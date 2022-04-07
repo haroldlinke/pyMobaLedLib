@@ -56,7 +56,8 @@
 # * License: http://creativecommons.org/licenses/by-sa/3.0/
 # ***************************************************************************
 
-PROG_VERSION ="LX4.19 05.04.2022"
+PROG_VERSION ="3.1.0.001 07.04.2022"
+hexversion = 0x03010001
 LARGE_FONT= ("Verdana", 12)
 VERY_LARGE_FONT = ("Verdana", 14)
 NORMAL_FONT = ("Verdana", 10)
