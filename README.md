@@ -11,17 +11,15 @@ Python >V3.7.0
 
 
 Installation using Python files
-1. search for the MLL-subfolder LEDs_Autoprog - this folder must contain the file "LEDs_AutoProg.ino"
-2. The path may have this look:  xxx/Arduino/MobaLedLib/Ver_3.1.0/LEDs_AutoProg/pyProg_Generator_MobaLedLib/python
-   (the directory needs to be verfied in a LINUX installation)
-3. create a subfolder pyProg_Generator_MobaLedLib in the folder LEDs_Autoprog (the name of the subfolder can be any name)
+1. search for the ARDUINO HOME/Arduino
+2. create a subfolder pyMobaLedLib in this folder (can be any Name)
 4. create a subfolder python
-5. Clone MobaLedLib_PyProgGen to the folder pyProg_Generator_MobaLedLib/Python - the file pyProg_Generator_MobaLedLib.py must be in this folder
-6. or download the branch as ZIP-file: unpack the ZIP file and copy the contents of the folder python into the folder pyProg_Generator_MobaLedLib/python
-7. or create a logical link for the download folder to the folder python (ln -s xxx/Arduino/MobaLedLib/python/pyProg_Generator_MobaLedLib.py ./myProg.py")
-8. open the folder pyProg_Generator_MobaLedLib/python
-9. start the Python file: pyProg_Generator_MobaLedLib.py 
-(python xx/Arduino/MobaLedLib/Ver_3.1.0/LEDs_AutoProg/pyProg_Generator_MobaLedLib/python pyProg_Generator_MobaLedLib.py
+5. Clone pyMobaLedLibn to the folder pyMobaLedLib/Python - the file pyMobaLedLib.py must be in this folder
+6. or download the branch as ZIP-file: unpack the ZIP file and copy the contents of the folder python into the folder pyMobaLedLib/python
+7. or create a logical link for the download folder to the folder python
+8. open the folder pyMobaLedLib/python
+9. start the Python file: pyMobaLedLib.py 
+(python Home/Arduino/pyMobaLedLib/python pyMobaLedLib.py
 
 This manual installation should work for Windows, Linux and Mac.
 
