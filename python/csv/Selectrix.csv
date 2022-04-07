@@ -1,0 +1,17 @@
+;Selectrix;0;DE;;COM?;;AutoDet --board arduino:avr:nano:cpu=atmega328old --pref programmer=arduino:arduinoisp;R not Chk;;;COM?;AutoDet --board arduino:avr:nano:cpu=atmega328old --pref programmer=arduino:arduinoisp;1;;0;;;0;0;0;0;0;0;0;0;0;0;
+;Aktiv;Filter;Channel oder Name [0..99];Bitposition [1..8];Typ;Start- wert;Beschreibung;Verteiler- Nummer;Stecker- Nummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;"LED/ 
+Sound
+Kanal";;;;;;;;;;;
+;?;;;;;;;;;;Heartbeat LED;RGB_Heartbeat(#LED);0;1;0;0;0;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;

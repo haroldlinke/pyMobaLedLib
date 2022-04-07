@@ -1,0 +1,269 @@
+{
+    "ARDUINO-port": {
+        "Typ": "",
+        "Mode": "",
+        "LEDs or LED Channel": "0",
+        "InCnt": "n",
+        "OutCnt": "0",
+        "Loc InCh": "0",
+        "Tmp8Bit": "1",
+        "SingleLEDCnt": "",
+        "Macro": "xxx",
+        "Find Name for detection of actual macro": "ARDUINO port",
+        "Name": "ARDUINO port",
+        "Kurzbeschreibung": "ARDUINO port ",
+        "Ausführliche Beschreibung": "ARDUINO port",
+        "MacroStr": "",
+        "Params": [
+            "S_Description",
+            "ARDUINO port"
+        ]
+    },
+    "ARDUINOConfigPage": {
+        "Typ": "ARDUINOConfigPage",
+        "Name": "ARDUINOConfigPage",
+        "MTabName": "ARDUINO Einstellungen",
+        "Title": "ARDUINO Einstellungen",
+        "Button_1": "Geänderte Einstellungen übernehmen",
+        "Button_2": "Individuellen Pfad zur ARDUINO IDE verwenden",
+        "Button_3": "Pfad zur ARDUINO IDE auswählen",
+        "Kurzbeschreibung": "Einstellungsparameter",
+        "Ausführliche Beschreibung": "Hier können Sie die Einstellungen für den ARDUINO vornehmen.\nSchliessen Sie den ARDUINO an einen USB Port an. Der ARDUINO wird automatisch in der Liste der gefundenen Geräte angezeigt.\nWenn nur ein ARDUINO gefunden wurde, wird er automatisch auch als Anschluss eingetragen. Sie könnnen dies aber auch von Hand ändern.\nDer Boardtyp wird auch automatisch übernommen.\nWenn mehrer ARDUINOs angeschlossen sind, können Sie den ausgewählten ARDUINO blinken lassen.",
+        "Params": [
+            "ARDUINOConnected",
+            "ARDUINOMessage",
+            "ARDUINODetect",
+            "ARDUINOParams",
+            "ARDUINOMobaLedLib"
+        ]
+    },
+    "ARDUINOMonitorPage": {
+        "Typ": "ARDUINOMonitorPage",
+        "Name": "ARDUINOMonitorPage",
+        "MTabName": "ARDUINO Monitor",
+        "Title": "ARDUINO Monitor",
+        "Button_1": "",
+        "Button_2": "",
+        "Button_3": "",
+        "Message_1": "Kompilieren und Hochladen gestartet. Dies kann einige Minuten dauern. Holen Sie sich einen Kaffee :)",
+        "Message_2": "Kompilieren und Hochladen erfolgreich beendet",
+        "Message_3": "FEHLER beim Kompilieren und Hochladen",
+        "Message_4": "Fehler: Die Arduino Entwicklungsumgebung wurde nicht gefunden. Hier wurde gesucht:",
+        "suppressLinesList": [
+            "Set log4j store directory",
+            " StatusLogger ",
+            "serial.SerialDiscovery"
+        ],
+        "Win_ARDUINOIDE": [
+            "C:\\Program Files (x86)\\Arduino\\arduino_debug.exe",
+            "C:\\Program Files\\Arduino\\arduino_debug.exe"
+        ],
+        "ARDUINOIDE": "arduino",
+        "Kurzbeschreibung": "ARDUINO Monitor",
+        "Ausführliche Beschreibung": "Diese Seite zeigt die Meldungen der ARDUINO-Tools beim Erzeugen des Programms und beim Hochladen an",
+        "Params": []
+    },
+    "ColorCheckPage": {
+        "Typ": "ColorCheckPage",
+        "Name": "ColorCheckPage",
+        "MTabName": "Farb Test",
+        "Title": "Farben Test",
+        "Button_1": "",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "Farbtestseite",
+        "Ausführliche Beschreibung": "Die Farben Testseite ermöglicht das Austesten der verschiedenen Farbkombinationen und das Erstellen einer farbtabelle für den <SetColTab>-Macro. Die Farben können über verschiedene Weg definiert werden: Einen Farbkreis, durch direkte Eingabe der Rot-Grün-Blau-Werte, des Farbtons, Helligkeit und Sättigung oder der Farbtemperatur.",
+        "Params": [
+            "ColorCheckButton_ok"
+        ]
+    },
+    "ConfigurationPage": {
+        "Typ": "ConfigurationPage",
+        "Name": "ConfigurationPage",
+        "MTabName": "Einstellungen",
+        "Title": "Einstellungen",
+        "Button_1": "Geänderte Einstellungen übernehmen",
+        "Button_2": "n",
+        "Button_3": "",
+        "Kurzbeschreibung": "Einstellungsparameter",
+        "Ausführliche Beschreibung": "pyProgramGenerator Einstellungen\n\r\n\rHier können Sie die Grundeinstellungen für das Programm an Ihre Wünsche anpassen.",
+        "Params": [
+            "Farbauswahl",
+            "ShowProgramGenerator",
+            "ShowPatternGenerator",
+            "ShowHiddentables",
+            "AutoLoadWorkbooks",
+            "UseCOM_Port_UserForm",
+            "Startseite",
+            "Language",
+            "LEDchannel",
+            "MaxLEDcnt",
+            "LEDColourCorrection",
+            "RMbusTimer",
+            "UseZ21Data",
+            "Z21Data",
+            "FontConfig"
+        ]
+    },
+    "DCCKeyboardPage": {
+        "Typ": "DCCKeyboardPage",
+        "Name": "DCCKeyboardPage",
+        "MTabName": "DCC Keyboard",
+        "Title": "DCC Keyboard",
+        "Button_1": "",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "DCC Keyboard Simulator",
+        "Ausführliche Beschreibung": "Der DCC Keyboard Simulator schickt an den ARDUINO direkt Kommandos, die den Kommandos entsprechen, die der DCC-ARDUINO an den LED-ARDUINO schicken würde. damt kann man die Funktion der DCC Schalter austesten.\nACHTUNG: Beim ersten Tastendruck kann es etwas dauern, da der ARDUINO den Modus umschalten muss und eventuell neu verbunden wird. Manchmal reagiert der ARDUINO auch erst auf den 2ten Tastendruck",
+        "Params": [
+            "DCC BaseAddress"
+        ]
+    },
+    "EffectMacroPage": {
+        "Typ": "EffectMacroPage",
+        "Name": "EffectMacroPage",
+        "MTabName": "Programmvorschau",
+        "Title": "MLL Programmvorschau",
+        "Button_1": "",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "MLL Programmvorschau",
+        "Ausführliche Beschreibung": "In der MLL Programmvorschau wird das erstellte Programm angezeigt. Diese Seite ist mehr für die Experten gedacht, um zu überprüfen, ob der richtige Code erzeugt wurde.",
+        "Params": []
+    },
+    "EffectTestPage": {
+        "Typ": "EffectTestPage",
+        "Name": "EffectTestPage",
+        "MTabName": "Programmgenerator",
+        "Title": "MLL Programmgenerator",
+        "Button_1": "",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "MLL Programmgenerator",
+        "Ausführliche Beschreibung": "MLL Programmgenerator ....",
+        "Params": []
+    },
+    "HelpPage": {
+        "Typ": "HelpPage",
+        "Name": "HelpPage",
+        "MTabName": "",
+        "Title": "Hilfe Seite",
+        "Kurzbeschreibung": "Hilfe Seite",
+        "Ausführliche Beschreibung": "Hilfe Seite",
+        "HelpPageURL": "https://wiki.mobaledlib.de/anleitungen/spezial/testseite"
+    },
+
+    "MacroStartPageData": {
+        "Typ": "MacroStartPageData",
+        "Name": "MacroStartPageData",
+        "TabName": " Start",
+        "Title": "Macro und Effekte Einführung",
+        "Kurzbeschreibung": "",
+        "Content": {
+            "Die Programmgenerator Seite": "Auf dieser Seite können alle Daten für die Konfiguration der MobaLEDLib eingegeben werden.\n Das Fenster ist in 4 Teile geteilt\n* ARDUINO - zur Steuerung des ARDUINOs\n* LED Liste - zur Auswahl der zu bearbeitenden LED oder LED-Bereichs\n  (Erste LED anklicken und die letzten LED des Bereichs mit SHIFT-Click)\n* Gruppenparameter - zur Eingabe der Daten einer Gruppe z.B. eines Hauses\n* Macros und Effekte - zur Auswahl des gewünschten Effektes\n",
+            "Auswahl eines Effektes": "Den gewünschten Macrotyp auswählen durch anklicken eines Reiters:\n* GasLights - für Strassenlampen (Neon, Gaslicht)\n* House - für Hausbeleuchtung\n* Light Macros - für Blinker, Schweisslicht, etc\n* Set Macros - für spezielle Macro Parameter, wie Farbtabelle, TV Eigenschaften etc\n* Sound Macros - für Tonwiedergabe mit dem Soundmodul\n",
+            "Kurzbeschreibug der Vorgehensweise:": "1. Gruppenparameter einstellen - Farbe, Name der Gruppe, Verteiler, Anschluss etc\n2. Auf <Übernehmen> klicken\n3.In LED Liste den oder die LED auswählen\n4.Zum <House>-Tab wechseln\n5.Mit gedrückter SHIFT-Taste, den gewünschten Effekt auswählen (z.B. ROOM_DARK)\n6.die nächste LED wird automtiasch ausgewählt\n7.nächsten Effekt anklicken (SHIFT gedrückt halten)\n8.Bis alle Effekte definiert sind\n9. Schalterart auf <DCC-Adresse> ändern - Adresse auf <105> ändern\n10. Taster - <House Daten übernehmen> anklicken\n11.Die Änderungen werden übernommen\n12.<Zum ARDUINO schicken> anklicken. Das Programm wird erstellt und zum ARDUINO geschickt.\n13. Zum <DCC-Keyboard> wechseln.\n14. Grüne Taste mit Adresse 105 anklicken.\n16. Die Haus LEDs starten"
+        },
+        "Params": [
+            "MacroStartPageText"
+        ]
+    },
+    "ProgGeneratorPage": {
+        "Typ": "ProgGeneratorPage",
+        "Name": "ProgGeneratorPage",
+        "MTabName": "ProgGeneratorPage",
+        "Title": "ProgGeneratorPage",
+        "Button_1": "",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "DCC Keyboard Simulator",
+        "Ausführliche Beschreibung": "Der DCC Keyboard Simulator schickt an den ARDUINO direkt Kommandos, die den Kommandos entsprechen, die der DCC-ARDUINO an den LED-ARDUINO schicken würde. damt kann man die Funktion der DCC Schalter austesten.\nACHTUNG: Beim ersten Tastendruck kann es etwas dauern, da der ARDUINO den Modus umschalten muss und eventuell neu verbunden wird. Manchmal reagiert der ARDUINO auch erst auf den 2ten Tastendruck",
+        "Params": [
+            "DCC BaseAddress"
+        ]
+    },
+    "SerialMonitorPage": {
+        "Typ": "SerialMonitorPage",
+        "Name": "SerialMonitorPage",
+        "MTabName": "Serial Monitor",
+        "Title": "Serial Monitor",
+        "Button_1": "Senden",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "Serial Monitor",
+        "Ausführliche Beschreibung": "Der Serial Monitor protokolliert die Kommunikation des Programms mit dem ARDUINO. Dies ist mehr für die Fehlerbehebung gedacht und für Experten.",
+        "Params": [
+            "SerialMonitorInput"
+        ]
+    },
+    "ServoTestPage": {
+        "Typ": "ServoTestPage",
+        "Name": "ServoTestPage",
+        "MTabName": "Servo Test",
+        "Title": "MobaLedLib LED Servotester",
+        "Button_1": "",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "Testen und Konfigurieren von Servos",
+        "Ausführliche Beschreibung": "Mit der Servoplatine von Hardi können über die MLL auch Servos angesteuert werden. Auf dieser Seite können Sie den Servo testen und konfigurieren.\nMit dem Schieberegler kann die Position des Servos eingestellt werden. Die Konfiguration des Servos erfolgt mit den Funktionen  <Min und Max Position programmieren> und <Servo Geschwindigkeit programmieren>",
+        "Params": [
+            "ServoAddress",
+            "ServoChannel"
+        ]
+    },
+    "SoundCheckPage": {
+        "Typ": "SoundCheckPage",
+        "Name": "SoundCheckPage",
+        "MTabName": "Sound Test",
+        "Title": "Sound Test",
+        "Button_1": "Sound an ARDUINO\nschicken",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "Testen des MLL-Sound Gerätes",
+        "Ausführliche Beschreibung": "Auf dieser Seite können Sie die MLL-Sound Geräte testen. Die MLL-Soundplatine mit dem <MP3-TF-16> Modul ermöglicht die Erzeugung von verschiedenen selbst erzeugten Geräuschen. Leider kommt es immer wider vor, dass die wiedergegebenen Sounds nicht richtig stimmen. Es kommt nicht immer die gewünschte Sound Datei. Das liegt an bauteiltoleranzen. Auf der Sound test Seite können die Werte für die verschiedenen Geräusche ausprobiert werden. Einfach die Soundmoduladresse angeben und in den Felder R/G/B die verschiedenen Werte durchprobieren, bis der richtige Sound kommt.",
+        "Params": [
+            "SoundAddress",
+            "SoundImpulsLength",
+            "Sound_LED"
+        ]
+    },
+    "StartPage": {
+        "Typ": "StartPage",
+        "Name": "StartPage",
+        "MTabName": "Start",
+        "DISCONNECT_FILENAME": "MobaLedTest_disconnect.txt",
+        "CLOSE_FILENAME": "MobaLedTest_close.txt",
+        "TEMP_LEDEFFECTTABLE_FILENAME": "../temp_ledeffect_table.json",
+        "TEMP_WORKBOOK_FILENAME": "../temp_workbook.table",
+        "InoName_DCC": "../../../examples/23_A.DCC_Interface/23_A.DCC_Interface.ino",
+        "InoName_SX": "../../../examples/23_A.Selectrix_Interface/23_A.Selectrix_Interface.ino",
+        "Ino_Dir_LED": "../../LEDs_AutoProg/",
+        "InoName_LED": "../LEDs_AutoProg.ino",
+        "FINISH_FILE": "Finished.txt",
+        "Title": "Start Seite",
+        "Kurzbeschreibung": "Start Seite",
+        "Photo": "Mobaled_ARDUINOs.png",
+        "Ausführliche Beschreibung": "Mit MobaLedLib lassen sich auf jeder Modellbahn-Anlage Lichteffekte, animierte Figuren, Servo- Motoren und Sound-Module ansteuern. Das System basiert auf den kostengünstigen und millionenfach bewährten Arduino-Microcontrollern. Bis zu 768 Effekte können über nur eine einzige Platine angesteuert werden. Auf jeder Anlage können beliebig viele MobaLedLib-Platinen kombiniert werden. Per DCC oder CAN-BUS kann das System mit vorhandenen Steuerzentralen oder dem PC verbunden werden. Die Programmierung der Effekte erfolgt über den Programmgenerator. Weitere Details finden Sie in der Hilfe.\n\r",
+        "MSG_NO_DEVICE_title": "Verbindung mit ARDUINO",
+        "MSG_NO_DEVICE": "Das Program arbeitet am besten, wenn es mit dem ARDUINO verbunden ist. \nEs wurde noch keine Verbindung zum ARDUINO eingestellt.\n\nWollen Sie dies jetzt tun?",
+        "msg_connect_open_error_title": "Verbindung mit ARDUINO",
+        "msg_connect_open_error": "Das Program arbeitet am besten, wenn es mit dem ARDUINO verbunden ist. \nDer Verbindungsaufbau zum Port {} war nicht möglich.\n\nWollen Sie zur ARDUINO Einstellungsseite wechseln und die Verbindung überprüfen?",
+        "Content": {
+            "MobaLedLib": "Beleuchtungskonfiguration der MobaLedLib für Dummis\nEinfach zu Bedienende Oberfläche zur Konfiguration von Beleuchtungen und anderen Effekten für eine Modeleisenbahn.\nMit diesem Programm können die Beleuchtungs- und andere Effekte für eine Modelleisenbahn ganz einfach erstellt werden. Es können bis zu 256 RGB LEDs oder 768 einzelne LEDs verwaltet werden.\nÜber eine einfach zu bedienende Benutzeroberfläche kann man die gewünschten Funktionen Auswählen und Konfigurieren. Es steht eine Vielzahl von Befehlen zur Verfügung. Der Wichtigste ist sicherlich das <Belebte Haus>. Man kann aber auch Andreaskreuze, Signale, Ampeln, Sounds, Servos und vieles mehr mit einem Klick auswählen.\nDie Effekte können automatisch gestartet oder über eine Zentrale aktiviert werden. Dazu werden momentan folgenden Protokolle/Busse unterstützt: DCC, Selectrix und der Märklin CAN Bus oder direkt über eine Steuerungssoftware (z.B. RocRail,iTrain, Traincontroller, WinDigiPet).\nDas alles wird in einer übersichtlichen Tabelle verwaltet. \nDie Konfiguration kann ganz einfach direkt zum Arduino geschickt und ausprobiert werden. Die Programmerzeugung geschieht komplett im Hintergrund. Der Benutzer muss keinerlei Programmiererfahrung haben. Die Eingabe der Daten erfolgt durch Auswahl der gewünschten LED und anklicken des gewünschten Macros bzw Effekts. Zu den Effekten kommt man mit einem Klick auf <Programmgenerator> in dem Reiter oben.\nAusserdem werden noch einige Hilfmittel zur Verfügung gestellt:\n\n- Programmvorschau: zeigt für Experten das erstellte ARDUINO-Programm an.\n- Farbtest: Erlaubt das Testen von verschiedenen Farben für die RGB Leds \n  und das Erstellen der Farbtabelle für den ColTab-Macro\n- Soundtest: ermöglicht das einfache Austesten des Soundmoduls\n- Servo Tester: ermöglicht das einfache Testen und Einstellen von Servos\n- Z21 Simulator: Ermöglicht die Steuerung der Effekt direkt von einer Modellbahnsteuerung,\n  die die Roco Z21 unterstützt.\n- Serial Monitor: Eralubt die Überwachung der Seriellen Schnittstelle zum ARDUINO\n- Einstellungen: Programmeinstellungen vornehmen. z.B. Anschluss des ARDUINO, Startseite usw."
+        }
+    },
+    "Z21MonitorPage": {
+        "Typ": "Z21MonitorPage",
+        "Name": "Z21MonitorPage",
+        "MTabName": "Z21 Simulator",
+        "Title": "Z21 Simulator",
+        "Button_1": "Start Simulator",
+        "Button_2": "Stop Simulator",
+        "Button_3": "Zeige Taster-Adressen",
+        "Kurzbeschreibung": "Z21 Simulation",
+        "Ausführliche Beschreibung": "Die Z21 Simulation ermöglicht die direkte Steuerung des ARDUINOS von Modellbahnsteuerungsprogrammen aus (z.B. Rocrail, iTrain, Traincontroller, WinDigiPet). Die Simulation verhält sich gegenüber dem Steuerprogramm wie eine Roco Z21 Zentrale. Wenn das Steuerproramm auf demselben Rechner läuft, findet das Steuerprogramm die Z21 Simulation unter der IP Adresse 127.0.0.1. Das Textfeld zeigt alle gesendeten und empfangenen Kommmandos an.",
+        "Params": [
+            "Z21KeyTestInput"
+            ]
+    }
+}

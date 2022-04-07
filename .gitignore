@@ -1,0 +1,5 @@
+
+*.pyc
+python/logfile.log
+
+python.zip
