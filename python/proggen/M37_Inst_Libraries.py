@@ -265,7 +265,7 @@ def __Get_State_of_Board_Row(Row):
     Board = Split(Board_and_Proc, ':')(0)
     ProcessorTyp = Split(Board_and_Proc, ':')(1)
     if Board == 'arduino' and ProcessorTyp == 'avr':
-        Sh.CellDict[Row, __Installed_Col] = 1
+        Sh.CellDict[Row, __Installed_Col] = "1"
         Sh.CellDict[Row, __DetectVer_Col] = Get_Std_Arduino_Lib_Ver()
         return
     TestFile = Sh.Cells(Row, __Test_File_Col)
@@ -277,12 +277,12 @@ def __Get_State_of_Board_Row(Row):
         Res = Dir()
     VerList = M30.DelLast(VerList)
     for Ver in Split(VerList, vbTab):
-        DirName = BoardDir + ProcessorTyp + '/' + Ver + '/libraries/'
+        DirName = BoardDir + ProcessorTyp + "/" + Ver + "/libraries/"
         if not M30.Dir_is_Empty(DirName):
             with_0 = Sh.Cells(Row, __Installed_Col)
             if Dir(DirName + TestFile) != '':
                 Sh.CellDict[Row, __DetectVer_Col] = Ver
-                with_0.Value = 1
+                with_0.Value = "1"
             else:
                 with_0.Value = ''
             return
@@ -312,7 +312,7 @@ def __Get_State_of_BoardExtras_Row(Row):
     ExtraType = Split(Board_and_Proc, ':')(1)
     TestFile = Sh.Cells(Row, __Test_File_Col)
     BoardDir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/' + Board
-    Res = Dir(BoardDir + '\\' + ExtraType + '/*.*', vbDirectory)
+    Res = Dir(BoardDir + '/' + ExtraType + '/*.*', vbDirectory)
     while Res != '':
         if Left(Res, 1) != '.':
             VerList = VerList + Res + vbTab
@@ -324,7 +324,7 @@ def __Get_State_of_BoardExtras_Row(Row):
             with_1 = Sh.Cells(Row, __Installed_Col)
             if Dir(DirName + '/' + TestFile) != '':
                 Sh.CellDict[Row, __DetectVer_Col] = Ver
-                with_1.Value = 1
+                with_1.Value = "1"
             else:
                 with_1.Value = ''
             return
@@ -793,9 +793,9 @@ def __Create_Do_Update_Script_Linux_part1(Pause_at_End):
     if ForceReinstall == True:
         if Dir(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache') != '':
             Kill(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache')
-    return UpdCnt,LibList,BrdList,OthersourceList
+    return UpdCnt,LibList,BrdList,OthersourceList,URLList
 
-def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList):
+def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLList):
 
     # *** Libraries ***
     if LibList != '':
@@ -820,6 +820,8 @@ def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList):
             return Res
     # *** Boards ***
     if BrdList != '':
+        if URLList != '':
+            URLList_split=URLList.split(",")
         BrdList = M30.DelLast(BrdList)
         URLList = M30.DelLast(URLList)
         Debug.Print('ECHO *********************************', '\n')
@@ -834,12 +836,16 @@ def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList):
             
             #VBFiles.writeText(fp, '"' + M08.Find_ArduinoExe() + '"')
             #VBFiles.writeText(fp, ' --install-boards ' + Brd)
-            if URLList != '':
-                VBFiles.writeText(fp, ' --pref "boardsmanager.additional.urls=' + URLList + '"')
+            #if URLList != '':
+            #    VBFiles.writeText(fp, ' --pref "boardsmanager.additional.urls=' + URLList + '"')
                 
             CommandStr = '"' + M08.Find_ArduinoExe() + '"' + ' --install-boards ' + Brd
-            if URLList != '':
-                CommandStr= CommandStr +' --pref "boardsmanager.additional.urls=' + URLList + '"'
+            if URLList_split != []:
+                CommandStr= CommandStr +' --pref "boardsmanager.additional.urls=' + URLList_split[0] + '"'
+                del URLList_split[0]
+                
+            #PG.dialog_parent.execute_shell_cmd(CommandStr)
+            
             Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)                        
             #VBFiles.writeText(fp, ' 2>&1 | find /v " StatusLogger " | find /v " INFO c.a" | find /v " WARN p.a" | find /v " WARN c.a"', '\n')
             #VBFiles.writeText(fp, 'ECHO.', '\n')
@@ -898,7 +904,7 @@ def __Correct_one_Temp_Arduino_nr_Dir(LibDir):
     Org_LibName = String()
     #-----------------------------------------------------------
     ## VB2PY (CheckDirective) VB directive took path 1 on 1
-    Org_LibName = __Get_Original_Name_from_TestFile(M02.Sketchbook_Path + '\\libraries\\' + LibDir + '\\')
+    Org_LibName = __Get_Original_Name_from_TestFile(M02.Sketchbook_Path + '/libraries/' + LibDir + '/')
     if Org_LibName != '':
         Org_LibPath = M02.Sketchbook_Path + '\\libraries\\' + Org_LibName
         if Dir(Org_LibPath, vbDirectory) != '':
@@ -934,7 +940,7 @@ def __Correct_Temp_Adrduino_nr_Dirs():
     ChDir(M02.Sketchbook_Path)
     print(os.getcwd())
     #dirpath = M02.Sketchbook_Path+'\\libraries\\Arduino_*.'
-    Res = Dir('libraries\\Arduino_*.', vbDirectory)
+    Res = Dir('libraries/Arduino_*.', vbDirectory)
     #Res = Dir(dirpath, vbDirectory)
     while Res != '':
         DirList = DirList + Res + vbTab
@@ -981,7 +987,7 @@ def __Check_All_Selected_Libraries_Result(Ask_User):
     Row = __First_Dat_Row
     while Sh.Cells(Row, __Libr_Name_Col) != '':
         if Sh.Cells(Row, __SelectRow_Col) != '':
-            if Sh.Cells(Row, __Installed_Col) != 1:
+            if Sh.Cells(Row, __Installed_Col) != "1":
                 NotInstCnt = NotInstCnt + 1
                 List = List + '   ' + Sh.Cells(Row, __Libr_Name_Col) + vbCr
         Row = Row + 1
@@ -1122,7 +1128,7 @@ def __Update_All_Selected_Libraries_Linux():
     #hwnd = Application.hwnd
     while 1:
         __UnzipList = ''
-        updcnt,LibList,BrdList,OthersourceList = __Create_Do_Update_Script_Linux_part1(Pause_at_End)
+        updcnt,LibList,BrdList,OthersourceList,URLList = __Create_Do_Update_Script_Linux_part1(Pause_at_End)
         if (updcnt == 0):
             P01.MsgBox(M09.Get_Language_Str('Es wurden keine Zeilen zur Installation ausgewählt. Die Zeilen müssen mit einem Häkchen in der Spalte \'Select\' markiert werden.' + vbCr + 'Für die ausgewählten Zeilen wird die neueste Software installiert, es sei den in der Spalte "Required Version" ist eine ' + 'bestimmte Version angegeben.'), vbInformation, M09.Get_Language_Str('Keine Zeilen zur Installation ausgewählt.'))
             break #*HL GoTo(EndFunc)
@@ -1137,7 +1143,7 @@ def __Update_All_Selected_Libraries_Linux():
         if Dir('libraries/*', vbDirectory) == '':
             MkDir('libraries/')
         ChDir(M02.Sketchbook_Path + '/libraries/')
-        Res = __Create_Do_Update_Script_Linux_part2(LibList,BrdList,OthersourceList)
+        Res = __Create_Do_Update_Script_Linux_part2(LibList,BrdList,OthersourceList,URLList)
         #CommandStr = P01.ThisWorkbook.Path + '/' + __UPDATE_LIB_CMD_NAME
         #Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
         if (Res == M40.Success) or (Res == M40.Timeout):

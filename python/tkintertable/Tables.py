@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
     Implements the core TableCanvas class.
     Created Oct 2008

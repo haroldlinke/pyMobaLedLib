@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
     Module implementing the TableModel class that manages data for
     it's associated TableCanvas.
