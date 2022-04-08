@@ -1,5 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+
 """
     Module implementing the TableModel class that manages data for
     it's associated TableCanvas.
@@ -154,7 +155,7 @@ class TableModel(object):
             return None
 
         #takes first row as field names
-        dictreader = csv.DictReader(open(filename, "r"), delimiter=sep,fieldnames=fieldnames)
+        dictreader = csv.DictReader(open(filename, "r",encoding="utf8"), delimiter=sep,fieldnames=fieldnames)
         dictdata = {}
         count=0
         for rec in dictreader:
