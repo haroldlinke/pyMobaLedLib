@@ -47,6 +47,7 @@ import subprocess
 import zipfile
 import platform
 import shutil
+import pathlib
 
 from ExcelAPI.X01_Excel_Consts import *
 #from proggen.M02_Public import Get_BoardTyp
@@ -1146,22 +1147,18 @@ def ConvertUTF8Str(UTF8Str):
     return fn_return_value
 
 def Dir_is_Empty(DirName):
-    Res = String()
-    fn_return_value = False
+    
     #---------------------------------------------------------
-    # Return true it the directoriy contains at least one subdirectory or one file
-    Res = Dir(DirName + r'\*.*', vbDirectory)
-    while Res != r'':
-        if Res != r'' and Left(Res, 1) != r'.':
-            return fn_return_value
-        Res = Dir()
-    Res = Dir(DirName + r'\*.*')
-    while Res != r'':
-        if Res != r'' and Left(Res, 1) != r'.':
-            return fn_return_value
-        Res = Dir()
-    fn_return_value = True
-    return fn_return_value
+    # Return false it the directory contains at least one subdirectory or one file
+    searchpath = pathlib.Path(DirName)
+    if searchpath.exists():
+        pathlist=pathlib.Path(DirName).iterdir()
+        for path in pathlist:
+            if path !="":
+                return False
+        return True
+    return True
+
 
 def Get_First_SubDir(DirName):
     Res = String()

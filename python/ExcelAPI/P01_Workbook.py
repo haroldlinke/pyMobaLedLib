@@ -774,7 +774,7 @@ class CWorksheet:
         self.AutoFilterMode = False
         self.searchcache = {}
         self.Shapes = CShapeList(self.tablemodel)
-        self.CellDict = CCellDict()
+        self.CellDict = CCellDict(ws=self)
         self.End_val = self.LastUsedColumn_val
         
     def LED_flash(self,row,col):
@@ -1485,15 +1485,16 @@ class CCell(str):
     Text = property(get_value, set_value, doc='value of CCell')
     
 class CCellDict():
-    def __init__ (self):
-        data = {}
+    def __init__ (self,ws=None):
+        #data = {}
+        self.ws = ws
         
     def __getitem__(self, k):
         #print("Getitem",k)
-        return Cells(k[0],k[1])
+        return Cells(k[0],k[1],ws=self.ws)
         
     def __setitem__(self,k,value):
-        ccell = Cells(k[0],k[1])
+        ccell = Cells(k[0],k[1],ws=self.ws)
         #print("Setitem",k, value,ccell.Sheet.Name)
         ccell.set_value(value)
 
