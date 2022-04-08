@@ -442,7 +442,8 @@ def UploadToSimulator(CreateHeaderFiles):
                 else:
                     #rerun command to show output to user
                     CommandStr = P01.ThisWorkbook.Path + "\\" + M02.Cfg_Dir_LED + M02.CfgBuild_Script
-                    M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
+                    Res = PG.get_dialog_parent().execute_shell_cmd(CommandStr,"Compile Simulator")
+                    #M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
         #*HL AppActivate(ActiveWorkbook.Windows(1).Caption)
         M30.Bring_Application_to_front()
     return fn_return_value
