@@ -81,7 +81,7 @@ class CStatusMsg_UserForm():
         self.controller = PG.get_global_controller()
         self.IsActive = False
         self.title = "Bitte etwas Geduld..."
-        self.label1_txt = "Lade alle Beispiele\nBitte etwas Geduld"
+        self.label1_txt = ""
         self.label2_txt = "..."
         self.button1_txt = "Abbrechen"
         self.button2_txt = "Ok"
@@ -179,21 +179,23 @@ class CStatusMsg_UserForm():
     
     def Set_Label(self, Msg):
         #----------------------------------
-        self.label1.configure(text=Msg)
-        self.top.update()
-        self.top.focus()
-        self.label_txt = Msg
-        #P01.set_statusmessage(self.label_txt +" "+ self.text)
+        if self. IsActive:
+            self.label1.configure(text=Msg)
+            self.top.update()
+            self.top.focus()
+            self.label_txt = Msg
+            #P01.set_statusmessage(self.label_txt +" "+ self.text)
     
     def Set_ActSheet_Label(self,Txt):
         #-------------------------------------------
         #ActSheet_Label = Txt
-        self.text=Txt
-        self.label2.configure(text=Txt)
-        self.top.update()
-        self.top.focus()
-        #P01.DoEvents()
-        #P01.set_statusmessage(self.label_txt +" "+ self.text)
+        if self.IsActive:
+            self.text=Txt
+            self.label2.configure(text=Txt)
+            self.top.update()
+            self.top.focus()
+            #P01.DoEvents()
+            #P01.set_statusmessage(self.label_txt +" "+ self.text)
     
     def ShowDialog(self, Label, Txt):
         #----------------------------------------------------

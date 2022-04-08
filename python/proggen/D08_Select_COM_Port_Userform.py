@@ -284,16 +284,16 @@ class CSelect_COM_Port_UserForm:
     def ShowDialog(self, Caption, Title, Text, Picture, Buttons, FocusButton, Show_ComPort, Red_Hint, ComPort_IO, PrintDebug=False):
         global COM_Port_Label,PortNames,LocalPrintDebug,LocalComPorts,__LocalPrintDebug, __OldSpinButton,__LocalShow_ComPort,Pressed_Button
         Debug.Print("Select_Com_Port_UserForm-Showdialog")
-        if  not PG.dialog_parent.getConfigData("UseCOM_Port_UserForm"):
-            Debug.Print("UseCOM_Port_UserForm=True")
-            fn_return_value = 3
-            serportname = PG.dialog_parent.getConfigData("serportname")
+        #if  not PG.dialog_parent.getConfigData("UseCOM_Port_UserForm"):
+        #    Debug.Print("UseCOM_Port_UserForm=True")
+        #    fn_return_value = 3
+        #    serportname = PG.dialog_parent.getConfigData("serportname")
 
-            if serportname[:3]=="COM":
-                serportname=int(serportname[3:])
-            
-            return fn_return_value,serportname
-        
+        #    if serportname[:3]=="COM":
+        #        serportname=int(serportname[3:])
+        #    
+        #    return fn_return_value,serportname
+        # 
             
         c = Variant()
     

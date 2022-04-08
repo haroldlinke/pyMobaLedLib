@@ -1060,7 +1060,7 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     ## VB2PY (CheckDirective) VB directive took path 1 on VBA7
     #*HL hwnd = Application.hwnd
     ## VB2PY (CheckDirective) VB directive took path 1 on OLD_LIB_CHECK
-    #*HL Check_Required_Libs_and_Install_missing()
+    Check_Required_Libs_and_Install_missing()
     if ComPortColumn == M25.COMPort_COL:
         ArduName = 'LED'
     else:
@@ -1391,6 +1391,7 @@ def Install_Libraries(LibNames=[]):
         M30.Show_Status_for_a_while(M09.Get_Language_Str('Bibliotheken erfolgreich installiert. (Dauer: ') + P01.Format(Time - Start, 'hh:mm:ss') + ')', '00:00:30')
 
 def Check_Required_Libs():
+    return "" #*HL
     LibPath = '\\Arduino\\libraries\\MobaLedLib\\examples\\00.Overview'
 
     LibDir = String()

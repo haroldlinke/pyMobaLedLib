@@ -50,6 +50,7 @@ from locale import getdefaultlocale
 from ExcelAPI.P01_Workbook import create_workbook
 import proggen.M02_Public as M02
 import proggen.M08_ARDUINO as M08
+import proggen.M40_ShellandWait as M40
 
 import ExcelAPI.P01_Workbook as P01
 
@@ -531,42 +532,61 @@ class Prog_GeneratorPage(tk.Frame):
             self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + self.startfile[0]+ "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")    
     
+    def terminate_process(self,event=None):
+        self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
+        self.arduinoMonitorPage.add_text_to_textwindow("\n* Program Terminated by User\n",highlight="Error")
+        self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
+        self.process.terminate()
+    
     def execute_shell_cmd(self,cmd_str,message1):
-        self.Update_Compile_Time(Start=True)
-
+        
         self.arduinoMonitorPage=self.controller.getFramebyName ("ARDUINOMonitorPage")
         self.arduinoMonitorPage.delete_text_from_textwindow()
+        self.controller.bind("c",self.terminate_process)
         
         logging.debug("execute_shell_cmd:"+cmd_str)
         
         self.arduinoMonitorPage.add_text_to_textwindow("\n\n*******************************************************\n"+ message1 +"\n*******************************************************\n\n")
         
-        self.controller.showFramebyName("ARDUINOMonitorPage")        
+        self.controller.showFramebyName("ARDUINOMonitorPage")
+        self.arduinoMonitorPage.update()
         
         try:
-            self.process = subprocess.Popen(cmd_str, stdout=subprocess.PIPE,stderr=subprocess.STDOUT,stdin = subprocess.DEVNULL,shell=True)
+            self.process = subprocess.Popen(cmd_str, stdout=subprocess.PIPE,stderr=subprocess.PIPE,stdin = subprocess.DEVNULL,shell=True)
             self.continue_loop=True
-            self.write_stdout_to_text_window()
+        
+            # Poll process.stdout to show stdout live
+            while True:
+                output = self.process.stdout.readline()
+                if self.process.poll() is not None:
+                    break
+                if output:
+                    self.arduinoMonitorPage.add_text_to_textwindow(str(output)+"\n")
+                    self.arduinoMonitorPage.update()
+    
+            rc = self.process.returncode
+            
+            self.arduinoMonitorPage.update()
+            
+            if rc != 0:
+                return M40.Failure
+            else:
+                return M40.Success
+        
+        except subprocess.TimeoutExpired:
+            #self.Stop_Compile_Time_Display()
+            #P01.Unload(F00.StatusMsg_UserForm)
+            return M40.Timeout
         except BaseException as e:
+            #self.Stop_Compile_Time_Display()
+            #P01.Unload(F00.StatusMsg_UserForm)
+            logging.debug("execute_shell_cmd:"+e)
             #logging.error("Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
-            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + self.startfile[0]+ "\n",highlight="Error")
-            self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")    
+            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + "\n",highlight="Error")
+            self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")            
         
-        
-        #************************************************************* test
-        # invoke process
-        process = subprocess.Popen(shlex.split(cmd_str),shell=False,stdout=subprocess.PIPE)
-        
-        # Poll process.stdout to show stdout live
-        while True:
-            output = process.stdout.readline()
-            if process.poll() is not None:
-                break
-            if output:
-                print (output.strip())
-        rc = process.poll()        
-        
+        return rc
             
     def start_ARDUINO_program_Popen(self):
         self.Update_Compile_Time(Start=True)

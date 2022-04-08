@@ -44,6 +44,7 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 from ExcelAPI.X01_Excel_Consts import *
+import proggen.Prog_Generator as PG
 
 import urllib.request 
 
@@ -810,7 +811,8 @@ def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLLi
         Debug.Print('@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache"', '\n')
         
         CommandStr = '"' + M08.Find_ArduinoExe() + '"' + ' --install-library ' + LibList
-        Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)        
+        Res = PG.get_dialog_parent().execute_shell_cmd(CommandStr,"Install Libraries" + repr(LibList))
+        #Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)        
         #VBFiles.writeText(fp, ' 2>&1 | find /v " StatusLogger " | find /v " INFO c.a" | find /v " WARN p.a" | find /v " WARN c.a"', '\n')
         #VBFiles.writeText(fp, 'ECHO.', '\n')
         #VBFiles.writeText(fp, 'ECHO Error %ERRORLEVEL%', '\n')
@@ -845,8 +847,8 @@ def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLLi
                 del URLList_split[0]
                 
             #PG.dialog_parent.execute_shell_cmd(CommandStr)
-            
-            Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)                        
+            Res = PG.get_dialog_parent().execute_shell_cmd(CommandStr,"Install Boards" + repr(BrdList))
+            #Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)                        
             #VBFiles.writeText(fp, ' 2>&1 | find /v " StatusLogger " | find /v " INFO c.a" | find /v " WARN p.a" | find /v " WARN c.a"', '\n')
             #VBFiles.writeText(fp, 'ECHO.', '\n')
             #VBFiles.writeText(fp, 'ECHO Error %ERRORLEVEL%', '\n')
@@ -1070,7 +1072,8 @@ def __Update_All_Selected_Libraries():
             MkDir('libraries/')
         ChDir(M02.Sketchbook_Path + '/libraries/')
         CommandStr = P01.ThisWorkbook.Path + '/' + __UPDATE_LIB_CMD_NAME
-        Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
+        Res = PG.get_dialog_parent().execute_shell_cmd(CommandStr,"Install all selected Libraries")
+        #Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
         if (Res == M40.Success) or (Res == M40.Timeout):
             pass
         else:
@@ -1149,7 +1152,7 @@ def __Update_All_Selected_Libraries_Linux():
         if (Res == M40.Success) or (Res == M40.Timeout):
             pass
         else:
-            P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler #1# beim Starten der Update Programms \'#2#\''), "#1#", str(Res)), '#2#', CommandStr), vbCritical, M09.Get_Language_Str('Fehler beim Aktualisieren der Bibliotheken'))
+            P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler #1# beim Starten der Update Programms \'#2#\''), "#1#", str(Res)), '#2#',""), vbCritical, M09.Get_Language_Str('Fehler beim Aktualisieren der Bibliotheken'))
             break #*HL GoTo(EndFunc)
         if WIN7_COMPATIBLE_DOWNLOAD:
             __Proc_UnzipList()
