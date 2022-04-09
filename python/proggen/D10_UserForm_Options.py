@@ -412,7 +412,7 @@ class CUserForm_Options:
         dstpath = workbookpath3+"/pyMobaLedLib/python"
         
         F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
-        #self.copytree(srcpath,dstpath)
+        self.copytree(srcpath,dstpath)
         F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programm")
         #except BaseException as e:
             #print("Update_MobLaedLib exception:",e)
