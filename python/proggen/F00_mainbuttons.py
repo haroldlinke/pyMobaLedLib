@@ -212,8 +212,6 @@ def __Worksheet_Calculate():
         return
     if Cells.Parent.Name == ActiveSheet.Name:
         Global_Worksheet_Calculate()
-        
-        
 
 def Workbook_Open():
     DidCopy = Boolean()
