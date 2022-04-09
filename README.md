@@ -27,12 +27,12 @@ The VBA code was translated 1 to 1 to Python using the Wedbased VB2PY-converter:
 http://vb2py.sourceforge.net/online_conversion.html. Therefore some hidden errors are still possible due to incompatibilities of the translation.
 
 History of Change
-V3.1.0.001 -  7.4.2022 - HL - Initial creation of pyMobaLedLib, derived from MobaledLib-PyProgammGenerator Version LX4.19
-                              New features: 
-                              - Selection of USB port is LINUX compatible
-                              - ARDUINO Library check at start of program, when libraries are missing, they are downloaded automatically
-                              - Update of MLL ("Aktualisiere Bibilotheken) and Install Beta Test of MLL implemented
-                              - Update of pyMobaLedLib implemented (Button under Optionen - Update)
+V3.1.0.001 -  7.4.2022 - HL 
+- Initial creation of pyMobaLedLib, derived from MobaledLib-PyProgammGenerator Version LX4.19
+- Selection of USB port is LINUX compatible
+- ARDUINO Library check at start of program, when libraries are missing, they are downloaded automatically
+- Update of MLL ("Aktualisiere Bibilotheken) and Install Beta Test of MLL implemented
+- Update of pyMobaLedLib implemented (Button under Optionen - Update)
                               
 Open Issues:
 - define a simple installation mechanism for LINUX and Mac
