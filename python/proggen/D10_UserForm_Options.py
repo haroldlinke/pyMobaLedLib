@@ -74,6 +74,8 @@ import proggen.M37_Inst_Libraries as M37
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
 
+import proggen.F00_mainbuttons as F00
+
 from ExcelAPI.X01_Excel_Consts import *
 import ExcelAPI.P01_Workbook as P01
 import proggen.Prog_Generator as PG
@@ -365,7 +367,7 @@ class CUserForm_Options:
                 errors.append((srcname, dstname, str(why)))
             # catch the Error from the recursive copytree so that we can
             # continue with other files
-            except Error as err:
+            except BaseException as err:
                 errors.extend(err.args[0])
         try:
             shutil.copystat(src, dst)
@@ -375,25 +377,49 @@ class CUserForm_Options:
         except OSError as why:
             errors.extend((src, dst, str(why)))
         if errors:
-            raise Error(errors)    
+            raise Error(errors) 
+        
+    def show_download_status(self,a,b,c):
+        
+            '''''Callback function 
+            @a:Downloaded data block 
+            @b:Block size 
+            @c:Size of the remote file 
+            '''  
+            per=100.0*a*b/c  
+            if per>100:  
+                per=100  
+            #print '%.2f%%' % per          
+        
+            F00.StatusMsg_UserForm.Set_ActSheet_Label(P01.Format(int(time.time()) - M37.Update_Time, 'hh:mm:ss')+"\n"+str(a*b))
         
     def __Update_pyMobaLedLib_Button_Click(self):
         self.Hide()
+        if P01.MsgBox(M09.Get_Language_Str('Soll die Python MobaLedLib aktualisiert werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) != vbYes:
+            return
+        F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Python MobaLedLib Programm'), '')
         URL= "https://github.com/HaroldLinke/pyMobaLedLib/archive/master.zip"
         workbookpath = P01.ThisWorkbook.Path
         workbookpath2 = os.path.dirname(workbookpath)
         workbookpath3 = os.path.dirname(workbookpath2)
         zipfilenamepath = workbookpath3+"/pyMobaLedLib.zip"
+        F00.StatusMsg_UserForm.Set_Label("Download Python MobaLedLib Programm")
+        urllib.request.urlretrieve(URL, zipfilenamepath,self.show_download_status)
         
-        urllib.request.urlretrieve(URL, zipfilenamepath)
-        
+        F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programm")
         M30.UnzipAFile(zipfilenamepath,workbookpath3)
         srcpath = workbookpath3+"/pyMobaLedLib-master/python"
         dstpath = workbookpath3+"/pyMobaLedLib/python"
         
-        self.copytree(srcpath,dstpath)
+        F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
+        #self.copytree(srcpath,dstpath)
+        F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programm")
+        #except BaseException as e:
+            #print("Update_MobLaedLib exception:",e)
         
+            #F00.StatusMsg_UserForm.Set_Label("Fehler beim Download des Python MobaLedLib Programms")
         
+        P01.Unload(F00.StatusMsg_UserForm)
     
     def __Update_Beta_Button_Click(self):
         #-------------------------------------

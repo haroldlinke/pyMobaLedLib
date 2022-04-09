@@ -159,7 +159,7 @@ __Other_Src_Col = 9
 __UPDATE_LIB_CMD_NAME = 'Update_Libraries.cmd'
 __RESTART_PROGGEN_CMD = 'Restart_ProgGen.cmd'
 __UnzipList = String()
-__Update_Time = Variant()
+Update_Time = Variant()
 WIN7_COMPATIBLE_DOWNLOAD = True
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Target - ByVal 
@@ -1006,33 +1006,33 @@ def __Test_Check_All_Selected_Libraries_Result():
     __Check_All_Selected_Libraries_Result()(True)
 
 def __Update_Status_old(Start=False):
-    global __Update_Time
+    global Update_Time
     #---------------------------------------------------
     # Is called by OnTime
-    if __Update_Time != 0 or Start:
+    if Update_Time != 0 or Start:
         if Start:
-            __Update_Time = Time
+            Update_Time = Time
         else:
-            F00.StatusMsg_UserForm.Set_ActSheet_Label(P01.Format(Time - __Update_Time, 'hh:mm:ss'))
+            F00.StatusMsg_UserForm.Set_ActSheet_Label(P01.Format(Time - Update_Time, 'hh:mm:ss'))
         
         P01.Application.OnTime(1000, __Update_Status)
         
 def __Update_Status(Start=False):
     #---------------------------------------------------------
-    global __Update_Time
+    global Update_Time
     # Is called by OnTime
-    if __Update_Time != 0 or Start:
+    if Update_Time != 0 or Start:
         if Start:
-            __Update_Time = int(time.time())
+            Update_Time = int(time.time())
         else:
-            F00.StatusMsg_UserForm.Set_ActSheet_Label(P01.Format(int(time.time()) - __Update_Time, 'hh:mm:ss'))
+            F00.StatusMsg_UserForm.Set_ActSheet_Label(P01.Format(int(time.time()) - Update_Time, 'hh:mm:ss'))
         P01.Application.OnTime(1000, __Update_Status)
 
 
 def __Stop_Status_Display():
-    global __Update_Time
+    global Update_Time
     #--------------------------------
-    __Update_Time = 0
+    Update_Time = 0
     P01.Unload(F00.StatusMsg_UserForm)
 
 def __Update_All_Selected_Libraries():
