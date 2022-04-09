@@ -124,7 +124,7 @@ class CStatusMsg_UserForm():
     
         self.top.resizable(False, False)  # This code helps to disable windows from resizing
     
-        window_height = 100
+        window_height = 150
         window_width = 200
     
         screen_width = self.top.winfo_screenwidth()
