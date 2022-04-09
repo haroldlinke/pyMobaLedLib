@@ -208,7 +208,6 @@ class Prog_GeneratorPage(tk.Frame):
         #config_frame.grid(row=1, columnspan=2, pady=(20, 30), padx=10)        
         #in_button_frame.grid(row=2, column=0, sticky="n", padx=4, pady=4)
         
-        F00.workbook_init(self.workbook)
         for sheet in self.workbook.sheets:
             sheet.tablemodel.resetDataChanged()
         
@@ -220,6 +219,9 @@ class Prog_GeneratorPage(tk.Frame):
         #self.controller.currentTabClass = self.tabClassName
         logging.debug("Tabselected: %s",self.tabname)
         P01.Application.setActiveWorkbook(self.workbook.Name)
+        for sheet in self.workbook.sheets:
+            if self.controller.getConfigData("ShowHiddentables"):
+                sheet.Visible(True)
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)        
         pass

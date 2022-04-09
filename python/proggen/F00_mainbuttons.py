@@ -223,11 +223,11 @@ def Workbook_Open():
     P01.Application.EnableEvents = False
     #Cleare_Mouse_Hook()
     Debug.Print('Workbook_Open() called')
-    P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH).Visible = False
-    P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible = False
-    P01.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible = False
-    P01.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Visible = False
-    P01.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible = False
+    P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH).Visible(False)
+    P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible(False)
+    P01.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible(False)
+    P01.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Visible(False)
+    P01.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible(False)
     M30.Check_Version()
     if P01.ActiveSheet.Name == M02.ConfigSheet:
         P01.Sheets(M02.START_SH).Select()

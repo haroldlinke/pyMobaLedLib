@@ -105,11 +105,11 @@ def Init():
         P01.Sheets('Main').Select()
         # Prevent problem in the following line
     Debug.Print('Init() called (Sheets.count=' + P01.ThisWorkbook.Sheets.Count + ')')
-    P01.Sheets('Languages').Visible = False
-    P01.Sheets('Goto_Activation_Entries').Visible = False
-    P01.Sheets('Special_Mode_Dlg').Visible = False
-    P01.Sheets('Par_Description').Visible = False
-    P01.Sheets('Multiplexer').Visible = False
+    P01.Sheets('Languages').Visible(False)
+    P01.Sheets('Goto_Activation_Entries').Visible(False)
+    P01.Sheets('Special_Mode_Dlg').Visible(False)
+    P01.Sheets('Par_Description').Visible(False)
+    P01.Sheets('Multiplexer').Visible(False)
     #*HL Cleare_Mouse_Hook()
     Check_Version()
     Update_Language_in_All_Sheets()
