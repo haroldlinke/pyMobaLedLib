@@ -1,9 +1,9 @@
-# MobaLedLib_pyProgGen for LINUX and MAC
+# MobaLedLib_pyProgGen for Windows, LINUX and MAC
 Python based Programgenerator for the MobaLedLib for Linux and Mac
 
 This branch is for development of the Windows/LINUX/Mac version of the ProgramGenerator
 
-This Branch is based on LX4.19 of the Linux version
+This Branch is based on LX4.19 of the Linux version of MobaLedLib_pyProgGen
 
 Requirements:
 MobaledLib 3.1.0F4 has to be installed
