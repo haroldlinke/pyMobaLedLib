@@ -4,3 +4,5 @@ python/logfile.log
 
 python.zip
 python/LEDs_AutoProg/Start_AM328_Sub.cmd
+python/LEDs_AutoProg/LEDs_AutoProg.h
+python/LEDs_AutoProg/Start_AM328_Sub.cmd
