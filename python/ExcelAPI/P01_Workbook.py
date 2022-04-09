@@ -527,7 +527,7 @@ class CWorkbook:
             self.tabdict_frames = dict()
             self.sheets = list()
             self.sheetdict = sheetdict
-        
+            self.tabid = 0
             for sheetname in self.sheetdict.keys():
                 tabframe = ttk.Frame(self.container,relief="ridge", borderwidth=1)
                 worksheet = self.new_sheet(sheetname,tabframe)
@@ -537,7 +537,9 @@ class CWorkbook:
                 self.container.add(tabframe, text=sheetname)
                 self.tabframedict[sheetname]=worksheet
                 if not self.showws and not PG.global_controller.show_hiddentables:
-                    self.container.tab(tabframe,state="hidden")
+                    worksheet.Visible(False)
+                    #self.container.tab(tabframe,state="hidden")
+                self.tabid += 1
                     
             self.container.bind("<<NotebookTabChanged>>",self.TabChanged)
                
@@ -547,13 +549,14 @@ class CWorkbook:
             self.sheets = None
         ThisWorkbook = self
         self.open()
-            
+        
+    def init_workbook(self):
+        F00.workbook_init(self)
+
     def open(self):
         if M28.Get_Num_Config_Var_Range("SimAutostart", 0, 3, 0) == 1: #               ' 04.04.22: Juergen Simulator
             M39.OpenSimulator()
-   
-        
-            
+           
     def new_sheet(self,sheetname,tabframe):
         sheetname_prop = self.sheetdict.get(sheetname)
         sheettype = sheetname_prop.get("SheetType","")
@@ -563,7 +566,7 @@ class CWorkbook:
         fieldnames = sheetname_prop.get("Fieldnames",None)
         if type(fieldnames) == str:
             fieldnames = fieldnames.split(";")
-        worksheet = CWorksheet(sheetname,workbook=self, csv_filepathname=(Path(self.pyProgPath) / sheetname_prop["Filename"]),frame=tabframe,fieldnames=fieldnames,formating_dict=formating_dict,Sheettype=sheettype,callback=callback)
+        worksheet = CWorksheet(sheetname,workbook=self, csv_filepathname=(Path(self.pyProgPath) / sheetname_prop["Filename"]),frame=tabframe,fieldnames=fieldnames,formating_dict=formating_dict,Sheettype=sheettype,callback=callback,tabid=self.tabid)
         return worksheet
 
             
@@ -695,9 +698,7 @@ class CWorkbook:
 
 class CWorksheet:
     
-    
-    
-    def __init__(self,Name,tablemodel=None,workbook=None,csv_filepathname=None,frame=None,fieldnames=None,formating_dict=None,Sheettype="",callback=False):
+    def __init__(self,Name,tablemodel=None,workbook=None,csv_filepathname=None,frame=None,fieldnames=None,formating_dict=None,Sheettype="",callback=False,tabid=0):
         
         sheetdict_popmenu = {"DCC":
                              { "LED blinken Ein/Aus":self.LED_flash,
@@ -731,7 +732,9 @@ class CWorksheet:
         self.fieldnames = fieldnames
         self.formating_dict = formating_dict
         self.Name = Name
+        self.Tabframe = frame
         self.DataChanged=False
+        self.tabid = tabid
         if tablemodel:
             self.tablemodel = tablemodel
             self.table = TableCanvas(frame, tablename=Name, model=tablemodel,width=self.width,height=self.height,scrollregion=(0,0,self.width,self.height),rightclickactions=self.rightclickactiondict)
@@ -1081,8 +1084,18 @@ class CWorksheet:
     def Select(self):
         global ActiveSheet
         ActiveSheet = self
+        self.Workbook.container.select(self.tabid)
         return
     
+    def Visible(self,value):
+        if value==True:
+            self.Workbook.container.tab(self.tabid,state="normal")
+            #self.Workbook.container.add(self)
+        else:
+            self.Workbook.container.tab(self.tabid,state="disable")
+            self.Workbook.container.hide(self.tabid)
+        
+        return    
     def getData(self):
         data = self.tablemodel.getData()
         return data

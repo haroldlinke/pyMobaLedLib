@@ -41,6 +41,7 @@ from vb2py.vbconstants import *
 
 import tkinter as tk
 from tkinter import ttk
+import urllib
 from mlpyproggen.tooltip import Tooltip
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
@@ -333,6 +334,66 @@ class CUserForm_Options:
         #-------------------------------------------
         self.Hide()
         M37.Update_MobaLedLib_from_Arduino_and_Restart_Excel()
+        
+        
+    def copytree(self, src, dst, symlinks=False, ignore=None):
+        names = os.listdir(src)
+        if ignore is not None:
+            ignored_names = ignore(src, names)
+        else:
+            ignored_names = set()
+            
+        if not os.path.exists(dst):
+            os.makedirs(dst)
+            
+        errors = []
+        for name in names:
+            if name in ignored_names:
+                continue
+            srcname = os.path.join(src, name)
+            dstname = os.path.join(dst, name)
+            try:
+                if symlinks and os.path.islink(srcname):
+                    linkto = os.readlink(srcname)
+                    os.symlink(linkto, dstname)
+                elif os.path.isdir(srcname):
+                    self.copytree(srcname, dstname, symlinks, ignore)
+                else:
+                    shutil.copy2(srcname, dstname)
+                # XXX What about devices, sockets etc.?
+            except (IOError, os.error) as why:
+                errors.append((srcname, dstname, str(why)))
+            # catch the Error from the recursive copytree so that we can
+            # continue with other files
+            except Error as err:
+                errors.extend(err.args[0])
+        try:
+            shutil.copystat(src, dst)
+        except WindowsError:
+            # can't copy file access times on Windows
+            pass
+        except OSError as why:
+            errors.extend((src, dst, str(why)))
+        if errors:
+            raise Error(errors)    
+        
+    def __Update_pyMobaLedLib_Button_Click(self):
+        self.Hide()
+        URL= "https://github.com/HaroldLinke/pyMobaLedLib/archive/master.zip"
+        workbookpath = P01.ThisWorkbook.Path
+        workbookpath2 = os.path.dirname(workbookpath)
+        workbookpath3 = os.path.dirname(workbookpath2)
+        zipfilenamepath = workbookpath3+"/pyMobaLedLib.zip"
+        
+        urllib.request.urlretrieve(URL, zipfilenamepath)
+        
+        M30.UnzipAFile(zipfilenamepath,workbookpath3)
+        srcpath = workbookpath3+"/pyMobaLedLib-master/python"
+        dstpath = workbookpath3+"/pyMobaLedLib/python"
+        
+        self.copytree(srcpath,dstpath)
+        
+        
     
     def __Update_Beta_Button_Click(self):
         #-------------------------------------
@@ -343,7 +404,7 @@ class CUserForm_Options:
         #-------------------------------------------------
         self.Hide()
         with_1 = P01.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
-        with_1.Visible = True
+        with_1.Visible(True)
         with_1.Select()
         
     def Button_Setup(self,button_frame,Text,Command,Accelerator,Row=0,label_text="",state=tk.NORMAL):
@@ -476,6 +537,7 @@ class CUserForm_Options:
         self.Button_Setup(Update_frame,M09.Get_Language_Str("Aktualisiere Bibliotheke"),self.__Update_to_Arduino_Button_Click,"",Row=0,label_text="Aktualisiert die MobaLedLib auf den offiziellen freigegebenen Stand welcher in der Arduino IDE verfügbar ist.")
         self.Button_Setup(Update_frame,M09.Get_Language_Str("Installiere Beta Test"),self.__Update_Beta_Button_Click,"",Row=1,label_text="Installiert die Beta Test Version der MobaLedLib Bibliothek.\n(Nur für Experten)")
         self.Button_Setup(Update_frame,M09.Get_Language_Str("Status der Bibliotheken"),self.__Show_Lib_and_Board_Page_Button_Click,"",Row=2,label_text="Zeigt den Status aller installierten Bibliotheken und Boards an.")
+        self.Button_Setup(Update_frame,M09.Get_Language_Str("Aktualisiere pyMobLedLib"),self.__Update_pyMobaLedLib_Button_Click,"",Row=3,label_text="Aktualisiert pyMobaLedLib auf die neueste Version.")
                        
         Bootloader_frame = tk.Frame(self.container)
         Bootloader_frame_Name = M09.Get_Language_Str("Bootloader")
