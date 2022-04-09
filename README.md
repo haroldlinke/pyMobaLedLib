@@ -34,6 +34,9 @@ V3.1.0.001 -  7.4.2022 - HL
 - ARDUINO Library check at start of program, when libraries are missing, they are downloaded automatically
 - Update of MLL ("Aktualisiere Bibilotheken) and Install Beta Test of MLL implemented
 - Update of pyMobaLedLib implemented (Button under Optionen - Update)
+
+V3.1.0.002 - 9.4.2022 - HL
+- progress information for download of Python Program
                               
 Open Issues:
 - define a simple installation mechanism for LINUX and Mac
