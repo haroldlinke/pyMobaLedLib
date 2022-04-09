@@ -522,8 +522,12 @@ class Prog_GeneratorPage(tk.Frame):
         else:
             pass
         
-        self.controller.showFramebyName("ARDUINOMonitorPage")        
+        self.controller.showFramebyName("ARDUINOMonitorPage")
         
+        self.execute_shell_cmd(startfile,"Upload started")
+        self.Stop_Compile_Time_Display()
+        return 
+    
         try:
             self.process = subprocess.Popen(startfile, stdout=subprocess.PIPE,stderr=subprocess.STDOUT,stdin = subprocess.DEVNULL,shell=True)
             self.continue_loop=True
@@ -554,13 +558,15 @@ class Prog_GeneratorPage(tk.Frame):
         self.arduinoMonitorPage.update()
         
         try:
-            self.process = subprocess.Popen(cmd_str, stdout=subprocess.PIPE,stderr=subprocess.PIPE,stdin = subprocess.DEVNULL,shell=True)
+            self.process = subprocess.Popen(cmd_str, stdout=subprocess.PIPE,stderr=subprocess.STDOUT,stdin = subprocess.DEVNULL,shell=True)
             self.continue_loop=True
         
             # Poll process.stdout to show stdout live
             while True:
                 output = self.process.stdout.readline()
                 if self.process.poll() is not None:
+                    logging.debug("shell ended")
+                    print("shell ended")
                     break
                 if output:
                     self.arduinoMonitorPage.add_text_to_textwindow(str(output)+"\n")
@@ -571,8 +577,10 @@ class Prog_GeneratorPage(tk.Frame):
             self.arduinoMonitorPage.update()
             
             if rc != 0:
+                self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
                 return M40.Failure
             else:
+                self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="OK")
                 return M40.Success
         
         except subprocess.TimeoutExpired:
