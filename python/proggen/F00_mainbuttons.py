@@ -35,6 +35,7 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import tkinter as tk
+import sys
 
 import proggen.M06_Write_Header as M06
 import proggen.M03_Dialog as M03
@@ -348,5 +349,6 @@ def port_set_busy(port):
     else:
         return "*"+port
     
-    
-    
+   
+def is_64bit() -> bool:
+    return sys.maxsize > 2**32
