@@ -65,6 +65,7 @@ import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
 import proggen.Prog_Generator as PG
+import proggen.F00_mainbuttons as F00
 
 import ExcelAPI.P01_Workbook as P01
 
@@ -120,7 +121,6 @@ IsLEDWindowVisible = None
 GetLEDWindowRect = None
 GetWrapperVersion = None
 
-x64 = False
 
 __AddressMapping = None
 
@@ -151,7 +151,7 @@ def loaddll():
     #       print("MLL_DLL not found")
     #       return
     
-        if x64:
+        if F00.is_64bit():
             dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x64\\MobaLedLibWrapper.dll'
         else:
             dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x86\\MobaLedLibWrapper.dll'
@@ -160,10 +160,10 @@ def loaddll():
         MobaLedLibWrapper = ctypes.CDLL(dllfilename)
 
     except OSError:
-        print("Unable to load MLL_DLL")
+        Debug.Print("Unable to load MLL_DLL "+dllfilename)
         sys.exit()
     
-    print(f'Succesfully loaded the MLL_DLL"') 
+    print(f'Succesfully loaded the MLL_DLL'+dllfilename) 
     
     #Private Declare PtrSafe Function CreateSampleConfig Lib "MobaLedLibWrapper.dll" () As LongPtr
     CreateSampleConfig = MobaLedLibWrapper.CreateSampleConfig
@@ -221,8 +221,11 @@ def loaddll():
 def IsSimualtorAvailable():
     fn_return_value = False
     WrapperVersion = Long()
-    x64=False
-    if x64:
+    
+    if not P01.checkplatform("Windows"): # Simulator only in Windows available
+        return fn_return_value
+    
+    if F00.is_64bit():
         dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x64\\MobaLedLibWrapper.dll'
         Debug.Print("IsSimulatorAvailable:"+dllfilename)
         if Dir(dllfilename) == '':

@@ -361,7 +361,7 @@ def __Get_All_Library_States():
                 if os.path.exists(LibDir + TestFile) or os.path.exists(LibDir + 'src/' + TestFile): #Dir(LibDir + TestFile) != '' or Dir(LibDir + 'src\\' + TestFile) != '':
                     with_2.Value = '1'
                 else:
-                    P01.MsgBox(M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:') + vbCr + '  \'' + LibDir + '\'' + vbCr + 'Error Nr: ' + Err.Number + vbCr + Err.Description, vbCritical, M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:'))
+                    P01.MsgBox(M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:') + vbCr + '  \'' + LibDir + '\'' + vbCr , vbCritical, M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:'))
             # VB2PY (UntranslatedCode) On Error GoTo 0
             installed = Sh.Cells(Row, __Installed_Col)
             if installed == "":
@@ -1122,62 +1122,71 @@ def __Update_All_Selected_Libraries_Linux():
     Start_Update = Boolean()
 
     #hwnd = LongPtr()
+    continue_update = False
     #----------------------------------------------------------
     if M02.Read_Sketchbook_Path_from_preferences_txt() == False:
         # VB2PY (UntranslatedCode) GoTo EndFunc
         pass
-    Start_Update = True
-    ## VB2PY (CheckDirective) VB directive took path 1 on VBA7
-    #hwnd = Application.hwnd
-    while 1:
-        __UnzipList = ''
-        updcnt,LibList,BrdList,OthersourceList,URLList = __Create_Do_Update_Script_Linux_part1(Pause_at_End)
-        if (updcnt == 0):
-            P01.MsgBox(M09.Get_Language_Str('Es wurden keine Zeilen zur Installation ausgewählt. Die Zeilen müssen mit einem Häkchen in der Spalte \'Select\' markiert werden.' + vbCr + 'Für die ausgewählten Zeilen wird die neueste Software installiert, es sei den in der Spalte "Required Version" ist eine ' + 'bestimmte Version angegeben.'), vbInformation, M09.Get_Language_Str('Keine Zeilen zur Installation ausgewählt.'))
-            break #*HL GoTo(EndFunc)
-        elif (updcnt == - 1):
-            break #*HL GoTo(EndFunc)
-        F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Bibliotheken und Boards'), '')
-        __Update_Status(Start_Update)
-        Start_Update = False
-        __Correct_Temp_Adrduino_nr_Dirs()
-        P01.ChDrive(M02.Sketchbook_Path)
-        ChDir(M02.Sketchbook_Path)
-        if Dir('libraries/*', vbDirectory) == '':
-            MkDir('libraries/')
-        ChDir(M02.Sketchbook_Path + '/libraries/')
-        Res = __Create_Do_Update_Script_Linux_part2(LibList,BrdList,OthersourceList,URLList)
-        #CommandStr = P01.ThisWorkbook.Path + '/' + __UPDATE_LIB_CMD_NAME
-        #Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
-        if (Res == M40.Success) or (Res == M40.Timeout):
-            pass
+    else:
+        ARDUINO_exe = M08.Find_ArduinoExe()
+        if ARDUINO_exe !="":
+            continue_update=True
         else:
-            P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler #1# beim Starten der Update Programms \'#2#\''), "#1#", str(Res)), '#2#',""), vbCritical, M09.Get_Language_Str('Fehler beim Aktualisieren der Bibliotheken'))
-            break #*HL GoTo(EndFunc)
-        if WIN7_COMPATIBLE_DOWNLOAD:
-            __Proc_UnzipList()
-        P01.Unload(F00.StatusMsg_UserForm)
-        # Bring Excel to the top
-        # Is not working if an other application has be moved above Excel with Alt+Tab
-        # But this is a feature of Windows.
-        #   See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow
-        # But it brings up excel again after the upload to the Arduino
-        # Without this funchion an other program was activated after the upload for some reasons
-        #*HL Bring_to_front(hwnd)
-        P01.DoEvents()
-        if __Get_All_Library_States() == False:
-            fn_return_value = False
-            break
-            # VB2PY (UntranslatedCode) GoTo EndFunc
-            pass
-        Trials = Trials + 1
-        if Trials >= 2:
-            Ask_User = True
-            Pause_at_End = True
-        __Update_General_Versions()
-        if not (__Check_All_Selected_Libraries_Result(Ask_User)):
-            fn_return_value = True
-            break
+            P01.MsgBox(M09.Get_Language_Str('Die ARDUINO IDE wurde nicht gefunden. Entweder wurde ARDUINO noch nicht installiert (Windows) oder das ARDUINO-Verzeichnis wurde noch nicht eingegeben (LINUX/Mac)'), vbInformation, M09.Get_Language_Str('ARDUINO IDE nicht gefunden'))
+            continue_update= False        
+        if continue_update:    
+            Start_Update = True
+            ## VB2PY (CheckDirective) VB directive took path 1 on VBA7
+            #hwnd = Application.hwnd
+            while 1:
+                __UnzipList = ''
+                updcnt,LibList,BrdList,OthersourceList,URLList = __Create_Do_Update_Script_Linux_part1(Pause_at_End)
+                if (updcnt == 0):
+                    P01.MsgBox(M09.Get_Language_Str('Es wurden keine Zeilen zur Installation ausgewählt. Die Zeilen müssen mit einem Häkchen in der Spalte \'Select\' markiert werden.' + vbCr + 'Für die ausgewählten Zeilen wird die neueste Software installiert, es sei den in der Spalte "Required Version" ist eine ' + 'bestimmte Version angegeben.'), vbInformation, M09.Get_Language_Str('Keine Zeilen zur Installation ausgewählt.'))
+                    break #*HL GoTo(EndFunc)
+                elif (updcnt == - 1):
+                    break #*HL GoTo(EndFunc)
+                F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Bibliotheken und Boards'), '')
+                __Update_Status(Start_Update)
+                Start_Update = False
+                __Correct_Temp_Adrduino_nr_Dirs()
+                P01.ChDrive(M02.Sketchbook_Path)
+                ChDir(M02.Sketchbook_Path)
+                if Dir('libraries/*', vbDirectory) == '':
+                    MkDir('libraries/')
+                ChDir(M02.Sketchbook_Path + '/libraries/')
+                Res = __Create_Do_Update_Script_Linux_part2(LibList,BrdList,OthersourceList,URLList)
+                #CommandStr = P01.ThisWorkbook.Path + '/' + __UPDATE_LIB_CMD_NAME
+                #Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
+                if (Res == M40.Success) or (Res == M40.Timeout):
+                    pass
+                else:
+                    P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler #1# beim Starten der Update Programms \'#2#\''), "#1#", str(Res)), '#2#',""), vbCritical, M09.Get_Language_Str('Fehler beim Aktualisieren der Bibliotheken'))
+                    break #*HL GoTo(EndFunc)
+                if WIN7_COMPATIBLE_DOWNLOAD:
+                    __Proc_UnzipList()
+                P01.Unload(F00.StatusMsg_UserForm)
+                # Bring Excel to the top
+                # Is not working if an other application has be moved above Excel with Alt+Tab
+                # But this is a feature of Windows.
+                #   See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow
+                # But it brings up excel again after the upload to the Arduino
+                # Without this funchion an other program was activated after the upload for some reasons
+                #*HL Bring_to_front(hwnd)
+                P01.DoEvents()
+                if __Get_All_Library_States() == False:
+                    fn_return_value = False
+                    break
+                    # VB2PY (UntranslatedCode) GoTo EndFunc
+                    pass
+                Trials = Trials + 1
+                if Trials >= 2:
+                    Ask_User = True
+                    Pause_at_End = True
+                __Update_General_Versions()
+                if not (__Check_All_Selected_Libraries_Result(Ask_User)):
+                    fn_return_value = True
+                    break
         
     __Stop_Status_Display()
     P01.Unload(F00.StatusMsg_UserForm)

@@ -40,6 +40,7 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 import time
+import platform
 
 #from proggen.M02_Public import *
 #from proggen.M06_Write_Header_LED2Var import *
@@ -123,17 +124,48 @@ def Test_Cmd_Admin():
     pass
 
 def Find_ArduinoExe():
-    ARDUINO_EXE = 'arduino_debug.exe'
-
-    Dirs = '  C:\\Program Files (x86)\\Arduino\\' + ARDUINO_EXE + vbCr + '  C:\\Program Files\\Arduino\\' + ARDUINO_EXE
-
-    FileName = Variant()
-    #-------------------------------------------
-    for FileName in Split(Dirs, vbCr):
-        FileName = Trim(FileName)
-        if Dir(FileName) != '':
-            fn_return_value = FileName
-            return fn_return_value
+    private_startfile=False
+    
+    system_platform = platform.platform()
+    Dirs = ""
+    ARDUINO_EXE = ""
+    
+    if not "Windows" in system_platform:
+        private_startfile = True
+        
+    if private_startfile == True:
+        filename = PG.get_global_controller().getConfigData("startcmd_filename")
+        Dirs=filename
+        logging.debug("upload_to_ARDUINO - Individual Filename: %s",filename)
+        if filename == " " or filename == "":
+            filename = "No Filename provided"
+        logging.debug("send to ARDUINO - Platform: %s",platform.platform())
+        
+        macos = "macOS" in system_platform
+        macos_fileending = "/Contents/MacOS/Arduino" 
+        if macos:
+            logging.debug("This is a MAC")
+            if not filename.endswith(macos_fileending):
+                filename = filename + "/Contents/MacOS/Arduino"
+        
+        if os.path.isfile(filename):
+            return filename
+        else:
+            return ""
+    else:
+    
+        ARDUINO_EXE = 'arduino_debug.exe'
+    
+        Dirs = '  C:\\Program Files (x86)\\Arduino\\' + ARDUINO_EXE + vbCr + '  C:\\Program Files\\Arduino\\' + ARDUINO_EXE
+    
+        FileName = Variant()
+        #-------------------------------------------
+        for FileName in Split(Dirs, vbCr):
+            FileName = Trim(FileName)
+            if Dir(FileName) != '':
+                fn_return_value = FileName
+                return fn_return_value
+    
     if P01.MsgBox(M09.Get_Language_Str('Fehler: Die Arduino Entwicklungsumgebung ist nicht oder nicht im Standard Verzeichnis installiert.' + 
                                        vbCr + 'Das Programm muss abhängig vom Betriebssystem hier installiert sein:') + vbCr + Dirs + vbCr + vbCr +
                   M09.Get_Language_Str('Achtung: Die \'App\' Version der Arduino IDE wird nicht unterstützt. ' + vbCr + 'Es muss die \'Windows Installer, for Windows XP and up\' Version installiert werden.' +
@@ -143,8 +175,8 @@ def Find_ArduinoExe():
         print("Shell")
         #*HL Shell('Explorer "https://www.arduino.cc/en/main/software"')
     
-    M30.EndProg()
-    return fn_return_value
+    #M30.EndProg()
+    return "" #fn_return_value
 
 def GetShortPath(Path):
     #fso = FileSystemObject()
