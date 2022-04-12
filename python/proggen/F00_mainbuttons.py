@@ -41,6 +41,7 @@ import proggen.M06_Write_Header as M06
 import proggen.M03_Dialog as M03
 import proggen.M01_Gen_Release_Version as M01
 import proggen.M02_Public as M02
+import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
 import proggen.M12_Copy_Prog as M12
 import proggen.M17_Import_old_Data as M17
@@ -235,8 +236,16 @@ def Workbook_Open():
     M09.__Update_Language_in_All_Sheets()
     M28.Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets(False)
     M01.Set_Config_Default_Values_at_Program_Start()
-    M37.Install_Missing_Libraries_and_Board()
-    M38.__Load_Extensions()
+    
+    ARDUINO_exe = M08.Find_ArduinoExe()
+    if ARDUINO_exe !="":
+        continue_update=True
+    else:
+        P01.MsgBox(M09.Get_Language_Str('Die ARDUINO IDE wurde nicht gefunden. Entweder wurde ARDUINO noch nicht installiert (Windows) oder das ARDUINO-Verzeichnis wurde noch nicht eingegeben (LINUX/Mac)'), vbInformation, M09.Get_Language_Str('ARDUINO IDE nicht gefunden'))
+        continue_update= False
+    if continue_update:
+        M37.Install_Missing_Libraries_and_Board()
+        M38.__Load_Extensions()
     P01.Application.ScreenUpdating = True
     #if ENABLE_CRITICAL_EVENTS_WB:
     #    # Generate events for special actions
