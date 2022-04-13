@@ -349,8 +349,6 @@ def __Get_All_Library_States():
     Row = __First_Dat_Row
     while Sh.Cells(Row, __Libr_Name_Col) != '':
         TestFile = Sh.Cells(Row, __Test_File_Col)
-        TestFile=os.path.normpath(TestFile)
-        #TestFile.replace("\\","/")
         Sh.CellDict[Row, __DetectVer_Col] = ''
         Sh.CellDict[Row, __Installed_Col] = ''
         if InStr(Sh.Cells(Row, __Lib_Board_Col), 'L') > 0:
@@ -799,6 +797,9 @@ def __Create_Do_Update_Script_Linux_part1(Pause_at_End):
     return UpdCnt,LibList,BrdList,OthersourceList,URLList
 
 def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLList):
+    if P01.MsgBox(M09.Get_Language_Str(' Folgende ARDUINO Bibliotheken müssen aktualisiert werden:\n' + repr(LibList)+"\n"+repr(BrdList)+"\n"+repr(OthersourceList)+'\n Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('ARDUINO Bibilothem update')) != vbYes:
+        # shutdown and restart
+        return M40.Failure
 
     # *** Libraries ***
     if LibList != '':
