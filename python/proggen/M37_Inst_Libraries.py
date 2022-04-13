@@ -349,6 +349,8 @@ def __Get_All_Library_States():
     Row = __First_Dat_Row
     while Sh.Cells(Row, __Libr_Name_Col) != '':
         TestFile = Sh.Cells(Row, __Test_File_Col)
+        TestFile=os.path.normpath(TestFile)
+        #TestFile.replace("\\","/")
         Sh.CellDict[Row, __DetectVer_Col] = ''
         Sh.CellDict[Row, __Installed_Col] = ''
         if InStr(Sh.Cells(Row, __Lib_Board_Col), 'L') > 0:
