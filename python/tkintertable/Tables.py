@@ -2063,17 +2063,20 @@ class TableCanvas(Canvas):
         
             iconfilename=celldict.get("Icon",None)
             if iconfilename:
-                iconfilename=iconfilename.replace(".bmp",".png")
-                iconfilename=iconfilename.replace("\\","/")
-                x1,y1,x2,y2 = self.getCellCoords(row,col)
-                #pic1 = PIL.Image.open(iconfilename)           # Open the image like this first
-                #iconimage = PIL.ImageTk.PhotoImage(pic1)      # Then with PhotoImage. NOTE: self.root_pic2 =     and not     root_pic2 =
-                iconimage=PhotoImage(file=iconfilename)
-                self.iconlist.append(iconimage)
-                image_id = self.create_image( x1,y1+2, #x1+w/2,y1+h/2,
-                                              image= iconimage,                                         
-                                              anchor="nw",
-                                              tag=('Icon','iconfilename_'+str(col)+'_'+str(row))) 
+                try:
+                    iconfilename=iconfilename.replace(".bmp",".png")
+                    iconfilename=iconfilename.replace("\\","/")
+                    x1,y1,x2,y2 = self.getCellCoords(row,col)
+                    #pic1 = PIL.Image.open(iconfilename)           # Open the image like this first
+                    #iconimage = PIL.ImageTk.PhotoImage(pic1)      # Then with PhotoImage. NOTE: self.root_pic2 =     and not     root_pic2 =
+                    iconimage=PhotoImage(file=iconfilename)
+                    self.iconlist.append(iconimage)
+                    image_id = self.create_image( x1,y1+2, #x1+w/2,y1+h/2,
+                                                  image= iconimage,                                         
+                                                  anchor="nw",
+                                                  tag=('Icon','iconfilename_'+str(col)+'_'+str(row)))
+                except:
+                    Debug.Print("DrawTable - draw ICON Error:" + iconfilename)
         
             if self.isLink(celltxt) == True:
                 haslink=0

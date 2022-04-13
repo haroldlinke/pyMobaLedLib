@@ -680,6 +680,26 @@ class LEDColorTest(tk.Tk):
                 self.cancel_without_save()
         else:
             self.cancel_without_save()
+            
+            
+    # ----------------------------------------------------------------
+    #  restart program
+    # ----------------------------------------------------------------
+    def restart(self):
+        logging.debug("Restart requested")
+        
+        answer = tk.messagebox.askyesnocancel ('Das Programm wird beendet und neu gestartet','Daten wurden verändert. Sollen die Daten gesichert werden?',default='no')
+        if answer == None:
+            return # no cancelation
+        if answer:
+            self.cancel_with_save() 
+        else:
+            self.cancel_without_save()
+        #restart program
+        logging.debug("Restart")
+        os.execv(sys.executable, ["python"]+sys.argv)
+        
+        #############################################
 
 
     def close_notification(self):
