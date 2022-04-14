@@ -288,7 +288,7 @@ class UserForm_Other():
         ShowErr = Boolean()
         #-------------------------------------------------------------------------------------
         if ParNr > self.MAX_PAR_CNT:
-            P01.MsgBox('Internal error in Check_Range()')
+            P01.MsgBox('Internal error in Check_Range', vbCritical,'Internal error in Check_Range')
             M30.EndProg()
         paramName = self.ParName[ParNr-1]
         parVariable = self.ParamVar.get(paramName)
@@ -943,7 +943,7 @@ class UserForm_Other():
             p = Trim(p)
             if Left(p, 1) != '#' and InStr(' Cx B_LED_Cx ', ' ' + p + ' ') == 0:
                 if UsedParNr >= self.MAX_PAR_CNT:
-                    P01.MsgBox('Internal error: The number of parameters is to large in Show_UserForm_Other()')
+                    P01.MsgBox('Internal error: The number of parameters is to large in Show_UserForm_Other()',vbCritical,"Internal Error")
                     M30.EndProg()
                 ParVal = ''
                 Typ, Min, Max, Def, Opt, InpTxt, Hint = M10.Get_Par_Data(p)

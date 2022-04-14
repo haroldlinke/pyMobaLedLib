@@ -157,9 +157,7 @@ class UserForm_Select_Typ_DCC:
         self.R1.grid(row=1,column=0,sticky="nesw",padx=10,pady=10)
         self.R2.grid(row=2,column=0,sticky="nesw",padx=10,pady=10)
         self.R3.grid(row=3,column=0,sticky="nesw",padx=10,pady=10)
-        
-        self.top.bind("<Return>", self.ok)
-        
+        self.R1.focus_set()
         self.button_frame = ttk.Frame(self.top)
         
         self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))

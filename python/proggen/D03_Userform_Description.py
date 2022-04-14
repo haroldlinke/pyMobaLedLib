@@ -100,6 +100,7 @@ class UserForm_Description:
         self.label2.grid(row=2,column=0,columnspan=1,rowspan=1,sticky="nesw",padx=10,pady=10)
 
         self.top.bind("<Return>", self.ok)
+        self.top.bind("<Escape>", self.cancel)
         self.button_frame = ttk.Frame(self.top)
         
         self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))

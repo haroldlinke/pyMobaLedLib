@@ -441,7 +441,6 @@ def Select_Typ_by_Dialog(Target):
         if F00.UserForm_Select_Typ_SX.Userform_res !="":
             Target.set_value(F00.UserForm_Select_Typ_SX.Userform_res) #*HL        
     else:
-        #UserForm_Select_Typ_DCC = D02.UserForm_Select_Typ_DCC()
         F00.UserForm_Select_Typ_DCC.setFocus(Target)
         F00.UserForm_Select_Typ_DCC.Show()
         M02GV.Userform_Res = F00.UserForm_Select_Typ_DCC.Userform_res
