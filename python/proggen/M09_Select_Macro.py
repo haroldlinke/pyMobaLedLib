@@ -452,11 +452,11 @@ def __SelectMacros_Sub():
     P01.Application.EnableEvents = False
     P01.Cells(P01.ActiveCell().Row, M25.Config__Col).Select()
     P01.Application.EnableEvents = OldEvents
-    if M28.Get_String_Config_Var('Use_TreeView_for_Macros') == '':
-        if P01.MsgBox(M09.Get_Language_Str('Soll die neue Baumansicht zur Auswahl der Makros verwendet werden oder weiter ' + 'mit dem alten Listenbasierten Dialog gearbeitet werden?' + vbCr + '  Ja = Neue Baumansicht' + vbCr + '  Nein = Alte Listenansicht' + vbCr + '(Das kann nachträglich auf der \'Config\' Seite geändert werden)'), vbQuestion + vbYesNo, M09.Get_Language_Str('Welcher Makro Auswahl Dialog soll verwendet werden?')) == vbYes:
-            M28.Set_String_Config_Var('Use_TreeView_for_Macros', '1')
-        else:
-            M28.Set_String_Config_Var('Use_TreeView_for_Macros', '0')
+    #if M28.Get_String_Config_Var('Use_TreeView_for_Macros') == '':
+    #    if P01.MsgBox(M09.Get_Language_Str('Soll die neue Baumansicht zur Auswahl der Makros verwendet werden oder weiter ' + 'mit dem alten Listenbasierten Dialog gearbeitet werden?' + vbCr + '  Ja = Neue Baumansicht' + vbCr + '  Nein = Alte Listenansicht' + vbCr + '(Das kann nachträglich auf der \'Config\' Seite geändert werden)'), vbQuestion + vbYesNo, M09.Get_Language_Str('Welcher Makro Auswahl Dialog soll verwendet werden?')) == vbYes:
+    M28.Set_String_Config_Var('Use_TreeView_for_Macros', '1')
+    #    else:
+    #        M28.Set_String_Config_Var('Use_TreeView_for_Macros', '0')
     ActMacro = Replace(Trim(P01.Cells(P01.ActiveCell().Row, M25.Config__Col).Value), 'HouseT(', 'House(')
     if True: # M28.Get_Bool_Config_Var('Use_TreeView_for_Macros'): #standard list not supported
         Sort_for_TreeView_based_Makro()

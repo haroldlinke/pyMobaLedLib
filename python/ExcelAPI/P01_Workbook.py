@@ -412,7 +412,7 @@ def Format(value,formatstring):
 
 
 def MsgBox(ErrorMessage:str, msg_type:int, ErrorTitle:str):
-    if msg_type == vbQuestion + vbYesNoCancel:
+    if msg_type == vbQuestion + vbYesNoCancel or msg_type == vbYesNoCancel:
         res=tk.messagebox.askyesnocancel(title=ErrorTitle, message=ErrorMessage)
         if res == None:
             return vbCancel
@@ -420,6 +420,14 @@ def MsgBox(ErrorMessage:str, msg_type:int, ErrorTitle:str):
             return vbYes
         else:
             return vbNo
+    elif msg_type == vbQuestion + vbYesNo or msg_type == vbYesNo:
+        res=tk.messagebox.askyesno(title=ErrorTitle, message=ErrorMessage)
+        if res == None:
+            return vbCancel
+        if res:
+            return vbYes
+        else:
+            return vbNo        
     elif msg_type == vbOKCancel:
         res=tk.messagebox.askokcancel(title=ErrorTitle, message=ErrorMessage)
         if res == None:
@@ -428,8 +436,25 @@ def MsgBox(ErrorMessage:str, msg_type:int, ErrorTitle:str):
             return vbOK
         else:
             return vbCancel
-    
+    elif msg_type == vbOKOnly:
+        res=tk.messagebox.showinfo(title=ErrorTitle, message=ErrorMessage)
+        
+    elif msg_type == vbInformation:
+        res=tk.messagebox.showinfo(title=ErrorTitle, message=ErrorMessage)
+        
+    elif msg_type == vbCritical:
+        res=tk.messagebox.showerror(title=ErrorTitle, message=ErrorMessage)
+        
+    elif msg_type == vbCritical + vbYesNo:
+        res=tk.messagebox.askyesno(title=ErrorTitle, message=ErrorMessage)
+        if res == None:
+            return vbCancel
+        if res:
+            return vbYes
+        else:
+            return vbNo
     else:
+        logging.debug("P01_MSGBox: Unknown Messagetype:"+str(msg_type))
         res=tk.messagebox.askyesnocancel(title=ErrorTitle, message=ErrorMessage)
         if res == None:
             return vbCancel

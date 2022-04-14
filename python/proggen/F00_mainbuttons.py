@@ -57,9 +57,11 @@ import proggen.M37_Inst_Libraries as M37
 import proggen.M38_Extensions as M38
 import proggen.M39_Simulator as M39
 
-
+import proggen.D01_Userform_DialogGuide1 as D01
 import proggen.D02_Userform_Select_Typ_DCC as D02
 import proggen.D02_Userform_Select_Typ_SX as D02SX
+import proggen.D03_Userform_Description as D03
+import proggen.D04_Userform_Connector as D04
 import proggen.D09_StatusMsg_Userform as D09
 import proggen.D08_Select_COM_Port_Userform as D08
 import proggen.D10_UserForm_Options as D10
@@ -298,11 +300,15 @@ def worksheet_init(worksheet):
             first_call=False
     
 def init_UserForms():
-    global StatusMsg_UserForm, UserForm_Select_Typ_DCC, UserForm_Select_Typ_SX, Select_COM_Port_UserForm,UserForm_Options
-    StatusMsg_UserForm = D09.CStatusMsg_UserForm()
+    global StatusMsg_UserForm, UserForm_Select_Typ_DCC, UserForm_Select_Typ_SX, Select_COM_Port_UserForm,UserForm_Options,UserForm_DialogGuide1,UserForm_Description,UserForm_Connector
+    
+    UserForm_DialogGuide1 = D01.UserForm_DialogGuide1()
     UserForm_Select_Typ_DCC = D02.UserForm_Select_Typ_DCC()
     UserForm_Select_Typ_SX = D02SX.UserForm_Select_Typ_SX()
+    UserForm_Description = D03.UserForm_Description()
+    UserForm_Connector = D04.UserForm_Connector()
     Select_COM_Port_UserForm = D08.CSelect_COM_Port_UserForm()
+    StatusMsg_UserForm = D09.CStatusMsg_UserForm()
     UserForm_Options = D10.CUserForm_Options()
 
     

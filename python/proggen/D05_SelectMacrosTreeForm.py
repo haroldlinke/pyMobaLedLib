@@ -96,7 +96,7 @@ class SelectMacrosTreeform:
     def ok(self, event=None):
         self.IsActive = False
         self.Select_Button_Click()
-        #self.Userform_res = value
+        self.Userform_res = ""
         self.top.destroy()
         self.res = True
  
