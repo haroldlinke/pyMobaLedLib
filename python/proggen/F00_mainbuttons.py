@@ -65,6 +65,7 @@ import proggen.D04_Userform_Connector as D04
 import proggen.D09_StatusMsg_Userform as D09
 import proggen.D08_Select_COM_Port_Userform as D08
 import proggen.D10_UserForm_Options as D10
+import proggen.D11_Userform_SimpleInput as D11
 
 def Arduino_Button_Click(event=None):
     #---------------------------------
@@ -300,7 +301,7 @@ def worksheet_init(worksheet):
             first_call=False
     
 def init_UserForms():
-    global StatusMsg_UserForm, UserForm_Select_Typ_DCC, UserForm_Select_Typ_SX, Select_COM_Port_UserForm,UserForm_Options,UserForm_DialogGuide1,UserForm_Description,UserForm_Connector
+    global StatusMsg_UserForm, UserForm_Select_Typ_DCC, UserForm_Select_Typ_SX, Select_COM_Port_UserForm,UserForm_Options,UserForm_DialogGuide1,UserForm_Description,UserForm_Connector,Userform_SimpleInput
     
     UserForm_DialogGuide1 = D01.UserForm_DialogGuide1()
     UserForm_Select_Typ_DCC = D02.UserForm_Select_Typ_DCC()
@@ -310,6 +311,7 @@ def init_UserForms():
     Select_COM_Port_UserForm = D08.CSelect_COM_Port_UserForm()
     StatusMsg_UserForm = D09.CStatusMsg_UserForm()
     UserForm_Options = D10.CUserForm_Options()
+    Userform_SimpleInput = D11.UserForm_SimpleInput()
 
     
 def notimplemented(command):
