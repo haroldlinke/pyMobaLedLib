@@ -96,7 +96,7 @@ class SelectMacrosTreeform:
     def ok(self, event=None):
         self.IsActive = False
         self.Select_Button_Click()
-        self.Userform_res = ""
+        #self.Userform_res = ""
         self.top.destroy()
         self.res = True
  
@@ -192,9 +192,9 @@ class SelectMacrosTreeform:
                     icon=value[1]
                     row = value[2]
                     if icon:
-                        Tree.insert(Parent, 'end', uid, text=key,value=(description,str(row)),image=icon,tags=(str(row)))
+                        Tree.insert(Parent, 'end', uid, text=key,value=(description,str(row)),image=icon,tags=("node"))
                     else:
-                        Tree.insert(Parent, 'end', uid, text=key,value=(description,str(row)),tags=(str(row)))
+                        Tree.insert(Parent, 'end', uid, text=key,value=(description,str(row)),tags=("node"))
                     key_width = self.std_font.measure(key+"      ")
                     self.max_key_width = max(key_width, self.max_key_width)                
                     self.CreateMacroTree(Tree, uid, Filter, Dictionary[key])
@@ -391,7 +391,7 @@ class SelectMacrosTreeform:
                 cur_dict_group = cur_dict.get(group,None)
                 if cur_dict_group==None:
                     cur_dict_group=cur_dict
-                    cur_dict[group]={"*"+group: (Description,self.pic2,str(Row))}
+                    cur_dict[group]={"*"+group: (Description,self.pic2,str(0))}
                     break
                 else:
                     cur_dict = cur_dict_group
