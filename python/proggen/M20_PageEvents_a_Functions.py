@@ -928,7 +928,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
                 if P01.ActiveSheet.Shapes.getShape(i).TopLeftCell_Row == Row:
                     #P01.ActiveSheet.Rectangles(i).Delete                   ' 25.03.21:
                     OldRect_List = vbObjectInitialize((OldRect_Cnt,), Variant, OldRect_List)
-                    OldRect_List[OldRect_Cnt] = i
+                    OldRect_List[OldRect_Cnt] = i-1
                     OldRect_Cnt = OldRect_Cnt + 1
                 else:
                     # find orphans
