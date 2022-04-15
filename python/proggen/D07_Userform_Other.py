@@ -122,6 +122,11 @@ class UserForm_Other():
     def show(self):
         
         self.IsActive = True
+        self.top.wait_visibility()
+        self.top.takefocus = True
+        self.top.focus_set()
+        self.top.focus_force()
+        self.top.grab_set()        
         self.controller.wait_window(self.top)
 
         return self.res

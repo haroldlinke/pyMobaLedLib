@@ -121,8 +121,8 @@ class SelectMacrosTreeform:
         
         self.entry1 = tk.Entry(self.top,width=10,textvariable=self.entry1_input)
         self.ActLanguage = M09.Get_ExcelLanguage()
+       
         
-        self.top.grab_set()
         
         self.top.resizable(False, False)  # This code helps to disable windows from resizing
         

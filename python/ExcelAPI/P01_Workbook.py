@@ -60,6 +60,7 @@ import proggen.Prog_Generator as PG
 import proggen.F00_mainbuttons as F00
 import proggen.M18_Save_Load as M18
 import proggen.M39_Simulator as M39
+import proggen.D11_Userform_SimpleInput as D11
 
 #import proggen.M01_Gen_Release_Version as M01
 import keyboard
@@ -464,7 +465,10 @@ def MsgBox(ErrorMessage:str, msg_type:int, ErrorTitle:str):
     return vbNo
 
 def InputBox(Message:str, Title:str, Default=None):
-    res = tk.simpledialog.askstring(Title,Message,initialvalue=Default)
+    #res = tk.simpledialog.askstring(Title,Message,initialvalue=Default,parent=PG.dialog_parent)
+    
+    F00.Userform_SimpleInput.Show(Message,Title,Default)
+    res = F00.Userform_SimpleInput.UserForm_res
     if res == None:
         res=""
     return res
