@@ -17,7 +17,12 @@ Installation using Python files
 5. download the branch as ZIP-file: unpack the ZIP file and copy the contents of the folder python into the folder pyMobaLedLib/python
 6. open the folder pyMobaLedLib/python
 7. start the Python file: pyMobaLedLib.py 
-(python Home/Arduino/pyMobaLedLib/python pyMobaLedLib.py
+(python Home/Arduino/pyMobaLedLib/python pyMobaLedLib.py)
+
+Attention LINUX Users: 
+
+It is not possible to detect the location of the ARDUINO IDE executable automatically, as it can be installed in any directory
+Skip the update of the ARDUINO libraries at startup and go to the ARDINO-Einstellungen Page. Click the Button "Pfad zur ARDUINO IDE einstellen" and select the ARDUINO IDE executable in the  following file selection dialog.
 
 This manual installation should work for Windows, Linux and Mac.
 
@@ -37,6 +42,19 @@ V3.1.0.001 -  7.4.2022 - HL
 
 V3.1.0.002 - 9.4.2022 - HL
 - progress information for download of Python Program
+
+V3.1.0.003 - 13.4.2021 - HL
+- ARDUINO library check improved
+
+V3.1.0.004 - 14.4.2021 - HL
+- Dialogs improved (keyboard usage)
+
+V3.1.0.005 - 15.4.2021 - HL
+- replace ARDUINO Configuration page with USB Dialog
+
+V3.1.0.006 - 16:4.2021 - HL
+- error correction USB Dialog - automatic detection of new connected ARDUINO
+- 
                               
 Open Issues:
 - define a simple installation mechanism for LINUX and Mac
