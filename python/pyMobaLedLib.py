@@ -96,6 +96,8 @@ import webbrowser
 import argparse
 import shutil
 from datetime import datetime
+import proggen.M07_COM_Port_New as M07New
+import proggen.M25_Columns as M25
 
 # --- Translation - not used
 EN = {}
@@ -346,12 +348,12 @@ class LEDColorTest(tk.Tk):
         arduinomenu.add_command(label="Trennen", command=self.DisconnectArduino)
         arduinomenu.add_command(label="Alle LED aus", command=self.SwitchoffallLEDs)
         
-        optionsmenu = tk.Menu(menu)
-        menu.add_cascade(label="Optionen", menu=optionsmenu)
-        optionsmenu.add_command(label="Aktualisiere Bibliothek", command=self.update_library)
-        optionsmenu.add_command(label="Installiere Beta Test", command=self.install_Betatest)
-        optionsmenu.add_command(label="Status der Bibliotheken", command=self.library_status)
-        optionsmenu.add_command(label="Schnelle Bootloader installieren", command=self.install_fast_bootloader)
+        #optionsmenu = tk.Menu(menu)
+        #menu.add_cascade(label="Optionen", menu=optionsmenu)
+        #optionsmenu.add_command(label="Aktualisiere Bibliothek", command=self.update_library)
+        #optionsmenu.add_command(label="Installiere Beta Test", command=self.install_Betatest)
+        #optionsmenu.add_command(label="Status der Bibliotheken", command=self.library_status)
+        #optionsmenu.add_command(label="Schnelle Bootloader installieren", command=self.install_fast_bootloader)
         
         #patternconfmenu = tk.Menu(menu)
         #menu.add_cascade(label="Pattern Configurator", menu=patternconfmenu)
@@ -771,8 +773,11 @@ class LEDColorTest(tk.Tk):
                     return
                 
                 if answer:
-                    
-                    self.showFramebyName("ARDUINOConfigPage") 
+                    ComPortColumn = M25.COMPort_COL
+                    ComPort=" "
+                    res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
+                    self.setConfigData("serportname",ComPort)
+                    #self.showFramebyName("ARDUINOConfigPage") 
             else:
                 self.connect()
         

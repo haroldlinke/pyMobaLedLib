@@ -238,6 +238,7 @@ def Detect_Com_Port_and_Save_Result(Right):
     #if Port > 0:
     if F00.port_is_available(Port):    
         P01.CellDict[M02.SH_VARS_ROW, ComPortColumn] = Port
+        PG.global_controller.setConfigData("serportname",Port)
         F00.StatusMsg_UserForm.Set_Label(M09.Get_Language_Str('Überprüfe den Arduino Typ'))
         F00.StatusMsg_UserForm.Show()
         

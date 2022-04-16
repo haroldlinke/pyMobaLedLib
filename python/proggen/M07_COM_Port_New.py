@@ -188,18 +188,19 @@ def __Blink_Arduino_LED():
     BaudRate = 50
     
     #if M07.CheckCOMPort > 0:
+    Debug.Print("__Blink_Arduino_LED - CheckComPort:"+str(M07.CheckCOMPort))
     if F00.port_is_available(M07.CheckCOMPort):    
-        #print("Blink_LED start")
+        Debug.Print("Blink_LED start")
         F00.Select_COM_Port_UserForm.Update_SpinButton(0)
         #if M07.CheckCOMPort != 999:
-        if M07.CheckCOMPort != " ":
+        if M07.CheckCOMPort != "999":
             __CheckCOMPort_Res, DeviceSignatur = M07.DetectArduino(M07.CheckCOMPort, BaudRate, HWVersion, SWMajorVersion, SWMinorVersion, DeviceSignatur, 1, PrintDebug= __PRINT_DEBUG)
         else:
             __CheckCOMPort_Res = - 9
         #*HLApplication.Cursor = xlNorthwestArrow
         #Debug.Print "CheckCOMPort_Res=" & CheckCOMPort_Res & "  CheckCOMPort=" & CheckCOMPort
         if __CheckCOMPort_Res < 0:
-            if M07.CheckCOMPort == " ": #999:
+            if M07.CheckCOMPort == "999": #999:
                 F00.Select_COM_Port_UserForm.Show_Status(True, M09.Get_Language_Str('Kein COM Port erkannt.' + vbCr + 'Bitte Arduino an einen USB Anschluss des Computers anschließen'))
             else:
                 F00.Select_COM_Port_UserForm.Show_Status(True, M09.Get_Language_Str('Achtung: Der Arduino wird von einem anderen Programm benutzt.' + vbCr + '(Serieller Monitor?)' + vbCr + 'Das Programm muss geschlossen werden! '))
@@ -208,7 +209,7 @@ def __Blink_Arduino_LED():
         #*HL Sleep(10)
         P01.DoEvents()
         P01.Application.OnTime(1000, __Blink_Arduino_LED)
-        #print("Blink_LED end")
+        Debug.Print("Blink_LED end")
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ComPort_IO - ByRef 
 def Select_Arduino_w_Blinking_LEDs_Dialog(Caption, Title, Text, Picture, Buttons, ComPort_IO):
@@ -229,7 +230,7 @@ def Select_Arduino_w_Blinking_LEDs_Dialog(Caption, Title, Text, Picture, Buttons
     #  1: If the left   Button is pressed  (Install, ...)
     #  2: If the middle Button is pressed  (Abort)
     #  3: If the right  Button is pressed  (OK)
-    M07.CheckCOMPort = " " #999
+    M07.CheckCOMPort = "999" #999
     P01.Application.OnTime(1000, __Blink_Arduino_LED)
     #__Blink_Arduino_LED()
     # Return values of Select_COM_Port_UserForm.ShowDialog:
@@ -252,7 +253,7 @@ def __Test_Select_Arduino_w_Blinking_LEDs_Dialog():
     Debug.Print('ComPort=' + ComPort)
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ComPort - ByRef 
-def __Show_USB_Port_Dialog(ComPortColumn, ComPort):
+def Show_USB_Port_Dialog(ComPortColumn, ComPort):
     fn_return_value = False
     Res = Long()
 
@@ -288,7 +289,7 @@ def USB_Port_Dialog(ComPortColumn):
     fn_return_value = False
     ComPort = Long()
     #----------------------------------------------------------------
-    res, ComPort= __Show_USB_Port_Dialog(ComPortColumn, ComPort)
+    res, ComPort= Show_USB_Port_Dialog(ComPortColumn, ComPort)
     if res:
         #if IsNumeric(ComPort):
         if F00.port_is_available(ComPort):
@@ -320,7 +321,7 @@ def Detect_Com_Port(RightSide=False, Pic_ID='DCC'):
         ComPortColumn = M25.COMPort_COL
     
     #if __Show_USB_Port_Dialog(ComPortColumn, ComPort):
-    res, ComPort= __Show_USB_Port_Dialog(ComPortColumn, ComPort)
+    res, ComPort= Show_USB_Port_Dialog(ComPortColumn, ComPort)
     if res:        
         fn_return_value = ComPort
     return fn_return_value

@@ -198,40 +198,41 @@ class ARDUINOConfigPage(tk.Frame):
         #self.ledmaxcount.set(self.controller.get_maxLEDcnt())
         logging.debug("Tabselected: %s",self.tabname)
         self.store_old_config()
-        self.controller.disconnect()
-        if self.arduino_portlist == {}:
-            logging.debug("Create Portlist")
-            self.comports=portlist.comports(include_links=False)
-            self.old_ports=[]
-            conarduino_str = ""
-            for comport in self.comports:
-                logging.debug("Portlist.ComPorts:"+comport[0]+" "+comport[1]+" "+comport[2])
-                if self.check_string(comport[1],["ARDUINO","CH340","USB Serial Port","ttyACM","USB"]):
-                    portlist_data = self.arduino_portlist.get(comport[0],{})
-                    if portlist_data == {}:
-                        self.arduino_portlist[comport[0]]={
-                                                "Description"    : comport[1],
-                                                "Baudrate"       : "???",
-                                                "DeviceSignature": "???",
-                                                "Status"         : "unchecked"
-                                                }
-                    else:
-                        portlist_data["Description"]     = comport[1]
-                        portlist_data["Baudrate"]        = "???"
-                        portlist_data["DeviceSignature"] = "???"
-                        portlist_data["Status"]          = "unchecked"
-        
-        self.update_ARDUINO_data(update_comport=True)
-        
-        # bind update of Comport combobox to event
-        combobox_var = self.controller.macroparams_var["ARDUINOConfigPage"]["ARDUINO Port"]
-        
-        combobox_var.bind("<<ComboboxSelected>>",self.on_comport_value_changed)
-        
-        self.controller.set_macroparam_val(self.tabClassName, "ARDUINOMessage", "Erkennung der ARDUINOs ...",disable=True)
-        logging.debug(repr(self.arduino_portlist))
-        self.monitor_arduino_ports = True
-        self.after(200,self.on_update_ARDUINO_data)
+        if False:
+            self.controller.disconnect()
+            if self.arduino_portlist == {}:
+                logging.debug("Create Portlist")
+                self.comports=portlist.comports(include_links=False)
+                self.old_ports=[]
+                conarduino_str = ""
+                for comport in self.comports:
+                    logging.debug("Portlist.ComPorts:"+comport[0]+" "+comport[1]+" "+comport[2])
+                    if self.check_string(comport[1],["ARDUINO","CH340","USB Serial Port","ttyACM","USB"]):
+                        portlist_data = self.arduino_portlist.get(comport[0],{})
+                        if portlist_data == {}:
+                            self.arduino_portlist[comport[0]]={
+                                                    "Description"    : comport[1],
+                                                    "Baudrate"       : "???",
+                                                    "DeviceSignature": "???",
+                                                    "Status"         : "unchecked"
+                                                    }
+                        else:
+                            portlist_data["Description"]     = comport[1]
+                            portlist_data["Baudrate"]        = "???"
+                            portlist_data["DeviceSignature"] = "???"
+                            portlist_data["Status"]          = "unchecked"
+            
+            self.update_ARDUINO_data(update_comport=True)
+            
+            # bind update of Comport combobox to event
+            combobox_var = self.controller.macroparams_var["ARDUINOConfigPage"]["ARDUINO Port"]
+            
+            combobox_var.bind("<<ComboboxSelected>>",self.on_comport_value_changed)
+            
+            self.controller.set_macroparam_val(self.tabClassName, "ARDUINOMessage", "Erkennung der ARDUINOs ...",disable=True)
+            logging.debug(repr(self.arduino_portlist))
+            self.monitor_arduino_ports = True
+            self.after(200,self.on_update_ARDUINO_data)
     
     def tabunselected(self):
         logging.debug("Tabunselected: %s",self.tabname)
