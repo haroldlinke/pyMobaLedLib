@@ -1018,7 +1018,8 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
             select_variable_ = P01.MsgBox(Msg, vbYesNoCancel + vbQuestion, M09.Get_Language_Str('Fehler bei der Überprüfung des angeschlossenen Arduinos'))
             if (select_variable_ == vbYes):
                 Retry = True
-                P01.Cells(M02.SH_VARS_ROW, ComPortColumn).Value = - P01.val(P01.Cells(M02.SH_VARS_ROW, ComPortColumn).Value)
+                #P01.Cells(M02.SH_VARS_ROW, ComPortColumn).Value = - P01.val(P01.Cells(M02.SH_VARS_ROW, ComPortColumn).Value)
+                P01.Cells(M02.SH_VARS_ROW, ComPortColumn).Value = F00.port_set_busy(str(P01.Cells(M02.SH_VARS_ROW, ComPortColumn).Value))
             elif (select_variable_ == vbCancel):
                 return fn_return_value, BuildOptions, DeviceSignature
             elif (select_variable_ == vbNo):
