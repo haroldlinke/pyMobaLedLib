@@ -716,7 +716,7 @@ def Read_File_to_String(FileName):
         # VBFiles.closeFile(fp)
         return fn_return_value
     except:
-        P01.MsgBox(M09.Get_Language_Str(r'Fehler beim lesen der Datei:') + vbCr + r'  '' + FileName() + r''', vbCritical, M09.Get_Language_Str(r'Fehler beim Datei lesen'))
+        P01.MsgBox(M09.Get_Language_Str(r'Fehler beim lesen der Datei:') + vbCr + r'  ' + FileName + r'', vbCritical, M09.Get_Language_Str(r'Fehler beim Datei lesen'))
         fn_return_value = r'#ERROR#'
         return fn_return_value
 
