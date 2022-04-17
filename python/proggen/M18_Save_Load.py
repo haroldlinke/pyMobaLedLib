@@ -600,7 +600,10 @@ def Save_Data_to_File():
     #-----------------------------
     # Is called from the options dialog
     __Achtivate_MyExampleDir_if_called_the_first_time()
-    ExampleName = 'Prog_Gen_Data_' + Replace(P01.Date_str(), '.', '_')
+    datestr = P01.Date_str()
+    datestr = datestr.replace(".","_")
+    datestr = datestr.replace("/","_")
+    ExampleName = 'Prog_Gen_Data_' + datestr
     Res = P01.Application.GetSaveAsFilename(InitialFileName= ExampleName, fileFilter= M09.Get_Language_Str('Program Generator File (*.MLL_pgf), *.MLL_pgf'), Title= M09.Get_Language_Str('Dateiname zum abspeichern der Daten angeben'))
     if Res:
         #*HL if Dir(Res) != '':
