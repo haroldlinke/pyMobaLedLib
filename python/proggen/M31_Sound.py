@@ -132,7 +132,7 @@ def BeepThis2(ThisSound='Beep', ThisValue=VBMissingArgument, ThisCount=1, Wait=F
             ThisSound = ThisSound + '.wav'
         sPath = ThisSound
         if Dir(sPath) == '':
-            sPath = ActiveWorkbook.Path + '\\' + ThisSound
+            sPath = P01.ActiveWorkbook.Path + '/' + ThisSound
             if Dir(sPath) == '':
                 sPath = Environ('SystemRoot') + sMedia + ThisSound
         flags = __SND_FILENAME

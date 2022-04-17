@@ -122,8 +122,8 @@ def __Install_ArduinoISP_to_Right_Arduino():
     # Compile and upload the ArduinoISP program to the right Arduino
     M25.Make_sure_that_Col_Variables_match()
     InoName = 'ArduinoISP.ino'
-    DstDir = P01.ThisWorkbook.Path + '\\' + M30.FileName(InoName) + '\\'
-    SrcDir = M30.FilePath(M08.Find_ArduinoExe()) + 'examples\\11.ArduinoISP\\ArduinoISP\\'
+    DstDir = P01.ThisWorkbook.Path + '/' + M30.FileName(InoName) + '/'
+    SrcDir = M30.FilePath(M08.Find_ArduinoExe()) + 'examples/11.ArduinoISP/ArduinoISP/'
     M30.CreateFolder(DstDir)
     if not M12.FileCopy_with_Check(DstDir, InoName, SrcDir + InoName):
         return fn_return_value

@@ -322,6 +322,7 @@ def __Compile_and_Upload(SrcDir, InoName, CommandStr, ResFile):
     return fn_return_value
 
 def __Get_COMPortStr(ComPortColumn):
+    Debug.Print("__Get_COMPortStr")
     fn_return_value = None
     #---------------------------------------------------------------
     Check_USB_Port_with_Dialog(ComPortColumn)

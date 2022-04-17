@@ -428,7 +428,7 @@ class Z21MonitorPage(tk.Frame):
         
     def show_key_adresses(self,event=None):
         
-        filename = "..\\..\\LEDs_AutoProg.h"
+        filename = "../../LEDs_AutoProg.h"
         filedir = self.controller.mainfile_dir
         filepath1 = os.path.join(filedir, filename)
         

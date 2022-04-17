@@ -394,8 +394,8 @@ def IniFileName():
     Dir = String()
     #--------------------------------------------------------------------------------------------
     #    IniFileName = ThisWorkbook.Path & "\" & Multiplexer_DIR & "\Multiplexer.ini"
-    Dir = Environ('USERPROFILE') + '\\Documents\\' + 'MyPattern_Config_Examples'
-    _ret = Dir + '\\' + Multiplexer_INI_FILE_NAME
+    Dir = Environ('USERPROFILE') + '/Documents/' + 'MyPattern_Config_Examples'
+    _ret = Dir + '/' + Multiplexer_INI_FILE_NAME
     return _ret
 
 def __Test_ReadIniFileString():
