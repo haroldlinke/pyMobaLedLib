@@ -191,7 +191,7 @@ def __Start_MobaLedCheckColors_py():
     OldDir = String()
     #--------------------------------------------------------
     OldDir = CurDir
-    DstDir = P01.ThisWorkbook.Path + '\\' + __CHECKCOL_EXE_DIR
+    DstDir = P01.ThisWorkbook.Path + '/' + __CHECKCOL_EXE_DIR
     # VB2PY (UntranslatedCode) On Error GoTo DirError
     ChDrive(DstDir)
     ChDir(DstDir)
@@ -231,7 +231,7 @@ def Disconnect_CheckColors():
 
     Name = String()
     #----------------------------------
-    Name = ThisWorkbook.Path + '\\' + __CHECKCOL_DAT_DIR + __DISCONECTED_NAME
+    Name = P01.ThisWorkbook.Path + '/' + __CHECKCOL_DAT_DIR + __DISCONECTED_NAME
     fp = FreeFile()
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
     VBFiles.openFile(fp, Name, 'w') 
@@ -257,7 +257,7 @@ def Close_CheckColors():
 def __Delete_CheckColors_CloseFile():
     Name = String()
     #-----------------------------------------
-    Name = ThisWorkbook.Path + '\\' + __CHECKCOL_EXE_DIR + __CLOSE_CHECKCOL_N
+    Name = P01.ThisWorkbook.Path + '/' + __CHECKCOL_EXE_DIR + __CLOSE_CHECKCOL_N
     if Dir(Name) != '':
         Kill(Name)
 
@@ -278,7 +278,7 @@ def Write_ColTest_Only_File():
 def __Delete_ColTest_Only_File():
     Name = String()
     #-------------------------------------
-    Name = P01.ThisWorkbook.Path + '\\' + __CHECKCOL_EXE_DIR + __COLTEST_ONLYFILE
+    Name = P01.ThisWorkbook.Path + '/' + __CHECKCOL_EXE_DIR + __COLTEST_ONLYFILE
     if Dir(Name) != '':
         Kill(Name)
 
@@ -411,7 +411,7 @@ def Write_Default_CheckColors_Parameter_File():
 def __Open_Cfg_File_and_Get_Sp_and_Ep(Txt, Sp, Ep, FileName):
     fn_return_value = None
     #---------------------------------------------------------------------------------------------------------------------------------------------
-    FileName = ThisWorkbook.Path + '\\' + __CHECKCOL_DAT_DIR + __CONFIG_FILE_NAME
+    FileName = P01.ThisWorkbook.Path + '/' + __CHECKCOL_DAT_DIR + __CONFIG_FILE_NAME
     Txt = Read_File_to_String(FileName)
     if Txt == '#ERROR#':
         return fn_return_value
@@ -724,7 +724,7 @@ def __Update_Wait_CheckColors_Form():
                 __Smiley_Cnt = 0
     Calculate()
     #Debug.Print "*Update_Wait_CheckColors_Form"
-    if Dir(ThisWorkbook.Path + '\\' + __FINISHEDTXT_FILE) != '':
+    if Dir(ThisWorkbook.Path + '/' + __FINISHEDTXT_FILE) != '':
         Wait_CheckColors_Form.Hide()
         if __Proc_CheckColors_Form_Callback != '':
             Run(__Proc_CheckColors_Form_Callback)

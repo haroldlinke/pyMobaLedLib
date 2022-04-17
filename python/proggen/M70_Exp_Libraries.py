@@ -109,7 +109,7 @@ def __Make_Sure_that_GitHub_Library_Exists(Expected_DirName, ExpectedFilesLst):
     M30.CreateFolder(Path)
     if Dir(Path + Expected_DirName, vbDirectory) != '':
         Debug.Print('Directory already exists: ' + Path + Expected_DirName)
-        if __Check_Expected_Files(Path + Expected_DirName + '\\', ExpectedFilesLst):
+        if __Check_Expected_Files(Path + Expected_DirName + '/', ExpectedFilesLst):
             fn_return_value = True
             return fn_return_value
         else:

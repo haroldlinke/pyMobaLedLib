@@ -748,17 +748,18 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
     # Ich habe jetzt mal das Neueste Board Paket für den Nano (1.8.1) Installiert. Mal schauen ob es
     # jetzt besser ist. Dummerweise habe ich mir nicht gemerkt welches Board Paket ich vorher hatte.
     # Es war irgend was mit 1.6?
+    Debug.Print("Create_Cmd_file")
     if Dir(SrcDir + ResultName) != '':
         Kill(SrcDir + ResultName)
         # 16.03.20: Added Thisworkbook...
     ## VB2PY (CheckDirective) VB directive took path 1 on 1
     BuildDir = Replace(Environ('APPDATA'), 'Roaming', '') + 'Arduino_Build_' + Replace(InoName, '.ino', '')
-    BuildDirForScript = '%APPDATA%\\..\\' + 'Arduino_Build_' + Replace(InoName, '.ino', '')
-    if Dir(BuildDir + '\\.') == '':
+    BuildDirForScript = '%APPDATA%/../' + 'Arduino_Build_' + Replace(InoName, '.ino', '')
+    if Dir(BuildDir + '/.') == '':
         # VB2PY (UntranslatedCode) On Error Resume Next
         MkDir(BuildDir)
         # VB2PY (UntranslatedCode) On Error GoTo 0
-        BuildDirForScript = '%APPDATA%\\..\\' + 'Arduino_Build_' + Replace(InoName, '.ino', '')
+        BuildDirForScript = '%APPDATA%/../' + 'Arduino_Build_' + Replace(InoName, '.ino', '')
         #Debug.Print "BuildDir='" & BuildDir & "'"
     # Other options:  --verbose-build --verbose-upload"
     #   Boards  see: C:\P<rogram Files (x86)\Arduino\hardware\arduino\avr\boards.txt
@@ -1218,7 +1219,7 @@ def Compile_and_Upload_LED_Prog_to_Arduino(CreateFilesOnly=False):
     if CreateFilesOnly == False:
         Doit = Upload_the_Right_Arduino_Prog_if_needed()
     if Doit:
-        fn_return_value = Compile_and_Upload_Prog_to_Arduino(M02.InoName_LED, M25.COMPort_COL, M25.BUILDOP_COL, P01.ThisWorkbook.Path + '\\' + M02.Ino_Dir_LED, CreateFilesOnly=CreateFilesOnly)
+        fn_return_value = Compile_and_Upload_Prog_to_Arduino(M02.InoName_LED, M25.COMPort_COL, M25.BUILDOP_COL, P01.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED, CreateFilesOnly=CreateFilesOnly)
     return fn_return_value
 
 
@@ -1258,7 +1259,7 @@ def Compile_and_Upload_Prog_to_Right_Arduino():
     else:
         P01.MsgBox('Interner Fehler: Undefined M25.Page_ID \'' + M25.Page_ID + '\' in Compile_and_Upload_Prog_to_Right_Arduino', vbCritical, 'Interner Fehler')
         M30.EndProg()
-    SrcDir = P01.ThisWorkbook.Path + '\\..\\examples\\' + M30.FileName(InoName) + '\\'
+    SrcDir = P01.ThisWorkbook.Path + '/../examples/' + M30.FileName(InoName) + '/'
     if Dir(SrcDir + InoName) != '':
         Debug.Print('Programm aus lokalem Verzeichnis wird zum Upload verwendet: ' + SrcDir)
         P01.Application.StatusBar = 'Programm aus lokalem Verzeichnis wird zum Upload verwendet: ' + SrcDir
@@ -1413,7 +1414,7 @@ def Install_Libraries(LibNames=[]):
         pass
     else:
         P01.MsgBox(M09.Get_Language_Str('Fehler ') + Res + M09.Get_Language_Str(' beim starten des Arduino Programms \'') + CommandStr + '\'', vbCritical, M09.Get_Language_Str('Fehler beim Starten des Arduino programms'))
-    SrcDir = P01.ThisWorkbook.Path + '\\'
+    SrcDir = P01.ThisWorkbook.Path + '/'
     P01.ChDrive(SrcDir)
     ChDir(SrcDir)
     if Dir(ResFile) != '':
@@ -1424,6 +1425,7 @@ def Install_Libraries(LibNames=[]):
         M30.Show_Status_for_a_while(M09.Get_Language_Str('Bibliotheken erfolgreich installiert. (Dauer: ') + P01.Format(Time - Start, 'hh:mm:ss') + ')', '00:00:30')
 
 def Check_Required_Libs():
+    Debug.Print(Check_Required_Libs)
     return "" #*HL
     LibPath = '\\Arduino\\libraries\\MobaLedLib\\examples\\00.Overview'
 
@@ -1458,6 +1460,7 @@ def Test_Check_Required_Libs():
     Debug.Print('Check_Required_Libs: ' + Check_Required_Libs())
 
 def Check_Required_Libs_and_Install_missing():
+    Debug.Print("Check_Required_Libs_and_Install_missing")
     MissingLibs = String()
     #---------------------------------------------------
     if M28.Get_Bool_Config_Var('Lib_Installed_other'):

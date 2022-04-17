@@ -110,7 +110,7 @@ def FileCopy_with_Check(DestDir, Name, SourceName=VBMissingArgument):
     # Could also copy a whole folder with all sub directories
     # If SourceName is empty the file/directory "Name" is copied from the program dir to DestDir
     # If a SourceName is given the file the source dir is extracted from the name.
-    SrcPath = P01.ThisWorkbook.Path + '\\'
+    SrcPath = P01.ThisWorkbook.Path + '/'
     SrcName = Name
     if SourceName != '':
         if M30.FilePath(SourceName) != '':

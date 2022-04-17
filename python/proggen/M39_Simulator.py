@@ -152,9 +152,9 @@ def loaddll():
     #       return
     
         if F00.is_64bit():
-            dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x64\\MobaLedLibWrapper.dll'
+            dllfilename = P01.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x64/MobaLedLibWrapper.dll'
         else:
-            dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x86\\MobaLedLibWrapper.dll'
+            dllfilename = P01.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x86/MobaLedLibWrapper.dll'
         
         Debug.Print("LoadDll:"+dllfilename)    
         MobaLedLibWrapper = ctypes.CDLL(dllfilename)
@@ -226,19 +226,19 @@ def IsSimualtorAvailable():
         return fn_return_value
     
     if F00.is_64bit():
-        dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x64\\MobaLedLibWrapper.dll'
+        dllfilename = P01.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x64/MobaLedLibWrapper.dll'
         Debug.Print("IsSimulatorAvailable:"+dllfilename)
         if Dir(dllfilename) == '':
             Debug.Print("IsSimulatorAvailable:"+dllfilename + " Not found")
             return fn_return_value
-        ChDir(P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x64')
+        ChDir(P01.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x64')
     else:
-        dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x86\\MobaLedLibWrapper.dll'
+        dllfilename = P01.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x86/MobaLedLibWrapper.dll'
         Debug.Print("IsSimulatorAvailable:"+dllfilename)
         if Dir(dllfilename) == '':
             Debug.Print("IsSimulatorAvailable:"+dllfilename + " Not found")
             return fn_return_value
-        ChDir(P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x86')
+        ChDir(P01.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x86')
     # VB2PY (UntranslatedCode) On Error GoTo SimError
     # call any function to test binding
     loaddll()
@@ -315,7 +315,7 @@ def __LoadConfiguration():
 
     if not IsSimualtorAvailable():
         return
-    Buffer,buflen = __LoadFile(P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'LEDConfig.bin')
+    Buffer,buflen = __LoadFile(P01.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'LEDConfig.bin')
     dllBuffer = ctypes.create_string_buffer(Buffer)
 
     print(repr(dllBuffer.raw))
@@ -436,11 +436,11 @@ def UploadToSimulator(CreateHeaderFiles):
         fn_return_value = True
 
     if fn_return_value:
-        CommandStr = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + M02.CfgBuild_Script + " silent"
+        CommandStr = P01.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + M02.CfgBuild_Script + " silent"
         if __Create_Compile_Script():
             fn_return_value = M40.ShellAndWait(CommandStr, 0, vbMinimizedNoFocus, M40.PromptUser) == M40.Success
             if fn_return_value:
-                if Dir(P01.ThisWorkbook.Path + "\\" + M02.Cfg_Dir_LED + "result.txt") == "" :
+                if Dir(P01.ThisWorkbook.Path + "/" + M02.Cfg_Dir_LED + "result.txt") == "" :
                     OpenSimulator()
                 else:
                     #rerun command to show output to user
@@ -518,7 +518,7 @@ def __Create_Compile_Script():
     Name = String()
 
     fp = Integer()
-    Name = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + M02.CfgBuild_Script
+    Name = P01.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + M02.CfgBuild_Script
     Debug.Print("Create_Compile_Script:"+Name)
     fp = FreeFile()
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
