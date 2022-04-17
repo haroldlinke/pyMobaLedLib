@@ -331,6 +331,7 @@ def __Get_State_of_BoardExtras_Row(Row):
             return
 
 def __Get_All_Library_States():
+    Debug.Print("__Get_All_Library_States")
     fn_return_value = None
     LibrariesDir = String()
 
@@ -394,6 +395,7 @@ def Check_if_curl_is_Available_and_gen_Message_if_not(Name, InstLink):
 
 def __Add_Update_from_Other_Source(fp, Row):
     global __UnzipList
+    Debug.Print("__Add_Update_from_Other_Source")
     #Sh = Worksheet()
 
     #LibName = String()
@@ -458,6 +460,7 @@ def __Add_Update_from_Other_Source(fp, Row):
     
 def __Add_Update_from_Other_Source_Linux(Row):
     global __UnzipList
+    Debug.Print("__Add_Update_from_Other_Source_Linux - Row:"+str(Row))
     #Sh = Worksheet()
 
     #LibName = String()
@@ -500,6 +503,7 @@ def __Add_Update_from_Other_Source_Linux(Row):
     Debug.Print(')', '\n')
     
     try:
+        Debug.Print("__Add_Update_from_Other_Source_Linux - Remove Lib"+str(LibName))
         shutil.rmtree(LibName)
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
@@ -531,6 +535,7 @@ def __Add_Update_from_Other_Source_Linux(Row):
 
 def __Proc_UnzipList():
     global __UnzipList
+    Debug.Print("__Proc_UnzipList: "+repr(__UnzipList))
     try:
         if __UnzipList == "":
             return
@@ -569,6 +574,7 @@ def Init_Libraries_Page():
 
 def __Create_Do_Update_Script(Pause_at_End):
     global __UPDATE_LIB_CMD_NAME
+    Debug.Print("__Create_Do_Update_Script")
     fn_return_value = None
     fp = Integer()
 
@@ -717,7 +723,7 @@ def __Create_Do_Update_Script(Pause_at_End):
     return fn_return_value
 
 def __Create_Do_Update_Script_Linux_part1(Pause_at_End):
-
+    Debug.Print("__Create_Do_Update_Script_Linux_part1")
     fn_return_value = None
     fp = Integer()
 
@@ -788,7 +794,7 @@ def __Create_Do_Update_Script_Linux_part1(Pause_at_End):
                 Board = Split(Board_and_Proc, ':')(0)
                 BoardDir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/' + Board
                 if Dir(BoardDir, vbDirectory) != '':
-                    Debug.Print('Deleting: ' + BoardDir)
+                    Debug.Print('__Create_Do_Update_Script_Linux_part1 - Deleting: ' + BoardDir)
                     M30.Del_Folder(BoardDir)
         Row = Row + 1
     if ForceReinstall == True:
@@ -850,7 +856,7 @@ def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLLi
                 del URLList_split[0]
                 
             #PG.dialog_parent.execute_shell_cmd(CommandStr)
-            Res = PG.get_dialog_parent().execute_shell_cmd(CommandStr,"Install Boards" + repr(BrdList))
+            Res = PG.get_dialog_parent().execute_shell_cmd(CommandStr,"Install Boards" + Brd)
             #Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)                        
             #VBFiles.writeText(fp, ' 2>&1 | find /v " StatusLogger " | find /v " INFO c.a" | find /v " WARN p.a" | find /v " WARN c.a"', '\n')
             #VBFiles.writeText(fp, 'ECHO.', '\n')
