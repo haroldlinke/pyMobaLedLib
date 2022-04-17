@@ -136,10 +136,10 @@ def Find_ArduinoExe():
     if private_startfile == True:
         filename = PG.get_global_controller().getConfigData("startcmd_filename")
         Dirs=filename
-        logging.debug("upload_to_ARDUINO - Individual Filename: %s",filename)
+        logging.debug("Find ARDUINO exe - Individual Filename: %s",filename)
         if filename == " " or filename == "":
             filename = "No Filename provided"
-        logging.debug("send to ARDUINO - Platform: %s",platform.platform())
+        logging.debug("Find ARDUINO EXE - Platform: %s",platform.platform())
         
         macos = "macOS" in system_platform
         macos_fileending = "/Contents/MacOS/Arduino" 
