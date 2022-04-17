@@ -89,7 +89,7 @@ DEBUG_DCCSEND = False
 InoName_DCC = '23_A.DCC_Interface.ino'
 InoName__SX = '23_A.Selectrix_Interface.ino'
 
-Ino_Dir_LED = 'LEDs_Autoprog/'
+Ino_Dir_LED = 'LEDs_AutoProg/'
 InoName_LED = 'LEDs_AutoProg.ino'
 Cfg_Dir_LED = "Configuration/"
 CfgName_LED = "Configuration.cpp"
