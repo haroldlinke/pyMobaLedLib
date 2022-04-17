@@ -174,7 +174,7 @@ def Get_User_std_Arduino_Lib_Ver():
     fn_return_value = None
     OtherBoardDir = String()
     #-------------------------------------------------------
-    OtherBoardDir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages\\arduino\\hardware\\avr\\'
+    OtherBoardDir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/arduino/hardware/avr/'
     fn_return_value = M30.Get_First_SubDir(OtherBoardDir)
     return fn_return_value
 
@@ -195,6 +195,7 @@ def Get_Std_Arduino_Lib_Ver():
     return fn_return_value
 
 def __Update_General_Versions():
+    Debug.Print("__Update_General_Versions")
     #Sh = Worksheet()
 
     #ArduinoDir = String()
@@ -803,7 +804,7 @@ def __Create_Do_Update_Script_Linux_part1(Pause_at_End):
     return UpdCnt,LibList,BrdList,OthersourceList,URLList
 
 def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLList):
-    if P01.MsgBox(M09.Get_Language_Str(' Folgende ARDUINO Bibliotheken müssen aktualisiert werden:\n' + repr(LibList)+"\n"+repr(BrdList)+"\n"+repr(OthersourceList)+'\n Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('ARDUINO Bibilothem update')) != vbYes:
+    if P01.MsgBox(M09.Get_Language_Str(' Folgende ARDUINO Bibliotheken müssen aktualisiert werden:\n' + repr(LibList)+"\n"+repr(BrdList)+"\n"+repr(OthersourceList)+'\n Soll das Update ausgeführt werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('ARDUINO Bibilothem update')) != vbYes:
         # shutdown and restart
         return M40.Failure
 
@@ -905,7 +906,7 @@ def __Get_Original_Name_from_TestFile(LibDir):
     while Sh.Cells(Row, __Libr_Name_Col) != '':
         if InStr(Sh.Cells(Row, __Lib_Board_Col), 'L') > 0:
             TestFile = Sh.Cells(Row, __Test_File_Col)
-            if Dir(LibDir + TestFile) != '' or Dir(LibDir + 'src\\' + TestFile) != '':
+            if Dir(LibDir + TestFile) != '' or Dir(LibDir + 'src/' + TestFile) != '':
                 fn_return_value = Sh.Cells(Row, __Libr_Name_Col)
                 return fn_return_value
         Row = Row + 1
@@ -917,12 +918,12 @@ def __Correct_one_Temp_Arduino_nr_Dir(LibDir):
     ## VB2PY (CheckDirective) VB directive took path 1 on 1
     Org_LibName = __Get_Original_Name_from_TestFile(M02.Sketchbook_Path + '/libraries/' + LibDir + '/')
     if Org_LibName != '':
-        Org_LibPath = M02.Sketchbook_Path + '\\libraries\\' + Org_LibName
+        Org_LibPath = M02.Sketchbook_Path + '/libraries/' + Org_LibName
         if Dir(Org_LibPath, vbDirectory) != '':
             Debug.Print('Deleting old library: ' + Org_LibPath)
             M30.Del_Folder(Org_LibPath)
         Debug.Print('Rename directory \'' + LibDir + '\' to \'' + Org_LibName + '\'')
-        M30.ChDir(M02.Sketchbook_Path + '\\libraries\\')
+        M30.ChDir(M02.Sketchbook_Path + '/libraries/')
         Debug.Print(Dir(LibDir, vbDirectory))
         # VB2PY (UntranslatedCode) On Error GoTo ErrMsg
         #M30.Name(LibDir)
@@ -1086,7 +1087,7 @@ def __Update_All_Selected_Libraries():
         if (Res == M40.Success) or (Res == M40.Timeout):
             pass
         else:
-            P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler #1# beim Starten der Update Programms \'#2#\''), "#1#", str(Res)), '#2#', CommandStr), vbCritical, M09.Get_Language_Str('Fehler beim Aktualisieren der Bibliotheken'))
+            P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler #1# beim Ausführen des Update Programms \'#2#\''), "#1#", str(Res)), '#2#', CommandStr), vbCritical, M09.Get_Language_Str('Fehler beim Aktualisieren der Bibliotheken'))
             break #*HL GoTo(EndFunc)
         if WIN7_COMPATIBLE_DOWNLOAD:
             __Proc_UnzipList()
@@ -1170,7 +1171,7 @@ def __Update_All_Selected_Libraries_Linux():
                 if (Res == M40.Success) or (Res == M40.Timeout):
                     pass
                 else:
-                    P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler #1# beim Starten der Update Programms \'#2#\''), "#1#", str(Res)), '#2#',""), vbCritical, M09.Get_Language_Str('Fehler beim Aktualisieren der Bibliotheken'))
+                    P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler #1# beim Ausführen des Update Programms \'#2#\''), "#1#", str(Res)), '#2#',""), vbCritical, M09.Get_Language_Str('Fehler beim Aktualisieren der Bibliotheken'))
                     break #*HL GoTo(EndFunc)
                 if WIN7_COMPATIBLE_DOWNLOAD:
                     __Proc_UnzipList()
@@ -1262,7 +1263,7 @@ def __Create_Restart_Cmd():
     if M02.Read_Sketchbook_Path_from_preferences_txt() == False:
         return fn_return_value
     fp = FreeFile()
-    Name = P01.ThisWorkbook.Path + '\\' + __RESTART_PROGGEN_CMD
+    Name = P01.ThisWorkbook.Path + '/' + __RESTART_PROGGEN_CMD
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
     VBFiles.openFile(fp, Name, 'w') 
     VBFiles.writeText(fp, '@ECHO OFF', '\n')
@@ -1309,7 +1310,7 @@ def __Create_Restart_Cmd():
     VBFiles.writeText(fp, 'Start Prog_Generator_MobaLedLib.xlsm', '\n')
     VBFiles.writeText(fp, 'EXIT', '\n')
     VBFiles.closeFile(fp)
-    fn_return_value = M08.GetShortPath(P01.ThisWorkbook.Path) + '\\' + __RESTART_PROGGEN_CMD
+    fn_return_value = M08.GetShortPath(P01.ThisWorkbook.Path) + '/' + __RESTART_PROGGEN_CMD
     return fn_return_value
     VBFiles.closeFile(fp)
     P01.MsgBox(M09.Get_Language_Str('Fehler beim schreiben der Datei \'') + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler beim erzeugen der Arduino Start Datei'))
@@ -1413,7 +1414,7 @@ def Delete_Selected():
         if Sh.Cells(Row, __SelectRow_Col) != '':
             if InStr(Sh.Cells(Row, __Lib_Board_Col), 'L') > 0:
                 # *** Library ***
-                LibrariesDir = M02.Sketchbook_Path + '\\libraries\\'
+                LibrariesDir = M02.Sketchbook_Path + '/libraries/'
                 LibDir = LibrariesDir + Sh.Cells(Row, __Libr_Name_Col)
                 if Dir(LibDir, vbDirectory) != '':
                     Debug.Print('Deleting: ' + LibDir)
@@ -1430,8 +1431,8 @@ def Delete_Selected():
                     DidDelete = True
         Row = Row + 1
     if DidDelete == True:
-        if Dir(Environ(M02.Env_USERPROFILE) + '\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache') != '':
-            Kill(Environ(M02.Env_USERPROFILE) + '\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache')
+        if Dir(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache') != '':
+            Kill(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache')
     Debug.Print('Waiting')
     for i in vbForRange(1, 30):
         DoEvents()
@@ -1529,7 +1530,7 @@ def __Test_Is_Lib_Installed():
     #UT--------------------------------
     Debug.Print('Is_Lib_Installed(esp32:esp32): ' + Is_Lib_Installed('esp32:esp32'))
     Debug.Print('Is_Lib_Installed(NichtInstal): ' + Is_Lib_Installed('NichtInstal'))
-    Debug.Print('Get_Lib_Version(esp32:tools\\esptool_py)' + Get_Lib_Version('esp32:tools\\esptool_py'))
+    Debug.Print('Get_Lib_Version(esp32:tools/esptool_py)' + Get_Lib_Version('esp32:tools/esptool_py'))
     Debug.Print('Get_Lib_Version(NichtInstal)' + Get_Lib_Version('NichtInstal'))
 
 def ESP32_Lib_Installed():

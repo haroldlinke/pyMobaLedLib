@@ -102,7 +102,7 @@ def Packages_Dir_Available():
 def Create_Packages_Dir_if_not_Available():
     #------------------------------------------------
     if not Packages_Dir_Available():
-        M30.CreateFolder(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages\\')
+        M30.CreateFolder(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/')
 
 def Create_Build(BoardName, fp):
     #-------------------------------------

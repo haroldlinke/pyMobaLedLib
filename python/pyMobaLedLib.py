@@ -2658,7 +2658,9 @@ def main_entry():
     
     try:
         import wingdbstub
+        #logging.debug("wingdbstub imported")
     except:
+        #logging.debug("wingdbstub not found")
         pass
     
     if sys.hexversion < 0x030700F0:
