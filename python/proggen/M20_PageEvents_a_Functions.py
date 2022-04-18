@@ -928,14 +928,13 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
                 if P01.ActiveSheet.Shapes.getShape(i).TopLeftCell_Row == Row:
                     #P01.ActiveSheet.Rectangles(i).Delete                   ' 25.03.21:
                     OldRect_List = vbObjectInitialize((OldRect_Cnt,), Variant, OldRect_List)
-                    OldRect_List[OldRect_Cnt] = i-1
+                    OldRect_List[OldRect_Cnt] = i
                     OldRect_Cnt = OldRect_Cnt + 1
                 else:
                     # find orphans
                     Addr = M25.Get_First_Number_of_Range(P01.ActiveSheet.Shapes.getShape(i).TopLeftCell_Row, AddrColumn)
                     if Addr == '':
                         P01.ActiveSheet.Shapes.Delete(i)
-                        i = i - 1
             i = i + 1
     else:
         if Global_Rect_List[Row] == '':
@@ -1010,7 +1009,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
     #*HL    P01.Range[P01.Cells(1, TargetColumn), P01.Cells(1, TargetColumn)].ColumnWidth = WorksheetFunction.RoundUp(i / factor, 1)
     for i in vbForRange(1, ButtonCount):
         if Used_OldRect < OldRect_Cnt:
-            objButton = P01.ActiveSheet.Shapes.getlist()[OldRect_List(Used_OldRect)]
+            objButton = P01.ActiveSheet.Shapes.getlist()[OldRect_List(Used_OldRect)-1]
             Used_OldRect = Used_OldRect + 1
         else:
             #*HLobjButton = P01.ActiveSheet.Shapes.AddShape(msoShapeRectangle, Row, TargetColumn, 0, 0, 0, 0)
