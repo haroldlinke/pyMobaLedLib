@@ -1176,10 +1176,11 @@ class CShapeList(object):
         return shape
         
     def Delete(self,shape):
-        if type(shape)==int:
-            del self.tablemodel.shapelist[shape-1]
-        else:
-            self.tablemodel.shapelist.remove(shape)
+        ActiveSheet.table.deleteshape(shape)
+        #if type(shape)==int:
+        #    del self.tablemodel.shapelist[shape-1]
+        #else:
+        #    self.tablemodel.shapelist.remove(shape)
         
     def Count(self):
         return len(self.tablemodel.shapelist)

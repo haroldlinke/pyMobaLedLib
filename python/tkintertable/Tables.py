@@ -1983,6 +1983,14 @@ class TableCanvas(Canvas):
         self.model.shapelist.append(newshape)
         newshape.masteridx=len(self.model.shapelist)
         return newshape #self.model.shapelist.AddShape(name, shapetype, Left, Top, Width, Height, Fill, Text=Text,masteridx=masteridx)
+    
+    def deleteshape(self,shape):
+        if type(shape)==int:
+            shape=self.model.shapelist[shape-1]
+            shape.Active=False
+        else:
+            #self.model.shapelist.remove(shape) 
+            shape.Active=False
         
     def drawShapes(self):
         self.delete("Shape")
@@ -1991,26 +1999,27 @@ class TableCanvas(Canvas):
             
     def drawShape(self,shape):
         #print("drawShapes:", self.model.modelname,shape.TopLeftCell_Row,shape.tablename)
-        shapeY = shape.Top
-        shaperow = self.getRowPosition(shapeY, ignorehiddenrows=True)
-        
-        if not shaperow in self.model.hiderowslist:
-            numhiddenrows = self.calc_nohidenrows(shaperow)
-            shapeY = shapeY - numhiddenrows*self.rowheight
-        
-            if shape.rectidx>0:
-                self.delete(shape.rectidx)
-            if shape.textidx>0:
-                self.delete(shape.textidx)
-            if shape.Shapetype == "rect":
-                if shape.TextFrame2 == "":
-                    shape.TextFrame2 = "0"
-                shape.rectidx = self.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fill,tags=(shape.masteridx,shape.Name,"Shape"))
-                shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.TextFrame2,tags=(shape.masteridx,shape.Name,"Shape"))
-                self.tag_raise(shape.rectidx)
-                self.tag_raise(shape.textidx)
-                self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
-                self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+        if shape.Active:
+            shapeY = shape.Top
+            shaperow = self.getRowPosition(shapeY, ignorehiddenrows=True)
+            
+            if not shaperow in self.model.hiderowslist:
+                numhiddenrows = self.calc_nohidenrows(shaperow)
+                shapeY = shapeY - numhiddenrows*self.rowheight
+            
+                if shape.rectidx>0:
+                    self.delete(shape.rectidx)
+                if shape.textidx>0:
+                    self.delete(shape.textidx)
+                if shape.Shapetype == "rect":
+                    if shape.TextFrame2 == "":
+                        shape.TextFrame2 = "0"
+                    shape.rectidx = self.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fill,tags=(shape.masteridx,shape.Name,"Shape"))
+                    shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.TextFrame2,tags=(shape.masteridx,shape.Name,"Shape"))
+                    self.tag_raise(shape.rectidx)
+                    self.tag_raise(shape.textidx)
+                    self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
+                    self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
 
     def drawText(self, row, col, celltxt, fgcolor=None, align=None,font=None):
         """Draw the text inside a cell area"""
@@ -3194,6 +3203,7 @@ class CShape(object):
         self.Shapetype = shapetype
         self.tablename=tablename
         self.Left = Left
+        self.Active = True
         self.Top = Top
         self.Width = Width
         self.Height = Height

@@ -471,14 +471,15 @@ class TableModel(object):
         return key
     
     def deleteShapeatRow(self,y1,y2):
-        deleteList=[]
-        index=0
+        #deleteList=[]
+        #index=0
         for shape in self.shapelist:
             if shape.Top in range(y1,y2):
-                deleteList.insert(0, index)
-        if len(deleteList)>0:
-            for item in deleteList:
-                del self.shapelist[item]
+                shape.Active=False
+        #        deleteList.insert(0, index)
+        #if len(deleteList)>0:
+        #    for item in deleteList:
+        #        self.shapelist[item].Active=False
         self.moveShapesVertical(y1,deltaY=y1-y2)
         self.setDataChanged()
 
