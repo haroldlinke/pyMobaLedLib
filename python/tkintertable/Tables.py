@@ -1987,11 +1987,11 @@ class TableCanvas(Canvas):
     def deleteshape(self,shape):
         if type(shape)==int:
             shape=self.model.shapelist[shape-1]
-            shape.Active=False
+            shape.set_activeflag(False)
         else:
             #self.model.shapelist.remove(shape) 
-            shape.Active=False
-        
+            shape.set_activeflag(False)
+            
     def drawShapes(self):
         self.delete("Shape")
         for shape in self.model.shapelist:
@@ -1999,7 +1999,8 @@ class TableCanvas(Canvas):
             
     def drawShape(self,shape):
         #print("drawShapes:", self.model.modelname,shape.TopLeftCell_Row,shape.tablename)
-        if shape.Active:
+        
+        if shape.get_activeflag():
             shapeY = shape.Top
             shaperow = self.getRowPosition(shapeY, ignorehiddenrows=True)
             
@@ -3241,12 +3242,21 @@ class CShape(object):
         canvas = global_tabledict.get(self.tablename,None)
         if canvas:
             canvas.drawShape(self)
-
         
     def Delete(self):
         canvas = global_tabledict.get(self.tablename,None)
         canvas.delete_shape(self.masteridx)
         pass
+    
+    def set_activeflag(self,value):
+        self.Active=value
+        
+    def get_activeflag(self):
+        try:
+            return self.Active
+        except:
+            self.Active=True
+        return self.Active
     
 
 
