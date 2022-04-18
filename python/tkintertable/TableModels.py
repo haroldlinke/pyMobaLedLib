@@ -475,7 +475,7 @@ class TableModel(object):
         #index=0
         for shape in self.shapelist:
             if shape.Top in range(y1,y2):
-                shape.Active=False
+                shape.set_activeflag(False)
         #        deleteList.insert(0, index)
         #if len(deleteList)>0:
         #    for item in deleteList:
