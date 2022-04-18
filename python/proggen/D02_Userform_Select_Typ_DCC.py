@@ -87,10 +87,10 @@ class UserForm_Select_Typ_DCC:
             self.res.set(1)
         elif (select_0 == UCase(Left(M09.Green_T, 1))):
             #Button_Green = True
-            self.res.set(2)
+            self.res.set(3)
         elif (select_0 == UCase(Left(M09.Red_T, 1))):
             #Button_Red = True
-            self.res.set(3)
+            self.res.set(2)
             # In any other cases the last state is used
         value = self.res.get()
         if value == 1: #Button_OnOff:

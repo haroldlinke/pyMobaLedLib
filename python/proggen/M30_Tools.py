@@ -464,6 +464,7 @@ def ShowHourGlassCursor(bApply):
         # in some systems the cursor may fail to reset to default, this forces it
         GetCursorPos(pt)
         SetCursorPos(pt.X, pt.Y)
+        
 
 def IsHourGlassCursor():
     #---------------------------------------------
@@ -478,7 +479,7 @@ def EndProg():
     #ShowHourGlassCursor(False)
     P01.Application.EnableEvents = True
     P01.Application.ScreenUpdating = True
-    sys.exit(0)
+    raise Exception("Error in Dialog")
 
 def ClearStatusbar():
     #--------------------------

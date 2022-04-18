@@ -74,7 +74,7 @@ shift_key = False
 
 datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
 datasheet_formating = { "HideCells" : ((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16),(1,"*")),
-                        "ProtectedCells"  : ((0,0),(1,0),("*",4),("*",12),("*",13),("*",14),("*",15),("*",16)),
+                        "ProtectedCells"  : ((0,0),(1,0),("*",12),("*",13),("*",14),("*",15),("*",16)),
                         "left_click_callertype": "cell",
                         "FontColor"       : { "1": {
                                                     "font"     : ("Arial",8),
