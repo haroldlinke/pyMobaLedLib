@@ -514,6 +514,8 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
     M20.Update_Start_LedNr()
     fn_return_value = True
+    P01.Unload(F00.StatusMsg_UserForm)
+    P01.ActiveSheet.Redraw_table()
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Name - ByVal 
@@ -533,7 +535,7 @@ def Read_PGF(Name, ToActiveSheet=False):
     FileStr = M30.Read_File_to_String(Name)
     if FileStr == '#ERROR#':
         return fn_return_value
-    lines = Split(FileStr, "\n")
+    lines = Split(FileStr, vbCr)
     if UBound(lines) <= 1:
         lines = Split(FileStr,"\n")
         if UBound(lines) <= 1:
