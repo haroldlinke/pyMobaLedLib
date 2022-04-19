@@ -11,3 +11,4 @@ python/LEDs_AutoProg/LEDs_AutoProg.h
 temp_workbook.table_PyProgramWorkbook
 temp_workbook.table_PyProgramWorkbook
 python/LEDs_AutoProg/LEDs_AutoProg.h
+*.pyd

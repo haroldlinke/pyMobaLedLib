@@ -533,7 +533,7 @@ def Read_PGF(Name, ToActiveSheet=False):
     FileStr = M30.Read_File_to_String(Name)
     if FileStr == '#ERROR#':
         return fn_return_value
-    lines = Split(FileStr, vbCr)
+    lines = Split(FileStr, "\n")
     if UBound(lines) <= 1:
         lines = Split(FileStr,"\n")
         if UBound(lines) <= 1:
@@ -542,9 +542,9 @@ def Read_PGF(Name, ToActiveSheet=False):
     Parts = Split(lines(0), vbTab)
     Err = ( UBound(Parts) < 2 )
     if not Err:
-        Err = ( Parts(0) != __Head_ID )
+        Err = ( str(Parts(0)) != __Head_ID )
     if not Err:
-        Err = ( Parts(1) != PGF_Identification )
+        Err = ( str(Parts(1)) != PGF_Identification )
     if not Err:
         ScrUpd = P01.Application.ScreenUpdating
         P01.Application.ScreenUpdating = False

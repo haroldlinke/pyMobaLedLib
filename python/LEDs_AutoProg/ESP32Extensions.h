@@ -45,6 +45,7 @@
 #ifdef USE_WIFI
   #ifndef WIFI_DNS_NAME 
     #define WIFI_DNS_NAME "MobaLedLib"
+    #undef Sec
 #endif
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -194,7 +195,7 @@ void setupESP32Extensions() {
 	}
 #endif
 #ifdef USE_LOCONET
-	interface.setup(stream);
+	interface.setup(2 /*Built in LED*/, stream);
 #endif
 #endif
 }
@@ -222,7 +223,7 @@ void loopESP32Extensions() {
 	#endif
 
 	#ifdef USE_LOCONET
-	interface.loop();
+	interface.process();
 	#endif	
 #endif	
 

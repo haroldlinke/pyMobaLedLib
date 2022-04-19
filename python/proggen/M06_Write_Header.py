@@ -511,6 +511,7 @@ def Generate_Config_Line(LEDNr, Channel_or_define, r, Config_Col, Addr):
 def Get_Typ_Const(Inp_Typ):
 #----------------------------------------------------------------
     M09.Set_Tast_Txt_Var()
+    Inp_Typ = str(Inp_Typ)
     if (Inp_Typ == M09.OnOff_T):
         fn_return_value = 'S_ONOFF,'
     elif (Inp_Typ == M09.Red_T):

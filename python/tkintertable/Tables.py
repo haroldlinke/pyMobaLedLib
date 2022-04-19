@@ -1958,7 +1958,6 @@ class TableCanvas(Canvas):
                                 width=w-self.inset*2,height=h-self.inset*2,
                                 window=self.cellentry,anchor='nw',
                                 tag='entry')
-
         return
 
     def checkDataEntry(self,event=None):
@@ -2086,7 +2085,7 @@ class TableCanvas(Canvas):
                                                   anchor="nw",
                                                   tag=('Icon','iconfilename_'+str(col)+'_'+str(row)))
                 except:
-                    Debug.Print("DrawTable - draw ICON Error:" + iconfilename)
+                    print("DrawTable - draw ICON Error:" + iconfilename)
         
             if self.isLink(celltxt) == True:
                 haslink=0
