@@ -301,7 +301,8 @@ def Get_LED_Nr(DefaultLedNr, Row, LED_Channel):
     #-----------------------------------------------------
     fn_return_value = int(DefaultLedNr)
     LEDNr = P01.Cells(Row, M25.LED_Nr__Col)
-    if LEDNr != '':
+    LEDNrstr=str(LEDNr)
+    if LEDNrstr != '':
         Pos = InStr(LEDNr, '-')
         if ( Pos < 1 ) :
             if Left(LEDNr, 1) == M02.SerialChannelPrefix:

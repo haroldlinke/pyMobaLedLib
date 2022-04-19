@@ -2656,12 +2656,7 @@ def main_entry():
     
     global COMMAND_LINE_ARG_DICT
     
-    try:
-        import wingdbstub
-        #logging.debug("wingdbstub imported")
-    except:
-        #logging.debug("wingdbstub not found")
-        pass
+    import wingdbstub
     
     if sys.hexversion < 0x030700F0:
         tk.messagebox.showerror("Wrong Python Version"+sys.version,"You need Python Version > 3.7 to run this Program")

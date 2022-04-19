@@ -479,6 +479,7 @@ def EndProg():
     #ShowHourGlassCursor(False)
     P01.Application.EnableEvents = True
     P01.Application.ScreenUpdating = True
+    Debug.Print("Error in Dialog: End_Prog()")
     raise Exception("Error in Dialog")
 
 def ClearStatusbar():

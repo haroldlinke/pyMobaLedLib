@@ -58,9 +58,11 @@ import subprocess
 import pickle
 import proggen.Prog_Generator as PG
 import proggen.F00_mainbuttons as F00
+import proggen.M02_Public as M02
 import proggen.M18_Save_Load as M18
+import proggen.M25_Columns as M25
+import proggen.M37_Inst_Libraries as M37
 import proggen.M39_Simulator as M39
-import proggen.D11_Userform_SimpleInput as D11
 
 #import proggen.M01_Gen_Release_Version as M01
 import keyboard
@@ -159,6 +161,7 @@ sheetdict_PROGGEN={"DCC":
             },
            "Libraries":
             {"Name":"Libraries",
+             "SheetType" : "Libraries",
              "Filename":"csv/Libraries.csv",
              "Fieldnames": "A;B;C;D;E;F;G;H;I;J",
              "Formating" : {"ProtectedCells"  : ((0,"*"),(1,"*"),(2,"*"),(3,"*"),(4,"*"),(5,"*"),(6,"*"),(7,"*")),
@@ -174,7 +177,8 @@ sheetdict_PROGGEN={"DCC":
                                                        "bg"       : "#FFFFFF",
                                                        "Cells"    : (("*","*"),)
                                                        }
-                                                }
+                                                },
+                            "left_click_callertype": "cell"
                             }
             },
            "Par_Description":
@@ -589,7 +593,7 @@ class CWorkbook:
     def new_sheet(self,sheetname,tabframe):
         sheetname_prop = self.sheetdict.get(sheetname)
         sheettype = sheetname_prop.get("SheetType","")
-        callback = sheettype=="Datasheet"
+        callback = sheettype in ["Datasheet","Libraries"]
         self.showws = sheettype in ["Datasheet","Config"]
         formating_dict = sheetname_prop.get("Formating",None)
         fieldnames = sheetname_prop.get("Fieldnames",None)
@@ -761,6 +765,7 @@ class CWorksheet:
         self.fieldnames = fieldnames
         self.formating_dict = formating_dict
         self.Name = Name
+        self.shape_clicked = False
         self.Tabframe = frame
         self.DataChanged=False
         self.tabid = tabid
@@ -852,6 +857,9 @@ class CWorksheet:
     def left_click_callback(self,value1,value2,callertype="cell"):
         
         if callertype=="cell":
+            if self.shape_clicked:
+                self.shape_clicked=False
+                return False
             row=value1
             col=value2
             #print("Left_Click_Call_Back:",row,col)
@@ -871,6 +879,7 @@ class CWorksheet:
             Application.caller = int(value1[0])
             if Application.canvas_leftclickcmd!=None:
                 Application.canvas_leftclickcmd()
+                self.shape_clicked = True # avoid cell maked as clicked
                 return False
         
     def EnableMousePosition(self):
@@ -1100,6 +1109,9 @@ class CWorksheet:
         global ActiveSheet
         ActiveSheet = self
         self.table.do_bindings()
+        Port=Cells(M02.SH_VARS_ROW, M25.COMPort_COL)
+        if F00.port_is_available(Port):    
+            PG.global_controller.setConfigData("serportname",Port)        
         return
     
     def do_bindings(self):
