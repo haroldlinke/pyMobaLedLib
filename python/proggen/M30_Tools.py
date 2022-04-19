@@ -178,7 +178,7 @@ def LastUsedRowIn(Sheet):
     else:
         Sh = Sheet
     #*HL fn_return_value = Sh.UsedRange.Rows(Sh.UsedRange.Rows.Count).Row
-    fn_return_value = len(Sh.UsedRange_Rows())-1
+    fn_return_value = Sh.get_LastUsedRow() #len(Sh.UsedRange_Rows())-1
     Sh = None
     return fn_return_value
 
@@ -245,7 +245,7 @@ def First_Change_in_Line(Target):
 def LastFilledRowIn_ChkAll(Sh):
     Row = int()
     #-------------------------------------------------------------
-    Row = LastUsedRowIn(Sh)
+    Row = LastUsedRowIn(Sh)+1
     with_variable2 = Sh
     while First_Change_in_Line(with_variable2.Cells(Row, 1)):
         Row = Row - 1
