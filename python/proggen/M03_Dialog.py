@@ -107,6 +107,7 @@ def Dialog_Guided_Input():
             __Ask_Input_NextRow = True
             P01.ActiveSheet.Redraw_table()            
             Ask_External_Control()
+            P01.ActiveSheet.addrow_if_needed()
             if __Input_NextRow:
                 Debug.Print('ToDo: Prüfen of die nächste Zeile leer ist und geg. eine Zeile einfügen')
             if not (__Input_NextRow):
@@ -141,7 +142,7 @@ def Dialog_Guided_Input():
                 P01.MsgBox(M09.Get_Language_Str('Die ausgewählte Spalte sollte nur von erfahrenen Benutzern verändert werden.' + vbCr + 'Es existiert keine Dialog gestützte Eingabe.'), vbInformation, M09.Get_Language_Str('Spalte sollte nur von Experten verändert werden'))
             else:
                 P01.MsgBox(M09.Get_Language_Str('Für die Ausgewählte Spalte existiert noch kein Dialog'), vbInformation, M09.Get_Language_Str('Kein Dialog vorhanden'))
-    
+        P01.ActiveSheet.addrow_if_needed()
     P01.ActiveSheet.Redraw_table(do_bindings=True)
     return
     
