@@ -1027,7 +1027,8 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     if p == 0:
         p = InStrRev(P01.ThisWorkbook.Path, '/')
     if p > 0:
-        ShortPath = Mid(P01.ThisWorkbook.Path, p + 1, 255) + ' '
+        pass #ShortPath = Mid(P01.ThisWorkbook.Path, p + 1, 255) + ' '
+    ShortPath = "Ver_"+ M02.Lib_Version_Nr+" "
     fp = FreeFile()
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
     #try:
@@ -1092,7 +1093,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     VBFiles.writeText(fp, '', '\n')
     Color_Test_Mode = M28.Get_String_Config_Var('Color_Test_Mode')
     select_variable_ = Left(UCase(Color_Test_Mode), 1)
-    if (select_variable_ == 'J') or (select_variable_ == 'Y') or (select_variable_ == '1'):
+    if True: #*HL (select_variable_ == 'J') or (select_variable_ == 'Y') or (select_variable_ == '1'):
         VBFiles.writeText(fp, '#define RECEIVE_LED_COLOR_PER_RS232' + vbCr, '\n')
     if M28.Get_Bool_Config_Var('USE_SPI_Communication') or M25.Page_ID == 'CAN':
         if M28.Get_Bool_Config_Var('USE_SPI_Communication'):

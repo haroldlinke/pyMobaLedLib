@@ -58,6 +58,7 @@
 
 
 PROG_VERSION ="3.1.0.013 18.04.2022"
+DEBUG = False
 
 hexversion = 0x03010001
 LARGE_FONT= ("Verdana", 12)

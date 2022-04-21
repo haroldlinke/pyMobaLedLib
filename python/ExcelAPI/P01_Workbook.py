@@ -399,17 +399,20 @@ def Format(value,formatstring):
     if formatstring == "hh:mm:ss":
         time_val = time.gmtime(value)
         return time.strftime("%H:%M:%S",time_val)
-        time_sec = value%60
-        value=int(value/60)
-        time_min = value % 60
-        value=int(value/60)
-        time_h=value
-        time_str = str(time_h)+":"+str(time_min)+":"+str(time_sec)
-        return time_str
+    elif formatstring == "hh:mm":
+        if type(value)==str:
+            return value[:5]
+        else:
+            time_val = time.gmtime(value)
+            return time.strftime("%H:%M",time_val)
+
     elif formatstring == "0000":
         return "{0:4d}".format(value)
+    
     elif formatstring == "00":
         return "{0:2d}".format(value)
+    elif formatstring == "dd.mm.yy":
+        return value[:2]+"."+value[3:5]+"."+value[6:]
     else:
         pass
     

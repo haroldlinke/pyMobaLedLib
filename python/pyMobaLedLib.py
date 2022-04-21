@@ -74,13 +74,14 @@ from mlpyproggen.LEDListPage import LEDListPage
 from mlpyproggen.SoundCheckPage import SoundCheckPage
 from mlpyproggen.tooltip import Tooltip
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PALETTE, DEFAULT_PARAM, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, SIZEFACTOR,\
-PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1, SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ
+PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1, SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ,DEBUG
 from mlpyproggen.LedEffectTable import ledeffecttable_class
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,ScrolledFrame,HorizontalScrolledFrame
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
 from tkcolorpicker.functions import hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, col2hue, rgb_to_hsv, convert_K_to_RGB
 import platform
+import traceback
 
 import ExcelAPI.P01_Workbook as P01
 
@@ -280,6 +281,7 @@ class LEDColorTest(tk.Tk):
         self.connection_startup = False
 
         tk.Tk.__init__(self, *args, **kwargs)
+        tk.Tk.report_callback_exception = self.show_tkinter_exception
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         logging.debug("Screenwidht: %s Screenheight: %s",screen_width,screen_height)
@@ -470,6 +472,19 @@ class LEDColorTest(tk.Tk):
 
         self.lift()
         self.grab_set()
+        
+    def show_tkinter_exception(self, exc,val,tb):
+        err = traceback.format_exception(exc,val,tb)
+        
+        messagestring = ""
+        for line in err:
+            messagestring+=line
+        messagebox.showerror('Exception',messagestring)
+        print("Tkinter Exception:",messagestring)
+        logging.debug("Tkinter Exception:\n"+messagestring)
+        if DEBUG:
+            raise
+        
         
     def check_data_changed(self):
         return self.paramDataChanged or self.activeworkbook.check_Data_Changed()
@@ -828,6 +843,7 @@ class LEDColorTest(tk.Tk):
                 if answer == None:
                     pass 
                 if answer:
+                    #open ARDUINO Comport Selection
                     self.showFramebyName("ARDUINOConfigPage")                 
                 self.arduino = None
                 self.ARDUINO_status = ""
