@@ -884,6 +884,12 @@ class CWorksheet:
         
     def EnableMousePosition(self):
         pass
+    
+    def addrow_if_needed(self,row=None):
+        if row==None:
+            row = self.table.getSelectedRow()
+        if row==self.tablemodel.getRowCount():
+            self.addrow_after_current_row()
         
     def addrow_after_current_row(self,copy=False):
         cur_row = self.table.getSelectedRow()

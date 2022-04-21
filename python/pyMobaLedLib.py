@@ -259,7 +259,7 @@ class LEDColorTest(tk.Tk):
         macrodata = self.MacroDef.data.get("StartPage",{})
         
         self.show_pyPrgrammGenerator = self.getConfigData("ShowProgramGenerator")
-        self.show_pyPatternGenerator = self.getConfigData("ShowPatternGenerator")
+        self.show_pyPatternGenerator = False #self.getConfigData("ShowPatternGenerator")
         self.show_hiddentables = self.getConfigData("ShowHiddentables")
         
         self.tempLedeffecttableFilname = macrodata.get("TEMP_LEDEFFECTTABLE_FILENAME","StartPage")

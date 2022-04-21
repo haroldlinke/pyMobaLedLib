@@ -164,7 +164,7 @@ class Pattern_GeneratorPage(tk.Frame):
         self.workbook_frame.rowconfigure(0,weight=1)
         self.workbook_frame.columnconfigure(0,weight=1)
         
-        self.workbook = create_workbook(frame=self.workbook_frame,path=self.filedir2,sheetdict=sheetdict_PatternGEN,workbookName="PatternWorkbook")
+        self.workbook = create_workbook(frame=self.workbook_frame,path=self.filedir2,pyProgPath=self.filedir2,sheetdict=sheetdict_PatternGEN,workbookName="PatternWorkbook")
         
         for sheet in self.workbook.sheets:
             sheet.SetChangedCallback(self.wschangedcallback)
