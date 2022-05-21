@@ -535,7 +535,7 @@ def DoEvents():
 
 
 class CWorkbook:
-    def __init__(self, frame=None,path=None,pyProgPath=None,workbookName=None, workbookFilename=None, sheetdict=sheetdict_PROGGEN):
+    def __init__(self, frame=None,path=None,pyProgPath=None,workbookName=None, workbookFilename=None, sheetdict=sheetdict_PROGGEN,init_workbook=None,open_workbook=None):
         global Workbooks,ThisWorkbook,pyProgfile_dir
         # Row and Columns are 0 based and not 1 based as in Excel
 
@@ -548,6 +548,8 @@ class CWorkbook:
             self.Path = path
             self.pyProgPath = pyProgPath
             self.master = frame
+            self.init_workbook_proc=init_workbook
+            self.open_workbook_proc = open_workbook
             self.tabframedict = {}
 
             self.FullName = workbookFilename

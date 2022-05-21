@@ -844,7 +844,12 @@ class LEDColorTest(tk.Tk):
                     pass 
                 if answer:
                     #open ARDUINO Comport Selection
-                    self.showFramebyName("ARDUINOConfigPage")                 
+                    ComPortColumn = M25.COMPort_COL
+                    ComPort=" "
+                    res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
+                    self.setConfigData("serportname",ComPort)
+                    #self.connect()
+                    #self.showFramebyName("ARDUINOConfigPage")                 
                 self.arduino = None
                 self.ARDUINO_status = ""
                 self.set_connectstatusmessage("Nicht Verbunden",fg="black")
@@ -2669,6 +2674,7 @@ def img_resource_path(relative_path):
 COMMAND_LINE_ARG_DICT = {}
 
 def main_entry():
+    global DEBUG
     
     global COMMAND_LINE_ARG_DICT
     
@@ -2712,6 +2718,7 @@ def main_entry():
         COMMAND_LINE_ARG_DICT["logging_level"]=logging_level
         if logging_level=="DEBUG":
             logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.DEBUG,datefmt="%H:%M:%S")
+            DEBUG=True
         elif logging_level=="INFO":
             logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.INFO,datefmt="%H:%M:%S")
         elif logging_level=="WARNING":

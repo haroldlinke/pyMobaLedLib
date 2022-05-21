@@ -785,15 +785,16 @@ class ColorCheckPage(tk.Frame):
     # ----------------------------------------------------------------    
     def update_palette_from_coltab(self,Colortable):
         print("Palette:",self.palette)
+        if Colortable:
         
-        for index in range(0,len(Colortable)):
-            print("ColTab:", Colortable(index).r,Colortable(index).g,Colortable(index).b)
-       
-        index = 0
-        for key in self.palette.keys():
-            self.palette[key] = rgb_to_hexa(Colortable(index).r,Colortable(index).g,Colortable(index).b)
-            index = index+1
-        print("Palette:",self.palette)
+            for index in range(0,len(Colortable)):
+                print("ColTab:", Colortable(index).r,Colortable(index).g,Colortable(index).b)
+           
+            index = 0
+            for key in self.palette.keys():
+                self.palette[key] = rgb_to_hexa(Colortable(index).r,Colortable(index).g,Colortable(index).b)
+                index = index+1
+            print("Palette:",self.palette)
         self._update_preview()
         return
     
@@ -1017,8 +1018,9 @@ class ColorCheckPage(tk.Frame):
                 if not self.controller.paramDataChanged:
                     answer = tk.messagebox.askyesno ('Zurück zur ColTab','Sie haben keine Daten geändert.\nIst das richtig (<ja> ancklicken)\n oder haben Sie vergessen, die Änderungen in der Palette zu speichern und möchten dies nachholen - mit <Rechter Maustaste>? (<Nein> ancklicken)',default='yes')
                     if answer == False:
-                        return # no cancelation                   
-                self.controller.checkcolor_callback(self.palette)
+                        return # no cancelation
+                if self.controller.checkcolor_callback:
+                    self.controller.checkcolor_callback(self.palette)
                 self.controller.showFramebyName("ProgGeneratorPage")
                 return
             else:
