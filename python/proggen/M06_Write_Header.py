@@ -1256,7 +1256,8 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     if Channel - 1 > 250:
         P01.MsgBox(M09.Get_Language_Str('Fehler: Die Anzahl der verwendeten Eingangskanäle ist zu groß!' + vbCr + 'Es sind maximal 250 verfügbar. Die Konfiguration enthält aber ') + str(Channel - 1) + '.' + vbCr + vbCr + M09.Get_Language_Str('Die Eingangskanäle werden zum einlesen von DCC, Selectrix und CAN Daten benutzt. ' + vbCr + 'Außerdem werden sie als interne Zwischenspeicher benötigt.'), vbCritical, M09.Get_Language_Str('Anzahl der InCh Variablen überschritten'))
         M30.EndProg()
-    if ConfigTxt == '':
+        
+    if ConfigTxt == "" and ExtensionsActiveCount == 0:                       # 17.04.22: Juergen improve empty configuration warning
         P01.MsgBox(M09.Get_Language_Str('Achtung: Es ist keine einzige Zeile in der Spalte "Beleuchtung, Sound, oder andere Effekte" aktiv!' + vbCr + '=> Das Programm wird keine LEDs ansteuern'), vbCritical, M09.Get_Language_Str('Achtung: Die Konfiguration ist leer'))
         #*HLUserForm_Header_Created.DontShowAgain = False
     P01.Application.StatusBar = Time + M09.Get_Language_Str(': Header Datei \'') + Name + M09.Get_Language_Str('\' wurde erzeugt')

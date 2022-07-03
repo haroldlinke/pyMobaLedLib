@@ -80,7 +80,7 @@ import ExcelAPI.P01_Workbook as P01
 # ##################################################### Public Const
 
 Lib_Version_Nr = '3.1.0'                                    # If changed check also "Exp_Prog_Gen_Version" in Pattern_Configurator
-Test_Sufix = 'F4'                                            # The Excel programs use the same version number than the library to avoid confusion
+Test_Sufix = 'F6'                                            # The Excel programs use the same version number than the library to avoid confusion
 Prog_Version = 'Ver. ' + Lib_Version_Nr + Test_Sufix        # A sufix could be used for beta version
 Prog_Version_Nr = Lib_Version_Nr + Test_Sufix               # Call Gen_Release_Version() to update all sheets
 DEBUG_CHANGEEVENT = False
