@@ -1,6 +1,6 @@
 ﻿x;;;;;;;;;
 ;;;;Last update:;;Arduino IDE:;1.8.19;Sketchbook_Path: 'C:/Users/Harold/Documents/Arduino';
-;;;;8.4.22 8:34;;Std. Boards (Nano, Uno, …): ;1.8.2;;
+;;;;2.6.22 8:34;;Std. Boards (Nano, Uno, …): ;1.8.2;;
 ;;;;;;;;;
 ;;;;;;;;;
 ;;;;;;;;;
@@ -27,7 +27,8 @@ until a newer oficial version than 3.3.3 is released because here the flicker du
 ;;1;L*;WiFiManager;WiFiManager.h;;2.0.3-alpha;;Library for ESP32 Wifi access
 ;;1;L;U8g2;clib/u8g2.h;;2.32.15;;Library for ESP32 display support
 ;;1;L;CAN;src/CAN.h;;0.3.1;;Library for ESP32 CAN support
-;;1;L;EspSoftwareSerial;SoftwareSerial.h;;6.15.2;;Library for ESP32 SoftwareSerial support
+,1,L,EspSoftwareSerial,SoftwareSerial.h,6.15.2,6.15.2,https://github.com/Jueff/espsoftwareserial/archive/refs/heads/master.zip,Library for ESP32 SoftwareSerial support
+;;1;L;EspSoftwareSerial;SoftwareSerial.h;6.15.2;6.15.2;https://github.com/Jueff/espsoftwareserial/archive/refs/heads/master.zip;Library for ESP32 SoftwareSerial support
 ;;;B*;rp2040:rp2040;rp2040/dummy_rp2040.h;1.9.6;;https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json;Board for Raspberry Pico  (Experimental)
 ;;;;;;;;;
 ;;;;;;;;;

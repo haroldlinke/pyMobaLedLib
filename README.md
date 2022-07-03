@@ -43,19 +43,47 @@ V3.1.0.001 -  7.4.2022 - HL
 V3.1.0.002 - 9.4.2022 - HL
 - progress information for download of Python Program
 
-V3.1.0.003 - 13.4.2021 - HL
+V3.1.0.003 - 13.4.2022 - HL
 - ARDUINO library check improved
 
-V3.1.0.004 - 14.4.2021 - HL
+V3.1.0.004 - 14.4.2022 - HL
 - Dialogs improved (keyboard usage)
 
-V3.1.0.005 - 15.4.2021 - HL
+V3.1.0.005 - 15.4.2022 - HL
 - replace ARDUINO Configuration page with USB Dialog
 
-V3.1.0.006 - 16:4.2021 - HL
+V3.1.0.006 - 16.4.2021 - HL
 - error correction USB Dialog - automatic detection of new connected ARDUINO
-- 
-                              
+
+V3.1.0.007 - 17.4.2022 - HL
+- adaption of USB Dialog for LINUX
+
+V3.1.0.008 - 17.4.2022 - HL
+- error correction - radio button alignment, date format for filenames corrected
+
+V3.1.0.009 - 17.4.2022 - HL
+- error correction - replace "\" in filenames with "/" for Linux - not all "\" were replaced
+
+V3.1.0.010 - 17.4.2022 - HL
+- error correction - replace "\" in filenames with "/" for Linux - not all "\" were replaced                             
+Open Issues:
+- define a simple installation mechanism for LINUX and Mac
+
+V3.1.0.010 - 18.4.2022 - HL
+- error correction - corrected error in Get_Typ_Const with different languages
+
+V3.1.0.011 - 19.4.2022 - HL
+ - error correction
+
+V3.1.0.012 - 19.4.2022 - HL
+ - EndProg should not terminate the program but return to main window
+
+V3.1.0.013 - 1.5.2022 - HL
+ - ARDUINO control window functions replaced by "Excel"-USB-Window
+
+V3.1.0.014 - 28.5.2022 - HL
+ - Manual entering of ARDUINO-Program location for LINUX possible
+
 Open Issues:
 - define a simple installation mechanism for LINUX and Mac
 
