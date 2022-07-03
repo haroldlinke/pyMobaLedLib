@@ -84,14 +84,6 @@ V3.1.0.013 - 1.5.2022 - HL
 V3.1.0.014 - 28.5.2022 - HL
  - Manual entering of ARDUINO-Program location for LINUX possible
 
-V3.1.0.015 - 03.07.2022 update to MLL 3.1.0F6
-09.04.22: - fix rebuild issue with ESP32
-          - change ESP32SoftwareSerial library source to a bugfix repository
-            as long the bug isn't fixed in then main library
-17.04.22: - add Led2Var support to simulator
-          - fix empty configuration warning if ony extensions are active
-          - fix extensions include problem
-
 Open Issues:
 - define a simple installation mechanism for LINUX and Mac
 
