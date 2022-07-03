@@ -82,7 +82,7 @@ class TableCanvas(Canvas):
         self.currentrow = 0
         self.currentcol = 0
         self.reverseorder = 0
-        self.startrow = self.endrow = None
+        self.startrow = self.endrow = 0
         self.startcol = self.endcol = None
         self.allrows = False       #for selected all rows without setting multiplerowlist
         self.multiplerowlist=[]

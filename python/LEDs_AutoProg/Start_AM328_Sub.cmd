@@ -4,10 +4,10 @@ CHCP 65001 >NUL
 
 if not exist MyPrivateBuildScript.cmd (
   REM embedded Fast Build and Upload
-  call :build "C:\Program Files (x86)\Arduino\" "LEDs_AutoProg.ino" COM3 "arduino:avr:nano:cpu=atmega328" 115200  "C:\Users\Harold\Documents\Arduino/libraries" atmega328p %*
+  call :build "C:\Program Files (x86)\Arduino\" "LEDs_AutoProg.ino" COM5 "arduino:avr:nano:cpu=atmega328" 115200  "C:\Users\Harold\Documents\Arduino/libraries" atmega328p %*
 ) else (
   REM user defined Build and Upload
-  call MyPrivateBuildScript.cmd "C:\Program Files (x86)\Arduino\" "LEDs_AutoProg.ino" COM3 "arduino:avr:nano:cpu=atmega328" 115200  "C:\Users\Harold\Documents\Arduino/libraries" atmega328p %*
+  call MyPrivateBuildScript.cmd "C:\Program Files (x86)\Arduino\" "LEDs_AutoProg.ino" COM5 "arduino:avr:nano:cpu=atmega328" 115200  "C:\Users\Harold\Documents\Arduino/libraries" atmega328p %*
 )
 IF ERRORLEVEL 1 ECHO Start_Arduino_Result: %ERRORLEVEL% > "Start_Arduino_Result.txt"
 goto :eof
