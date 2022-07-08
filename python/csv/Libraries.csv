@@ -19,14 +19,14 @@
 ;;1;L;TimerOne;TimerOne.h;;1.1;;
 ;;1;B;ATTinyCore:avr;ATTinyCore\src\ATTinyCore.h; ;1.5.2;http://drazzy.com/package_drazzy.com_index.json;Servo, Charliplexing
 ;;1;B;arduino:avr;cores\arduino\Arduino.h;1.8.2;1.8.2;;Standard library for Nano, Uno, …
-;;1;B;esp32:esp32;ESP32\src\dummy.h;1.0.4;1.0.4;https://dl.espressif.com/dl/package_esp32_index.json;"Board for ESP32
+;;1;B;esp32:esp32;ESP32/src/dummy.h;1.0.4;1.0.4;https://dl.espressif.com/dl/package_esp32_index.json;"Board for ESP32
 Use the actual FastLed library from
   https://github.com/FastLED/FastLED
 until a newer oficial version than 3.3.3 is released because here the flicker during the OTA Upload is fixed."
-;;1;BE*;esp32:tools\esptool_py;esptool.exe;;2.6.1;;Installed with ESP32 platform
+;;1;BE*;esp32:tools/esptool_py;esptool.exe;;2.6.1;;Installed with ESP32 platform
 ;;1;L*;WiFiManager;WiFiManager.h;;2.0.3-alpha;;Library for ESP32 Wifi access
-;;1;L;U8g2;clib\u8g2.h;;2.32.15;;Library for ESP32 display support
-;;1;L;CAN;src\CAN.h;;0.3.1;;Library for ESP32 CAN support
+;;1;L;U8g2;clib/u8g2.h;;2.32.15;;Library for ESP32 display support
+;;1;L;CAN;src/CAN.h;;0.3.1;;Library for ESP32 CAN support
 ;;1;L;EspSoftwareSerial;SoftwareSerial.h;6.15.2;6.15.2;https://github.com/Jueff/espsoftwareserial/archive/refs/heads/master.zip;Library for ESP32 SoftwareSerial support
 ;;;B*;rp2040:rp2040;rp2040\dummy_rp2040.h;1.9.6;;https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json;Board for Raspberry Pico  (Experimental)
 ;;;;;;;;;
