@@ -728,7 +728,13 @@ from vb2py.vbdebug import *
 # 17.03.22: - Simulator may switch between RGB and Single-LED view with doubelclick
 # 24.03.22: - fix DCC Offset bug with simulator
 #           - third simulator view displaying combined and single LED
-#
+# 09.04.22: - fix rebuild issue with ESP32
+#           - change ESP32SoftwareSerial library source to a bugfix repository - as
+#             long the bug isn't fixed in then main library
+# 17.04.22: - add Led2Var support to simulator
+#           - fix empty configuration warning if ony extensions are active
+#           - fix extensions include problem
+
 # ToDo:
 # ~~~~~
 # - Pattern_Configurator:    27.11.21:
