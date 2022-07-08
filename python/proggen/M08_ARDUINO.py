@@ -923,6 +923,86 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
     P01.MsgBox(M09.Get_Language_Str('Fehler beim schreiben der Datei \'') + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler beim erzeugen der Arduino Start Datei'))
     return fn_return_value
 
+def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType):
+   
+    CommandStr = String()
+
+    BuildDir = String()
+
+    BuildDirForScript = Variant()
+
+    fp = Integer()
+
+    Name = String()
+
+    i = Integer()
+    #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Arduino start Parameters see:
+    #   https://github.com/arduino/Arduino/blob/master/build/shared/manpage.adoc
+    #   https://forum.arduino.cc/index.php?topic=550577.0
+    #   http://inotool.org/
+    # 26.09.19:
+    # Manchmal Spinnt der Compiler. Er erzeugt seltsame Fehlermeldungen:
+    #    " internal compiler error: Segmentation fault "
+    # Wenn der Fehler ein mal komm, dann muss irgend was am Programm verädert werden,
+    # dann geht es meißtens wieder. Dann kann man die Änderung auch wieder rückgängig
+    # machen ohne das der Fehler wieder auftritt ;-(
+    #
+    # Wenn man das Verzeichnis "C:\Users\Hardi\AppData\Arduino_Build_23_B.LEDs_AutoProg"
+    # löscht, dann geht es auch ohne Änderung am Programm.
+    #
+    # Das Weglassen des Kommandozeilenschalters "--preserve-temp-files" bringt nichts.
+    # Das Problem ist hier beschrieben:
+    #  https://github.com/arduino/Arduino/issues/8821
+    #  https://github.com/arduino/Arduino/issues/7949
+    # Im zweiten Post wird behauptet, dass der Fehler mit der Version 1.8.10 nicht mehr auftritt.
+    # Dummerweise produziert diese sehr viele Debug Meldungen.
+    #
+    # Ich habe jetzt mal das Neueste Board Paket für den Nano (1.8.1) Installiert. Mal schauen ob es
+    # jetzt besser ist. Dummerweise habe ich mir nicht gemerkt welches Board Paket ich vorher hatte.
+    # Es war irgend was mit 1.6?
+    Debug.Print("Create_ARDUINO_IDE_Cmd")
+    if Dir(SrcDir + ResultName) != '':
+        Kill(SrcDir + ResultName)
+        # 16.03.20: Added Thisworkbook...
+    ## VB2PY (CheckDirective) VB directive took path 1 on 1
+    BuildDir = Replace(Environ('APPDATA'), 'Roaming', '') + 'Arduino_Build_' + Replace(InoName, '.ino', '')
+    BuildDirForScript = '%APPDATA%/../' + 'Arduino_Build_' + Replace(InoName, '.ino', '')
+    if Dir(BuildDir + '/.') == '':
+        # VB2PY (UntranslatedCode) On Error Resume Next
+        MkDir(BuildDir)
+        # VB2PY (UntranslatedCode) On Error GoTo 0
+        BuildDirForScript = '%APPDATA%/../' + 'Arduino_Build_' + Replace(InoName, '.ino', '')
+        #Debug.Print "BuildDir='" & BuildDir & "'"
+    # Other options:  --verbose-build --verbose-upload"
+    #   Boards  see: C:\P<rogram Files (x86)\Arduino\hardware\arduino\avr\boards.txt
+    #   New Bootloader: nano.menu.cpu.atmega328=ATmega328P
+    CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + '" --upload --port \\\\.\\' + ComPort + ' ' + BuildOptions
+    if BuildDirForScript != '':
+        CommandStr = CommandStr + ' --pref build.path="' + BuildDirForScript + '"' + ' --preserve-temp-files'
+        
+    # remove "'" in front of the --board options
+    print(CommandStr)
+    CommandStr = CommandStr.replace("'", "")
+    print(CommandStr)
+
+    # filter the SerialDiscovery messages                                     ' 16.03.20:
+    #CommandStr = CommandStr & " 2>&1 | find /v "" StatusLogger "" | find /v ""serial.SerialDiscovery"" | find /v ""fungsvorgang..."""
+    
+    #if ArduinoType == " ":
+    #    self.startfile = [filedirname,ino_filename,"--upload","--port",serport,"--pref","programmer=arduino:arduinoisp","--pref","build.path=../Arduino_Build_LEDs_AutoProg","--preserve-temp-files"]
+    #else:
+    #    self.startfile = [filedirname,ino_filename,"--upload","--port",serport,"--board",ArduinoType,"--pref","programmer=arduino:arduinoisp","--pref","build.path=../Arduino_Build_LEDs_AutoProg","--preserve-temp-files"]
+    
+    #logging.debug(repr(self.startfile)) 
+    logging.debug("Commandstr:"+CommandStr)
+    
+    fn_return_value = CommandStr
+    return fn_return_value
+
+    P01.MsgBox(M09.Get_Language_Str('Fehler beim schreiben der Datei \'') + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler beim erzeugen der Arduino Start Datei'))
+    return fn_return_value
+
 def Get_New_Board_Type(FirmwareVer):
     #------------------------------------------------------------------
     # Problem:
@@ -1141,8 +1221,18 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
         CPUType = 'atmega4809'
     else:
         CPUType = 'atmega328p'
-    CommandStr = '"' + Create_Cmd_file(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType) + '"'
-    
+        
+    useARDUINO_IDE = True
+    system_platform = platform.platform()
+    if not "Windows" in system_platform:
+        useARDUINO_IDE=True
+    else:
+        useARDUINO_IDE=False
+    if not useARDUINO_IDE: 
+        CommandStr = '"' + Create_Cmd_file(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType) + '"'
+    else:
+        CommandStr = Create_ARDUINO_IDE_Cmd(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType)
+        
     # Disable "serial.SerialDiscovery" trial 2                                ' 16.03.20:
     # Problem: Change the background color to Red is not working
     #CommandStr = CommandStr & " 2>&1 | find /v "" StatusLogger "" | find /v ""serial.SerialDiscovery"" | find /v ""fungsvorgang...
