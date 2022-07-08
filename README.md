@@ -92,4 +92,7 @@ V3.1.0.017 - 08.7.2022 - HL
 Open Issues:
 - define a simple installation mechanism for LINUX and Mac
 
+Known Issues:
+ - in 016 and 017, the library check at the start of the program asks tio update libraries with blank library names. Answer "no" to the update request and the program continues
+ - uploading binaries to DCC ARDUINO not tested yet
 
