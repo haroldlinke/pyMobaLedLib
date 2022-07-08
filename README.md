@@ -6,18 +6,17 @@ This branch is for development of the Windows/LINUX/Mac version of the ProgramGe
 This Branch is based on LX4.19 of the Linux version of MobaLedLib_pyProgGen
 
 Requirements:
-- MobaledLib 3.1.0F4 has to be installed
+- ARDUIONO IDE and MobaledLib > 3.1.0F4 has to be installed
 - Python >V3.7.0
 
 
 Installation using Python files
-1. search for the ARDUINO HOME/Arduino
+1. search for the folder ARDUINO HOME/Arduino
 2. create a subfolder pyMobaLedLib in this folder (the folder can have any Name)
 4. create a subfolder python
 5. download the branch as ZIP-file: unpack the ZIP file and copy the contents of the folder python into the folder pyMobaLedLib/python
 6. open the folder pyMobaLedLib/python
-7. start the Python file: pyMobaLedLib.py 
-(python Home/Arduino/pyMobaLedLib/python pyMobaLedLib.py)
+7. start the Python file: pyMobaLedLib.py with the command python3 pyMobaLedLib.py or python Home/Arduino/pyMobaLedLib/python/pyMobaLedLib.py
 
 Attention LINUX Users: 
 
@@ -83,9 +82,14 @@ V3.1.0.013 - 1.5.2022 - HL
 
 V3.1.0.014 - 28.5.2022 - HL
  - Manual entering of ARDUINO-Program location for LINUX possible
+ 
+V3.1.0.016 - 02.7.2022 - HL
+ - Update to MLL V3.1.0F5
+ 
+V3.1.0.017 - 08.7.2022 - HL
+ - Upload to ARDUINO under LINUX
 
 Open Issues:
 - define a simple installation mechanism for LINUX and Mac
 
-- all generated batch files need to be adapted from Windows cmds to Linux shell commands
 
