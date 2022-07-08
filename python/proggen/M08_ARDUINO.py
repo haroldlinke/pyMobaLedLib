@@ -977,7 +977,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
     # Other options:  --verbose-build --verbose-upload"
     #   Boards  see: C:\P<rogram Files (x86)\Arduino\hardware\arduino\avr\boards.txt
     #   New Bootloader: nano.menu.cpu.atmega328=ATmega328P
-    CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + '" --upload --port \\\\.\\' + ComPort + ' ' + BuildOptions
+    CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + '" --upload --port ' + ComPort + ' ' + BuildOptions
     if BuildDirForScript != '':
         CommandStr = CommandStr + ' --pref build.path="' + BuildDirForScript + '"' + ' --preserve-temp-files'
         
