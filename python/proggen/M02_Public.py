@@ -251,7 +251,9 @@ def Read_Sketchbook_Path_from_preferences_txt():
     Name = String()
 
     FileStr = String()
-    #---------------------------------------------------------------------
+    #-------------------
+    fn_return_value = False
+    #-------------------------------------------------
     # Attention: The file uses UTF8
     Name = Environ(Env_USERPROFILE) + AppLoc_Ardu + 'preferences.txt'
     Debug.Print("Read_Sketchbook_Path_from_preference_txt - Name:"+Name)
