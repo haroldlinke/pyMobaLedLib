@@ -363,6 +363,7 @@ def __Get_All_Library_States():
                 if os.path.exists(LibDir + TestFile) or os.path.exists(LibDir + 'src/' + TestFile): #Dir(LibDir + TestFile) != '' or Dir(LibDir + 'src\\' + TestFile) != '':
                     with_2.Value = '1'
                 else:
+                    Debug.Print("Fehler beim lesen des Verzeichnisses:"+LibDir)
                     P01.MsgBox(M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:') + vbCr + '  \'' + LibDir + '\'' + vbCr , vbCritical, M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:'))
             # VB2PY (UntranslatedCode) On Error GoTo 0
             installed = Sh.Cells(Row, __Installed_Col)
