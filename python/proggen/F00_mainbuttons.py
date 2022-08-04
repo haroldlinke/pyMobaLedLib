@@ -277,6 +277,11 @@ def workbook_init(workbook):
         logging.debug("Workbook_init - AppLoc_Ardu:"+M02.AppLoc_Ardu)
         M02.Env_USERPROFILE = 'USERPROFILE'
         logging.debug("Workbook_init - Env_USERPROFILE:"+M02.Env_USERPROFILE)
+    elif P01.checkplatform("Darwin"):
+        M02.AppLoc_Ardu = "/Library/Arduino15/"
+        logging.debug("Workbook_init - AppLoc_Ardu:"+M02.AppLoc_Ardu)
+        M02.Env_USERPROFILE = 'HOME'
+        logging.debug("Workbook_init - Env_USERPROFILE:"+M02.Env_USERPROFILE)        
     else:
         M02.AppLoc_Ardu = "/.arduino15/"
         logging.debug("Workbook_init - AppLoc_Ardu:"+M02.AppLoc_Ardu)
