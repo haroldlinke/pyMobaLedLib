@@ -623,7 +623,7 @@ def DetectArduino(port,baudrate, HWVersion=255, SWMajorVersion=255, SWMinorVersi
         if PG.global_controller.arduino and PG.global_controller.arduino.is_open:
             PG.global_controller.arduino.close()
         PG.global_controller.arduino = serial.Serial(no_port,baudrate=baudrate,timeout=0.2,write_timeout=1,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
-        logging.info("connected to: " + repr(PG.global_controller.arduino))
+        logging.info("Serial-params: " + repr(PG.global_controller.arduino))
     except BaseException as e:
         logging.debug(e)
         logging.debug("M07.detect_arduino: Error assigning port")
@@ -637,8 +637,8 @@ def DetectArduino(port,baudrate, HWVersion=255, SWMajorVersion=255, SWMinorVersi
     try:
         PG.global_controller.arduino.open()
     except BaseException as e:
-        logging.debug(e)            
         logging.debug("M07.detect_arduino: Error opening  port "+port_str)
+        logging.debug("M07.detect_arduino:"+ e)       
         return -1, None           
     try:
         PG.global_controller.arduino.dtr = True
