@@ -264,6 +264,7 @@ def Read_Sketchbook_Path_from_preferences_txt():
         #*HL Sketchbook_Path = M30.ConvertUTF8Str(M30.Get_Ini_Entry(FileStr, 'sketchbook.path='))
         #ThisWorkbook.Sheets(LIBRARYS__SH).Range("Sketchbook_Path") = Sketchbook_Path
         if Sketchbook_Path == '#ERROR#':
+            Debug.Print("Fehler beim Lesen der Datei: preferences.txt")
             P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: beim lesen des \'sketchbook.path\' in \'#1#\''), "#1#", Name), vbCritical, M09.Get_Language_Str('Fehler beim Lesen der Datei:') + ' \'preferences.txt\'')
             return fn_return_value
         if Left(Sketchbook_Path, 2) == '\\\\':

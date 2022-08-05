@@ -240,7 +240,7 @@ def Select_Arduino_w_Blinking_LEDs_Dialog(Caption, Title, Text, Picture, Buttons
     # The variable "CheckCOMPort_Res" is >= 0 if the Port is available
     fn_return_value, ComPort_IO = F00.Select_COM_Port_UserForm.ShowDialog(Caption, Title, Text, Picture, Buttons, '', True, M09.Get_Language_Str('Tipp: Der ausgewählte Arduino blinkt schnell'), ComPort_IO, __PRINT_DEBUG)
     if __CheckCOMPort_Res < 0:
-        ComPort_IO = - ComPort_IO
+        ComPort_IO = F00.port_set_busy(ComPort_IO)
         # Port is buzy
     P01.Application.Cursor = 0 #*HL xlDefault
     return fn_return_value, ComPort_IO

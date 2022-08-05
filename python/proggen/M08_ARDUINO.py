@@ -136,7 +136,7 @@ def Find_ArduinoExe():
     if private_startfile == True:
         filename = PG.get_global_controller().getConfigData("startcmd_filename")
         Dirs=filename
-        logging.debug("Find ARDUINO exe - Individual Filename: %s",filename)
+        #logging.debug("Find ARDUINO exe - Individual Filename: %s",filename)
         if filename == " " or filename == "":
             filename = "No Filename provided"
         logging.debug("Find ARDUINO EXE - Platform: %s",platform.platform())
@@ -149,8 +149,10 @@ def Find_ArduinoExe():
                 filename = filename + "/Contents/MacOS/Arduino"
         
         if os.path.isfile(filename):
+            logging.debug("Find ARDUINO exe - Individual Filename: %s",filename)
             return filename
         else:
+            logging.debug("Find ARDUINO exe - No Filename provided")
             return ""
     else:
     
@@ -164,6 +166,7 @@ def Find_ArduinoExe():
             FileName = Trim(FileName)
             if Dir(FileName) != '':
                 fn_return_value = FileName
+                logging.debug("Find ARDUINO exe - Individual Filename: %s",FileName)
                 return fn_return_value
     
     if P01.MsgBox(M09.Get_Language_Str('Fehler: Die Arduino Entwicklungsumgebung ist nicht oder nicht im Standard Verzeichnis installiert.' + 
@@ -172,7 +175,7 @@ def Find_ArduinoExe():
                                        vbCr + vbCr +
                                        'Soll die Arduino Webseite geöffnet werden damit die richtige Version herunter geladen werden kann ?'), 
                   vbCritical + vbYesNo, M09.Get_Language_Str('Fehler: \'') + ARDUINO_EXE + M09.Get_Language_Str('\' nicht gefunden')) == vbYes:
-        print("Shell")
+        logging.debug("Find ARDUINO exe - ARDUINO.Exe not found")
         #*HL Shell('Explorer "https://www.arduino.cc/en/main/software"')
     
     #M30.EndProg()
@@ -1348,6 +1351,7 @@ def Compile_and_Upload_Prog_to_Right_Arduino():
         return fn_return_value
     else:
         P01.MsgBox('Interner Fehler: Undefined M25.Page_ID \'' + M25.Page_ID + '\' in Compile_and_Upload_Prog_to_Right_Arduino', vbCritical, 'Interner Fehler')
+        Debug.Print('Compile_and_Upload_Prog_to_Right_Arduino: Interner Fehler: Undefined M25.Page_ID: ' + M25.Page_ID)
         M30.EndProg()
     SrcDir = P01.ThisWorkbook.Path + '/../examples/' + M30.FileName(InoName) + '/'
     if Dir(SrcDir + InoName) != '':
