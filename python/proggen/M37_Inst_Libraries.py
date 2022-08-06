@@ -479,45 +479,52 @@ def __Add_Update_from_Other_Source_Linux(Row):
     LibName = Sh.Cells(Row, __Libr_Name_Col)
     InstLink = Trim(Sh.Cells(Row, __Other_Src_Col))
     #VBFiles.writeText(fp, '', '\n')
-    Debug.Print('ECHO ' + M30.Replicate('*', Len('Updating ' + LibName + '...')), '\n')
-    Debug.Print('ECHO Updating ' + LibName + '...', '\n')
-    Debug.Print('ECHO ' + M30.Replicate('*', Len('Updating ' + LibName + '...')), '\n')
-    Debug.Print('if EXIST ' + LibName + '\\NUL (', '\n')
-    Debug.Print('   ECHO deleting old directory ' + LibName + '\\', '\n')
-    Debug.Print('   rmdir ' + LibName + '\\ /s /q', '\n')
-    Debug.Print('   REM timeout /T 3 /nobreak', '\n')
-    Debug.Print(')', '\n')
-    Debug.Print('if EXIST ' + LibName + '\\NUL (', '\n')
-    Debug.Print('   ECHO Error deleting old directory ' + LibName + '\\', '\n')
-    Debug.Print('   ECHO For some reasons the directory could not be deleted ;-(', '\n')
-    Debug.Print('   ECHO Check if an other program is active which prevents the deleting', '\n')
-    Debug.Print('   ECHO of the directory', '\n')
-    Debug.Print('   ECHO.', '\n')
-    Debug.Print('   ECHO Going to try a second time', '\n')
-    Debug.Print('   PAUSE', '\n')
-    Debug.Print('   rmdir ' + LibName + '\\ /s /q', '\n')
-    Debug.Print('   timeout /T 3 /nobreak', '\n')
-    Debug.Print(')', '\n')
-    Debug.Print('if EXIST ' + LibName + '\\NUL (', '\n')
-    Debug.Print( '   COLOR 4F', '\n')
-    Debug.Print('   ECHO Error: Still not able to delete the old directory ' + LibName + '\\   ;-(((', '\n')
-    Debug.Print('   PAUSE', '\n')
-    Debug.Print(')', '\n')
+    #Debug.Print('ECHO ' + M30.Replicate('*', Len('Updating ' + LibName + '...')), '\n')
+    #Debug.Print('ECHO Updating ' + LibName + '...', '\n')
+    #Debug.Print('ECHO ' + M30.Replicate('*', Len('Updating ' + LibName + '...')), '\n')
+    #Debug.Print('if EXIST ' + LibName + '\\NUL (', '\n')
+    #Debug.Print('   ECHO deleting old directory ' + LibName + '\\', '\n')
+    #Debug.Print('   rmdir ' + LibName + '\\ /s /q', '\n')
+    #Debug.Print('   REM timeout /T 3 /nobreak', '\n')
+    #Debug.Print(')', '\n')
+    #Debug.Print('if EXIST ' + LibName + '\\NUL (', '\n')
+    #Debug.Print('   ECHO Error deleting old directory ' + LibName + '\\', '\n')
+    #Debug.Print('   ECHO For some reasons the directory could not be deleted ;-(', '\n')
+    #Debug.Print('   ECHO Check if an other program is active which prevents the deleting', '\n')
+    #Debug.Print('   ECHO of the directory', '\n')
+    #Debug.Print('   ECHO.', '\n')
+    #Debug.Print('   ECHO Going to try a second time', '\n')
+    #Debug.Print('   PAUSE', '\n')
+    #Debug.Print('   rmdir ' + LibName + '\\ /s /q', '\n')
+    #Debug.Print('   timeout /T 3 /nobreak', '\n')
+    #Debug.Print(')', '\n')
+    #Debug.Print('if EXIST ' + LibName + '\\NUL (', '\n')
+    #Debug.Print( '   COLOR 4F', '\n')
+    #Debug.Print('   ECHO Error: Still not able to delete the old directory ' + LibName + '\\   ;-(((', '\n')
+    #Debug.Print('   PAUSE', '\n')
+    #Debug.Print(')', '\n')
     
     try:
         Debug.Print("__Add_Update_from_Other_Source_Linux - Remove Lib"+str(LibName))
         shutil.rmtree(LibName)
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
+        Debug.Print("Error: %s - %s." % (e.filename, e.strerror))
     
     
     if WIN7_COMPATIBLE_DOWNLOAD:
-        Debug.Print( 'powershell Invoke-WebRequest "' + InstLink + '" -o:' + LibName + '.zip', '\n')
-        Debug.Print( 'ECHO Invoke-WebRequest result: %ERRORLEVEL%', '\n')
-        #VBFiles.writeText(fp, 'IF ERRORLEVEL 1 Goto ErrorMsg', '\n')
-        urllib.request.urlretrieve(InstLink, LibName + '.zip')
+        try:
+            Debug.Print( 'urllib.request.urlretrieve "' + InstLink + '" -o:' + LibName + '.zip', '\n')
+            #Debug.Print( 'ECHO Invoke-WebRequest result: %ERRORLEVEL%', '\n')
+            #VBFiles.writeText(fp, 'IF ERRORLEVEL 1 Goto ErrorMsg', '\n')
+            urllib.request.urlretrieve(InstLink, LibName + '.zip')
+
+            Debug.Print( '__UnzipList "'  + LibName, '\n')
+            __UnzipList = __UnzipList + LibName + vbTab
         
-        __UnzipList = __UnzipList + LibName + vbTab
+        except BaseException as e:
+            Debug.Print("__Add_Update_from_Other_Source_Linux Error: ")
+            logging.debug(e)
     else:
         if Check_if_curl_is_Available_and_gen_Message_if_not(LibName, InstLink) == False:
             return

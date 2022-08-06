@@ -638,7 +638,7 @@ def DetectArduino(port,baudrate, HWVersion=255, SWMajorVersion=255, SWMinorVersi
         PG.global_controller.arduino.open()
     except BaseException as e:
         logging.debug("M07.detect_arduino: Error opening  port "+port_str)
-        logging.debug("M07.detect_arduino:"+ e)       
+        logging.debug(e)       
         return -1, None           
     try:
         PG.global_controller.arduino.dtr = True
