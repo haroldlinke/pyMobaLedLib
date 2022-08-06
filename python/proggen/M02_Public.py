@@ -51,7 +51,7 @@ from vb2py.vbconstants import *
 #import proggen.M06_Write_Header_Sound as M06Sound
 #import proggen.M06_Write_Header_SW as M06SW
 #import proggen.M07_COM_Port as M07
-#import proggen.M08_ARDUINO as M08
+import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
 #import proggen.M09_Select_Macro as M09SM
 #import proggen.M09_SelectMacro_Treeview as M09SMT
@@ -247,7 +247,8 @@ MB_LED_PIN_NR = '0  1  2  3  4  5  6  7  8  9  10  11  12  13  14 15 16'
 
 def Read_Sketchbook_Path_from_preferences_txt():
     global Sketchbook_Path
-        
+    Sketchbook_Path = ""
+    
     Name = String()
 
     FileStr = String()
@@ -281,26 +282,42 @@ def Get_Sketchbook_Path():
     if Sketchbook_Path == '':
         Read_Sketchbook_Path_from_preferences_txt()
     fn_return_value = Sketchbook_Path
+    logging.debug("Get_Sketchbook_Path="+ fn_return_value)
     return fn_return_value
 
 def Get_SrcDirInLib():
     fn_return_value = Get_Sketchbook_Path() + SrcDirInLib
+    logging.debug("Get_SrcDirInLib="+ fn_return_value)
     return fn_return_value
 
 def Get_DestDir_All():
     fn_return_value = Get_Sketchbook_Path() + DestDir_All
+    logging.debug("Get_DestDir_All="+ fn_return_value)
     return fn_return_value
 
 def Get_MobaUserDir():
     fn_return_value = Get_Sketchbook_Path() + MobaUserDir
+    logging.debug("Get_MobaUserDir="+ fn_return_value)
     return fn_return_value
 
 def Get_Ardu_LibDir():
     fn_return_value = Get_Sketchbook_Path() + Ardu_LibDir
+    if P01.checkplatform("Darwin"): # Mac
+        Arduino_Exe_dir = M08.Find_ArduinoExe()
+        test_str = "Contents/"
+        Arduino_Exe_dir_part1 = Arduino_Exe_dir[:Arduino_Exe_dir.index(test_str) + len(test_str)] # remove /MacOS/Arduino from path
+        fn_return_value = Arduino_Exe_dir_part1 + "Java/" + "libraries/"
+    logging.debug("Get_Ardu_LibDir="+ fn_return_value)
     return fn_return_value
 
 def Get_SrcDirExamp():
     fn_return_value = Get_Sketchbook_Path() + SrcDirExamp
+    if P01.checkplatform("Darwin"): # Mac
+        Arduino_Exe_dir = M08.Find_ArduinoExe()
+        test_str = "Contents/"
+        Arduino_Exe_dir_part1 = Arduino_Exe_dir[:Arduino_Exe_dir.index(test_str) + len(test_str)] # remove /MacOS/Arduino from path
+        fn_return_value = Arduino_Exe_dir_part1 + "Java/" + "examples/"
+    logging.debug("Get_SrcDirExamp="+ fn_return_value)
     return fn_return_value
 
 def Get_BoardTyp():

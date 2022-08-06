@@ -645,8 +645,9 @@ class Prog_GeneratorPage(tk.Frame):
             logging.debug("send to ARDUINO - Platform: %s",platform.platform())
             
             macos = "macOS" in system_platform
-            macos_fileending = "/Contents/MacOS/Arduino" 
-            if macos:
+            macos_fileending = "/Contents/MacOS/Arduino"
+            if P01.checkplatform("Darwin"): # Mac
+            #if macos:
                 logging.debug("This is a MAC")
                 if not filename.endswith(macos_fileending):
                     filename = filename + "/Contents/MacOS/Arduino"
