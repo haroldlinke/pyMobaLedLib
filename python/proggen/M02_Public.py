@@ -42,7 +42,7 @@ from vb2py.vbconstants import *
 
 #from proggen.M30_Tools import Read_File_to_String
 
-#import proggen.Prog_Generator as PG
+import proggen.Prog_Generator as PG
 
 #import proggen.M02_Public as M02
 #import proggen.M03_Dialog as M03
