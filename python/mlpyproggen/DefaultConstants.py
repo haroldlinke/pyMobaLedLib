@@ -58,7 +58,7 @@
 
 
 
-PROG_VERSION ="3.1.0.020 5.08.2022"
+PROG_VERSION ="3.1.0.022 6.08.2022"
 
 DEBUG = False
 
@@ -576,6 +576,8 @@ DEFAULT_CONFIG = {
                     "lastSoundImpuls": 200,
                     "startcmdcb": False,
                     "startcmd_filename": " ",
+                    "resourcePathcb": False,
+                    "resourcePath_filename": " ",                    
                     "ArduinoTypeName": "Nano/Uno (neu)",
                     "ArduinoTypeNumber": 1,
                     "Z21Data": {

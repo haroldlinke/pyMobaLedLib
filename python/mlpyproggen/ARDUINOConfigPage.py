@@ -132,6 +132,8 @@ class ARDUINOConfigPage(tk.Frame):
         button1_text = macrodata.get("Button_1",self.tabClassName)
         button2_text = macrodata.get("Button_2",self.tabClassName)
         button3_text = macrodata.get("Button_3",self.tabClassName)
+        button4_text = macrodata.get("Button_4",self.tabClassName)
+        button5_text = macrodata.get("Button_5",self.tabClassName)
         
         self.update_button = ttk.Button(button_frame, text=button1_text, command=self.save_config)
         self.update_button.pack(side="right", padx=10)
@@ -150,6 +152,22 @@ class ARDUINOConfigPage(tk.Frame):
         self.startcmd_label = tk.Label(startcmd_frame, text=self.startcmd_filename,width=120,height=1,wraplength=700)
         self.startcmd_label.grid(row=1,column=0,columnspan=2,padx=4, pady=4,sticky="w")
 
+        #create frame and entry for arduino resources  path (libraries, examples, hardware etc)
+        # --- start cmd checkbox and file selection
+        resourcePath_frame = ttk.Frame(self.main_frame, relief="ridge", borderwidth=2)
+        
+        self.s_resourcePathcbvar = tk.IntVar()
+        self.s_resourcePathcb = ttk.Checkbutton(resourcePath_frame,text=button4_text,variable=self.s_resourcePathcbvar,onvalue = 1, offvalue = 0, command=self.resourcePath)
+        self.s_resourcePathcb.grid(sticky='w', padx=4, pady=4, row=0,column=0)
+        self.s_resourcePathcbvar.set(self.getConfigData("resourcePathcb"))
+        
+        self.resourcePath_filename = self.getConfigData("resourcePath_filename")
+        self.resourcePath_button = ttk.Button(resourcePath_frame, text=button5_text,width=30, command=self.askresource_path)
+        self.resourcePath_button.grid(row=0,column=1, padx=4, pady=4,sticky="w")
+        self.resourcePath_label = tk.Label(resourcePath_frame, text=self.resourcePath_filename,width=120,height=1,wraplength=700)
+        self.resourcePath_label.grid(row=1,column=0,columnspan=2,padx=4, pady=4,sticky="w")
+        
+
         # --- placement
         # Tabframe
         self.frame.grid(row=0,column=0)
@@ -161,7 +179,7 @@ class ARDUINOConfigPage(tk.Frame):
         button_frame.grid(row=1, column=0,pady=10, padx=10)
         config_frame.grid(row=2, column=0, pady=10, padx=10, sticky="nesw")
         startcmd_frame.grid(row=3, column=0, pady=10, padx=10, stick="ew")
-        
+        resourcePath_frame.grid(row=4, column=0, pady=10, padx=10, stick="ew")
 
         macroparams = macrodata.get("Params",[])
         
@@ -621,6 +639,7 @@ class ARDUINOConfigPage(tk.Frame):
         self.setConfigData("pos_x",self.winfo_x())
         self.setConfigData("pos_y",self.winfo_y())
         self.setConfigData("startcmd_filename", self.startcmd_filename)
+        self.setConfigData("resourcePath_filename", self.resourcePath_filename)
         param_values_dict = self.get_macroparam_var_values(self.tabClassName)
         self.setConfigDataDict(param_values_dict)
         
@@ -631,12 +650,15 @@ class ARDUINOConfigPage(tk.Frame):
 
     def store_old_config(self):
         self.old_startcmd_filename = self.startcmd_filename
+        self.old_resourcePath_filename = self.resourcePath_filename
         self.old_param_values_dict = self.get_macroparam_var_values(self.tabClassName)
     
     def check_if_config_data_changed(self):
         
         if self.old_startcmd_filename != self.startcmd_filename:
             return True
+        if self.old_resourcePath_filename != self.resourcePath_filename:
+            return True        
         param_values_dict = self.get_macroparam_var_values(self.tabClassName)
         if self.old_param_values_dict != param_values_dict:
             return True
@@ -653,6 +675,12 @@ class ARDUINOConfigPage(tk.Frame):
             self.setConfigData("startcmdcb", True)
         else:
             self.setConfigData("startcmdcb", False)    
+            
+    def resourcePath(self,event=None):
+        if self.s_resourcePathcbvar.get() == 1:
+            self.setConfigData("resourcePathcb", True)
+        else:
+            self.setConfigData("resourcePathcb", False)        
 
     def askselectfile(self):
         self.startcmd_filename = tk.filedialog.askopenfilename()
@@ -664,6 +692,17 @@ class ARDUINOConfigPage(tk.Frame):
             if not self.startcmd_filename.endswith(macos_fileending):
                 self.startcmd_filename = self.startcmd_filename + "/Contents/MacOS/Arduino"        
         self.startcmd_label.configure(text=self.startcmd_filename)
+        
+    def askresource_path(self):
+        self.resourcePath_filename = tk.filedialog.askdirectory()
+        #system_platform = platform.platform()
+        #macos = "macOS" in system_platform
+        #macos_fileending = "/Contents/MacOS/Arduino" 
+        #if macos:
+        #    logging.debug("This is a MAC")
+        #    if not self.startcmd_filename.endswith(macos_fileending):
+        #        self.startcmd_filename = self.startcmd_filename + "/Contents/MacOS/Arduino"        
+        self.resourcePath_label.configure(text=self.resourcePath_filename)    
     
     def ButtonARDUINOTest(self):
         logging.debug("Function called: ButtonARDUINOConnect")
