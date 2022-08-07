@@ -303,20 +303,32 @@ def Get_MobaUserDir():
 def Get_Ardu_LibDir():
     fn_return_value = Get_Sketchbook_Path() + Ardu_LibDir
     if P01.checkplatform("Darwin"): # Mac
-        Arduino_Exe_dir = M08.Find_ArduinoExe()
-        test_str = "Contents/"
-        Arduino_Exe_dir_part1 = Arduino_Exe_dir[:Arduino_Exe_dir.index(test_str) + len(test_str)] # remove /MacOS/Arduino from path
-        fn_return_value = Arduino_Exe_dir_part1 + "Java/" + "libraries/"
+        ARDU_ResPath_cb = PG.get_global_controller().getConfigData("resourcePathcb")
+        if ARDU_ResPath_cb:
+            ARDU_ResPath = PG.get_global_controller().getConfigData("resourcePath_filename")
+        else:
+            ARDU_ResPath = ""
+        #Arduino_Exe_dir = M08.Find_ArduinoExe()
+        #test_str = "Contents/"
+        #Arduino_Exe_dir_part1 = Arduino_Exe_dir[:Arduino_Exe_dir.index(test_str) + len(test_str)] # remove /MacOS/Arduino from path
+        #fn_return_value = Arduino_Exe_dir_part1 + "Java/" + "libraries/"
+        fn_return_value = ARDU_ResPath + "libraries/"
     logging.debug("Get_Ardu_LibDir="+ fn_return_value)
     return fn_return_value
 
 def Get_SrcDirExamp():
     fn_return_value = Get_Sketchbook_Path() + SrcDirExamp
     if P01.checkplatform("Darwin"): # Mac
-        Arduino_Exe_dir = M08.Find_ArduinoExe()
-        test_str = "Contents/"
-        Arduino_Exe_dir_part1 = Arduino_Exe_dir[:Arduino_Exe_dir.index(test_str) + len(test_str)] # remove /MacOS/Arduino from path
-        fn_return_value = Arduino_Exe_dir_part1 + "Java/" + "examples/"
+        ARDU_ResPath_cb = PG.get_global_controller().getConfigData("resourcePathcb")
+        if ARDU_ResPath_cb:
+            ARDU_ResPath = PG.get_global_controller().getConfigData("resourcePath_filename")
+        else:
+            ARDU_ResPath = ""        
+        #Arduino_Exe_dir = M08.Find_ArduinoExe()
+        #test_str = "Contents/"
+        #Arduino_Exe_dir_part1 = Arduino_Exe_dir[:Arduino_Exe_dir.index(test_str) + len(test_str)] # remove /MacOS/Arduino from path
+        #fn_return_value = Arduino_Exe_dir_part1 + "Java/" + "examples/"
+        fn_return_value = ARDU_ResPath + "examples/"
     logging.debug("Get_SrcDirExamp="+ fn_return_value)
     return fn_return_value
 

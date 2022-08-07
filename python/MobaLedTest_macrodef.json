@@ -27,6 +27,8 @@
         "Button_1": "Geänderte Einstellungen übernehmen",
         "Button_2": "Individuellen Pfad zur ARDUINO IDE verwenden",
         "Button_3": "Pfad zur ARDUINO IDE auswählen",
+        "Button_4": "Individuellen Pfad zu ARDUINO Resourcen (libraries, examples) verwenden (nur MAC)",
+        "Button_5": "Pfad zu ARDUINO Resourcen auswählen",
         "Kurzbeschreibung": "Einstellungsparameter",
         "Ausführliche Beschreibung": "Hier können Sie die Einstellungen für die ARDUINO IDE vornehmen. Dies wird hauptsächlich für LINUX benötigt.",
         "Params": [
