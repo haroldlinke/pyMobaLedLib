@@ -312,7 +312,7 @@ def Get_Ardu_LibDir():
         #test_str = "Contents/"
         #Arduino_Exe_dir_part1 = Arduino_Exe_dir[:Arduino_Exe_dir.index(test_str) + len(test_str)] # remove /MacOS/Arduino from path
         #fn_return_value = Arduino_Exe_dir_part1 + "Java/" + "libraries/"
-        fn_return_value = ARDU_ResPath + "libraries/"
+        fn_return_value = ARDU_ResPath + "/libraries/"
     logging.debug("Get_Ardu_LibDir="+ fn_return_value)
     return fn_return_value
 
@@ -328,7 +328,7 @@ def Get_SrcDirExamp():
         #test_str = "Contents/"
         #Arduino_Exe_dir_part1 = Arduino_Exe_dir[:Arduino_Exe_dir.index(test_str) + len(test_str)] # remove /MacOS/Arduino from path
         #fn_return_value = Arduino_Exe_dir_part1 + "Java/" + "examples/"
-        fn_return_value = ARDU_ResPath + "examples/"
+        fn_return_value = ARDU_ResPath + "/examples/"
     logging.debug("Get_SrcDirExamp="+ fn_return_value)
     return fn_return_value
 
