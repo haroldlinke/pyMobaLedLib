@@ -622,6 +622,11 @@ def DetectArduino(port,baudrate, HWVersion=255, SWMajorVersion=255, SWMinorVersi
     try: # close the port if it is open and reopen it with DTR = False
         if PG.global_controller.arduino and PG.global_controller.arduino.is_open:
             PG.global_controller.arduino.close()
+        # hack for Mac
+        if P01.checkplatform("Darwin"):
+            logging.debug("Hack for Mac: Set baudrate to 19200")
+            baudrate=19200
+
         PG.global_controller.arduino = serial.Serial(no_port,baudrate=baudrate,timeout=0.2,write_timeout=1,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
         logging.info("Serial-params: " + repr(PG.global_controller.arduino))
     except BaseException as e:
