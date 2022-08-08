@@ -1167,6 +1167,9 @@ def Get_First_SubDir(DirName):
     Res = String()
     fn_return_value=""
     #------------------------------------------------------------
+    if DirName[-1:]=="/":
+        DirName = DirName[:-1]
+        
     Res = Dir(DirName + r'/*.*', vbDirectory)
     while Res != r'':
         if Res != r'' and Left(Res, 1) != r'.':

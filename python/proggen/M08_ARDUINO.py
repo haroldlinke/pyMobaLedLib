@@ -1321,6 +1321,7 @@ def Create_Config_Header_File(Name):
     fp = Integer()
     #--------------------------------------------------------------------
     fp = FreeFile()
+    fn_return_value=False
     try:
         
         # VB2PY (UntranslatedCode) On Error GoTo WriteError
@@ -1347,6 +1348,7 @@ def Compile_and_Upload_Prog_to_Right_Arduino():
     InoName = String()
 
     SrcDir = String()
+    fn_return_value=False
     #--------------------------------------------------------------------
     M25.Make_sure_that_Col_Variables_match()
     if (M25.Page_ID == 'DCC'):
@@ -1365,7 +1367,7 @@ def Compile_and_Upload_Prog_to_Right_Arduino():
         Debug.Print('Programm aus lokalem Verzeichnis wird zum Upload verwendet: ' + SrcDir)
         P01.Application.StatusBar = 'Programm aus lokalem Verzeichnis wird zum Upload verwendet: ' + SrcDir
     else:
-        SrcDir = M02.Get_SrcDirExamp() + M30.FileName(InoName) + '\\'
+        SrcDir = M02.Get_SrcDirExamp() + M30.FileName(InoName) + '/'
     #*HL if M07.ComPortPage().Cells(M02.SH_VARS_ROW, M25.COMPrtR_COL).Value > 0:
     if F00.port_is_available(M07.ComPortPage().Cells(M02.SH_VARS_ROW, M25.COMPrtR_COL).Value):
         #M07.ComPortPage().Cells(M02.SH_VARS_ROW, M25.COMPrtR_COL).Value = - P01.val(M07.ComPortPage().Cells(M02.SH_VARS_ROW, M25.COMPrtR_COL).Value)
@@ -1383,6 +1385,7 @@ def Ask_To_Upload_the_Right_Arduino_Prog(Focus_Button):
     Other_Prog = String()
 
     ComPortUnused = int()
+    
     #--------------------------------------------------------------------------------------
     # If the cell COMPrtR_COL is "COM?" the user is asked if the program for the
     # right arduino is already uploaded.
@@ -1403,6 +1406,7 @@ def Ask_To_Upload_the_Right_Arduino_Prog(Focus_Button):
 def Display_Connect_to_Left_Arduino():
     #------------------------------------------------------------
     M25.Make_sure_that_Col_Variables_match()
+    fn_return_value=False
     if 3 == F00.Select_COM_Port_UserForm.ShowDialog(M09.Get_Language_Str('Linken Arduino anschließen'), M09.Get_Language_Str('Linken (LED) Arduino anstecken'), M09.Get_Language_Str('Das Programm wurde erfolgreich auf den rechten Arduino geladen.' + vbCr + vbCr + 'Dieser Vorgang muss nur ein mal durchgeführt werden. In Zukunft ' + 'wird nur noch das Programm des linken (LED) Arduinos verändert.' + vbCr + vbCr + 'Das USB Kabel muss jetzt an den linken Arduino angeschlossen werden.' + vbCr + vbCr + 'Wenn das geschehen ist die "OK" Taste betätigen'), 'LED_Image', M09.Get_Language_Str('; A Abbrechen; O OK'), 'Default_Button', False, M09.Get_Language_Str('Umstecken zum Linken Arduino'), 0):
         fn_return_value = True
     return fn_return_value

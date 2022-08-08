@@ -568,12 +568,18 @@ def __Proc_UnzipList():
             # VB2PY (UntranslatedCode) On Error Resume Next
             try:
                 Kill(LibName_with_path + '.zip')
-            except:
+            
+            except BaseException as e:
+                logging.debug("__Proc_Unzip: Exception Kill "+LibName_with_path+".zip")
+                logging.debug(e)                
                 pass
             # VB2PY (UntranslatedCode) On Error GoTo 0
         return
-    except:
+    except BaseException as e:
+        logging.debug("__Proc_Unzip: Exception rename"+LibName_with_path+".zip")
+        logging.debug(e)       
         P01.MsgBox(M09.Get_Language_Str('Fehler beim Umbenennen des Verzeichnisses:') + vbCr + '  \'' + LibName_with_path + '-master\'' + vbCr + 'nach \'...' + LibName + '\'', vbCritical, M09.Get_Language_Str('Verzeichnis kann nicht umbenannt werden'))
+        return
     # VB2PY (UntranslatedCode) Resume Next
 
 def Init_Libraries_Page():
