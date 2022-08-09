@@ -96,12 +96,12 @@ DE = {"Red": "Rot", "Green": "Grün", "Blue": "Blau",
       }
 
 try:
-    TR = EN
-    if getdefaultlocale()[0][:2] == 'fr':
-        TR = FR
-    else:
-        if getdefaultlocale()[0][:2] == 'de':
-            TR = DE
+    TR = DE
+    #if getdefaultlocale()[0][:2] == 'fr':
+    #    TR = FR
+    #else:
+    #    if getdefaultlocale()[0][:2] == 'de':
+    #        TR = DE
 except ValueError or TypeError:
     TR = EN
 
