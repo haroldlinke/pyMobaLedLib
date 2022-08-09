@@ -51,7 +51,7 @@ try:
     else:
         if getdefaultlocale()[0][:2] == 'de':
             TR = DE        
-except ValueError:
+except ValueError or TypeError:
     TR = EN
 
 

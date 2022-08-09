@@ -1657,7 +1657,11 @@ class CLanguageSettings:
                 lngconfnum= int(lngconfstr)
             if lngconfnum==0:
                 loc = locale.getdefaultlocale()
-                locstr=loc[0][:2]
+                locstr=loc[0]
+                if locstr != None:
+                    locstr=loc[0][:2]
+                else:
+                    locstr="de"
                 msoid = locale2msoid.get(locstr,msoLanguageIDEnglishUK)
                 return msoid
             else:
