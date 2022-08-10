@@ -510,7 +510,7 @@ def __TestDetect():
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: DeviceSignatur - ByRef 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: FirmwareVer - ByRef 
 def Get_Arduino_Baudrate(ComPort, Start_Baudrate, DeviceSignatur, FirmwareVer, DebugPrint=False):
-    fn_return_value = None
+    fn_return_value = 0
     SWMajorVersion = Byte()
 
     SWMinorVersion = Byte()
