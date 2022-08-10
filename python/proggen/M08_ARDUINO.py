@@ -32,7 +32,7 @@
 #------------------------------------------------------------------------------
 # CHANGELOG:
 # 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
-# 2021-01-07 v4.02 HL: - Else:, ByRef check done, first PoC release
+# 2021-01-07 v4.02 HL: - Else:, ByRef check done, first PoC release 
 
 
 from vb2py.vbfunctions import *
@@ -123,7 +123,7 @@ def Test_Cmd_Admin():
     #Shell('cmd runas /user:Administrator cmd /c')
     pass
 
-def Find_ArduinoExe():
+def Find_ArduinoExe(data=False):
     private_startfile=False
     
     system_platform = platform.platform()
@@ -150,6 +150,8 @@ def Find_ArduinoExe():
         
         if os.path.isfile(filename):
             logging.debug("Find ARDUINO exe - Individual Filename: %s",filename)
+            if data and macos:
+                filename=filename.replace("/MacOS/Arduino", "/Java/")
             return filename
         else:
             logging.debug("Find ARDUINO exe - No Filename provided")
@@ -1418,8 +1420,8 @@ def Upload_the_Right_Arduino_Prog_if_needed():
     # it's not the CAN page
     # and not uploadeded before (R_OK)
     # and the the sheet uses the right arduino (DCC Adresses/ SX Channels entered)
-    fn_return_value = False
     M25.Make_sure_that_Col_Variables_match()
+    fn_return_value=False
     if M25.Page_ID != 'CAN' and P01.Cells(M02.SH_VARS_ROW, M25.R_UPLOD_COL) != 'R OK' and M06.Ext_AddrTxt_Used():
         if Ask_To_Upload_the_Right_Arduino_Prog('Default_Button'):
             if F00.port_is_available(P01.Cells(M02.SH_VARS_ROW, M25.COMPrtR_COL).Value): # > 0:

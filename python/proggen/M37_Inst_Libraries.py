@@ -186,7 +186,7 @@ def Get_Std_Arduino_Lib_Ver():
     #---------------------------------------------------
     # Std. Boards (Nano, Uno, ...)
     # The C:\Users\Hardi\AppData\Local\Arduino15\packages\arduino\hardware\avr\
-    ArduinoDir = M30.FilePath(M08.Find_ArduinoExe())
+    ArduinoDir = M30.FilePath(M08.Find_ArduinoExe(data=True))
     BoardVer = Get_User_std_Arduino_Lib_Ver()
     if BoardVer == '':
         Package_Index_Bundled = M30.Read_File_to_String(ArduinoDir + 'hardware/package_index_bundled.json')
@@ -207,7 +207,7 @@ def __Update_General_Versions():
     # - Std. Boards (Nano, Uno, ...)
     Sh = P01.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
     # Arduino IDE
-    ArduinoDir = M30.FilePath(M08.Find_ArduinoExe())
+    ArduinoDir = M30.FilePath(M08.Find_ArduinoExe(data=True))
     ArduinoVer = M30.Read_File_to_String(ArduinoDir + 'lib/version.txt')
     Sh.Range_set('Arduino_IDE_Ver', ArduinoVer)
     # Std. Boards (Nano, Uno, ...)
@@ -928,9 +928,11 @@ def __Get_Original_Name_from_TestFile(LibDir):
 
 def __Correct_one_Temp_Arduino_nr_Dir(LibDir):
     Org_LibName = String()
-    #-----------------------------------------------------------
-    ## VB2PY (CheckDirective) VB directive took path 1 on 1
-    Org_LibName = __Get_Original_Name_from_TestFile(M02.Sketchbook_Path + '/libraries/' + LibDir + '/')
+    #-----
+    if LibDir!= '':
+        Org_LibName = __Get_Original_Name_from_TestFile(M02.Sketchbook_Path + '/libraries/' + LibDir + '/')
+    else:
+        Org_LibName = __Get_Original_Name_from_TestFile(M02.Sketchbook_Path + '/libraries/')
     if Org_LibName != '':
         Org_LibPath = M02.Sketchbook_Path + '/libraries/' + Org_LibName
         if Dir(Org_LibPath, vbDirectory) != '':
