@@ -12,3 +12,6 @@ temp_workbook.table_PyProgramWorkbook
 temp_workbook.table_PyProgramWorkbook
 python/LEDs_AutoProg/LEDs_AutoProg.h
 *.pyd
+python/LEDs_AutoProg/LEDs_AutoProg.h
+python/LEDs_AutoProg/Start_AM328_Sub.cmd
+python/LEDs_AutoProg/Start_Arduino_Result.txt

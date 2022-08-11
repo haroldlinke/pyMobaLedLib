@@ -77,7 +77,7 @@ UT----------------------------------
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
 def Is_Data_Sheet(Sh):
-    _ret = ""
+    _ret = False
     PageId = String()
     #--------------------------------------------------------------
     PageId = Sh.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)

@@ -429,9 +429,9 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
     #   MsgBox Get_Language_Str("Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:") & "  '" & "U8g2: Library for monochrome display" & "'", vbCritical, Get_Language_Str("Fehlende Erweiterung")
     #   Exit Function
     #End If
-    if M37.Get_Lib_Version('CAN') == '':
-        P01.MsgBox(M09.Get_Language_Str('Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:') + '  \'' + 'CAN: Library for ESP32 CAN communication' + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
-        return fn_return_value
+    #if M37.Get_Lib_Version('CAN') == '':    ' 01.08.22 Juergen - CAN is now embedded in src/MLL_CAN
+    #    P01.MsgBox(M09.Get_Language_Str('Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:') + '  \'' + 'CAN: Library for ESP32 CAN communication' + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
+    #    return fn_return_value
     # don't check for this optional library only                          ' 12.11.21 Juergen
     #If Get_Lib_Version("WifiManager") = "" Then
     #   MsgBox Get_Language_Str("Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:") & "  '" & "WifiManager: Library for ESP32 Wifi access" & "'", vbCritical, Get_Language_Str("Fehlende Erweiterung")
