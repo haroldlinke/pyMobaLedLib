@@ -1,4 +1,4 @@
-0;Diese Seite enthält globale Einstellungen des Programms;;;;;;
+﻿x;Diese Seite enthält globale Einstellungen des Programms;;;;;;
 ;Standardzeiten der House() Funktion:;;;;;;
 ;Minimale Zeit bis zur nächsten Änderung :;;;;;;
 ;Maximale Zeit bis zur nächsten Änderung :;;;;;;
@@ -8,7 +8,7 @@
 ;Aktiviere LED Farbtest Mode :;1;;;;;
 ;Anzeige der StartLed Nummer;1;;;;;
 ;;;;;;;
-;Baumansicht  zur Makroauswahl verwenden:;;;;;;
+;Baumansicht  zur Makroauswahl verwenden:;1;;;;;
 ;Expert Mode aktivieren:;;;;;;
 ;;;;;;;
 ;Auswahl der angezeigten Spalten:;;;;;;

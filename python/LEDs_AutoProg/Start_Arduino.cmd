@@ -5,7 +5,7 @@ if exist "Start_Arduino_Result.txt" del "Start_Arduino_Result.txt"
 COLOR 1F
 ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "
 ECHO    "    Zum                                                                  "
-ECHO    "     PC                    Prog_Generator Ver. 3.1.0F6         by Hardi  "
+ECHO    "     PC                    Prog_Generator Ver. 3.2.1           by Hardi  "
 ECHO    "      \\                                                                 "
 ECHO    "       \\                                                                "
 ECHO    "    ____\\___________________                                            "

@@ -148,7 +148,7 @@ SET aCache=%USERPROFILE%\AppData\Local\Temp\MobaLedLib_cache\ATMega
 if not exist "%aTemp%"  md "%aTemp%"
 if not exist "%aCache%" md "%aCache%"
 
-xcopy D:\data\doc\GitHub\pyMobaLedLib\python\LEDs_AutoProg\boards.local.txt "C:\Users\Harold\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.2\" /d /y >nul
+xcopy D:\data\doc\GitHub\pyMobaLedLib\python\LEDs_AutoProg\boards.local.txt "C:\Users\Harold\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\" /d /y >nul
 
 REM *** Call the arduino builder ***
 "%aHome%\arduino-builder" -compile -logger=human ^
