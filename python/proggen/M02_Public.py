@@ -307,7 +307,7 @@ def Get_Ardu_LibDir():
         if ARDU_ResPath_cb:
             ARDU_ResPath = PG.get_global_controller().getConfigData("resourcePath_filename")
         else:
-            ARDU_ResPath = ""
+            ARDU_ResPath = Get_Sketchbook_Path()
         #Arduino_Exe_dir = M08.Find_ArduinoExe()
         #test_str = "Contents/"
         #Arduino_Exe_dir_part1 = Arduino_Exe_dir[:Arduino_Exe_dir.index(test_str) + len(test_str)] # remove /MacOS/Arduino from path
