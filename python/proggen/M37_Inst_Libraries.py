@@ -818,7 +818,7 @@ def __Create_Do_Update_Script_Linux_part1(Pause_at_End):
     return UpdCnt,LibList,BrdList,OthersourceList,URLList
 
 def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLList):
-    if P01.MsgBox(M09.Get_Language_Str(' Folgende ARDUINO Bibliotheken müssen aktualisiert werden:\n' + repr(LibList)+"\n"+repr(BrdList)+"\n"+repr(OthersourceList)+'\n Soll das Update ausgeführt werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('ARDUINO Bibilothem update')) != vbYes:
+    if P01.MsgBox(M09.Get_Language_Str(' Folgende ARDUINO Bibliotheken müssen aktualisiert werden:\nLibraries:' + repr(LibList)+"\nBoards:"+repr(BrdList)+"\nOthersource:"+repr(OthersourceList)+'\n Soll das Update ausgeführt werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('ARDUINO Bibilothem update')) != vbYes:
         # shutdown and restart
         return M40.Failure
 
