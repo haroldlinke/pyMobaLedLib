@@ -1294,6 +1294,8 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
         #    P01.MsgBox(M09.Get_Language_Str('Fehler ') + Res + M09.Get_Language_Str(' beim Starten des Arduino Programms \'') + CommandStr + '\'', vbCritical, M09.Get_Language_Str('Fehler beim Starten des Arduino programms'))
         
         if Dir(ResFile) != '':
+            arduinoMonitorPage=PG.global_controller.getFramebyName ("ARDUINOMonitorPage")
+            arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
             Failed = True
     
     if Failed:
