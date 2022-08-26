@@ -65,8 +65,15 @@ import proggen.M37_Inst_Libraries as M37
 import proggen.M39_Simulator as M39
 
 #import proggen.M01_Gen_Release_Version as M01
-import keyboard
-#import proggen.M25_Columns as M25
+try:
+    keyboard_Module_imported = False
+    import keyboard
+    keyboard_Module_imported = True
+    logging.debug("Keyboard Module imported")
+except:
+    logging.debug("Keyboard Module not imported")
+    
+    #import proggen.M25_Columns as M25
 #import proggen.M02_global_variables as M02
 import proggen.M28_divers as M28
 
@@ -505,23 +512,28 @@ __VK_CONTROL = 0x11
 __VK_SHIFT = 0x10
 
 def GetAsyncKeyState(key):
+    
     global shift_key
-    if key==__VK_UP:
-        return keyboard.is_pressed("up")
-    if key==__VK_DOWN:
-        return keyboard.is_pressed("down")
-    if key==__VK_RETURN:
-        return keyboard.is_pressed("enter")
-    if key==__VK_ESCAPE:   
-        return keyboard.is_pressed("escape")
-    if key==__VK_CONTROL:   
-        return keyboard.is_pressed("crtl")
-    if key==__VK_SHIFT:
-        Debug.Print("Check Shift Key")
-        fn_return_value = shift_key #or keyboard.is_pressed("shift")
-        shift_key=False
-        return fn_return_value
-    return
+    
+    if keyboard_Module_imported:
+        if key==__VK_UP:
+            return keyboard.is_pressed("up")
+        if key==__VK_DOWN:
+            return keyboard.is_pressed("down")
+        if key==__VK_RETURN:
+            return keyboard.is_pressed("enter")
+        if key==__VK_ESCAPE:   
+            return keyboard.is_pressed("escape")
+        if key==__VK_CONTROL:   
+            return keyboard.is_pressed("crtl")
+        if key==__VK_SHIFT:
+            Debug.Print("Check Shift Key")
+            fn_return_value = shift_key #or keyboard.is_pressed("shift")
+            shift_key=False
+            return fn_return_value
+        return False
+    else:
+        return False
 
 
 def GetCursorPos():
