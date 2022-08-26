@@ -22,7 +22,7 @@ Attention LINUX and Mac Users:
 It is not possible to detect the location of the ARDUINO IDE executable automatically, as it can be installed in any directory
 Skip the update of the ARDUINO libraries at startup and go to the ARDINO-Einstellungen Page. Click the Button "Pfad zur ARDUINO IDE einstellen" and select the ARDUINO IDE executable in the  following file selection dialog.
 
-For MAC installation you can find detailed instructions in th efile MLL-MAC_Installationn_V2.pdf 
+For MAC installation you can find detailed instructions in th efile MLL-MAC_Installation_V2.pdf 
 
 This Version is a Proof of Concept for a Python based MLL-Programm Generator that simulates the UserInterface of the Excel based Program Generator and can be used on Windows, Linux and Mac.
 
