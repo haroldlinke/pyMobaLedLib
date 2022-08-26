@@ -9,8 +9,7 @@ Requirements:
 - ARDUINO IDE and MobaledLib > 3.1.0F4 has to be installed
 - Python >V3.7.0
 
-
-Installation using Python files
+Principal Installation using Python files
 1. search for the folder ARDUINO HOME/Arduino
 2. create a subfolder pyMobaLedLib in this folder (the folder can have any Name)
 4. create a subfolder python
@@ -18,12 +17,12 @@ Installation using Python files
 6. open the folder pyMobaLedLib/python
 7. start the Python file: pyMobaLedLib.py with the command python3 pyMobaLedLib.py or python Home/Arduino/pyMobaLedLib/python/pyMobaLedLib.py
 
-Attention LINUX Users: 
+Attention LINUX and Mac Users: 
 
 It is not possible to detect the location of the ARDUINO IDE executable automatically, as it can be installed in any directory
 Skip the update of the ARDUINO libraries at startup and go to the ARDINO-Einstellungen Page. Click the Button "Pfad zur ARDUINO IDE einstellen" and select the ARDUINO IDE executable in the  following file selection dialog.
 
-This manual installation should work for Windows, Linux and Mac.
+For MAC installation you can find detailed instructions in th efile MLL-MAC_Installationn_V2.pdf 
 
 This Version is a Proof of Concept for a Python based MLL-Programm Generator that simulates the UserInterface of the Excel based Program Generator and can be used on Windows, Linux and Mac.
 
