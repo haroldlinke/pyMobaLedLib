@@ -87,6 +87,12 @@ V3.1.0.016 - 02.7.2022 - HL
  
 V3.1.0.017 - 08.7.2022 - HL
  - Upload to ARDUINO under LINUX
+ 
+ V3.1.0.018 - 0.22 Implement MAC compatibility
+ 
+ V3.2.1.01  - Update to MLL 3.2.1
+ 
+ V3.2.1.02  - Make use of keyboard module optional
 
 Open Issues:
 - define a simple installation mechanism for LINUX and Mac
