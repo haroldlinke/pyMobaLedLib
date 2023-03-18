@@ -6,7 +6,7 @@ This branch is for development of the Windows/LINUX/Mac version of the ProgramGe
 This Branch is based on LX4.19 of the Linux version of MobaLedLib_pyProgGen
 
 Requirements:
-- ARDUINO IDE and MobaledLib > 3.1.0F4 has to be installed
+- ARDUINO IDE and MobaledLib > 3.2.1 has to be installed
 - Python >V3.7.0
 
 Principal Installation using Python files
