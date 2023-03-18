@@ -39,32 +39,20 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 import proggen.M02_Public as M02
-import proggen.M03_Dialog as M03
-import proggen.M06_Write_Header_LED2Var as M06LED
-import proggen.M06_Write_Header_Sound as M06Sound
+import proggen.M02a_Public as M02a
 import proggen.M06_Write_Header as M06
-import proggen.M07_COM_Port as M07
-import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
 import proggen.M09_Select_Macro as M09SM
-import proggen.M09_SelectMacro_Treeview as M09SMT
-import proggen.M10_Par_Description as M10
-import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
-import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
 import proggen.M30_Tools as M30
-import proggen.M31_Sound as M31
-import proggen.M37_Inst_Libraries as M37
-import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
-import ExcelAPI.P01_Worksheetfunction as WorksheetFunction
+import proggen.Prog_Generator as PG
+import ExcelAPI.XLWF_Worksheetfunction as WorksheetFunction
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 __DstVar_List = String()
 __MultiSet_DstVar_List = String()
@@ -247,7 +235,7 @@ def __Add_InpVars(MacroName, Org_Macro, Filled_Macro, r, Org_Macro_Row):
                 return _ret
         else:
             # Check if there is a number in column "InCnt" and all arguments have been found
-            InCntStr = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Cells(Org_Macro_Row, M02.SM_InCnt_COL)
+            InCntStr = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Cells(Org_Macro_Row, M02.SM_InCnt_COL)
             if InCntStr != '':
                 if IsNumeric(InCntStr):
                     if Det_Cnt != P01.val(InCntStr):
@@ -944,12 +932,12 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
         VBFiles.writeText(fp, '#ifndef CONFIG_ONLY', '\n')
         VBFiles.writeText(fp, '//*** Analog switches ***', '\n')
         VBFiles.writeText(fp, '', '\n')
-        if M02.Get_BoardTyp() == 'AM328':
+        if M02a.Get_BoardTyp() == 'AM328':
             if M70.Make_Sure_that_AnalogScanner_Library_Exists() == False:
                 return _ret, Channel
             VBFiles.writeText(fp, '#include <AnalogScanner.h>   // Interrupt driven analog reading library. The library has to be installed manually from https://github.com/merose/AnalogScanner', '\n')
             VBFiles.writeText(fp, 'AnalogScanner scanner;       // Creates an instance of the analog pin scanner.', '\n')
-        elif M02.Get_BoardTyp() == 'ESP32':
+        elif M02a.Get_BoardTyp() == 'ESP32':
             VBFiles.writeText(fp, '#include "AnalogScannerESP32.h"   ', '\n')
             VBFiles.writeText(fp, 'AnalogScannerESP32 scanner;       // Creates an instance of the analog pin scanner.', '\n')
         VBFiles.writeText(fp, '', '\n')
@@ -1083,14 +1071,14 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
             PinList = M30.DelLast(PinList)
             VBFiles.writeText(fp, '  int scanOrder[] = {' + PinList + '};', '\n')
             VBFiles.writeText(fp, '  const int SCAN_COUNT = sizeof(scanOrder) / sizeof(scanOrder[0]);', '\n')
-            if M02.Get_BoardTyp() == 'AM328':
+            if M02a.Get_BoardTyp() == 'AM328':
                 VBFiles.writeText(fp, '', '\n')
                 if Read_LDR:
                     VBFiles.writeText(fp, '  Init_DarknessSensor(' + str(LDR_Pin_Number) + ', 50, SCAN_COUNT); // Attention: The analogRead() function can\'t be used together with the darkness sensor !', '\n')
                     VBFiles.writeText(fp, '  scanner.setCallback(' + str(LDR_Pin_Number) + ', Darkness_Detection_Callback);', '\n')
                 VBFiles.writeText(fp, '  scanner.setScanOrder(SCAN_COUNT, scanOrder);', '\n')
                 VBFiles.writeText(fp, '  scanner.beginScanning();', '\n')
-            elif M02.Get_BoardTyp() == 'ESP32':
+            elif M02a.Get_BoardTyp() == 'ESP32':
                 VBFiles.writeText(fp, '  scanner.setScanPins(SCAN_COUNT, scanOrder);', '\n')
                 if Read_LDR:
                     VBFiles.writeText(fp, '  Init_DarknessSensor(' + str(LDR_Pin_Number) + ', 50, 50); // Attention: The analogRead() function can\'t be used together with the darkness sensor !', '\n')

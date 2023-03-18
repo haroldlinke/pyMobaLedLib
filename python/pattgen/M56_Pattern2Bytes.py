@@ -1,54 +1,7 @@
-# -*- coding: utf-8 -*-
-#
-#         Write header
-#
-# * Version: 4.02
-# * Author: Harold Linke
-# * Date: January 7, 2021
-# * Copyright: Harold Linke 2021
-# *
-# *
-# * MobaLedCheckColors on Github: https://github.com/haroldlinke/MobaLedCheckColors
-# *
-# *  
-# * https://github.com/Hardi-St/MobaLedLib
-# *
-# * MobaLedCheckColors is free software: you can redistribute it and/or modify
-# * it under the terms of the GNU General Public License as published by
-# * the Free Software Foundation, either version 3 of the License, or
-# * (at your option) any later version.
-# *
-# * MobaLedCheckColors is distributed in the hope that it will be useful,
-# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# * GNU General Public License for more details.
-# *
-# * You should have received a copy of the GNU General Public License
-# * along with this program.  if not, see <http://www.gnu.org/licenses/>.
-# *
-# *
-# ***************************************************************************
-
-#------------------------------------------------------------------------------
-# CHANGELOG:
-# 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
-# 2021-01-07 v4.02 HL: - Else:, ByRef check done, first PoC release
-
-
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-from vb2py.vbconstants import *
-
-
-import proggen.Prog_Generator as PG
-
-import ExcelAPI.P01_Workbook as P01
-
-from ExcelAPI.X01_Excel_Consts import *
-
-
-from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
+import pattgen.M30_Tools as M30
+import pattgen.M55_PWM_Data_Send
 
 """ Convert a Pattern string to a byte array
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,15 +33,15 @@ UT----------------------------
 -----------------------------------------------
 """
 
-__ReplaceList = 'SI_LocalVar > 254, SI_0 > 254, SI_1 > 255, ) > ,'
+ReplaceList = 'SI_LocalVar > 254, SI_0 > 254, SI_1 > 255, ) > ,'
 
-def __ExitError(Txt):
+def ExitError(Txt):
     #-----------------------------------
     Debug.Print(Txt)
-    EndProg()
+    M30.EndProg()
 
-def __Get_Mode_Nr(Par, XMode):
-    fn_return_value = None
+def Get_Mode_Nr(Par, XMode):
+    _fn_return_value = None
     ModeList = 'PM_NORMAL              = 0,' + 'PM_SEQUENZ_W_RESTART   = 1,' + 'PM_SEQUENZ_W_ABORT     = 2,' + 'PM_SEQUENZ_NO_RESTART  = 3,' + 'PM_SEQUENZ_STOP        = 4,' + 'PM_PINGPONG            = 5,' + 'PM_HSV                 = 6,' + 'PM_RES                 = 7,' + '_PF_XFADE              = &H08,' + 'PF_NO_SWITCH_OFF       = &H10,' + 'PF_EASEINOUT           = &H20,' + 'PF_SLOW                = &H40,' + 'PF_INVERT_INP          = &H80,' + '0X                     = &H,' + '0x                     = &H'
 
     ModePair = Variant()
@@ -106,49 +59,53 @@ def __Get_Mode_Nr(Par, XMode):
     for NrStr in Split(ConvPar, '|'):
         NrStr = Trim(NrStr)
         if not IsNumeric(NrStr):
-            __ExitError('Wrong entry \'' + NrStr + '\' in Mode Sting \'' + Par + '\'')
+            ExitError('Wrong entry \'' + NrStr + '\' in Mode Sting \'' + Par + '\'')
         Res = Res or Val(NrStr)
     if XMode:
         Res = Res or 0x8
-    fn_return_value = Res
-    return fn_return_value
+    _fn_return_value = Res
+    return _fn_return_value
 
-def __Test_Get_Mode_Nr():
+def Test_Get_Mode_Nr():
     #UT---------------------------
-    Debug.Print(Hex(__Get_Mode_Nr('PM_SEQUENZ_W_RESTART|PF_NO_SWITCH_OFF|0x40', True)))
+    Debug.Print(Hex(Get_Mode_Nr('PM_SEQUENZ_W_RESTART|PF_NO_SWITCH_OFF|0x40', True)))
 
-def __Get_Enable_Input(PatternName, Parm):
-    fn_return_value = None
+def Get_Enable_Input(PatternName, Parm):
+    _fn_return_value = None
     #-------------------------------------------------------------------------------
-    if (Parm == 'SI_Enable_Sound'):
-        fn_return_value = 253
+    _select50 = Parm
+    if (_select50 == 'SI_Enable_Sound'):
+        _fn_return_value = 253
     else:
+        # Is it a number
         if IsNumeric(Parm):
-            fn_return_value = Val(Parm)
+            _fn_return_value = Val(Parm)
         else:
-            __ExitError('Unknown Enable input \'' + Parm + '\'')
-    return fn_return_value
+            ExitError('Unknown Enable input \'' + Parm + '\'')
+    return _fn_return_value
 
-def __Convert_Time(Parm):
-    fn_return_value = None
+def Convert_Time(Parm):
+    _fn_return_value = None
     ms = Long()
     #------------------------------------------------------
-    ms = Convert_TimeStr_to_ms(Parm)
+    ms = M30.Convert_TimeStr_to_ms(Parm)
     if ms < 0:
-        __ExitError('Error converting the time \'' + Parm + '\'')
+        ExitError('Error converting the time \'' + Parm + '\'')
     else:
         if ms >= 65536:
-            __ExitError('Fehler die Zeit \'' + Parm + '\' ist zu groß')
-        fn_return_value = Long_to_2ByteStr(ms)
-    return fn_return_value
+            ExitError('Fehler die Zeit \'' + Parm + '\' ist zu groß')
+        _fn_return_value = M30.Long_to_2ByteStr(ms)
+    return _fn_return_value
 
-def __Test_Convert_Time():
+def Test_Convert_Time():
     #UT----------------------------
-    Debug.Print(__Convert_Time('500 ms'))
-    #Debug.Print Convert_Time("200 ms") ' 200, 0
+    Debug.Print(Convert_Time('500 ms'))
+    # 244, 1
+    #Debug.Print Convert_Time("200 ms")
+    # 200, 0
 
 def Convert_PatternStr_to_ByteStr(Txt):
-    fn_return_value = None
+    _fn_return_value = None
     PatternName = String()
 
     PMode = String()
@@ -185,23 +142,26 @@ def Convert_PatternStr_to_ByteStr(Txt):
     # =>
     #    50, 0, 128, 254, 255, 4, 0, 255, 0, 8, 200, 0, 244, 1, 200, 0, 244, 1, 200, 0, 244, 1, 200, 0, 244, 1, 200, 0, 244, 1, 200, 0, 17, 0, 32, 64, 80, 160, 42, 2  , 0, 63, 128, 63, 128, 63, 128, 64, 0, 0, 1,
     #
-    Check_if_C_Code_Version_is_Set()
+    pattgen.M55_PWM_Data_Send.Check_if_C_Code_Version_is_Set()
     PatternName = Split(Txt, '(')(0)
     PatternPos = InStr(PatternName, 'PatternT')
     if PatternPos == 0:
-        __ExitError('PatternName \'' + PatternName + '\' doesn\'t contain the word \'Pattern\'')
-    select_1 = Left(PatternName, 1)
-    if (select_1 == 'X'):
+        ExitError('PatternName \'' + PatternName + '\' doesn\'t contain the word \'Pattern\'')
+    _select51 = Left(PatternName, 1)
+    if (_select51 == 'X'):
         PMode = 'X'
-        FirstTypNr = APATTERNT1_T
-    elif (select_1 == 'A'):
+        FirstTypNr = pattgen.M55_PWM_Data_Send.APATTERNT1_T
+        # #define APATTERNT1_T  40  Flag "_PF_XFADE" is set if XPattern is used
+    elif (_select51 == 'A'):
         PMode = 'A'
-        FirstTypNr = APATTERNT1_T
-    elif (select_1 == 'P'):
+        FirstTypNr = pattgen.M55_PWM_Data_Send.APATTERNT1_T
+        # #define APATTERNT1_T  40
+    elif (_select51 == 'P'):
         PMode = 'P'
-        FirstTypNr = PATTERNT1_T
+        FirstTypNr = pattgen.M55_PWM_Data_Send.PATTERNT1_T
+        # #define  PATTERNT1_T  10
     else:
-        __ExitError('Unknown Pattern Typ: \'' + PatternName + '\'')
+        ExitError('Unknown Pattern Typ: \'' + PatternName + '\'')
     # Byte 1
     HasEnableInp = InStr(PatternName, 'PatternTE') > 0
     if HasEnableInp:
@@ -209,11 +169,12 @@ def Convert_PatternStr_to_ByteStr(Txt):
     else:
         TimeCnt = Val(Mid(PatternName, PatternPos + Len('PatternT')))
     if TimeCnt == 0:
-        __ExitError('Fehler beim Einlesen der Zeitabschnitte von \'' + PatternName + '\'')
+        ExitError('Fehler beim Einlesen der Zeitabschnitte von \'' + PatternName + '\'')
     Res = Res + FirstTypNr + TimeCnt - 1 + ', '
     ParamsStr = Split(Txt, '(')(1)
     GotoMode = InStr(ParamsStr, 'SI_LocalVar') > 0
-    Replace_Const(ParamsStr, __ReplaceList, ',', '>')
+    M30.Replace_Const(ParamsStr, ReplaceList, ',', '>')
+    # Replace string like "SI_LocalVar", "ms", ...
     CommentPos = InStr(ParamsStr, '//')
     if CommentPos > 0:
         ParamsStr = Trim(Left(ParamsStr, CommentPos - 1))
@@ -222,6 +183,8 @@ def Convert_PatternStr_to_ByteStr(Txt):
     # 0    1      2     (3)   3     4     5     6     7
     # LED, NStru, InCh, SI_1, LEDs, Val0, Val1, Off, Mode|_PF_XFADE,_T2B(T1),_W2B(COUNT_VARARGS(__VA_ARGS__)), __VA_ARGS__,
     Res = Res + '0, '
+    # First RGB LED must always be 0 otherwise the Charliplexing module cashes and the EEPROM has to be deleted
+    # 05.06.20:
     Nr = 1
     if InStr(PatternName, 'PatternTE') > 0:
         PModeNr = 8
@@ -230,29 +193,31 @@ def Convert_PatternStr_to_ByteStr(Txt):
     while Nr < PModeNr:
         if Nr == 3:
             if InStr(PatternName, 'PatternTE') > 0:
-                Res = Res + __Get_Enable_Input(PatternName, Trim(Params(Nr))) + ', '
+                Res = Res + Get_Enable_Input(PatternName, Trim(Params(Nr))) + ', '
                 Nr = Nr + 1
             else:
                 Res = Res + '255, '
+                # SI_1 = 255
             LEDs = Val(Params(Nr))
         Res = Res + Params(Nr) + ', '
         Nr = Nr + 1
     # Mode
-    Mode = __Get_Mode_Nr(Params(Nr), PMode == 'X')
+    Mode = Get_Mode_Nr(Params(Nr), PMode == 'X')
     Res = Res + Mode + ', '
     Nr = Nr + 1
     # Time parameter
     for Nr in vbForRange(Nr, Nr + TimeCnt - 1):
-        Res = Res + __Convert_Time(Params(Nr)) + ', '
-    Res = Res + Long_to_2ByteStr(UBound(Params) + 1 - Nr) + ', '
+        Res = Res + Convert_Time(Params(Nr)) + ', '
+    Res = Res + M30.Long_to_2ByteStr(UBound(Params) + 1 - Nr) + ', '
+    # Number of remaining parameters
     # copy the remaining parameter (Data bytes and Goto Tab)
     while Nr <= UBound(Params):
         Res = Res + Params(Nr) + ', '
         Nr = Nr + 1
-    fn_return_value = Res
-    return fn_return_value
+    _fn_return_value = Res
+    return _fn_return_value
 
-def __Test_Convert_PatternStr_to_ByteStr():
+def Test_Convert_PatternStr_to_ByteStr():
     #-----------------------------------------------
     Debug.Print(Convert_PatternStr_to_ByteStr('XPatternT11(0,128,SI_LocalVar,4,0,255,0,0,200 ms,500 ms,200 ms,500 ms,200 ms,500 ms,200 ms,500 ms,200 ms,500 ms,200 ms,32,64,80,160,42,2  ,0,63,128,63,128,63,128,64,0,0,1)'))
     #Debug.Print Convert_PatternStr_to_ByteStr("XPatternTE11(0,128,SI_LocalVar,SI_1,4,0,255,0,0,200 ms,500 ms,200 ms,500 ms,200 ms,500 ms,200 ms,500 ms,200 ms,500 ms,200 ms,32,64,80,160,42,2  ,0,63,128,63,128,63,128,64,0,0,1)")

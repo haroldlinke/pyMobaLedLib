@@ -65,11 +65,11 @@ import proggen.M80_Create_Mulitplexer as M80
 
 import proggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 import  proggen.F00_mainbuttons as F00
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 
 from vb2py.vbfunctions import *
@@ -191,7 +191,7 @@ def __Save_SingleSheet_to_pgf(Name, Sh):
 
 def __Test_Save_SingleSheet_to_pgf():
     #-----------------------------------------
-    Debug.Print('Save_SingleSheet_to_pgf: ' + __Save_SingleSheet_to_pgf(P01.ThisWorkbook.Path + '\\Test.MLL_pgf', P01.ActiveSheet))
+    Debug.Print('Save_SingleSheet_to_pgf: ' + __Save_SingleSheet_to_pgf(PG.ThisWorkbook.Path + '\\Test.MLL_pgf', P01.ActiveSheet))
 
 def Save_Sheets_to_pgf(Name, FromAllSheets):
     fn_return_value = None
@@ -223,11 +223,11 @@ def Save_Sheets_to_pgf(Name, FromAllSheets):
 
 def __Test_Save_Sheets_to_pgf():
     #UT----------------------------------
-    Debug.Print('Save_Sheets_to_pgf=' + Save_Sheets_to_pgf(P01.ThisWorkbook.Path + '\\Test_All.MLL_pgf', True))
+    Debug.Print('Save_Sheets_to_pgf=' + Save_Sheets_to_pgf(PG.ThisWorkbook.Path + '\\Test_All.MLL_pgf', True))
 
 def __Find_Sheet_with_matching_Page_ID(Page_ID):
     fn_return_value = None
-    #Sh = P01.Worksheet()
+    #Sh = P01.Worksheet
     #--------------------------------------------------------------------------------
     for Sh in P01.ActiveWorkbook.Sheets:
         if Sh.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL) == Page_ID:
@@ -237,7 +237,7 @@ def __Find_Sheet_with_matching_Page_ID(Page_ID):
 
 def __Copy_and_Clear_Sheet(SheetName, Page_ID):
     fn_return_value = None
-    #Sh = P01.Worksheet()
+    #Sh = P01.Worksheet
     #---------------------------------------------------------------------------------------
     Sh = __Find_Sheet_with_matching_Page_ID(Page_ID)
     if Sh is None:

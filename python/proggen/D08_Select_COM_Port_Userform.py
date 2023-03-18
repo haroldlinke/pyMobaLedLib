@@ -70,8 +70,8 @@ import proggen.M30_Tools as M30
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 import proggen.Prog_Generator as PG
 import proggen.M09_Language as M09
 

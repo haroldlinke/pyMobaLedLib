@@ -23,7 +23,7 @@
 from __future__ import absolute_import, division, print_function
 import sys
 import traceback
-#from PIL import Image, ImageTk
+# fromx PIL import Image, ImageTk
 #import PIL as PIL
 try:
     from tkinter import *
@@ -52,6 +52,10 @@ import os, types
 import copy
 import platform
 from mlpyproggen.tooltip import Tooltip_Canvas
+import ExcelAPI.XLC_Excel_Consts as X01
+#import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLF_FormGenerator as XLF
+import logging
 
 global_tabledict = {}
 
@@ -60,7 +64,7 @@ class TableCanvas(Canvas):
 
     def __init__(self, parent=None, tablename="dummy", model=None, data=None, read_only=False,
                  width=None, height=None, bgcolor='#F7F7FA', fgcolor='black',
-                 rows=10, cols=5, rightclickactions={}, **kwargs):
+                 rows=10, cols=5, rightclickactions={}, worksheet=None, **kwargs):
         Canvas.__init__(self, parent, bg=bgcolor,
                          width=width, height=height,
                          relief=GROOVE,
@@ -96,6 +100,9 @@ class TableCanvas(Canvas):
         self.left_click_callertype = None
         self.Flag_move=False
         self.lastmultiplerowlist  = []
+        self.entry_active=False
+        self.selectedShapes=[]
+        self.worksheet = worksheet
 
         self.loadPrefs()
         #set any options passed in kwargs to overwrite defaults and prefs
@@ -126,7 +133,7 @@ class TableCanvas(Canvas):
         self.rightclick_actions = rightclickactions
         self.setFontSize()
         return
-    
+
     def set_left_click_callback(self,callback):
         self.left_click_callback = callback
         
@@ -307,6 +314,8 @@ class TableCanvas(Canvas):
 
     def getRowPosition(self, y, ignorehiddenrows=False):
         """Get current row from canvas position"""
+        
+        return self.calc_row_from_y(y)
 
         h = self.rowheight
         y_start = self.y_start
@@ -322,7 +331,10 @@ class TableCanvas(Canvas):
         else:
             for row in range(self.rows):
                 if not row in self.model.hiderowslist:
-                    y_curr += h
+                    new_h=self.model.rowheightlist.get(row,None)
+                    if new_h == None:
+                        new_h=h
+                    y_curr += new_h
                     if y_curr >=y_test:
                         break
         #row1=row
@@ -387,8 +399,11 @@ class TableCanvas(Canvas):
             self.delete('colrect')
 
         self.rowrange = range(0,self.rows)
+        tableheight = self.rowheight*self.rows+10
+        for row in self.model.rowheightlist.keys():
+            tableheight += self.model.rowheightlist[row]-self.rowheight # add size of other rows
         self.configure(scrollregion=(0,0, self.tablewidth+self.x_start,
-                self.rowheight*self.rows+10))
+                tableheight))
 
         x1, y1, x2, y2 = self.getVisibleRegion()
         startvisiblerow, endvisiblerow = self.getVisibleRows(y1, y2)
@@ -416,6 +431,8 @@ class TableCanvas(Canvas):
                     #bgcolor = model.getColorAt(row,col, 'bg')
                     #fgcolor = model.getColorAt(row,col, 'fg')
                     fgcolor,bgcolor,font = model.getCellFormatAt(row,col)
+                    bgcolor = model.getColorAt(row,col, 'bg') #*HL
+                    fgcolor = model.getColorAt(row,col, 'fg') #*HL                   
                     align=model.getCellAlignment(row,col)
                     text = model.getValueAt(row,col)
                     self.drawText(row, col, text, fgcolor, align,font=font)
@@ -457,6 +474,8 @@ class TableCanvas(Canvas):
         #bgcolor = self.model.getColorAt(row,col, 'bg')
         #fgcolor = self.model.getColorAt(row,col, 'fg')
         fgcolor,bgcolor,font = self.model.getCellFormatAt(row,col)
+        bgcolor = self.model.getColorAt(row,col, 'bg') #*HL
+        fgcolor = self.model.getColorAt(row,col, 'fg') #*HL       
         text = self.model.getValueAt(row,col)
         self.drawText(row, col, text, fgcolor,font=font)
         if bgcolor != None:
@@ -609,8 +628,11 @@ class TableCanvas(Canvas):
         minx1,miny1,minx2,miny2 = self.getCellCoords(src_rowlist[0],1)
         maxx1,maxy1,maxx2,maxy2 = self.getCellCoords(src_rowlist[-1],1)
         deltaY = (dest_rowindex-src_rowlist[0])*self.rowheight
+        for row in range(dest_rowindex-src_rowlist[0]):
+            deltaY += self.model.rowheightlist[row]-self.rowheight # add size of other rows            
         deleteY=len(src_rowlist)*self.rowheight
-        
+        for row in range(len(src_rowlist)):
+            deleteY += self.model.rowheightlist[row]-self.rowheight # add size of other rows               
         self.model.moveRows(src_rowlist, dest_rowindex,minY1=miny1,maxY1=maxy2,deltaY=deltaY,deleteY=deleteY)
         self.redrawTable()
 
@@ -796,7 +818,7 @@ class TableCanvas(Canvas):
         self.filterwin = None
         self.showAll()
         return
-    
+   
     def resizecolumns(self,colsizelist):
         factor = 7
         if len(colsizelist)>0:
@@ -860,25 +882,72 @@ class TableCanvas(Canvas):
         #get coord on canvas, not window, need this if scrolling
         y = int(self.canvasy(event.y))
         y_start=self.y_start
-        rowc = int((int(y)-y_start)/h)
-        
-        for row in self.model.hiderowslist:
-            if row<rowc:
-                rowc+=1
-            else:
-                break
+        #rowc = int((int(y)-y_start)/h)
+        #print ('rowclicked - calc row:', rowc)
+        cur_y = y_start
+        rowc=-1
 
-        
-        #rowc = math.floor(rowc)
-        #print 'event.y',event.y, 'y',y
-        #print ('rowclicked', rowc)
+        for row in range(self.rows):
+            if not (row in self.model.hiderowslist):
+                new_h=self.model.rowheightlist.get(row,None)
+                if new_h==None:
+                    new_h=h
+                cur_y +=new_h
+                if cur_y > y:
+                    break
+        rowc=row
+        #for row in self.model.hiderowslist:
+        #    if row <= rowc:
+        #        rowc+=1
         return rowc
     
     def calc_row_from_y(self,y):
         y_start=self.y_start
         h=self.rowheight
-        rowc = int((int(y)-y_start)/h)
+        #rowc = int((int(y)-y_start)/h)
+        cur_y = y_start
+        rowc=-1
+
+        for row in range(self.rows):
+            if not row in self.model.hiderowslist:
+                new_h=self.model.rowheightlist.get(row,None)
+                if new_h==None:
+                    new_h=h
+                cur_y +=new_h
+                if cur_y > y:
+                    break
+        rowc=row
         return rowc
+    
+    def calc_y_from_row(self,row,rowstart=0,y_start=None):
+        if y_start==None:
+            y_start=self.y_start
+        h=self.rowheight
+        #rowc = int((int(y)-y_start)/h)
+        cur_y = y_start
+        for row in range(rowstart,row):
+            if not row in self.model.hiderowslist:
+                new_h=self.model.rowheightlist.get(row,None)
+                if new_h==None:
+                    new_h=h
+                cur_y +=new_h
+        return cur_y
+    
+    def calc_col_from_x(self,x):
+        w=self.cellwidth
+        x_start=self.x_start
+        #print self.col_positions
+        for colpos in self.col_positions:
+            try:
+                nextpos=self.col_positions[self.col_positions.index(colpos)+1]
+            except:
+                nextpos=self.tablewidth
+            if x > colpos and x <= nextpos:
+                #print 'x=', x, 'colpos', colpos, self.col_positions.index(colpos)
+                return self.col_positions.index(colpos)
+            else:
+                #print None
+                pass        
         
     def get_col_clicked(self,event):
         """get col where event on canvas occurs"""
@@ -903,7 +972,6 @@ class TableCanvas(Canvas):
     def setSelectedRow(self, row):
         """Set currently selected row and reset multiple row list"""
         self.lastmultiplerowlist = self.multiplerowlist
-
         self.currentrow = row
         self.multiplerowlist = []
         self.multiplerowlist.append(row)
@@ -919,7 +987,6 @@ class TableCanvas(Canvas):
 
     def setSelectedCells(self, startrow, endrow, startcol, endcol):
         """Set a block of cells selected"""
-
         self.currentrow = startrow
         self.currentcol = startcol
         if startrow < 0 or startcol < 0:
@@ -931,6 +998,12 @@ class TableCanvas(Canvas):
         for c in range(startcol, endcol):
             self.multiplecollist.append(c)
         return
+    
+    def setSelectedShapes(self,shape):
+        self.selectedShapes=[shape]
+        
+    def getSelectedShapes(self):
+        return self.selectedShapes
 
     def getSelectedRow(self):
         """Get currently selected row"""
@@ -955,12 +1028,15 @@ class TableCanvas(Canvas):
 
     def getCellCoords(self, row, col, extend=None):
         """Get x-y coordinates to drawing a cell in a given row/col"""
-        colname=self.model.getColumnName(col)
-        if colname in self.model.columnwidths:
-            w1=w=self.model.columnwidths[colname]
-        else:
+        try:
+            colname=self.model.getColumnName(col)
+            if colname in self.model.columnwidths:
+                w1=w=self.model.columnwidths[colname]
+            else:
+                w1=w=self.cellwidth
+        except:
+            logging.debug("getCellCoords %s, %s",row,col)
             w1=w=self.cellwidth
-            
         if extend:
             if extend=="w":
                 start_col = col+1
@@ -981,15 +1057,16 @@ class TableCanvas(Canvas):
                         w+= self.cellwidth 
                 else:
                     break
-        h=self.rowheight
+        #h=self.rowheight
+        h=self.getrowheight(row)
         x_start=self.x_start
         y_start=self.y_start
 
         #get nearest rect co-ords for that row/col
         #x1=x_start+w*col
         x1=self.col_positions[col]
-        y1old=y_start+h*row
-        y1=self.getRow2Y(row)
+        #y1old=y_start+h*row
+        y1=self.calc_y_from_row(row)
         #if y1old != y1:
         #    print("getcellcoords - y1old != y1:",y1old,y1)
         if extend==None or extend=="w":
@@ -1007,9 +1084,25 @@ class TableCanvas(Canvas):
             if row == calcrow:
                 break            
             if not calcrow in self.model.hiderowslist:
-                y_curr += h
+                new_h=self.model.rowheightlist.get(calcrow,None)
+                if new_h == None:
+                    new_h=h
+                y_curr += new_h
         y=self.y_start+y_curr
         return y
+    
+    def getRowHeightDelta(self,row):
+        h=self.rowheight
+        y_curr = 0
+        for calcrow in range(0,self.rows):
+            if row == calcrow:
+                break            
+            if not calcrow in self.model.hiderowslist:
+                new_h=self.model.rowheightlist.get(calcrow,None)
+                if new_h == None:
+                    new_h=h
+                y_curr += new_h-h
+        return y_curr    
 
     def getCanvasPos(self, row, col):
         """Get the cell x-y coords as a fraction of canvas size"""
@@ -1019,6 +1112,27 @@ class TableCanvas(Canvas):
         cx=float(x1)/self.tablewidth
         cy=float(y1)/(self.rows*self.rowheight)
         return cx, cy
+    
+    def generate_SheetSelectionChange_event(self,row,col):
+        self.event_row=row
+        self.event_col=col
+        logging.debug("generate_selection_change_event: <<SheetSelectionChange>> %s, %s",self.event_row,self.event_col)
+        #self.event_generate("<<SheetSelectionChange>>",when="tail")
+        self.worksheet.Workbook.Synch_Evt_SheetSelectionChange(self)
+        
+    def generate_SheetChange_event(self,row,col):
+        self.event_row=row
+        self.event_col=col
+        logging.debug("generate_selection_change_event: <<SheetChange>> %s, %s",self.event_row,self.event_col)
+        #self.event_generate("<<SheetChange>>",when="tail")
+        self.worksheet.Workbook.Synch_Evt_SheetChange(self)
+        
+    def generate_SheetReturnKey_event(self,row,col):
+        self.event_row=row
+        self.event_col=col
+        logging.debug("generate_selection_change_event: <<SheetReturnKey>> %s, %s",self.event_row,self.event_col)
+        #self.event_generate("<<SheetReturnKey>>",when="tail")
+        self.worksheet.Workbook.Synch_Evt_SheetReturnKey()
 
     def isInsideTable(self,x,y):
         """Returns true if x-y coord is inside table bounds"""
@@ -1055,6 +1169,7 @@ class TableCanvas(Canvas):
         self.multiplerowlist=[]
         self.multiplerowlist.append(self.currentrow)
         self.drawSelectedRect(self.currentrow, self.currentcol)
+        self.generate_SheetSelectionChange_event(self.currentrow, self.currentcol)
         self.drawSelectedRow()
         coltype = self.model.getColumnType(self.currentcol)
         if coltype == 'text' or coltype == 'number':
@@ -1072,6 +1187,7 @@ class TableCanvas(Canvas):
         self.multiplerowlist=[]
         self.multiplerowlist.append(self.currentrow)
         self.drawSelectedRect(self.currentrow, self.currentcol)
+        self.generate_SheetSelectionChange_event(self.currentrow, self.currentcol)
         self.drawSelectedRow()
         coltype = self.model.getColumnType(self.currentcol)
         if coltype == 'text' or coltype == 'number':
@@ -1128,11 +1244,13 @@ class TableCanvas(Canvas):
             self.setSelectedRow(rowclicked)
             self.setSelectedCol(colclicked)
             self.drawSelectedRect(self.currentrow, self.currentcol)
+            self.generate_SheetSelectionChange_event(self.currentrow, self.currentcol)
             self.drawSelectedRow()
             self.tablerowheader.drawSelectedRows(rowclicked)
             coltype = self.model.getColumnType(colclicked)
             if coltype == 'text' or coltype == 'number':
                 self.drawCellEntry(rowclicked, colclicked)
+            #add call to ws selected callback
         return
 
     def handle_left_release(self,event):
@@ -1197,7 +1315,7 @@ class TableCanvas(Canvas):
                 self.multiplerowlist = range(self.endrow, self.startrow+1)
             else:
                 self.multiplerowlist = range(self.startrow, self.endrow+1)
-            print("Mousedrag-Select:",self.multiplerowlist)
+            #print("Mousedrag-Select:",self.multiplerowlist)
             self.drawMultipleRows(self.multiplerowlist)
             self.tablerowheader.drawSelectedRows(self.multiplerowlist)
             #draw selected cells outline using row and col lists
@@ -1262,6 +1380,7 @@ class TableCanvas(Canvas):
             else:
                 self.currentcol  = self.currentcol -1
         self.drawSelectedRect(self.currentrow, self.currentcol)
+        self.generate_SheetSelectionChange_event(self.currentrow, self.currentcol)
         coltype = self.model.getColumnType(self.currentcol)
         if coltype == 'text' or coltype == 'number':
             self.delete('entry')
@@ -1293,6 +1412,10 @@ class TableCanvas(Canvas):
             self.rightmenu.destroy()
         rowclicked = self.get_row_clicked(event)
         colclicked = self.get_col_clicked(event)
+        
+        if self.entry_active and rowclicked==0 and colclicked==1:
+            rowclicked = self.entry_row
+            colclicked = self.entry_col
              
         #if colclicked == None or ("*","*") in self.model.protected_cells or ("*",colclicked) in self.model.protected_cells or (rowclicked,"*") in self.model.protected_cells or (rowclicked,colclicked) in self.model.protected_cells:
         if colclicked == None or any(elem in self.model.protected_cells for elem in (("*","*"),(rowclicked,"*"),("*",colclicked),(rowclicked,colclicked))):
@@ -1308,6 +1431,7 @@ class TableCanvas(Canvas):
                 self.setSelectedRow(rowclicked)
                 self.setSelectedCol(colclicked)
                 self.drawSelectedRect(self.currentrow, self.currentcol)
+                self.generate_SheetSelectionChange_event(self.currentrow, self.currentcol)
                 self.drawSelectedRow()
             if self.isInsideTable(event.x,event.y) == 1:
                 self.rightmenu = self.popupMenu(event,rows=self.multiplerowlist, cols=self.multiplecollist)
@@ -1347,6 +1471,7 @@ class TableCanvas(Canvas):
             self.gotonextRow()
             self.currentcol = self.currentcol+1
         self.drawSelectedRect(self.currentrow, self.currentcol)
+        self.generate_SheetSelectionChange_event(self.currentrow, self.currentcol)
         return
     
     def gotoCell(self, row, col):
@@ -1357,6 +1482,7 @@ class TableCanvas(Canvas):
         self.currentcol = col
         self.currentrow = row
         self.drawSelectedRect(self.currentrow, self.currentcol)
+        self.generate_SheetSelectionChange_event(self.currentrow, self.currentcol)
         return    
 
     def movetoSelectedRow(self, row=None, recname=None):
@@ -1378,9 +1504,11 @@ class TableCanvas(Canvas):
         self.formulaText.insert(END, str(cell))
         self.formulaText.focus_set()
         self.drawSelectedRect(row, col, color='red')
+        self.generate_SheetSelectionChange_event(row, col)
         return
 
     def formula_Dialog(self, row, col, currformula=None):
+        return #*HL
         """Formula dialog"""
         self.mode = 'formula'
         #print (self.mode)
@@ -1397,9 +1525,9 @@ class TableCanvas(Canvas):
             f = f.strip('\n')
             self.model.setFormulaAt(f,row,col)
             value = self.model.doFormula(f)
-            #color = self.model.getColorAt(row,col,'fg')
             fgcolor,bgcolor,font = model.getCellFormatAt(row,col)
-            self.drawText(row, col, value, color,font=font)
+            fgcolor = self.model.getColorAt(row,col,'fg')
+            self.drawText(row, col, value, fgcolor,font=font)
             close()
             self.mode = 'normal'
             return
@@ -1551,16 +1679,16 @@ class TableCanvas(Canvas):
                         "Preferences" : self.showtablePrefs,
                         "Formulae->Value" : lambda : self.convertFormulae(rows, cols)}
 
-        #main = ["Set Fill Color","Set Text Color","Copy", "Paste", "Fill Down","Fill Right",
-        #        "Clear Data"]
-        #general = ["Select All", "Add Row(s)" , "Delete Row(s)", "Auto Fit Columns", "Filter Records", "Preferences"]
-        #filecommands = ['New','Load','Save','Import text','Export csv']
-        #plotcommands = ['Plot Selected','Plot Options']
+        main = ["Set Fill Color","Set Text Color","Copy", "Paste", "Fill Down","Fill Right",
+                "Clear Data"]
+        general = ["Select All", "Add Row(s)" , "Delete Row(s)", "Auto Fit Columns", "Filter Records", "Preferences"]
+        filecommands = ['New','Load','Save','Import text','Export csv']
+        plotcommands = ['Plot Selected','Plot Options']
         
-        main = ["Copy", "Paste", "Clear Data"]
-        #general = ["Add Row(s)",]
-        #filecommands = ['New','Load Sheet','Save Sheet','Import csv text','Export csv']
-        #plotcommands = []        
+        #main = ["Copy", "Paste", "Clear Data"]
+        general = ["Add Row(s)",]
+        filecommands = ['New','Load Sheet','Save Sheet','Import csv text','Export csv']
+        plotcommands = []        
 
         def createSubMenu(parent, label, commands):
             menu = Menu(parent, tearoff = 0)
@@ -1608,16 +1736,16 @@ class TableCanvas(Canvas):
                 add_popup_command(action)
                 
 
-            #if coltype in self.columnactions:
-            #    add_commands(coltype)
-            #add_defaultcommands()
+            if coltype in self.columnactions:
+                add_commands(coltype)
+            add_defaultcommands()
 
-        #for action in general:
-        #    popupmenu.add_command(label=action, command=defaultactions[action])
+        for action in general:
+            popupmenu.add_command(label=action, command=defaultactions[action])
 
-        #popupmenu.add_separator()
-        #createSubMenu(popupmenu, 'File', filecommands)
-        #createSubMenu(popupmenu, 'Plot', plotcommands)
+        popupmenu.add_separator()
+        createSubMenu(popupmenu, 'File', filecommands)
+        createSubMenu(popupmenu, 'Plot', plotcommands)
         popupmenu.bind("<FocusOut>", popupFocusOut)
         popupmenu.focus_set()
         popupmenu.post(event.x_root, event.y_root)
@@ -1760,7 +1888,15 @@ class TableCanvas(Canvas):
             else:
                 break
         return hiddenrows
-
+    
+    def changeGrid(self,gridno,griditem):
+        self.model.gridlist[gridno]=griditem
+        
+    def getrowheight(self,row):
+        rowheight = self.model.rowheightlist.get(row,self.rowheight)
+        return rowheight
+       
+       
     def drawGrid(self, startrow, endrow):
         """Draw the table grid lines"""
         self.delete('gridline','text')
@@ -1773,8 +1909,9 @@ class TableCanvas(Canvas):
         x_pos=x_start
         
         if self.model.gridlist != []:
-            #print("Grid_ Startrow - Endrwo:",startrow,endrow)
-            for griditem in self.model.gridlist:
+            #print("Grid_ Startrow - Endrow:",startrow,endrow)
+            for grid in self.model.gridlist:
+                griditem = self.model.gridlist[grid]
                 cell0 = griditem[0]
                 cell1 = griditem[1]
                 row0 = cell0[0]
@@ -1793,12 +1930,16 @@ class TableCanvas(Canvas):
                 else:
                     endrow1=endrow
                     
-                hiddenrows=self.calc_nohidenrows(startrow1)
-                startrow1=startrow1-hiddenrows
-                hiddenrows=self.calc_nohidenrows(endrow1)
-                endrow1  = endrow1-hiddenrows
+                #hiddenrows=self.calc_nohidenrows(startrow1)
+                #startrow1=startrow1-hiddenrows
+                #hiddenrows=self.calc_nohidenrows(endrow1)
+                #endrow1  = endrow1-hiddenrows
                 
                 y_start1 = y_start + (startrow1)*h
+                y_delta = self.getRowHeightDelta(startrow1)
+                y_start1 += y_delta
+                y_start1 = self.calc_y_from_row(startrow1,y_start=y_start)
+                
                 #print("Grid Vertical - y_start1:",y_start, y_start1)
                 rows = endrow1-startrow1+1
                 
@@ -1814,11 +1955,14 @@ class TableCanvas(Canvas):
                         col1=self.cols-1
                     x_start = self.col_positions[col0]
                     x_end   = self.col_positions[col1+1]
+                    y_pos = y_start1
                     for row in range(startrow1, endrow1+2):
-                        y_pos=y_start+row*h
+                        
+                                            
                         #print("Grid Horizontal - y_pos:",row,y_pos)
                         self.create_line(x_start,y_pos,x_end,y_pos, tag='gridline',
                                             fill=self.grid_color, width=self.linewidth)
+                        y_pos +=self.getrowheight(row+startrow1)
         else:               
             if self.vertlines==1:
                 for col in range(cols+1):
@@ -1914,6 +2058,9 @@ class TableCanvas(Canvas):
         x1,y1,x2,y2 = self.getCellCoords(row,col)
         w=x2-x1
         #Draw an entry window
+        self.entry_active=True
+        self.entry_row=row
+        self.entry_col=col
         txtvar = StringVar()
         txtvar.set(text)
         def callback(e):
@@ -1934,14 +2081,21 @@ class TableCanvas(Canvas):
                     model.setValueAt(value,row,col)
             elif coltype == 'text':
                 model.setValueAt(value,row,col)
-
-            #color = self.model.getColorAt(row,col,'fg')
             fgcolor,bgcolor,font = model.getCellFormatAt(row,col)
+            fgcolor = self.model.getColorAt(row,col,'fg')
             self.drawText(row, col, value, fgcolor, align=self.align,font=font)
             if e.keysym=='Return':
                 self.delete('entry')
-                #self.drawRect(row, col)
+                self.entry_active=False
+                self.cellentry.event_row = row
+                self.cellentry.event_col = col
+                #self.cellentry.event_generate("<<SheetReturnKey>>",when='tail')
+                self.generate_SheetReturnKey_event(row, col)
+                #self.cellentry.event_generate("<<SheetChange>>",when='tail')
+                self.generate_SheetChange_event(row, col)
+                self.drawRect(row, col)
                 #self.gotonextCell(e)
+                #self.gotonextRow()
             return
 
         self.cellentry=Entry(self.parentframe,width=20,
@@ -1953,7 +2107,11 @@ class TableCanvas(Canvas):
         self.cellentry.icursor(END)
         self.cellentry.bind('<Return>', callback)
         self.cellentry.bind('<KeyRelease>', callback)
+        self.cellentry.bind("<Button-3>", self.handle_right_click)
         self.cellentry.focus_set()
+        self.cellentry.event_row=row
+        self.cellentry.event_col=col
+        self.cellentry.worksheet = self.worksheet
         self.entrywin=self.create_window(x1+self.inset,y1+self.inset,
                                 width=w-self.inset*2,height=h-self.inset*2,
                                 window=self.cellentry,anchor='nw',
@@ -1977,49 +2135,193 @@ class TableCanvas(Canvas):
             return 1
         return 1
     
-    def addShape(self, name, shapetype, Left, Top, Width, Height, Fill, masteridx=0,Text=""):
-        newshape = CShape(self.tablename, name, shapetype, Left, Top, Width, Height, Fill, Text=Text)
-        self.model.shapelist.append(newshape)
-        newshape.masteridx=len(self.model.shapelist)
-        return newshape #self.model.shapelist.AddShape(name, shapetype, Left, Top, Width, Height, Fill, Text=Text,masteridx=masteridx)
+    def findshape(self,name):
+        for shape in self.model.shapelist:
+            if shape.Name==name:
+                return shape
+        return None
+    
+    def addShape(self, name, shapetype, Left, Top, Width, Height, Fillcolor, Text="",controls_dict=None):
+        newshape = self.findshape(name)
+        if newshape:
+            return newshape
+        filltkcolor=int2tkcolor(Fillcolor)
+        newshape = CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, Text=Text,tablecanvas=self)
+        #self.model.shapelist.append(newshape)
+
+        return newshape
+    
+    def addLabel(self, textorientation, Left, Top, Width, Height):
+        name="IntLabel1"
+        shapetype = X01.msoTextBox
+        filltkcolor="#000000"
+        newshape = CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, Text=None,tablecanvas=self)
+        #self.model.shapelist.append(newshape)
+        return newshape
+    
+    def addConnector(self, contype, BeginX, Beginy, Width, Height):
+        name="IntConnector1"
+        shapetype = "Connector"
+        filltkcolor="#000000"
+        newshape = CTShape(name, shapetype, BeginX, Beginy, Width, Height, FillTKcolor=filltkcolor, Text=None,tablecanvas=self)
+        #self.model.shapelist.append(newshape)
+        return newshape    
+    
+    def addPicture(self, name, Left, Top, Width, Height):
+        shapetype = "picture"
+        filltkcolor="#000000"
+        newshape = CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, Text=Text,tablecanvas=self)
+        #self.model.shapelist.append(newshape)
+        return newshape
+        
     
     def deleteshape(self,shape):
         if type(shape)==int:
             shape=self.model.shapelist[shape-1]
             shape.set_activeflag(False)
         else:
-            #self.model.shapelist.remove(shape) 
+            self.model.shapelist.remove(shape) 
             shape.set_activeflag(False)
             
     def drawShapes(self):
         self.delete("Shape")
+        #print("DrawShapes")
         for shape in self.model.shapelist:
             self.drawShape(shape)
             
     def drawShape(self,shape):
         #print("drawShapes:", self.model.modelname,shape.TopLeftCell_Row,shape.tablename)
-        
         if shape.get_activeflag():
             shapeY = shape.Top
-            shaperow = self.getRowPosition(shapeY, ignorehiddenrows=True)
-            
-            if not shaperow in self.model.hiderowslist:
-                numhiddenrows = self.calc_nohidenrows(shaperow)
-                shapeY = shapeY - numhiddenrows*self.rowheight
-            
+            #shapeY = self.calc_y_from_row(shape.TopLeftCell_Row)
+            #shaperow = self.getRowPosition(shapeY, ignorehiddenrows=True)
+            shaperow = shape.TopLeftCell_Row
+            if not shaperow in []: #self.model.hiderowslist:
+                #numhiddenrows = self.calc_nohidenrows(shaperow)
+                #shapeY = shapeY - numhiddenrows*self.rowheight
                 if shape.rectidx>0:
                     self.delete(shape.rectidx)
+                    shape.rectidx=0
                 if shape.textidx>0:
                     self.delete(shape.textidx)
-                if shape.Shapetype == "rect":
-                    if shape.TextFrame2 == "":
-                        shape.TextFrame2 = "0"
-                    shape.rectidx = self.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fill,tags=(shape.masteridx,shape.Name,"Shape"))
-                    shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.TextFrame2,tags=(shape.masteridx,shape.Name,"Shape"))
-                    self.tag_raise(shape.rectidx)
-                    self.tag_raise(shape.textidx)
+                    shape.textidx=0
+                if shape.Shapetype == X01.msoShapeRectangle or shape.Shapetype == "rect":
+                    #if shape.TextFrame2.TextRange.Text == "":
+                    #    shape.TextFrame2.TextRange.Text = "0"
+                    shape.rectidx = self.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape"))
+                    if shape.ZOrder_Val==0:
+                        self.tag_raise(shape.rectidx)
+                    else:
+                        self.tag_lower(shape.rectidx)
                     self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
-                    self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                    if shape.Text !="":
+                        shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
+                        if shape.ZOrder_Val==0:
+                            self.tag_raise(shape.textidx)
+                        else:
+                            self.tag_lower(shape.textidx)                        
+                        self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                    else:
+                        shape.textidx = -1
+                elif shape.Shapetype == X01.msoTextBox:
+                    #if shape.TextFrame2.TextRange.Text == "":
+                    #    shape.TextFrame2.TextRange.Text = "0"
+                    if shape.Text !="":
+                        shape.textidx = self.create_text(int(shape.Left),int(shape.Top),anchor="nw",text=shape.Text,tags=(shape.Name,"Shape"))
+                        if shape.ZOrder_Val==0:
+                            self.tag_raise(shape.textidx)
+                        else:
+                            self.tag_lower(shape.textidx)                        
+                        self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                    else:
+                        shape.textidx = -1                
+                elif shape.Shapetype == X01.msoOLEControlObject:
+                    if shape.formwin==None:
+                        formFrame = Frame(self,borderwidth=0)
+                        control_dict = shape.control_dict.get("Components",None)
+                        shape.AlternativeText = shape.control_dict.get("AlternativeText",None)
+                        XLF.generate_controls(control_dict,formFrame,self.worksheet)
+                        if shape.Top==None:
+                            x1,y1,x2,y2 = self.getCellCoords(shape.Row-1,shape.Col-1)
+                            shape.Top=y1
+                            shape.Left=x1
+                        else:
+                            x1 = shape.Left
+                            y1 = shape.Top
+                        #shape.form.bind('<Return>', callback)
+                        #shape.form.bind('<KeyRelease>', callback)
+                        #shape.form.bind("<Button-3>", self.handle_right_click)
+                        #self.form.focus_set()
+                        shape.formwin=self.create_window(x1,y1, width=shape.Width,height=shape.Height,window=formFrame,anchor='nw',tag='form')
+                    else:
+                        self.coords(shape.formwin,shape.Left, shape.Top)
+                        
+                        if shape.updatecontrol:
+                            control = self.worksheet.Controls_Dict.get(shape.Name,None)
+                            if control:
+                                control.TKWidget.configure(text=shape.Text,background=shape.Fillcolor)
+                                
+                    self.tag_raise(shape.formwin)
+                elif shape.Shapetype == "picture":
+                    pass
+                    #print("drawshape - Picture:")
+                    #shape.rectidx = self.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fill,tags=(shape.masteridx,shape.Name,"Shape"))
+                    #shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.TextFrame2,tags=(shape.masteridx,shape.Name,"Shape"))
+                    #self.tag_raise(shape.rectidx)
+                    #self.tag_raise(shape.textidx)
+                    #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
+                    #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                elif shape.Shapetype == X01.msoShapeOval or shape.Shapetype == "oval":
+                    #if shape.TextFrame2 == "":
+                    #    shape.TextFrame2 = "0"
+                    #print("DrawShape:",shape.Name,"-",shape.Fill.ForeColor.tkcolor())    
+                    shape.rectidx = self.create_oval(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape"))
+                    self.tag_raise(shape.rectidx)
+                    if shape.Text !="":
+                        shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
+                        self.tag_raise(shape.textidx)
+                    #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
+                    #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                elif shape.Shapetype == X01.msoFreeform:
+                    if shape.SegmentType == X01.msoSegmentCurve:
+                        smooth=True
+                    else:
+                        smooth=False
+                    if shape.EditingType == X01.msoEditingAuto:
+                        shape.rectidx = self.create_polygon(shape.nodelist,fill=shape.Fillcolor,outline=shape.LineColor,smooth=smooth,tags=(shape.Name,"Shape"))
+                    else:
+                        arrow=None
+                        if hasattr(shape,"EndArrowheadStyle_val"):
+                            if shape.EndArrowheadStyle_val in (X01.msoArrowheadStealth,X01.msoArrowheadTriangle):
+                                arrow=LAST
+                        if hasattr(shape,"BeginArrowheadStyle_val"):
+                            if shape.BeginArrowheadStyle_val in (X01.msoArrowheadStealth,X01.msoArrowheadTriangle):
+                                arrow=FIRST                               
+                        shape.rectidx = self.create_line(shape.nodelist,fill=shape.Fillcolor,smooth=smooth,arrow=arrow,tags=(shape.Name,"Shape"))
+                    if shape.ZOrder_Val==0:
+                        self.tag_raise(shape.rectidx)
+                    else:
+                        self.tag_lower(shape.rectidx)
+                    #if shape.Text !="":
+                    #    shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
+                    #    self.tag_raise(shape.textidx)                    
+                elif shape.Shapetype == "Connector":
+                    #if shape.TextFrame2.TextRange.Text == "":
+                    #    shape.TextFrame2.TextRange.Text = "0"
+                    arrow=None
+                    if hasattr(shape,"EndArrowheadStyle_val"):
+                        if shape.EndArrowheadStyle_val == X01.msoArrowheadStealth:
+                            arrow=LAST
+                    if hasattr(shape,"BeginArrowheadStyle_val"):
+                        if shape.BeginArrowheadStyle_val == X01.msoArrowheadStealth:
+                            arrow=FIRST                        
+                    shape.rectidx = self.create_line(shape.Left,shape.Top,shape.Left+shape.Width,shape.Top+shape.Height,fill=shape.Fillcolor,arrow=arrow,tags=(shape.Name,"Shape"))
+                    if shape.ZOrder_Val==0:
+                        self.tag_raise(shape.rectidx)
+                    else:
+                        self.tag_lower(shape.rectidx)
+                else:
+                    logging.debug("Unknown Shapetype: %s",shape.Shapetype)
 
     def drawText(self, row, col, celltxt, fgcolor=None, align=None,font=None):
         """Draw the text inside a cell area"""
@@ -2085,7 +2387,7 @@ class TableCanvas(Canvas):
                                                   anchor="nw",
                                                   tag=('Icon','iconfilename_'+str(col)+'_'+str(row)))
                 except:
-                    print("DrawTable - draw ICON Error:" + iconfilename)
+                    logging.debug("DrawTable - draw ICON Error:" + iconfilename)
         
             if self.isLink(celltxt) == True:
                 haslink=0
@@ -2438,6 +2740,13 @@ class TableCanvas(Canvas):
         fonts = set(list(font.families()))
         fonts = sorted(list(fonts))
         return fonts
+    
+    def getShape(self,index):
+        if index <= len(self.model.shapelist):
+            shape = self.model.shapelist[index-1]
+        else:
+            shape=None
+        return shape    
 
     def loadPrefs(self, prefs=None):
         """Load table specific prefs from the prefs instance used
@@ -2874,7 +3183,7 @@ class ColumnHeader(Canvas):
         x_start=self.table.x_start
         #x = event.x
         x=int(self.canvasx(event.x))
-        if x > self.tablewidth+w:
+        if x > self.table.tablewidth+w:
             return
         #if event x is within x pixels of divider, draw resize symbol
         if x!=x_start and self.within(x, self.table.col_positions, 4):
@@ -3184,68 +3493,70 @@ class AutoScrollbar(Scrollbar):
     #    raise TclError, "cannot use pack with this widget"
     #def place(self, **kw):
     #    raise TclError, "cannot use place with this widget"
-    
 
-#class CShapeList(object):
-#    def __init__(self,canvas):
-#        self.shapelist = []
-#        self.canvas=canvas
-#        
-#    def AddShape(self, name, shapetype, Left, Top, Width, Height, Fill, masteridx=0,Text=""):
-#        if shapetype == "rect":
-#            shape = CShape(self.canvas, name, "rect", Left, Top, Width, Height, Fill,masteridx=masteridx,Text=Text)
-#            self.shapelist.append(shape)
-#            shape.index = len(self.shapelist)-1
-#            return shape
     
-class CShape(object):
-    def __init__(self, tablename, name, shapetype, Left, Top, Width, Height, Fill, masteridx=0,Text=""):
+class CTShape(object):
+    def __init__(self, name, shapetype, Left, Top, Width, Height, FillTKcolor="", LineTKcolor="",Text="",Row=None, Col=None, rotation=0,orientation=1,nodelist=None,tablecanvas=None,control_dict=None,zorder=0,segmenttype=0,editingtype=X01.msoEditingAuto):
         self.Shapetype = shapetype
-        self.tablename=tablename
+        self.updatecontrol=False
+        self.rectidx=0
+        self.textidx=0
+        self.formwin=None
+        self.tablename = tablecanvas.tablename
         self.Left = Left
         self.Active = True
         self.Top = Top
         self.Width = Width
         self.Height = Height
+        self.Row = Row
+        self.Col = Col
+        self.Rotation = rotation
         self.Name = name
-        self.TextFrame2 = Text
-        self.AlternativeText = ""
-        self.Fill = Fill
-        self.Index = 0
-        self.onaction = ""
-        self.rectidx=0
-        self.textidx=0
-        self.masteridx=masteridx
-        canvas = global_tabledict.get(self.tablename,None)
-        self.TopLeftCell_Row=canvas.calc_row_from_y(Top)+1
-       
-        #self.canvas.tag_bind(shape.rectidx,"<Button-1>", self.shape_button_1)
+        self.Text = ""
+        self.AlternativeText=""
+        self.ZOrder_Val=zorder
+        self.control_dict = control_dict
+        self.Visible_val = True
+        self.Fillcolor = FillTKcolor
+        self.LineColor = LineTKcolor
+        if Top !=None:
+            self.TopLeftCell_Row=tablecanvas.calc_row_from_y(Top)
+            self.TopLeftCell_Col=tablecanvas.calc_col_from_x(Left)
+        else:
+            self.TopLeftCell_Row=Row
+            self.TopLeftCell_Col=Col
+        self.nodelist=nodelist
+        self.SegmentType = segmenttype
+        self.EditingType = editingtype
+        tablecanvas.model.shapelist.append(self)
         
     def shape_button_1(self,event=None):
         #print("Shape Button_1 event")
         #print(repr(event))
-        canvas = global_tabledict.get(self.tablename,None)
-        if canvas:        
-            tags=canvas.gettags(self.rectidx)
-            #print(tags)
-            if canvas.left_click_callback:
-                res_continue = canvas.left_click_callback(tags, "",callertype="canvas")
-                
+        tablecanvas=global_tabledict[self.tablename]
+        tags=tablecanvas.gettags(self.rectidx)
+        #print(tags)
+        if tablecanvas.left_click_callback:
+            res_continue = tablecanvas.left_click_callback(tags, "",callertype="canvas")
         return
             
-    def updateShape(self,Fill=None,Text=None):
-        if Fill:
-            self.Fill=Fill
+    def updateShape(self,Fillcolor=None,Text=None,AltText=None):
+        if Fillcolor:
+            self.Fillcolor=Fillcolor
         if Text:
-            self.TextFrame2=Text
-        canvas = global_tabledict.get(self.tablename,None)
-        if canvas:
-            canvas.drawShape(self)
+            self.Text=Text
+        if AltText:
+            self.AlternativeText=AltText
+        tablecanvas=global_tabledict[self.tablename]
+        tablecanvas.drawShape(self)
         
     def Delete(self):
-        canvas = global_tabledict.get(self.tablename,None)
-        canvas.delete_shape(self.masteridx)
+        tablecanvas=global_tabledict[self.tablename]
+        tablecanvas.deleteshape(self.Name)
         pass
+    
+    def ZOrder(self,zorder):
+        self.ZOrder_val=zorder
     
     def set_activeflag(self,value):
         self.Active=value
@@ -3257,5 +3568,66 @@ class CShape(object):
             self.Active=True
         return self.Active
     
+    def Select(self):
+        tablecanvas=global_tabledict[self.tablename]
+        tablecanvas.setSelectedCells(self.TopLeftCell_Row, self.TopLeftCell_Row+1, self.TopLeftCell_Col, self.TopLeftCell_Col+1)
+        tablecanvas.setSelectedShapes(self)
+        
+    def get_visible(self):
+        return self.Visible_val
+    
+    def set_visible(self, value):
+        self.Visible_val=value
+        if value==True:
+            tablecanvas=global_tabledict[self.tablename]
+            tablecanvas.drawShape(self)
+        else:
+            pass # removeshape
 
+    Visible = property(get_visible, set_visible, doc='Visible Status')
+    
+    def get_top(self):
+        return self.Top_val
+    
+    def set_top(self, value):
+        self.Top_val=value
+        if self.rectidx!=0 or self.formwin!=None:
+            tablecanvas=global_tabledict[self.tablename]
+            tablecanvas.drawShape(self)
+        
+    Top = property(get_top, set_top, doc='Shape-Top')
+    
+    def get_text(self):
+        return self.Text_val
+    
+    def set_text(self, value):
+        self.Text_val=value
+        if self.rectidx!=0 or self.formwin!=None:
+            tablecanvas=global_tabledict[self.tablename]
+            self.updatecontrol = True
+            tablecanvas.drawShape(self)
+            self.updatecontrol = False
+        
+    Text = property(get_text, set_text, doc='Shape-Text')
 
+            
+def rgb2tkcolor(r,g,b):
+    return f'#{r:02x}{g:02x}{b:02x}'
+
+def tkcolor2rgb(color):
+    r = int(color[1:3], 16)
+    g = int(color[3:5], 16)
+    b = int(color[5:7], 16)
+    return (r,g,b)
+
+def int2tkcolor(colorVal):
+    if type(colorVal)==int:
+        r=colorVal % 256
+        g=(colorVal // 256 )  % 256
+        b=colorVal // 65536
+        _fn_return_value = f'#{r:02x}{g:02x}{b:02x}'
+    else:
+        _fn_return_value=colorVal
+    return _fn_return_value
+
+    

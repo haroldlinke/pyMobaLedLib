@@ -62,7 +62,7 @@ from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
 
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, DEFAULT_PALETTE, LARGE_FONT, NORMAL_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, PERCENT_BRIGHTNESS, BLINKFRQ
-#from mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
+# fromx mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
 import mlpyproggen.dictFile as dictFile
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
 from locale import getdefaultlocale

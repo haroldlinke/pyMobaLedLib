@@ -20,7 +20,7 @@ Alpha channel gradient bar
 """
 
 
-#from PIL import Image, ImageTk
+# fromx PIL import Image, ImageTk
 from tkcolorpicker.functions import tk, round2, rgb_to_hsv
 from tkcolorpicker.functions import create_checkered_image
 

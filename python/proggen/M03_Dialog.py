@@ -71,8 +71,8 @@ import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 import proggen.F00_mainbuttons as F00
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 
 """ Dialog guided input

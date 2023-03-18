@@ -76,8 +76,8 @@ import proggen.M37_Inst_Libraries as M37
 
 import proggen.F00_mainbuttons as F00
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 import proggen.Prog_Generator as PG
 import proggen.M09_Language as M09
 
@@ -267,37 +267,37 @@ class CUserForm_Options:
             Col = M25.BUILDOP_COL
             Side = 'L'
             BuildOpt = P01.Cells(M02.SH_VARS_ROW, Col)
-            self.Autodetect_Typ_L_CheckBox_var.set(InStr(BuildOpt, M02.AUTODETECT_STR) > 0)
+            self.Autodetect_Typ_L_CheckBox_var.set(InStr(str(BuildOpt), M02.AUTODETECT_STR) > 0)
         else:
             Col = M25.BUILDOpRCOL
             Side = 'R'
             BuildOpt = P01.Cells(M02.SH_VARS_ROW, Col)
-            self.Autodetect_Typ_R_CheckBox_var.set(InStr(BuildOpt, M02.AUTODETECT_STR) > 0)
-        if InStr(BuildOpt, M02.BOARD_NANO_OLD) > 0:
+            self.Autodetect_Typ_R_CheckBox_var.set(InStr(str(BuildOpt), M02.AUTODETECT_STR) > 0)
+        if InStr(str(BuildOpt), M02.BOARD_NANO_OLD) > 0:
             self.Controls['Nano_Normal_' + Side].Value = True
             return
-        if InStr(BuildOpt, M02.BOARD_NANO_FULL) > 0:
+        if InStr(str(BuildOpt), M02.BOARD_NANO_FULL) > 0:
             self.Controls['Nano_Full_' + Side].Value = True
             return
             # 28.10.20:
-        if InStr(BuildOpt, M02.BOARD_NANO_NEW) > 0:
+        if InStr(str(BuildOpt), M02.BOARD_NANO_NEW) > 0:
             self.Controls['Nano_New_' + Side].Value = True
             return
-        if InStr(BuildOpt, M02.BOARD_UNO_NORM) > 0:
+        if InStr(str(BuildOpt), M02.BOARD_UNO_NORM) > 0:
             self.Controls['Uno_' + Side].Value = True
             return
-        if InStr(BuildOpt, M02.BOARD_NANO_EVERY) > 0:
+        if InStr(str(BuildOpt), M02.BOARD_NANO_EVERY) > 0:
             return
             # currently no option in GUI, but that's ok, as ATMEGA4809 is currently unsupported 28.10.20: Jürgen
-        if InStr(BuildOpt, M02.BOARD_ESP32) > 0 and Side == 'L' and M37.ESP32_Lib_Installed():
+        if InStr(str(BuildOpt), M02.BOARD_ESP32) > 0 and Side == 'L' and M37.ESP32_Lib_Installed():
             self.Controls['ESP32_L'].Value = True
             return
             # 11.11.20:
-        if InStr(BuildOpt, M02.BOARD_PICO) > 0 and Side == 'L' and M37.PICO_Lib_Installed():
+        if InStr(str(BuildOpt), M02.BOARD_PICO) > 0 and Side == 'L' and M37.PICO_Lib_Installed():
             self.Controls['PICO_L'].Value = True
             return
             # 18.04.21: Juergen
-        if InStr(BuildOpt, '--board ') > 0:
+        if InStr(str(BuildOpt), '--board ') > 0:
             self.Controls['Nano_Normal_' + Side].Value = False
             self.Controls['Nano_New_' + Side].Value = False
             self.Controls['Uno_' + Side].Value = False
@@ -401,7 +401,7 @@ class CUserForm_Options:
         URL= "https://github.com/HaroldLinke/pyMobaLedLib/archive/master.zip"
         try:
             
-            workbookpath = P01.ThisWorkbook.Path
+            workbookpath = PG.ThisWorkbook.Path
             workbookpath2 = os.path.dirname(workbookpath)
             workbookpath3 = os.path.dirname(workbookpath2)
             zipfilenamepath = workbookpath3+"/pyMobaLedLib.zip"
@@ -437,7 +437,7 @@ class CUserForm_Options:
     def __Show_Lib_and_Board_Page_Button_Click(self):
         #-------------------------------------------------
         self.Hide()
-        with_1 = P01.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
+        with_1 = PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
         with_1.Visible(True)
         with_1.Select()
         

@@ -43,16 +43,16 @@ import time
 from vb2py.vbconstants import *
 
 from mlpyproggen.DefaultConstants import ARDUINO_WAITTIME,LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION,ARDUINO_LONG_WAITTIME
-#from mlpyproggen.configfile import ConfigFile
+# fromx mlpyproggen.configfile import ConfigFile
 from locale import getdefaultlocale
-#from tkintertable import TableCanvas, TableModel
-#from collections import OrderedDict
-from ExcelAPI.P01_Workbook import create_workbook
+# fromx tkintertable import TableCanvas, TableModel
+# fromx collections import OrderedDict
+from ExcelAPI.XLW_Workbook import create_workbook
 import proggen.M02_Public as M02
 import proggen.M08_ARDUINO as M08
 import proggen.M40_ShellandWait as M40
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 import os
 #import serial
@@ -63,12 +63,12 @@ import subprocess
 #import time
 import logging
 import platform
-#from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
-#from proggen.M06_Write_Header import Create_HeaderFile
-#from ExcelAPI.P01_Workbook import global_tablemodel
+# fromx scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
+# fromx proggen.M06_Write_Header import Create_HeaderFile
+# fromx ExcelAPI.X02_Workbook import global_tablemodel
 
-#from datetime import datetime
-#from mlpyproggen.T01_exceltable import get_globaltabelmodel
+# fromx datetime import datetime
+# fromx mlpyproggen.T01_exceltable import get_globaltabelmodel
 import  proggen.F00_mainbuttons as F00
 import proggen.M02_Public as M02
 import proggen.M09_Language as M09
@@ -117,10 +117,149 @@ def get_dialog_parent():
 ThreadEvent = None
 
 BUTTONLABELWIDTH = 10
+
+datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
+datasheet_formating = { "HideCells" : ((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16),(1,"*")),
+                        "ProtectedCells"  : ((0,0),(1,0),("*",12),("*",13),("*",14),("*",15),("*",16)),
+                        "left_click_callertype": "cell",
+                        "FontColor"       : { "1": {
+                                                    "font"     : ("Arial",8),
+                                                    "fg"       : "#FFFF00",
+                                                    "bg"       : "#0000FF",
+                                                    "Cells"    : ((0,"*"),(1,"*"))
+                                                    },
+                                              "2": {
+                                                    "font"     : ("Wingdings",10),
+                                                    "fg"       : "#000000",
+                                                    "bg"       : "#FFFFFF",
+                                                    "Cells"    : (("*",1),)
+                                                    },                                                          
+                                            "default": {
+                                                   "font"     : ("Arial",10),
+                                                   "fg"       : "#000000",
+                                                   "bg"       : "#FFFFFF",
+                                                   "Cells"    : (("*","*"),)
+                                                   }
+                                }
+                    }
+                        
+sheetdict_PROGGEN={"DCC":
+            {"Name":"DCC",
+             "Filename"  : "csv/DCC.csv",
+             "Fieldnames": datasheet_fieldnames,
+             "Formating" : datasheet_formating,
+             "SheetType" : "Datasheet"
+             },
+           "Selectrix":
+            {"Name":"Selectrix",
+             "Filename"  : "csv/Selectrix.csv",
+             "Fieldnames": "A;Aktiv;Filter;Channel oder\nName[0..99];Bitposition\n[1..8];Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment",
+             "Formating" : datasheet_formating,
+             "SheetType" : "Datasheet"
+             },
+           "CAN":
+            {"Name":"CAN",
+             "Filename"  : "csv/CAN.csv",
+             "Fieldnames": datasheet_fieldnames,
+             "Formating" : datasheet_formating,
+             "SheetType" : "Datasheet"
+             },
+           "Examples":
+            {"Name":"Examples",
+             "Filename"  : "csv/Examples.csv",
+             "Fieldnames": datasheet_fieldnames,
+             "Formating" : datasheet_formating,
+             "SheetType" : "Datasheet"
+             },
+           "Config":
+            {"Name":"Config",
+             "Filename":"csv/Config.csv",
+             "Fieldnames": "A;B;C;D",
+             "SheetType" : "Config",
+             "Formating" : { "HideCells"       : (("*",3),),
+                            "ProtectedCells"  : ( ("*",1),("*",3)),
+                            "FontColor"       : { "1": {
+                                                        "font"     : ("Arial",10),
+                                                        "fg"       : "#0000FF",
+                                                        "bg"       : "#FFFFFF",
+                                                        "Cells"    : ((0,"*"),)
+                                                        },
+                                                "default": {
+                                                       "font"     : ("Arial",10),
+                                                       "fg"       : "#000000",
+                                                       "bg"       : "#FFFFFF",
+                                                       "Cells"    : (("*","*"),)
+                                                       }
+                                                }
+                            }
+            },
+           "Languages":
+            {"Name":"Languages",
+             "Filename":"csv/Languages.csv",
+             "Fieldnames": "A;B;C;D;E;F;G;H;I"
+            },
+           "Lib_Macros":
+            {"Name":"Lib_Macros",
+             "Filename":"csv/Lib_Macros.csv",
+             "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS"
+            },
+           "Libraries":
+            {"Name":"Libraries",
+             "SheetType" : "Libraries",
+             "Filename":"csv/Libraries.csv",
+             "Fieldnames": "A;B;C;D;E;F;G;H;I;J",
+             "Formating" : {"ProtectedCells"  : ((0,"*"),(1,"*"),(2,"*"),(3,"*"),(4,"*"),(5,"*"),(6,"*"),(7,"*")),
+                            "FontColor"       : { "1": {
+                                                        "font"     : ("Arial",10),
+                                                        "fg"       : "#FFFF00",
+                                                        "bg"       : "#0000FF",
+                                                        "Cells"    : ((6,"*"),)
+                                                        },
+                                                "default": {
+                                                       "font"     : ("Arial",10),
+                                                       "fg"       : "#000000",
+                                                       "bg"       : "#FFFFFF",
+                                                       "Cells"    : (("*","*"),)
+                                                       }
+                                                },
+                            "left_click_callertype": "cell"
+                            }
+            },
+           "Par_Description":
+            {"Name":"Par_Description",
+             "Filename":"csv/Par_Description.csv",
+              "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K"
+            },
+           "Platform_Parameters":
+            {"Name":"Platform_Parameters",
+             "Filename":"csv/Platform_Parameters.csv",
+             "Fieldnames": "A;B;C;D;E"
+            },
+           "Named_Ranges":
+            {"Name":"Named_Ranges",
+             "Filename":"csv/Named_Ranges.csv",
+             "Fieldnames": "A;B;C;D"
+            },
+           "Events": {"Workbook_Open"          : None,
+                      "Workbook_BeforeClose"   : None,
+                      "SheetActivate"          : None,
+                      "SheetDeactivate"        : None,
+                      "SheetTableUpdate"       : None,
+                      "SheetCalculate"         : None,
+                      "SheetBeforeDoubleClick" : None,
+                      "SheetChange"            : M20.Global_Worksheet_Change,
+                      "SheetSelectionChange"   : None,
+                      "SheetReturnKey"         : None,
+                      "NewSheet"               : None
+           }           
+        }
+
+start_sheet  = "DCC"
+ThisWorkbook = None
             
 class Prog_GeneratorPage(tk.Frame):
     def __init__(self, parent, controller):
-        global global_tablemodel
+        global global_tablemodel, ThisWorkbook
         global dialog_parent
         dialog_parent = self
         self.tabClassName = "ProgGeneratorPage"
@@ -180,12 +319,17 @@ class Prog_GeneratorPage(tk.Frame):
         #self.workbook_frame.grid_rowconfigure(0,weight=1)
         #self.workbook_frame.grid_columnconfigure(0,weight=1)        
         
-        self.workbook = create_workbook(frame=self.workbook_frame,path=filedir2, pyProgPath=filedir2)
+        self.workbook = create_workbook(frame=self.workbook_frame,path=filedir2, pyProgPath=filedir2, workbookName="ProgGenerator", sheetdict=sheetdict_PROGGEN,start_sheet=start_sheet,p_global_controller=global_controller)
+        ThisWorkbook=self.workbook
         
         for sheet in self.workbook.sheets:
-            sheet.SetChangedCallback(self.wschangedcallback)
-            sheet.SetSelectedCallback(self.wsselectedcallback)
-        
+            sheet.SetChangedCallback(wschangedcallback)
+            sheet.SetSelectedCallback(wsselectedcallback)
+            sheet.SetCalculationCallback(wscalculationcallback)
+            sheet.SetInitDataFunction(F00.worksheet_init)
+           
+        self.workbook.SetInitWorkbookFunction(F00.workbook_init)
+                
         # Tabframe
         self.frame.grid(row=0,column=0,sticky="nesw")
 
@@ -210,6 +354,10 @@ class Prog_GeneratorPage(tk.Frame):
         
         for sheet in self.workbook.sheets:
             sheet.tablemodel.resetDataChanged()
+        
+        self.workbook.activate_sheet(start_sheet)
+            
+        
         
         # ----------------------------------------------------------------
         # Standardprocedures for every tabpage
@@ -267,16 +415,7 @@ class Prog_GeneratorPage(tk.Frame):
     # End of Standardprocedures for every tabpage
     # ---------------------------------------------------------------- 
     
-    def wschangedcallback(self,changedcell):
-        
-        #print ("wschangedcallback ",changedcell.Row,":",changedcell.Column)
-        M20.Global_Worksheet_Change(changedcell)
-        
-    def wsselectedcallback(self,changedcell):
-        
-        #print ("wsselectedcallback ",changedcell.Row,":",changedcell.Column)
-        M20.Global_Worksheet_SelectionChange(changedcell)    
-        
+
         
     def create_button_list(self):
         
@@ -566,7 +705,7 @@ class Prog_GeneratorPage(tk.Frame):
                 output = self.process.stdout.readline()
                 if self.process.poll() is not None:
                     logging.debug("shell ended")
-                    print("shell ended")
+                    #print("shell ended")
                     break
                 if output:
                     self.arduinoMonitorPage.add_text_to_textwindow(str(output)+"\n")
@@ -782,6 +921,19 @@ class Prog_GeneratorPage(tk.Frame):
         self.controller.showFramebyName("ColorCheckPage")    
     
     
-        
+
+def wschangedcallback(changedcell):
+    
+    #print ("wschangedcallback ",changedcell.Row,":",changedcell.Column)
+    M20.Global_Worksheet_Change(changedcell)
+    
+def wsselectedcallback(changedcell):
+    
+    #print ("wsselectedcallback ",changedcell.Row,":",changedcell.Column)
+    M20.Global_Worksheet_SelectionChange(changedcell)
+    
+def wscalculationcallback(worksheet,cell=None):
+   pass
+    
 
 

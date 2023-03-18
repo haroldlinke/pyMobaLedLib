@@ -65,9 +65,9 @@ import proggen.M80_Create_Mulitplexer as M80
 
 import proggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
@@ -110,8 +110,8 @@ def __Load_Extensions():
     RemoveExistingExtensions()
     OldEvents = P01.Application.EnableEvents
     P01.Application.EnableEvents = False
-    ParamSheet = P01.ThisWorkbook.Sheets(M02.PAR_DESCR_SH)
-    MacroSheet = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+    ParamSheet = PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH)
+    MacroSheet = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
     MacroRow = M30.LastUsedRowIn(MacroSheet) + 1
     ParamRow = M30.LastUsedRowIn(ParamSheet) + 1
     for Extension in Extensions:
@@ -328,7 +328,7 @@ def GetExtensionByTypeName(TypeName):
     return fn_return_value
 
 def IsExtensionKey(Key):
-    fn_return_value = InStr(Key, ExtensionKey) == 1
+    fn_return_value = InStr(str(Key), ExtensionKey) == 1
     return fn_return_value
 
 def Init_HeaderFile_Generation_Extension():
@@ -343,16 +343,16 @@ def Init_HeaderFile_Generation_Extension():
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Cmd - ByRef 
 def Add_Extension_Entry(Cmd):
     fn_return_value = None
-    Str = String()
+    p_str = String()
 
     #Extension = clsExtension()
     Cmd = Mid(Cmd, Len(ExtensionKey) + 1)
-    Str = Cmd
+    p_str = Cmd
     if InStr(Cmd, '(') > 0:
-        Str = Split(Str, '(')(0)
-    Extension = GetExtensionByTypeName(Str)
+        p_str = Split(p_str, '(')(0)
+    Extension = GetExtensionByTypeName(p_str)
     if Extension is None:
-        MsgBox(Replace('Extension \'#1#\' not found', '#1#', Str), vbCritical, 'MobaLedLib Extensions')
+        MsgBox(Replace('Extension \'#1#\' not found', '#1#', p_str), vbCritical, 'MobaLedLib Extensions')
         fn_return_value = False
         return fn_return_value
     if not __ExtensionsActive.Exists(Extension.Id):
@@ -365,7 +365,7 @@ def Write_Header_File_Extension_Before_Config(fp):
     fn_return_value = None
     #Extension = clsExtension()
 
-    Str = Variant()
+    p_str = Variant()
 
     HeaderWritten = Boolean()
     #------------------------------------------------------------------
@@ -382,8 +382,8 @@ def Write_Header_File_Extension_Before_Config(fp):
                     VBFiles.writeText(fp, '', '\n')
                     HeaderWritten = True
                 VBFiles.writeText(fp, '// Extension ' + Extension.Name, '\n')
-                for Str in Split(Extension.MacroIncludes, ','):
-                    VBFiles.writeText(fp, '#include <' + Str + '>')
+                for p_str in Split(Extension.MacroIncludes, ','):
+                    VBFiles.writeText(fp, '#include <' + p_str + '>')
                 VBFiles.writeText(fp, '', '\n')
         if HeaderWritten:
             VBFiles.writeText(fp, '// ----- dynamic Extensions section end -----', '\n')
@@ -394,7 +394,7 @@ def Write_Header_File_Extension_After_Config(fp):
     fn_return_value = None
     Extension = Variant()
 
-    Str = Variant()
+    p_str = Variant()
 
     Index = Integer()
     #------------------------------------------------------------------
@@ -405,8 +405,8 @@ def Write_Header_File_Extension_After_Config(fp):
         for Extension in Extensions:
             if Extension.Includes != '':
                 VBFiles.writeText(fp, '// Extension ' + Extension.Name, '\n')
-                for Str in Split(Extension.Includes, ','):
-                    VBFiles.writeText(fp, '#include <' + Str + '>')
+                for p_str in Split(Extension.Includes, ','):
+                    VBFiles.writeText(fp, '#include <' + p_str + '>')
             VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, '', '\n')
         if __ExtensionLines.Count > 0:
@@ -436,8 +436,8 @@ def Write_PIO_Extension(fp):
 
 def RemoveExistingExtensions():
 
-    MacroSheet = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
-    ParamSheet = P01.ThisWorkbook.Sheets(M02.PAR_DESCR_SH)
+    MacroSheet = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+    ParamSheet = PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH)
     for r in vbForRange(1, M30.LastUsedRowIn(ParamSheet)):
         if IsExtensionKey(ParamSheet.Cells(r, M10.ParName_COL)):
             ParamSheet.Rows(r).EntireRow.Delete()

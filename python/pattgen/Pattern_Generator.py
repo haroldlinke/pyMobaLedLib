@@ -39,15 +39,24 @@ import tkinter as tk
 from tkinter import ttk,messagebox
 
 from mlpyproggen.DefaultConstants import ARDUINO_WAITTIME,LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION,ARDUINO_LONG_WAITTIME
-#from mlpyproggen.configfile import ConfigFile
+# fromx mlpyproggen.configfile import ConfigFile
 from locale import getdefaultlocale
-#from tkintertable import TableCanvas, TableModel
-#from collections import OrderedDict
-from ExcelAPI.P01_Workbook import create_workbook,sheetdict_PatternGEN
+# fromx tkintertable import TableCanvas, TableModel
+# fromx collections import OrderedDict
+# fromx ExcelAPI.X02_Workbook import create_workbook
+import pattgen.M02_Main as M02
+import pattgen.M80_Multiplexer_INI_Handling as M80
+import pattgen.M08_Load_Sheet_Data as M08
+import pattgen.M03_Analog_Trend as M03
+import pattgen.M65_Special_Modules as M65
+import pattgen.M16_Add_Del_Columns as M16
+from ExcelAPI.P01_Worksheetcalc import Calc_Worksheet
+import pattgen.DieseArbeitsmappe
+import pattgen.Tabelle9
 
-import pattgen.T09_Tabelle9 as PAT09
-
-
+import pattgen.Tabelle9 as PAT09
+import pattgen.D00_Forms as D00
+import ExcelAPI.XLW_Workbook as XLW
 
 import os
 #import serial
@@ -58,15 +67,15 @@ import subprocess
 #import time
 import logging
 import platform
-#from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
-#from proggen.M06_Write_Header import Create_HeaderFile
-#from ExcelAPI.P01_Workbook import global_tablemodel
+# fromx scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
+# fromx proggen.M06_Write_Header import Create_HeaderFile
+# fromx ExcelAPI.X02_Workbook import global_tablemodel
 
-#from datetime import datetime
-#from mlpyproggen.T01_exceltable import get_globaltabelmodel
-import  proggen.F00_mainbuttons as F00
-import proggen.M20_PageEvents_a_Functions as M20
-import ExcelAPI.P01_Workbook as P01
+# fromx datetime import datetime
+# fromx mlpyproggen.T01_exceltable import get_globaltabelmodel
+#import  proggen.F00_mainbuttons as F00
+#import proggen.M20_PageEvents_a_Functions as M20
+import ExcelAPI.XLW_Workbook as X02
 #import proggen.D08_Select_COM_Port_Userform as D08
 
 
@@ -101,19 +110,261 @@ dialog_parent = None
 def set_global_controller(controller):
     global global_controller
     global_controller=controller
+    X02.global_controller = controller
 
 def get_global_controller():
     return global_controller
 
 def get_dialog_parent():
     return dialog_parent
+
+def Del_Col_Button_Click():
+    M16.Del_Columns_from_Pattern()
+    XLW.ActiveSheet.Redraw_table()
+
+def Add_Col_Button_Click():
+    M16.Add_Columns_to_Pattern()
+    XLW.ActiveSheet.Redraw_table()
+    
+def button_testen_cmd():
+    X02.Application.Caller="Test_Leds_M99O01"
+    M80.Button_Pressed()
+    
+def button_aktualisieren_cmd():
+    X02.Application.Caller="Update"
+    X02.ActiveSheet.EventWSchanged(X02.Cells(5,5))
+    #M03.Update_Grafik()
+    
+def button_newsheet_cmd():
+    M08.New_Sheet()
+    
+def button_Neuberechnen_cmd():
+    X02.ActiveSheet.EventWSchanged(X02.ActiveCell())
+    #Global_Worksheet_Change(P01.ActiveCell())
+
 ThreadEvent = None
 
 BUTTONLABELWIDTH = 10
-            
+
+
+sheetdict_PatternGEN={"Main":
+            {"Name":"Main",
+             "Filename"  : "csv/PA_Main.csv",
+             "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS",
+             "Formating" : {"HideCells"       : ((0,0),),
+                            "HideRows"        : [12,15,16,17,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46],
+                            #"HideRows"        : [],
+                            "ProtectedCells"  : (("*",0),("*",1),("*",2),("*",3)),
+                            "GridList"        : {"1": ((27,4),(27,63)),
+                                                 "2": ((46,4),(46,63)),
+                                                 "3": ((48,3),(50,63))
+                                                 },
+                            "ColumnWidth"     : (5,17,1,8,22,7),
+                            "ColumnAlignment" : {3:"e",},
+                            "RowHeight"       : 20,
+                            "FontColor"       : { "1": {
+                                                        "font"     : ("Arial",9),
+                                                        "fg"       : "#000000",
+                                                        "bg"       : "#FFFF00",
+                                                        "Cells"    : ((1,4),(2,4),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),(9,4),(10,4),(11,4),(12,4),(13,4),(14,4),(15,4),(21,4))
+                                                        },
+                                                "default": {
+                                                       "font"     : ("Arial",9),
+                                                       "fg"       : "#000000",
+                                                       "bg"       : "#FFFFFF",
+                                                       "Cells"    : (("*","*"),)
+                                                       }
+                                                }
+                            },
+             "SheetType" : "Datasheet",
+             "Controls" :  { "Form1": { "Name"           : "RGB_LED_CheckBox",
+                                        "AlternativeText":"Add_Del_Button",
+                                        "BackColor"     : "#FFFFFF",
+                                        "BorderColor"   : "#000012",
+                                        "Caption"       : "",
+                                        "Height"        : 12,
+                                        "Left"          : None,
+                                        "Col"           : 5,
+                                        "Top"           : None,
+                                        "Row"           : 48,
+                                        "Type"          : "FormWindow",
+                                        "Visible"       : True,
+                                        "Width"         : 100,
+                                        "Components"    : [{"Name":"Add_Col","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                            "Caption":"+",
+                                                            "Command": Add_Col_Button_Click ,"ControlTipText":"","ForeColor":"#000012","Height":12,"Left":0,"Top":1,"Type":"CommandButton","Visible":True,"Width":12,"AlternativeText":"Add_Del_Button"},
+                                                           {"Name":"Del_Button","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                            "Caption":"-",
+                                                            "Command": Del_Col_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":12,"Left":14,"Top":1,"Type":"CommandButton","Visible":True,"Width":12,"AlternativeText":"Add_Del_Button"},
+                                                           {"Name":"RGB_LED_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","Persistent":True,
+                                                            "Caption":"RGB LED",
+                                                            "ControlTipText":"","ForeColor":"#000012","Height":12,"Left":28,"Top":1,"Type":"CheckBox","Visible":True,"Width":60,"AlternativeText":"Add_Del_Button"},
+                                                         ]},
+                            "Form2": {  "Name"          : "Options_Button",
+                                        "BackColor"     : "#FFFFFF",
+                                        "BorderColor"   : "#000012",
+                                        "Caption"       : "",
+                                        "Height"        : "1.35c",
+                                        "Left"          : None,
+                                        "Col"           : 1,
+                                        "Top"           : None,
+                                        "Row"           : 1,
+                                        "Type"          : "FormWindow",
+                                        "Visible"       : True,
+                                        "Width"         : "1.35c",
+                                        "Components"    : [{"Name":"Options","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"Btn_PA_Options.png",
+                                                            "Caption":"Options",
+                                                            "Command": M02.Main_Menu ,"ControlTipText":"Optionen","ForeColor":"#000012","Height":"1.35c","Left":0,"Top":0,"Type":"CommandButton","Visible":True,"Width":"1.35c"},
+                                                          ]},
+                            "Form3": {  "Name"          : "Import",
+                                        "BackColor"     : "#FFFFFF",
+                                        "BorderColor"   : "#000012",
+                                        "Caption"       : "",
+                                        "Height"        : "2.7c",
+                                         "Left"          : None,
+                                        "Col"           : 2,
+                                        "Top"           : None,
+                                        "Row"           : 23,                                        
+                                        "Type"          : "FormWindow",
+                                        "Visible"       : True,
+                                        "Width"         : "2c",
+                                        "Components"    : [{"Name":"Import","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"Btn_PA_Import_from_Prog_Gen.png",
+                                                            "Caption":"Import from ProgGen",
+                                                            "Command": PAT09.Import_from_ProgGen_Button_Click ,"ControlTipText":"Optionen","ForeColor":"#000012","Height":"2.7c","Left":0,"Top":0,"Type":"CommandButton","Visible":True,"Width":"2c"},
+                                                          ]},
+                            "Form4": {  "Name"          : "Export",
+                                        "BackColor"     : "#FFFFFF",
+                                        "BorderColor"   : "#000012",
+                                        "Caption"       : "",
+                                        "Height"        : "2.7c",
+                                        "Left"          : None,
+                                        "Col"           : 2,
+                                        "Top"           : None,
+                                        "Row"           : 49,
+                                        "Type"          : "FormWindow",
+                                        "Visible"       : True,
+                                        "Width"         : "2c",
+                                        "Components"    : [{"Name":"Export","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"Btn_PA_Prog_Gen.png",
+                                                            "Caption":"Export zu ProgGen",
+                                                            "Command": PAT09.Prog_Generator_Button_Click ,"ControlTipText":"Export zu ProgGen","ForeColor":"#000012","Height":"2.7c","Left":0,"Top":0,"Type":"CommandButton","Visible":True,"Width":"2c"},
+                                                          ]},
+                            "Form5": {  "Name"          : "Insert",
+                                        "BackColor"     : "#FFFFFF",
+                                        "BorderColor"   : "#000012",
+                                        "Caption"       : "",
+                                        "Height"        : "2.7c",
+                                        "Left"          : None,
+                                        "Col"           : 2,
+                                        "Top"           : None,
+                                        "Row"           : 56,                                        
+                                        "Type"          : "FormWindow",
+                                        "Visible"       : True,
+                                        "Width"         : "2c",
+                                        "Components"    : [{"Name":"Insert","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"Btn_PA_insert_image.png",
+                                                            "Caption":"Bild einfügen",
+                                                            "Command": PAT09.InsertPicture_Button_Click ,"ControlTipText":"Bild einfügen","ForeColor":"#000012","Height":"2.7c","Left":0,"Top":0,"Type":"CommandButton","Visible":True,"Width":"2c"},
+                                                          ]},
+                            "Form6": {  "Name"          : "Test_Leds_M99O01",
+                                        "BackColor"     : "#FFFFFF",
+                                        "BorderColor"   : "#000012",
+                                        "Caption"       : "",
+                                        "Height"        : 24,
+                                        "Left"          : None,
+                                        "Col"           : 9,
+                                        "Top"           : None,
+                                        "Row"           : 14,                                        
+                                        "Type"          : "FormWindow",
+                                        "Visible"       : True,
+                                        "Width"         : 74,
+                                        "Components"    : [{"Name":"Test_Leds_M99O01","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                                            "Caption":"Test Pattern",
+                                                            "Command": button_testen_cmd ,"ControlTipText":"Pattern Testen","ForeColor":"#000012","Height":20,"Left":2,"Top":2,"Type":"CommandButton","Visible":True,"Width":70},
+                                                          ]},
+                            "Form7": {  "Name"          : "ReCalc",
+                                        "BackColor"     : "#FFFFFF",
+                                        "BorderColor"   : "#000012",
+                                        "Caption"       : "",
+                                        "Height"        : 24,
+                                        "Left"          : None,
+                                        "Col"           : 6,
+                                        "Top"           : None,
+                                        "Row"           : 14,                                        
+                                        "Type"          : "FormWindow",
+                                        "Visible"       : True,
+                                        "Width"         : 74,
+                                        "Components"    : [{"Name":"ReCalc","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                                            "Caption":"Aktualisieren",
+                                                            "Command": button_aktualisieren_cmd ,"ControlTipText":"Grafik aktualisieren und Neuberechnen","ForeColor":"#000012","Height":20,"Left":2,"Top":2,"Type":"CommandButton","Visible":True,"Width":70},
+                                                          ]},
+                            "Form8": {  "Name"          : "New_Sheet",
+                                        "BackColor"     : "#FFFFFF",
+                                        "BorderColor"   : "#000012",
+                                        "Caption"       : "",
+                                        "Height"        : 24,
+                                        "Left"          : None,
+                                        "Col"           : 6,
+                                        "Top"           : None,
+                                        "Row"           : 1,                                        
+                                        "Type"          : "FormWindow",
+                                        "Visible"       : True,
+                                        "Width"         : 74,
+                                        "Components"    : [{"Name":"New_Sheet","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                                            "Caption":"Neues Blatt",
+                                                            "Command": button_newsheet_cmd ,"ControlTipText":"Ein neues Blatt hinzufügen","ForeColor":"#000012","Height":20,"Left":2,"Top":2,"Type":"CommandButton","Visible":True,"Width":70},
+                                                          ]},                                            
+                        }
+             },
+            "Languages":
+              {"Name":"Languages",
+               "Filename"  : "csv/PA_Languages.csv",
+               "Fieldnames": "A;B;C;D;E;F",
+               "Formating" : {}
+               },                             
+           "Goto_Activation_Entries":
+            {"Name":"Goto_Activation_Entries",
+             "Filename"  : "csv/PA_Goto_Activation_Entries.csv",
+             "Fieldnames": "A;B;C;D;E;F",
+             "Formating" : {},
+             },
+           "Special_Mode_Dlg":
+            {"Name":"Special_Mode_Dlg",
+             "Filename"  : "csv/PA_Special_Mode_Dlg.csv",
+             "Fieldnames": "A;B;C;D;E;F",
+             "Formating" : {},
+             },
+           "Par_Description":
+            {"Name":"Par_Description",
+             "Filename":"csv/PA_Par_Description.csv",
+              "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K"
+            },
+           "Named_Ranges":
+            {"Name":"Named_Ranges",
+             "Filename":"csv/PA_Named_Ranges.csv",
+             "Fieldnames": "A;B;C;D"
+            },
+           "Events": {"Workbook_Open"          : pattgen.DieseArbeitsmappe.Workbook_Open,
+                      "Workbook_BeforeClose"   : pattgen.DieseArbeitsmappe.Workbook_BeforeClose,
+                      "SheetActivate"          : pattgen.Tabelle9.Worksheet_Activate,
+                      "SheetDeactivate"        : pattgen.Tabelle9.Worksheet_Deactivate,
+                      "SheetTableUpdate"       : None,
+                      "SheetCalculate"         : Calc_Worksheet,
+                      "SheetBeforeDoubleClick" : None,
+                      "SheetChange"            : pattgen.Tabelle9.Worksheet_Change,
+                      "SheetSelectionChange"   : pattgen.Tabelle9.Worksheet_SelectionChange,
+                      "SheetReturnKey"         : M02.Global_On_Enter_Proc,
+                      "NewSheet"               : None
+           }
+        } 
+        
+
+start_sheet = "Main"
+
+
 class Pattern_GeneratorPage(tk.Frame):
+    
+    
     def __init__(self, parent, controller):
-        global global_tablemodel
+        global global_tablemodel, ThisWorkbook
         global dialog_parent
         dialog_parent = self
         self.tabClassName = "PatternGeneratorPage"
@@ -122,7 +373,7 @@ class Pattern_GeneratorPage(tk.Frame):
         set_global_controller(controller)
         macrodata = self.controller.MacroDef.data.get(self.tabClassName,{})
         self.tabname = macrodata.get("MTabName",self.tabClassName)
-        self.title = macrodata.get("Title","Test "+self.tabClassName + " noch nicht funktionsfähig")
+        self.title = macrodata.get("Title",self.tabClassName + " (Betatest)")
         
         #button1_text = macrodata.get("Button_1",self.tabClassName)
         #button2_text = macrodata.get("Button_2",self.tabClassName)
@@ -156,20 +407,25 @@ class Pattern_GeneratorPage(tk.Frame):
 
         self.parent = parent
         
-        title_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2)
+        title_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=0)
         self.button_frame = ttk.Frame(self.frame, borderwidth=0)
         self.workbook_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2)
         filedir = os.path.dirname(os.path.realpath(__file__))
         self.filedir2 = os.path.dirname(filedir)
         self.workbook_frame.rowconfigure(0,weight=1)
         self.workbook_frame.columnconfigure(0,weight=1)
-        
-        self.workbook = create_workbook(frame=self.workbook_frame,path=self.filedir2,pyProgPath=self.filedir2,sheetdict=sheetdict_PatternGEN,workbookName="PatternWorkbook")
+        X02.Application.EnableEvents=False
+        self.workbook = X02.create_workbook(frame=self.workbook_frame,path=self.filedir2,pyProgPath=self.filedir2,sheetdict=sheetdict_PatternGEN,workbookName="PatternWorkbook",start_sheet=start_sheet,p_global_controller=self.controller)
+        ThisWorkbook=self.workbook
         
         for sheet in self.workbook.sheets:
-            sheet.SetChangedCallback(self.wschangedcallback)
-            sheet.SetSelectedCallback(self.wsselectedcallback)
+            sheet.SetChangedCallback(wschangedcallback)
+            sheet.SetSelectedCallback(wsselectedcallback)
+            sheet.SetCalculationCallback(wscalculationcallback)
+            sheet.SetInitDataFunction(SheetInitDataProc)
         
+        self.workbook.SetInitWorkbookFunction(None)
+                
         # Tabframe
         self.frame.grid(row=0,column=0,sticky="nesw")
 
@@ -177,17 +433,23 @@ class Pattern_GeneratorPage(tk.Frame):
         label.pack(padx=5,pady=(5,5))
         
         # create buttonlist
-        self.create_button_list()
+        #self.create_button_list()
         
-        title_frame.grid(row=0, column=0, sticky="n",pady=(10, 10), padx=10)
-        self.button_frame.grid(row=1, column=0, sticky="nw",pady=(10, 10), padx=10)
-        self.workbook_frame.grid(row=2,column=0,sticky="nesw",pady=(10, 10), padx=10)
+        title_frame.grid(row=0, column=0, sticky="n") #,pady=(10, 10), padx=10)
+        #self.button_frame.grid(row=1, column=0, sticky="nw",pady=(10, 10), padx=10)
+        self.workbook_frame.grid(row=1,column=0,sticky="nesw")#,pady=(10, 10), padx=10)
     
         #config_frame.grid(row=1, columnspan=2, pady=(20, 30), padx=10)        
         #in_button_frame.grid(row=2, column=0, sticky="n", padx=4, pady=4)
         
         for sheet in self.workbook.sheets:
             sheet.tablemodel.resetDataChanged()
+            
+        D00.init_UserForms()
+
+        self.workbook.activate_sheet(start_sheet)
+        
+        X02.Application.EnableEvents=True
         
         # ----------------------------------------------------------------
         # Standardprocedures for every tabpage
@@ -196,7 +458,7 @@ class Pattern_GeneratorPage(tk.Frame):
     def tabselected(self):
         #self.controller.currentTabClass = self.tabClassName
         logging.debug("Tabselected: %s",self.tabname)
-        P01.Application.setActiveWorkbook(self.workbook.Name)
+        X02.Application.setActiveWorkbook(self.workbook.Name)
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)        
         pass
@@ -238,40 +500,23 @@ class Pattern_GeneratorPage(tk.Frame):
     def disconnect(self):
         pass
     
-    # ----------------------------------------------------------------
-    # End of Standardprocedures for every tabpage
-    # ---------------------------------------------------------------- 
-    
-    def wschangedcallback(self,changedcell):
-        
-        #print ("wschangedcallback ",changedcell.Row,":",changedcell.Column)
-        M20.Global_Worksheet_Change(changedcell)
-        
-    def wsselectedcallback(self,changedcell):
-        
-        #print ("wsselectedcallback ",changedcell.Row,":",changedcell.Column)
-        M20.Global_Worksheet_SelectionChange(changedcell)    
-        
-        
     def create_button_list(self):
-        
         button_list=(
-                        {"Icon_name": "btn_pa_import_from_prog_gen.png",
-                         "command"  : PAT09.Import_from_ProgGen_Button_Click,
-                         "padx"     : 20,
-                         "tooltip"  : "Pattern von Prog Generator importieren"},
-                        {"Icon_name": "btn_send_to_arduino.png",
-                         "command"  : PAT09.Prog_Generator_Button_Click,
-                         "padx"     : 20,
-                         "tooltip"  : "Pattern an Prog Generator schicken"},
-                        {"Icon_name": "btn_pa_insert_image.png",
-                         "command"  : PAT09.InsertPicture_Button_Click,
+                        {"Icon_name": "",
+                         "Text"     : "Grafik Aktualisieren",
+                         "command"  : self.button_aktualisieren_cmd,
                          "padx"     : 10,
-                         "tooltip"  : "Bild einfügen"},
-                        {"Icon_name": "btn_Options.png",
-                         "command"  : PAT09.Option_Button_Click,
+                         "tooltip"  : "Aktualisieren"},
+                        {"Icon_name": "",
+                         "Text"     : "Neuberechnen",
+                         "command"  : self.button_Neuberechnen_cmd,
                          "padx"     : 10,
-                         "tooltip"  : "Optionen"}
+                         "tooltip"  : "Neuberechnen"},                        
+                        {"Icon_name": "",
+                         "Text"     : "Testen",
+                         "command"  : self.button_testen_cmd,
+                         "padx"     : 10,
+                         "tooltip"  : "Testen"},
                     )
         
         filedir = os.path.dirname(os.path.realpath(__file__))
@@ -282,11 +527,29 @@ class Pattern_GeneratorPage(tk.Frame):
         for button_desc in button_list:
             self.create_button(button_desc)
             
+    def button_testen_cmd(self):
+        X02.Application.Caller="Test_Leds_M99O01"
+        M80.Button_Pressed()
+        
+    def button_aktualisieren_cmd(self):
+        X02.Application.Caller="Update"
+        M03.Update_Grafik()
+        
+    def button_Neuberechnen_cmd(self):
+        X02.ActiveSheet.EventWSchanged(X02.ActiveCell())
+        #Global_Worksheet_Change(P01.ActiveCell())
+        
+    def prog_Attiny(self):
+        M65.Prog_Tiny_UniProg()
+            
     def create_button(self, button_desc):
-        filename = r"/images/"+button_desc["Icon_name"]
-        filepath = self.filedir2 + filename
-        self.icon_dict[button_desc["Icon_name"]] = tk.PhotoImage(file=filepath)
-        button=ttk.Button(self.button_frame, text="Dialog", image=self.icon_dict[button_desc["Icon_name"]], command=button_desc["command"])
+        if button_desc["Icon_name"] != "":
+            filename = r"/images/"+button_desc["Icon_name"]
+            filepath = self.filedir2 + filename
+            self.icon_dict[button_desc["Icon_name"]] = tk.PhotoImage(file=filepath)
+            button=ttk.Button(self.button_frame, text="Dialog", image=self.icon_dict[button_desc["Icon_name"]], command=button_desc["command"])
+        else:
+            button=ttk.Button(self.button_frame, text=button_desc["Text"], command=button_desc["command"])
         button.pack( side="left",padx=button_desc["padx"])
         self.controller.ToolTip(button, text=button_desc["tooltip"])
     
@@ -508,8 +771,28 @@ class Pattern_GeneratorPage(tk.Frame):
         self.controller.coltab = ColorTable
         self.controller.checkcolor_callback = callback
         self.controller.showFramebyName("ColorCheckPage")    
+
+# ----------------------------------------------------------------
+# Callback procedures
+# ---------------------------------------------------------------- 
+
+def wschangedcallback(changedcell):    
+    #print ("wschangedcallback ",changedcell.Row,":",changedcell.Column)
+    M02.Global_Worksheet_Change(changedcell)
+    
+def wsselectedcallback(changedcell):
+    
+    #print ("wsselectedcallback ",changedcell.Row,":",changedcell.Column)
+    M02.Global_Worksheet_SelectionChange(changedcell)    
+   
+def wscalculationcallback(worksheet,cell=None):
+    Calc_Worksheet(worksheet,cell=cell)
+    
+def SheetInitDataProc(sheet):
+    Target=XLW.CRange(5,5,ws=sheet)
+    M02.Global_Worksheet_Change(Target)
+    sheet.Redraw_table()
     
     
-        
-
-
+    
+ThisWorkbook=None

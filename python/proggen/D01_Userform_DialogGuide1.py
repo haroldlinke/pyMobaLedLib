@@ -35,7 +35,7 @@ import tkinter as tk
 from tkinter import ttk
 import proggen.Prog_Generator as PG
 from vb2py.vbconstants import *
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 import proggen.M09_Language as M09
 
 class UserForm_DialogGuide1:

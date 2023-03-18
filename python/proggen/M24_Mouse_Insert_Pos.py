@@ -66,9 +66,9 @@ import proggen.M80_Create_Mulitplexer as M80
 
 import proggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
@@ -175,7 +175,7 @@ def __Show_InsertLine_until_Mousepressed(MinRow, SheetName):
     if P01.GetAsyncKeyState(__VK_RETURN) != 0:
         __EnterKey_Pressed = True
     if MoveByKey:
-        P01.SetCursorPos(P01.ActiveWindow.ActivePane.PointsToScreenPixelsX(ActiveCell.Left +  ( ActiveCell.Width / 2 )), ActiveWindow.ActivePane.PointsToScreenPixelsY(ActiveCell.Top +  ( ActiveCell.Height / 2 )))
+        P01.SetCursorPos(P01.ActiveWindow.ActivePane.PointsToScreenPixelsX(ActiveCell().Left +  ( ActiveCell().Width / 2 )), ActiveWindow.ActivePane.PointsToScreenPixelsY(ActiveCell().Top +  ( ActiveCell().Height / 2 )))
         rng = P01.ActiveCell()
     else:
         rng = __GetRange(llCoord.Xcoord, llCoord.Ycoord)

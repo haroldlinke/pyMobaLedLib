@@ -49,12 +49,13 @@ import platform
 import shutil
 import pathlib
 
-from ExcelAPI.X01_Excel_Consts import *
-#from proggen.M02_Public import Get_BoardTyp
+from ExcelAPI.XLC_Excel_Consts import *
+# fromx proggen.M02_Public import Get_BoardTyp
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 import proggen.M02_Public as M02
+import proggen.M02a_Public as M02a
 #import proggen.M02_global_variables as M02GV
 #import proggen.M03_Dialog as M03
 import proggen.M06_Write_Header as M06
@@ -67,6 +68,7 @@ import proggen.M09_Language as M09
 #import proggen.M09_Select_Macro as M09SM
 #import proggen.M09_SelectMacro_Treeview as M09SMT
 #import proggen.M10_Par_Description as M10
+import proggen.M12_Copy_Prog as M12
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
@@ -1062,7 +1064,7 @@ def Bring_to_front(hwnd):
     # See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow
     # But it brings up excel again after the upload to the Arduino
     # Without this funchion an other program was activated after the upload for some reasons
-    P01.ThisWorkbook.Activate()
+    PG.ThisWorkbook.Activate()
     #*HL SetForegroundWindow(hwnd)
 
 def Replicate(RepeatString, NumOfTimes):
@@ -1305,17 +1307,17 @@ def Clear_Platform_Parameter_Cache():
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ParName - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: EmptyCheck=False - ByVal 
 def Get_Current_Platform_String(ParName, EmptyCheck=False, Silent=False):
-    fn_return_value = Get_Platform_String(M02.Get_BoardTyp(), ParName, EmptyCheck, Silent)
+    fn_return_value = Get_Platform_String(M02a.Get_BoardTyp(), ParName, EmptyCheck, Silent)
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ParName - ByVal 
 def Get_Current_Platform_Bool(ParName, Silent=False):
-    fn_return_value = Get_Platform_Bool(M02.Get_BoardTyp(), ParName, Silent)
+    fn_return_value = Get_Platform_Bool(M02a.Get_BoardTyp(), ParName, Silent)
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ParName - ByVal 
 def Get_Current_Platform_Int(ParName, Silent=False):
-    fn_return_value = Get_Platform_Int(M02.Get_BoardTyp(), ParName, Silent)
+    fn_return_value = Get_Platform_Int(M02a.Get_BoardTyp(), ParName, Silent)
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: PlatformKey - ByVal 
@@ -1467,21 +1469,21 @@ def CreateHeaderFile(Platform, SheetName):
     M25.Make_sure_that_Col_Variables_match()
     OriginalPlatform = P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL)
     if (Platform == 'ESP32'):
-        P01.Cells[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_ESP32
+        P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_ESP32
     elif (Platform == 'AM328'):
-        P01.Cells[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_NANO_NEW
+        P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_NANO_NEW
     elif (Platform == 'PICO'):
-        P01.Cells[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_PICO
+        P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_PICO
     else:
         P01.MsgBox('The platform ' + Platform + ' is not supported')
         return
     if M06.Create_HeaderFile(True):
-        FileCopy_with_Check(P01.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED, Platform + '_Header_' + SheetName + '.h', P01.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + M02.Include_FileName)
+        M12.FileCopy_with_Check(PG.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED, Platform + '_Header_' + SheetName + '.h', PG.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + M02.Include_FileName)
     else:
-        TargetName = P01.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + Platform + '_Header_' + SheetName + '.h'
+        TargetName = PG.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + Platform + '_Header_' + SheetName + '.h'
         if Dir(TargetName) != '':
             Kill(TargetName)
-    P01.Cells[M02.SH_VARS_ROW, M25.BUILDOP_COL] = OriginalPlatform
+    P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = OriginalPlatform
     
 def __IsValidPageId(ID):
     fn_return_value = True
@@ -1509,15 +1511,15 @@ def CreateAllHeaderFiles():
 """ 31.01.22: Juergen
 ---------------------------------------------------------------------------------------------------------------------------------
 """
-def Matches(Str, reg, matchIndex=VBMissingArgument, subMatchIndex=VBMissingArgument):
+def Matches(p_str, reg, matchIndex=VBMissingArgument, subMatchIndex=VBMissingArgument):
     #---------------------------------------------------------------------------------------------------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo ErrHandl
     fn_return_value = False
     regex = CreateObject('VBScript.RegExp')
     regex.Pattern = reg
     regex.Global = not ( matchIndex == 0 and subMatchIndex == 0 ) 
-    if regex.Test(Str):
-        Match = regex.Execute(Str)
+    if regex.Test(p_str):
+        Match = regex.Execute(p_str)
         fn_return_value = Match.Count == 1
         return fn_return_value
     fn_return_value = False

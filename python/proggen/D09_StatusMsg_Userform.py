@@ -34,15 +34,15 @@
 # 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
 # 2021-01-07 v4.02 HL: - Else:, ByRef check done - first PoC release
 
-#from vb2py.vbfunctions import *
-#from vb2py.vbdebug import *
-#from vb2py.vbconstants import *
+# fromx vb2py.vbfunctions import *
+# fromx vb2py.vbdebug import *
+# fromx vb2py.vbconstants import *
 
 import tkinter as tk
 from tkinter import ttk
-#from mlpyproggen.tooltip import Tooltip
-#from tkcolorpicker.spinbox import Spinbox
-#from tkcolorpicker.limitvar import LimitVar
+# fromx mlpyproggen.tooltip import Tooltip
+# fromx tkcolorpicker.spinbox import Spinbox
+# fromx tkcolorpicker.limitvar import LimitVar
 
 import proggen.Prog_Generator as PG
 
@@ -69,8 +69,8 @@ import proggen.Prog_Generator as PG
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
 
-#from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+# fromx ExcelAPI.X01_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 import logging
 

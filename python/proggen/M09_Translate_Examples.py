@@ -34,9 +34,6 @@
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-from proggen.M28_divers import *
-from proggen.M30_Tools import *
-from proggen.M09_Language import *
 
 """ Translate the example strings
 UT------------------------------------------------

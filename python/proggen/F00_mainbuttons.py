@@ -45,7 +45,7 @@ import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
 import proggen.M12_Copy_Prog as M12
 import proggen.M17_Import_old_Data as M17
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 import proggen.Prog_Generator as PG
 import proggen.M22_Hide_UnHide as M22
 import proggen.M23_Add_Move_Del_Row as M23
@@ -66,6 +66,8 @@ import proggen.D09_StatusMsg_Userform as D09
 import proggen.D08_Select_COM_Port_Userform as D08
 import proggen.D10_UserForm_Options as D10
 import proggen.D11_Userform_SimpleInput as D11
+import proggen.D12_Select_ProgGen_Src_Form as D12
+import proggen.D13_Select_ProgGen_Dest_Form as D13
 
 def Arduino_Button_Click(event=None):
     #---------------------------------
@@ -226,11 +228,11 @@ def Workbook_Open():
     P01.Application.EnableEvents = False
     #Cleare_Mouse_Hook()
     Debug.Print('Workbook_Open() called')
-    P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH).Visible(False)
-    P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible(False)
-    P01.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible(False)
-    P01.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Visible(False)
-    P01.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible(False)
+    PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH).Visible(False)
+    PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible(False)
+    PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible(False)
+    PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Visible(False)
+    PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible(False)
     M30.Check_Version()
     if P01.ActiveSheet.Name == M02.ConfigSheet:
         P01.Sheets(M02.START_SH).Select()
@@ -270,6 +272,7 @@ def Workbook_Open():
 
         
 def workbook_init(workbook):
+          
     M01.__Release_or_Debug_Version(True)
     
     if P01.checkplatform("Windows"):
@@ -293,20 +296,21 @@ def workbook_init(workbook):
     Workbook_Open()    
     P01.Application.set_canvas_leftclickcmd(M32.DCCSend)    
     
-def worksheet_init(worksheet):
+def worksheet_init(act_worksheet):
     return
 
     first_call=True
 
-    if worksheet.Datasheet:
-        P01.ActiveSheet=worksheet
+    if act_worksheet.Datasheet:
+        P01.ActiveSheet=act_worksheet
         for row in range(3,M30.LastUsedRow()):
             M20.Update_TestButtons(row,First_Call=first_call)
             M20.Update_StartValue(row)
             first_call=False
     
 def init_UserForms():
-    global StatusMsg_UserForm, UserForm_Select_Typ_DCC, UserForm_Select_Typ_SX, Select_COM_Port_UserForm,UserForm_Options,UserForm_DialogGuide1,UserForm_Description,UserForm_Connector,Userform_SimpleInput
+    global StatusMsg_UserForm, UserForm_Select_Typ_DCC, UserForm_Select_Typ_SX, Select_COM_Port_UserForm,UserForm_Options,UserForm_DialogGuide1,UserForm_Description,UserForm_Connector
+    global Userform_SimpleInput,Select_ProgGen_Src_Form, Select_ProgGen_Dest_Form
     
     UserForm_DialogGuide1 = D01.UserForm_DialogGuide1()
     UserForm_Select_Typ_DCC = D02.UserForm_Select_Typ_DCC()
@@ -317,6 +321,8 @@ def init_UserForms():
     StatusMsg_UserForm = D09.CStatusMsg_UserForm()
     UserForm_Options = D10.CUserForm_Options()
     Userform_SimpleInput = D11.UserForm_SimpleInput()
+    Select_ProgGen_Src_Form = D12.CSelect_ProgGen_Src_Form(PG.global_controller)
+    Select_ProgGen_Dest_Form = D13.CSelect_ProgGen_Dest_Form(PG.global_controller)
 
     
 def notimplemented(command):
@@ -334,40 +340,48 @@ StatusMsg_UserForm = None
 UserForm_Select_Typ_DCC = None
 UserForm_Select_Typ_SX = None
 Select_COM_Port_UserForm = None
+Select_ProgGen_Src_Form = None
+Select_ProgGen_Dest_Form = None
 
 #**************************
 #'  Port handling functions
 #**************************
 
 def port_is_busy(port):
-    
     if type(port)==int:
         return port <0
     elif type(port)==str:
         return port.startswith("*")
+    elif type(port)==P01.CRange:
+        strport=str(port)
+        return strport.startswith("*")
     
 def port_is_available(port):
     if type(port)==int:
         return port > 0
-    elif type(port)==str or type(port)==P01.CCell:
-        return not (port.startswith("*") or port=="COM?" or port==" " or port=="NO DEVICE")
+    elif type(port)==str or type(port)==P01.CRange:
+        strport=str(port)
+        return not (strport.startswith("*") or strport=="COM?" or strport==" " or strport=="NO DEVICE")
     return False
     
 def port_reset(port):
-    if port.startswith("*"):
-        return(port[1:])
+    strport=str(port)
+    if strport.startswith("*"):
+        return(strport[1:])
     else:
         return port
     
 def port_check_format(port):
-    if IsNumeric(port):
-        return "COM"+port
+    strport=str(port)
+    if IsNumeric(strport):
+        return "COM"+strport
     else:
-        return port
+        return strport
     
 def port_set_busy(port):
-    if port.startswith("*"):
-        return(port)
+    strport=str(port)
+    if strport.startswith("*"):
+        return(strport)
     else:
         return "*"+port
     

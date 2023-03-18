@@ -55,6 +55,9 @@ def Array(*args):
         array[idx] = args[idx]
     return array
 
+def Call(**params):
+    """Call a function from string"""
+    eval(*args)
 
 def CBool(num):
     """Return the boolean version of a number"""
@@ -161,7 +164,6 @@ def EOF(channel):
 def FileLen(filename):
     """Return the length of a given file"""
     return os.stat(str(filename))[6]
-
 
 def Filter(sourcesarray, match, include=1):
     """Returns a zero-based array containing subset of a string array based on a specified filter criteria"""
@@ -431,7 +433,7 @@ def RGB(r, g, b):
     return ((bm * 256) + gm) * 256 + rm
 
 
-def Replace(expression, find, replace, start=1, count=-1):
+def Replace(expression, find, replace, start=1, count=-1,Compare=None):
     """Returns a string in which a specified substring has been replaced with another
     substring a specified number of times
 
@@ -731,10 +733,14 @@ def Val(text):
     quicker.
 
     """
+    if type(text)!=str: #*HL if text is not string then return it without change (might be int or float)
+        return text
     best = 0
     for idx in range(len(text)):
         try:
             best = float(text[:idx + 1])
+            if (best - int(best)) == 0:
+                best=int(best)
         except ValueError:
             pass
     return best

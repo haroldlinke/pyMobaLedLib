@@ -37,7 +37,7 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 #import proggen.M02_Public as M02
-#import ExcelAPI.P01_Workbook as P01
+#import ExcelAPI.X02_Workbook as P01
 #import proggen.M08_ARDUINO as M08
 #import proggen.M09_Language as M09
 #import proggen.M25_Columns as M25
@@ -66,11 +66,11 @@ import proggen.M30_Tools as M30
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 import proggen.D08_Select_COM_Port_Userform as D08
 import proggen.M07_COM_Port as M07
-import  proggen.F00_mainbuttons as F00
+import proggen.F00_mainbuttons as F00
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *

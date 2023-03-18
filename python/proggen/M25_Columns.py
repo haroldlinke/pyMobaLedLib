@@ -39,9 +39,9 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 
-#from proggen.M02_Public import SH_VARS_ROW,PAGE_ID_COL,Header_Row
+# fromx proggen.M02_Public import SH_VARS_ROW,PAGE_ID_COL,Header_Row
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 import proggen.M02_Public as M02
 #import proggen.M02_global_variables as M02GV
@@ -59,15 +59,16 @@ import proggen.M09_Language as M09
 #import proggen.M20_PageEvents_a_Functions as M20
 #import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-#import proggen.M28_divers as M28
+import proggen.M28_divers as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 #import proggen.M37_Inst_Libraries as M37
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
+import proggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 
 Col_from_Sheet = ""  #*HL
@@ -101,16 +102,16 @@ def Add_Icons_and_Lines():
     #Sh = P01.CWorksheet
     #--------------------------------
     P01.Application.EnableEvents = False
-    for Sh in P01.ThisWorkbook.Sheets:
-        if M27.Is_Data_Sheet(Sh):
+    for Sh in PG.ThisWorkbook.Sheets:
+        if M28.Is_Data_Sheet(Sh):
             Make_sure_that_Col_Variables_match(Sh)
             with_variable0 = Sh
             if with_variable0.Cells(M02.Header_Row, MacIcon_Col) == r'Beleuchtung, Sound, oder andere Effekte':
-                with_variable1 = with_variable0.Columns(M27.ColumnLettersFromNr(MacIcon_Col) + r':' + M27.ColumnLettersFromNr(MacIcon_Col))
+                with_variable1 = with_variable0.Columns(M30.ColumnLettersFromNr(MacIcon_Col) + r':' + M30.ColumnLettersFromNr(MacIcon_Col))
                 #.Select ' Debug
                 with_variable1.Insert(Shift=xlToRight, CopyOrigin=xlFormatFromLeftOrAbove)
                 with_variable1.Insert(Shift=xlToRight, CopyOrigin=xlFormatFromLeftOrAbove)
-                with_variable0.Columns[M27.ColumnLettersFromNr(MacIcon_Col) + r':' + M27.ColumnLettersFromNr(MacIcon_Col)].ColumnWidth = 1.78
+                with_variable0.Columns[M30.ColumnLettersFromNr(MacIcon_Col) + r':' + M30.ColumnLettersFromNr(MacIcon_Col)].ColumnWidth = 1.78
                 with_variable2 = with_variable0.Cells(M02.Header_Row, MacIcon_Col)
                 with_variable2.FormulaR1C1 = r'Icon'
                 with_variable2.Orientation = 90
@@ -124,13 +125,13 @@ def Del_Icons_and_Lines():
     #Sh = Variant()
     #--------------------------------
     P01.Application.EnableEvents = False
-    for Sh in P01.ThisWorkbook.Sheets:
-        if M27.Is_Data_Sheet(Sh):
+    for Sh in PG.ThisWorkbook.Sheets:
+        if M28.Is_Data_Sheet(Sh):
             Make_sure_that_Col_Variables_match(Sh)
             First_Col = MacIcon_Col
             with_variable3 = Sh
             if with_variable3.Cells(M02.Header_Row, First_Col) == r'Icon':
-                with_variable3.Columns(M27.ColumnLettersFromNr(First_Col) + r':' + M27.ColumnLettersFromNr(First_Col + 1)).Delete(Shift=xlToLeft)
+                with_variable3.Columns(M30.ColumnLettersFromNr(First_Col) + r':' + M30.ColumnLettersFromNr(First_Col + 1)).Delete(Shift=xlToLeft)
     P01.Application.EnableEvents = True
 
 def Has_Macro_and_LanguageName_Column(Sh, Col):
@@ -221,7 +222,7 @@ def Get_First_Number_of_Range(Row, Col):
     #-----------------------------------------------------------------------------
     # Accepts also a address which contains two adressed separated by '-'
     # Example: '1 - 3'
-    Addr = Replace(Replace(P01.Cells(Row, Col), vbLf, r''), r' ', r'')
+    Addr = Replace(Replace(str(P01.Cells(Row, Col)), vbLf, r''), r' ', r'')
     if Addr == r'':
         fn_return_value = r''
         return fn_return_value

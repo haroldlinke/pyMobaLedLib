@@ -63,7 +63,7 @@ from tkcolorpicker.functions import tk, ttk, round2, create_checkered_image, \
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, DEFAULT_PALETTE, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, Very_SMALL_FONT, PROG_VERSION, PERCENT_BRIGHTNESS, BLINKFRQ, ARDUINO_WAITTIME, ARDUINO_LONG_WAITTIME, HOUSE_PALETTE2COLOR_PALETTE, SWITCHMACROLIST,SIZEFACTOR,MAC_Version
-#from mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
+# fromx mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
 import mlpyproggen.dictFile as dictFile
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
 from locale import getdefaultlocale

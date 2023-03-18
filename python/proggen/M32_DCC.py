@@ -43,7 +43,7 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 import proggen.M02_Public as M02
 #import proggen.M02_global_variables as M02GV
@@ -114,7 +114,7 @@ def DCCSend():
     Direction = P01.val(Mid(callerName, 7, 2))
     if SendDCCAccessoryCommand(Addr, Direction):
         
-        for Button in P01.ActiveSheet.Shapes.getlist():
+        for Button in P01.ActiveSheet.Shapes:
             #Debug.Print Button.Name
             if Button.Name == callerName and Button.AlternativeText != '':
                 Tmp = Button.Name
@@ -123,8 +123,8 @@ def DCCSend():
                 Button.Name = Button.AlternativeText
                 Button.AlternativeText = Tmp
                 #*HLButton.TextFrame2.TextRange.Text = Mid(Button.Name, 13, 1)
-                Button.TextFrame2 = Mid(Button.Name, 13, 1)
-                Button.Fill = M20.GetButtonColor(P01.val(Mid(Button.Name, 10, 2)))
+                Button.TextFrame2.TextRange.Text = Mid(Button.Name, 13, 1)
+                Button.Fill.ForeColor.rgb = M20.GetButtonColor(P01.val(Mid(Button.Name, 10, 2)))
                 Button.updateShape()
     M39.SendToSimulator(Addr, Direction)
 

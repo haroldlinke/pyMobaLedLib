@@ -36,48 +36,16 @@
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-
-from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-#from proggen.M25_Columns import Make_sure_that_Col_Variables_match
-#from ExcelAPI.P01_Workbook import (TimeValue, ActiveCell, create_workbook, IsError, Cells, Range, Sheets, Rows, Columns, IsEmpty, val, VarType, ChDrive, Format, 
-#                                        MsgBox, InputBox, CWorkbook, CWorksheet, CRange, CRectangles, CSelection, CRow, CEntireRow, CColumn, CEntireColumn, CCell, CCellDict, CWorksheetFunction, CApplication, CFont, CActiveWindow, SoundLines)
-
-
-
 import proggen.M02_Public as M02
-import proggen.M02_global_variables as M02GV
-import proggen.M03_Dialog as M03
-import proggen.M06_Write_Header as M06
-import proggen.M06_Write_Header_LED2Var as M06LED
-import proggen.M06_Write_Header_Sound as M06Sound
-import proggen.M06_Write_Header_SW as M06SW
-import proggen.M07_COM_Port as M07
-import proggen.M08_ARDUINO as M08
+import proggen.M02a_Public as M02a
 import proggen.M09_Language as M09
-import proggen.M09_Select_Macro as M09SM
-import proggen.M09_SelectMacro_Treeview as M09SMT
-import proggen.M10_Par_Description as M10
-import proggen.M20_PageEvents_a_Functions as M20
-import proggen.M25_Columns as M25
-import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
 import proggen.M30_Tools as M30
-import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
-import proggen.M60_CheckColors as M60
-import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
-
-import ExcelAPI.P01_Workbook as P01
-
-from ExcelAPI.X01_Excel_Consts import *
-
-
+import ExcelAPI.XLW_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Path - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ExpectedFilesLst - ByVal 
@@ -105,17 +73,17 @@ def __Make_Sure_that_GitHub_Library_Exists(Expected_DirName, ExpectedFilesLst):
     #-----------------------------------------------------------------------------------------------------------------------------------
     DestName_for_ZIP = Expected_DirName + '.zip'
     ExtractedDirName = Expected_DirName + '-master'
-    Path = M02.Get_Ardu_LibDir()
+    Path = M02a.Get_Ardu_LibDir()
     M30.CreateFolder(Path)
     if Dir(Path + Expected_DirName, vbDirectory) != '':
         Debug.Print('Directory already exists: ' + Path + Expected_DirName)
-        if __Check_Expected_Files(Path + Expected_DirName + '/', ExpectedFilesLst):
+        if __Check_Expected_Files(Path + Expected_DirName + '', ExpectedFilesLst):
             fn_return_value = True
             return fn_return_value
         else:
             P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Das Verzeichnis \'#1#\' existiert, es enthält aber ' + 'nicht alle der erwarteten Dateien:'), "#1#", Path + Expected_DirName) + vbCr + '  \'' + ExpectedFilesLst + '\'' + vbCr + vbCr + M09.Get_Language_Str('Das Verzeichnis muss manuell gelöscht werden!'), vbCritical, M09.Get_Language_Str('Fehler: Einige Dateien Fehlen'))
             return fn_return_value
-    DestName = M02.Get_Ardu_LibDir() + DestName_for_ZIP
+    DestName = M02a.Get_Ardu_LibDir() + DestName_for_ZIP
     if M37.WIN7_COMPATIBLE_DOWNLOAD:
         M30.F_shellExec('powershell Invoke-WebRequest "' + 'https://github.com/merose/AnalogScanner/archive/master.zip" -o:' + DestName + '"')
     else:
