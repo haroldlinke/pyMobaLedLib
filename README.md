@@ -31,6 +31,15 @@ http://vb2py.sourceforge.net/online_conversion.html. Therefore some hidden error
 
 History of Change
 
+V4.0.9.001 - 18.3.2023 - HL
+- Beta test of PatternGenerator - Main Functionality is available
+- new Excelmodel for running translated VBA code
+
+Known issues:
+- test pattern - goto mode support not implemented yet
+- Patterngenerator access to ARDUINO not fully tested yet
+
+
 V3.1.0.001 -  7.4.2022 - HL 
 - Initial creation of pyMobaLedLib, derived from MobaledLib-PyProgammGenerator Version LX4.19
 - Selection of USB port is LINUX compatible
