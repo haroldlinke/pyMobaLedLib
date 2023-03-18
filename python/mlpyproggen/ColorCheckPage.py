@@ -68,7 +68,7 @@ from tkcolorpicker.limitvar import LimitVar
 from mlpyproggen.lightgradientbar import LightGradientBar
 from mlpyproggen.colorwheel import ColorWheel
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, DEFAULT_PALETTE, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, PERCENT_BRIGHTNESS, BLINKFRQ, ARDUINO_WAITTIME
-#from mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
+# fromx mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
 import mlpyproggen.dictFile as dictFile
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
 
@@ -784,7 +784,7 @@ class ColorCheckPage(tk.Frame):
     # End of Standardprocedures for every tabpage
     # ----------------------------------------------------------------    
     def update_palette_from_coltab(self,Colortable):
-        print("Palette:",self.palette)
+        #print("Palette:",self.palette)
         if Colortable:
         
             for index in range(0,len(Colortable)):
@@ -794,7 +794,7 @@ class ColorCheckPage(tk.Frame):
             for key in self.palette.keys():
                 self.palette[key] = rgb_to_hexa(Colortable(index).r,Colortable(index).g,Colortable(index).b)
                 index = index+1
-            print("Palette:",self.palette)
+            #print("Palette:",self.palette)
         self._update_preview()
         return
     

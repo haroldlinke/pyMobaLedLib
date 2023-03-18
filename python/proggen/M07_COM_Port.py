@@ -43,7 +43,7 @@ from vb2py.vbconstants import *
 
 
 #import proggen.M02_Public as M02
-#import ExcelAPI.P01_Workbook as P01
+#import ExcelAPI.X02_Workbook as P01
 #import proggen.M08_ARDUINO as M08
 #import proggen.M09_Language as M09
 #import proggen.M25_Columns as M25
@@ -51,6 +51,7 @@ from vb2py.vbconstants import *
 #import mlpyproggen.U01_userform as U01
 
 import proggen.M02_Public as M02
+import proggen.M02a_Public as M02a
 #import proggen.M03_Dialog as M03
 #import proggen.M06_Write_Header_LED2Var as M06LED
 #import proggen.M06_Write_Header_Sound as M06Sound
@@ -74,7 +75,7 @@ import proggen.M30_Tools as M30
 
 #import proggen.D08_Select_COM_Port_Userform as D08
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 import  proggen.F00_mainbuttons as F00
 
 import proggen.Prog_Generator as PG
@@ -356,8 +357,8 @@ def EnumComPorts_old(Show_Unknown, ResNames, PrintDebug=True):
     # Doesn't check if the COM Port is used by an other program
     CountOnly = True
     NumberOfPorts = 0
-    ESP_Inst = ( M02.Get_BoardTyp() == 'ESP32' )
-    PICO_Inst = ( M02.Get_BoardTyp() == 'PICO' )
+    ESP_Inst = ( M02a.Get_BoardTyp() == 'ESP32' )
+    PICO_Inst = ( M02a.Get_BoardTyp() == 'PICO' )
     for objItem in GetObject('winmgmts:\\\\.\\root\\CIMV2').ExecQuery('SELECT * FROM Win32_PnPEntity WHERE ClassGuid="{4d36e978-e325-11ce-bfc1-08002be10318}"', VBGetMissingArgument(GetObject.ExecQuery, 1), 48):
         if Show_Unknown or ( ESP_Inst == False and PICO_Inst == False and  (InStr(objItem.Caption, 'CH340') > 0 or InStr(objItem.Caption, 'Arduino') > 0 or InStr(objItem.Caption, 'USB Serial Port') > 0 ) ) or ( ESP_Inst == True and InStr(objItem.Caption, 'Silicon Labs CP210x') > 0 )  or  ( PICO_Inst == True and InStr(objItem.Path_.Path, 'USB\\\\VID_2E8A&PID_000A\\') > 0 ):
     # 21.04.21: Added: "Silicon Labs CP210x" for the PICO
@@ -393,8 +394,8 @@ def EnumComPorts_old(Show_Unknown, ResNames, PrintDebug=True):
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ResNames - ByRef 
 def EnumComPorts(Show_Unknown, ResNames, PrintDebug=True):
     Ports = vbObjectInitialize((50,), Byte)
-    ESP_Inst = ( M02.Get_BoardTyp() == 'ESP32' )
-    PICO_Inst = ( M02.Get_BoardTyp() == 'PICO' )
+    ESP_Inst = ( M02a.Get_BoardTyp() == 'ESP32' )
+    PICO_Inst = ( M02a.Get_BoardTyp() == 'PICO' )
 
     temp_comports_list = portlist.comports(include_links=False)
     
@@ -920,7 +921,7 @@ def SendMLLCommand(ComPort, message, UseHardwareHandshake, ShowResult):
     if UseHardwareHandshake:
         InitComPort(ComPort, 'BAUD=115200 PARITY=N DATA=8 STOP=1 dtr=off octs=on')
     else:
-        if M02.Get_BoardTyp() != 'PICO':
+        if M02a.Get_BoardTyp() != 'PICO':
             InitComPort(ComPort, 'BAUD=115200 PARITY=N DATA=8 STOP=1 dtr=off octs=off')
         else:
             InitComPort(ComPort, 'BAUD=115200 PARITY=N DATA=8 STOP=1 dtr=on octs=off')
@@ -928,7 +929,7 @@ def SendMLLCommand(ComPort, message, UseHardwareHandshake, ShowResult):
     handle = CreateFile('\\\\.\\COM' + ComPort, __GENERIC_READ or __GENERIC_WRITE, 0, 0, __OPEN_EXISTING, __FILE_ATTRIBUTE_NORMAL, 0)
     if handle < 0:
         Err.Raise(1, VBGetMissingArgument(Err.Raise, 1), '')
-    if M02.Get_BoardTyp() == 'PICO':
+    if M02a.Get_BoardTyp() == 'PICO':
         EscapeCommFunction(handle, __COM_SETDTR)
     if UseHardwareHandshake:
         Repeat = 1

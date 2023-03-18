@@ -65,10 +65,11 @@ import proggen.M60_CheckColors as M60
 import proggen.M80_Create_Mulitplexer as M80
 import proggen.D06_Userform_House as D06
 import proggen.D07_Userform_Other as D07
+import proggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 
 
@@ -113,13 +114,13 @@ def __Release_or_Debug_Version(Release):
     # AddImagesToTreeForm ".\Icons", True                                     ' 28.11.21: For some reasons this call generates an error. The same function could be called by the "Read Pictures" button in the "Lib_Macros" sheet without problems ?!?
     #           => It has to be called manually
     if Release:
-        P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH).Visible(False) #*HL
-        P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible(False) #*HL
-        P01.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible(False) #*HL
-        P01.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Visible(False) #*HL
-        P01.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible(False) #*HL
+        PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH).Visible(False) #*HL
+        PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible(False) #*HL
+        PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible(False) #*HL
+        PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Visible(False) #*HL
+        PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible(False) #*HL
     
-    for Sh in P01.ThisWorkbook.sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if M28.Is_Data_Sheet(Sh):
             Sh.Select()
             P01.ActiveWindow.Zoom = 100
@@ -133,13 +134,13 @@ def __Release_or_Debug_Version(Release):
             #else:
             #    with_0.ColorIndex = xlAutomatic
             # This internal data are always shown
-            #P01.Cells[M02.SH_VARS_ROW, M25.BUILDOP_COL].Font.ColorIndex = xlAutomatic
-            #P01.Cells[M02.SH_VARS_ROW, M25.COMPort_COL].Font.ColorIndex = xlAutomatic
-            #P01.Cells[M02.SH_VARS_ROW, M25.COMPrtR_COL].Font.ColorIndex = xlAutomatic
-            #P01.Cells[M02.SH_VARS_ROW, M25.BUILDOpRCOL].Font.ColorIndex = xlAutomatic
+            #P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL].Font.ColorIndex = xlAutomatic
+            #P01.CellDict[M02.SH_VARS_ROW, M25.COMPort_COL].Font.ColorIndex = xlAutomatic
+            #P01.CellDict[M02.SH_VARS_ROW, M25.COMPrtR_COL].Font.ColorIndex = xlAutomatic
+            #P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOpRCOL].Font.ColorIndex = xlAutomatic
             # Show / Hide the internal columns
-            #P01.Cells[1, M25.InCnt___Col].EntireColumn.Hidden = False
-            #P01.Cells[1, M25.LocInCh_Col].EntireColumn.Hidden = False
+            #P01.CellDict[1, M25.InCnt___Col].EntireColumn.Hidden = False
+            #P01.CellDict[1, M25.LocInCh_Col].EntireColumn.Hidden = False
             #           have been hidden in release mode
             # Build otions
             P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = '\'' + M02.AUTODETECT_STR + ' ' + M02.BOARD_NANO_OLD + ' ' + M02.DEFARDPROG_STR
@@ -166,7 +167,7 @@ def __Release_or_Debug_Version(Release):
     M28.Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets(Release) 
     if Release:
         # move cursor to begin of sheet data                               ' 10.03.21  Juergen
-        for Sh in P01.ThisWorkbook.sheets:
+        for Sh in PG.ThisWorkbook.sheets:
             if M28.Is_Data_Sheet(Sh):
                 Sh.Select()
                 factor = 10
@@ -232,7 +233,7 @@ def set_columnwidth(Sh):
 
 def Set_Config_Default_Values_at_Program_Start():
     #------------------------------------------------------
-    M27.Set_Bool_Config_Var('Lib_Installed_other', False)
+    M28.Set_Bool_Config_Var('Lib_Installed_other', False)
 
 def __Set_Config_Default_Values_for_Release():
     #--------------------------------------------------

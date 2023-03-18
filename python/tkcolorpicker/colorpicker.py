@@ -20,7 +20,7 @@ Colorpicker dialog
 """
 
 
-#from PIL import ImageTk
+# fromx PIL import ImageTk
 from tkcolorpicker.functions import tk, ttk, round2, create_checkered_image, \
     overlay, PALETTE, hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, col2hue, rgb_to_hsv
 from tkcolorpicker.alphabar import AlphaBar

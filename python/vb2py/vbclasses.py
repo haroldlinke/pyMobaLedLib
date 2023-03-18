@@ -151,6 +151,7 @@ class _DebugClass:
         """Print debugging output"""
         if self._logger:
             self._logger.debug("\t".join([str(arg) for arg in args]))
+        #print("Logging.Debug")
         logging.debug("\t".join([str(arg) for arg in args]))
 
 
@@ -189,6 +190,9 @@ class Double(float):
 
 class Long(int):
     """Python version of VB's Long"""
+    
+class LongPtr(int):
+    """Python version of VB's LongPtr"""    
 
 
 class Boolean(int):
@@ -442,6 +446,7 @@ class _VBFiles:
 
     def getLineInput(self, channelid, number=1):
         """Get data from a file one line at a time with no parsing"""
+        #return self.getInput(channelid, number, separators=("\n", ""), evaloutput=0)
         return self.getInput(channelid, number, separators=("\n", ""), evaloutput=0)
 
     def writeText(self, channelid, *args):

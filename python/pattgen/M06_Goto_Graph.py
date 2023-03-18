@@ -1,55 +1,35 @@
-# -*- coding: utf-8 -*-
-#
-#         Write header
-#
-# * Version: 4.02
-# * Author: Harold Linke
-# * Date: January 7, 2021
-# * Copyright: Harold Linke 2021
-# *
-# *
-# * MobaLedCheckColors on Github: https://github.com/haroldlinke/MobaLedCheckColors
-# *
-# *  
-# * https://github.com/Hardi-St/MobaLedLib
-# *
-# * MobaLedCheckColors is free software: you can redistribute it and/or modify
-# * it under the terms of the GNU General Public License as published by
-# * the Free Software Foundation, either version 3 of the License, or
-# * (at your option) any later version.
-# *
-# * MobaLedCheckColors is distributed in the hope that it will be useful,
-# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# * GNU General Public License for more details.
-# *
-# * You should have received a copy of the GNU General Public License
-# * along with this program.  if not, see <http://www.gnu.org/licenses/>.
-# *
-# *
-# ***************************************************************************
-
-#------------------------------------------------------------------------------
-# CHANGELOG:
-# 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
-# 2021-01-07 v4.02 HL: - Else:, ByRef check done, first PoC release
-
-
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-from vb2py.vbconstants import *
+import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLC_Excel_Consts as XLC
+import pattgen.M30_Tools as M30
+import pattgen.M01_Public_Constants_a_Var as M01
+import pattgen.M03_Analog_Trend
+import pattgen.M05_Goto_Gr_Calc_Height
+import pattgen.Pattern_Generator as PG
 
-
-import proggen.Prog_Generator as PG
-
-import ExcelAPI.P01_Workbook as P01
-
-from ExcelAPI.X01_Excel_Consts import *
-
-from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
-
-
+""" Number of Goto start points which is updated when Draw_All_Arrows is called
+-----------------------------
+------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+UT------------------------------
+----------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------
+---------------------------------------------------------------
+UT-------------------------------
+-------------------------------------------------------------------
+-----------------------------------------------
+---------------------------
+-------------------------------------
+--------------------------------------------------------------------------------------------------
+UT-----------------------------------
+------------------------------------------
+-------------------------------------------------------
+UT-------------------------------------------
+---------------------------------------------------
+--------------------------------------------------
+"""
+guifactor = 1 #XLC.xlvp2py_guifactor
 Goto_Start_Points = Long()
 
 def Delete_Goto_Graph():
@@ -57,54 +37,57 @@ def Delete_Goto_Graph():
 
     o = Variant()
     #-----------------------------
-    WasProtected = ActiveSheet.ProtectContents
+    WasProtected = X02.ActiveSheet.ProtectContents
     if WasProtected:
-        ActiveSheet.Unprotect()
-    for o in ActiveSheet.Shapes:
+        X02.ActiveSheet.Unprotect()
+    for o in X02.ActiveSheet.Shapes:
         if Left(o.Name, Len('Goto_Graph')) == 'Goto_Graph':
             o.Delete()
     if WasProtected:
-        Protect_Active_Sheet()
+        M30.Protect_Active_Sheet()
 
-def __Draw_GotoArrowXY(X1, X2, y, h, Color):
+def Draw_GotoArrowXY(X1, X2, y, h, Color):
     o = Variant()
     #------------------------------------------------------------------------------------------------------
     # Draw a curved arrow from x1, y to x2, y.
     # h defines the height. Positive numbers draw the arrow below y, negative above y
     # http://www.herber.de/mailing/vb/html/xlobjfreeformbuilder.htm
-    with_0 = ActiveSheet
-    with_1 = with_0.Shapes.BuildFreeform(msoEditingCorner, X1, y)
+    _with8 = X02.ActiveSheet
+    _with9 = _with8.Shapes.BuildFreeform(XLC.msoEditingCorner, X1, y)
+    # Startpunkt
     #                                             Richt1   Richt2    Ende
-    with_1.AddNodes(msoSegmentCurve, msoEditingCorner, X1, y, ( X1 + X2 )  / 2, y + 2 * h, X2, y)
-    o = with_1.ConvertToShape
-    #.Shapes (.Shapes.Count) ' Debug
-    with_2 = o
-    with_3 = with_2.Line
-    with_3.EndArrowheadStyle = msoArrowheadTriangle
-    with_3.ForeColor.rgb = Color
-    with_2.Name = 'Goto_Graph_CurvedArrow' + ActiveSheet.Shapes.Count
+    _with9.AddNodes(XLC.msoSegmentCurve, XLC.msoEditingCorner, X1, y, ( X1 + X2 )  / 2, y + 2 * h, X2, y)
+    o = _with9.ConvertToShape()
+    #.Shapes (.Shapes.Count)
+    # Debug
+    _with10 = o
+    _with11 = _with10.Line
+    _with11.EndArrowheadStyle = XLC.msoArrowheadTriangle
+    _with11.ForeColor.rgb = Color
+    _with10.Name = 'Goto_Graph_CurvedArrow' + str(X02.ActiveSheet.Shapes.Count())
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: r1 - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: r2 - ByVal 
-def __Draw_GotoArrow(r1, r2, h, Color):
+def Draw_GotoArrow(r1, r2, h, Color):
     #-----------------------------------------------------------------------------------------
     if r1 != r2:
-        __Draw_GotoArrowXY(r1.Left + r1.Width * 0.5, r2.Left + r2.Width * 0.5, r1.Top + r1.Height, h, Color)
+        Draw_GotoArrowXY(r1.Left + r1.Width * 0.5, r2.Left + r2.Width * 0.5, r1.Top + r1.Height, h, Color)
     else:
-        __Draw_GotoArrowXY(r1.Left + r1.Width * 0.3, r2.Left + r2.Width * 0.7, r1.Top + r1.Height, h, rgb(255, 0, 0))
+        Draw_GotoArrowXY(r1.Left + r1.Width * 0.3, r2.Left + r2.Width * 0.7, r1.Top + r1.Height, h, rgb(255, 0, 0))
 
-def __Test_Draw_GotoArrow():
+def Test_Draw_GotoArrow():
     #UT------------------------------
     #Delete_Goto_Graph
     #Draw_GotoArrowXY 100, 200, 100, 50, rgb(255, 0, 0)
-    __Draw_GotoArrow(ActiveCell, ActiveCell.offset(0, 2), 60, rgb(0, 0, 255))
+    Draw_GotoArrow(X02.ActiveCell(), X02.ActiveCell().offset(0, 2), 60, rgb(0, 0, 255))
 
-def __Draw_StraitArrow(r, Txt, h, dx, Dir, Color):
-    tdx = - 10
+def Draw_StraitArrow(r, Txt, h, dx, Dir, Color):
+    
+    tdx = - 10*guifactor
 
-    tdy = - 16
+    tdy = - 16*guifactor
 
-    th = 72
+    th = 72*guifactor
 
     x = Double()
 
@@ -116,45 +99,47 @@ def __Draw_StraitArrow(r, Txt, h, dx, Dir, Color):
 
     o = Variant()
     #----------------------------------------------------------------------------------------------------------------------
-    if Dir() == 1:
+    if Dir == 1:
         x = r.Left + r.Width * 0.3
     else:
         x = r.Left + r.Width * 0.7
     y = r.Top
     x0 = x - dx
     y0 = y - h
-    with_4 = ActiveSheet.Shapes.AddConnector(msoConnectorStraight, x0, y0, x, y)
-    if Dir() == 1:
-        with_4.Line.EndArrowheadStyle = msoArrowheadStealth
+    _with12 = X02.ActiveSheet.Shapes.AddConnector(XLC.msoConnectorStraight, x0, y0, x, y)
+    if Dir == 1:
+        _with12.Line.EndArrowheadStyle = XLC.msoArrowheadStealth
+        # Other type: msoArrowheadTriangle
     else:
-        with_4.Line.BeginArrowheadStyle = msoArrowheadStealth
-    with_4.Line.ForeColor.rgb = Color
-    with_4.Name = 'Goto_Graph_Arrow' + ActiveSheet.Shapes.Count
-    with_5 = ActiveSheet.Shapes.AddLabel(msoTextOrientationHorizontal, x0 + tdx, y0 + tdy, 40, th)
-    with_5.TextFrame2.TextRange.Characters.Text = Txt
-    with_5.Name = 'Goto_Graph_Label' + ActiveSheet.Shapes.Count
+        _with12.Line.BeginArrowheadStyle = XLC.msoArrowheadStealth
+        # Other type: msoArrowheadOval
+    _with12.Line.ForeColor.rgb = Color
+    _with12.Name = 'Goto_Graph_Arrow' + str(X02.ActiveSheet.Shapes.Count())
+    _with13 = X02.ActiveSheet.Shapes.AddLabel(XLC.msoTextOrientationHorizontal, x0 + tdx, y0 + tdy, 40*guifactor, th)
+    _with13.TextFrame2.TextRange.Characters.Text = Txt
+    _with13.Name = 'Goto_Graph_Label' + str(X02.ActiveSheet.Shapes.Count())
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: r - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Txt - ByVal 
-def __Draw_StartArrow(r, Txt):
+def Draw_StartArrow(r, Txt):
     #-----------------------------------------------------------------
-    __Draw_StraitArrow(r, Txt, 30, 10, 1, rgb(0, 128, 0))
+    Draw_StraitArrow(r, Txt, 30*guifactor, 10*guifactor, 1, rgb(0, 128, 0))
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: r - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Txt - ByVal 
-def __Draw_EndArrow(r, Txt):
+def Draw_EndArrow(r, Txt):
     #---------------------------------------------------------------
-    __Draw_StraitArrow(r, Txt, 17, - 10, - 1, rgb(128, 0, 0))
+    Draw_StraitArrow(r, Txt, 17*guifactor, - 10*guifactor, - 1, rgb(128, 0, 0))
 
-def __Test_Draw_StartArrow():
+def Test_Draw_StartArrow():
     #UT-------------------------------
     Delete_Goto_Graph()
-    __Draw_StartArrow(ActiveCell, '7')
-    __Draw_EndArrow(ActiveCell, 'E')
-    ActiveCell.Select()
+    Draw_StartArrow(X02.ActiveCell(), '7')
+    Draw_EndArrow(X02.ActiveCell(), 'E')
+    X02.ActiveCell().Select()
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: GotoArrowTab - ByVal 
-def __Draw_GotoArrowTab(GotoArrowTab, LastCol):
+def Draw_GotoArrowTab(GotoArrowTab, LastCol):
     MaxH = Double()
 
     GNr = Long()
@@ -164,35 +149,39 @@ def __Draw_GotoArrowTab(GotoArrowTab, LastCol):
     ArrTabArr = vbObjectInitialize(objtype=String)
     #-------------------------------------------------------------------
     # Draw the Goto arrows
-    MaxH = Cells(GoTo_Row + 1, 1).Height * 0.8
+    MaxH = X02.Cells(M01.GoTo_Row + 1, 1).Height * 0.8 * 0.5 #*HL
     ArrTabArr = Split(GotoArrowTab, ' ')
     for ArrowTabEntry in ArrTabArr:
         Cols = Split(ArrowTabEntry, ',')
         GNr = GNr + 1
         if UBound(Cols) == 2:
-            h = MaxH * Cols(2)
+            # Three parameters given ?
+            h = MaxH * int(Cols(2))
         else:
-            h = MaxH * GNr /  ( UBound(ArrTabArr) + 1 ) 
+            h = MaxH * GNr /  ( UBound(ArrTabArr) + 1 )
+            # Old format without height
         if Val(Cols(1)) <= LastCol:
+            # Inside the valid range ?
             Color = rgb(0, 0, 255)
+            # Blue
         else:
             Color = rgb(255, 153, 0)
-        __Draw_GotoArrow(Cells(GoTo_Row, Val(Cols(0))), Cells(GoTo_Row, Val(Cols(1))), h, Color)
+            # Orange
+        Draw_GotoArrow(X02.Cells(M01.GoTo_Row, Val(Cols(0))), X02.Cells(M01.GoTo_Row, Val(Cols(1))), h, Color)
 
 def Goto_Mode_is_Active():
-    fn_return_value = None
+    _fn_return_value = None
     #-----------------------------------------------
-    fn_return_value = ThisWorkbook.ActiveSheet.Range('Goto_Mode') == '1'
-    return fn_return_value
+    _fn_return_value = PG.ThisWorkbook.ActiveSheet.Range('Goto_Mode') == '1'
+    return _fn_return_value
 
 def Draw_All_Arrows():
+    global Goto_Start_Points
     WasProtected = Boolean()
 
     OldScrUpd = Boolean()
 
     LastCol = Long()
-
-    GotoCells = Range()
 
     c = Variant()
 
@@ -208,128 +197,140 @@ def Draw_All_Arrows():
 
     FirstLEDsRow = Long()
     #---------------------------
-    WasProtected = ActiveSheet.ProtectContents
+    WasProtected = X02.ActiveSheet.ProtectContents
     if WasProtected:
-        ActiveSheet.Unprotect()
-    OldScrUpd = Application.ScreenUpdating
-    Application.ScreenUpdating = False
+        X02.ActiveSheet.Unprotect()
+    OldScrUpd = X02.Application.ScreenUpdating
+    X02.Application.ScreenUpdating = False
     Delete_Goto_Graph()
     Goto_Start_Points = 0
     if Goto_Mode_is_Active() == False:
         return
-    Calc_Reachable_Columns()
-    FirstLEDsRow = Range(FirstLEDTabRANGE).Row
-    LastLEDsRow = FirstLEDsRow + Range(LED_Cnt_Rng) - 1
-    #LastLEDsCol = LastFilledColumn(Range(LEDsRANGE), LastLEDsRow) ' Find the last used column
-    LastLEDsCol = LastFilledColumn2(Range(LEDsRANGE), LastLEDsRow)
-    LastCol = LastUsedColumnInRow(ActiveSheet, GoTo_Row)
+    pattgen.M03_Analog_Trend.Calc_Reachable_Columns()
+    ## VB2PY (CheckDirective) VB2PY Python directive
+    FirstLEDsRow = X02.Range(M01.FirstLEDTabRANGE).Row
+    LastLEDsRow = FirstLEDsRow + X02.Range(M01.LED_Cnt_Rng) - 1
+    #LastLEDsCol = LastFilledColumn(Range(LEDsRANGE), LastLEDsRow)
+    # Find the last used column
+    LastLEDsCol = M30.LastFilledColumn2(X02.Range(M01.LEDsRANGE), LastLEDsRow)
+    # Find the last used column  20.11.19: Faster function
+    LastCol = M30.LastUsedColumnInRow(X02.ActiveSheet, M01.GoTo_Row)
     if LastLEDsCol > LastCol:
         LastCol = LastLEDsCol
-    if LastCol >= GoTo_Col1:
-        GotoCells = Range(Cells(GoTo_Row, GoTo_Col1), Cells(GoTo_Row, LastCol))
+    if LastCol >= M01.GoTo_Col1:
+        GotoCells = X02.Range(X02.Cells(M01.GoTo_Row, M01.GoTo_Col1), X02.Cells(M01.GoTo_Row, LastCol))
         for c in GotoCells:
             V = UCase(c)
             if SNr == 0 or InStr(V, 'S') > 0:
-                __Draw_StartArrow(c, SNr)
+                Draw_StartArrow(c, SNr)
                 SNr = SNr + 1
             Goto_Start_Points = SNr
-            if InStr(V, 'E') > 0 and Reachable_Col(c.Column - GoTo_Col1) > 0:
-                __Draw_EndArrow(c, 'E')
+            if InStr(V, 'E') > 0 and pattgen.M03_Analog_Trend.Reachable_Col(c.Column - M01.GoTo_Col1) > 0:
+                Draw_EndArrow(c, 'E')
             # Fill the GotoArrowTab list
-            if InStr(V, 'G') > 0 and Reachable_Col(c.Column - GoTo_Col1) > 0:
-                p = Get_Number_from_Str(V)
+            if InStr(V, 'G') > 0 and pattgen.M03_Analog_Trend.Reachable_Col(c.Column - M01.GoTo_Col1) > 0:
+                p = pattgen.M03_Analog_Trend.Get_Number_from_Str(V)
                 if p > 0:
-                    if InStr(PosList, ' ' + p + ' ') > 0:
-                        GotoArrowTab = GotoArrowTab + c.Column + ',' + PosColArray(p - 1) + ' '
+                    if InStr(pattgen.M03_Analog_Trend.PosList, ' ' + str(p) + ' ') > 0:
+                        GotoArrowTab = GotoArrowTab + str(c.Column) + ',' + str(pattgen.M03_Analog_Trend.PosColArray(p - 1)) + ' '
                     else:
-                        GotoArrowTab = GotoArrowTab + c.Column + ',' + LastCol + 1 + ' '
+                        GotoArrowTab = GotoArrowTab + str(c.Column) + ',' + str(LastCol) + 1 + ' '
         # Draw the Goto arrows
         if GotoArrowTab != '':
-            List_w_Height = Calc_Height_GotoArrow(Left(GotoArrowTab, Len(GotoArrowTab) - 1))
-            __Draw_GotoArrowTab(List_w_Height, LastCol)
+            List_w_Height = pattgen.M05_Goto_Gr_Calc_Height.Calc_Height_GotoArrow(Left(GotoArrowTab, Len(GotoArrowTab) - 1))
+            Draw_GotoArrowTab(List_w_Height, LastCol)
     if WasProtected:
-        Protect_Active_Sheet()
-    Application.ScreenUpdating = OldScrUpd
+        M30.Protect_Active_Sheet()
+    X02.Application.ScreenUpdating = OldScrUpd
 
-def __Move_Add_Del_Col_Buttons():
+def Move_Add_Del_Col_Buttons():
     o = Variant()
 
     y = Double()
+    # 20.11.19:
     #-------------------------------------
     # The buttons have to be moved if the height of the column is changed
-    y = Rows(GoTo_Row + 1).Top + Rows(GoTo_Row + 1).Height
-    for o in ActiveSheet.Shapes:
+    y = X02.Rows(M01.GoTo_Row + 1).Top + X02.Rows(M01.GoTo_Row + 1).Height
+    for o in X02.ActiveSheet.Shapes.getlist(): #*HL
         if o.AlternativeText == 'Add_Del_Button':
             o.Top = y - o.Height - 2
 
 def Hide_Show_GotoLines(Hide, Resize_And_Move_Buttons=True):
     #--------------------------------------------------------------------------------------------------
-    if Rows(GoTo_Row + ':' + GoTo_Row).EntireRow.Hidden != Hide:
-        WasProtected = ActiveSheet.ProtectContents
+    if X02.Rows(str(M01.GoTo_Row) + ':' + str(M01.GoTo_Row)).EntireRow.Hidden != Hide: #*HL
+        # 25.06.19: Old: "& GoTo_Row + 1"
+        WasProtected = X02.ActiveSheet.ProtectContents
         if WasProtected:
-            ActiveSheet.Unprotect()
-        Rows[GoTo_Row + ':' + GoTo_Row].EntireRow.Hidden = Hide
+            X02.ActiveSheet.Unprotect()
+        X02.Rows(str(M01.GoTo_Row) + ':' + str(M01.GoTo_Row)).EntireRow.Hidden = Hide #*HL
+        # 25.06.19: Don't hide "Bitte Tabelle ausfüllen..." line Old: "& GoTo_Row + 1"
         if Resize_And_Move_Buttons:
             if Hide:
-                Rows[GoTo_Row - 1].RowHeight = 12
-                Rows[GoTo_Row + 1].RowHeight = 15
+                X02.RowDict[M01.GoTo_Row - 1].RowHeight = 12
+                X02.RowDict[M01.GoTo_Row + 1].RowHeight = 15
             else:
-                Rows[GoTo_Row - 1].RowHeight = 60
-                Rows[GoTo_Row + 1].RowHeight = 60
-            __Move_Add_Del_Col_Buttons()
+                X02.RowDict[M01.GoTo_Row - 1].RowHeight = 60
+                X02.RowDict[M01.GoTo_Row + 1].RowHeight = 60
+            Move_Add_Del_Col_Buttons()
         if WasProtected:
-            Protect_Active_Sheet()
+            M30.Protect_Active_Sheet()
 
-def __Test_Hide_Show_GotoLines():
+def Test_Hide_Show_GotoLines():
     #UT-----------------------------------
-    Hide_Show_GotoLines(not Rows(GoTo_Row + ':' + GoTo_Row + 1).EntireRow.Hidden)
+    Hide_Show_GotoLines(not X02.Rows(M01.GoTo_Row + ':' + M01.GoTo_Row + 1).EntireRow.Hidden)
 
 def Hide_Show_GotoLines_If_Enabled():
     #------------------------------------------
     Hide_Show_GotoLines(not Goto_Mode_is_Active())
 
-def __Hide_Show_Special_ModeLines(Hide):
+def Hide_Show_Special_ModeLines(Hide):
+    # 29.12.19:
     #-------------------------------------------------------
-    if Range('RGB_Modul_Nr').EntireRow.Hidden != Hide:
-        WasProtected = ActiveSheet.ProtectContents
+    if X02.Range('RGB_Modul_Nr').EntireRow.Hidden != Hide:
+        WasProtected = X02.ActiveSheet.ProtectContents
         if WasProtected:
-            ActiveSheet.Unprotect()
-        Range[Range('RGB_Modul_Nr'), Range('Analog_Inputs')].EntireRow.Hidden = Hide
-        ActiveSheet.Send2Module_Button.Visible = not Hide
-        ActiveSheet.Send2Module_Button.Enabled = not Hide
-        ActiveSheet.Prog_Generator_Button.Visible = Hide
-        ActiveSheet.Prog_Generator_Button.Enabled = Hide
+            X02.ActiveSheet.Unprotect()
+        X02.Range(X02.Range('RGB_Modul_Nr'), X02.Range('Analog_Inputs')).EntireRow.Hidden = Hide #*HL
+        #X02.ActiveSheet.Send2Module_Button.Visible = not Hide
+        #X02.ActiveSheet.Send2Module_Button.Enabled = not Hide
+        #X02.ActiveSheet.Prog_Generator_Button.Visible = Hide
+        #X02.ActiveSheet.Prog_Generator_Button.Enabled = Hide
         if WasProtected:
-            Protect_Active_Sheet()
+            M30.Protect_Active_Sheet()
 
-def __Test_Hide_Show_Special_ModeLines():
+def Test_Hide_Show_Special_ModeLines():
+    # 29.12.19:
     #UT-------------------------------------------
-    __Hide_Show_Special_ModeLines(not Range('RGB_Modul_Nr').EntireRow.Hidden)
+    Hide_Show_Special_ModeLines(not X02.Range('RGB_Modul_Nr').EntireRow.Hidden)
 
-def __Special_Mode_is_Active():
-    fn_return_value = None
+def Special_Mode_is_Active():
+    _fn_return_value = None
     Special_Mode = String()
 
     OldEvents = Boolean()
+    # 29.12.19:
     #---------------------------------------------------
-    Special_Mode = ThisWorkbook.ActiveSheet.Range('Special_Mode')
-    OldEvents = Application.EnableEvents
-    Application.EnableEvents = False
-    select_0 = UCase(Left(Special_Mode, 1))
-    if (select_0 == 'C'):
+    Special_Mode = PG.ThisWorkbook.ActiveSheet.Range('Special_Mode')
+    OldEvents = X02.Application.EnableEvents
+    X02.Application.EnableEvents = False
+    _select4 = UCase(Left(Special_Mode, 1))
+    if (_select4 == 'C'):
+        # Charliplexing
         if Left(Special_Mode, Len('Charlieplexing')) != 'Charlieplexing':
-            ThisWorkbook.ActiveSheet.Range['Special_Mode'] = 'Charlieplexing V2'
+            PG.ThisWorkbook.ActiveSheet.RangeDict['Special_Mode'] = 'Charlieplexing V2'
             # Correct the active cell. It shold be the next line and not the line after the hidden range
-            if ActiveCell.Address == Range('Analog_Inputs').offset(1, 0).Address:
-                Range('Special_Mode').offset(1, 0).Select()
-        fn_return_value = True
-    Application.EnableEvents = OldEvents
-    return fn_return_value
+            if X02.ActiveCell().Address == X02.Range('Analog_Inputs').offset(1, 0).Address:
+                X02.Range('Special_Mode').offset(1, 0).Select()
+        _fn_return_value = True
+    X02.Application.EnableEvents = OldEvents
+    return _fn_return_value
 
 def Hide_Show_Special_ModeLines_If_Enabled():
+    # 29.12.19:
     #--------------------------------------------------
-    __Hide_Show_Special_ModeLines(not __Special_Mode_is_Active())
-    #  If Not Special_Mode_is_Active() Then ' Prevent that a hidden cell is selected
+    Hide_Show_Special_ModeLines(not Special_Mode_is_Active())
+    #  If Not Special_Mode_is_Active() Then
+    # Prevent that a hidden cell is selected
     #     If ActiveCell.Address = Range("RGB_Modul_Nr").Address Then Range("Analog_Inputs").offset(1, 0).Select
     #  End If
 

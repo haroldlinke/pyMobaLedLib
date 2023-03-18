@@ -63,7 +63,7 @@ def Get_Multiplexer_Group(Res, Description, Row):
 
     RStr = String()
 
-    Str = String()
+    p_str = String()
 
     Parts = vbObjectInitialize(objtype=String)
 
@@ -93,9 +93,9 @@ def Get_Multiplexer_Group(Res, Description, Row):
     LedsInGroup = val(__ReadIniFileString('Multiplexer_' + Cells(Row, Descrip_Col).Value, 'Number_Of_LEDs'))
     __FirstOneInGroup = True
     for i in vbForRange(1, Groups):
-        Str = Str + __Create_Multiplexer(Trim(LStr), LEDCnt +  ( i - 1 )  * LedsInGroup, Description, Row)
+        p_str = p_str + __Create_Multiplexer(Trim(LStr), LEDCnt +  ( i - 1 )  * LedsInGroup, Description, Row)
         __FirstOneInGroup = False
-    _ret = Str
+    _ret = p_str
     return _ret
 
 def __Create_Multiplexer(Res, LEDCnt, Description, Row):
@@ -315,13 +315,13 @@ def __Options_INCH(InCh, Options):
     _ret = ""
     i = Integer()
 
-    Str = String()
+    p_str = String()
     #--------------------------------------------------------------------------------------------
     #    For i = 0 To Options - 1
     for i in vbForRange(0, Options):
-        Str = Str + ',' +  ( InCh + '+' + CStr(i) )
-    _ret = Str
-    #    Debug.Print "Options_INCH = ", Str
+        p_str = p_str + ',' +  ( InCh + '+' + CStr(i) )
+    _ret = p_str
+    #    Debug.Print "Options_INCH = ", p_str
     return _ret
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Res - ByVal 
@@ -367,7 +367,7 @@ def Special_Multiplexer_Ext(Res, LEDs):
 
 def LedCount(Cmd):
     _ret = ""
-    OldSheet = Worksheet()
+    OldSheet = X02.Worksheet
 
     SelRow = int()
 

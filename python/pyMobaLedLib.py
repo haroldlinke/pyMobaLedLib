@@ -83,7 +83,7 @@ from tkcolorpicker.functions import hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, col2hu
 import platform
 import traceback
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 from locale import getdefaultlocale
 import os
@@ -93,6 +93,7 @@ import threading
 import queue
 import time
 import logging
+import logging.handlers
 import webbrowser
 import argparse
 import shutil
@@ -143,11 +144,11 @@ def _(text):
 # ------------------------------
 
 
-tabClassList_all = ( StartPage, Prog_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_all = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_all_patterngen = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_mll_only = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_SetColTab = (ColorCheckPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, EffectTestPage, EffectMacroPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, EffectTestPage, EffectMacroPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
 
 #tabClassList_all = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
@@ -480,7 +481,7 @@ class LEDColorTest(tk.Tk):
         for line in err:
             messagestring+=line
         messagebox.showerror('Exception',messagestring)
-        print("Tkinter Exception:",messagestring)
+        #print("Tkinter Exception:",messagestring)
         logging.debug("Tkinter Exception:\n"+messagestring)
         if DEBUG:
             raise
@@ -1314,9 +1315,6 @@ class LEDColorTest(tk.Tk):
             self.cor_red = self.getConfigData("led_correction_r")
             self.cor_green = self.getConfigData("led_correction_g")
             self.cor_blue = self.getConfigData("led_correction_b")
-        
-
-            
             
             
     def readConfigData(self):
@@ -2673,12 +2671,14 @@ def img_resource_path(relative_path):
 
 COMMAND_LINE_ARG_DICT = {}
 
+logger=logging.getLogger(__name__)
+
 def main_entry():
     global DEBUG
     
     global COMMAND_LINE_ARG_DICT
     
-    import wingdbstub
+    #import wingdbstub
     
     if sys.hexversion < 0x030700F0:
         tk.messagebox.showerror("Wrong Python Version"+sys.version,"You need Python Version > 3.7 to run this Program")
@@ -2698,9 +2698,10 @@ def main_entry():
     try:
         args = parser.parse_args()
     except argparse.ArgumentError:
+        #print("Argument Error")
         logging.debug ('Catching an argumentError')
     
-    format = "%(asctime)s: %(message)s"
+    logging_format = '%(asctime)s - %(message)s'
     
     filedir = os.path.dirname(os.path.realpath(__file__))
     if args.logfile:
@@ -2709,37 +2710,55 @@ def main_entry():
         logfilename1=LOG_FILENAME
         
     if logfilename1 == "stdout":
-        logfilename=""
+        logfilename=None
     else:
         logfilename = os.path.join(filedir, logfilename1)
+    logging_level="DEBUG"
     
     if args.loglevel:
         logging_level = args.loglevel.upper()
         COMMAND_LINE_ARG_DICT["logging_level"]=logging_level
         if logging_level=="DEBUG":
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.DEBUG,datefmt="%H:%M:%S")
+            log_level=logging.DEBUG
             DEBUG=True
         elif logging_level=="INFO":
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.INFO,datefmt="%H:%M:%S")
+            log_level=logging.INFO
         elif logging_level=="WARNING":
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.WARNING,datefmt="%H:%M:%S")
+            log_level=logging.WARNING
         elif logging_level=="ERROR":
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.ERROR,datefmt="%H:%M:%S")
+            log_level=logging.ERROR
         else:
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.CRITICAL,datefmt="%H:%M:%S")
+            log_level=logging.CRITICAL
     else:
-        logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.DEBUG,datefmt="%H:%M:%S")
-    logging.info("Python Version: %s",sys.version)
-    logging.info("MLL Proggenerator started %s", PROG_VERSION)
-    logging.info(" Platform: %s",platform.platform())
-    logging.debug("Installationfolder %s",filedir)
+        log_level=logging.DEBUG
+
+    logger.setLevel(log_level)
+    fh = logging.handlers.RotatingFileHandler(logfilename,maxBytes=1000000,backupCount=3)
+    fh.setLevel(log_level)
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(log_level)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    fh.setFormatter(formatter)
+    # add the handlers to logger
+    logger.addHandler(ch)
+    logger.addHandler(fh)
+    logging.basicConfig(format=logging_format, filename=logfilename,filemode="w",level=log_level,datefmt="%H:%M:%S",force=True)
+
+    logger.info("Python Version: %s",sys.version)
+    logger.info("MLL Proggenerator started %s", PROG_VERSION)
+    logger.info(" Platform: %s",platform.platform())
+    logger.debug("Installationfolder %s",filedir)
+    logger.debug("Logging Level: %s Logfilename: %s",logging_level, logfilename)
     
     if args.startpage:
         COMMAND_LINE_ARG_DICT["startpagename"]=args.startpage
     else:
         COMMAND_LINE_ARG_DICT["startpagename"]="StartPage"
         
-    logging.info(" Startpage: %s",COMMAND_LINE_ARG_DICT["startpagename"])        
+    logger.info(" Startpage: %s",COMMAND_LINE_ARG_DICT["startpagename"])        
     if args.port:
         COMMAND_LINE_ARG_DICT["serportname"]=args.port
         
@@ -2759,14 +2778,14 @@ def main_entry():
         open(filepath1, 'r').close()
         colortest_only = True
     except BaseException as e:
-        logging.debug(e)
+        logger.debug(e)
         colortest_only = False
         pass
     
     if colortest_only:
         COMMAND_LINE_ARG_DICT["colortest_only"]= "True"
         
-    logging.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
+    logger.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
     
     app = LEDColorTest()
     

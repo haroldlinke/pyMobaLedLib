@@ -66,9 +66,9 @@ import proggen.M80_Create_Mulitplexer as M80
 
 import proggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
@@ -119,7 +119,7 @@ def __Select_and_Open_Old_Version():
                     Name = ''
                 else:
                     Name = False
-            if Name == P01.ThisWorkbook.FullName:
+            if Name == PG.ThisWorkbook.FullName:
                 Name = False
                 if P01.MsgBox(M09.Get_Language_Str('Fehler: Die Daten können nicht aus der aktuellen Datei importiert werden.' + vbCr + vbCr + 'Auswahl wiederholen?'), vbQuestion + vbOKCancel, M09.Get_Language_Str('Fehler: Aktuelle Datei ausgewählt')) == vbCancel:
                     Name = ''
@@ -134,12 +134,12 @@ def __Select_and_Open_Old_Version():
             FileCopy(Name, TempName)
             # VB2PY (UntranslatedCode) On Error GoTo 0
             fn_return_value = P01.Workbooks.Open(TempName, ReadOnly= True)
-    ChDir(P01.ThisWorkbook.Path)
-    P01.ChDrive(P01.ThisWorkbook.Path)
+    ChDir(PG.ThisWorkbook.Path)
+    P01.ChDrive(PG.ThisWorkbook.Path)
     return fn_return_value
     P01.MsgBox(M09.Get_Language_Str('Fehler beim kopieren der Datei') + vbCr + '  \'' + Name + '\' ' + M09.Get_Language_Str('nach') + vbCr + '  \'' + TempName + '\'', vbCritical, M09.Get_Language_Str('Fehler beim kopieren der alten Programm Generators'))
-    ChDir(P01.ThisWorkbook.Path)
-    P01.ChDrive(P01.ThisWorkbook.Path)
+    ChDir(PG.ThisWorkbook.Path)
+    P01.ChDrive(PG.ThisWorkbook.Path)
     return fn_return_value
 
 def __Import_from_Old_Version_CallBack(Do_Import, Import_FromAllSheets):
@@ -150,7 +150,7 @@ def __Import_from_Old_Version_CallBack(Do_Import, Import_FromAllSheets):
         PGF_Name = P01.ActiveWorkbook.Path + '\\Import_From_old_Prog.MLL_pgf'
         Res = M18.Save_Sheets_to_pgf(PGF_Name, Import_FromAllSheets)
         __ImportWB.Close(Savechanges=False)
-        P01.ThisWorkbook.Activate()
+        PG.ThisWorkbook.Activate()
         if Res:
             Res = M18.Read_PGF(PGF_Name)
     else:
@@ -169,7 +169,7 @@ def Remove_Selection_in_Sheet(Sh):
 def Remove_Selections_in_all_Data_Sheets():
     OldSheet = String()
 
-    Sh = P01.Worksheet()
+    Sh = P01.Worksheet
 
     ScrUpd = Boolean()
     #------------------------------------------------
@@ -199,7 +199,7 @@ def __Old_Version_exists():
 
     ActDir = String()
     #-----------------------------------------------
-    ActDir = M30.FileName(P01.ThisWorkbook.Path)
+    ActDir = M30.FileName(PG.ThisWorkbook.Path)
     Path = M02.Get_MobaUserDir() + 'MobaLedLib_*'
     Name = Dir(Path, vbDirectory)
     while Name != '':

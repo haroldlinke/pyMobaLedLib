@@ -64,8 +64,8 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 ParName_COL = 1
 Par_Cnt_COL = 2
@@ -90,14 +90,13 @@ def __Get_ParDesc_Row(Sh, Name):
     #------------------------------------------------------------------------
     with_0 = Sh
     r = with_0.Range(with_0.Cells(1, ParName_COL), with_0.Cells(M30.LastUsedRowIn(Sh), ParName_COL))
-    #f = r.Find(What= Name, after= r.Cells(__FirstDatRow, 1), LookIn= xlFormulas, LookAt= xlWhole, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
-    f_row=r.Cells.index(Name)+1 #*HL
-    if f_row is None:
+    f = r.Find(What= Name, after= r.CellsFct(__FirstDatRow, 1), LookIn= xlFormulas, LookAt= xlWhole, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
+    if f is None:
         Debug.Print('Fehlender Parameter: ' + Name)
         P01.MsgBox('Fehler: Der Parameter Name \'' + Name + '\' wurde nicht im Sheet \'' + Sh.Name + '\' gefunden!', vbCritical, 'Internal Error')
         M30.EndProg()
     else:
-        fn_return_value = f_row
+        fn_return_value = f.Row
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ParName - ByVal 
@@ -113,7 +112,7 @@ def Get_Par_Data(ParName):
 
     Row = int()
 
-    #Sh = Worksheet()
+    #Sh = X02.Worksheet
 
     ActLanguage = Integer()
 

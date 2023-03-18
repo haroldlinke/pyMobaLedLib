@@ -92,7 +92,7 @@ class ToolTips :
         except (IndexError, ValueError) :
             # either widget_ref couldn't be found in self.widgets
             # or the tooltip text couldn't be found for the widget's index, so bail out
-            print("An error occured while trying to find the tooltip text for the hovered widget.")
+            Debug.Print("An error occured while trying to find the tooltip text for the hovered widget.")
             return(False)
 
         # grab the event widget's top master (will be used for both measuring the position of the tooltip

@@ -34,16 +34,16 @@
 
 import tkinter as tk
 from tkinter import ttk,messagebox,filedialog
-#from mlpyproggen.configfile import ConfigFile
-#from mlpyproggen.dictFile import readDictFromFile, saveDicttoFile
-#from mlpyproggen.ConfigurationPage import ConfigurationPage
-#from mlpyproggen.SerialMonitorPage import SerialMonitorPage
-#from mlpyproggen.ColorCheckPage import ColorCheckPage
-#from mlpyproggen.EffectTestPage import EffectTestPage
-#from mlpyproggen.EffectMacroPage import EffectMacroPage
-#from mlpyproggen.LEDListPage import LEDListPage
-#from mlpyproggen.SoundCheckPage import SoundCheckPage
-#from mlpyproggen.tooltip import Tooltip
+# fromx mlpyproggen.configfile import ConfigFile
+# fromx mlpyproggen.dictFile import readDictFromFile, saveDicttoFile
+# fromx mlpyproggen.ConfigurationPage import ConfigurationPage
+# fromx mlpyproggen.SerialMonitorPage import SerialMonitorPage
+# fromx mlpyproggen.ColorCheckPage import ColorCheckPage
+# fromx mlpyproggen.EffectTestPage import EffectTestPage
+# fromx mlpyproggen.EffectMacroPage import EffectMacroPage
+# fromx mlpyproggen.LEDListPage import LEDListPage
+# fromx mlpyproggen.SoundCheckPage import SoundCheckPage
+# fromx mlpyproggen.tooltip import Tooltip
 from mlpyproggen.DefaultConstants import SETMACRO_LIST, SWITCHMACROLIST, SingleEffectHandling_Tbl, EFFECT_LED_CHANNELS_LIST, EFFECT_LED_STARTLED_LIST,SIZEFACTOR
 
 import json
@@ -57,7 +57,7 @@ from locale import getdefaultlocale
 import logging
 import re
 #import webbrowser
-#from datetime import datetime
+# fromx datetime import datetime
 
 
 # --- Translation - not used

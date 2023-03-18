@@ -39,23 +39,23 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-#from proggen.M02_Public import *
-#from proggen.M06_Write_Header_LED2Var import *
-#from proggen.M06_Write_Header_Sound import *
-#from proggen.M06_Write_Header_SW import *
-#from proggen.M08_ARDUINO import *
-#from proggen.M09_Language import *
-#from proggen.M09_SelectMacro_Treeview import *
-#from proggen.M10_Par_Description import *
-#from proggen.M20_PageEvents_a_Functions import *
-#from proggen.M25_Columns import *
-#from proggen.M27_Sheet_Icons import *
-#from proggen.M28_divers import *
-#from proggen.M30_Tools import *
-#from proggen.M60_CheckColors import *
-#from proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M02_Public import *
+# fromx proggen.M06_Write_Header_LED2Var import *
+# fromx proggen.M06_Write_Header_Sound import *
+# fromx proggen.M06_Write_Header_SW import *
+# fromx proggen.M08_ARDUINO import *
+# fromx proggen.M09_Language import *
+# fromx proggen.M09_SelectMacro_Treeview import *
+# fromx proggen.M10_Par_Description import *
+# fromx proggen.M20_PageEvents_a_Functions import *
+# fromx proggen.M25_Columns import *
+# fromx proggen.M27_Sheet_Icons import *
+# fromx proggen.M28_divers import *
+# fromx proggen.M30_Tools import *
+# fromx proggen.M60_CheckColors import *
+# fromx proggen.M80_Create_Mulitplexer import *
 
-#from ExcelAPI.P01_Workbook import *
+# fromx ExcelAPI.X02_Workbook import *
 
 import proggen.M02_Public as M02
 #import proggen.M03_Dialog as M03
@@ -80,10 +80,11 @@ import proggen.M60_CheckColors as M60
 import proggen.M80_Create_Mulitplexer as M80
 import proggen.D06_Userform_House as D06
 import proggen.D07_Userform_Other as D07
+import proggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 
 """ - Bei Effekten welche einzelne LEDs ansteuern muss die Adressierung der
@@ -416,7 +417,7 @@ def Add_Icon_and_Name(SelRow, DstRow, Sh=None, NameOnly=False):
     #-------------------------------------------------------------------------------------------------------------------
     # SelRow: Row in the Lib_Macros sheet
     if M25.LanName_Col > 0 and SelRow > 0:
-        _with0 = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+        _with0 = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
         if Sh is None:
             Sh = P01.ActiveSheet
         LanName = Get_Language_Text(SelRow, M02.SM_LName_COL, M09.Get_ExcelLanguage())
@@ -476,7 +477,7 @@ def __SelectMacros_Sub():
         ActLanguage = M09.Get_ExcelLanguage()
         MacroName = Split(SelectMacro_Res, ',')(0)
         SelRow = int(Split(SelectMacro_Res, ',')(1))
-        _with2 = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+        _with2 = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
         DlgTyp = _with2.Cells(SelRow, M02.SM_Typ___COL)
         LEDs = _with2.Cells(SelRow, M02.SM_LEDS__COL)
         Macro = _with2.Cells(SelRow, M02.SM_Macro_COL)
@@ -567,14 +568,14 @@ def __SelectMacros_Sub():
                 if (_select7 == 'BlueLight1') or (_select7 == 'BlueLight2') or (_select7 == 'Leuchtfeuer'):
                     if InStr(Parts(1), ' C_ALL,') > 0:
                         P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Das Makro \'#1#\' kann nur mit einer oder zwei LEDs benutzt werden.'), "#1#", MacroName), vbCritical, M09.Get_Language_Str('Fehler: Makro kann nicht mit 3 LEDs benutzt werden'))
-                        ActiveCell = Replace(Parts(1), ' C_ALL, ', ' C12, ')
+                        P01.ActiveCell().Value = Replace(Parts(1), ' C_ALL, ', ' C12, ')
                         P01.CellDict[DstRow, M25.LEDs____Col] = 'C1-2'
             # Changed by Misha 18-4-2020                                       ' 14.06.20: Added from Mishas version
             Parts = Split(Res, ',')
             if Left(MacroName, Len('Multiplexer')) == 'Multiplexer':  # mulitplexer not supported yet
                 P01.CellDict[DstRow, M25.LocInCh_Col] = M80.Count_Ones(P01.val(Parts(5))) + 1
                 # 10.02.21: 20210206 Misha, Added + 1 because there is an zero pattern added.
-                P01.CellDict[ActiveCell.Row, M25.DCC_or_CAN_Add_Col].Value = Userform_Res_Address
+                P01.CellDict[ActiveCell().Row, M25.DCC_or_CAN_Add_Col].Value = Userform_Res_Address
             else:
                 P01.CellDict[DstRow, M25.LocInCh_Col] = P01.val(_with2.Cells(SelRow, M02.SM_LocInCCOL))
             # End Changed by Misha 18-4-2020
@@ -606,25 +607,25 @@ def __Move_Cursor_to_visible_Macro_Cell(Row):
     P01.Application.EnableEvents = OldEvents
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Str - ByVal 
-def Find_Macro_in_Lib_Macros_Sheet(Str):
+def Find_Macro_in_Lib_Macros_Sheet(p_str):
     _ret = 0
     #r = Range()
 
     #c = Range()
     #---------------------------------------------------------------------------
     _with3 = P01.Sheets(M02.LIBMACROS_SH)
-    Str = Replace(Str, 'HouseT(', 'House(')
-    if InStr(Str, '(') > 0:
-        Str = Split(Str, '(')(0) + '('
-        if Str[:3]=="// ":
-            Str=Str[3:]
-    r = _with3.Range(_with3.Cells(M02.SM_DIALOGDATA_ROW1, M02.SM_Name__COL), _with3.Cells(M30.LastUsedRowIn(P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)), M02.SM_Name__COL))
+    p_str = Replace(p_str, 'HouseT(', 'House(')
+    if InStr(p_str, '(') > 0:
+        p_str = Split(p_str, '(')(0) + '('
+        if p_str[:3]=="// ":
+            p_str=p_str[3:]
+    r = _with3.Range(_with3.Cells(M02.SM_DIALOGDATA_ROW1, M02.SM_Name__COL), _with3.Cells(M30.LastUsedRowIn(PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)), M02.SM_Name__COL))
     for c in r.Rows: #*HL
         # Find the line
         if _with3.Cells(c.Row, M02.SM_FindN_COL) != '':
             ## VB2PY (CheckDirective) VB directive took path 1 on True
             #           Why did the old function use the InStr function ?
-            if Str == _with3.Cells(c.Row, M02.SM_FindN_COL):
+            if p_str == _with3.Cells(c.Row, M02.SM_FindN_COL):
                 _ret = c.Row
                 return _ret
     return _ret
@@ -659,9 +660,9 @@ def __Change_Links_to_Absolute():
 def __Sort_by_Column(Col, SortFlag):
     #OldUpdating = Boolean()
 
-    #Sh = P01.Worksheet()
+    #Sh = P01.Worksheet
     #----------------------------------------------------------
-    if True: #P01.ThisWorkbook.Worksheets(M02.LIBMACROS_SH).Range('SortByTreeView').Value == SortFlag:
+    if True: #PG.ThisWorkbook.Worksheets(M02.LIBMACROS_SH).Range('SortByTreeView').Value == SortFlag:
         return
     OldUpdating = P01.Application.ScreenUpdating
     P01.Application.ScreenUpdating = False
@@ -677,7 +678,7 @@ def __Sort_by_Column(Col, SortFlag):
     _with7.Orientation = xlTopToBottom
     _with7.SortMethod = xlPinYin
     _with7.Apply()
-    P01.ThisWorkbook.Worksheets[M02.LIBMACROS_SH].Range['SortByTreeView'].Value = SortFlag
+    PG.ThisWorkbook.Worksheets[M02.LIBMACROS_SH].Range['SortByTreeView'].Value = SortFlag
     P01.Application.ScreenUpdating = OldUpdating
 
 def Sort_for_List_based_Makro():
@@ -690,13 +691,13 @@ def Sort_for_TreeView_based_Makro():
 
 def Get_Language_Text(Row, FirstCol, ActLanguage):
     _ret = ""
-    #Sh = Worksheet()
+    #Sh = X02.Worksheet
 
     #Txt = String()
     #-------------------------------------------------------------------------------------------------
     # Get the language specific text
     # If the requested text is not available use the englich or german text
-    Sh = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+    Sh = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
     _with8 = Sh
     Txt = _with8.Cells(Row, FirstCol + ActLanguage * M02.DeltaCol_Lib_Macro_Lang).Value
     if Txt == '' and ActLanguage > 1:

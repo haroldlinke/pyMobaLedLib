@@ -114,6 +114,7 @@ class TableModel(object):
         #self.editable={}
         self.nodisplay = []
         self.hiderowslist = []
+        self.rowheightlist = {}
         self.ColumnAlignment = {}
         self.protected_cells = [] #*HL  list of cells that are not editable ("*",col) and (row,"*") for rows and columns
         self.shapelist = [] #*HL list of shapes
@@ -213,7 +214,9 @@ class TableModel(object):
         data["format_cells"]=self.format_cells
         data["columnwidths"]=self.columnwidths
         data["rowwidths"]=self.rowwidths
-        data["shapelist"]=self.shapelist
+        data["shapelist"]=copy.deepcopy(self.shapelist)
+        #print("GetData****Shapelist************")
+        #repr(self.shapelist)
         return data
 
     def getAllCells(self):
@@ -563,7 +566,7 @@ class TableModel(object):
     
     def moveRow(self,srckeylist=None,destindex=None,minY1=None,maxY1=0,deltaY=0,deleteY=0):
         if srckeylist and destindex:
-            print("MoveRow:",srckeylist,destindex)
+            #print("MoveRow:",srckeylist,destindex)
             for key in srckeylist:
                 self.reclist.remove(key)
             self.reclist[destindex:destindex]=srckeylist
@@ -781,7 +784,8 @@ class TableModel(object):
 
     def setValueAt(self, value, rowIndex, columnIndex):
         """Changed the dictionary when cell is updated by user"""
-
+        if value==None:
+            value=""
         name = self.getRecName(rowIndex)
         colname = self.getColumnName(columnIndex)
         coltype = self.columntypes[colname]
@@ -794,6 +798,9 @@ class TableModel(object):
             except:
                 pass
         else:
+            if type(value) != str and type(value) != int:
+                print(str(type(value)))
+                #print("Set Value at error:",name,colname,value)
             self.data[name][colname] = value
         self.updateLastUsedRow(rowIndex)
         self.setDataChanged()
@@ -828,7 +835,7 @@ class TableModel(object):
             else:
                 fgcolor = None
                 bgcolor = None
-                font    = None                
+                font    = None
         else:
             fgcolor = None
             bgcolor = None
@@ -844,7 +851,16 @@ class TableModel(object):
         if name in self.colors[key] and colname in self.colors[key][name]:
             return self.colors[key][name][colname]
         else:
-            return None
+            #return None
+            fgcolor,bgcolor,font = self.getCellFormatAt(rowIndex, columnIndex)
+            if key=="bg":
+                return bgcolor
+            elif key=="font":
+                return font
+            else:
+                return fgcolor
+        
+        
 
     def setColorAt(self, rowIndex, columnIndex, color, key='bg'):
         """Set color"""
