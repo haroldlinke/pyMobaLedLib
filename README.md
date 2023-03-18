@@ -37,7 +37,10 @@ V4.0.9.001 - 18.3.2023 - HL
 
 Known issues:
 - test pattern - goto mode support not implemented yet
+- main textbox and pictures are not visible yet
 - Patterngenerator access to ARDUINO not fully tested yet
+- a lot of  GUI issues need to be solevd and updated - functionality was first priority for this beta
+- performance of pattern testing is low - will be improved in a later version
 
 
 V3.1.0.001 -  7.4.2022 - HL 
