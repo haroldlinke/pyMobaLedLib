@@ -359,7 +359,7 @@ def Add_Extension_Entry(Cmd):
         __ExtensionsActive.Add(Extension.Id, Extension)
     __ExtensionLines.Add(__ExtensionLines.Count + 1, Cmd)
     fn_return_value = True
-    return fn_return_value
+    return fn_return_value, Cmd #*HL ByRef
 
 def Write_Header_File_Extension_Before_Config(fp):
     fn_return_value = None
@@ -438,14 +438,18 @@ def RemoveExistingExtensions():
 
     MacroSheet = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
     ParamSheet = PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH)
+    
+    
     for r in vbForRange(1, M30.LastUsedRowIn(ParamSheet)):
         if IsExtensionKey(ParamSheet.Cells(r, M10.ParName_COL)):
             ParamSheet.Rows(r).EntireRow.Delete()
             r = r - 1
+            raise() #*HL diese For Schleifen funktionieren nicht, da die Schleifenvariable in der Schleife reduziert wird!!
     for r in vbForRange(M02.SM_DIALOGDATA_ROW1, M30.LastUsedRowIn(MacroSheet)):
         if IsExtensionKey(MacroSheet.Cells(r, M02.SM_Typ___COL)):
             MacroSheet.Rows(r).EntireRow.Delete()
             r = r - 1
+            raise() #*HL diese For Schleifen funktionieren nicht, da die Schleifenvariable in der Schleife reduziert wird!!
 
 
 

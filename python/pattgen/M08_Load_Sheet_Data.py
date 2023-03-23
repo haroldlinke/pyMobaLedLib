@@ -173,12 +173,12 @@ def Create_New_Sheet(SheetName, Add_to_Duplicate_Name='_Copy_', AfterSheetName=V
     X02.Range(M01.MacEnab_Rng).Value = ''
 
 def Add_by_Hardi():
-    return #*HL
+   
     #------------------------
-    X02.ActiveSheet.Shapes.AddLabel(msoTextOrientationHorizontal, 443, 0, 55, 5).Select()
+    X02.ActiveSheet.Shapes.AddLabel(X01.msoTextOrientationHorizontal, 443*X02.guifactor, 0, 55*X02.guifactor, 5*X02.guifactor).Select()
     X02.Selection.ShapeRange[1].TextFrame2.TextRange.Characters.Text = 'by Hardi'
-    X02.Selection.ShapeRange.TextFrame2.TextRange.Font.Fill.ForeColor.rgb = rgb(0, 0, 255)
-    X02.Selection.ShapeRange.Name = 'InternalTextBox'
+    X02.Selection.ShapeRange[1].TextFrame2.TextRange.Font.Fill.ForeColor.rgb = rgb(0, 0, 255)
+    X02.Selection.ShapeRange[1].Name = 'InternalTextBox'
     X02.Selection.Placement = X01.xlFreeFloating
 
 def New_Sheet():
@@ -288,7 +288,7 @@ def Load_LED_Tab(Line, LTabNr):
             _with23.offset(LTabNr, i).Value = c
         i = i + 1
     LTabNr = LTabNr + 1
-    return LTabNr #*HL
+    return LTabNr #*HL ByRef
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: attr - ByVal 
 def Set_Attrib(r, attr):
@@ -326,7 +326,7 @@ def Load_LED_Att(Line, LAttNr):
             Set_Attrib(_with25.offset(LAttNr, i), c)
         i = i + 1
     LAttNr = LAttNr + 1
-    return LAttNr
+    return LAttNr #*HL ByRef
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Line - ByVal 
 def Load_Textbox(Line, Name='', LanguageNr=- 2):
@@ -346,7 +346,7 @@ def Load_Textbox(Line, Name='', LanguageNr=- 2):
     Line2 = Mid(Line, Len(Params(0)) + 2)
     Line2 = Replace(Line2, '{Attrib}', Chr(1))
     Parts = Split(Line2, Chr(1))
-    X02.ActiveSheet.Shapes.AddLabel(X01.msoTextOrientationHorizontal, Val(Edges(0)), Correct_Top_Pos_by_Version(Val(Edges(1))), Val(Edges(2)), Val(Edges(3))).Select()
+    X02.ActiveSheet.Shapes.AddLabel(X01.msoTextOrientationHorizontal, Val(Edges(0))*X02.guifactor, Correct_Top_Pos_by_Version(Val(Edges(1)))*X02.guifactor, Val(Edges(2))*X02.guifactor, Val(Edges(3))*X02.guifactor).Select()
     # 21.10.19: Added Val()  17.11.19: Added: Correct_Top_Pos_by_Version
     X02.Selection.Placement = X01.xlFreeFloating
     X02.Selection.ShapeRange[1].TextFrame2.TextRange.Characters.Text = Replace(Replace(Parts(0), '| ', '|'), '|', vbLf)
@@ -386,6 +386,7 @@ def Show_Rotating_Status(message, RotPos):
     RotPos = RotPos + 1
     X03.Sleep(100)
     X02.DoEvents()
+    return RotPos #*HL ByRef
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Line - ByVal 
 def Load_msoFormControl(Line, LanguageNr=- 2):
@@ -471,7 +472,7 @@ def Load_Picture(Line, SourceDir):
     # Redraw everything to make sure that the picture is placed correctly
     # 12.01.20:
     # VB2PY (UntranslatedCode) On Error GoTo LoadError
-    X02.ActiveSheet.Shapes.AddPicture(PicName, linktofile= X01.msoFalse, savewithdocument= X01.msoCTrue, Left= Val(Edges(0)), Top= Correct_Top_Pos_by_Version(Val(Edges(1))), Width= Val(Edges(2)), Height= Val(Edges(3))).Select()
+    X02.ActiveSheet.Shapes.AddPicture(PicName, linktofile= X01.msoFalse, savewithdocument= X01.msoCTrue, Left= Val(Edges(0))*X02.guifactor, Top= Correct_Top_Pos_by_Version(Val(Edges(1)))*X02.guifactor, Width= Val(Edges(2))*X02.guifactor, Height= Val(Edges(3))*X02.guifactor).Select()
     # 12.07.20: Old: Width:=-1, Height:=-1
     # VB2PY (UntranslatedCode) On Error GoTo 0
     X02.Selection.Name = M30.NoExt(Params(1))
@@ -498,6 +499,14 @@ def Set_Defaults_for_Sheet():
     # 29.12.19:
     Add_by_Hardi()
     X02.ActiveWindow.DisplayHeadings = False
+    
+    X02.ActiveSheet.Calculate()  #*HL
+    X02.ActiveSheet.Calculate()  #*HL
+    X02.Application.Caller="Update" #*HL
+    X02.ActiveSheet.EventWSchanged(X02.Cells(5,5)) #*HL
+    
+    #X02.ActiveSheet.EventWSchanged(X02.Cells(5,5)) #*HL  
+
     if Get_Cell('Grafische Anzeige:') != '':
         ## VB2PY (CheckDirective) VB directive took path 1 on True
         # 25.11.19:
@@ -556,7 +565,7 @@ def Load_Sheets(SourceName, Loaded_Sheets, AfterSheetName=VBMissingArgument):
         X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Fehler: Die Datei \'') + SourceName + '\' ' + pattgen.M09_Language.Get_Language_Str('existiert nicht.'), vbCritical, pattgen.M09_Language.Get_Language_Str('Fehler'))
         return
     SourceDir = M30.FilePath(SourceName)
-    VBFiles.openFile(FileNr, SourceName, 'r') 
+    VBFiles.openFile(FileNr, SourceName, 'r') #*HL
     #FirstSheet = True
     LNr = 0
     ScrUpd = X02.Application.ScreenUpdating
@@ -640,6 +649,9 @@ def Load_Sheets(SourceName, Loaded_Sheets, AfterSheetName=VBMissingArgument):
                     else:
                         if len(Tokens)==2: #*HL correction /n problem
                             Set_Cell(Trim(Tokens(0)), Tokens(1))
+                        elif len(Tokens)==1: #*HL correction /n problem
+                            pass
+                            
     # All sheets loade
     if FinishPrevious:
         # Do we have to finish the previous sheet (In case there was no sheet in the configuration file)
@@ -649,7 +661,6 @@ def Load_Sheets(SourceName, Loaded_Sheets, AfterSheetName=VBMissingArgument):
         # Protect the previos sheet
     X02.Application.Calculation = X01.xlCalculationAutomatic
     X02.Application.EnableEvents = True
-    X02.ActiveSheet.Calculate()
     X02.Application.ScreenUpdating = ScrUpd
     VBFiles.closeFile(FileNr)
     if AddedSheets > 1:
@@ -684,12 +695,12 @@ def Load_AllExamples_Sheets():
     return _fn_return_value
 
 def Is_Normal_Data_Sheet(Name, Txt):
-    _fn_return_value = None
+    _fn_return_value = False
     #-----------------------------------------------------------------------------
     if PG.ThisWorkbook.Sheets(Name).Visible == False:
         return _fn_return_value
     # 11.01.20:
-    if Name != M01.MAIN_SH and Name != M01.LANGUAGES_SH and Name != M01.GOTO_ACTIVATION_SH and Name != M01.PAR_DESCRIPTION_SH and Name != M01.SPECIAL_MODEDLG_SH:
+    if Name != M01.MAIN_SH and Name != M01.LANGUAGES_SH and Name != M01.GOTO_ACTIVATION_SH and Name != M01.PAR_DESCRIPTION_SH and Name != M01.SPECIAL_MODEDLG_SH and Name != "Named_Ranges":
         _fn_return_value = True
         # Additional savety check in case a new sheet has been added which is not listed above
         ## VB2PY (CheckDirective) VB directive took path 1 on True
@@ -697,6 +708,7 @@ def Is_Normal_Data_Sheet(Name, Txt):
         # Invisible string at "A1"
         # 25.01.20:
         CheckCell = 'A1'
+        CheckStr = "Normal Data Sheet" # Invisible string at "A1" 
         if PG.ThisWorkbook.Sheets(Name).Range(CheckCell) != CheckStr:
             _select15 = X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Achtung: Soll die Seite \'') + Name + '\' ' + Txt + pattgen.M09_Language.Get_Language_Str(' werden?'), vbQuestion + vbYesNoCancel, pattgen.M09_Language.Get_Language_Str('Unbekannte Seite entdeckt'))
             if (_select15 == vbNo):
@@ -710,7 +722,7 @@ def Del_All_Sheets_Excep_Main():
     #-------------------------------------
     X02.Application.Calculation = X01.xlCalculationManual
     # Otherwise the "CalculatePattern()" functionis called for every sheet
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets: #*HL
         if Is_Normal_Data_Sheet(Sh.Name, pattgen.M09_Language.Get_Language_Str('gelöscht')):
             X02.Application.DisplayAlerts = False
             X02.Sheets(Sh.Name).Delete()

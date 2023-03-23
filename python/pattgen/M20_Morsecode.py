@@ -100,6 +100,7 @@ def One_Char(Zeichencode, Zellcounter, Morsezeichen):
             Zellcounter = Zellcounter + 1
         else:
             X02.MsgBox('Wrong character in \'Morsezeichen(' + Zeichencode + ')\'', vbCritical, 'Interner Fehler')
+    return Zellcounter #*HL ByRef
 
 def Make_Morsecode():
     Zaehler = Double()
@@ -240,14 +241,14 @@ def Make_Morsecode():
             _select29 = Mid(Parts(0), 2)
             if (_select29 == 'KA') or (_select29 == 'BT') or (_select29 == 'AR') or (_select29 == 'VE') or (_select29 == 'SK') or (_select29 == 'SOS') or (_select29 == 'HH') or (_select29 == 'OE') or (_select29 == 'SZ') or (_select29 == 'AAA') or (_select29 == 'MIM') or (_select29 == 'OS') or (_select29 == 'NNN') or (_select29 == 'IMI') or (_select29 == 'BA') or (_select29 == 'UK') or (_select29 == 'KN') or (_select29 == 'KK') or (_select29 == 'JN') or (_select29 == 'BT') or (_select29 == 'AR') or (_select29 == 'DN') or (_select29 == 'AC'):
                 for ix in vbForRange(2, Len(Parts(0))):
-                    One_Char(Asc(Mid(Parts(0), ix, 1)), Zellcounter, Morsezeichen)
+                    Zellcounter = One_Char(Asc(Mid(Parts(0), ix, 1)), Zellcounter, Morsezeichen)
                     Zellcounter = Zellcounter + 1
             else:
                 X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Unbekanntes Spezial Signal \'') + Parts(0) + '}\'', vbCritical, pattgen.M09_Language.Get_Language_Str('Unbekanntes Signal'))
             Zaehler = Zaehler + Len(Parts(0)) + 1
         else:
             ## VB2PY (CheckDirective) VB directive took path 1 on 1
-            One_Char(Zeichencode, Zellcounter, Morsezeichen)
+            Zellcounter = One_Char(Zeichencode, Zellcounter, Morsezeichen)
         Zellcounter = Zellcounter + 3
     Zellcounter = Zellcounter - 3
     # 17.10.19: Hardi
@@ -315,6 +316,7 @@ def Simulate_MorseCode(Ditdauer, Zellcounter):
         X02.ActiveSheet.Calculate()
         X02.DoEvents()
         X03.Sleep(Ditdauer)
+    Zaehler += 1 #* loop variable in Python 1 less as in VBA
     #Cells(LEDsTAB_R+1, Zaehler - 1).Interior.ColorIndex = 2
     if StartActCell > 0:
         X02.Range[X02.Cells(M01.LEDsTAB_R + 1, StartActCell), X02.Cells(M01.LEDsTAB_R + 1, Zaehler)].Interior.ColorIndex = 2

@@ -23,7 +23,7 @@
 from __future__ import absolute_import, division, print_function
 import sys
 import traceback
-# fromx PIL import Image, ImageTk
+#from PIL import Image, ImageTk
 #import PIL as PIL
 try:
     from tkinter import *
@@ -2191,7 +2191,8 @@ class TableCanvas(Canvas):
             
     def drawShape(self,shape):
         #print("drawShapes:", self.model.modelname,shape.TopLeftCell_Row,shape.tablename)
-        if shape.get_activeflag():
+        if shape.get_activeflag() and shape.get_visible():
+            print("Draw-Shape:",shape.Name)
             shapeY = shape.Top
             #shapeY = self.calc_y_from_row(shape.TopLeftCell_Row)
             #shaperow = self.getRowPosition(shapeY, ignorehiddenrows=True)
@@ -2227,14 +2228,14 @@ class TableCanvas(Canvas):
                     #if shape.TextFrame2.TextRange.Text == "":
                     #    shape.TextFrame2.TextRange.Text = "0"
                     if shape.Text !="":
-                        shape.textidx = self.create_text(int(shape.Left),int(shape.Top),anchor="nw",text=shape.Text,tags=(shape.Name,"Shape"))
+                        shape.textidx = self.create_text(int(shape.Left),int(shape.Top),anchor="nw",text=shape.Text,tags=(shape.Name,"Shape"),width=shape.Width)
                         if shape.ZOrder_Val==0:
                             self.tag_raise(shape.textidx)
                         else:
                             self.tag_lower(shape.textidx)                        
-                        self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                        #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
                     else:
-                        shape.textidx = -1                
+                        shape.textidx = -1
                 elif shape.Shapetype == X01.msoOLEControlObject:
                     if shape.formwin==None:
                         formFrame = Frame(self,borderwidth=0)
@@ -2264,10 +2265,23 @@ class TableCanvas(Canvas):
                     self.tag_raise(shape.formwin)
                 elif shape.Shapetype == "picture":
                     pass
-                    #print("drawshape - Picture:")
-                    #shape.rectidx = self.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fill,tags=(shape.masteridx,shape.Name,"Shape"))
-                    #shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.TextFrame2,tags=(shape.masteridx,shape.Name,"Shape"))
-                    #self.tag_raise(shape.rectidx)
+                    print("drawshape - Picture:", shape.Name)
+                    image_loaded=False
+                    try:
+                        shape.image = PhotoImage(file=shape.Name)
+                        shape.rectidx = self.create_image(shape.Left,shape.Top,image=shape.image,tags=(shape.Name,"Shape","Picture"),anchor='nw')
+                        self.tag_raise(shape.rectidx)
+                        image_loaded=True
+                    except:
+                        image_loaded=False
+                    if not image_loaded:
+                        try:
+                            shape.Name=shape.Name.replace(".jpg",".png")
+                            shape.image = PhotoImage(file=shape.Name)
+                            shape.rectidx = self.create_image(shape.Left,shape.Top,image=shape.image,tags=(shape.Name,"Shape","Picture"),anchor='nw')
+                            self.tag_raise(shape.rectidx)
+                        except:
+                            logging.debug("Error: Image not found: "+shape.Name)
                     #self.tag_raise(shape.textidx)
                     #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
                     #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
@@ -3513,6 +3527,7 @@ class CTShape(object):
         self.Rotation = rotation
         self.Name = name
         self.Text = ""
+        self.image=None
         self.AlternativeText=""
         self.ZOrder_Val=zorder
         self.control_dict = control_dict

@@ -98,7 +98,7 @@ def Check_Par_with_ErrMsg(ParNr, Val):
     if (_select40 == ''):
         # Normal Numeric parameter
         if Check_Limit_to_MinMax(ParNr, _with51.Value) == False:
-            return _fn_return_value
+            return _fn_return_value, Val
     elif (_select40 == 'Time'):
         # time could have a tailing "Min", "Sek", "sek", "Sec", "sec", "Ms", "ms"
         if IsNumeric(_with51.Value):
@@ -116,7 +116,7 @@ def Check_Par_with_ErrMsg(ParNr, Val):
         M30.EndProg()
     Val = _with51.Value
     _fn_return_value = True
-    return _fn_return_value
+    return _fn_return_value, Val
 
 def UserForm_Initialize():
     #--------------------------------
@@ -131,6 +131,18 @@ def Show_UserForm_Other(Par, Name, Description):
     CNames = 'Val0 Val1 Period Duration Timeout DstVar MinTime MaxTime Par1'
 
     p = Variant()
+    
+    Typ = String()
+
+    Min = String()
+
+    Max = String()
+
+    Def = String()
+
+    InpTxt = String()
+
+    Hint = String()    
 
     UsedParNr = Long()
 
@@ -160,7 +172,7 @@ def Show_UserForm_Other(Par, Name, Description):
         if p == 'Flags':
             Show_CounterFlags = True
         else:
-            pattgen.M15_Par_Description.Get_Par_Data(p, Typ, Min, Max, Def, InpTxt, Hint)
+            Typ, Min, Max, Def, InpTxt, Hint = pattgen.M15_Par_Description.Get_Par_Data(p, Typ, Min, Max, Def, InpTxt, Hint)
             TypA[UsedParNr] = Typ
             MinA[UsedParNr] = Min
             MaxA[UsedParNr] = Max
@@ -205,7 +217,8 @@ def Create_Result(Res):
             Val = 'Not Found'
             for Nr in vbForRange(1, MAX_PAR_CNT):
                 if ParName(Nr - 1) == p:
-                    if Check_Par_with_ErrMsg(Nr, Val) == False:
+                    res, Val = Check_Par_with_ErrMsg(Nr, Val)
+                    if res == False:
                         return _fn_return_value
                     break
             if Val == 'Not Found':
@@ -213,7 +226,7 @@ def Create_Result(Res):
         Res = Res + Val + ', '
     Res = FuncName + '(' + M30.DelLast(Res, 2) + ')'
     _fn_return_value = True
-    return _fn_return_value
+    return _fn_return_value, Res #*HL ByRef
 
 def Abort_Button_Click():
     #-------------------------------
@@ -226,8 +239,9 @@ def Abort_Button_Click():
 
 def OK_Button_Click():
     #----------------------------
-    if Create_Result(pattgen.M14_Select_GotoAct.Userform_Res):
-        UnhookFormScroll()
+    res, pattgen.M14_Select_GotoAct.Userform_Res = Create_Result(pattgen.M14_Select_GotoAct.Userform_Res)
+    if res:
+        #UnhookFormScroll()
         # Deactivate the mouse wheel scroll function
         #Me.Hide
         X02.Unload(Me)

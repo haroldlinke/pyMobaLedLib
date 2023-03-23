@@ -243,17 +243,17 @@ def Calc_Worksheet(ws,cell=None):
     setcellfromvariable(ws, "E34",E34)  
 
     #* "E35" <f>IF(Goto_Mode=1,"SI_LocalVar",SchalterNr)</f> -> InputCh
-    E35=IF(Goto_Mode==1,"SI_LocalVar",SchalterNr)
+    E35=IF(Goto_Mode=="1","SI_LocalVar",SchalterNr)
     InputCh=E35
     setcellfromvariable(ws, "E35",E35)
     
     #* "H35" <f>IF(Goto_Mode=1,"",",InCh")</f> -> InChStr
-    H35=IF(Goto_Mode==1,"",",InCh")
+    H35=IF(Goto_Mode=="1","",",InCh")
     InChStr=H35
     setcellfromvariable(ws, "H35",H35)
     
     #* "J35" <f>IF(Goto_Mode=1,"SI_LocalVar","InCh")</f> -> InNrStr2
-    J35=IF(Goto_Mode==1,"SI_LocalVar","InCh")
+    J35=IF(Goto_Mode=="1","SI_LocalVar","InCh")
     InNrStr2=J35
     setcellfromvariable(ws, "J35",J35)
     

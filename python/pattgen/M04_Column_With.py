@@ -28,7 +28,7 @@ def Get_Duration(c, FirstEmptyCol, Values):
         elif InStr(s, 'Min') > 0:
             V = V * 60 * 1000
         _fn_return_value = V
-    return _fn_return_value
+    return _fn_return_value, FirstEmptyCol #*HL ByRef
 
 def Adjust_Column_With_to_Duration():
     FirstLEDsRow = Long()
@@ -76,7 +76,7 @@ def Adjust_Column_With_to_Duration():
         Min_t = 999999
         for Col in vbForRange(M01.Dauer_Col1, LastLEDsCol):
             _with35 = X02.Cells(M01.Dauer_Row, Col)
-            ms = Get_Duration(X02.Cells(M01.Dauer_Row, Col), FirstEmptyCol, Values)
+            ms, FirstEmptyCol = Get_Duration(X02.Cells(M01.Dauer_Row, Col), FirstEmptyCol, Values)
             Values[i] = ms
             i = i + 1
             if ms > Max_t:

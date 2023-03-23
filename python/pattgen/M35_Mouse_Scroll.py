@@ -130,7 +130,7 @@ def LowLevelMouseProc(nCode, wParam, lParam):
 def Save_Mouse_Hook():
     # 28.04.20:
     #----------------------------
-    PG.ThisWorkbook.Sheets[M01.MouseHook_Store_Page].Range['MouseHook'] = mLngMouseHook
+    PG.ThisWorkbook.Sheets[M01.MouseHook_Store_Page].Range['MouseHook'] = "" #mLngMouseHook
 
 def Cleare_Mouse_Hook():
     # 28.04.20:

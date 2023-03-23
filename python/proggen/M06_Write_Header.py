@@ -465,7 +465,8 @@ def Generate_Config_Line(LEDNr, Channel_or_define, r, Config_Col, Addr):
             return fn_return_value
         
         if M38.IsExtensionKey(Cmd):
-            if not M38.Add_Extension_Entry(Cmd):
+            res,Cmd = M38.Add_Extension_Entry(Cmd) #*HL ByRef
+            if not res:
                 fn_return_value = '#ERROR#'
                 P01.Cells(r, M25.Config__Col).Select()
             return fn_return_value        

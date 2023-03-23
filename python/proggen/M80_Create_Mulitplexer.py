@@ -363,7 +363,7 @@ def Special_Multiplexer_Ext(Res, LEDs):
     else:
         # LedType = "RGB LEDs"
         LEDs = Trim(Param(4)) * LedsInGroup
-    return _ret
+    return _ret, LEDs #*HL ByRef
 
 def LedCount(Cmd):
     _ret = ""

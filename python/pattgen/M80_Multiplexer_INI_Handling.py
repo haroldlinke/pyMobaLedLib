@@ -1093,6 +1093,7 @@ def Load_msoShapeOval(Pos, LedName=VBMissingArgument):
 def Add_LED_Shape(LED, LedNr, l, t, h, w):
     
     global LED_Nrs_OnOff
+    guifactor =1.55
     
     #*HL Sh = Shape()
     #---------------------------------------------------------------------------------------------------------------
@@ -1100,7 +1101,7 @@ def Add_LED_Shape(LED, LedNr, l, t, h, w):
         # Add the shape
         # ActiveSheet.Shapes.AddShape(msoShapeOval, h_center, v_center, min_dim, min_dim).Select
         # ActiveSheet.Shapes.AddShape(msoShapeOval, l, t, h, w).Select
-        Sh = X02.ActiveSheet.Shapes.AddShape(X01.msoShapeOval, l, t, h, w)
+        Sh = X02.ActiveSheet.Shapes.AddShape(X01.msoShapeOval, l*guifactor, t*guifactor, h*guifactor, w*guifactor)
         Sh.Name = LED + str(LedNr)  #*HL
         #Sh.Title = "LedNr = " & LED & LedNr
         # 11.07.20: Disabled because it doubles the "AlternativeText"
@@ -1902,26 +1903,30 @@ def Calc_PatternNumber(PatternNumber, Pattern, NumberOfPatterns):
     #  - Positions for the Goto instruction (P)
     #  - Goto instructions (G nr)
     #  - GoEnd instructions (E)
+    PNr=0
     _with112 = Pattern
-    GotoEntry = UCase(_with112.Goto_List(PatternNumber))
+    GotoEntry = UCase(_with112.Goto_List[PatternNumber])
     if InStr(GotoEntry, 'E'):
         PatternNumber = NumberOfPatterns + 1
-        return
+        return PatternNumber
     p = InStr(GotoEntry, 'G')
     if p > 0:
         GotoP = Val(Mid(GotoEntry, p + 1))
         for PatternNumber in vbForRange(1, NumberOfPatterns):
-            GotoEntry = UCase(_with112.Goto_List(PatternNumber))
+            GotoEntry = UCase(_with112.Goto_List[PatternNumber])
             if InStr(GotoEntry, 'P') > 0:
                 PNr = PNr + 1
                 if PNr == GotoP:
-                    return
-        return
-    PatternNumber = PatternNumber + 1
+                    return PatternNumber
+        PatternNumber +=1 #*HL Loopvariable adapation to VBA behavior
+        return PatternNumber
+    PatternNumber = PatternNumber + 1 #*HL loop variable adaption to VBA behavior
+    return PatternNumber #*HL ByRef
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: PatternNumber - ByRef 
 def Calc_StartPatternNumber(GotoNr, PatternNumber, Pattern, NumberOfPatterns):
     GotoEntry = String()
+    SNr=0
     # 03.06.20: Hardi
     #-------------------------------------------------------------------------------------------------------------------------------------
     # The Goto line contains the
@@ -1931,11 +1936,13 @@ def Calc_StartPatternNumber(GotoNr, PatternNumber, Pattern, NumberOfPatterns):
     #  - GoEnd instructions (E)
     _with113 = Pattern
     for PatternNumber in vbForRange(1, NumberOfPatterns):
-        GotoEntry = UCase(_with113.Goto_List(PatternNumber))
+        GotoEntry = UCase(_with113.Goto_List[PatternNumber])
         if InStr(GotoEntry, 'S') > 0:
             SNr = SNr + 1
         if SNr >= GotoNr:
-            return
+            return PatternNumber
+    PatternNumber+=1 #*HL Loopvariable adapation to VBA behavior
+    return PatternNumber #*HL ByRef
 
 def Test_Callback(Nr, Buff=VBMissingArgument):
     #TT-----------------------------------------------------------
@@ -1944,7 +1951,7 @@ def Test_Callback(Nr, Buff=VBMissingArgument):
 def Test_Select_GotoNr_Form():
     GotoCnt = 9
     #UT----------------------------------
-    Select_GotoNr_Form.Show_Dialog(GotoCnt, 'Test_Callback')
+    D00.Select_GotoNr_Form.Show_Dialog(GotoCnt, Test_Callback)
 
 def Select_GotoNr_Callback(Nr, Buff=VBMissingArgument):
     global GotoNr, RestartDisplay_Leds
@@ -1959,11 +1966,12 @@ def Get_Start_Cnt(NumberOfPatterns, Pattern):
     GotoEntry = String()
 
     PatternNumber = Long()
+    SNr = 0
     # 04.06.20: Hardi
     #-------------------------------------------------------------------------------------------------------------------------------------
     _with114 = Pattern
     for PatternNumber in vbForRange(1, NumberOfPatterns):
-        GotoEntry = UCase(_with114.Goto_List(PatternNumber))
+        GotoEntry = UCase(_with114.Goto_List[PatternNumber])
         if InStr(GotoEntry, 'S') > 0:
             SNr = SNr + 1
     _fn_return_value = SNr + 1
@@ -1972,8 +1980,8 @@ def Get_Start_Cnt(NumberOfPatterns, Pattern):
 def Display_Leds(MacroCodeNr, NumberOfPatterns, LED_Array, Pattern, LED_Type_RGB):
     global GotoNr, RestartDisplay_Leds,  LED_Nrs_OnOff
     #--------------------------------------------------------------------------------------------------------------------------------------------------
-    if Pattern.Goto_Mode == '1':
-        Select_GotoNr_Form.Show_Dialog(Get_Start_Cnt(NumberOfPatterns, Pattern), 'Select_GotoNr_Callback')
+    if Pattern.Goto_Mode == "1": #* HL
+        D00.Select_GotoNr_Form.Show_Dialog(Get_Start_Cnt(NumberOfPatterns, Pattern), Select_GotoNr_Callback)
         GotoNr = 0
     else:
         GotoNr = - 1
@@ -1987,7 +1995,7 @@ def Display_Leds(MacroCodeNr, NumberOfPatterns, LED_Array, Pattern, LED_Type_RGB
         if not (GotoNr >= 0):
             break
     Display_Leds_Ending(MacroCodeNr, Pattern.Channels, LED_Nrs_OnOff)
-    if Pattern.Goto_Mode == '1':
+    if Pattern.Goto_Mode == "1":
         Button_Pressed_Handling('Test_Leds_M99O01', True)
         # Stop executing the Displaying of a Pattern
     # Clear the actual position
@@ -2028,9 +2036,9 @@ def Display_Leds_with_StartNr(StartNr, MacroCodeNr, NumberOfPatterns, LED_Array,
     PatternNumber = 1
     PingPong = InStr(_with115.Mode, 'PM_PINGPONG') > 0
     # 03.06.20: Hardi
-    GotoMode = ( _with115.Goto_Mode == '1' )
+    GotoMode = ( _with115.Goto_Mode == "1" )
     if GotoMode:
-        Calc_StartPatternNumber(StartNr, PatternNumber, Pattern, NumberOfPatterns)
+        PatternNumber = Calc_StartPatternNumber(StartNr, PatternNumber, Pattern, NumberOfPatterns)
     # 04.06.20: Hardi
     while Test_Buttons(MacroNr * 100 + OptionNr) and TestPatternButtonOn and RestartDisplay_Leds == False:
         if MacroNr >= 90:
@@ -2065,11 +2073,11 @@ def Display_Leds_with_StartNr(StartNr, MacroCodeNr, NumberOfPatterns, LED_Array,
                 else:
                     Debug.Print ("Not Visible '" + LED + str(LED_Nr) + "'")
                 Debug.Print( "LED_Nr : " + str(LED_Nr) + str(RGB_Channel(0)) + "/" + str(RGB_Channel(1)) + "/" + str(RGB_Channel(2)))
-        X02.ActiveSheet.Redraw_table()
+        #X02.ActiveSheet.Redraw_table()
         DelayTimer(( _with115.Duration(1 +  ( ( PatternNumber - 1 )  % UBound(_with115.Duration) )) ))
         # 03.06.20: Hardi
         if GotoMode:
-            Calc_PatternNumber(PatternNumber, Pattern, NumberOfPatterns)
+            PatternNumber=Calc_PatternNumber(PatternNumber, Pattern, NumberOfPatterns) #*HL
             if PatternNumber > NumberOfPatterns:
                 #MsgBox "End"
                 return
@@ -2588,8 +2596,11 @@ def Check_Pattern(PatternRow, PattStr=VBMissingArgument, Channels=VBMissingArgum
     Parts = Split(RStr, ',')
     if Channels == 0:
         for Row in vbForRange(PatternRow, 1, - 1):
+            RowRes=Row+1 #* HL Loopvariable adaption to VBA behavior
             if Left(X02.Cells(Row, 4).Value, 1) == 'M':
+                RowRes=Row
                 break
+        Row=RowRes #* HL Loopvariable adaption to VBA behavior
         LEDs = X02.Cells(Row, X02.Range('Number_Of_LEDs').Column).Value
     else:
         LEDs = Channels
@@ -2659,8 +2670,11 @@ def Check_MultiplexerName(MacroRow):
     MacroNameInputOK = False
     Error = 0
     for Row in vbForRange(MacroRow, 1, - 1):
+        RowRes=Row+1
         if Left(X02.Cells(Row, 4).Value, 1) == 'M':
+            RowRes=Row
             break
+    Row=RowRes
     MacroName = X02.Cells(Row, 3).Value
     if Left(MacroName, Len('Multiplexer_')) != 'Multiplexer_':
         X02.CellDict[Row, 3].Value = 'Multiplexer_' + MacroName
