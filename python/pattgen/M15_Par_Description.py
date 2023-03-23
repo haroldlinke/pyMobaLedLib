@@ -61,6 +61,7 @@ def Get_Par_Data(ParName, Typ, Min, Max, Def, InpTxt, Hint):
         InpTxt = ParName
     Hint = _with49.Cells(Row, ParHint_COL)
     # Inserting a LF seames to be not possible ;-(   Test with: Replace(.Cells(Row, ParHint_COL), "|", vbCrLf)
+    return Typ, Min, Max, Def, InpTxt, Hint #*HL ByRef
 
 def Test_Get_Par_Data():
     Typ = String()
@@ -75,7 +76,7 @@ def Test_Get_Par_Data():
 
     Hint = String()
     #UT----------------------------
-    Get_Par_Data('Duration', Typ, Min, Max, Def, InpTxt, Hint)
+    Typ, Min, Max, Def, InpTxt, Hint = Get_Par_Data('Duration', Typ, Min, Max, Def, InpTxt, Hint) #*HL ByRef
     Debug.Print('Typ:' + Typ, 'Min:' + Min + ' Max:' + Max + ' Def:' + Def + vbCr + 'InpTxt:' + InpTxt + vbCr + 'Hint:' + Hint)
 
 # VB2PY (UntranslatedCode) Option Explicit

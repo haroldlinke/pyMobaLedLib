@@ -233,6 +233,8 @@ def Int(value):
     if -32767 <= n <= 32767:
         return int(n)
     else:
+        return int(n) #*HL change
+    
         raise ValueError("Out of range in Int (%s)" % n)
 
 

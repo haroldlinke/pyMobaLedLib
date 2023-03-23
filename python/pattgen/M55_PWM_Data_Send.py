@@ -303,6 +303,7 @@ def Toggle(NextDatFlag):
         NextDatFlag = WB_MarkBit
     else:
         NextDatFlag = 0
+    return NextDatFlag #*HL ByRef
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: NextDatFlag - ByRef 
 def Send_String(PortId, LedNr, LEDCnt, NextDatFlag, Add2CRC, Txt):
@@ -322,14 +323,14 @@ def Send_String(PortId, LedNr, LEDCnt, NextDatFlag, Add2CRC, Txt):
             # Debug
         if not Send_LED_Dat(PortId, ( Asc(c) and WB_Mask )  + NextDatFlag, LedNr, LEDCnt):
             return _fn_return_value
-        Toggle(NextDatFlag)
+        NextDatFlag=Toggle(NextDatFlag)
         X03.Sleep(WaitTime)
         if not Send_LED_Dat(PortId, Int(( Asc(c) / WB_MarkBit )) + NextDatFlag, LedNr, LEDCnt):
             return _fn_return_value
-        Toggle(NextDatFlag)
+        NextDatFlag=Toggle(NextDatFlag)
         X03.Sleep(WaitTime)
     _fn_return_value = True
-    return _fn_return_value
+    return _fn_return_value, NextDatFlag #*HL ByRef
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: NextDatFlag - ByRef 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ByteStr - ByVal 
@@ -368,17 +369,17 @@ def Send_ByteString(PortId, LedNr, LEDCnt, NextDatFlag, AddByteCnt, ByteStr, Per
             Debug.Print('Add CRC ' + B)
         if not Send_LED_Dat(PortId, ( B and WB_Mask )  + NextDatFlag, LedNr, LEDCnt):
             return _fn_return_value
-        Toggle(NextDatFlag)
+        NextDatFlag=Toggle(NextDatFlag)
         X03.Sleep(WaitTime)
         if not Send_LED_Dat(PortId, Int(( B / WB_MarkBit )) + NextDatFlag, LedNr, LEDCnt):
             return _fn_return_value
-        Toggle(NextDatFlag)
+        NextDatFlag=Toggle(NextDatFlag)
         Cnt = Cnt + 1
         Percent_Msg_UserForm.Set_Status_Label(PercentTxt + Round(100 * Cnt / Total, 0) + ' %')
         X03.Sleep(WaitTime)
     _fn_return_value = True
     Percent_Msg_UserForm.Hide()
-    return _fn_return_value
+    return _fn_return_value, NextDatFlag #*HL ByRef
 
 def LA(L1, L2):
     _fn_return_value = None
@@ -443,8 +444,8 @@ def Send_Pattern_Test(PortId, LedNr, LEDCnt, NextDatFlag, Mode):
     #ByteStr = "1, 2, "
     ByteStr = ByteStr + '0'
     # Add EndCfg
-    _fn_return_value = Send_ByteString(PortId, LedNr, LEDCnt, NextDatFlag, True, ByteStr)
-    return _fn_return_value
+    _fn_return_value, NextDatFlag = Send_ByteString(PortId, LedNr, LEDCnt, NextDatFlag, True, ByteStr)
+    return _fn_return_value, NextDatFlag #*HL ByRef
 
 def Conv_Analog_Limmits_to_ByteStr(Param):
     _fn_return_value = None
@@ -524,10 +525,10 @@ def Send_CRC(PortId, LedNr, LEDCnt, NextDatFlag):
         CRC = pattgen.M58_CRC.Crc16_ModBus(CRC_ByteList)
         if DEBUG_SEND:
             Debug.Print('CRC calculated over all \'Send_String()\' calls except the the header: ' + Hex(CRC))
-        _fn_return_value = Send_ByteString(PortId, LedNr, LEDCnt, NextDatFlag, False, M30.Long_to_2ByteStr(CRC), 'CRC ')
+        _fn_return_value, NextDatFlag = Send_ByteString(PortId, LedNr, LEDCnt, NextDatFlag, False, M30.Long_to_2ByteStr(CRC), 'CRC ')
     else:
         _fn_return_value = True
-    return _fn_return_value
+    return _fn_return_value, NextDatFlag #*HL ByRef
 
 def Get_Goto_pwm(GotoNr):
     _fn_return_value = None
@@ -650,16 +651,16 @@ def Test_Send_with_Dialog():
             NextDatFlag = 0
             CRC_ByteList = vbObjectInitialize((0,), Variant)
         elif (_select46 == 'E'):
-            Res = Send_CRC(PortId, LedNr, LEDCnt, NextDatFlag)
+            Res, NextDatFlag = Send_CRC(PortId, LedNr, LEDCnt, NextDatFlag)
             Res = Send_LED_PWM(PortId, 255, LedNr, LEDCnt)
         elif (_select46 == 'R'):
             Res = Send_LED_PWM(PortId, Val(Mid(Inp, 2)), LedNr, LEDCnt)
         elif (_select46 == 'N'):
-            Toggle(NextDatFlag)
+            NextDatFlag=Toggle(NextDatFlag)
         elif (_select46 == 'C'):
-            Res = Send_String(PortId, LedNr, LEDCnt, NextDatFlag, False, CP_HEAD_VERSION)
+            Res, NextDatFlag = Send_String(PortId, LedNr, LEDCnt, NextDatFlag, False, CP_HEAD_VERSION)
         elif (_select46 == 'H') or (_select46 == 'V') or (_select46 == 'P') or (_select46 == 'L') or (_select46 == 'W') or (_select46 == 'B') or (_select46 == 'T'):
-            Res = Send_Pattern_Test(PortId, LedNr, LEDCnt, NextDatFlag, UCase(Inp))
+            Res, NextDatFlag = Send_Pattern_Test(PortId, LedNr, LEDCnt, NextDatFlag, UCase(Inp))
         elif (_select46 == ''):
             EndLoop = True
         elif (_select46 == 'G'):
@@ -669,7 +670,7 @@ def Test_Send_with_Dialog():
         else:
             if Val(Inp) >= 0 and Val(Inp) <= 15:
                 Res = Send_LED_Dat(PortId, Val(Inp) + NextDatFlag, LedNr, LEDCnt)
-                Toggle(NextDatFlag)
+                NextDatFlag=Toggle(NextDatFlag)
             else:
                 X02.MsgBox('Wrong Input:' + vbCr + '  \'' + Inp + '\'', vbCritical, 'Test_Send_with_Dialog')
         if not Res:
@@ -709,7 +710,7 @@ def Convert_Numerical_LED_Assignement(LED_Assignement, ByteStr):
             Nibbel = 0
             ByteStr = ByteStr + LA(L0, Nr)
     _fn_return_value = True
-    return _fn_return_value
+    return _fn_return_value, ByteStr #*HL ByRef
 
 def Test_Convert_Numerical_LED_Assignement():
     ByteStr = String()
@@ -821,13 +822,15 @@ def Send_to_ATTiny(PortId, LedNr, LED_Assignement_Str, Analog_Inputs):
     CRC_ByteList = vbObjectInitialize((0,), Variant)
     X03.Sleep(WaitTime_Start)
     Percent_Msg_UserForm.Set_Status_Label(pattgen.M09_Language.Get_Language_Str('Sende Kennung...'))
-    if not Send_String(PortId, LedNr, LEDCnt, NextDatFlag, False, CP_HEAD_VERSION):
+    res, NextDatFlag = Send_String(PortId, LedNr, LEDCnt, NextDatFlag, False, CP_HEAD_VERSION)
+    if not res:
         # VB2PY (UntranslatedCode) GoTo ErrMsg
         pass
     LED_Assignement_Str = Trim(LED_Assignement_Str)
     if LED_Assignement_Str != '':
         if IsNumeric(Left(LED_Assignement_Str, 1)):
-            if Convert_Numerical_LED_Assignement(LED_Assignement_Str, ByteStr) == False:
+            res, ByteStr = Convert_Numerical_LED_Assignement(LED_Assignement_Str, ByteStr)
+            if  res == False:
                 # VB2PY (UntranslatedCode) GoTo ErrorHand
                 pass
         else:
@@ -843,11 +846,13 @@ def Send_to_ATTiny(PortId, LedNr, LED_Assignement_Str, Analog_Inputs):
     ByteStr = ByteStr + pattgen.M56_Pattern2Bytes.Convert_PatternStr_to_ByteStr(X02.Range(M01.ErgebnisRng))
     ByteStr = ByteStr + '0'
     # Add EndCfg
-    if not Send_ByteString(PortId, LedNr, LEDCnt, NextDatFlag, True, ByteStr):
+    res, NextDatFlag = Send_ByteString(PortId, LedNr, LEDCnt, NextDatFlag, True, ByteStr)
+    if not res:
         # VB2PY (UntranslatedCode) GoTo ErrMsg
         pass
     # Send the data to the ATTiny
-    if not Send_CRC(PortId, LedNr, LEDCnt, NextDatFlag):
+    res, NextDatFlag = Send_CRC(PortId, LedNr, LEDCnt, NextDatFlag)
+    if not res:
         # VB2PY (UntranslatedCode) GoTo ErrMsg
         pass
     # Send the CRC

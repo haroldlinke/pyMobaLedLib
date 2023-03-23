@@ -251,6 +251,7 @@ def Process_File(VBAName):
 
     FPos = Long()
     #UT--------------------------------------------------------
+    raise() #*HL byRef issue
     if not Load_File_in_String(VBAName, p_str):
         return _fn_return_value
     VBA_Modul_Name = M30.FileName(VBAName)

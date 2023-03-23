@@ -173,7 +173,7 @@ def Convert_PatternStr_to_ByteStr(Txt):
     Res = Res + FirstTypNr + TimeCnt - 1 + ', '
     ParamsStr = Split(Txt, '(')(1)
     GotoMode = InStr(ParamsStr, 'SI_LocalVar') > 0
-    M30.Replace_Const(ParamsStr, ReplaceList, ',', '>')
+    ParamsStr = M30.Replace_Const(ParamsStr, ReplaceList, ',', '>')
     # Replace string like "SI_LocalVar", "ms", ...
     CommentPos = InStr(ParamsStr, '//')
     if CommentPos > 0:
@@ -208,6 +208,7 @@ def Convert_PatternStr_to_ByteStr(Txt):
     # Time parameter
     for Nr in vbForRange(Nr, Nr + TimeCnt - 1):
         Res = Res + Convert_Time(Params(Nr)) + ', '
+    Nr +=1 #*HL Loopvariable adapation to VBA behavior
     Res = Res + M30.Long_to_2ByteStr(UBound(Params) + 1 - Nr) + ', '
     # Number of remaining parameters
     # copy the remaining parameter (Data bytes and Goto Tab)

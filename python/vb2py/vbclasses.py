@@ -384,7 +384,7 @@ class _VBFiles:
             else:
                 old_file.close()
             #
-            self._channels[channelid] = open(filename, mode)
+            self._channels[channelid] = open(filename, mode,newline="\r\n")
         finally:
             self._lock.release()
 
@@ -411,8 +411,15 @@ class _VBFiles:
         and what the implications of chunking would be in a multithreaded app.
 
         We use the lock to prevent multiple reads.
-
+        
+        
         """
+        vars = []
+        f = self._channels[channelid]
+        line=f.readline()
+        line=line.replace("\r\n","")
+        return line
+        
         if separators is None:
             separators = ("\n", ",", "\t", "")
         #
@@ -436,6 +443,8 @@ class _VBFiles:
                         buffer = ""
                     else:
                         buffer += char
+                else:
+                    pass
         finally:
             self._lock.release()
         #	

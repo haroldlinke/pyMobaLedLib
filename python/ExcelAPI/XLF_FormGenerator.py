@@ -197,7 +197,7 @@ def generate_controls(comp_list,parent,dlg):
                 comp.Accelerator = component_dict.get("Accelerator","")
                 comp.icon = component_dict.get("IconName","")
                 if comp.Accelerator!="":            
-                    parent.bind(comp.Accelerator, Command)   
+                    parent.bind(comp.Accelerator, Command)
                     
                 if comp.icon != "":
                     filename = r"/images/"+comp.icon

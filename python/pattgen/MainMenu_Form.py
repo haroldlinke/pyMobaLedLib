@@ -52,7 +52,7 @@ def DeleteAlleExamplesButton_Click():
     #Debug.Print "End DeleteAlleExamplesButton_Click()"
     # Debug
     PG.ThisWorkbook.Sheets(M01.MAIN_SH).Select()
-    D00.MainMenu_Form.Show()
+    #D00.MainMenu_Form.Show()
 
 def HelpButton_Click():
     #-----------------------------
@@ -81,7 +81,7 @@ def LoadExampleButton_Click():
     ChDir(( M30.FilePath(M01.ExampleName) ))
     # VB2PY (UntranslatedCode) On Error GoTo 0
     Res = X02.Application.GetOpenFilename(fileFilter= pattgen.M09_Language.Get_Language_Str('Pattern configurator example (*.MLL_pcf), *.MLL_pcf'), Title= pattgen.M09_Language.Get_Language_Str('Load Examples'))
-    if Res != False:
+    if Res != "":
         D00.StatusMsg_UserForm.Show()
         # 12.01.20:
         M01.ExampleName = Res
