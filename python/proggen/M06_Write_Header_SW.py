@@ -498,17 +498,19 @@ def __Get_Matching_Arg(Org_Macro, Line, DestVarName):
         Act_Args = __Get_Arguments(Line)
         if M30.isInitialised(Act_Args):
             if UBound(Act_Args) >= UBound(Org_Args):
+                new_i=-1 #*HL simulation of loopvar change
                 for i in vbForRange(0, UBound(Org_Args)):
-                    if Org_Args(i) == DestVarName:
-                        _select3 = DestVarName
-                        if (_select3 == '...') or (_select3 == 'OutList'):
-                            while i <= UBound(Act_Args):
-                                _ret = __Get_Matching_Arg() + Act_Args(i) + ','
-                                i = i + 1
-                            _ret = M30.DelLast(__Get_Matching_Arg())
-                        else:
-                            _ret = Act_Args(i)
-                        return _ret
+                    if i>new_i:
+                        if Org_Args(i) == DestVarName:
+                            _select3 = DestVarName
+                            if (_select3 == '...') or (_select3 == 'OutList'):
+                                while i <= UBound(Act_Args):
+                                    _ret = __Get_Matching_Arg() + Act_Args(i) + ','
+                                    new_i = i + 1
+                                _ret = M30.DelLast(__Get_Matching_Arg())
+                            else:
+                                _ret = Act_Args(i)
+                            return _ret
     P01.MsgBox(Replace(M09.Get_Language_Str('Fehler bei der Erkennung der Zielvariable in Makro \'#1#\''), "#1#", Line), vbCritical, M09.Get_Language_Str('Fehler: Zielvariable wurde nicht gefunden'))
     return _ret
 

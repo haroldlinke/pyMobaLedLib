@@ -32,7 +32,7 @@
 # *
 # ***************************************************************************
 import pattgen.Pattern_Generator as PG
-import pattgen.D01_Select_GotoNr_Form
+import pattgen.Select_GotoNr_Form
 import pattgen.Select_COM_Port_UserForm
 import pattgen.MainMenu_Form
 import pattgen.StatusMsg_UserForm
@@ -58,7 +58,7 @@ def init_UserForms():
     #Select_COM_Port_UserForm = D08.CSelect_COM_Port_UserForm()
     #StatusMsg_UserForm = D09.CStatusMsg_UserForm()
    
-    Select_GotoNr_Form = pattgen.D01_Select_GotoNr_Form.CSelect_GotoNr_Form(PG.global_controller)
+    Select_GotoNr_Form = pattgen.Select_GotoNr_Form.CSelect_GotoNr_Form(PG.global_controller)
     MainMenu_Form = pattgen.MainMenu_Form.CMainMenu_Form(PG.global_controller)
     Select_COM_Port_UserForm = pattgen.Select_COM_Port_UserForm.CSelect_COM_Port_UserForm(PG.global_controller)
     StatusMsg_UserForm = pattgen.StatusMsg_UserForm.CStatusMsg_UserForm(PG.global_controller)

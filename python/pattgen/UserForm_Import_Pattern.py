@@ -45,7 +45,7 @@ def Abort_Button_Click():
     #-------------------------------
     Me.Option_Name_Field.Value = ''
     Me.Option_Pattern_Field.Value = ''
-    Store_Pos2(Me, pattgen.M80_Multiplexer_INI_Handling.OtherForm_Pos)
+    #Store_Pos2(Me, pattgen.M80_Multiplexer_INI_Handling.OtherForm_Pos)
     X02.Unload(Me)
     # Don't keep the entered data. Importand because the positions of the controlls and the visibility have been changed
     X02.Worksheets('Multiplexer').Select()
@@ -103,13 +103,15 @@ def Select_Button_Click():
         _with128 = Pattern
         CountRGB = 0
         CountSingle = 0
+        New_ChNr=0 #*HL Adaption of loopvariable to VBA behavior
         for ChNr in vbForRange(1, _with128.Channels):
-            # If next Three Channels have the same name then Channel is first Channel in RGB Group!
-            if pattgen.M80_Multiplexer_INI_Misc.IS_RGB_Group(ChNr):
-                CountRGB = CountRGB + 1
-                ChNr = ChNr + 2
-            else:
-                CountSingle = CountSingle + 1
+            if ChNr>New_ChNr: #*HL Adaption of loopvariable to VBA behavior
+                # If next Three Channels have the same name then Channel is first Channel in RGB Group!
+                if pattgen.M80_Multiplexer_INI_Misc.IS_RGB_Group(ChNr):
+                    CountRGB = CountRGB + 1
+                    New_ChNr = ChNr + 2 #*HL Adaption of loopvariable to VBA behavior
+                else:
+                    CountSingle = CountSingle + 1
         if CountRGB > 0 and CountSingle > 0:
             X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Kombinationen von Einzel- und RGB-LEDs werden vom Multiplexer nicht unterstützt !!!'), vbExclamation, pattgen.M09_Language.Get_Language_Str('Importfehler!'))
             Me.Option_Name_Field.Value = ''
@@ -183,8 +185,11 @@ def OK_Button_Click():
     OptionNr = Val(Right(MacroCodeNr, 2))
     X02.Range('MultiplexerNumber').Select()
     for Row in vbForRange(4, 400, 28):
+        RowRes=Row+1 #*HL adaption of loopvariable to VBA behavior 
         if X02.Cells(Row, 4).Value == MacroName + 'O00':
+            RowRes=Row #*HL adaption of loopvariable to VBA behavior 
             break
+    Row=RowRes #*HL adaption of loopvariable to VBA behavior 
     MacroCodeNr = MacroName + 'O' + Right('00' + CStr(OptionNr), 2)
     MacroRow = Row + OptionNr * 3 - 1
     MacroNr = Val(Mid(MacroCodeNr, 2, 2))
@@ -214,7 +219,7 @@ def OK_Button_Click():
     X02.ActiveSheet.Shapes['Save_Multiplexer'].Fill.ForeColor.rgb = rgb(0, 230, 255)
     # Color the Button
     pattgen.M80_Multiplexer_INI_Misc.ActiveSheet_ProtectShapes(True)
-    Store_Pos2(Me, pattgen.M80_Multiplexer_INI_Handling.OtherForm_Pos)
+    #Store_Pos2(Me, pattgen.M80_Multiplexer_INI_Handling.OtherForm_Pos)
     X02.Application.EnableEvents = True
     X02.Application.ScreenUpdating = True
     X02.Unload(Me)

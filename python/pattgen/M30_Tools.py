@@ -636,6 +636,7 @@ def Replace_Const(ParamStr, ReplaceList, MainDelimmiter, SubDelimmiter):
         if Trim(ReplacePair) != '':
             Parts = Split(ReplacePair, SubDelimmiter)
             ParamStr = Replace(ParamStr, Trim(Parts(0)), Trim(Parts(1)))
+    return ParamStr #*HL ByRef
 
 def Test_Dec_Sep():
     p_str = String()
@@ -662,7 +663,7 @@ def Convert_TimeStr_to_ms(Parm):
     # Converte a string like "3.5 Min + 2.4 Sec + 200 ms"
     # to a two byte string
     # Return -99999 in case of an error
-    Replace_Const(Parm, ReplaceList, ';', '>')
+    Parm = Replace_Const(Parm, ReplaceList, ';', '>')
     if InStr(Parm, '/16') > 0:
         # It's o.k. if there is only one "/16" in a sum. We divide the whole result even
         DivideBy16 = True

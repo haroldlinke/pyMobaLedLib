@@ -120,8 +120,13 @@ def Copy_Pattern_Macro_Callback(OK_Pressed, SendToArduino, GoBack):
         p = p + 1
     InCnt = 1
     LocInCh = 0
-    if not pattgen.M13_Goto_Act.Get_Additional_Goto_Activation_Macro(Activation_Macro, InCnt, LocInCh):
+    
+    #* HL if not pattgen.M13_Goto_Act.Get_Additional_Goto_Activation_Macro(Activation_Macro, InCnt, LocInCh):
+    #* HL    return
+    res, Activation_Macro, InCnt, LocInCh = pattgen.M13_Goto_Act.Get_Additional_Goto_Activation_Macro(Activation_Macro, InCnt, LocInCh) #*HL ByRef
+    if not res:
         return
+        
     # Add macros like InCh_to_TmpVar()
     MacroTxt = Activation_Macro + Replace(Replace(Mid(Macro_Line, p), '(LED,', '(#LED,'), ',InCh,', ',#InCh,')
     Kanaele = int(PG.ThisWorkbook.ActiveSheet.Range('Kanaele'))

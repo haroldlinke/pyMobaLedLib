@@ -84,7 +84,7 @@ def Get_Counter_Act_Macro(Params, Loc_InCh):
     Loc_InCh = 0
     _fn_return_value = Res
     # 08.01.20: Added: "New_Local_Var()" & vbcr &
-    return _fn_return_value
+    return _fn_return_value, Loc_InCh #*HL ByRef
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Params - ByVal 
 def Get_RandomB_Act_Macro(Params):
@@ -126,7 +126,7 @@ def Get_RandTimeAct_Macro(Params, Loc_InCh, Add_Flag):
         return _fn_return_value
     _fn_return_value = 'Random(#LocInCh, #InCh, RM_NORMAL, ' + Parts(0) + ', ' + Parts(1) + ', 1 ms, 1 ms)' + vbLf + 'New_Local_Var()' + vbLf + '// Attention: State 0 is used if input is disabled' + vbLf + 'Counter(CF_ONLY_LOCALVAR' + Add_Flag + ' | CF_SKIP0, #LocInCh, #InCh, 0 Sec, ' + pattgen.M06_Goto_Graph.Goto_Start_Points + ')' + vbLf
     Loc_InCh = 1
-    return _fn_return_value
+    return _fn_return_value, Loc_InCh
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Act_Macro - ByRef 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: InCnt - ByRef 
@@ -188,20 +188,20 @@ def Get_Additional_Goto_Activation_Macro(Act_Macro, InCnt, Loc_InCh):
             # 07.05.20:
         elif (_select41 == 'Counter'):
             InCnt = 1
-            Act_Macro = Get_Counter_Act_Macro(Params, Loc_InCh)
+            Act_Macro, Loc_InCh = Get_Counter_Act_Macro(Params, Loc_InCh)
         elif (_select41 == 'RandButton'):
             InCnt = 1
             Act_Macro = Get_RandomB_Act_Macro(Params)
         elif (_select41 == 'RandomTime'):
             InCnt = 1
-            Act_Macro = Get_RandTimeAct_Macro(Params, Loc_InCh, ' | CF_RANDOM')
+            Act_Macro, Loc_InCh = Get_RandTimeAct_Macro(Params, Loc_InCh, ' | CF_RANDOM')
         elif (_select41 == 'RandomCount'):
             InCnt = 1
-            Act_Macro = Get_RandTimeAct_Macro(Params, Loc_InCh, ' | CF_ROTATE')
+            Act_Macro, Loc_InCh = Get_RandTimeAct_Macro(Params, Loc_InCh, ' | CF_ROTATE')
             # 13.01.20:
         elif (_select41 == 'RandomPingPong'):
             InCnt = 1
-            Act_Macro = Get_RandTimeAct_Macro(Params, Loc_InCh, ' | CF_PINGPONG')
+            Act_Macro, Loc_InCh = Get_RandTimeAct_Macro(Params, Loc_InCh, ' | CF_PINGPONG')
             # 13.01.20:
         elif (_select41 == 'Nothing'):
             # Nothing
@@ -219,7 +219,7 @@ def Get_Additional_Goto_Activation_Macro(Act_Macro, InCnt, Loc_InCh):
         Act_Macro = Comment + Act_Macro
     _fn_return_value = True
     X02.Workbooks(ActWB).Activate()
-    return _fn_return_value
+    return _fn_return_value, Act_Macro, InCnt, Loc_InCh #*HL ByRef
 
 def Test_Get_Additional_Goto_Activation_Macro():
     Act_Macro = String()
@@ -228,7 +228,8 @@ def Test_Get_Additional_Goto_Activation_Macro():
 
     Loc_InCh = Integer()
     #UT----------------------------------------------------
-    if Get_Additional_Goto_Activation_Macro(Act_Macro, InCnt, Loc_InCh):
+    res, Act_Macro, InCnt, Loc_InCh = Get_Additional_Goto_Activation_Macro(Act_Macro, InCnt, Loc_InCh)
+    if res:
         Debug.Print('InCnt=' + InCnt + ' Loc_InCh=' + Loc_InCh)
         Debug.Print(' Act_Macro=' + Act_Macro)
 

@@ -57,11 +57,11 @@ def Get_Goto_Chars(Par):
 
     GotoNr = Integer()
     #--------------------------------------------------------
-    if Par and M02a.START_BIT:
+    if Par & M02a.START_BIT:
         Res = Res + 'S'
-    if Par and M02a.POS_M_BIT:
+    if Par & M02a.POS_M_BIT:
         Res = Res + 'P'
-    GotoNr = Par and M02a.GOTOENDNR
+    GotoNr = Par & M02a.GOTOENDNR
     _select33 = GotoNr
     if (_select33 == 0):
         # Nothing
@@ -69,7 +69,7 @@ def Get_Goto_Chars(Par):
     elif (_select33 == M02a.GOTOENDNR):
         Res = Res + 'E'
     else:
-        Res = Res + 'G' + GotoNr
+        Res = Res + 'G' + str(GotoNr)
     _fn_return_value = Res
     return _fn_return_value
 
@@ -144,8 +144,8 @@ def Decode_Pattern_String_to_Struct(p_str, Pattern_Res):
         _with46.SwitchNumber = Par(2)
     # Write the Goto Mode
     if GotoMode:
-        _with46.Goto_Mode = 1
-        _with46.GraphicDisplay = 1
+        _with46.Goto_Mode = "1"
+        _with46.GraphicDisplay = "1"
     else:
         _with46.Goto_Mode = ''
     # Parameters 3..7
@@ -168,8 +168,8 @@ def Decode_Pattern_String_to_Struct(p_str, Pattern_Res):
     for ParNr in vbForRange(8, 8 + TimeCnt - 1):
         _with46.Duration[DNr] = Par(ParNr)
         DNr = DNr + 1
-    ParNr+=1 #*HL
     # Fill then LEDs table
+    ParNr+=1 #*HL loop variable is one too low at the end of the loop
     BitMaskCnt = UBound(Par) + 1 - ParNr
     # number of remaining parameters
     BitsPerState = LEDs * _with46.BitsPerChannel
@@ -191,6 +191,7 @@ def Decode_Pattern_String_to_Struct(p_str, Pattern_Res):
     Col = M01.LEDsTAB_C
     Div = 2 ** _with46.BitsPerChannel
     Mask = ( 2 ** _with46.BitsPerChannel )  - 1
+
     ActByte = int(Par(ParNr)) #*HL
     ParNr = ParNr + 1
     RemBits = 8
@@ -232,14 +233,15 @@ def Decode_Pattern_String_to_Struct(p_str, Pattern_Res):
         #Finished = False
         #Row = GoTo_Row
         #Col = GoTo_Col1
-        GCol = 1
+        GCol = 1 
         while ParNr <= UBound(Par):
-            _with46.Goto_List[GCol] = Get_Goto_Chars(Val(Par(ParNr)))
+            Goto_List[GCol] = Get_Goto_Chars(Val(Par(ParNr)))
             #Col = Col + 1
             GCol = GCol + 1
             ParNr = ParNr + 1
         # VB2PY (UnhandledDefinition) Dim of implicit 'With' object (Goto_List) is not supported
-        Goto_List = vbObjectInitialize(((1, GCol - 1),), Variant, Goto_List)
+        #Goto_List = vbObjectInitialize(((1, GCol - 1),), Variant, Goto_List)
+        _with46.Goto_List = Goto_List
     _fn_return_value = True
     return _fn_return_value
 

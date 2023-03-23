@@ -272,7 +272,7 @@ def __Proc_General(LEDs, Macro, Description, LedChannels, LED_Channel, Def_Chann
                 Res, LEDs = __Special_ConstrWarnLight(Res, LEDs)
                 # 18.09.19
             if Left(Parts(0), Len('Multiplexer')) == 'Multiplexer':
-                Res = M80.Special_Multiplexer_Ext(Res, LEDs)
+                Res, LEDs = M80.Special_Multiplexer_Ext(Res, LEDs)
                 # Added by Misha 2020-03-26 ' 14.06.20: Added from Mishas version
         if InStr(Res, '$') > 0:
             Res_LED_Channel = Split(Res, '$')(1)

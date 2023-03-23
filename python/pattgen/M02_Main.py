@@ -650,6 +650,7 @@ def Global_On_Enter_Proc():
 def Proc_DoubleCkick(Sh, Target, Cancel):
     # 01.01.20
     #----------------------------------------------------------------------------------------------
+    Cancel = False
     if Is_Data_Sheet(X02.ActiveSheet):
         _select2 = X02.ActiveCell().Address
 # Cancel = True to disable the standard function => Don't go into cell edit mode
@@ -665,6 +666,7 @@ def Proc_DoubleCkick(Sh, Target, Cancel):
         elif (_select2 == X02.Range('CPX_LED_Assignement').Address):
             Cancel = True
             pattgen.M55_PWM_Data_Send.LED_Assignement_Dialog()
+    return Cancel
 
 def Global_Worksheet_Deactivate():
     # 02.06.20: Misha

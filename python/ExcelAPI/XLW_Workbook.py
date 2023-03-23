@@ -83,6 +83,7 @@ pyProgfile_dir = "\\LEDs_AutoProg\\pyProg_Generator_MobaLedLib"
 
 shift_key = False
 
+guifactor  = 1.55
 
 def checkplatform(checkstr):
     teststr = platform.system()
@@ -557,7 +558,7 @@ class CWorkbook(object):
         #self.sheets.append(act_worksheet)
         #self.container.add(tabframe, text=sheetname)
         #self.tabframedict[sheetname]=act_worksheet
-        
+        logging.debug("Error: Delete sheet not implemented!!")
         return
         
                 
@@ -2791,6 +2792,7 @@ class CShape(object):
     
     def set_visible(self, value):
         self.Visible_val=value
+        self.Tshape.Visible = value
         if value==True:
             pass # redrawshape
         else:
@@ -2934,7 +2936,7 @@ class CApplication(object):
         global_controller.after(time,cmd)
         return
     
-    def RoundUp(v1,v2):
+    def RoundUp(self,v1,v2):
         #print("RoundUp")
         if v2 == 0:
             if v1 == int(v1):
@@ -3042,7 +3044,7 @@ class CLanguageSettings(object):
             return msoLanguageIDEnglishUK
         
 class CFont(object):
-    def __init__(self,name="Font",size=8,shapetype=msoTextBox):
+    def __init__(self,name="Font",size=8,shapetype=msoTextBox,shape=None):
         self.Name = name
         self.Size = size
         self.Shapetype= shapetype
@@ -3050,6 +3052,7 @@ class CFont(object):
         self.Bold=False
         self.Italic=False
         self.Underline=- 4142
+        self.Fill = CFill(self.Color,shape=shape)
         
 class CSelectedSheets(object):
     def _init__(self):
@@ -3097,7 +3100,7 @@ class CTextRange(object):
         self.Shape=shape
         self.Characters = CCharacters(text=text,shape=shape)
         #self.Text = text
-        self.Font = CFont()
+        self.Font = CFont(shape=shape)
         
     def get_text(self):
         if self.Shape.Tshape:
