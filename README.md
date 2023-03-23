@@ -32,6 +32,9 @@ http://vb2py.sourceforge.net/online_conversion.html. Therefore some hidden error
 The VBA Code of the PatternGenerator was translated by an enhanced version of the VB2PY command line tool.
 
 History of Change
+V4.0.10.001 - 23.9.2023 - HL
+- new: support for PNG images
+- new: pattern test support goto acts
 
 V4.0.9.001 - 18.3.2023 - HL
 - Beta test of PatternGenerator - Main Functionality is available
