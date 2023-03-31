@@ -40,6 +40,7 @@ import os
 import sys
 import ExcelAPI.XLW_Workbook as X02
 import pattgen.M09_Language as M09
+import pattgen.D00_GlobalProcs as D00
 
 
 # ##########################################################
@@ -74,6 +75,7 @@ class CControl_Template(object):
         self.TKWidget=None
         self.Controls=[]
         self.Enabled = True
+        self.Init_Value=None
         
     def get_value(self):
         if self.TKVar:
@@ -130,35 +132,42 @@ def ToolTip(widget,text="", key="",button_1=False):
         tooltip_var.update_text(text)            
     return    
 
-def generate_controls(comp_list,parent,dlg):
+def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}):
     gui_factor_label_width = guifactor
     gui_factor_label_height = guifactor
     gui_factor_pos = guifactor
     
     if comp_list != None:
         for component_dict in comp_list:
+            compName= component_dict.get("Name","")
             comp=CControl_Template(Dlg=dlg)
             #dlg.Controls.append(comp)
             comp.Name = component_dict.get("Name","")
             comp.Type = component_dict.get("Type","")
-            comp.Persistent = component_dict.get("Persistent",False)
+            comp.Default = component_dict.get("Default",None)
+            comp.Persistent = component_dict.get("Persistent",comp.Default)
+            comp.Init_Value = persistent_controls.get(comp.Name,None)
             comp.Caption = M09.Get_Language_Str(component_dict.get("Caption",""))
             comp.AlternativeText = component_dict.get("AlternativeText","")
+            comp.Font = component_dict.get("Font",("Calibri",10))
             width = component_dict.get("Width",0)
             height = component_dict.get("Height",0)
             if type(width)==int:
                 comp.Width = int(width * gui_factor_label_width)
                 comp.Height = int(height * gui_factor_label_height)
+            elif type(width) == float:
+                comp.Width = int(width)
+                comp.Height = int(height)                
             else:
                 comp.Width = width
                 comp.Height = height
-            comp.Wraplength = 0 # comp.Width-10
+            comp.Wraplength = comp.Width
             comp.Top = int(component_dict.get("Top",0) * gui_factor_pos)
             comp.Left = int(component_dict.get("Left",0) * gui_factor_pos)
             #comp_font = self.fontlabel
             comp.ControlTipText = component_dict.get("ControlTipText","")
+            comp.format_dict = format_dict.get(comp.Name,None)
             dlg.AddControl(comp)
-            
             if comp.Type == "MultiPage":
                 mp_comp_list = component_dict.get("Components",[])
                 container = ttk.Notebook(parent)
@@ -187,25 +196,26 @@ def generate_controls(comp_list,parent,dlg):
                 else:
                     anchor="n"
                     justify=tk.CENTER
-                label=tk.Label(parent, text=comp.Caption,anchor=anchor, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength) #,font=comp_font)
+                label=tk.Label(parent, text=comp.Caption,anchor=anchor, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,font=comp.Font) #,font=comp_font)
                 label.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=label
                 if comp.ControlTipText!="":
                     ToolTip(label, text=comp.ControlTipText)
             elif comp.Type == "CommandButton":
                 comp.Command = component_dict.get("Command",None)
+                if type(comp.Command) == str:
+                    comp.Command = D00.globalprocs.get(comp.Command,None)
                 comp.Accelerator = component_dict.get("Accelerator","")
                 comp.icon = component_dict.get("IconName","")
                 if comp.Accelerator!="":            
                     parent.bind(comp.Accelerator, Command)
-                    
                 if comp.icon != "":
                     filename = r"/images/"+comp.icon
                     filedir = os.path.dirname(os.path.realpath(__file__))
                     filedir2 = os.path.dirname(filedir)                    
                     filepath = filedir2 + filename
                     comp.iconImage = tk.PhotoImage(file=filepath)
-                    button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,image=comp.iconImage,anchor="nw")
+                    button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,image=comp.iconImage,anchor="nw",font=comp.Font)
                 else:
                     button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength)
                 button.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
@@ -214,17 +224,51 @@ def generate_controls(comp_list,parent,dlg):
                     ToolTip(button, text=comp.ControlTipText)
                 pass
             elif comp.Type == "CheckBox":
-                comp.TKVar = tk.IntVar(value=0)
+                if comp.Init_Value:
+                    init_value=comp.Init_Value
+                else:
+                    init_value=0
+                comp.TKVar = tk.IntVar(value=init_value)
                 setattr(dlg,comp.Name,comp)
                 #comp.Command = component_dict.get("Command",None)
                 comp.Accelerator = component_dict.get("Accelerator","")
                 #if comp.Accelerator!="":
                 #    parent.bind(comp.Accelerator, Command)                    
-                checkbutton=tk.Checkbutton(parent, text=comp.Caption,width=comp.Width,wraplength = comp.Wraplength,anchor="w",variable=comp.TKVar,onvalue = 1, offvalue = 0)
+                checkbutton=tk.Checkbutton(parent, text=comp.Caption,width=comp.Width,wraplength = comp.Wraplength,anchor="w",variable=comp.TKVar,onvalue = 1, offvalue = 0,font=comp.Font)
                 checkbutton.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=checkbutton
                 if comp.ControlTipText!="":
                     ToolTip(checkbutton, text=comp.ControlTipText)
+            elif comp.Type == "TextBox":
+                textbox=tk.Text(parent, width=comp.Width,height=comp.Height,wrap= tk.WORD,font=comp.Font,relief=tk.FLAT) #,font=comp_font)
+                textbox.insert("1.0",comp.Caption)
+                charformat_dict = component_dict.get("CharFormat",None)
+                if charformat_dict==None:
+                    charformat_dict=comp.format_dict # shape individual formats
+                if charformat_dict:
+                    for index in charformat_dict.keys():
+                        startidx = index[0]
+                        endidx = index[1]
+                        if type(startidx)==int:
+                            endidx  = "1.0+"+str(startidx+endidx-2)+"c"
+                            startidx= "1.0+"+str(startidx-1)+"c"
+                        tagname = "tag"+str(startidx)+str(endidx)
+                        textbox.tag_add(tagname, startidx,endidx)
+                        charformat=charformat_dict.get(index,None)
+                        if type(charformat)==tuple: # old version
+                            textbox.tag_config(tagname, font=charformat)
+                        else:
+                            if charformat:
+                                if charformat.Font:
+                                    font=textbox.cget("font")+" "+charformat.Font
+                                    textbox.tag_config(tagname, font=font)
+                                if charformat.ForeGround:
+                                    textbox.tag_config(tagname, foreground=charformat.ForeGround)
+                textbox.config(state=tk.DISABLED)
+                textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                comp.TKWidget=textbox
+                if comp.ControlTipText!="":
+                    ToolTip(textbox, text=comp.ControlTipText)                
             elif comp.Type == "ListBox":
                 comp.TKVar = tk.StringVar(value=[])
                 setattr(dlg,comp.Name,comp)
@@ -232,7 +276,7 @@ def generate_controls(comp_list,parent,dlg):
                 #comp.Accelerator = component_dict.get("Accelerator","")
                 #if comp.Accelerator!="":
                 #    parent.bind(comp.Accelerator, Command)                    
-                listbox=tk.Listbox(parent, height=comp.Height, width=comp.Width,listvariable=comp.TKVar)
+                listbox=tk.Listbox(parent, height=comp.Height, width=comp.Width,listvariable=comp.TKVar,font=comp.Font)
                 listbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=listbox
                 if comp.ControlTipText!="":

@@ -93,6 +93,7 @@ class TableCanvas(Canvas):
         self.multiplecollist=[]
         self.col_positions=[]       #record current column grid positions
         self.row_positions=[]      #record current row grid positions
+        self.imagedict ={}
         self.mode = 'normal'
         self.read_only = read_only
         self.filtered = False
@@ -103,6 +104,7 @@ class TableCanvas(Canvas):
         self.entry_active=False
         self.selectedShapes=[]
         self.worksheet = worksheet
+        self.persistent_controls_dict={}
 
         self.loadPrefs()
         #set any options passed in kwargs to overwrite defaults and prefs
@@ -380,10 +382,11 @@ class TableCanvas(Canvas):
             end = self.cols
         return start, end
 
-    def redrawVisible(self, event=None, callback=None):
+    def redrawVisible(self, event=None, callback=None,force=False):
         """Redraw the visible portion of the canvas"""
         self.delete("Icon")
-        self.delete("Shape")
+        if force:
+            self.delete("Shape")
 
         model = self.model
         self.rows = self.model.getRowCount()
@@ -439,7 +442,7 @@ class TableCanvas(Canvas):
                     if bgcolor != None:
                         self.drawRect(row,col, color=bgcolor)
                     
-        self.drawShapes()
+        self.drawShapes(force=force)
 
         #self.drawSelectedCol()
         self.tablecolheader.redraw()
@@ -456,8 +459,8 @@ class TableCanvas(Canvas):
 
         return
 
-    def redrawTable(self, event=None, callback=None):
-        self.redrawVisible(event, callback)
+    def redrawTable(self, event=None, callback=None,force=False):
+        self.redrawVisible(event, callback,force=force)
         return
 
     def redraw(self, event=None, callback=None):
@@ -946,8 +949,10 @@ class TableCanvas(Canvas):
                 #print 'x=', x, 'colpos', colpos, self.col_positions.index(colpos)
                 return self.col_positions.index(colpos)
             else:
+                return 0
                 #print None
-                pass        
+                raise ValueError("Table calc_col_from_x col not found - x="+x)
+            
         
     def get_col_clicked(self,event):
         """get col where event on canvas occurs"""
@@ -1679,11 +1684,11 @@ class TableCanvas(Canvas):
                         "Preferences" : self.showtablePrefs,
                         "Formulae->Value" : lambda : self.convertFormulae(rows, cols)}
 
-        main = ["Set Fill Color","Set Text Color","Copy", "Paste", "Fill Down","Fill Right",
-                "Clear Data"]
-        general = ["Select All", "Add Row(s)" , "Delete Row(s)", "Auto Fit Columns", "Filter Records", "Preferences"]
+        #main = ["Set Fill Color","Set Text Color","Copy", "Paste", "Fill Down","Fill Right", "Clear Data"]
+        #general = ["Select All", "Add Row(s)" , "Delete Row(s)", "Auto Fit Columns", "Filter Records", "Preferences"]
         filecommands = ['New','Load','Save','Import text','Export csv']
         plotcommands = ['Plot Selected','Plot Options']
+        main = ["Set Fill Color","Set Text Color","Copy", "Paste", "Clear Data"]        
         
         #main = ["Copy", "Paste", "Clear Data"]
         general = ["Add Row(s)",]
@@ -1743,9 +1748,9 @@ class TableCanvas(Canvas):
         for action in general:
             popupmenu.add_command(label=action, command=defaultactions[action])
 
-        popupmenu.add_separator()
-        createSubMenu(popupmenu, 'File', filecommands)
-        createSubMenu(popupmenu, 'Plot', plotcommands)
+        #popupmenu.add_separator()
+        #createSubMenu(popupmenu, 'File', filecommands)
+        #createSubMenu(popupmenu, 'Plot', plotcommands)
         popupmenu.bind("<FocusOut>", popupFocusOut)
         popupmenu.focus_set()
         popupmenu.post(event.x_root, event.y_root)
@@ -2168,7 +2173,7 @@ class TableCanvas(Canvas):
         return newshape    
     
     def addPicture(self, name, Left, Top, Width, Height):
-        shapetype = "picture"
+        shapetype = X01.msoPicture
         filltkcolor="#000000"
         newshape = CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, Text=Text,tablecanvas=self)
         #self.model.shapelist.append(newshape)
@@ -2180,19 +2185,23 @@ class TableCanvas(Canvas):
             shape=self.model.shapelist[shape-1]
             shape.set_activeflag(False)
         else:
+            if shape.rectidx!=0:
+                self.delete(shape.rectidx)
+            if shape.formwin!=None:
+                self.delete(shape.formwin)
             self.model.shapelist.remove(shape) 
             shape.set_activeflag(False)
             
-    def drawShapes(self):
-        self.delete("Shape")
+    def drawShapes(self,force=False):
+        #self.delete("Shape")
         #print("DrawShapes")
         for shape in self.model.shapelist:
-            self.drawShape(shape)
+            self.drawShape(shape,force=force)
             
-    def drawShape(self,shape):
+    def drawShape(self,shape,force=False):
         #print("drawShapes:", self.model.modelname,shape.TopLeftCell_Row,shape.tablename)
         if shape.get_activeflag() and shape.get_visible():
-            print("Draw-Shape:",shape.Name)
+            #print("Draw-Shape:",shape.Name)
             shapeY = shape.Top
             #shapeY = self.calc_y_from_row(shape.TopLeftCell_Row)
             #shaperow = self.getRowPosition(shapeY, ignorehiddenrows=True)
@@ -2200,142 +2209,153 @@ class TableCanvas(Canvas):
             if not shaperow in []: #self.model.hiderowslist:
                 #numhiddenrows = self.calc_nohidenrows(shaperow)
                 #shapeY = shapeY - numhiddenrows*self.rowheight
-                if shape.rectidx>0:
-                    self.delete(shape.rectidx)
-                    shape.rectidx=0
-                if shape.textidx>0:
-                    self.delete(shape.textidx)
-                    shape.textidx=0
-                if shape.Shapetype == X01.msoShapeRectangle or shape.Shapetype == "rect":
-                    #if shape.TextFrame2.TextRange.Text == "":
-                    #    shape.TextFrame2.TextRange.Text = "0"
-                    shape.rectidx = self.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape"))
-                    if shape.ZOrder_Val==0:
-                        self.tag_raise(shape.rectidx)
-                    else:
-                        self.tag_lower(shape.rectidx)
-                    self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
-                    if shape.Text !="":
-                        shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
+                #if shape.rectidx>0:
+                #    self.delete(shape.rectidx)
+                #    shape.rectidx=0
+                #if shape.textidx>0:
+                #    self.delete(shape.textidx)
+                #    shape.textidx=0
+                if shape.rectidx==0 or force:
+                    #print("New-Shape:",shape.Name)
+                    if shape.Shapetype == X01.msoShapeRectangle or shape.Shapetype == "rect":
+                        #if shape.TextFrame2.TextRange.Text == "":
+                        #    shape.TextFrame2.TextRange.Text = "0"
+                        shape.rectidx = self.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape"))
                         if shape.ZOrder_Val==0:
-                            self.tag_raise(shape.textidx)
-                        else:
-                            self.tag_lower(shape.textidx)                        
-                        self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
-                    else:
-                        shape.textidx = -1
-                elif shape.Shapetype == X01.msoTextBox:
-                    #if shape.TextFrame2.TextRange.Text == "":
-                    #    shape.TextFrame2.TextRange.Text = "0"
-                    if shape.Text !="":
-                        shape.textidx = self.create_text(int(shape.Left),int(shape.Top),anchor="nw",text=shape.Text,tags=(shape.Name,"Shape"),width=shape.Width)
-                        if shape.ZOrder_Val==0:
-                            self.tag_raise(shape.textidx)
-                        else:
-                            self.tag_lower(shape.textidx)                        
-                        #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
-                    else:
-                        shape.textidx = -1
-                elif shape.Shapetype == X01.msoOLEControlObject:
-                    if shape.formwin==None:
-                        formFrame = Frame(self,borderwidth=0)
-                        control_dict = shape.control_dict.get("Components",None)
-                        shape.AlternativeText = shape.control_dict.get("AlternativeText",None)
-                        XLF.generate_controls(control_dict,formFrame,self.worksheet)
-                        if shape.Top==None:
-                            x1,y1,x2,y2 = self.getCellCoords(shape.Row-1,shape.Col-1)
-                            shape.Top=y1
-                            shape.Left=x1
-                        else:
-                            x1 = shape.Left
-                            y1 = shape.Top
-                        #shape.form.bind('<Return>', callback)
-                        #shape.form.bind('<KeyRelease>', callback)
-                        #shape.form.bind("<Button-3>", self.handle_right_click)
-                        #self.form.focus_set()
-                        shape.formwin=self.create_window(x1,y1, width=shape.Width,height=shape.Height,window=formFrame,anchor='nw',tag='form')
-                    else:
-                        self.coords(shape.formwin,shape.Left, shape.Top)
-                        
-                        if shape.updatecontrol:
-                            control = self.worksheet.Controls_Dict.get(shape.Name,None)
-                            if control:
-                                control.TKWidget.configure(text=shape.Text,background=shape.Fillcolor)
-                                
-                    self.tag_raise(shape.formwin)
-                elif shape.Shapetype == "picture":
-                    pass
-                    print("drawshape - Picture:", shape.Name)
-                    image_loaded=False
-                    try:
-                        shape.image = PhotoImage(file=shape.Name)
-                        shape.rectidx = self.create_image(shape.Left,shape.Top,image=shape.image,tags=(shape.Name,"Shape","Picture"),anchor='nw')
-                        self.tag_raise(shape.rectidx)
-                        image_loaded=True
-                    except:
-                        image_loaded=False
-                    if not image_loaded:
-                        try:
-                            shape.Name=shape.Name.replace(".jpg",".png")
-                            shape.image = PhotoImage(file=shape.Name)
-                            shape.rectidx = self.create_image(shape.Left,shape.Top,image=shape.image,tags=(shape.Name,"Shape","Picture"),anchor='nw')
                             self.tag_raise(shape.rectidx)
+                        else:
+                            self.tag_lower(shape.rectidx)
+                        self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
+                        if shape.Text !="":
+                            shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
+                            if shape.ZOrder_Val==0:
+                                self.tag_raise(shape.textidx)
+                            else:
+                                self.tag_lower(shape.textidx)                        
+                            self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                        else:
+                            shape.textidx = -1
+                    elif shape.Shapetype == X01.msoTextBox or shape.Shapetype == "TextBox":
+                        #if shape.TextFrame2.TextRange.Text == "":
+                        #    shape.TextFrame2.TextRange.Text = "0"
+                        if shape.Text !="":
+                            shape.textidx = self.create_text(int(shape.Left),int(shape.Top),anchor="nw",text=shape.Text,tags=(shape.Name,"Shape"),width=shape.Width)
+                            if shape.ZOrder_Val==0:
+                                self.tag_raise(shape.textidx)
+                            else:
+                                self.tag_lower(shape.textidx)                        
+                            #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                        else:
+                            shape.textidx = -1
+                    elif shape.Shapetype == X01.msoOLEControlObject:
+                        if shape.formwin==None or force:
+                            formFrame = Frame(self,borderwidth=0)
+                            control_dict = shape.control_dict.get("Components",None)
+                            format_dict  = shape.format_dict
+                            shape.AlternativeText = shape.control_dict.get("AlternativeText",None)
+                            XLF.generate_controls(control_dict,formFrame,self.worksheet,persistent_controls=self.persistent_controls_dict,format_dict=format_dict)
+                            if shape.Top==None:
+                                x1,y1,x2,y2 = self.getCellCoords(shape.Row-1,shape.Col-1)
+                                shape.Top=y1
+                                shape.Left=x1
+                            else:
+                                x1 = shape.Left
+                                y1 = shape.Top
+                            #shape.form.bind('<Return>', callback)
+                            #shape.form.bind('<KeyRelease>', callback)
+                            #shape.form.bind("<Button-3>", self.handle_right_click)
+                            #self.form.focus_set()
+                            shape.formwin=self.create_window(x1,y1, width=shape.Width,height=shape.Height,window=formFrame,anchor='nw',tag='form')
+                        else:
+                            self.coords(shape.formwin,shape.Left, shape.Top)
+                            if shape.updatecontrol:
+                                control = self.worksheet.Controls_Dict.get(shape.Name,None)
+                                if control:
+                                    control.TKWidget.configure(text=shape.Text,background=shape.Fillcolor)
+                                    
+                        self.tag_raise(shape.formwin)
+                    elif shape.Shapetype == "picture" or shape.Shapetype==X01.msoPicture:
+                        pass
+                        print("drawshape - Picture:", shape.Name)
+                        image_loaded=False
+                        try:
+                            image = PhotoImage(file=shape.Name)
+                            self.imagedict[shape.Name] = image
+                            shape.rectidx = self.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture"),anchor='nw')
+                            self.tag_raise(shape.rectidx)
+                            image_loaded=True
                         except:
-                            logging.debug("Error: Image not found: "+shape.Name)
-                    #self.tag_raise(shape.textidx)
-                    #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
-                    #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
-                elif shape.Shapetype == X01.msoShapeOval or shape.Shapetype == "oval":
-                    #if shape.TextFrame2 == "":
-                    #    shape.TextFrame2 = "0"
-                    #print("DrawShape:",shape.Name,"-",shape.Fill.ForeColor.tkcolor())    
-                    shape.rectidx = self.create_oval(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape"))
-                    self.tag_raise(shape.rectidx)
-                    if shape.Text !="":
-                        shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
-                        self.tag_raise(shape.textidx)
-                    #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
-                    #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
-                elif shape.Shapetype == X01.msoFreeform:
-                    if shape.SegmentType == X01.msoSegmentCurve:
-                        smooth=True
-                    else:
-                        smooth=False
-                    if shape.EditingType == X01.msoEditingAuto:
-                        shape.rectidx = self.create_polygon(shape.nodelist,fill=shape.Fillcolor,outline=shape.LineColor,smooth=smooth,tags=(shape.Name,"Shape"))
-                    else:
+                            image_loaded=False
+                        if not image_loaded:
+                            try:
+                                shape.Name=shape.Name.replace(".jpg",".png")
+                                image = PhotoImage(file=shape.Name)
+                                self.imagedict[shape.Name] = image                                
+                                shape.rectidx = self.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture"),anchor='nw')
+                                self.tag_raise(shape.rectidx)
+                            except:
+                                logging.debug("Error: Image not found: "+shape.Name)
+                        #self.tag_raise(shape.textidx)
+                        #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
+                        #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                    elif shape.Shapetype == X01.msoShapeOval or shape.Shapetype == "oval":
+                        #if shape.TextFrame2 == "":
+                        #    shape.TextFrame2 = "0"
+                        #print("DrawShape:",shape.Name,"-",shape.Fill.ForeColor.tkcolor())    
+                        shape.rectidx = self.create_oval(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape"))
+                        self.tag_raise(shape.rectidx)
+                        if shape.Text !="":
+                            shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
+                            self.tag_raise(shape.textidx)
+                        #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
+                        #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
+                    elif shape.Shapetype == X01.msoFreeform:
+                        if shape.SegmentType == X01.msoSegmentCurve:
+                            smooth=True
+                        else:
+                            smooth=False
+                        if shape.EditingType == X01.msoEditingAuto:
+                            shape.rectidx = self.create_polygon(shape.nodelist,fill=shape.Fillcolor,outline=shape.LineColor,smooth=smooth,tags=(shape.Name,"Shape"))
+                        else:
+                            arrow=None
+                            if hasattr(shape,"EndArrowheadStyle_val"):
+                                if shape.EndArrowheadStyle_val in (X01.msoArrowheadStealth,X01.msoArrowheadTriangle):
+                                    arrow=LAST
+                            if hasattr(shape,"BeginArrowheadStyle_val"):
+                                if shape.BeginArrowheadStyle_val in (X01.msoArrowheadStealth,X01.msoArrowheadTriangle):
+                                    arrow=FIRST                               
+                            shape.rectidx = self.create_line(shape.nodelist,fill=shape.Fillcolor,smooth=smooth,arrow=arrow,tags=(shape.Name,"Shape"))
+                        if shape.ZOrder_Val==0:
+                            self.tag_raise(shape.rectidx)
+                        else:
+                            self.tag_lower(shape.rectidx)
+                        #if shape.Text !="":
+                        #    shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
+                        #    self.tag_raise(shape.textidx)                    
+                    elif shape.Shapetype == "Connector":
+                        #if shape.TextFrame2.TextRange.Text == "":
+                        #    shape.TextFrame2.TextRange.Text = "0"
                         arrow=None
                         if hasattr(shape,"EndArrowheadStyle_val"):
-                            if shape.EndArrowheadStyle_val in (X01.msoArrowheadStealth,X01.msoArrowheadTriangle):
+                            if shape.EndArrowheadStyle_val == X01.msoArrowheadStealth:
                                 arrow=LAST
                         if hasattr(shape,"BeginArrowheadStyle_val"):
-                            if shape.BeginArrowheadStyle_val in (X01.msoArrowheadStealth,X01.msoArrowheadTriangle):
-                                arrow=FIRST                               
-                        shape.rectidx = self.create_line(shape.nodelist,fill=shape.Fillcolor,smooth=smooth,arrow=arrow,tags=(shape.Name,"Shape"))
-                    if shape.ZOrder_Val==0:
-                        self.tag_raise(shape.rectidx)
+                            if shape.BeginArrowheadStyle_val == X01.msoArrowheadStealth:
+                                arrow=FIRST                        
+                        shape.rectidx = self.create_line(shape.Left,shape.Top,shape.Left+shape.Width,shape.Top+shape.Height,fill=shape.Fillcolor,arrow=arrow,tags=(shape.Name,"Shape"))
+                        if shape.ZOrder_Val==0:
+                            self.tag_raise(shape.rectidx)
+                        else:
+                            self.tag_lower(shape.rectidx)
                     else:
-                        self.tag_lower(shape.rectidx)
-                    #if shape.Text !="":
-                    #    shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
-                    #    self.tag_raise(shape.textidx)                    
-                elif shape.Shapetype == "Connector":
-                    #if shape.TextFrame2.TextRange.Text == "":
-                    #    shape.TextFrame2.TextRange.Text = "0"
-                    arrow=None
-                    if hasattr(shape,"EndArrowheadStyle_val"):
-                        if shape.EndArrowheadStyle_val == X01.msoArrowheadStealth:
-                            arrow=LAST
-                    if hasattr(shape,"BeginArrowheadStyle_val"):
-                        if shape.BeginArrowheadStyle_val == X01.msoArrowheadStealth:
-                            arrow=FIRST                        
-                    shape.rectidx = self.create_line(shape.Left,shape.Top,shape.Left+shape.Width,shape.Top+shape.Height,fill=shape.Fillcolor,arrow=arrow,tags=(shape.Name,"Shape"))
-                    if shape.ZOrder_Val==0:
-                        self.tag_raise(shape.rectidx)
-                    else:
-                        self.tag_lower(shape.rectidx)
+                        logging.debug("Unknown Shapetype: %s",shape.Shapetype)
                 else:
-                    logging.debug("Unknown Shapetype: %s",shape.Shapetype)
+                    if shape.ZOrder_Val==0:
+                        self.tag_raise(shape.rectidx)
+                    else:
+                        self.tag_lower(shape.rectidx)                    
+                    pass
+                #update shape
 
     def drawText(self, row, col, celltxt, fgcolor=None, align=None,font=None):
         """Draw the text inside a cell area"""
@@ -3510,7 +3530,7 @@ class AutoScrollbar(Scrollbar):
 
     
 class CTShape(object):
-    def __init__(self, name, shapetype, Left, Top, Width, Height, FillTKcolor="", LineTKcolor="",Text="",Row=None, Col=None, rotation=0,orientation=1,nodelist=None,tablecanvas=None,control_dict=None,zorder=0,segmenttype=0,editingtype=X01.msoEditingAuto):
+    def __init__(self, name, shapetype, Left, Top, Width, Height, FillTKcolor="", LineTKcolor="",Text="",Row=None, Col=None, rotation=0,orientation=1,nodelist=None,tablecanvas=None,control_dict=None,Init_Value=None,zorder=0,segmenttype=0,editingtype=X01.msoEditingAuto):
         self.Shapetype = shapetype
         self.updatecontrol=False
         self.rectidx=0
@@ -3531,9 +3551,11 @@ class CTShape(object):
         self.AlternativeText=""
         self.ZOrder_Val=zorder
         self.control_dict = control_dict
+        self.Init_Value=Init_Value
         self.Visible_val = True
         self.Fillcolor = FillTKcolor
         self.LineColor = LineTKcolor
+        self.OnAction = ""
         if Top !=None:
             self.TopLeftCell_Row=tablecanvas.calc_row_from_y(Top)
             self.TopLeftCell_Col=tablecanvas.calc_col_from_x(Left)
@@ -3543,6 +3565,7 @@ class CTShape(object):
         self.nodelist=nodelist
         self.SegmentType = segmenttype
         self.EditingType = editingtype
+        self.format_dict = {}
         tablecanvas.model.shapelist.append(self)
         
     def shape_button_1(self,event=None):
@@ -3595,7 +3618,7 @@ class CTShape(object):
         self.Visible_val=value
         if value==True:
             tablecanvas=global_tabledict[self.tablename]
-            tablecanvas.drawShape(self)
+            #tablecanvas.drawShape(self)
         else:
             pass # removeshape
 

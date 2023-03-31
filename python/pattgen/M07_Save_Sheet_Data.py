@@ -414,7 +414,7 @@ def Save_Objects(FileNr, DestPath):
                 if Left(o.AlternativeText, Len('Language: ')) == 'Language: ':
                     # 11.02.20:
                     LanguageNrStr = Mid(o.AlternativeText, Len('Language: ') + 1)
-                Print_Typ_and_Pos(FileNr, 'msoTextBox' + LanguageNrStr, o, o.TextFrame.Characters.Text + Get_TextBoxAttrib(o))
+                Print_Typ_and_Pos(FileNr, 'msoTextBox' + LanguageNrStr, o, o.TextFrame2.Characters.Text + Get_TextBoxAttrib(o))
         elif (_select19 == X01.msoFormControl):
             # 8: Button
             # 19.10.19:

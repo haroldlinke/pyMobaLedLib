@@ -213,8 +213,9 @@ class TableModel(object):
         data["protected_cells"] = self.protected_cells
         data["format_cells"]=self.format_cells
         data["columnwidths"]=self.columnwidths
+        data["rowheightlist"]=self.rowheightlist
         data["rowwidths"]=self.rowwidths
-        data["shapelist"]=copy.deepcopy(self.shapelist)
+        data["shapelist"]=self.shapelist
         #print("GetData****Shapelist************")
         #repr(self.shapelist)
         return data
