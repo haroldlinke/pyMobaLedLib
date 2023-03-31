@@ -132,9 +132,10 @@ class CSelect_GotoNr_Form:
         self.Button_Callback_Proc(Nr)
     
     def End_Button_Click(self):
-        self.Button_Callback_Proc(- 1)
-        #M80.Store_Pos2(self, pattgen.M80_Multiplexer_INI_Handling.Pos_Select_GotoNr_Form)
-        X02.Unload(self)
+        if self.Button_Callback_Proc:
+            self.Button_Callback_Proc(- 1)
+            #M80.Store_Pos2(self, pattgen.M80_Multiplexer_INI_Handling.Pos_Select_GotoNr_Form)
+            X02.Unload(self)
     
     def Show_Dialog(self,GotoCnt, Button_Callback):
         global Button_Callback_Proc

@@ -382,7 +382,7 @@ def WS_Conditional_Formating(ws,changedCell):
     if convertCell2Excel(changedCell)=="E5":
         #extend grid
         value=int(changedCell)
-        ws.table.changeGrid(2,((48,3),(48+value,63)))
+        ws.table.changeGrid(2,((48,3),(48+value+1,63)))
         
 
     

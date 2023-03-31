@@ -280,6 +280,7 @@ class LEDColorTest(tk.Tk):
         self.paramDataChanged = False
         self.palette = {}
         self.connection_startup = False
+        self.ProgVersion = PROG_VERSION
 
         tk.Tk.__init__(self, *args, **kwargs)
         tk.Tk.report_callback_exception = self.show_tkinter_exception

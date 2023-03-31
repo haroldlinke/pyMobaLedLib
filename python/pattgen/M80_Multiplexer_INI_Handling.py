@@ -1041,6 +1041,7 @@ def Add_LEDs_in_ActiveCell(r, MacroCodeNr, NumberOfLEDs, LED_Array=VBMissingArgu
 
 def Load_msoShapeOval(Pos, LedName=VBMissingArgument):
     global EditMode
+    guifactor =1.55
     Params = vbObjectInitialize(objtype=String)
 
     LED = String()
@@ -1062,12 +1063,12 @@ def Load_msoShapeOval(Pos, LedName=VBMissingArgument):
     LED = Left(LedName, Len('LED_M99O01L'))
     LedNr = Val(Mid(LedName, Len('LED_M99O01L') + 1))
     Params = Split(Pos, ';')
-    l = M30.NrStr2d(Params(0))
+    l = M30.NrStr2d(Params(0)) * guifactor
     # 27.07.20: Added "NrStr2d()" to prevent problems with german decimal separator
-    t = M30.NrStr2d(Params(1))
-    w = M30.NrStr2d(Params(2))
+    t = M30.NrStr2d(Params(1)) * guifactor
+    w = M30.NrStr2d(Params(2)) * guifactor
     # 12.07.20: Swapped w and h
-    h = M30.NrStr2d(Params(3))
+    h = M30.NrStr2d(Params(3)) * guifactor
     if UBound(Params) == 4:
         r = M30.NrStr2d(Params(4))
     else:
@@ -1093,7 +1094,7 @@ def Load_msoShapeOval(Pos, LedName=VBMissingArgument):
 def Add_LED_Shape(LED, LedNr, l, t, h, w):
     
     global LED_Nrs_OnOff
-    guifactor =1.55
+    guifactor =1
     
     #*HL Sh = Shape()
     #---------------------------------------------------------------------------------------------------------------
@@ -2040,6 +2041,7 @@ def Display_Leds_with_StartNr(StartNr, MacroCodeNr, NumberOfPatterns, LED_Array,
     if GotoMode:
         PatternNumber = Calc_StartPatternNumber(StartNr, PatternNumber, Pattern, NumberOfPatterns)
     # 04.06.20: Hardi
+    X02.ActiveSheet.Redraw_table()
     while Test_Buttons(MacroNr * 100 + OptionNr) and TestPatternButtonOn and RestartDisplay_Leds == False:
         if MacroNr >= 90:
             # Show the actual displayed column
@@ -2073,7 +2075,7 @@ def Display_Leds_with_StartNr(StartNr, MacroCodeNr, NumberOfPatterns, LED_Array,
                 else:
                     Debug.Print ("Not Visible '" + LED + str(LED_Nr) + "'")
                 Debug.Print( "LED_Nr : " + str(LED_Nr) + str(RGB_Channel(0)) + "/" + str(RGB_Channel(1)) + "/" + str(RGB_Channel(2)))
-        #X02.ActiveSheet.Redraw_table()
+        X02.ActiveSheet.Redraw_table()
         DelayTimer(( _with115.Duration(1 +  ( ( PatternNumber - 1 )  % UBound(_with115.Duration) )) ))
         # 03.06.20: Hardi
         if GotoMode:
@@ -2300,6 +2302,8 @@ def DelayTimer(vSeconds):
     t1 = Single()
 
     dSeconds = Double()
+    
+    average_processingtime = 0.5
     #--------------------------------------------------------------------------------------------
     # https://stackoverflow.com/questions/20652409/using-vba-to-detect-which-decimal-sign-the-computer-is-using
     # It is important to know that Application.DecimalSeparator and Application International(xlDecimalSeparator)
@@ -2315,6 +2319,10 @@ def DelayTimer(vSeconds):
     # I therefore strongly recommend to always use Application.International(xlDecimalSeparator).
     #You can use integer (1 for 1 second) or single (1.5 for 1 and a half second)
     dSeconds = M30.Convert_TimeStr_to_ms(vSeconds) / 1000
+    dSeconds -= average_processingtime # time already passed by processing
+    if dSeconds <= 0:
+        X02.DoEvents()
+        return
     #    Beep
     # Just for testing purpose!
     #    Debug.Print "DelayTimer : " & dSeconds & " Sec."
@@ -2328,8 +2336,9 @@ def DelayTimer(vSeconds):
         if t1 - t0 >= dSeconds:
             break
         # 03.06.20: Hardi: exit befor the DoEvents because this call my be quite long
-        X02.DoEvents()
         time.sleep(0.1)
+        #X02.Delay(dSeconds)
+        X02.DoEvents()
         if not TestPatternButtonOn:
             break
         if RestartDisplay_Leds:

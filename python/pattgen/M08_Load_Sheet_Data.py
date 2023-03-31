@@ -99,7 +99,8 @@ def Del_Text_Box():
     #-------------------------
     for o in X02.ActiveSheet.Shapes:
         _select7 = o.Type
-        if (_select7 == X01.msoTextBox):
+        #*HL if (_select7 == X01.msoTextBox):
+        if (_select7 == X01.msoOLEControlObject and o.Name=="TextBox1"):
             # 17: TextBox
             #o.Select
             # Debug
@@ -205,7 +206,7 @@ def New_Sheet():
             Create_New_Sheet(Name, Add_to_Duplicate_Name='_', AfterSheetName=M01.MAIN_SH)
             Load_Textbox(M01.StdDescEdges + Chr(M01.pcfSep) + pattgen.M09_Language.Get_Language_Str(M01.StdDescStart), 'Description Message')
             # 24.06.20: Added: "Description Message" to make sure that the description is translated
-            X02.Range[M01.Macro_N_Rng] = M30.Replace_Illegal_Char(X02.ActiveSheet.Name)
+            X02.RangeDict[M01.Macro_N_Rng] = M30.Replace_Illegal_Char(X02.ActiveSheet.Name)
             Add_by_Hardi()
         X02.Range(M01.FirstLEDTabRANGE).Select()
         M30.Protect_Active_Sheet()
@@ -346,11 +347,13 @@ def Load_Textbox(Line, Name='', LanguageNr=- 2):
     Line2 = Mid(Line, Len(Params(0)) + 2)
     Line2 = Replace(Line2, '{Attrib}', Chr(1))
     Parts = Split(Line2, Chr(1))
-    X02.ActiveSheet.Shapes.AddLabel(X01.msoTextOrientationHorizontal, Val(Edges(0))*X02.guifactor, Correct_Top_Pos_by_Version(Val(Edges(1)))*X02.guifactor, Val(Edges(2))*X02.guifactor, Val(Edges(3))*X02.guifactor).Select()
+    #*HLX02.ActiveSheet.Shapes.AddLabel(X01.msoTextOrientationHorizontal, Val(Edges(0))*X02.guifactor, Correct_Top_Pos_by_Version(Val(Edges(1)))*X02.guifactor, Val(Edges(2))*X02.guifactor, Val(Edges(3))*X02.guifactor).Select()
     # 21.10.19: Added Val()  17.11.19: Added: Correct_Top_Pos_by_Version
-    X02.Selection.Placement = X01.xlFreeFloating
-    X02.Selection.ShapeRange[1].TextFrame2.TextRange.Characters.Text = Replace(Replace(Parts(0), '| ', '|'), '|', vbLf)
+    #*HL X02.Selection.Placement = X01.xlFreeFloating
+    #*HL X02.Selection.ShapeRange[1].TextFrame2.TextRange.Characters.Text = Replace(Replace(Parts(0), '| ', '|'), '|', vbLf)
     # 13.02.20: Added: Replace(...)
+    Text = Replace(Replace(Parts(0), '| ', '|'), '|', vbLf)
+    X02.ActiveSheet.Shapes.AddTextBox(Name, X01.msoTextOrientationHorizontal, Val(Edges(0))*X02.guifactor, Correct_Top_Pos_by_Version(Val(Edges(1)))*X02.guifactor, Val(Edges(2))*X02.guifactor, Val(Edges(3))*X02.guifactor,Text=Text).Select()
     if Name != '':
         X02.Selection.ShapeRange[1].Name = Name
     if UBound(Parts) == 1:
@@ -365,9 +368,9 @@ def Load_Textbox(Line, Name='', LanguageNr=- 2):
                 # 19.10.19: Second parameter is the lenght and not the end position
                 _select13 = Left(c, 1)
                 if (_select13 == 'B'):
-                    pass #X02.Selection.ShapeRange[1].TextFrame2.TextRange.Characters[Start, Lenghth].Font.Bold = X01.msoTrue  #*HL
+                    X02.Selection.ShapeRange[1].TextFrame2.TextRange.Characters.charformat(Start, Lenghth,Bold=True)  #*HL
                 elif (_select13 == 'F'):
-                    pass #X02.Selection.ShapeRange[1].TextFrame2.TextRange.Characters[Start, Lenghth].Font.Fill.ForeColor.rgb = Par(2)   #*HL
+                    X02.Selection.ShapeRange[1].TextFrame2.TextRange.Characters.charformat(Start, Lenghth,ForeColor=Par(2))   #*HL
                     # 19.10.19:
     if LanguageNr >= 0:
         # 11.02.20:
@@ -390,9 +393,9 @@ def Show_Rotating_Status(message, RotPos):
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Line - ByVal 
 def Load_msoFormControl(Line, LanguageNr=- 2):
+    
     logging.debug("Load_msoFormControl- ERROR: %s",Line)
-    return #*HL
-
+    
     Params = vbObjectInitialize(objtype=String)
 
     Edges = vbObjectInitialize(objtype=String)
@@ -406,16 +409,16 @@ def Load_msoFormControl(Line, LanguageNr=- 2):
         return
     # Skip buttons which have been added by a wrong program  13.02.20:
     Edges = Split(M30.CorrectKomma(Params(0)), ';')
-    X02.ActiveSheet.Buttons.Add(Val(Edges(0)), Correct_Top_Pos_by_Version(Val(Edges(1))), Val(Edges(2)), Val(Edges(3))).Select()
+    shape= X02.ActiveSheet.Buttons.Add(Val(Edges(0)), Correct_Top_Pos_by_Version(Val(Edges(1))), Val(Edges(2)), Val(Edges(3))) #*HL
     # 21.10.19: Added Val() 17.11.19: Added: Correct_Top_Pos_by_Version
-    X02.Selection.Characters.Text = Params(1)
-    X02.Selection.OnAction = Params(2)
+    shape.TextFrame2.TextRange.Characters.Text = Params(1)
+    shape.OnAction = Params(2)
     Init_Proc = Params(2) + '_Init'
     if LanguageNr >= 0:
         # 12.02.20:
-        X02.Selection.ShapeRange[1].AlternativeText = 'Language: ' + LanguageNr
+        shape.AlternativeText = 'Language: ' + str(LanguageNr)
         if pattgen.M09_Language.Get_ExcelLanguage() != LanguageNr:
-            X02.Selection.Visible = False
+            shape.Visible = False
     #Button_Init_Proc_Finished = False
     #Dim OldStatus As String, OldEvents As Boolean
     #OldStatus = Application.StatusBar
@@ -500,8 +503,8 @@ def Set_Defaults_for_Sheet():
     Add_by_Hardi()
     X02.ActiveWindow.DisplayHeadings = False
     
-    X02.ActiveSheet.Calculate()  #*HL
-    X02.ActiveSheet.Calculate()  #*HL
+    X02.ActiveSheet.EventWScalculate(X02.Cells(5,5))  #*HL
+    X02.ActiveSheet.EventWScalculate(X02.Cells(5,5))  #*HL
     X02.Application.Caller="Update" #*HL
     X02.ActiveSheet.EventWSchanged(X02.Cells(5,5)) #*HL
     

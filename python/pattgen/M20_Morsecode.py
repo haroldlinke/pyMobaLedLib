@@ -30,6 +30,7 @@ UT----------------------------------
 
 
 def Add_Kursive_Text(r, Txt):
+    return '*HL'
     Parts = vbObjectInitialize(objtype=String)
     #------------------------------------------------------
     Parts = Split(pattgen.M09_Language.Get_Language_Str(Txt), '#')
@@ -38,7 +39,7 @@ def Add_Kursive_Text(r, Txt):
         r = Txt
     else:
         r = Parts(2)
-        r.Characters[Start= Val(Parts(0)), Length= Val(Parts(1))].Font.FontStyle = 'Italic'
+        r.Characters(Start= Val(Parts(0)), Length= Val(Parts(1))).Font.FontStyle = 'Italic'  #*HL
 
 def Test_Bold():
     #UT------------
@@ -92,9 +93,9 @@ def One_Char(Zeichencode, Zellcounter, Morsezeichen):
             X02.CellDict[M01.LEDsTAB_R + 1, Zellcounter].Value = c
             Zellcounter = Zellcounter + 1
         elif (_select28 == '-'):
-            X02.Range[X02.Cells(M01.LEDsTAB_R + 0, Zellcounter), X02.Cells(M01.LEDsTAB_R + 0, Zellcounter + 2)].Value = 'X'
-            X02.Range[X02.Cells(M01.LEDsTAB_R + 2, Zellcounter), X02.Cells(M01.LEDsTAB_R + 2, Zellcounter + 2)].Value = '-'
-            X02.Range[X02.Cells(M01.LEDsTAB_R + 1, Zellcounter), X02.Cells(M01.LEDsTAB_R + 1, Zellcounter + 2)].Value = c
+            X02.Range(X02.Cells(M01.LEDsTAB_R + 0, Zellcounter), X02.Cells(M01.LEDsTAB_R + 0, Zellcounter + 2)).Value = 'X'
+            X02.Range(X02.Cells(M01.LEDsTAB_R + 2, Zellcounter), X02.Cells(M01.LEDsTAB_R + 2, Zellcounter + 2)).Value = '-'
+            X02.Range(X02.Cells(M01.LEDsTAB_R + 1, Zellcounter), X02.Cells(M01.LEDsTAB_R + 1, Zellcounter + 2)).Value = c
             Zellcounter = Zellcounter + 3
         elif (_select28 == '_') or (_select28 == ' '):
             Zellcounter = Zellcounter + 1
@@ -279,7 +280,7 @@ def Find_Second_Pic():
         #If o.Type <> msoComment Then o.Select
         # Debug
         _select30 = o.Type
-        if (_select30 == msoPicture) or (_select30 == msoLinkedPicture):
+        if (_select30 == X01.msoPicture) or (_select30 == X01.msoLinkedPicture):
             if o.Name != 'MainMenu':
                 Nr = Nr + 1
                 if Nr == 2:
@@ -309,7 +310,7 @@ def Simulate_MorseCode(Ditdauer, Zellcounter):
             X02.CellDict[M01.LEDsTAB_R + 1, Zaehler].Interior.ColorIndex = 6
         else:
             if StartActCell > 0:
-                X02.Range[X02.Cells(M01.LEDsTAB_R + 1, StartActCell), X02.Cells(M01.LEDsTAB_R + 1, Zaehler)].Interior.ColorIndex = 2
+                X02.Range(X02.Cells(M01.LEDsTAB_R + 1, StartActCell), X02.Cells(M01.LEDsTAB_R + 1, Zaehler)).Interior.ColorIndex = 2
                 StartActCell = 0
         Led_An.Visible = ( X02.Cells(M01.LEDsTAB_R, Zaehler).Value == 'X' )
         # Show / Hide the flash light
@@ -319,7 +320,7 @@ def Simulate_MorseCode(Ditdauer, Zellcounter):
     Zaehler += 1 #* loop variable in Python 1 less as in VBA
     #Cells(LEDsTAB_R+1, Zaehler - 1).Interior.ColorIndex = 2
     if StartActCell > 0:
-        X02.Range[X02.Cells(M01.LEDsTAB_R + 1, StartActCell), X02.Cells(M01.LEDsTAB_R + 1, Zaehler)].Interior.ColorIndex = 2
+        X02.Range(X02.Cells(M01.LEDsTAB_R + 1, StartActCell), X02.Cells(M01.LEDsTAB_R + 1, Zaehler)).Interior.ColorIndex = 2
     Led_An.Visible = False
     X02.Application.Cursor = X01.xlDefault
 
@@ -328,6 +329,7 @@ def Test_Simulate_MorseCode():
     Simulate_MorseCode(240, 30)
 
 def Hide_Second_Pic():
+    
     Led_An = Variant()
     #----------------------------
     Led_An = Find_Second_Pic()
