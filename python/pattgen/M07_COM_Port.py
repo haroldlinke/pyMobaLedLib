@@ -473,7 +473,7 @@ def Get_Arduino_Baudrate(ComPort, Start_Baudrate, DebugPrint=VBMissingArgument):
     for i in vbForRange(1, 6):
         # In case of an error we check each baudrate 3 times because sometimes the Baudrate is not detected if started with the wrong Baudrate
         if DebugPrint:
-            Debug.Print('Trying COM' + ComPort + ' with Baudrate ' + Baudrate)
+            Debug.Print('Trying COM' + ComPort + ' with Baudrate ' + str(Baudrate))
         if 1:
             # Faster
             Res = DetectArduino(ComPort, Baudrate, DeviceSignatur= DeviceSignatur)
@@ -483,8 +483,8 @@ def Get_Arduino_Baudrate(ComPort, Start_Baudrate, DebugPrint=VBMissingArgument):
         if (_select54 == 1):
             # Detected an arduino
             if DebugPrint:
-                Debug.Print('  Serial Port     : COM' + ComPort)
-                Debug.Print('  Serial Baudrate : ' + Baudrate)
+                Debug.Print('  Serial Port     : COM' + str(ComPort))
+                Debug.Print('  Serial Baudrate : ' + str(Baudrate))
                 Debug.Print('  Hardware Version: ' + HWVersion)
                 Debug.Print('  Firmware Version: ' + SWMajorVersion + '.' + SWMinorVersion)
                 Debug.Print('  Device signature: ')

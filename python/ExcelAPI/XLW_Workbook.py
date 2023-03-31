@@ -58,6 +58,8 @@ from pathlib import Path
 import proggen.M20_PageEvents_a_Functions as M20
 import subprocess
 import pickle
+import pattgen.D00_GlobalProcs as D00
+import pattgen.M08_Load_Sheet_Data as M08
 import proggen.F00_mainbuttons as F00
 import proggen.M02_Public as M02
 import proggen.M18_Save_Load as M18
@@ -552,37 +554,47 @@ class CWorkbook(object):
         #    if M28.Get_Num_Config_Var_Range("SimAutostart", 0, 3, 0) == 1: #               ' 04.04.22: Juergen Simulator
         #        M39.OpenSimulator()
         
+    def Delay(self,dSeconds):
+        #print("Delay started", dSeconds)
+        self.controller.after(int(dSeconds*1000))
+        #print("Delay End")
+        
+        
     def delete_sheet(self,sheetname):
         #remove sheet from all lists:
            
         #self.sheets.append(act_worksheet)
         #self.container.add(tabframe, text=sheetname)
         #self.tabframedict[sheetname]=act_worksheet
-        logging.debug("Error: Delete sheet not implemented!!")
+        logging.debug("Delete sheet:"+sheetname)
+        tabframe=self.tabframedict[sheetname]
+        self.sheets.remove(tabframe.sheet)
+        del self.tabframedict[sheetname]
+        self.container.forget(tabframe)
         return
         
                 
-    def add_sheet(self,sheetname,from_sheet=None,After=None):
+    def add_sheet(self,sheetname,from_sheet=None,After=None,nocontrols=False,noredraw=False):
         tabframe = ttk.Frame(self.container,relief="ridge", borderwidth=1)
         act_worksheet = self.new_sheet(sheetname,tabframe,from_sheet=from_sheet)
         tabframe.sheetname = sheetname
         tabframe.sheet = act_worksheet
         self.sheets.append(act_worksheet)
         self.container.add(tabframe, text=sheetname)
-        self.tabframedict[sheetname]=act_worksheet
+        self.tabframedict[sheetname]=tabframe
         
         copyfrom_sheet=self.Sheets(from_sheet)
-        
         if copyfrom_sheet:
             act_worksheet.wscalculation_callback = copyfrom_sheet.wscalculation_callback
             act_worksheet.wschanged_callback = copyfrom_sheet.wschanged_callback
             act_worksheet.wsselected_callback = copyfrom_sheet.wsselected_callback
-            
-            sheetname_prop = self.sheetdict.get(copyfrom_sheet.Name)
-            controls_dict = sheetname_prop.get("Controls",None)
-            if controls_dict:
-                act_worksheet.add_controls(controls_dict)
-            act_worksheet.table.redraw()
+            if not nocontrols:
+                sheetname_prop = self.sheetdict.get(copyfrom_sheet.Name)
+                controls_dict = sheetname_prop.get("Controls",None)
+                if controls_dict:
+                    act_worksheet.add_controls(controls_dict)
+            if not noredraw:
+                act_worksheet.table.redraw()
         
         if not self.showws and not self.controller.show_hiddentables:
             act_worksheet.Visible(False)
@@ -676,6 +688,11 @@ class CWorkbook(object):
             self.LoadWorkbook(filename)
         return
     
+    def LoadPCF(self,filename=None):
+        """load PCF from a file"""
+        M08.Load_Sheets(filename)
+        return
+    
     def SavePGF(self,filename=None):
         M18.Save_Data_to_File()
         return
@@ -691,33 +708,39 @@ class CWorkbook(object):
             if sheet.Datasheet or sheet.Configsheet or allsheets:
                 sheetdata = sheet.getData()
                 workbookdata[sheet.Name] = sheetdata
-        
-        
-        # Write JSON file
-        #with open(filename+".json", 'w', encoding='utf8') as outfile:
-        #    json.dump(workbookdata, outfile, ensure_ascii=False, indent=4)        
-        
         fd = open(filename,'wb')
         try:
-            pickle.dump(workbookdata,fd)
+            saveData={}
+            saveData["Version"]=self.controller.ProgVersion
+            saveData["Workbookdata"]=workbookdata
+            pickle.dump(saveData,fd)
             fd.close()
         except BaseException as e:
-            logging.debug(e)            
+            logging.debug(e,  exc_info=True)            
             logging.debug("Save Workbook Error: "+filename)            
         return
     
     def LoadWorkbook(self,filename):
         fd=open(filename,'rb')
         try:
-            workbookdata = pickle.load(fd)
+            savedData = pickle.load(fd)
+            logging.debug("FileVersion:"+savedData["Version"])
+            workbookdata= savedData["Workbookdata"]
+            for sheetname in workbookdata.keys():
+                sheet = self.Sheets(sheetname)
+                if sheet == None:
+                    self.add_sheet(sheetname, from_sheet="Main",nocontrols=True,noredraw=True)
             for sheet in self.sheets:
                 data = workbookdata.get(sheet.Name,{})
                 if data !={}:
                     sheet.setData(data)
                     sheet.init_data()
                     sheet.tablemodel.resetDataChanged()
+                    #sheet.EventWScalculate(Cells(5,5))
+                    #Application.Caller="Update"
+                    #sheet.EventWSchanged(Cells(5,5))
         except BaseException as e:
-            logging.debug(e)            
+            logging.debug(e, exc_info=True)            
             logging.debug("Load Workbook Error"+filename)
         return
     
@@ -888,7 +911,40 @@ class CCellsFind(object):
             if cell_val == What:
                 return cell
         return None
+    
+class CButtons(object):
+    def __init__(self,ws=None):
+        self.shape=None
+        self.ws= ws
+        self.Buttonlist = []
 
+    def Add(self,l,t,w,h):
+        shapetype = msoOLEControlObject
+        Left = l
+        Top = t
+        Width = w
+        Height = h
+        control_dict = {  "Name"          : "Button",
+                                     "BackColor"     : "#FFFFFF",
+                                     "BorderColor"   : "#000012",
+                                     "Caption"       : "Button",
+                                     "Height"        : Height,
+                                     "Left"          : Left,
+                                     "Col"           : None,
+                                     "Top"           : Top,
+                                     "Row"           : None,                                        
+                                     "Type"          : "FormWindow",
+                                     "Visible"       : True,
+                                     "Width"         : Width,
+                                     "Components"    : [{"Name":"Button","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                                        "Caption":"Test",
+                                                        "Command": None ,"ControlTipText":"","ForeColor":"#000012","Height":Height-2,"Left":1,"Top":1,"Type":"CommandButton","Visible":True,"Width":Width-2},
+                                                        ]}
+                        
+        self.shape = self.ws.Shapes.AddShape(shapetype, Left, Top, Width, Height, Row=None, Col=None, Fill=0,text="",name="",control_dict=control_dict)
+        self.Buttonlist.append(self.shape)
+        return self.shape
+       
 class CWorksheet(object):
     
     def __init__(self,Name,tablemodel=None,workbook=None,csv_filepathname=None,frame=None,fieldnames=None,formating_dict=None,Sheettype="",callback=False,tabid=0):
@@ -919,6 +975,7 @@ class CWorksheet(object):
         self.wsRowdict = {}
         self.EnableCalculation=True
         self.tabid = tabid
+        self.Buttons = CButtons(ws=self)
         if tablemodel:
             self.tablemodel = tablemodel
             self.table = TableCanvas(frame, tablename=Name, model=tablemodel,width=self.width,height=self.height,scrollregion=(0,0,self.width,self.height),rightclickactions=self.rightclickactiondict,worksheet=self)
@@ -926,7 +983,11 @@ class CWorksheet(object):
             if csv_filepathname:
                 #self.tablemodel = TableModel()
                 self.table = TableCanvas(frame, tablename=Name, model=None,width=self.width,height=self.height,scrollregion=(0,0,self.width,self.height),rightclickactions=self.rightclickactiondict,worksheet=self)
-                self.table.importCSV(filename=self.csv_filepathname, sep=';',fieldnames=self.fieldnames)
+                fileextension = os.path.splitext(self.csv_filepathname)[1]
+                if fileextension == ".csv":
+                    self.table.importCSV(filename=self.csv_filepathname, sep=';',fieldnames=self.fieldnames)
+                elif fileextension == ".MLL_PCF":
+                    self.Workbook.load
                 self.tablemodel = self.table.getModel()
                 if callback:
                     self.table.set_left_click_callback(self.left_click_callback)
@@ -953,6 +1014,7 @@ class CWorksheet(object):
         self.Controls_Dict = {}
         self.persistent_controls_dict = {}
         self.RangeDict = CRangeDict()
+        self.wsInitDataFunction=None
         
     def init_data(self):
         if self.wsInitDataFunction:
@@ -980,23 +1042,25 @@ class CWorksheet(object):
         
     def add_controls(self,controls_dict):
         for control_key in controls_dict.keys():
-            form_def = controls_dict[control_key]
-            Left = form_def.get("Left",None)
-            Top = form_def.get("Top",None)
-            Row=form_def.get("Row",None)
-            Col=form_def.get("Col",None)
-            Width = form_def["Width"]
-            Height = form_def["Height"]
-            Name = form_def["Name"]
-            controls_def= form_def
-            self.Shapes.AddShape(msoOLEControlObject, Left, Top, Width, Height, Row=Row, Col=Col, Fill=0, text="", name=Name,control_dict=controls_def)
-            
+            if control_key !="Default":
+                form_def = controls_dict[control_key]
+                Left = form_def.get("Left",None)
+                Top = form_def.get("Top",None)
+                Row=form_def.get("Row",None)
+                Col=form_def.get("Col",None)
+                Width = form_def["Width"]
+                Height = form_def["Height"]
+                Name = form_def["Name"]
+                controls_def= form_def
+                self.Shapes.AddShape(msoOLEControlObject, Left, Top, Width, Height, Row=Row, Col=Col, Fill=0, text="", name=Name,control_dict=controls_def)
+                
     def AddControl(self,control):
         self.Controls.append(control)
         self.Controls_Dict[control.Name]=control
 
     def set_control_val(self, control,value,disable=False):
         if value != None:
+            control.Init_Value=value
             if hasattr(control,"TKVar"):
                 variable = control.TKVar
                 if variable:
@@ -1056,6 +1120,7 @@ class CWorksheet(object):
                 self.persistent_controls_dict[control.Name]=self.get_control_val(control)
     
     def SetPersistentControls(self):
+        self.table.persistent_controls_dict = self.persistent_controls_dict
         for control in self.Controls:
             if control.Persistent:
                 self.set_control_val(control,self.persistent_controls_dict[control.Name])
@@ -1099,7 +1164,6 @@ class CWorksheet(object):
             global_controller.blinking_on_off(lednum,ledcount,seq=True)    
         
     def left_click_callback(self,value1,value2,callertype="cell"):
-        
         if callertype=="cell":
             if self.shape_clicked:
                 self.shape_clicked=False
@@ -1286,9 +1350,9 @@ class CWorksheet(object):
     def SetInitDataFunction(self,func):
         self.wsInitDataFunction = func
         
-    def EventWScalculate(self):
+    def EventWScalculate(self,changecell=None):
         if self.wscalculation_callback:
-            self.wscalculation_callback(self)
+            self.wscalculation_callback(self,changecell)
        
     def EventWSchanged(self, changedcell):
         if self.wschanged_callback and Application.EnableEvents:
@@ -1443,7 +1507,7 @@ class CWorksheet(object):
         self.tablemodel.setupModel(data)
         self.persistent_controls_dict=data.get("Persistent_Controls",{})
         self.SetPersistentControls()
-        self.table.redrawTable()
+        self.table.redrawTable(force=True)
         
     def getSelectedRow(self):
         selectedRow=self.table.getSelectedRow()+1
@@ -1536,7 +1600,7 @@ class CShapeList(object):
     def getlist(self):
         return self.ws.tablemodel.shapelist
         
-    def AddShape(self, shapetype, Left, Top, Width, Height, Row=None, Col=None, Fill=0,text="",name="",control_dict=None):
+    def AddShape(self, shapetype, Left, Top, Width, Height, Row=None, Col=None, Fill=0,text="",name="",control_dict=None,Init_Value=None):
         shape=None
         if shapetype == msoShapeRectangle:
             shape=CShape(name, shapetype, Left, Top, Width, Height, Fill, ws=self.ws)
@@ -1545,12 +1609,36 @@ class CShapeList(object):
         elif shapetype == msoTextBox:
             shape=CShape(name, shapetype, Left, Top, Width, Height, Fill, Text=text,ws=self.ws)
         elif shapetype == msoOLEControlObject:
-            shape=CShape(name, shapetype, Left, Top, Width, Height, Fill,ws=self.ws, Row=Row, Col=Col, control_dict=control_dict)
+            shape=CShape(name, shapetype, Left, Top, Width, Height, Fill,ws=self.ws, Row=Row, Col=Col, control_dict=control_dict,Init_Value=Init_Value)
         return shape # self.convTShape2CShape(shape)
 
     def AddLabel(self, TextOrientation=msoTextOrientationHorizontal, Left=0, Top=0 , Width=0, Height=0):
         shape=self.ws.table.addLabel( TextOrientation, Left, Top, Width, Height)
         return self.convTShape2CShape(shape)
+    
+    def AddTextBox(self, Name="TextBox1", TextOrientation=msoTextOrientationHorizontal, Left=0, Top=0 , Width=0, Height=0,Text=""):
+        #shape=self.ws.table.addLabel( TextOrientation, Left, Top, Width, Height)
+        shapetype = msoOLEControlObject
+        control_dict = {  "Name" : Name,
+                            "BackColor"     : "#FFFFFF",
+                            "BorderColor"   : "#000012",
+                            "Caption"       : "",
+                            "Height"        : Height,
+                            "Left"          : Left,
+                            "Col"           : None,
+                            "Top"           : Top,
+                            "Row"           : None,
+                            "Type"          : "FormWindow",
+                            "Visible"       : True,
+                            "Width"         : Width,
+                            "Components"    : [{"Name":Name,"Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                               "Caption": Text,
+                                               "Command": None ,"ControlTipText":"","ForeColor":"#000012","Height":Height,"Left":1,"Top":1,"Type":"TextBox","Visible":True,"Width":Width},
+                                               ]}
+        shape = self.ws.Shapes.AddShape(shapetype, Left, Top, Width, Height, Row=None, Col=None, Fill=0,text="",name=Name,control_dict=control_dict)
+        #self.Buttonlist.append(self.shape)        
+        
+        return shape    
     
     def AddConnector(self, ConType, BeginX, BeginY, EndX, EndY):
         Left=BeginX
@@ -1586,7 +1674,6 @@ class CShapeList(object):
             if Shape.Name == searchname:
                 return Shape
         return None
-        
     
     def __iter__(self):
     #returning __iter__ object
@@ -1621,75 +1708,78 @@ class CRange(str):
         if ws==None:
             ws=ActiveSheet
             
-        if t2==None:
-            if t1==None: #only type definition, only dummy needed
+        if t1==None and t2==None: #only type definition, only dummy needed
                 return
         #print("Range:",t1,t2)
+        finished=False
         if type(t1)==int and type(t2)==int:
             start=(t1,t2)
             end=(t1,t2)
-        elif type(t1) == CRange:
+            finished=True
+        elif type(t1) == CRange and t2==None:
             #t1=t1.start
             start=t1.start
-            if t2==None:
-                end=t1.end
-            elif type(t2) ==CRange:
-                end=t2.start
-            else:
-                Debug.Print("CRange-Error t2 wrong type:"+repr(t2))
-        elif type(t1)== str:
-            if IsNumeric(t1):
-                t1=int(t1)
-            elif ":" in t1: # range as string a:b
-                cellsplit = t1.split(":")
-                temprng=CRange(cellsplit[0],cellsplit[1])
-                start= temprng.start
-                end  = temprng.end
-                
-            else:
-                named_cell1 = ws.find_RangeName(t1,ws=ws)
-                if named_cell1 == None:
-                    logging.debug("Named Range not found:", t1)
-                    start=(1,1)
-                    end=(1,1)
+            end=t1.end
+            finished=True
+        elif type(t1)== CRange and type(t2) ==CRange:
+            start=t1.start
+            end=t2.end
+            finished=True
+        if not finished:
+            if type(t1)== str:
+                if IsNumeric(t1):
+                    t1=int(t1)
+                elif ":" in t1: # range as string a:b
+                    cellsplit = t1.split(":")
+                    temprng=CRange(cellsplit[0],cellsplit[1])
+                    start= temprng.start
+                    end  = temprng.end
+                    finished=True
                 else:
-                    if t2 != None:
-                        if type(t2) == str:
-                            named_cell2 = ws.find_RangeName(t2)
-                            temprng=CRange(named_cell1,named_cell2,ws=ws)
-                            start= temprng.start
-                            end  = temprng.end
-                            
-                        else:
-                            temprng = CRange(named_cell1,t2,ws=ws)
-                            start= temprng.start
-                            end  = temprng.end
+                    named_cell1 = ws.find_RangeName(t1,ws=ws)
+                    if named_cell1 == None:
+                        logging.debug("Named Range not found:", t1)
+                        start=(1,1)
+                        end=(1,1)
+                        raise ValueError("CRange Error: Named Range not found:"+ t1)
                     else:
                         start=named_cell1.start
                         end  =named_cell1.end
-        else: 
-            if type(t1)==int and type(t2)!=int:
-                #error return (t1,t1)
-                start=(t1,t1)
-                end=(t1,t1)
-            else: # t1 is a tuple (row,col)
-                start=t1
-                end  =t1
-        if t2!=None:
-            if type(t2)==CRange:
-                end=t2.end
-            elif type(t2)==str:
+                        if t2==None:
+                            finished=True
+        if not finished:
+            if type(t2)==str:
                 if IsNumeric(t2):
                     t2=int(t2)
-                    start=(t1,t2)
-                    end=(t1,t2)
+                    start = (t1,t2)
+                    end   = (t1,t2)
+                    finished = True
+                elif ":" in t2: # range as string a:b
+                    cellsplit = t2.split(":")
+                    temprng=CRange(cellsplit[0],cellsplit[1])
+                    end  = temprng.end
+                    finished=True
                 else:
-                    logging.debug("Error-CRANGE-Type T2: %s",repr(t2))
-            elif type(t2)!=int:
-                end = t2
-            else:
-                start=(t1,t2)
-                end=(t1,t2)
+                    named_cell2 = ws.find_RangeName(t2,ws=ws)
+                    if named_cell2 == None:
+                        logging.debug("Named Range not found:", t1)
+                        start=(1,1)
+                        end=(1,1)
+                        finished = True
+                    else:
+                        end  =named_cell2.end
+                        finished = True
+        if not finished:
+            if type(t1) ==tuple and t2 == None: # t1 is a tuple (row,col)
+                start=t1
+                end  =t1
+                finished=True
+            elif type(t1)==tuple and type(t2)==tuple:
+                start = t1
+                end   = t2
+                finished = True
+        if not finished:
+            raise ValueError("CRange: invalid type combination: t1="+str(type(t1))+" t2:"+str(type(t2)))
         row=start[0]
         col=start[1]
         max_cols = ws.tablemodel.getColumnCount()
@@ -2211,34 +2301,6 @@ class CRange(str):
     def _get_LastColumn(self):
         return self.ws.tablemodel.getColumnCount()
     
-            
-class CRectangles(object):
-    def __init__(self):
-        self.rlist = []
-        self.Count=0
-        
-    def add(self,rectangle):
-        self.rlist.append(rectangle)
-        self.Count+=1
-        
-    def delete(self,i):
-        self.rlist.remove(i)
-        self.Count-=1
-
-    
-class CRectangle(object):
-    def __init__(self,row=0,col=0,i=0,onaction=""):
-        self.OnAction = onaction
-        self.TopLeftCell = None
-        self.TopLeftCell.Row = row
-        self.TopLeftCell.Column = col
-        self.index = i
-        pass
-    
-    def Delete(self):
-        super().delete(self.index)
-        pass
-    
 class CShapeRange(object):
     def __init__(self,ws=None):
         if ws==None:
@@ -2700,9 +2762,12 @@ class CFill(object):
         pass
 
 class CShape(object):
-    def __init__(self, name, shapetype, Left, Top, Width=0, Height=0, Fillcolor=0, Text="",Row=None, Col=None, rotation=0,orientation=msoTextOrientationHorizontal,AlternativeText="",ws=None,tshape=None,nodelist=None,control_dict=None,linecolor=0,zorder=0,segmenttype=msoSegmentLine,editingtype=msoEditingAuto):
+    def __init__(self, name, shapetype, Left, Top, Width=0, Height=0, Fillcolor=0, Text="",Row=None, Col=None, rotation=0,orientation=msoTextOrientationHorizontal,AlternativeText="",ws=None,tshape=None,nodelist=None,control_dict=None,Init_Value=None,linecolor=None,zorder=0,segmenttype=msoSegmentLine,editingtype=msoEditingAuto):
         filltkcolor=int2tkcolor(Fillcolor)
-        linetkcolor=int2tkcolor(linecolor)
+        if linecolor:
+            linetkcolor=int2tkcolor(linecolor)
+        else:
+            linetkcolor=None
         if shapetype==msoOLEControlObject:
             if type(Width)==int:
                 Width = Width *1.55
@@ -2710,7 +2775,7 @@ class CShape(object):
         if ws==None:
             ws=ActiveSheet
         if tshape==None:
-            tshape=CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, LineTKcolor=linetkcolor,Text=Text,Row=Row, Col=Col,rotation=rotation,orientation=orientation,nodelist=nodelist,tablecanvas=ws.table,control_dict=control_dict,zorder=zorder,segmenttype=segmenttype,editingtype=editingtype)
+            tshape=CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, LineTKcolor=linetkcolor,Text=Text,Row=Row, Col=Col,rotation=rotation,orientation=orientation,nodelist=nodelist,tablecanvas=ws.table,control_dict=control_dict,Init_Value=Init_Value,zorder=zorder,segmenttype=segmenttype,editingtype=editingtype)
         self.Tshape=tshape 
         self.Shapetype = shapetype
         if shapetype in (msoShapeRectangle, msoShapeOval):
@@ -2727,9 +2792,9 @@ class CShape(object):
         self.rectidx=0
         self.textidx=0
         self.tablename = ws.table.tablename
-        self.Left = Left
+        self.Left_val = Left
         self.Active = True
-        self.Top = Top
+        #self.Top = Top
         self.Top_val = None
         self.Width = Width
         self.Height = Height
@@ -2744,7 +2809,7 @@ class CShape(object):
             self.TopLeftCell_Row=ws.table.calc_row_from_y(Top)
             self.TopLeftCell_Col=ws.table.calc_col_from_x(Left)
         self.Index = 0
-        self.OnAction = ""
+        self.OnAction_val = ""
         self.ZOrder_val=zorder
         self.Locked = False
         self.TextFrame2 = CTextFrame2(text=Text,shape=self)
@@ -2783,7 +2848,6 @@ class CShape(object):
     
     def Select(self):
         global Selection
-        #self.Tablecanvas.setSelectedCells(self.TopLeftCell_Row, self.TopLeftCell_Row+1, self.TopLeftCell_Col, self.TopLeftCell_Col+1)
         self.Tablecanvas.setSelectedShapes(self)
         Selection=CSelection(None,ws=self.Worksheet)
         
@@ -2836,7 +2900,20 @@ class CShape(object):
     
     TopLeftCell = property(get_TopLeftCell, set_TopLeftCell, doc='Shape-Name')
 
+    def get_OnAction(self):
+        return self.OnAction_val
     
+    def set_OnAction(self, value):
+        self.OnAction_val=value
+        self.Tshape.OnAction=value
+        control_dict = self.Tshape.control_dict.get("Components",None)
+        if control_dict:
+            button = control_dict[0]
+            button_command = D00.globalprocs.get(value,None)
+            button["Command"]=button_command
+            
+
+    OnAction = property(get_OnAction, set_OnAction, doc='Shape-OnAction')        
     
 class CCellDict(object):
     def __init__ (self,ws=None):
@@ -2936,6 +3013,12 @@ class CApplication(object):
         global_controller.after(time,cmd)
         return
     
+    def Run(self,cmd):
+        methodToCall = D00.globalprocs.get(cmd,None)
+        if methodToCall:
+            methodToCall()
+        
+
     def RoundUp(self,v1,v2):
         #print("RoundUp")
         if v2 == 0:
@@ -3082,6 +3165,7 @@ class CCharacters(object):
         self.Shape=shape
         #self.Text = text
         #self.Textrange.Text=text
+        self.charformat_val = {} #dict(CCharFormat(0,len(text),shape)
         
     def get_text(self):
         return self.Shape.Text
@@ -3093,7 +3177,30 @@ class CCharacters(object):
         if self.Shape.Tshape:
             self.Shape.Tshape.Text=value
 
-    Text = property(get_text, set_text, doc='Character-Text')        
+    Text = property(get_text, set_text, doc='Character-Text')
+    
+    def charformat(self,start,length,Bold=None,ForeColor=None):
+        if length>0:
+            #charformat = CCharFormat(start,length,self.Shape)
+            
+            charformat= CCharFormat(start, length, shape=self.Shape)
+            if Bold!=None:
+                if Bold==True:
+                    charformat.Font="bold"
+                else:
+                    charformat.Font="normal"
+            if ForeColor!=None:
+                charformat.ForeGround=int2tkcolor(int(ForeColor))
+            self.charformat_val[(start,length)] = charformat
+            self.Shape.Tshape.format_dict[self.Shape.Name] = self.charformat_val
+            return
+
+        
+class CCharFormat(object):
+    def __init__(self,start,length,shape=None):
+        self.Font = None
+        self.ForeGround = None
+        
 
 class CTextRange(object):
     def __init__(self,text="",shape=None):
@@ -3138,6 +3245,8 @@ class CControl(object):
     def __init__(self,value):
         self.Value=value
 
+def Delay(dseconds):
+    ActiveWorkbook.Delay(dseconds)
         
 def rgb2tkcolor(r,g,b):
     return f'#{r:02x}{g:02x}{b:02x}'
