@@ -239,7 +239,7 @@ def Opening_Pattern_Configurator():
     if Right(WorkingPath, 1) != '\\':
         WorkingPath = WorkingPath + '\\'
     if not IsWorkBookOpen(PattConfFile):
-        if X02.Dir(WorkingPath + PattConfFile, vbDirectory) != vbNullString:
+        if Dir(WorkingPath + PattConfFile, vbDirectory) != vbNullString:
             # MsgBox "Folder and Excelsheet exist"
             X02.Workbooks.Open(( WorkingPath + PattConfFile ))
         else:

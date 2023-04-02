@@ -6,7 +6,7 @@ import ExcelAPI.XLW_Workbook as X02
 import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M09_Language
-import pattgen.M07_COM_Port as M07
+import proggen.M07_COM_Port as M07
 import pattgen.D00_Forms as D00
 
 """----------------------

@@ -309,12 +309,12 @@ def Save_Picture(o, DestPath):
     for Ext in Split('.png|.jpg', '|'):
         PicName = DestPath + o.Name + Ext
         # 09.07.20: Using "Ext"
-        if X02.Dir(PicName) != '':
+        if Dir(PicName) != '':
             if M01.OVERWRITE_EXISTING_PIC:
                 Kill(PicName)
             break
     _fn_return_value = M30.FileNameExt(PicName)
-    if X02.Dir(PicName) == '':
+    if Dir(PicName) == '':
         o.Copy()
         # copy to clipboard
         Save_Pic_from_clipboard(PicName)

@@ -2906,7 +2906,10 @@ class CShape(object):
     def set_OnAction(self, value):
         self.OnAction_val=value
         self.Tshape.OnAction=value
-        control_dict = self.Tshape.control_dict.get("Components",None)
+        if self.Tshape.control_dict:
+            control_dict = self.Tshape.control_dict.get("Components",None)
+        else:
+            control_dict = None
         if control_dict:
             button = control_dict[0]
             button_command = D00.globalprocs.get(value,None)

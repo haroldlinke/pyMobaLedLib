@@ -51,11 +51,11 @@ def Get_Prog_Generator_Name():
             Path = M01.Get_DestDir_All()
             # Check if it exists in the user dir
             FullPath = Path + Default_Prog_Generator_Name
-            if X02.Dir(FullPath) == '':
+            if Dir(FullPath) == '':
                 # Check if it exists in the lib dir
                 Path = M01a.Get_SrcDirInLib()
                 FullPath = Path + Default_Prog_Generator_Name
-                if X02.Dir(FullPath) == '':
+                if Dir(FullPath) == '':
                     X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Fehler: Das Programm \'') + Default_Prog_Generator_Name + '\'' + vbCr + pattgen.M09_Language.Get_Language_Str('existiert nicht im Standard Verzeichnis:') + vbCr + '  \'' + Path + '\'', vbCritical, pattgen.M09_Language.Get_Language_Str('Fehler ') + Default_Prog_Generator_Name + pattgen.M09_Language.Get_Language_Str(' nicht vorhanden'))
                     return _fn_return_value
             Prog_Generator_Name = FullPath

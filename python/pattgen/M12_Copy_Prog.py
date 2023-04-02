@@ -37,8 +37,8 @@ def FileCopy_with_Check(DestDir, Name, SourceName=VBMissingArgument):
         if M30.FilePath(SourceName) != '':
             SrcPath = M30.FilePath(SourceName)
         SrcName = M30.FileNameExt(SourceName)
-    if X02.Dir(SrcPath + SrcName) == '':
-        if X02.Dir(SrcPath + SrcName, vbDirectory) != '':
+    if Dir(SrcPath + SrcName) == '':
+        if Dir(SrcPath + SrcName, vbDirectory) != '':
             # Check if it's a directory
             CopyDir = True
         else:
@@ -67,11 +67,11 @@ def Copy_File_With_new_Name_If_Exists(Name):
     FullDestDir = M30.FilePath(Name)
     ProgName = FullDestDir + M30.FileNameExt(Name)
     # Check if the program already exists
-    if X02.Dir(ProgName) != '':
+    if Dir(ProgName) != '':
         while 1:
             Nr = Nr + 1
             CopyName = FullDestDir + M30.FileName(Name) + '_Old_' + Nr + '.xlsm'
-            if not (X02.Dir(CopyName) != ''):
+            if not (Dir(CopyName) != ''):
                 break
         if not FileCopy_with_Check(FullDestDir, M30.FileNameExt(CopyName), FullDestDir + M30.FileNameExt(Name)):
             return _fn_return_value
@@ -213,7 +213,7 @@ def CreateDesktopShortcut(LinkName, BookFullName, IconName=M01.DefaultIcon):
     _with80 = oShortcut
     _with80.TargetPath = BookFullName
     if IconName != '':
-        if X02.Dir(Path + Sep + IconName) == '':
+        if Dir(Path + Sep + IconName) == '':
             X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Fehler: Das Icon \'') + IconName + pattgen.M09_Language.Get_Language_Str('\' existiert nicht'), vbCritical, pattgen.M09_Language.Get_Language_Str('Fehler: Icon nicht im Programm Verzeichnis'))
         else:
             _with80.IconLocation = Path + Sep + IconName

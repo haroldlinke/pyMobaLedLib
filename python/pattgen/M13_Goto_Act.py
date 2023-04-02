@@ -142,7 +142,7 @@ def Get_Additional_Goto_Activation_Macro(Act_Macro, InCnt, Loc_InCh):
     # Return False to abort
     if not pattgen.M06_Goto_Graph.Goto_Mode_is_Active():
         _fn_return_value = True
-        return _fn_return_value
+        return _fn_return_value, Act_Macro, InCnt, Loc_InCh #*HL ByRef
     ActWB = X02.ActiveWorkbook.Name
     # Dell_All_Arrows must be run in this workbook
     PG.ThisWorkbook.Activate()
@@ -152,7 +152,7 @@ def Get_Additional_Goto_Activation_Macro(Act_Macro, InCnt, Loc_InCh):
         # Do we have more than the start point 0 ?
         _fn_return_value = True
         # No => Noting to do, Exit
-        return _fn_return_value
+        return _fn_return_value,Act_Macro, InCnt, Loc_InCh #*HL ByRef
     Bin_Start_Points = Get_BinSize(pattgen.M06_Goto_Graph.Goto_Start_Points)
     while Act_Macro == '':
         GotoAct = Trim(X02.Range('Goto_Aktivierung'))
@@ -212,7 +212,7 @@ def Get_Additional_Goto_Activation_Macro(Act_Macro, InCnt, Loc_InCh):
                 Act_Macro = 'ABORT'
         if Act_Macro == 'ERROR' or Act_Macro == 'ABORT':
             X02.Workbooks(ActWB).Activate()
-            return _fn_return_value
+            return _fn_return_value, Act_Macro, InCnt, Loc_InCh #*HL ByRef
     if Act_Macro == 'Nothing':
         Act_Macro = ''
     else:
