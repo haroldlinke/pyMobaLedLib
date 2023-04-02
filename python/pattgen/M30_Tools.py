@@ -510,7 +510,11 @@ def EndProg():
     # Normaly this function should not be called because the
     # global variables and dialog positions are cleared.
     Enable_Application_Automatics()
-    sys.exit(0)
+    X02.Application.EnableEvents = True
+    X02.Application.ScreenUpdating = True
+    Debug.Print("Error in Dialog: End_Prog()")
+    raise Exception("Error in Dialog")    
+    #sys.exit(0)
 
 def Enable_Application_Automatics():
     #-----------------------------------------
@@ -736,11 +740,11 @@ def ClearStatusbar():
 def Show_Status_for_a_while(Txt, Duration='00:00:15'):
     #-------------------------------------------------------------------------------------------
     X02.Application.StatusBar = Txt
-    if Txt != '':
-        X02.Application.OnTime(X02.Now + X02.TimeValue(Duration), 'ClearStatusbar')
+    if Txt != r'':
+        X02.Application.OnTime(15000, ClearStatusbar)
     else:
-        X02.Application.OnTime(X02.Now + X02.TimeValue('00:00:00'), 'ClearStatusbar')
-
+        X02.Application.OnTime(15000, ClearStatusbar)
+ 
 def InputBoxMov(prompt, Title=VBMissingArgument, Default=VBMissingArgument, Left=VBMissingArgument, Top=VBMissingArgument, helpfile=VBMissingArgument, HelpContextID=VBMissingArgument):
     _fn_return_value = None
     OldUpdate = Boolean()

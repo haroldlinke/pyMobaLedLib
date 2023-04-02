@@ -102,6 +102,9 @@ def DCCSend():
     Direction = Byte()
     # VB2PY (UntranslatedCode) On Error Resume Next
     Button = P01.ActiveSheet.Shapes.getShape(P01.Application.caller)
+    if Button==None:
+        print("Button not found ",P01.Application.caller )
+        return
     callerName = Button.Name
     # VB2PY (UntranslatedCode) On Error GoTo 0
     if callerName == '':

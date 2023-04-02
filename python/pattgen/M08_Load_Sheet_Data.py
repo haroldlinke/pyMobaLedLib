@@ -461,14 +461,14 @@ def Load_Picture(Line, SourceDir):
     # 02.07.19: Added: CorrectKomma()
     PicName = SourceDir + Params(1)
     # 25.11.19: First look in the source dir
-    if X02.Dir(PicName) == '':
+    if Dir(PicName) == '':
         SecondDir = PG.ThisWorkbook.Path + '\\' + M01.ExampleDir + '\\'
         PicName = SecondDir + Params(1)
         if UCase(SecondDir) != UCase(SourceDir):
             SecondDir = vbCr + '  ' + SecondDir
         else:
             SecondDir = ''
-        if X02.Dir(PicName) == '':
+        if Dir(PicName) == '':
             X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Fehler: Das Bild \'') + Params(1) + pattgen.M09_Language.Get_Language_Str('\' existiert nicht in folgenen Verzeichnissen:') + vbCr + '  ' + SourceDir + SecondDir, vbCritical, pattgen.M09_Language.Get_Language_Str('Bild nicht gefunden'))
             return
     M02a.Global_Worksheet_Change(X02.Cells(1, 1))
@@ -564,7 +564,7 @@ def Load_Sheets(SourceName, Loaded_Sheets, AfterSheetName=VBMissingArgument):
     OldSheet = X02.ActiveSheet
     X02.Application.EnableEvents = False
     FileNr = FreeFile()
-    if X02.Dir(SourceName) == '':
+    if Dir(SourceName) == '':
         X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Fehler: Die Datei \'') + SourceName + '\' ' + pattgen.M09_Language.Get_Language_Str('existiert nicht.'), vbCritical, pattgen.M09_Language.Get_Language_Str('Fehler'))
         return
     SourceDir = M30.FilePath(SourceName)
