@@ -298,7 +298,7 @@ def Add_All_VBA_Strings_to_the_Languages_Sheet():
     X02.MsgBox('Add all missing text constants in the VBA program to the languages sheet.' + vbCr + vbCr + 'Attention: The program \'Export_Code.xlsm\' must be called to export the source code modules ' + 'to the directory:' + vbCr + '  \'' + SrcDir + '\'', vbInformation)
     AddedCnt = 0
     for Ext in Split(Extentions, ' '):
-        Res = X02.Dir(PG.ThisWorkbook.Path + SrcDir + Ext)
+        Res = Dir(PG.ThisWorkbook.Path + SrcDir + Ext)
         while 1:
             if Res != '':
                 if Res == 'M09_Language.bas' or Res == 'M09_Languages_Add.bas':
@@ -307,7 +307,7 @@ def Add_All_VBA_Strings_to_the_Languages_Sheet():
                     Debug.Print('File: ' + Res)
                     Process_File()(PG.ThisWorkbook.Path + SrcDir + Res)
                     Cnt = Cnt + 1
-                Res = X02.Dir()
+                Res = Dir()
                 # Mit Excel für Mac 2016 wird der ursprüngliche Dir-Funktionsaufruf erfolgreich ausgeführt. Nachfolgende Aufrufe zum Durchlaufen des angegebenen Verzeichnisses führen jedoch zu einem Fehler. Dies ist leider ein bekanntes Problem.
             else:
                 break

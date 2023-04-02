@@ -7,7 +7,7 @@ import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M09_Language
 import pattgen.M56_Pattern2Bytes
 import pattgen.M58_CRC
-import pattgen.M07_COM_Port
+import proggen.M07_COM_Port
 import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M60_Select_LED
 import pattgen.M11_To_Prog_Gen

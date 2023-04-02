@@ -279,7 +279,7 @@ def Show_USB_Port_Dialog(ComPortColumn, ComPort):
         Picture = 'Tiny_image'
         ArduName = 'ISP'
     else:
-        P01.MsgBox('Internal Error: Unsupported  ComPortColumn=' + ComPortColumn + ' in \'USB_Port_Dialog()\'', vbCritical, 'Internal Error')
+        P01.MsgBox('Internal Error: Unsupported  ComPortColumn=' + str(ComPortColumn) + ' in \'USB_Port_Dialog()\'', vbCritical, 'Internal Error')
         M30.EndProg()
     Res, ComPort = Select_Arduino_w_Blinking_LEDs_Dialog(M09.Get_Language_Str('Überprüfung des USB Ports'), M09.Get_Language_Str('Auswahl des Arduino COM Ports'), Replace(M09.Get_Language_Str('Mit diesem Dialog wird der COM Port überprüft ' + 'bzw. ausgewählt an den der #1# Arduino angeschlossen ist.' + vbCr + vbCr + 'OK, wenn die LEDs am richtigen Arduino schnell blinken.'), '#1#', ArduName), Picture, M09.Get_Language_Str(' ; A Abbruch; O Ok'), ComPort)
     fn_return_value = ( Res == 3 )

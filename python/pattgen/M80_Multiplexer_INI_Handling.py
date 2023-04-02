@@ -260,7 +260,7 @@ def Load_Multiplexer():
     Debug.Print('Start loading Multiplexer.')
     Map = Environ('USERPROFILE') + '\\Documents\\' + 'MyPattern_Config_Examples'
     IniFileName = Map + '\\' + MULTIPLEXER_INI_FILE_NAME
-    if X02.Dir(IniFileName) == '':
+    if Dir(IniFileName) == '':
         # 04.06.20: Hardi: Changed Messages
         #                  ToDo: The ini file is saved automatically. The Message that the user has to save it is not necessary
         if X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Fehler die \'Multiplexer.ini\' Datei existiert nicht:') + vbCr + '  \'' + IniFileName + '\'' + vbCr + vbCr + pattgen.M09_Language.Get_Language_Str('Eine neue \'Multiplexer.ini\' wird erstellt.') + vbCr + vbCr + pattgen.M09_Language.Get_Language_Str('Soll die Datei mit Beispiel Daten generiert werden?'), vbQuestion + vbYesNo, pattgen.M09_Language.Get_Language_Str('Multiplexer Datei nicht vorhanden')) == vbYes:
@@ -269,7 +269,7 @@ def Load_Multiplexer():
             # 04.06.20: Hardi
         else:
             Create_Multiplexer_Ini
-    if not X02.Dir(IniFileName) != '':
+    if not Dir(IniFileName) != '':
         X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Fehler die Datei existiert nicht:') + vbCr + '  \'' + IniFileName + '\'' + vbCrLf + vbCrLf + pattgen.M09_Language.Get_Language_Str('Eine neue \'Multiplexer.ini\' wird erstellt. Vergessen Sie nicht, Ihre Änderungen zu speichern!'), vbCritical, pattgen.M09_Language.Get_Language_Str('Multiplexer Datei nicht gefunden!'))
         Create_Multiplexer_Ini
     X02.Application.EnableEvents = False
@@ -2796,7 +2796,7 @@ def Load_New_Picture():
             if UCase(M30.FilePath(Res)) != UCase(DestDir):
                 # Copy the file ?
                 CopyIt = True
-                if X02.Dir(DestDir + M30.FileNameExt(Res)) != '':
+                if Dir(DestDir + M30.FileNameExt(Res)) != '':
                     # Already existing
                     if X02.MsgBox(Replace(Replace(pattgen.M09_Language.Get_Language_Str('Das Bild \'#1#\' ist bereits im Verzeichnis' + vbCr + '  \'#2#\' vorhanden.' + vbCr + vbCr + 'Soll die Datei überschrieben werden?' + vbCr + vbCr + 'Das beeinflusst unter Umständen andere Beispiele'), '#1#', M30.FileNameExt(Res)), '#2#', DestDir), vbQuestion + vbYesNo, pattgen.M09_Language.Get_Language_Str('Bild ist bereits im Beispiel Verzeichnis vorhanden')) == vbNo:
                         CopyIt = False

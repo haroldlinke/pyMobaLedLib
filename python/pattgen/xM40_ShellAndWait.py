@@ -54,7 +54,7 @@ def ShellAndWait(ShellCommand, TimeOutSeconds, ShellWindowState, BreakKey):
     _fn_return_value = None
     TimeOutMs = Long()
 
-    WaitRes = LongLong()
+    WaitRes = Long()
 
     ms = Long()
 

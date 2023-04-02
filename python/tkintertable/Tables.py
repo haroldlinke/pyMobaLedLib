@@ -1297,6 +1297,8 @@ class TableCanvas(Canvas):
         colover = self.get_col_clicked(event)
         if colover == None or rowover == None:
             return
+        if self.startcol is None or self.endcol is None:
+            return        
 
         if rowover >= self.rows or self.startrow > self.rows:
             return
@@ -3643,7 +3645,7 @@ class CTShape(object):
         if self.rectidx!=0 or self.formwin!=None:
             tablecanvas=global_tabledict[self.tablename]
             self.updatecontrol = True
-            tablecanvas.drawShape(self)
+            tablecanvas.drawShape(self,force=True) 
             self.updatecontrol = False
         
     Text = property(get_text, set_text, doc='Shape-Text')
