@@ -104,7 +104,8 @@
             "RMbusTimer",
             "UseZ21Data",
             "Z21Data",
-            "FontConfig"
+            "FontConfig",
+            "FontConfig_PattGen"
         ]
     },
     "DCCKeyboardPage": {

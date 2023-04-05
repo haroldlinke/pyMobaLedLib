@@ -255,13 +255,22 @@ class LEDColorTest(tk.Tk):
         self.fontentry = self.get_font("FontLabel")
         self.fonttext = self.get_font("FontText")
         
+        self.fontpattgen_sizenormal = self.getConfigData("FontNormal")
+        self.fontpattgen_sizelarge = self.getConfigData("FontLarge")
+        self.fontpattgen_sizesmall = self.getConfigData("FontSmall")
+        self.fontpattgen_name = self.getConfigData("FontName")
+        if self.fontpattgen_name=="":
+            self.fontpattgen_name = "Arial"
+        self.defaultfontnormal = (self.fontpattgen_name, self.fontpattgen_sizenormal)
+        self.defaultfontsmall = (self.fontpattgen_name, self.fontpattgen_sizesmall)
+        self.defaultfontlarge = (self.fontpattgen_name, self.fontpattgen_sizelarge)
         self.cor_red = self.getConfigData("led_correction_r")
         self.cor_green = self.getConfigData("led_correction_g")
         self.cor_blue = self.getConfigData("led_correction_b")
         macrodata = self.MacroDef.data.get("StartPage",{})
         
         self.show_pyPrgrammGenerator = self.getConfigData("ShowProgramGenerator")
-        self.show_pyPatternGenerator = False #self.getConfigData("ShowPatternGenerator")
+        self.show_pyPatternGenerator = self.getConfigData("ShowPatternGenerator")
         self.show_hiddentables = self.getConfigData("ShowHiddentables")
         
         self.tempLedeffecttableFilname = macrodata.get("TEMP_LEDEFFECTTABLE_FILENAME","StartPage")
@@ -284,26 +293,35 @@ class LEDColorTest(tk.Tk):
 
         tk.Tk.__init__(self, *args, **kwargs)
         tk.Tk.report_callback_exception = self.show_tkinter_exception
+        self.update()
+        
+        #print(self.getConfigData("pos_x"), self.getConfigData("pos_y"))
+        #print(self.getConfigData("win_height"), self.getConfigData("win_width"))
+        self.window_height= self.getConfigData("win_height")
+        if self.window_height<500:
+            self.window_height=1080
+        self.window_width = self.getConfigData("win_width")
+        if self.window_width<500:
+            self.window_width=1920
+                
+        if self.getConfigData("pos_x") < 1920 and self.getConfigData("pos_y") < 1080:
+            self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))        
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         logging.debug("Screenwidht: %s Screenheight: %s",screen_width,screen_height)
-        geometry = self.winfo_geometry()
-        print(geometry)
+
         if screen_width<1280:
             SIZEFACTOR_width = screen_width/1280
-            window_width=screen_width
-        else:
-            window_width = 1920 # 1280
+            self.window_width=screen_width
         
         if screen_height < 900:
-            window_height=screen_height
-        else:
-            window_height=1000
+            self.window_height=screen_height
         
         if self.getConfigData("pos_x") < screen_width and self.getConfigData("pos_y") < screen_height:
-            self.geometry('%dx%d+%d+%d' % (window_width,window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))
+            self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))
         else:
-            self.geometry("%dx%d+0+0" % (window_width,window_height))
+            self.geometry("%dx%d+0+0" % (self.window_width,self.window_height))
+
         #geometry = self.winfo_geometry()
         #print(geometry, self.getConfigData("pos_x"), self.getConfigData("pos_y"))        
 
@@ -778,7 +796,7 @@ class LEDColorTest(tk.Tk):
     # ----------------------------------------------------------------             
     def startup_system(self):
         
-        if self.getConfigData("autoconnect"):
+        if True: #self.getConfigData("autoconnect"):
             
             if self.getConfigData("serportname").upper() == "NO DEVICE":
                 logging.debug("Portname: No DEVICE - show message")
@@ -935,7 +953,7 @@ class LEDColorTest(tk.Tk):
                     self.tabdict[key].connect()
                     
                     
-                port_dcc_data = self.serial_port_dict.get(port,{})
+                port_dcc_data = self.serial_port_dict.get(str(port),{})
                 if port_dcc_data != {}:
                     port_dcc_data["ARDUINO"] = self.arduino
                 else:
@@ -1198,7 +1216,7 @@ class LEDColorTest(tk.Tk):
                 self.queue.put( ">> " + str(message))
             except BaseException as e:
                 logging.debug("Error write message to ARDUINO %s",message)
-                logging.debug(e)  
+                logging.debug(e)
     
     def set_maxLEDcnt(self,maxLEDcnt):
         self.maxLEDcnt = maxLEDcnt

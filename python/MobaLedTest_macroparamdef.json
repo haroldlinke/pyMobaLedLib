@@ -660,6 +660,23 @@
             "FontScale"
         ]
     },
+    "FontConfig_PattGen": {
+        "ParName": "FontConfig_PattGen",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": "ProgGen/PattGen DefaultFont",
+        "Hint": "ProgGen/PattGen DefaultFont (nur nach Neustart sichtbar)",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "FontName",
+            "FontSmall",
+            "FontNormal",
+            "FontLarge"
+        ]
+    },
     "FontTitle": {
         "ParName": "FontTitle",
         "Cnt": "1",
@@ -683,6 +700,54 @@
         "Default": "8",
         "Input Text": "Beschriftung",
         "Hint": "Parameter-Beschriftung Schriftgröße in Punkten"
+    },
+    "FontLarge": {
+        "ParName": "FontLarge",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontLarge",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "14",
+        "Input Text": "Große Schrift",
+        "Hint": "Schriftgröße für große Schrift in Punkten"
+    },
+    "FontName": {
+        "ParName": "FontName",
+        "Cnt": "1",
+        "Type": "BigEntry",
+        "ConfigName": "FontName",
+        "Min": "",
+        "Max": "",
+        "Persistent": "True",
+        "Default": "Arial",
+        "Input Text": "Schriftart",
+        "Hint": "Schriftart z.B. Arial, Calibri"
+    },
+    "FontNormal": {
+        "ParName": "FontNormal",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontNormal",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "11",
+        "Input Text": "Normale Schrift",
+        "Hint": "Schriftgröße für normale Schrift in Punkten"
+    },
+    "FontSmall": {
+        "ParName": "FontSmall",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontSmall",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "8",
+        "Input Text": "Kleine Schrift",
+        "Hint": "Schriftgröße für kleine Schrift in Punkten"
     },
     "FontSpinbox": {
         "ParName": "FontSpinbox",

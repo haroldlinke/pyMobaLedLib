@@ -237,7 +237,8 @@ class ConfigurationPage(tk.Frame):
     def save_config(self):
         self.setConfigData("pos_x",self.winfo_x())
         self.setConfigData("pos_y",self.winfo_y())
-        
+        self.setConfigData("win_height",self.controller.winfo_height())
+        self.setConfigData("win_width",self.controller.winfo_width())
         param_values_dict = self.get_macroparam_var_values(self.tabClassName)
         
         # update maxLEDCnt

@@ -132,7 +132,7 @@ def ToolTip(widget,text="", key="",button_1=False):
         tooltip_var.update_text(text)            
     return    
 
-def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}):
+def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={},defaultfont=("Calibri",10)):
     gui_factor_label_width = guifactor
     gui_factor_label_height = guifactor
     gui_factor_pos = guifactor
@@ -149,7 +149,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             comp.Init_Value = persistent_controls.get(comp.Name,None)
             comp.Caption = M09.Get_Language_Str(component_dict.get("Caption",""))
             comp.AlternativeText = component_dict.get("AlternativeText","")
-            comp.Font = component_dict.get("Font",("Calibri",10))
+            comp.Font = component_dict.get("Font",defaultfont)
             width = component_dict.get("Width",0)
             height = component_dict.get("Height",0)
             if type(width)==int:
