@@ -118,141 +118,7 @@ ThreadEvent = None
 
 BUTTONLABELWIDTH = 10
 
-datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
-datasheet_formating = { "HideCells" : ((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16),(1,"*")),
-                        "ProtectedCells"  : ((0,0),(1,0),("*",12),("*",13),("*",14),("*",15),("*",16)),
-                        "left_click_callertype": "cell",
-                        "FontColor"       : { "1": {
-                                                    "font"     : ("Arial",8),
-                                                    "fg"       : "#FFFF00",
-                                                    "bg"       : "#0000FF",
-                                                    "Cells"    : ((0,"*"),(1,"*"))
-                                                    },
-                                              "2": {
-                                                    "font"     : ("Wingdings",10),
-                                                    "fg"       : "#000000",
-                                                    "bg"       : "#FFFFFF",
-                                                    "Cells"    : (("*",1),)
-                                                    },                                                          
-                                            "default": {
-                                                   "font"     : ("Arial",10),
-                                                   "fg"       : "#000000",
-                                                   "bg"       : "#FFFFFF",
-                                                   "Cells"    : (("*","*"),)
-                                                   }
-                                }
-                    }
-                        
-sheetdict_PROGGEN={"DCC":
-            {"Name":"DCC",
-             "Filename"  : "csv/DCC.csv",
-             "Fieldnames": datasheet_fieldnames,
-             "Formating" : datasheet_formating,
-             "SheetType" : "Datasheet"
-             },
-           "Selectrix":
-            {"Name":"Selectrix",
-             "Filename"  : "csv/Selectrix.csv",
-             "Fieldnames": "A;Aktiv;Filter;Channel oder\nName[0..99];Bitposition\n[1..8];Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment",
-             "Formating" : datasheet_formating,
-             "SheetType" : "Datasheet"
-             },
-           "CAN":
-            {"Name":"CAN",
-             "Filename"  : "csv/CAN.csv",
-             "Fieldnames": datasheet_fieldnames,
-             "Formating" : datasheet_formating,
-             "SheetType" : "Datasheet"
-             },
-           "Examples":
-            {"Name":"Examples",
-             "Filename"  : "csv/Examples.csv",
-             "Fieldnames": datasheet_fieldnames,
-             "Formating" : datasheet_formating,
-             "SheetType" : "Datasheet"
-             },
-           "Config":
-            {"Name":"Config",
-             "Filename":"csv/Config.csv",
-             "Fieldnames": "A;B;C;D",
-             "SheetType" : "Config",
-             "Formating" : { "HideCells"       : (("*",3),),
-                            "ProtectedCells"  : ( ("*",1),("*",3)),
-                            "FontColor"       : { "1": {
-                                                        "font"     : ("Arial",10),
-                                                        "fg"       : "#0000FF",
-                                                        "bg"       : "#FFFFFF",
-                                                        "Cells"    : ((0,"*"),)
-                                                        },
-                                                "default": {
-                                                       "font"     : ("Arial",10),
-                                                       "fg"       : "#000000",
-                                                       "bg"       : "#FFFFFF",
-                                                       "Cells"    : (("*","*"),)
-                                                       }
-                                                }
-                            }
-            },
-           "Languages":
-            {"Name":"Languages",
-             "Filename":"csv/Languages.csv",
-             "Fieldnames": "A;B;C;D;E;F;G;H;I"
-            },
-           "Lib_Macros":
-            {"Name":"Lib_Macros",
-             "Filename":"csv/Lib_Macros.csv",
-             "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS"
-            },
-           "Libraries":
-            {"Name":"Libraries",
-             "SheetType" : "Libraries",
-             "Filename":"csv/Libraries.csv",
-             "Fieldnames": "A;B;C;D;E;F;G;H;I;J",
-             "Formating" : {"ProtectedCells"  : ((0,"*"),(1,"*"),(2,"*"),(3,"*"),(4,"*"),(5,"*"),(6,"*"),(7,"*")),
-                            "FontColor"       : { "1": {
-                                                        "font"     : ("Arial",10),
-                                                        "fg"       : "#FFFF00",
-                                                        "bg"       : "#0000FF",
-                                                        "Cells"    : ((6,"*"),)
-                                                        },
-                                                "default": {
-                                                       "font"     : ("Arial",10),
-                                                       "fg"       : "#000000",
-                                                       "bg"       : "#FFFFFF",
-                                                       "Cells"    : (("*","*"),)
-                                                       }
-                                                },
-                            "left_click_callertype": "cell"
-                            }
-            },
-           "Par_Description":
-            {"Name":"Par_Description",
-             "Filename":"csv/Par_Description.csv",
-              "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K"
-            },
-           "Platform_Parameters":
-            {"Name":"Platform_Parameters",
-             "Filename":"csv/Platform_Parameters.csv",
-             "Fieldnames": "A;B;C;D;E"
-            },
-           "Named_Ranges":
-            {"Name":"Named_Ranges",
-             "Filename":"csv/Named_Ranges.csv",
-             "Fieldnames": "A;B;C;D"
-            },
-           "Events": {"Workbook_Open"          : None,
-                      "Workbook_BeforeClose"   : None,
-                      "SheetActivate"          : None,
-                      "SheetDeactivate"        : None,
-                      "SheetTableUpdate"       : None,
-                      "SheetCalculate"         : None,
-                      "SheetBeforeDoubleClick" : None,
-                      "SheetChange"            : M20.Global_Worksheet_Change,
-                      "SheetSelectionChange"   : None,
-                      "SheetReturnKey"         : None,
-                      "NewSheet"               : None
-           }           
-        }
+
 
 start_sheet  = "DCC"
 ThisWorkbook = None
@@ -266,6 +132,146 @@ class Prog_GeneratorPage(tk.Frame):
         tk.Frame.__init__(self,parent)
         self.controller = controller
         set_global_controller(controller)
+        self.default_font        = self.controller.defaultfontnormal
+        self.default_boldfont    = (self.default_font[0],self.default_font[1],"bold")
+        self.default_smallfont   = self.controller.defaultfontsmall
+        
+        datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
+        datasheet_formating = { "HideCells" : ((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16),(1,"*")),
+                                "ProtectedCells"  : ((0,0),(1,0),("*",12),("*",13),("*",14),("*",15),("*",16)),
+                                "left_click_callertype": "cell",
+                                "FontColor"       : { "1": {
+                                                            "font"     : self.default_smallfont,
+                                                            "fg"       : "#FFFF00",
+                                                            "bg"       : "#0000FF",
+                                                            "Cells"    : ((0,"*"),(1,"*"))
+                                                            },
+                                                      "2": {
+                                                            "font"     : ("Wingdings",10),
+                                                            "fg"       : "#000000",
+                                                            "bg"       : "#FFFFFF",
+                                                            "Cells"    : (("*",1),)
+                                                            },                                                          
+                                                    "default": {
+                                                           "font"     : self.default_font,
+                                                           "fg"       : "#000000",
+                                                           "bg"       : "#FFFFFF",
+                                                           "Cells"    : (("*","*"),)
+                                                           }
+                                        }
+                            }
+                                
+        sheetdict_PROGGEN={"DCC":
+                    {"Name":"DCC",
+                     "Filename"  : "csv/DCC.csv",
+                     "Fieldnames": datasheet_fieldnames,
+                     "Formating" : datasheet_formating,
+                     "SheetType" : "Datasheet"
+                     },
+                   "Selectrix":
+                    {"Name":"Selectrix",
+                     "Filename"  : "csv/Selectrix.csv",
+                     "Fieldnames": "A;Aktiv;Filter;Channel oder\nName[0..99];Bitposition\n[1..8];Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment",
+                     "Formating" : datasheet_formating,
+                     "SheetType" : "Datasheet"
+                     },
+                   "CAN":
+                    {"Name":"CAN",
+                     "Filename"  : "csv/CAN.csv",
+                     "Fieldnames": datasheet_fieldnames,
+                     "Formating" : datasheet_formating,
+                     "SheetType" : "Datasheet"
+                     },
+                   "Examples":
+                    {"Name":"Examples",
+                     "Filename"  : "csv/Examples.csv",
+                     "Fieldnames": datasheet_fieldnames,
+                     "Formating" : datasheet_formating,
+                     "SheetType" : "Datasheet"
+                     },
+                   "Config":
+                    {"Name":"Config",
+                     "Filename":"csv/Config.csv",
+                     "Fieldnames": "A;B;C;D",
+                     "SheetType" : "Config",
+                     "Formating" : { "HideCells"       : (("*",3),),
+                                    "ProtectedCells"  : ( ("*",1),("*",3)),
+                                    "FontColor"       : { "1": {
+                                                                "font"     : self.default_font ,
+                                                                "fg"       : "#0000FF",
+                                                                "bg"       : "#FFFFFF",
+                                                                "Cells"    : ((0,"*"),)
+                                                                },
+                                                        "default": {
+                                                               "font"     : self.default_font ,
+                                                               "fg"       : "#000000",
+                                                               "bg"       : "#FFFFFF",
+                                                               "Cells"    : (("*","*"),)
+                                                               }
+                                                        }
+                                    }
+                    },
+                   "Languages":
+                    {"Name":"Languages",
+                     "Filename":"csv/Languages.csv",
+                     "Fieldnames": "A;B;C;D;E;F;G;H;I"
+                    },
+                   "Lib_Macros":
+                    {"Name":"Lib_Macros",
+                     "Filename":"csv/Lib_Macros.csv",
+                     "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS"
+                    },
+                   "Libraries":
+                    {"Name":"Libraries",
+                     "SheetType" : "Libraries",
+                     "Filename":"csv/Libraries.csv",
+                     "Fieldnames": "A;B;C;D;E;F;G;H;I;J",
+                     "Formating" : {"ProtectedCells"  : ((0,"*"),(1,"*"),(2,"*"),(3,"*"),(4,"*"),(5,"*"),(6,"*"),(7,"*")),
+                                    "FontColor"       : { "1": {
+                                                                "font"     : self.default_font ,
+                                                                "fg"       : "#FFFF00",
+                                                                "bg"       : "#0000FF",
+                                                                "Cells"    : ((6,"*"),)
+                                                                },
+                                                        "default": {
+                                                               "font"     : self.default_font ,
+                                                               "fg"       : "#000000",
+                                                               "bg"       : "#FFFFFF",
+                                                               "Cells"    : (("*","*"),)
+                                                               }
+                                                        },
+                                    "left_click_callertype": "cell"
+                                    }
+                    },
+                   "Par_Description":
+                    {"Name":"Par_Description",
+                     "Filename":"csv/Par_Description.csv",
+                      "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K"
+                    },
+                   "Platform_Parameters":
+                    {"Name":"Platform_Parameters",
+                     "Filename":"csv/Platform_Parameters.csv",
+                     "Fieldnames": "A;B;C;D;E"
+                    },
+                   "Named_Ranges":
+                    {"Name":"Named_Ranges",
+                     "Filename":"csv/Named_Ranges.csv",
+                     "Fieldnames": "A;B;C;D"
+                    },
+                   "Events": {"Workbook_Open"          : None,
+                              "Workbook_BeforeClose"   : None,
+                              "SheetActivate"          : None,
+                              "SheetDeactivate"        : None,
+                              "SheetTableUpdate"       : None,
+                              "SheetCalculate"         : None,
+                              "SheetBeforeDoubleClick" : None,
+                              "SheetChange"            : M20.Global_Worksheet_Change,
+                              "SheetSelectionChange"   : None,
+                              "SheetReturnKey"         : None,
+                              "NewSheet"               : None
+                   }           
+                }        
+        
         macrodata = self.controller.MacroDef.data.get(self.tabClassName,{})
         self.tabname = macrodata.get("MTabName",self.tabClassName)
         self.title = macrodata.get("Title",self.tabClassName)
@@ -317,9 +323,11 @@ class Prog_GeneratorPage(tk.Frame):
         self.workbook_frame.rowconfigure(0,weight=1)
         self.workbook_frame.columnconfigure(0,weight=1)
         #self.workbook_frame.grid_rowconfigure(0,weight=1)
-        #self.workbook_frame.grid_columnconfigure(0,weight=1)        
+        #self.workbook_frame.grid_columnconfigure(0,weight=1)
         
-        self.workbook = create_workbook(frame=self.workbook_frame,path=filedir2, pyProgPath=filedir2, workbookName="ProgGenerator", sheetdict=sheetdict_PROGGEN,start_sheet=start_sheet,p_global_controller=global_controller)
+        self.workbook_width = self.controller.window_width-120
+        self.workbook_height = self.controller.window_height-420
+        self.workbook = create_workbook(frame=self.workbook_frame,path=filedir2, pyProgPath=filedir2, workbookName="ProgGenerator", sheetdict=sheetdict_PROGGEN,start_sheet=start_sheet,p_global_controller=global_controller,width=self.workbook_width,height=self.workbook_height)
         ThisWorkbook=self.workbook
         
         for sheet in self.workbook.sheets:

@@ -64,11 +64,13 @@ class TableCanvas(Canvas):
 
     def __init__(self, parent=None, tablename="dummy", model=None, data=None, read_only=False,
                  width=None, height=None, bgcolor='#F7F7FA', fgcolor='black',
-                 rows=10, cols=5, rightclickactions={}, worksheet=None, **kwargs):
+                 rows=10, cols=5, rightclickactions={}, worksheet=None,default_font=("Calibri",11), **kwargs):
+        #Canvas.__init__(self, parent, bg=bgcolor,
+        #                 width=width, height=height,
+        #                 relief=GROOVE,
+        #                 scrollregion=(0,0,width,height))
         Canvas.__init__(self, parent, bg=bgcolor,
-                         width=width, height=height,
-                         relief=GROOVE,
-                         scrollregion=(0,0,width,height))
+                         relief=GROOVE)        
         self.tablename=tablename
         self.parentframe = parent
         #get platform into a variable
@@ -76,11 +78,11 @@ class TableCanvas(Canvas):
         self.platform = platform.system()
         self.width = width
         self.height = height
+        self.default_font=default_font
         self.set_defaults()
         self.fgcolor = fgcolor
         self.iconlist=[]
         self.tooltip_var_dict = {}
-
         self.currentpage = None
         self.navFrame = None
         self.currentrow = 0
@@ -158,7 +160,7 @@ class TableCanvas(Canvas):
         self.linewidth=1.0
         self.rowheaderwidth=40
         self.showkeynamesinheader=False
-        self.thefont = ('Arial',9)
+        self.thefont = self.default_font #('Arial',9)
         self.bgcolor = '#F7F7FA'
         self.fgcolor = 'black'
         self.entrybackgr = 'white'
@@ -289,8 +291,8 @@ class TableCanvas(Canvas):
         self['yscrollcommand'] = self.Yscrollbar.set
         self.tablecolheader['xscrollcommand'] = self.Xscrollbar.set
         self.tablerowheader['yscrollcommand'] = self.Yscrollbar.set
-        self.parentframe.rowconfigure(1,weight=1)
-        self.parentframe.columnconfigure(1,weight=1)
+        self.parentframe.rowconfigure(0,weight=1)
+        self.parentframe.columnconfigure(0,weight=1)
 
         self.tablecolheader.grid(row=0,column=1,rowspan=1,sticky='news',pady=0,ipady=0)
         self.tablerowheader.grid(row=1,column=0,rowspan=1,sticky='news',pady=0,ipady=0)
@@ -2229,7 +2231,7 @@ class TableCanvas(Canvas):
                             self.tag_lower(shape.rectidx)
                         self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
                         if shape.Text !="":
-                            shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
+                            shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,font=self.thefont,tags=(shape.Name,"Shape"))
                             if shape.ZOrder_Val==0:
                                 self.tag_raise(shape.textidx)
                             else:
@@ -2241,7 +2243,7 @@ class TableCanvas(Canvas):
                         #if shape.TextFrame2.TextRange.Text == "":
                         #    shape.TextFrame2.TextRange.Text = "0"
                         if shape.Text !="":
-                            shape.textidx = self.create_text(int(shape.Left),int(shape.Top),anchor="nw",text=shape.Text,tags=(shape.Name,"Shape"),width=shape.Width)
+                            shape.textidx = self.create_text(int(shape.Left),int(shape.Top),anchor="nw",text=shape.Text,tags=(shape.Name,"Shape"),width=shape.Width,font=self.thefont)
                             if shape.ZOrder_Val==0:
                                 self.tag_raise(shape.textidx)
                             else:
@@ -2255,7 +2257,7 @@ class TableCanvas(Canvas):
                             control_dict = shape.control_dict.get("Components",None)
                             format_dict  = shape.format_dict
                             shape.AlternativeText = shape.control_dict.get("AlternativeText",None)
-                            XLF.generate_controls(control_dict,formFrame,self.worksheet,persistent_controls=self.persistent_controls_dict,format_dict=format_dict)
+                            XLF.generate_controls(control_dict,formFrame,self.worksheet,persistent_controls=self.persistent_controls_dict,format_dict=format_dict,defaultfont=self.thefont)
                             if shape.Top==None:
                                 x1,y1,x2,y2 = self.getCellCoords(shape.Row-1,shape.Col-1)
                                 shape.Top=y1
@@ -2307,7 +2309,7 @@ class TableCanvas(Canvas):
                         shape.rectidx = self.create_oval(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape"))
                         self.tag_raise(shape.rectidx)
                         if shape.Text !="":
-                            shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
+                            shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,font=self.thefont,tags=(shape.Name,"Shape"))
                             self.tag_raise(shape.textidx)
                         #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
                         #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
@@ -2595,7 +2597,7 @@ class TableCanvas(Canvas):
         if text == None or text == '' or len(str(text))<=10:
             return
 
-        sfont = font.Font(family='Arial', size=12,weight='bold')
+        sfont = self.thefont # font.Font(family='Arial', size=12,weight='bold') #tooltip font
         
         
         obj = self.create_text(x1+w/1.5,y2,text=text,
@@ -2787,6 +2789,7 @@ class TableCanvas(Canvas):
     def loadPrefs(self, prefs=None):
         """Load table specific prefs from the prefs instance used
            if they are not present, create them."""
+        return
 
         if prefs == None:
             prefs=Preferences('Table',{'check_for_update':1})
@@ -2836,7 +2839,7 @@ class TableCanvas(Canvas):
         self.grid_color = self.prefs.get('grid_color')
         self.rowselectedcolor = self.prefs.get('rowselectedcolor')
         self.fontsize = self.celltextsizevar.get()
-        self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
+        #self.thefont = (self.prefs.get('celltextfont'), self.prefs.get('celltextsize'))
         self.rowheaderwidthvar = IntVar()
         self.rowheaderwidthvar.set(self.prefs.get('rowheaderwidth'))
         self.rowheaderwidth = self.rowheaderwidthvar.get()

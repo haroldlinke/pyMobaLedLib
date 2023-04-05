@@ -188,11 +188,11 @@ def set_activeworkbook(p_workbook):
         p_workbook.ActiveSheet.Activate()
 
 
-def create_workbook(frame=None, path=None,pyProgPath=None,workbookName=None,workbookFilename=None,sheetdict=None,start_sheet=None,p_global_controller=None):
+def create_workbook(frame=None, path=None,pyProgPath=None,workbookName=None,workbookFilename=None,sheetdict=None,start_sheet=None,p_global_controller=None,width=None,height=None):
     global ActiveSheet,ActiveWorkbook,global_controller
     if p_global_controller:
         global_controller = p_global_controller
-    workbook = CWorkbook(frame=frame,path=path,pyProgPath=pyProgPath,workbookName=workbookName,workbookFilename=workbookFilename,sheetdict=sheetdict,start_sheet=start_sheet)
+    workbook = CWorkbook(frame=frame,path=path,pyProgPath=pyProgPath,workbookName=workbookName,workbookFilename=workbookFilename,sheetdict=sheetdict,start_sheet=start_sheet,width=width,height=height)
     set_activeworkbook(workbook)
     return workbook
     
@@ -458,7 +458,7 @@ class Worksheet(object):
         self.Name = "Dummy"
 
 class CWorkbook(object):
-    def __init__(self, frame=None,path=None,pyProgPath=None,workbookName=None, workbookFilename=None, sheetdict=None,init_workbook=None,open_workbook=None,start_sheet=None,controller=None):
+    def __init__(self, frame=None,path=None,pyProgPath=None,workbookName=None, workbookFilename=None, sheetdict=None,init_workbook=None,open_workbook=None,start_sheet=None,controller=None,width=None,height=None):
         global Workbooks,pyProgfile_dir,Worksheets
         # Row and Columns are 0 based and not 1 based as in Excel
         if controller==None:
@@ -480,6 +480,9 @@ class CWorkbook(object):
             self.tabframedict = {}
             self.oldTabName=""
             self.ActiveSheet = None
+            self.workbook_width  = width
+            self.workbook_height = height
+            self.default_font = self.controller.defaultfontnormal
 
             self.FullName = workbookFilename
             style = ttk.Style(frame)
@@ -613,7 +616,7 @@ class CWorkbook(object):
         fieldnames = sheetname_prop.get("Fieldnames",None)
         if type(fieldnames) == str:
             fieldnames = fieldnames.split(";")
-        act_worksheet = CWorksheet(sheetname,workbook=self, csv_filepathname=(Path(self.pyProgPath) / sheetname_prop["Filename"]),frame=tabframe,fieldnames=fieldnames,formating_dict=formating_dict,Sheettype=sheettype,callback=callback,tabid=self.tabid)
+        act_worksheet = CWorksheet(sheetname,workbook=self, csv_filepathname=(Path(self.pyProgPath) / sheetname_prop["Filename"]),frame=tabframe,fieldnames=fieldnames,formating_dict=formating_dict,Sheettype=sheettype,callback=callback,tabid=self.tabid,width=self.workbook_width,height=self.workbook_height)
         return act_worksheet
     
     def activate_sheet(self,sheetname):
@@ -947,21 +950,28 @@ class CButtons(object):
        
 class CWorksheet(object):
     
-    def __init__(self,Name,tablemodel=None,workbook=None,csv_filepathname=None,frame=None,fieldnames=None,formating_dict=None,Sheettype="",callback=False,tabid=0):
+    def __init__(self,Name,tablemodel=None,workbook=None,csv_filepathname=None,frame=None,fieldnames=None,formating_dict=None,Sheettype="",callback=False,tabid=0,width=None, height=None):
         
         sheetdict_popmenu = {"DCC":
                              { "LED blinken Ein/Aus":self.LED_flash,
                                "LED nacheinander blinken Ein/Aus":self.LED_flash_seq
                              }
                             }
-
         screen_width = 1920
-        screen_height = 1080       
+        screen_height = 1080
         self.controller = workbook.controller
+        print(workbook.controller.winfo_width(),workbook.controller.winfo_height())
         self.rightclickactiondict = sheetdict_popmenu.get(Name,{})
-        self.width = screen_width-120
-        self.height = screen_height-350
+        if width == None:
+            self.width = screen_width-120
+        else:
+            self.width = width
+        if height == None:
+            self.height = screen_height-350
+        else:
+            self.height= height
         self.Workbook = workbook
+        self.default_font = workbook.default_font
         self.ProtectContents = False
         self.Datasheet = Sheettype == "Datasheet"
         self.Configsheet = Sheettype == "Config"
@@ -978,11 +988,11 @@ class CWorksheet(object):
         self.Buttons = CButtons(ws=self)
         if tablemodel:
             self.tablemodel = tablemodel
-            self.table = TableCanvas(frame, tablename=Name, model=tablemodel,width=self.width,height=self.height,scrollregion=(0,0,self.width,self.height),rightclickactions=self.rightclickactiondict,worksheet=self)
+            self.table = TableCanvas(frame, tablename=Name, model=tablemodel,width=self.width,height=self.height,default_font=self.default_font,scrollregion=(0,0,self.width,self.height),rightclickactions=self.rightclickactiondict,worksheet=self)
         else:
             if csv_filepathname:
                 #self.tablemodel = TableModel()
-                self.table = TableCanvas(frame, tablename=Name, model=None,width=self.width,height=self.height,scrollregion=(0,0,self.width,self.height),rightclickactions=self.rightclickactiondict,worksheet=self)
+                self.table = TableCanvas(frame, tablename=Name, model=None,width=self.width,height=self.height,default_font=self.default_font,scrollregion=(0,0,self.width,self.height),rightclickactions=self.rightclickactiondict,worksheet=self)
                 fileextension = os.path.splitext(self.csv_filepathname)[1]
                 if fileextension == ".csv":
                     self.table.importCSV(filename=self.csv_filepathname, sep=';',fieldnames=self.fieldnames)
@@ -1813,7 +1823,8 @@ class CRange(str):
         #self.Columns = []
         #self.Cells = CCells(self.rowrange,self.colrange,ws=ws)
         obj.CountLarge = (obj.end[0]-obj.start[0]+1)*(obj.end[1]-obj.start[1]+1)
-        obj.Font = CFont("Arial",10)
+        obj.Font = obj.Parent.default_font
+        obj.default_font = obj.Parent.default_font
 
         return obj
         #    x1,y1,x2,y2 = self.ws.table.getCellCoords(self.Row-1,self.Column-1)
