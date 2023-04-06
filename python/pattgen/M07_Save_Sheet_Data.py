@@ -283,7 +283,7 @@ def Test_Show_only_this_Picture():
         if (_select18 == msoPicture) or (_select18 == msoLinkedPicture):
             # 11, 13: Picture
             if o.Name != 'MainMenu':
-                Show_only_this_Picture_and_Enter_Name()(o)
+                Show_only_this_Picture_and_Enter_Name(o)
 
 def Save_Picture(o, DestPath):
     _fn_return_value = None

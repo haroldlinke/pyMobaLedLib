@@ -908,7 +908,7 @@ def __Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLLi
 
 def __Test_Create_Do_Update_Script():
     #UT---------------------------------------
-    __Create_Do_Update_Script()(True)
+    __Create_Do_Update_Script(True)
 
 def __Get_Original_Name_from_TestFile(LibDir):
     fn_return_value = ""
@@ -1030,7 +1030,7 @@ def __Check_All_Selected_Libraries_Result(Ask_User):
 
 def __Test_Check_All_Selected_Libraries_Result():
     #UT---------------------------------------------------
-    __Check_All_Selected_Libraries_Result()(True)
+    __Check_All_Selected_Libraries_Result(True)
 
 def __Update_Status_old(Start=False):
     global Update_Time
@@ -1456,7 +1456,7 @@ def Delete_Selected():
         Debug.Print('.')
         Sleep(100)
     Debug.Print('')
-    __Get_All_Library_States()()
+    __Get_All_Library_States()
 
 def Update_MobaLedLib_from_Arduino_and_Restart_Excel():
     #------------------------------------------------------------
@@ -1475,8 +1475,8 @@ def Check_Actual_Versions():
     # Is called by the button in the "Libraries" sheet
     # It checks all versions and selects the rows which have to be updated
     __Update_General_Versions()
-    __Get_All_Library_States()()
-    __Select_Missing()()
+    __Get_All_Library_States()
+    __Select_Missing()
 
 def Install_Selected():
     #----------------------------

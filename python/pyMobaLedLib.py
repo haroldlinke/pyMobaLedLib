@@ -171,7 +171,7 @@ ThreadEvent = None
 # Class LEDColorTest
 # ----------------------------------------------------------------
 
-class LEDColorTest(tk.Tk):
+class pyMobaLedLibapp(tk.Tk):
     
     # ----------------------------------------------------------------
     # LEDColorTest __init__
@@ -183,6 +183,7 @@ class LEDColorTest(tk.Tk):
         self.setcoltab_only = False
         caller_setcoltab = (caller == "SetColTab")
         self.colortest_only = COMMAND_LINE_ARG_DICT.get("colortest_only","")== "True"
+        self.loaddatafile = COMMAND_LINE_ARG_DICT["loaddatafile"]!="False"
         self.coltab = None
         self.checkcolor_callback = None
         self.ledhighlight = False
@@ -259,8 +260,6 @@ class LEDColorTest(tk.Tk):
         self.fontpattgen_sizelarge = self.getConfigData("FontLarge")
         self.fontpattgen_sizesmall = self.getConfigData("FontSmall")
         self.fontpattgen_name = self.getConfigData("FontName")
-        if self.fontpattgen_name=="":
-            self.fontpattgen_name = "Arial"
         self.defaultfontnormal = (self.fontpattgen_name, self.fontpattgen_sizenormal)
         self.defaultfontsmall = (self.fontpattgen_name, self.fontpattgen_sizesmall)
         self.defaultfontlarge = (self.fontpattgen_name, self.fontpattgen_sizelarge)
@@ -298,6 +297,7 @@ class LEDColorTest(tk.Tk):
         #print(self.getConfigData("pos_x"), self.getConfigData("pos_y"))
         #print(self.getConfigData("win_height"), self.getConfigData("win_width"))
         self.window_height= self.getConfigData("win_height")
+        
         if self.window_height<500:
             self.window_height=1080
         self.window_width = self.getConfigData("win_width")
@@ -457,6 +457,7 @@ class LEDColorTest(tk.Tk):
         self.showFramebyName(startpagename)
         
         filedir = self.mainfile_dir # os.path.dirname(os.path.realpath(__file__))
+        self.update()
         for wb in P01.Workbooks:
             wb.init_workbook()
             if self.getConfigData("AutoLoadWorkbooks"):
@@ -2709,6 +2710,7 @@ def main_entry():
     parser = argparse.ArgumentParser(description='Generate MLL Programs') #,exit_on_error=False) seems to create a problem in some python versions
     parser.add_argument('--loglevel',choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"],help="Logginglevel to be printed into the logfile")
     parser.add_argument('--logfile',help="Logfilename")
+    parser.add_argument('--loaddatafile',choices=["True","False"],help="if <False> the last saved data will no be loaded")
     parser.add_argument('--startpage',choices=['StartPage', 'ColorCheckPage', 'Prog_GeneratorPage', 'SoundCheckPage', 'DCCKeyboardPage', 'ServoTestPage', 'Z21MonitorPage', 'SerialMonitorPage', 'ARDUINOMonitorPage', 'ConfigurationPage'],help="Name of the first page shown after start")
     parser.add_argument('--port',help="Name of the port where the ARDUINO is connected to")
     parser.add_argument('--z21simulator',choices=["True","False"],help="if <True> the Z21simulator will be started automatically")
@@ -2789,6 +2791,11 @@ def main_entry():
         if (args.caller == "SetColTab"):
             COMMAND_LINE_ARG_DICT["caller"]= "SetColTab"
             COMMAND_LINE_ARG_DICT["startpagename"]='ColorCheckPage'
+            
+    if args.loaddatafile:
+        COMMAND_LINE_ARG_DICT["loaddatafile"]=args.loaddatafile
+    else:
+        COMMAND_LINE_ARG_DICT["loaddatafile"]=True
         
     # check if colortest only is needed
     try: #check if a COLORTESTONLY_FILE is in the main Dir 
@@ -2806,7 +2813,7 @@ def main_entry():
         
     logger.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
     
-    app = LEDColorTest()
+    app = pyMobaLedLibapp()
     
     app.setroot(app)
     
