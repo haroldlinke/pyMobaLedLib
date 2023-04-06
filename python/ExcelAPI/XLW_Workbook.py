@@ -416,6 +416,7 @@ __VK_RETURN = 0xD
 __VK_ESCAPE = 0x1B
 __VK_CONTROL = 0x11
 __VK_SHIFT = 0x10
+VK_SHIFT = 0x10
 
 def GetAsyncKeyState(key):
     
@@ -465,6 +466,12 @@ class CWorkbook(object):
             self.controller = global_controller
         else:
             self.controller = controller
+            
+        self.controller.bind("<KeyPress-Shift_L>", self.shift_press)
+        self.controller.bind("<KeyPress-Shift_R>", self.shift_press)
+        self.controller.bind("<KeyRelease-Shift_L>", self.shift_release)
+        self.controller.bind("<KeyRelease-Shift_R>", self.shift_release)        
+ 
 
         if workbookName:
             self.Name = workbookName
@@ -528,6 +535,16 @@ class CWorkbook(object):
         self.InitWorkbookFunction=None
         Worksheets = self.sheets
         self.open()
+        
+    def shift_press(self,event):
+        global shift_key
+        print("Shift press")
+        shift_key=True
+    
+    def shift_release(sekf,event):
+        global shift_key
+        print("Shift release") 
+        shift_key=False
         
     def init_workbook(self):
         set_activeworkbook(self)
@@ -724,9 +741,17 @@ class CWorkbook(object):
         return
     
     def LoadWorkbook(self,filename):
+        if shift_key:
+            logging.debug("Load Workbook: Shift Key pressed:"+filename+" not loaded")
+            return
+        if not self.controller.loaddatafile:
+            logging.debug("Load Workbook: arg loaddatafile=False - "+filename+" not loaded")
+            return            
+            
         fd=open(filename,'rb')
         try:
             savedData = pickle.load(fd)
+            logging.debug("Load Workbook:"+filename)
             logging.debug("FileVersion:"+savedData["Version"])
             workbookdata= savedData["Workbookdata"]
             for sheetname in workbookdata.keys():
@@ -1823,7 +1848,7 @@ class CRange(str):
         #self.Columns = []
         #self.Cells = CCells(self.rowrange,self.colrange,ws=ws)
         obj.CountLarge = (obj.end[0]-obj.start[0]+1)*(obj.end[1]-obj.start[1]+1)
-        obj.Font = obj.Parent.default_font
+        obj.Font = CFont(obj.Parent.default_font[0],obj.Parent.default_font[1])
         obj.default_font = obj.Parent.default_font
 
         return obj
@@ -2497,7 +2522,7 @@ class CRow(object):
             for row in self.Rowrange:
                 self._set_hiderow(row,newval)
         else:
-            self._set_hiderow(self.Row,newval)    
+            self._set_hiderow(self.Row,newval)
     
     def get_Hidden(self):
         return self.Row-1 in ActiveSheet.table.model.hiderowslist
@@ -2510,10 +2535,10 @@ class CRow(object):
             for row in self.Rowrange:
                 self._set_rowheight(row,newval)
         else:
-            self._set_rowheight(self.Row,newval)    
+            self._set_rowheight(self.Row,newval)
     
     def get_RowHeight(self):
-        rowheight = ActiveSheet.table.model.rowheightlist.get(self.Row-1,12)
+        rowheight = ActiveSheet.table.model.rowheightlist.get(self.Row-1,ActiveSheet.table.model.default_rowheight)
         rowheight = int(rowheight/xlvp2py_guifactor)
         return rowheight
         

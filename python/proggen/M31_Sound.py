@@ -157,7 +157,7 @@ def __Test_BeepThis1():
     #BeepThis2 "Default"
     #BeepThis2 "Asterisk"
     #BeepThis2 "Fax"
-    BeepThis2()('Windows Information Bar.wav', VBGetMissingArgument(BeepThis2(), 1), VBGetMissingArgument(BeepThis2(), 2), True)
+    BeepThis2('Windows Information Bar.wav', VBGetMissingArgument(BeepThis2(), 1), VBGetMissingArgument(BeepThis2(), 2), True)
 
 # VB2PY (UntranslatedCode) Option Explicit
 # VB2PY (UntranslatedCode) Public Declare PtrSafe Function PlaySound Lib "winmm.dll" Alias "PlaySoundA" (ByVal lpszName As String, ByVal hModule As LongPtr, ByVal dwFlags As Long) As Long

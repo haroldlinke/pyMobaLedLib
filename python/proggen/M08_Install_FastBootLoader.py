@@ -243,7 +243,7 @@ def Install_FastBootloader():
         if not __Install_ArduinoISP_to_Right_Arduino():
             return
         while 1:
-            __Write_Bootloader()()
+            __Write_Bootloader()
             if not (P01.MsgBox(M09.Get_Language_Str('Installation des Bootloaders abgeschlossen' + vbCr + vbCr + 'Soll der Bootloader auf einen weiteren Arduino geladen werden?' + vbCr + vbCr + 'Wenn ja, dann muss dieser jetzt in den linken Steckplatz gesteckt werden.' + vbCr + 'Mit \'Nein\' wird wieder das DCC/Selectrix Programm auf den rechten Nano installiert.' + vbCr + vbCr + 'Achtung der rechte Arduino darf nicht entfernt werden!'), vbYesNo + vbDefaultButton2, M09.Get_Language_Str('Noch einen Arduino aktualisieren?')) == vbYes):
                 break
         M08.Compile_and_Upload_Prog_to_Right_Arduino()

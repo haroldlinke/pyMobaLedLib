@@ -531,7 +531,7 @@ def __Change_Comport_in_ConfigFile(ComNr):
 
 def __Test_Change_Comport_in_ConfigFile():
     #UT--------------------------------------------
-    __Change_Comport_in_ConfigFile()(4)
+    __Change_Comport_in_ConfigFile(4)
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ColTab - ByRef 
 def __Read_ColTab_from_Config_File():
@@ -581,7 +581,7 @@ def __Read_ColTab_from_palette(palette):
 def __Test_Read_ColTab_from_Config_File():
     ColTab = vbObjectInitialize((__COLTAB_SIZE,), RGB_T)
     #UT--------------------------------------------
-    __Read_ColTab_from_Config_File()(ColTab)
+    __Read_ColTab_from_Config_File(ColTab)
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ColTab - ByRef 
 def __ColTab_to_C_String(ColTab):
@@ -637,7 +637,7 @@ def __ColTab_to_C_String(ColTab):
 def __TestColTab_to_C_String():
     ColTab = vbObjectInitialize((__COLTAB_SIZE,), RGB_T)
     #UT---------------------------------
-    __Read_ColTab_from_Config_File()(ColTab)
+    __Read_ColTab_from_Config_File(ColTab)
     Debug.Print(__ColTab_to_C_String(ColTab))
     #ActiveCell = ColTab_to_C_String(ColTab)
 
@@ -665,9 +665,9 @@ def __Test_C_String_to_ColTab():
 
     C_Str = String()
     #UT----------------------------------
-    __Read_ColTab_from_Config_File()(ColTab)
+    __Read_ColTab_from_Config_File(ColTab)
     C_Str = __ColTab_to_C_String(ColTab)
-    __C_String_to_ColTab()(C_Str, ColTab)
+    __C_String_to_ColTab(C_Str, ColTab)
     #ColTab(1).g = 212 ' Simulate an error
     Debug.Print('Vergleich: ' +  ( C_Str == __ColTab_to_C_String(ColTab) ))
     
@@ -818,7 +818,7 @@ def Open_MobaLedCheckColors(Callback, Dest_Sheet="", Dest_Row=-1):
         __Delete_ColTest_Only_File()
         if InStr(P01.Cells(Dest_Row, M25.Config__Col), 'Set_ColTab') > 0:
             ColTab = __C_String_to_ColTab(P01.Cells(Dest_Row, M25.Config__Col))
-            #*HL __Insert_ColTab_to_ConfigFile()(ColTab)
+            #*HL __Insert_ColTab_to_ConfigFile(ColTab)
             # Moved up
             # ATTENTION: This Message box is necessary to generate the delay which prevents the CheckColor
             #            program to be closed by the "Close" File which has been written above

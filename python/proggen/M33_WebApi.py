@@ -91,9 +91,9 @@ def __ParseJSON(json , Key='obj'):
     __token = __Tokenize(json)
     __dic = {}
     if __token(__p) == '{':
-        __ParseObj()(Key)
+        __ParseObj(Key)
     else:
-        __ParseArr()(Key)
+        __ParseArr(Key)
     fn_return_value = __dic
     return fn_return_value
 
@@ -104,7 +104,7 @@ def __ParseObj(Key):
     if (select_0 == ']'):
         pass
     elif (select_0 == '['):
-        __ParseArr()(Key)
+        __ParseArr(Key)
     elif (select_0 == '{'):
         if __token(__p + 1) == '}':
             __p = __p + 1
@@ -132,7 +132,7 @@ def __ParseArr(Key):
     if (select_1 == '}'):
         pass
     elif (select_1 == '{'):
-        __ParseObj()(Key + ArrayID(e))
+        __ParseObj(Key + ArrayID(e))
     elif (select_1 == '['):
         fn_return_value(Key)
     elif (select_1 == ']'):

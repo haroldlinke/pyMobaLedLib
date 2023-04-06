@@ -653,7 +653,7 @@ def __Add_Cx_to_DstVars(Org_Macro, Line, Cnt, r):
             return _ret
         EndNr = StartNr + Cnt - 1
         for i in vbForRange(StartNr, EndNr):
-            if Add_Variable_to_DstVar_List(Left(Arg1, TxtLen) + i) == False:
+            if Add_Variable_to_DstVar_List(Left(Arg1, TxtLen) + str(i)) == False:
                 return _ret
         _ret = True
     return _ret

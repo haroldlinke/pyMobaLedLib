@@ -58,7 +58,7 @@
 
 
 
-PROG_VERSION ="4.0.12 02.04.2023"
+PROG_VERSION ="4.0.14 06.04.2023"
 
 DEBUG = False
 
@@ -559,6 +559,8 @@ DEFAULT_CONFIG = {
                     "lastLed": 0,
                     "pos_x": 10,
                     "pos_y": 10,
+                    "win_height": 1080,
+                    "win_width" : 1920,
                     "colorview": 1,
                     "startpage": -1,
                     "startpagename" : "StartPage",
@@ -620,6 +622,10 @@ DEFAULT_CONFIG = {
                     "FontLabel": "8",
                     "FontSpinbox": "8",
                     "FontScale" : "8",
+                    "FontName": "Arial",
+                    "FontNormal": 11,
+                    "FontLarge" : 14,
+                    "FontSmall" : 8,
                     "RMbusTimer": "0",
                     "ShowProgramGenerator": 1,
                     "ShowPatternGenerator": 0,

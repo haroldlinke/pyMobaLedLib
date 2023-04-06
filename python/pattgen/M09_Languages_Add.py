@@ -305,7 +305,7 @@ def Add_All_VBA_Strings_to_the_Languages_Sheet():
                     Skipped = Skipped + Res + vbCr
                 else:
                     Debug.Print('File: ' + Res)
-                    Process_File()(PG.ThisWorkbook.Path + SrcDir + Res)
+                    Process_File(PG.ThisWorkbook.Path + SrcDir + Res)
                     Cnt = Cnt + 1
                 Res = Dir()
                 # Mit Excel für Mac 2016 wird der ursprüngliche Dir-Funktionsaufruf erfolgreich ausgeführt. Nachfolgende Aufrufe zum Durchlaufen des angegebenen Verzeichnisses führen jedoch zu einem Fehler. Dies ist leider ein bekanntes Problem.

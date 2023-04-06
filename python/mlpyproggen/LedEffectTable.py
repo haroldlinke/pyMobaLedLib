@@ -91,7 +91,7 @@ class RightClickMenu(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.create_right_click_menu()       
+        self.create_right_click_menu()
 
     def create_right_click_menu(self):
         self.right_click_menu = tk.Menu(self.master, tearoff=0, relief='sunken')

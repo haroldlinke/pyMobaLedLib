@@ -59,7 +59,7 @@ def ClipBoard_SetData(sPutToClip):
 
 def Test_ClipBoard_SetData():
     #UT---------------------------------
-    ClipBoard_SetData()('Hallo Armin')
+    ClipBoard_SetData('Hallo Armin')
 
 # VB2PY (UntranslatedCode) Option Explicit
 # VB2PY (UntranslatedCode) Declare PtrSafe Function GlobalUnlock Lib "kernel32" (ByVal hMem As LongPtr) As LongPtr

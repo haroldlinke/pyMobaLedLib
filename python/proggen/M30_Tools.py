@@ -190,7 +190,7 @@ def LastUsedColumnInRow(Sh, Row):
     return fn_return_value
 
 def LastUsedColumnIn(Sheet):
-    Sh:P01.CWorksheet = Variant()
+    #Sh:P01.CWorksheet = Variant()
     #--------------------------------------------------
     if P01.VarType(Sheet) == vbString:
         Sh = P01.Sheets(Sheet)
@@ -1427,14 +1427,14 @@ def Test_Get_Platform_String():
     #   false       false
     #   intGood         -22
     #   intBad          a44
-    Get_Platform_String()(r'ESP32', r'SPI_Pins')
-    Get_Platform_Bool()(r'AM328', r'TRUE')
-    Get_Platform_Bool()(r'AM328', r'TRue')
-    Get_Platform_Bool()(r'AM328', r'false')
-    Get_Platform_Bool()(r'AM328', r'0')
-    Get_Platform_Bool()(r'AM328', r'1')
-    Get_Platform_Int()(r'PICO', r'intGood')
-    Get_Platform_Int()(r'PICO', r'intBad')
+    Get_Platform_String(r'ESP32', r'SPI_Pins')
+    Get_Platform_Bool(r'AM328', r'TRUE')
+    Get_Platform_Bool(r'AM328', r'TRue')
+    Get_Platform_Bool(r'AM328', r'false')
+    Get_Platform_Bool(r'AM328', r'0')
+    Get_Platform_Bool(r'AM328', r'1')
+    Get_Platform_Int(r'PICO', r'intGood')
+    Get_Platform_Int(r'PICO', r'intBad')
 
 def Get_Act_ms():
     
