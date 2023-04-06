@@ -325,7 +325,7 @@ def Show_Hide_Column_in_all_Sheets(Show, ColName):
                 else:
                     P01.MsgBox('Unknown ColName: \'' + ColName + '\'', vbCritical, 'Internal Error')
                     Stop()
-                __Show_Hide_Column_in_Sheet()(Show, Col, Sh)
+                __Show_Hide_Column_in_Sheet(Show, Col, Sh)
 
 # VB2PY (UntranslatedCode) Option Explicit
 

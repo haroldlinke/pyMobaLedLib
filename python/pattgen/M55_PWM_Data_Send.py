@@ -608,7 +608,7 @@ def Open_Port_With_Error_Msg_and_get_LastLED(PortId):
     if LastLEDNr <= 0:
         X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Fehler: Auf dem Arduino ist nicht das richtige Programm installiert.' + vbCr + 'Der Arduino muss mit dem Excel Programm \'Prog_Generator\' konfiguriert werden.' + 'Dabei muss der \'LED Farbtest Mode\' im \'Config\' Blatt aktiviert sein.' + vbCr + vbCr + 'Meldung von Arduino:') + vbCr + BootMsg, vbCritical, pattgen.M09_Language.Get_Language_Str('Falsches Programm auf dem Arduino installiert'))
         GoTo(ErrorHand)
-    Write_Com()(PortId, '#L 0 0 0 0 FFFF' + vbLf)
+    Write_Com(PortId, '#L 0 0 0 0 FFFF' + vbLf)
     _fn_return_value = LastLEDNr
     Percent_Msg_UserForm.Hide()
     return _fn_return_value

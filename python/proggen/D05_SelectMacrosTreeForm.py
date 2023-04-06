@@ -652,17 +652,17 @@ class SelectMacrosTreeform:
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: KeyAscii - ByVal 
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Shift - ByVal 
     def __Expert_CheckBox_KeyUp(KeyAscii, Shift):
-        __Send_Letters_to_TextBoxFilter()(KeyAscii, Shift)
+        __Send_Letters_to_TextBoxFilter(KeyAscii, Shift)
     
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: KeyAscii - ByVal 
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Shift - ByVal 
     def __Abort_Button_KeyUp(KeyAscii, Shift):
-        __Send_Letters_to_TextBoxFilter()(KeyAscii, Shift)
+        __Send_Letters_to_TextBoxFilter(KeyAscii, Shift)
     
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: KeyAscii - ByVal 
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Shift - ByVal 
     def __Select_Button_KeyUp(KeyAscii, Shift):
-        __Send_Letters_to_TextBoxFilter()(KeyAscii, Shift)
+        __Send_Letters_to_TextBoxFilter(KeyAscii, Shift)
     
     def Calc_SelectMacro_Res(self):
         Res = String()
@@ -704,13 +704,13 @@ class SelectMacrosTreeform:
     def __Expert_CheckBox_Click():
         #----------------------------------
         if not __InitializeTreeFrom_Activ:
-            __InitializeTreeFrom_Lib_Macros_Sheet()(TextBoxFilter.Value)
+            __InitializeTreeFrom_Lib_Macros_Sheet(TextBoxFilter.Value)
             M28.Set_String_Config_Var('Expert_Mode_aktivate', IIf(Expert_CheckBox, '1', '0'))
     
     def Update_TextBoxFilter():
         #---------------------------------
         if not __InitializeTreeFrom_Activ:
-            __InitializeTreeFrom_Lib_Macros_Sheet()(TextBoxFilter.Value)
+            __InitializeTreeFrom_Lib_Macros_Sheet(TextBoxFilter.Value)
     
     def __TextBoxFilter_Change():
         #---------------------------------

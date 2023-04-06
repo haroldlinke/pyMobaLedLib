@@ -109,11 +109,11 @@ def ListBox_Change():
                 #'            If Txt <> "" Then
                 #'                  Description = Description & Txt & vbCr
                 #'            Else
-                Description = Description + SrcSh.Cells(Row, pattgen.M14_Select_GotoAct.SM_ShrtD_COL) + vbCr
+                Description = Description + str(SrcSh.Cells(Row, pattgen.M14_Select_GotoAct.SM_ShrtD_COL)) + vbCr
                 #'            End If
                 #'            Detail = Detail & Replace_Double_Space(SrcSh.Cells(Row, SM_Macro_COL)) & vbCr
                 # Show one or more selected details
-        SelectedCnt_Label = 'Selected: ' + Cnt
+        SelectedCnt_Label = 'Selected: ' + str(Cnt)
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Cancel - ByVal 
 def ListBox_DblClick(Cancel):

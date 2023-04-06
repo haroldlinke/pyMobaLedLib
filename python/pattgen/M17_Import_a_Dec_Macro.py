@@ -80,7 +80,7 @@ def Test_Decode_Pattern_String():
     #Decode_Pattern_String_and_Compare "PatternT1(LED,128,SI_1,6,5,128,0,PM_PINGPONG,1 Sek,129,64,32,16,8)"
     #Decode_Pattern_String_and_Compare "PatternT1(LED,196,SI_1,5,5,128,0,PM_PINGPONG,1 Sek,3,48,0,3,48,0,3)"
     #Decode_Pattern_String_and_Compare "PatternT1(0,168,SI_1,5,5,128,0,PM_PINGPONG,1 Sek,7,0,28,0,112,0,192,1,0,7)     // Wechselblinker"
-    Decode_Pattern_String_and_Compare()('PatternT1(0,96,SI_1,1,0,255,0,PM_SEQUENZ_NO_RESTART,240,213,221,85,232,34,142,35,14,168,162,163,139,43,10)     // Morsecode')
+    Decode_Pattern_String_and_Compare('PatternT1(0,96,SI_1,1,0,255,0,PM_SEQUENZ_NO_RESTART,240,213,221,85,232,34,142,35,14,168,162,163,139,43,10)     // Morsecode')
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: a - ByRef 
 def isInitialised(a):

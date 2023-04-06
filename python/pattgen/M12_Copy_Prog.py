@@ -141,7 +141,7 @@ def Copy_Prog_If_in_LibDir():
     # 14.06.20: Copy also the second program
     if not FileCopy_with_Check(FullDestDir, M01.SECOND_PROG + '.xlsm'):
         return _fn_return_value
-    CreateDesktopShortcut()(M01.SECOND_LINK, FullDestDir + M01.SECOND_PROG + '.xlsm', M01.SECOND_ICON)
+    CreateDesktopShortcut(M01.SECOND_LINK, FullDestDir + M01.SECOND_PROG + '.xlsm', M01.SECOND_ICON)
     # 14.06.20: Create Link to the second programm
     ProgName = FullDestDir + PG.ThisWorkbook.Name
     if not Copy_File_With_new_Name_If_Exists(ProgName):
@@ -158,7 +158,7 @@ def Copy_Prog_If_in_LibDir():
         X02.MsgBox(CopyMsg + pattgen.M09_Language.Get_Language_Str('In Zukunft kann das Programm über den Link') + vbCr + '   ' + Split(M01.DSKLINKNAME, ' ')(0) + vbCr + '   ' + Split(M01.DSKLINKNAME, ' ')(1) + vbCr + pattgen.M09_Language.Get_Language_Str('auf dem Desktop gestartet werden'), vbInformation, pattgen.M09_Language.Get_Language_Str('Programm kopiert und Link auf Desktop erzeugt'))
     else:
         X02.MsgBox(CopyMsg + pattgen.M09_Language.Get_Language_Str('Beim Anlegen des Links gab es Probleme ;-(' + vbCr + 'Das Programm kann trotzdem von der oben angegebenen Position aus gestartet werden.'), vbInformation, pattgen.M09_Language.Get_Language_Str('Programm kopiert'))
-    CreateDesktopShortcut()('Wiki MobaLedLib', M01.WikiPg_Link, M01.WikiPg_Icon)
+    CreateDesktopShortcut('Wiki MobaLedLib', M01.WikiPg_Link, M01.WikiPg_Icon)
     # Create Link to the Wiki
     return _fn_return_value
     X02.Application.DisplayAlerts = True
@@ -167,11 +167,11 @@ def Copy_Prog_If_in_LibDir():
 
 def TestCreateDesktopShortcut():
     #UT------------------------------------
-    CreateDesktopShortcut()('Aber Hallo3', PG.ThisWorkbook.FullName)
+    CreateDesktopShortcut('Aber Hallo3', PG.ThisWorkbook.FullName)
 
 def TestCreateWikiDesktopShortcut():
     #UT----------------------------------------
-    CreateDesktopShortcut()('Wiki MobaLedLib', M01.WikiPg_Link, M01.WikiPg_Icon)
+    CreateDesktopShortcut('Wiki MobaLedLib', M01.WikiPg_Link, M01.WikiPg_Icon)
 
 def CreateDesktopShortcut(LinkName, BookFullName, IconName=M01.DefaultIcon):
     _fn_return_value = None

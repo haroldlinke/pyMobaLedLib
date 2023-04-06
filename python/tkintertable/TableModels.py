@@ -115,6 +115,7 @@ class TableModel(object):
         self.nodisplay = []
         self.hiderowslist = []
         self.rowheightlist = {}
+        self.default_rowheight = 12
         self.ColumnAlignment = {}
         self.protected_cells = [] #*HL  list of cells that are not editable ("*",col) and (row,"*") for rows and columns
         self.shapelist = [] #*HL list of shapes

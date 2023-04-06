@@ -49,7 +49,7 @@ import ExcelAPI.XLW_Workbook as P01
 
 def __TestCreateDesktopShortcut():
     #UT------------------------------------
-    CreateDesktopShortcut()('Aber Hallo', PG.ThisWorkbook.Name, 'mll_platine_ausschnitt3_icon.ico')
+    CreateDesktopShortcut('Aber Hallo', PG.ThisWorkbook.Name, 'mll_platine_ausschnitt3_icon.ico')
 
 def CreateDesktopShortcut(LinkName, BookFullName, IconName):
     return True #*HL

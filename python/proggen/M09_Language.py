@@ -297,7 +297,7 @@ def __Test_Update_Language_in_Sheet():
     OldUpdate = P01.Application.ScreenUpdating
     P01.Application.EnableEvents = False
     P01.Application.ScreenUpdating = False
-    __Update_Language_in_Sheet()(P01.ActiveSheet, - 1)
+    __Update_Language_in_Sheet(P01.ActiveSheet, - 1)
     P01.Application.EnableEvents = OldEvents
     P01.Application.ScreenUpdating = OldUpdate
 
@@ -416,7 +416,7 @@ def __Update_Language_in_All_Sheets():
                     Translate_Example_Texts_in_Sheet(Sh)
             __Activate_Language_in_Example_Sheet(Sh)
     ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-    __Update_Language_in_Config_Sheet()(DestLang)
+    __Update_Language_in_Config_Sheet(DestLang)
     M27.Update_Language_Name_Column_in_all_Sheets()
     #*HL U01.Unload(StatusMsg_UserForm)
     if not OldSheet is None:

@@ -241,7 +241,7 @@ def Test_Update_Language_in_Sheet():
     OldUpdate = X02.Application.ScreenUpdating
     X02.Application.EnableEvents = False
     X02.Application.ScreenUpdating = False
-    Update_Language_in_Sheet()(X02.ActiveSheet, - 1)
+    Update_Language_in_Sheet(X02.ActiveSheet, - 1)
     X02.Application.EnableEvents = OldEvents
     X02.Application.ScreenUpdating = OldUpdate
 

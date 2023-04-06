@@ -247,7 +247,7 @@ def Write_Fuses(ComPort, Mode, DstDir):
 
 def Test_Write_Fuses_if_Wanted():
     #UT-------------------------------------
-    Write_Fuses()('\\\\.\\COM7', '16MHz, BOD 2.7V', Replace(PG.ThisWorkbook.Path, 'extras', 'examples\\80.Modules\\02.CharlieplexTiny\\'))
+    Write_Fuses('\\\\.\\COM7', '16MHz, BOD 2.7V', Replace(PG.ThisWorkbook.Path, 'extras', 'examples\\80.Modules\\02.CharlieplexTiny\\'))
     # Write_Fuses "\\.\COM7", " 8MHz, BOD 2.7V", Replace(ThisWorkbook.Path, "extras", "examples\80.Modules\02.CharlieplexTiny\")
 
 def Compile_and_Upload(SrcDir, InoName, CommandStr, ResFile):

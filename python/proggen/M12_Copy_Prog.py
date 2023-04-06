@@ -223,7 +223,7 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
         # 14.06.20: Copy also the second program
     if not FileCopy_with_Check(FullDestDir, M02.SECOND_PROG + '.xlsm'):
         return fn_return_value
-    CreateDesktopShortcut()(M02.SECOND_LINK, FullDestDir + M02.SECOND_PROG + '.xlsm', M02.SECOND_ICON)
+    CreateDesktopShortcut(M02.SECOND_LINK, FullDestDir + M02.SECOND_PROG + '.xlsm', M02.SECOND_ICON)
     ProgName = FullDestDir + PG.ThisWorkbook.Name
     if not __Copy_File_With_new_Name_If_Exists(ProgName, DidCopy):
         return fn_return_value
@@ -239,7 +239,7 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
         P01.MsgBox(CopyMsg + M09.Get_Language_Str('In Zukunft kann das Programm über den Link') + vbCr + '   ' + Split(M02.DSKLINKNAME, ' ')(0) + vbCr + '   ' + Split(M02.DSKLINKNAME, ' ')(1) + vbCr + M09.Get_Language_Str('auf dem Desktop gestartet werden'), vbInformation, M09.Get_Language_Str('Programm kopiert und Link auf Desktop erzeugt'))
     else:
         P01.MsgBox(CopyMsg + M09.Get_Language_Str('Beim Anlegen des Links gab es Probleme ;-(' + vbCr + 'Das Programm kann trotzdem von der oben angegebenen Position aus gestartet werden.'), vbInformation, M09.Get_Language_Str('Programm kopiert'))
-    CreateDesktopShortcut()('Wiki MobaLedLib', M02.WikiPg_Link, M02.WikiPg_Icon)
+    CreateDesktopShortcut('Wiki MobaLedLib', M02.WikiPg_Link, M02.WikiPg_Icon)
     return fn_return_value
     P01.Application.DisplayAlerts = True
     P01.MsgBox(M09.Get_Language_Str('Fehler beim Speichern des Programms im Verzeichnis:') + vbCr + '  \'' + M30.FilePath(ProgName) + '\'', vbCritical, M09.Get_Language_Str('Fehler beim Speichen des Excel Programms'))
@@ -247,11 +247,11 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
 
 def __TestCreateDesktopShortcut():
     #UT------------------------------------
-    CreateDesktopShortcut()('Aber Hallo3', PG.ThisWorkbook.FullName)
+    CreateDesktopShortcut('Aber Hallo3', PG.ThisWorkbook.FullName)
 
 def __TestCreateWikiDesktopShortcut():
     #UT----------------------------------------
-    CreateDesktopShortcut()('Wiki MobaLedLib', M02.WikiPg_Link, M02.WikiPg_Icon)
+    CreateDesktopShortcut('Wiki MobaLedLib', M02.WikiPg_Link, M02.WikiPg_Icon)
 
 def CreateDesktopShortcut(LinkName, BookFullName, IconName=M02.DefaultIcon):
     Debug.Print("CreateDesktopShortcut not implemented: %s", LinkName)

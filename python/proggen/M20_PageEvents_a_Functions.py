@@ -492,7 +492,7 @@ def AutofilterAllColumns(EndRow):
 def Correct_Autofilter():
     #-------------------------------
     # Call this manualy in case the filter is corrupted
-    AutofilterAllColumns()(M30.LastUsedRow())
+    AutofilterAllColumns(M30.LastUsedRow())
 
 def Clear_Formula_Errors():
     return #*HL
