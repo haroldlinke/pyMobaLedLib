@@ -61,8 +61,8 @@ from mlpyproggen.ConfigurationPage import ConfigurationPage
 from mlpyproggen.ARDUINOConfigPage import ARDUINOConfigPage
 from mlpyproggen.SerialMonitorPage import SerialMonitorPage, SerialThread
 from mlpyproggen.ColorCheckPage import ColorCheckPage
-from mlpyproggen.EffectTestPage import EffectTestPage
-from mlpyproggen.EffectMacroPage import EffectMacroPage
+#from mlpyproggen.EffectTestPage import EffectTestPage
+#from mlpyproggen.EffectMacroPage import EffectMacroPage
 from mlpyproggen.DCC_KeyboardPage import DCCKeyboardPage
 from proggen.Prog_Generator import Prog_GeneratorPage
 from pattgen.Pattern_Generator import Pattern_GeneratorPage
@@ -70,12 +70,12 @@ from mlpyproggen.ServoTestPage import ServoTestPage
 from mlpyproggen.Z21MonitorPage import Z21MonitorPage
 from mlpyproggen.ARDUINOMonitorPage import ARDUINOMonitorPage
 from mlpyproggen.StartPage import StartPage
-from mlpyproggen.LEDListPage import LEDListPage
+#from mlpyproggen.LEDListPage import LEDListPage
 from mlpyproggen.SoundCheckPage import SoundCheckPage
 from mlpyproggen.tooltip import Tooltip
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PALETTE, DEFAULT_PARAM, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, SIZEFACTOR,\
 PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1, SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ,DEBUG
-from mlpyproggen.LedEffectTable import ledeffecttable_class
+#from mlpyproggen.LedEffectTable import ledeffecttable_class
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,ScrolledFrame,HorizontalScrolledFrame
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
@@ -148,7 +148,7 @@ tabClassList_all = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, Color
 tabClassList_all_patterngen = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_mll_only = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_SetColTab = (ColorCheckPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, EffectTestPage, EffectMacroPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
 
 #tabClassList_all = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
@@ -197,34 +197,34 @@ class pyMobaLedLibapp(tk.Tk):
         self.readConfigData()
         self.ARDUINO_current_portname = ""
         self.ARDUINO_status = ""
-        self.ledtable = {"000": "#FFFFFF"}
-        self.init_ledgrouptable = {
-                                "Gruppenname": {
-                                    "Name": "Gruppenname",
-                                    "params": {
-                                        "Group_Name": "Gruppenname",
-                                        "Group_Colour": "#FFFFFF",
-                                        "Group_Distributor": "",
-                                        "Group_Connector": "",
-                                        "Group_Comment": ""
-                                    }
-                                },
-                                "Gruppenname2": {
-                                    "Name": "Gruppenname",
-                                    "params": {
-                                        "Group_Name": "Gruppenname2",
-                                        "Group_Colour": "#FFFF00",
-                                        "Group_Distributor": "",
-                                        "Group_Connector": "",
-                                        "Group_Comment": ""
-                                    }
-                                }                                
-                            }        
-        self.ledeffecttable = ledeffecttable_class(self.init_ledgrouptable, self)
-        self.ledeffecttable.init_ledeffecttable()
+        #self.ledtable = {"000": "#FFFFFF"}
+        #self.init_ledgrouptable = {
+        #                        "Gruppenname": {
+        #                            "Name": "Gruppenname",
+        #                            "params": {
+        #                                "Group_Name": "Gruppenname",
+        #                                "Group_Colour": "#FFFFFF",
+        #                                "Group_Distributor": "",
+        #                                "Group_Connector": "",
+        #                                "Group_Comment": ""
+        #                            }
+        #                        },
+        #                        "Gruppenname2": {
+        #                            "Name": "Gruppenname",
+        #                            "params": {
+        #                                "Group_Name": "Gruppenname2",
+        #                                "Group_Colour": "#FFFF00",
+        #                                "Group_Distributor": "",
+        #                                "Group_Connector": "",
+        #                                "Group_Comment": ""
+        #                            }
+        #                        }                                
+        #                    }        
+        #self.ledeffecttable = ledeffecttable_class(self.init_ledgrouptable, self)
+        #self.ledeffecttable.init_ledeffecttable()
         self.colorpalette = {}
         self.macroparams_value = {}
-        self.ledeffect_label_list = {}
+        #self.ledeffect_label_list = {}
         self.macroparams_var = {"dummy": {}}
         self.persistent_param_dict = {}
         self.macroparam_frame_dict = {}
@@ -622,14 +622,14 @@ class pyMobaLedLibapp(tk.Tk):
     def ExitProg_with_save(self):
         self.cancel_with_save()    
 
-    def saveLEDTabtoFile(self, filepath):
+    def xsaveLEDTabtoFile(self, filepath):
                
         temp_dict = {"ledeffecttable":self.ledeffecttable.get_table(),
                      "ledgrouptable" :self.ledeffecttable.mledgrouptable}
         
         saveDicttoFile(filepath, temp_dict)
 
-    def readLEDTabfromFile(self, filepath,tabselection=True):
+    def xreadLEDTabfromFile(self, filepath,tabselection=True):
         temp_dict = readDictFromFile(filepath)
         if temp_dict:
             temp_led_effect_table = temp_dict.get("ledeffecttable",{}) 
@@ -1231,25 +1231,25 @@ class pyMobaLedLibapp(tk.Tk):
         else:
             return self.getConfigData("maxLEDcount")
         
-    def init_ledeffecttable(self):
+    def xinit_ledeffecttable(self):
         self.ledeffecttable.init_ledeffecttable()
  
-    def init_ledeffecttable_entry(self,keystr):
+    def xinit_ledeffecttable_entry(self,keystr):
         self.ledeffecttable.init_entry(keystr)
         
-    def ledeffecttable_copy_leds(self,start_int,cnt_int,dest_int):
+    def xledeffecttable_copy_leds(self,start_int,cnt_int,dest_int):
         self.ledeffecttable.copy_leds(start_int,cnt_int,dest_int)
 
-    def ledeffecttable_init_entries(self,start_int,cnt_int):
+    def xledeffecttable_init_entries(self,start_int,cnt_int):
         self.ledeffecttable.init_entries(start_int,cnt_int)
             
-    def ledeffecttable_move_leds(self,start_int,cnt_int,dest_int):
+    def xledeffecttable_move_leds(self,start_int,cnt_int,dest_int):
         self.ledeffecttable.move_leds(start_int,cnt_int,dest_int)
         
-    def ledeffecttable_insert_leds(self,start_int,cnt_int):
+    def xledeffecttable_insert_leds(self,start_int,cnt_int):
         self.ledeffecttable.insert_leds(start_int,cnt_int)
 
-    def ledeffecttable_remove_leds(self,remove_start_int,cnt_int):
+    def xledeffecttable_remove_leds(self,remove_start_int,cnt_int):
         self.ledeffecttable.remove_leds(remove_start_int,cnt_int)
 
                 

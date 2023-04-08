@@ -142,7 +142,7 @@ def __Save_Sheet_to_pgf(fp, Sh):
         Sh.Select()
         Page_ID = P01.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)
         VBFiles.writeText(fp, __SheetID + vbTab, Page_ID + vbTab + Sh.Name, '\n')
-        if len(P01.Selection.Cells) > 1:
+        if P01.Selection.Cells.Count > 1:
             rng = P01.Selection
         else:
             rng = P01.Range(P01.Cells(M02.FirstDat_Row, 1), P01.Cells(M30.LastFilledRowIn_ChkAll(Sh), 1))
@@ -573,7 +573,7 @@ def Get_MyExampleDir():
     fn_return_value = None
     Dir = [] 
     #-------------------------------------------
-    Dir = Environ('USERPROFILE') + '/Documents/' + M02.MyExampleDir
+    Dir = Environ(M02.Env_USERPROFILE) + '/Documents/' + M02.MyExampleDir
     M30.CreateFolder(Dir + '/')
     fn_return_value = Dir
     return fn_return_value

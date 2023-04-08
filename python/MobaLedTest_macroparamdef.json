@@ -1,5 +1,5 @@
 {
-    "...": {
+    "x...": {
         "ParName": "...",
         "Cnt": "4",
         "Type": "Var",
@@ -8,39 +8,6 @@
         "Default": "",
         "Input Text": "",
         "Hint": "",
-        "Implementation comment": ""
-    },
-    "ADKey": {
-        "ParName": "ADKey",
-        "Cnt": "1",
-        "Type": "",
-        "Min": "0",
-        "Max": "255",
-        "Default": "255",
-        "Input Text": "\"Helligkeitswert\" ADKey",
-        "Hint": "Die Werte können mit dem Farbtest-Programm ermittelt werden.",
-        "Implementation comment": ""
-    },
-    "ADKey1": {
-        "ParName": "ADKey1",
-        "Cnt": "1",
-        "Type": "",
-        "Min": "0",
-        "Max": "255",
-        "Default": "255",
-        "Input Text": "\"Helligkeitswert\" ADKey1",
-        "Hint": "Die Werte können mit dem Farbtest-Programm ermittelt werden.",
-        "Implementation comment": ""
-    },
-    "ADKey2": {
-        "ParName": "ADKey2",
-        "Cnt": "1",
-        "Type": "",
-        "Min": "0",
-        "Max": "255",
-        "Default": "0",
-        "Input Text": "\"Helligkeitswert\" ADKey2",
-        "Hint": "Die Werte können mit dem Farbtest-Programm ermittelt werden.",
         "Implementation comment": ""
     },
     "ARDUINO Baudrate": {
@@ -230,7 +197,7 @@
         "Input Text": "Automatisch übernehmen",
         "Hint": "Daten des ARDUINO werden automatisch übernommen"
     },
-    "Act": {
+    "xAct": {
         "ParName": "Act",
         "Cnt": "2",
         "Type": "Time",
@@ -263,7 +230,7 @@
         "Input Text": "Workbooks automatisch laden",
         "Hint": "Beim Start werden die letzten Workbooks automatisch geladen"
     },
-    "BW_B": {
+    "xBW_B": {
         "ParName": "BW_B",
         "Cnt": "2",
         "Type": "",
@@ -274,7 +241,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "BW_G": {
+    "xBW_G": {
         "ParName": "BW_G",
         "Cnt": "2",
         "Type": "",
@@ -285,7 +252,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "BW_R": {
+    "xBW_R": {
         "ParName": "BW_R",
         "Cnt": "2",
         "Type": "",
@@ -307,7 +274,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "B_Max": {
+    "xB_Max": {
         "ParName": "B_Max",
         "Cnt": "2",
         "Type": "",
@@ -318,7 +285,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "B_Min": {
+    "xB_Min": {
         "ParName": "B_Min",
         "Cnt": "2",
         "Type": "",
@@ -329,7 +296,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "BinStates": {
+    "xBinStates": {
         "ParName": "BinStates",
         "Cnt": "1",
         "Type": "",
@@ -340,7 +307,7 @@
         "Hint": "Anzahl der vom Charlieplexing-Modul unterstützten Zustände (zwischen 2 und 11).",
         "Implementation comment": ""
     },
-    "Brightness": {
+    "xBrightness": {
         "ParName": "Brightness",
         "Cnt": "1",
         "Type": "",
@@ -417,7 +384,7 @@
         "Input Text": "RED",
         "Hint": "RED"
     },
-    "ColTab": {
+    "xColTab": {
         "ParName": "ColTab",
         "Cnt": "1",
         "Type": "ColTab",
@@ -453,7 +420,7 @@
         "Hint": "Ein oder mehrere Modes: CM_NORMAL, CF_INV_INPUT, CF_INV_ENABLE, CF_BINARY, CF_RESET_LONG, CF_UP_DOWN, CF_ROTATE, CF_PINGPONG, CF_SKIP0, CF_RANDOM, CF_LOCAL_VAR, CF_ONLY_LOCALVAR  getrennt über '|'",
         "Implementation comment": ""
     },
-    "Cx": {
+    "xCx": {
         "ParName": "Cx",
         "Cnt": "13",
         "Type": "CX",
@@ -528,7 +495,7 @@
         "Input Text": "DCC-Start",
         "Hint": "Start des DCC-Adressbereichs, den der ARDUINO abdecken soll"
     },
-    "DstVar": {
+    "xDstVar": {
         "ParName": "DstVar",
         "Cnt": "17",
         "Type": "Var",
@@ -540,7 +507,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "DstVar0": {
+    "xDstVar0": {
         "ParName": "DstVar0",
         "Cnt": "6",
         "Type": "Var",
@@ -552,7 +519,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "DstVar1": {
+    "xDstVar1": {
         "ParName": "DstVar1",
         "Cnt": "8",
         "Type": "Var",
@@ -564,7 +531,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "DstVarN": {
+    "xDstVarN": {
         "ParName": "DstVarN",
         "Cnt": "17",
         "Type": "Var",
@@ -576,7 +543,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "Duration": {
+    "xDuration": {
         "ParName": "Duration",
         "Cnt": "9",
         "Type": "Time",
@@ -587,7 +554,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "Enable": {
+    "xEnable": {
         "ParName": "Enable",
         "Cnt": "1",
         "Type": "Var",
@@ -598,7 +565,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "EnableCh": {
+    "xEnableCh": {
         "ParName": "EnableCh",
         "Cnt": "1",
         "Type": "Var",
@@ -610,7 +577,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "End": {
+    "xEnd": {
         "ParName": "End",
         "Cnt": "1",
         "Type": "",
@@ -795,7 +762,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "GlobVarNr": {
+    "xGlobVarNr": {
         "ParName": "GlobVarNr",
         "Cnt": "1",
         "Type": "Var",
@@ -806,7 +773,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "Group_Colour": {
+    "xGroup_Colour": {
         "ParName": "Group_Colour",
         "Cnt": "1",
         "Type": "Color",
@@ -817,7 +784,7 @@
         "Hint": "Farbe der Gruppe - direkt eingeben oder durch Anklicken des Farb-Buttons auswählen",
         "Implementation comment": ""
     },
-    "Group_Comment": {
+    "xGroup_Comment": {
         "ParName": "Group_Comment",
         "Cnt": "1",
         "Type": "BigEntry",
@@ -828,7 +795,7 @@
         "Hint": "Beliebige Beschreibung, z.B. rotes Haus am Hang links",
         "Implementation comment": ""
     },
-    "Group_Connector": {
+    "xGroup_Connector": {
         "ParName": "Group_Connector",
         "Cnt": "1",
         "Type": "String",
@@ -839,7 +806,7 @@
         "Hint": "Bezeichnung des Anschlusses, an dem die Gruppe angeschlossen ist",
         "Implementation comment": ""
     },
-    "Group_Distributor": {
+    "xGroup_Distributor": {
         "ParName": "Group_Distributor",
         "Cnt": "1",
         "Type": "String",
@@ -850,7 +817,7 @@
         "Hint": "Bezeichnung des Verteilers, an dem die Gruppe angeschlossen ist",
         "Implementation comment": ""
     },
-    "Group_Name": {
+    "xGroup_Name": {
         "ParName": "Group_Name",
         "Cnt": "1",
         "Type": "GroupCombo",
@@ -861,7 +828,7 @@
         "Hint": "Bezeichnung der Gruppe - Auswahl aus Liste oder neuen Namen eingeben und <übernehmen> anklicken",
         "Implementation comment": ""
     },
-    "ImportLEDcnt": {
+    "xImportLEDcnt": {
         "ParName": "ImportLEDcnt",
         "Cnt": "1",
         "SingleLEDCnt":"1",
@@ -873,7 +840,7 @@
         "Hint": "Anzahl der LEDs, die das Makro verwendet",
         "Implementation comment": ""
     },
-    "ImportString": {
+    "xImportString": {
         "ParName": "ImportString",
         "Type": "Text",
         "Min": "1",
@@ -883,7 +850,7 @@
         "Hint": "Mit diesem Makro ist es möglich, ein Macro direkt vom Excel-ProgGen einzufügen.",
         "Implementation comment": ""
     },
-    "TemplateString": {
+    "xTemplateString": {
         "ParName": "TemplateString",
         "Type": "Text",
         "Min": "1",
@@ -894,7 +861,7 @@
         "Hint": "Mit diesem Makro ist es möglich, ein Macro direkt vom Excel-ProgGen einzufügen.",
         "Implementation comment": ""
     },
-    "InCh": {
+    "xInCh": {
         "ParName": "InCh",
         "Cnt": "",
         "Type": "Multipleparams",
@@ -912,7 +879,7 @@
             "S_Invert"
         ]
     },
-    "InCh_Cnt": {
+    "xInCh_Cnt": {
         "ParName": "InCh_Cnt",
         "Cnt": "2",
         "Type": "",
@@ -923,7 +890,7 @@
         "Hint": "Anzahl der verwendeten InCh-Variablen",
         "Implementation comment": ""
     },
-    "InReset": {
+    "xInReset": {
         "ParName": "InReset",
         "Cnt": "2",
         "Type": "Var",
@@ -995,7 +962,7 @@
             "CC_BLUE"
         ]
     },
-    "LEDcnt": {
+    "xLEDcnt": {
         "ParName": "LEDcnt",
         "Cnt": "1",
         "Type": "",
@@ -1006,7 +973,7 @@
         "Hint": "Anzahl der LEDs eines Baustellenwarnlichts (3-15)",
         "Implementation comment": ""
     },
-    "LedCnt": {
+    "xLedCnt": {
         "ParName": "LedCnt",
         "Cnt": "1",
         "Type": "",
@@ -1017,7 +984,7 @@
         "Hint": "Anzahl der benutzten LEDs für die Feuersimulation",
         "Implementation comment": ""
     },
-    "LEDcntCWL": {
+    "xLEDcntCWL": {
         "ParName": "LEDcntCWL",
         "Cnt": "1",
         "Type": "",
@@ -1028,7 +995,7 @@
         "Hint": "Anzahl der LEDs eines Baustellenwarnlichts (3-15)",
         "Implementation comment": ""
     },
-    "LedCntRGB": {
+    "xLedCntRGB": {
         "ParName": "LedCntRGB",
         "Cnt": "1",
         "Type": "",
@@ -1039,7 +1006,7 @@
         "Hint": "Anzahl der benutzten LEDs für die Feuersimulation",
         "Implementation comment": ""
     },
-    "LedCnt_Nxt": {
+    "xLedCnt_Nxt": {
         "ParName": "LedCnt_Nxt",
         "Cnt": "1",
         "Type": "",
@@ -1050,7 +1017,7 @@
         "Hint": "Ändert die StartLedNr des folgenden Befehls",
         "Implementation comment": ""
     },
-    "LedCnt_Res": {
+    "xLedCnt_Res": {
         "ParName": "LedCnt_Res",
         "Cnt": "1",
         "Type": "",
@@ -1162,7 +1129,7 @@
         "Input Text": "LED Kanal",
         "Hint": "Kanalnummer, an die die LEDs-Geräte angeschlossen sind, die bearbeitet werden sollen"
     },
-    "MaxOn": {
+    "xMaxOn": {
         "ParName": "MaxOn",
         "Cnt": "2",
         "Type": "Time",
@@ -1173,7 +1140,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "MaxSoundNr": {
+    "xMaxSoundNr": {
         "ParName": "MaxSoundNr",
         "Cnt": "6",
         "Type": "",
@@ -1184,7 +1151,7 @@
         "Hint": "Maximale Sound-Nummer|Modul MP3_F-16P: 14|Modul JQ6500: 5",
         "Implementation comment": "Die maximale Nummer ist abhängig vom Sound-Modul. 14 beim MP3-TF-16P, 5 beim JQ6500"
     },
-    "MaxTime": {
+    "xMaxTime": {
         "ParName": "MaxTime",
         "Cnt": "4",
         "Type": "Time",
@@ -1195,7 +1162,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "Max_Brightness": {
+    "xMax_Brightness": {
         "ParName": "Max_Brightness",
         "Cnt": "4",
         "Type": "",
@@ -1206,7 +1173,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "Max_Delay": {
+    "xMax_Delay": {
         "ParName": "Max_Delay",
         "Cnt": "1",
         "Type": "Time",
@@ -1217,7 +1184,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "MinBrightness": {
+    "xMinBrightness": {
         "ParName": "MinBrightness",
         "Cnt": "2",
         "Type": "",
@@ -1228,7 +1195,7 @@
         "Hint": "Die Helligkeit ist eine Zahl zwischen 0 und 255.",
         "Implementation comment": ""
     },
-    "MinOn": {
+    "xMinOn": {
         "ParName": "MinOn",
         "Cnt": "2",
         "Type": "Time",
@@ -1239,7 +1206,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "MinTime": {
+    "xMinTime": {
         "ParName": "MinTime",
         "Cnt": "4",
         "Type": "Time",
@@ -1250,7 +1217,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "Min_Brightness": {
+    "xMin_Brightness": {
         "ParName": "Min_Brightness",
         "Cnt": "4",
         "Type": "",
@@ -1261,7 +1228,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "Min_Def": {
+    "xMin_Def": {
         "ParName": "Min_Def",
         "Cnt": "1",
         "Type": "",
@@ -1272,7 +1239,7 @@
         "Hint": "Werte > 5 sind nicht sinnvoll",
         "Implementation comment": ""
     },
-    "Min_Delay": {
+    "xMin_Delay": {
         "ParName": "Min_Delay",
         "Cnt": "1",
         "Type": "Time",
@@ -1283,7 +1250,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "Off": {
+    "xOff": {
         "ParName": "Off",
         "Cnt": "1",
         "Type": "",
@@ -1294,7 +1261,7 @@
         "Hint": "Die Helligkeit ist eine Zahl zwischen 0 und 255.",
         "Implementation comment": ""
     },
-    "OnT": {
+    "xOnT": {
         "ParName": "OnT",
         "Cnt": "1",
         "Type": "Time",
@@ -1305,7 +1272,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "On_Max": {
+    "xOn_Max": {
         "ParName": "On-Max",
         "Cnt": "1",
         "Type": "",
@@ -1315,7 +1282,7 @@
         "Input Text": "Max Ein",
         "Hint": "Maximale Anzahl der zufällig aktiven Beleuchtungen"
     },
-    "On_Min": {
+    "xOn_Min": {
         "ParName": "On-Min",
         "Cnt": "1",
         "Type": "",
@@ -1325,7 +1292,7 @@
         "Input Text": "Min Ein",
         "Hint": "Minimale Anzahl der zufällig aktiven Beleuchtungen"
     },
-    "PNumLED": {
+    "xPNumLED": {
         "ParName": "PNumLED",
         "Cnt": "1",
         "Type": "",
@@ -1336,7 +1303,7 @@
         "Hint": "Anzahl der LEDs, die vom Patternkonfigurator-Makro benötigt werden.",
         "Implementation comment": ""
     },
-    "Pause": {
+    "xPause": {
         "ParName": "Pause",
         "Cnt": "2",
         "Type": "Time",
@@ -1347,7 +1314,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "Period": {
+    "xPeriod": {
         "ParName": "Period",
         "Cnt": "3",
         "Type": "Time",
@@ -1358,7 +1325,7 @@
         "Hint": "Die Periode wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die Maximalperiode beträgt zwei Minuten (131070 ms). ",
         "Implementation comment": ""
     },
-    "R_InCh": {
+    "xR_InCh": {
         "ParName": "R_InCh",
         "Cnt": "12",
         "Type": "Var",
@@ -1369,7 +1336,7 @@
         "Hint": "",
         "Implementation comment": "Input channel reset"
     },
-    "R_Max": {
+    "xR_Max": {
         "ParName": "R_Max",
         "Cnt": "2",
         "Type": "",
@@ -1380,7 +1347,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "R_Min": {
+    "xR_Min": {
         "ParName": "R_Min",
         "Cnt": "2",
         "Type": "",
@@ -1391,7 +1358,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "RandMode": {
+    "xRandMode": {
         "ParName": "RandMode",
         "Cnt": "2",
         "Type": "Var",
@@ -1403,7 +1370,7 @@
         "Hint": "Ein oder mehrere Modes: RM_NORMAL, RF_SLOW, RF_SEQ, RF_STAY_ON, RF_NOT_SAME getrennt mit '|'",
         "Implementation comment": ""
     },
-    "RandOff": {
+    "xRandOff": {
         "ParName": "RandOff",
         "Cnt": "1",
         "Type": "",
@@ -1414,7 +1381,7 @@
         "Hint": "0 = Lampe bleibt an, 1 = Blitzt nur kurz auf, 255 = Lampe bleibt sehr lange an, bis es zum nächsten Aussetzer kommt",
         "Implementation comment": ""
     },
-    "Rand_On": {
+    "xRand_On": {
         "ParName": "Rand_On",
         "Cnt": "1",
         "Type": "",
@@ -1438,7 +1405,7 @@
         "Hint": "Definiert die Wartezeit zwischen zwei Abfragen der Taster am ARDUINO (x 100ms) - Standard = 1 entspricht 100ms",
         "Implementation comment": ""
     },
-    "Rotate": {
+    "xRotate": {
         "ParName": "Rotate",
         "Cnt": "4",
         "Type": "",
@@ -1449,7 +1416,7 @@
         "Hint": "Beginnt nach dem letzen Zustand wieder mit dem ersten Zustand, wenn die Variable auf 1 gesetzt ist.",
         "Implementation comment": ""
     },
-    "S_Address": {
+    "xS_Address": {
         "ParName": "S_Address",
         "Cnt": "1",
         "Type": "String",
@@ -1460,7 +1427,7 @@
         "Hint": "Adresse oder Variablenname",
         "Implementation comment": ""
     },
-    "S_Class": {
+    "xS_Class": {
         "ParName": "S_Class",
         "Cnt": "1",
         "Type": "Combo",
@@ -1501,7 +1468,7 @@
         "Hint": "Art des Schalters: Immer an, DCC-Adresse, CAN-Bus-Adresse , Selectrix (Adresse.Bit) ,ARDUINO Port, Variable",
         "Implementation comment": ""
     },
-    "S_Description": {
+    "xS_Description": {
         "ParName": "Description",
         "Cnt": "1",
         "Type": "String",
@@ -1512,7 +1479,7 @@
         "Hint": "Kurzbezeichnung des Schalters",
         "Implementation comment": ""
     },
-    "S_InCh": {
+    "xS_InCh": {
         "ParName": "S_InCh",
         "Cnt": "6",
         "Type": "Var",
@@ -1523,7 +1490,7 @@
         "Hint": "",
         "Implementation comment": "Input channel set"
     },
-    "S_Invert": {
+    "xS_Invert": {
         "ParName": "S_Invert",
         "Cnt": "1",
         "Type": "Checkbutton",
@@ -1538,7 +1505,7 @@
         "Hint": "Eingang invertieren",
         "Implementation comment": ""
     },
-    "S_Start": {
+    "xS_Start": {
         "ParName": "S_Start",
         "Cnt": "1",
         "Type": "Combo",
@@ -1569,7 +1536,7 @@
         "Hint": "Startwert des Schalters: Aus, Ein, LED1, LED2, LED3",
         "Implementation comment": ""
     },
-    "S_Type": {
+    "xS_Type": {
         "ParName": "S_Typ",
         "Cnt": "1",
         "Type": "Combo",
@@ -1592,7 +1559,7 @@
         "Hint": "Typ des Schalters: Ein-/Ausschalter, rote Taste, grüne Taste, Taste (nur bei SX)",
         "Implementation comment": ""
     },
-    "S_Typex": {
+    "xS_Typex": {
         "ParName": "Typ",
         "Cnt": "1",
         "Type": "Combo",
@@ -1756,7 +1723,7 @@
         "Input Text": "Sound Anschluss R",
         "Hint": "Sound Anschluss R"
     },
-    "SrcLED": {
+    "xSrcLED": {
         "ParName": "SrcLED",
         "Cnt": "1",
         "Type": "",
@@ -1767,7 +1734,7 @@
         "Hint": "Die Helligkeitswerte werden von dieser LED kopiert",
         "Implementation comment": ""
     },
-    "Start": {
+    "xStart": {
         "ParName": "Start",
         "Cnt": "1",
         "Type": "",
@@ -1815,7 +1782,7 @@
         "Input Text": "Startseite",
         "Hint": "Seite auswählen, die als Startseite gezeigt werden soll"
     },
-    "States": {
+    "xStates": {
         "ParName": "States",
         "Cnt": "1",
         "Type": "",
@@ -1837,7 +1804,7 @@
         "Hint": "Anzahl der Schritte, um welche die Lautstärke verringert/erhöht werden soll",
         "Implementation comment": ""
     },
-    "T_InCh": {
+    "xT_InCh": {
         "ParName": "T_InCh",
         "Cnt": "6",
         "Type": "Var",
@@ -1848,7 +1815,7 @@
         "Hint": "",
         "Implementation comment": "Input channel trigger"
     },
-    "T_Max": {
+    "xT_Max": {
         "ParName": "T-Max",
         "Cnt": "1",
         "Type": "Time",
@@ -1858,7 +1825,7 @@
         "Input Text": "Max Zeit (sek)",
         "Hint": "Maximale Zeit bis zur nächsten Änderung"
     },
-    "T_Min": {
+    "xT_Min": {
         "ParName": "T-Min",
         "Cnt": "1",
         "Type": "Time",
@@ -1868,7 +1835,7 @@
         "Input Text": "Min Zeit(sek)",
         "Hint": "Minimale Zeit bis zur nächsten Änderung"
     },
-    "Test_But_InCh": {
+    "xTest_But_InCh": {
         "ParName": "Test_But_InCh",
         "Cnt": "1",
         "Type": "",
@@ -1879,7 +1846,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "TimeOut": {
+    "xTimeOut": {
         "ParName": "TimeOut",
         "Cnt": "11",
         "Type": "Time",
@@ -1890,7 +1857,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "Timeout": {
+    "xTimeout": {
         "ParName": "Timeout",
         "Cnt": "10",
         "Type": "Time",
@@ -1901,7 +1868,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "Update_t_Max": {
+    "xUpdate_t_Max": {
         "ParName": "Update_t_Max",
         "Cnt": "4",
         "Type": "",
@@ -1912,7 +1879,7 @@
         "Hint": "",
         "Implementation comment": ""
     },
-    "Update_t_Min": {
+    "xUpdate_t_Min": {
         "ParName": "Update_t_Min",
         "Cnt": "4",
         "Type": "",
@@ -1945,7 +1912,7 @@
         "Input Text": "Z21 Port Liste verwenden",
         "Hint": "Wenn diese Option gesetzt wird, verwendet der Z21-Simulator die Eintragungen in der nachfolgenden Tabelle (für Experten)"
     },
-    "Val0": {
+    "xVal0": {
         "ParName": "Val0",
         "Cnt": "5",
         "Type": "",
@@ -1956,7 +1923,7 @@
         "Hint": "Die Helligkeit ist eine Zahl zwischen 0 und 255.",
         "Implementation comment": ""
     },
-    "Val1": {
+    "xVal1": {
         "ParName": "Val1",
         "Cnt": "9",
         "Type": "",
@@ -1967,7 +1934,7 @@
         "Hint": "Die Helligkeit ist eine Zahl zwischen 0 und 255.",
         "Implementation comment": ""
     },
-    "WaitE": {
+    "xWaitE": {
         "ParName": "WaitE",
         "Cnt": "1",
         "Type": "Time",
@@ -1978,7 +1945,7 @@
         "Hint": "Die Zeit wird in Millisekunden angegeben. Es können aber auch [Sec] oder [Min] angehängt werden. Die maximale Zeit beträgt 17 Minuten (1048560 ms). ",
         "Implementation comment": ""
     },
-    "WaitT": {
+    "xWaitT": {
         "ParName": "WaitT",
         "Cnt": "1",
         "Type": "Time",

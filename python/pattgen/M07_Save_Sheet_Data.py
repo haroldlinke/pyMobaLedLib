@@ -2,6 +2,7 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import pattgen.M30_Tools as M30
 import pattgen.M01_Public_Constants_a_Var as M01
+import proggen.M02_Public as M02
 import ExcelAPI.XLC_Excel_Consts as X01
 import ExcelAPI.XLW_Workbook as X02
 import ExcelAPI.XLWA_WinAPI as X03
@@ -519,7 +520,7 @@ def Get_MyExampleDir():
     _fn_return_value = None
     EDir = String()
     #-------------------------------------------
-    EDir = Environ('USERPROFILE') + '\\Documents\\' + M01.MyExampleDir
+    EDir = Environ(M02.Env_USERPROFILE) + '\\Documents\\' + M01.MyExampleDir
     M30.CreateFolder(EDir + '\\')
     _fn_return_value = EDir
     return _fn_return_value

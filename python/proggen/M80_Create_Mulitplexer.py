@@ -158,7 +158,7 @@ def __Create_Multiplexer(Res, LEDCnt, Description, Row):
     #---------------------------------------------------------------------------------------------------------------
     #  Dim INCH_RND As String, ReadLines() As String, Line As Variant, LastLine As Long, FoundCmd As Boolean
     #    IniFileName = Get_MyExampleDir() & "\" & Multiplexer_INI_FILE_NAME
-    Map = Environ('USERPROFILE') + '\\Documents\\' + 'MyPattern_Config_Examples'
+    Map = Environ(M02.Env_USERPROFILE) + '\\Documents\\' + 'MyPattern_Config_Examples'
     IniFileName = Map + '\\' + Multiplexer_INI_FILE_NAME
     ProgDir = IniFileName
     if Dir(ProgDir, vbDirectory) == '':
@@ -394,7 +394,7 @@ def IniFileName():
     Dir = String()
     #--------------------------------------------------------------------------------------------
     #    IniFileName = ThisWorkbook.Path & "\" & Multiplexer_DIR & "\Multiplexer.ini"
-    Dir = Environ('USERPROFILE') + '/Documents/' + 'MyPattern_Config_Examples'
+    Dir = Environ(M02.Env_USERPROFILE) + '/Documents/' + 'MyPattern_Config_Examples'
     _ret = Dir + '/' + Multiplexer_INI_FILE_NAME
     return _ret
 
