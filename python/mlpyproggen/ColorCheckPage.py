@@ -1261,7 +1261,7 @@ class ColorCheckPage(tk.Frame):
             #    self._send_ledcolor_to_ARDUINO(lednum_str,1,keycolor)                
             #    time.sleep(ARDUINO_WAITTIME)    
                 
-    def _get_color_from_ledtable(self,lednum):
+    def x_get_color_from_ledtable(self,lednum):
         lednum_int = int(lednum)
         lednum_int += self.controller.LED_baseadress
         lednum_str = '{:03}'.format(lednum_int)

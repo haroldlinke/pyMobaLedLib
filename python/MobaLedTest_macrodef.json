@@ -122,30 +122,6 @@
             "DCC BaseAddress"
         ]
     },
-    "EffectMacroPage": {
-        "Typ": "EffectMacroPage",
-        "Name": "EffectMacroPage",
-        "MTabName": "Programmvorschau",
-        "Title": "MLL-Programmvorschau",
-        "Button_1": "",
-        "Button_2": "",
-        "Button_3": "",
-        "Kurzbeschreibung": "MLL-Programmvorschau",
-        "Ausführliche Beschreibung": "In der MLL-Programmvorschau wird das erstellte Programm angezeigt. Diese Seite ist mehr für die Experten gedacht, um zu überprüfen, ob der richtige Code erzeugt wurde.",
-        "Params": []
-    },
-    "EffectTestPage": {
-        "Typ": "EffectTestPage",
-        "Name": "EffectTestPage",
-        "MTabName": "Programmgenerator",
-        "Title": "MLL-Programmgenerator",
-        "Button_1": "",
-        "Button_2": "",
-        "Button_3": "",
-        "Kurzbeschreibung": "MLL-Programmgenerator",
-        "Ausführliche Beschreibung": "MLL-Programmgenerator ...",
-        "Params": []
-    },
     "HelpPage": {
         "Typ": "HelpPage",
         "Name": "HelpPage",
@@ -156,21 +132,6 @@
         "HelpPageURL": "https://wiki.mobaledlib.de/anleitungen/spezial/testseite"
     },
 
-    "MacroStartPageData": {
-        "Typ": "MacroStartPageData",
-        "Name": "MacroStartPageData",
-        "TabName": " Start",
-        "Title": "Einführung Macro und Effekte",
-        "Kurzbeschreibung": "",
-        "Content": {
-            "Die Programmgenerator-Seite": "Auf dieser Seite können alle Daten für die Konfiguration der MobaLEDLib eingegeben werden.\n Das Fenster ist in vier Teile geteilt\n* ARDUINO - zur Steuerung des ARDUINOs\n* LED-Liste - zur Auswahl der zu bearbeitenden LED oder des LED-Bereichs\n  (Erste LED anklicken und die letzten LED des Bereichs mit SHIFT-Click)\n* Gruppenparameter - zur Eingabe der Daten einer Gruppe, z.B. eines Hauses\n* Macros und Effekte - zur Auswahl des gewünschten Effekts\n",
-            "Auswahl eines Effekts": "Den gewünschten Macro-Typ auswählen durch anklicken eines Reiters:\n* GasLights - für Straßenlampen (Neon, Gaslicht)\n* House - für Hausbeleuchtung\n* Light Macros - für Blinker, Schweisslicht, etc\n* Set Macros - für spezielle Macro-Parameter, wie Farbtabelle, TV-Eigenschaften etc\n* Sound-Macros - für Tonwiedergabe mit dem Soundmodul\n",
-            "Kurzbeschreibung der Vorgehensweise:": "1. Gruppenparameter einstellen - Farbe, Name der Gruppe, Verteiler, Anschluss, etc\n2. Auf <Übernehmen> klicken\n3. In LED-Liste die LED(s) auswählen\n4. Zum <House>-Tab wechseln\n5. Mit gedrückter SHIFT-Taste den gewünschten Effekt auswählen (z.B. ROOM_DARK)\n6. die nächste LED wird automatisch ausgewählt\n7. nächsten Effekt anklicken (SHIFT gedrückt halten)\n8. 5-7 wiederholen, bis alle Effekte definiert sind\n9. Schalterart auf <DCC-Adresse> ändern - Adresse auf <105> ändern\n10. Taster - <House-Daten übernehmen> anklicken\n11. Die Änderungen werden übernommen\n12. <Zum ARDUINO schicken> anklicken. Das Programm wird erstellt und zum ARDUINO geschickt.\n13. Zum <DCC-Keyboard> wechseln.\n14. Grüne Taste mit Adresse 105 anklicken.\n16. Die Haus-LEDs starten"
-        },
-        "Params": [
-            "MacroStartPageText"
-        ]
-    },
     "ProgGeneratorPage": {
         "Typ": "ProgGeneratorPage",
         "Name": "ProgGeneratorPage",

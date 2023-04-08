@@ -11,6 +11,7 @@ import proggen.M07_COM_Port_New as M07b
 import proggen.M08_ARDUINO as M08
 import pattgen.Pattern_Generator as PG
 import proggen.Prog_Generator as ProgGen
+import proggen.M02_Public as M02
 
 import ExcelAPI.XLWA_WinAPI as X03
 import ExcelAPI.XLC_Excel_Consts as X01
@@ -29,7 +30,7 @@ def Find_File_in_UserDir_with_Version_Dir(UserDir, VersionDir, SearchName):
     #   UserDir:    "\AppData\Local\Arduino15\packages\arduino\tools\avrdude\"
     #   VersionDir: "*-arduino*"
     #   SearchName: "\bin\avrdude.exe"
-    SeachDir = Environ('USERPROFILE') + UserDir
+    SeachDir = Environ(M02.Env_USERPROFILE) + UserDir
     VerDir = Dir(SeachDir + VersionDir, vbDirectory)
     if VerDir == '':
         X02.MsgBox(Replace(M09.Get_Language_Str('Fehler: Das Verzeichnis \'#1#\' wurde nicht gefunden'), '#1#', SeachDir + VersionDir), vbCritical, M09.Get_Language_Str('Verzeichnis nicht gefunden'))

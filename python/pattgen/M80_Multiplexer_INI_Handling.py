@@ -15,6 +15,7 @@ import pattgen.M12_Copy_Prog
 import pattgen.M08_Load_Sheet_Data
 import pattgen.D00_Forms as D00
 import pattgen.Pattern_Generator as PG
+import proggen.M02_Public as M02
 
 """--------------------------------------------------------------------------------------------'
                                                                                             '
@@ -258,7 +259,7 @@ def Load_Multiplexer():
     X02.Application.EnableEvents = True
     #Sub to load all of the ini section names into array 'sectnNames().
     Debug.Print('Start loading Multiplexer.')
-    Map = Environ('USERPROFILE') + '\\Documents\\' + 'MyPattern_Config_Examples'
+    Map = Environ(M02.Env_USERPROFILE) + '\\Documents\\' + 'MyPattern_Config_Examples'
     IniFileName = Map + '\\' + MULTIPLEXER_INI_FILE_NAME
     if Dir(IniFileName) == '':
         # 04.06.20: Hardi: Changed Messages

@@ -813,7 +813,7 @@ def CreateFolder(sFolder):
     # VB2PY (UntranslatedCode) On Error GoTo ErrorHandler
     logging.debug("Create_Folder:"+sFolder)
     s = GetPathOnly(sFolder)
-    if P01.Dir(s) == r'':
+    if Dir(s) == r'':
         s = CreateFolder(s)
         MkDir(s)
     fn_return_value = sFolder

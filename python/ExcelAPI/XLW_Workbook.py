@@ -467,10 +467,10 @@ class CWorkbook(object):
         else:
             self.controller = controller
             
-        self.controller.bind("<KeyPress-Shift_L>", self.shift_press)
-        self.controller.bind("<KeyPress-Shift_R>", self.shift_press)
-        self.controller.bind("<KeyRelease-Shift_L>", self.shift_release)
-        self.controller.bind("<KeyRelease-Shift_R>", self.shift_release)        
+        #self.controller.bind("<KeyPress-Shift_L>", self.shift_press)
+        #self.controller.bind("<KeyPress-Shift_R>", self.shift_press)
+        #self.controller.bind("<KeyRelease-Shift_L>", self.shift_release)
+        #self.controller.bind("<KeyRelease-Shift_R>", self.shift_release)        
  
 
         if workbookName:
@@ -2040,7 +2040,6 @@ class CRange(str):
         x1,y1,x2,y2 = self.ws.table.getCellCoords(self.Row-1,self.Column-1)
         return x2-x1
     Width = property(_Width, dummy, doc='Width of cell')
-        
 
 # Methods
     def Activate(self):
@@ -2107,8 +2106,6 @@ class CRange(str):
         return self.offset(offset_row, offset_col)    
             
     def offset(self, offset_row, offset_col):
-        #newrowrange=(self.rowrange[0]+offset_row,self.rowrange[1]+offset_row)
-        #newcolrange=(self.colrange[0]+offset_col,self.colrange[1]+offset_col)
         newstart=(self.start[0]++offset_row,self.start[1]+offset_col)
         newend=(self.end[0]++offset_row,self.end[1]+offset_col)
         new_range=CRange(newstart,newend,ws=self.ws)
@@ -2129,8 +2126,6 @@ class CRange(str):
                 return False
         return True    
 
-#python substitute function
-        
     def __iter__(self):
     #returning __iter__ object
         if self.iter_start!=None:
@@ -2407,7 +2402,6 @@ class CColumns(object):
         if self.currentcol>self.lastcol: 
             self.stopiteration=True
         return currentresult    
-        
    
 class CSelection(object):
     def __init__(self,selrange=None,ws=None):
@@ -2486,6 +2480,17 @@ class CSelection(object):
    
     Columns = property(get_Columns, set_Columns, doc='Columns')
     
+    def set_Cells(self, newval):
+        pass
+    
+    def get_Cells(self):
+        selectedcol=ActiveSheet.table.getSelectedColumn()+1
+        selectedrow=ActiveSheet.table.getSelectedRow()+1
+        return CRange(selectedrow,selectedcol)
+   
+    Cells = property(get_Cells, set_Cells, doc='Selection-Cells')
+        
+    
 
 class CRow(object):
     def __init__(self,rownumber,rowrange=None):
@@ -2544,10 +2549,7 @@ class CRow(object):
         
     RowHeight = property(get_RowHeight, set_RowHeight, doc='Hiddenvalue of CRow')
         
-    
-        
 class CEntireRow(object):
-    
     def __init__(self,rownumber,colrange=None,ws=None):
         self.Rownumber = rownumber
         self.Hidden_value = False
@@ -2566,19 +2568,12 @@ class CEntireRow(object):
         
     def set_Hidden(self, newval):
         self.Hidden_value = newval
-        
-        if self.Rowrange:
-            for row in self.Rowrange:
-                self._set_hiderow(row,newval)
-        else:
-            self._set_hiderow(self.Rownumber,newval)
+        self._set_hiderow(self.Rownumber,newval)
     
     def get_Hidden(self):
         return self.Rownumber-1 in ActiveSheet.table.model.hiderowslist
         
     Hidden = property(get_Hidden, set_Hidden, doc='Hiddenvalue of CRow')
-        
-
         
 class CColumn(object):
     def __init__(self,colnumber,rowrange=None):
