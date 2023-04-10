@@ -9,6 +9,7 @@ import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M09_Language as M09
 import pattgen.M08_Load_Sheet_Data
 import pattgen.Pattern_Generator as PG
+import pattgen.D00_Forms as D00
 
 """ Concept for saving pictures:                                           12.07.20:
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -307,18 +308,20 @@ def Save_Picture(o, DestPath):
         else:
             M30.EndProg()
     # Check if the picture exists as ".jpg" or ".png"
-    for Ext in Split('.png|.jpg', '|'):
-        PicName = DestPath + o.Name + Ext
-        # 09.07.20: Using "Ext"
-        if Dir(PicName) != '':
-            if M01.OVERWRITE_EXISTING_PIC:
-                Kill(PicName)
-            break
+    #for Ext in Split('.png|.jpg', '|'):
+    PicName = DestPath + M30.FileNameExt(o.Name) # + Ext
+    #    # 09.07.20: Using "Ext"
+    #    if Dir(PicName) != '':
+    #        if M01.OVERWRITE_EXISTING_PIC:
+    #            Kill(PicName)
+    #        break
+    if PicName != o.Name:
+        shutil.copy2(o.Name,DestPath)
     _fn_return_value = M30.FileNameExt(PicName)
-    if Dir(PicName) == '':
-        o.Copy()
-        # copy to clipboard
-        Save_Pic_from_clipboard(PicName)
+    #if Dir(PicName) == '':
+    #    o.Copy()
+    #    # copy to clipboard
+    #    Save_Pic_from_clipboard(PicName)
     return _fn_return_value
 
 def Get_TextBoxAttrib(o):
@@ -507,9 +510,9 @@ def Save_All_Sheets_to(FileName):
     pattgen.M08_Load_Sheet_Data.Del_All_Sheets_which_contain_Copy_in_their_Name()
     Oldupdating = X02.Application.ScreenUpdating
     X02.Application.ScreenUpdating = False
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if pattgen.M08_Load_Sheet_Data.Is_Normal_Data_Sheet(Sh.Name, pattgen.M09_Language.Get_Language_Str('gespeichert')):
-            StatusMsg_UserForm.Set_ActSheet_Label(pattgen.M09_Language.Get_Language_Str('Schreibe ') + Sh.Name)
+            D00.StatusMsg_UserForm.Set_ActSheet_Label(pattgen.M09_Language.Get_Language_Str('Schreibe ') + Sh.Name)
             Sh.Activate()
             Sh.Select()
             Save_One_Sheet(X02.ActiveSheet, FileName, AppendSheet)

@@ -740,7 +740,7 @@ def Del_All_Sheets_which_contain_Copy_in_their_Name():
     OldSheet = X02.ActiveSheet
     X02.Application.Calculation = X01.xlCalculationManual
     # Otherwise the "CalculatePattern()" functionis called
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if InStr(Sh.Name, '_Copy_'):
             X02.Application.DisplayAlerts = False
             X02.Sheets(Sh.Name).Delete()

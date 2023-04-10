@@ -302,7 +302,7 @@ def Update_Language_in_All_Sheets():
     DestLang = Get_ExcelLanguage()
     #DestLang = 1
     # debug
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         #If sh.Name <> LANGUAGES_SH And sh.Name <> GOTO_ACTIVATION_SH And sh.Name <> PAR_DESCRIPTION_SH Then
         # 20.01.20: Old
         ## VB2PY (CheckDirective) VB directive took path 1 on PATTERN_CONFIG_PROG

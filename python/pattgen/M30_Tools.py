@@ -343,7 +343,7 @@ def CreateFolder(sFolder):
     # http://www.freevbcode.com/ShowCode.asp?ID=257
     # VB2PY (UntranslatedCode) On Error GoTo ErrorHandler
     s = GetPathOnly(sFolder)
-    if X02.Dir(s, vbDirectory) == '':
+    if Dir(s, vbDirectory) == '':
         s = CreateFolder(s)
         MkDir(s)
     _fn_return_value = sFolder

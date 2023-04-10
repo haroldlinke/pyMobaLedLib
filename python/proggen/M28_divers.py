@@ -98,7 +98,7 @@ def EnableAllButtons():
     Sh = Variant()
     #----------------------------
     # Enable all buttons in case they have been disabled by a crash
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if Is_Data_Sheet(Sh):
             Sh.EnableDisableAllButtons(True)
 

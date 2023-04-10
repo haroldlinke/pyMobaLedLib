@@ -66,6 +66,7 @@ from mlpyproggen.ColorCheckPage import ColorCheckPage
 from mlpyproggen.DCC_KeyboardPage import DCCKeyboardPage
 from proggen.Prog_Generator import Prog_GeneratorPage
 from pattgen.Pattern_Generator import Pattern_GeneratorPage
+import pattgen.MainMenu_Form as MainMenu
 from mlpyproggen.ServoTestPage import ServoTestPage
 from mlpyproggen.Z21MonitorPage import Z21MonitorPage
 from mlpyproggen.ARDUINOMonitorPage import ARDUINOMonitorPage
@@ -349,9 +350,13 @@ class pyMobaLedLibapp(tk.Tk):
         filemenu.add_command(label="MacroWorkbook von Datei lesen", command=self.OpenFileWorkbook)
         filemenu.add_command(label="MacroWorkbook speichern als", command=self.SaveFileWorkbook)
         filemenu.add_separator()
-        filemenu.add_command(label="Excel ProgGen PGF-Datei lesen", command=self.OpenFilePGF)
-        filemenu.add_command(label="Als Excel ProgGen PGF-Datei speichern", command=self.SaveFilePGF)
-        filemenu.add_separator()        
+        filemenu.add_command(label="ProgramGenerator: PGF-Datei lesen", command=self.OpenFilePGF)
+        filemenu.add_command(label="ProgramGenerator: PGF-Datei speichern", command=self.SaveFilePGF)
+        filemenu.add_separator()
+        filemenu.add_command(label="PatternGenerator: PCF-Datei lesen", command=self.OpenFilePCF)
+        filemenu.add_command(label="PatternGenerator: Alle Seiten als PCF-Datei speichern", command=self.SaveAllFilePCF)
+        filemenu.add_command(label="PatternGenerator: Aktuelle Seite als PCF-Datei speichern", command=self.SaveCurSheetFilePCF)
+        filemenu.add_separator()                
         filemenu.add_command(label="Beenden und Konfig-Daten speichern", command=self.ExitProg_with_save)
         filemenu.add_command(label="Beenden ohne Konfig-Daten zu speichern", command=self.ExitProg)
 
@@ -561,6 +566,15 @@ class pyMobaLedLibapp(tk.Tk):
         #filepath = filedialog.askopenfilename(filetypes=[("LED List files","*.led.json"),("All JSON files","*.json")],defaultextension=".led.json")
         # filepath:
         self.activeworkbook.LoadPGF()
+        
+    def SaveAllFilePCF(self):
+        MainMenu.SaveAllExamplesButton_Click()
+        
+    def SaveCurSheetFilePCF(self):
+        MainMenu.SaveActualExampleButton_Click()
+
+    def OpenFilePCF(self):
+        MainMenu.LoadExampleButton_Click()
 
     def About(self):
         tk.messagebox("MobaCheckColor by Harold Linke")
