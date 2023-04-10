@@ -328,7 +328,7 @@ def Test_Decode_Pattern_String_with_All_Examples():
     ErrCnt = Long()
     #UT-------------------------------------------------------
     # Attention the content in the actual sheet is changed
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if pattgen.M08_Load_Sheet_Data.Is_Normal_Data_Sheet(Sh.Name, pattgen.M09_Language.Get_Language_Str('verglichen')) and Sh.Name != X02.ActiveSheet.Name:
             Debug.Print('Checking ' + Sh.Name)
             if Decode_Pattern_String_and_Compare(Sh.Range(M01.ErgebnisRng)):

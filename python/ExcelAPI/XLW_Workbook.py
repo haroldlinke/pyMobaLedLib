@@ -59,6 +59,7 @@ import proggen.M20_PageEvents_a_Functions as M20
 import subprocess
 import pickle
 import pattgen.D00_GlobalProcs as D00
+import pattgen.M07_Save_Sheet_Data as M07
 import pattgen.M08_Load_Sheet_Data as M08
 import proggen.F00_mainbuttons as F00
 import proggen.M02_Public as M02
@@ -602,8 +603,10 @@ class CWorkbook(object):
         self.sheets.append(act_worksheet)
         self.container.add(tabframe, text=sheetname)
         self.tabframedict[sheetname]=tabframe
-        
-        copyfrom_sheet=self.Sheets(from_sheet)
+        if from_sheet==None:
+            copyfrom_sheet=None
+        else:
+            copyfrom_sheet=self.Sheets(from_sheet)
         if copyfrom_sheet:
             act_worksheet.wscalculation_callback = copyfrom_sheet.wscalculation_callback
             act_worksheet.wschanged_callback = copyfrom_sheet.wschanged_callback
@@ -653,13 +656,16 @@ class CWorkbook(object):
             #newtab.tabselected()
         logging.debug("TabChanged %s - %s",self.oldTabName,newtab_name)        
         
-    def Sheets(self,name):
+    def Sheets(self,name=None):
+        if name==None:
+            return self.sheets        
         if self.sheets != None:
             if name == "<<LASTSHEET>>":
                 return self.sheets[-1]
             for sheet in self.sheets:
                 if sheet.Name == name:
                     return sheet
+
         return None
     
     def Worksheets(self,name):
@@ -710,7 +716,13 @@ class CWorkbook(object):
     
     def LoadPCF(self,filename=None):
         """load PCF from a file"""
-        M08.Load_Sheets(filename)
+        loaded_sheets=""
+        M08.Load_Sheets(filename,loaded_sheets)
+        return
+    
+    def SavePCF(self,filename=None):
+        """Save Pattern to a file"""
+        M07.Save_All_Sheets_to(filename)
         return
     
     def SavePGF(self,filename=None):
@@ -748,25 +760,26 @@ class CWorkbook(object):
             logging.debug("Load Workbook: arg loaddatafile=False - "+filename+" not loaded")
             return            
             
-        fd=open(filename,'rb')
+        #fd=open(filename,'rb')
         try:
-            savedData = pickle.load(fd)
-            logging.debug("Load Workbook:"+filename)
-            logging.debug("FileVersion:"+savedData["Version"])
-            workbookdata= savedData["Workbookdata"]
-            for sheetname in workbookdata.keys():
-                sheet = self.Sheets(sheetname)
-                if sheet == None:
-                    self.add_sheet(sheetname, from_sheet="Main",nocontrols=True,noredraw=True)
-            for sheet in self.sheets:
-                data = workbookdata.get(sheet.Name,{})
-                if data !={}:
-                    sheet.setData(data)
-                    sheet.init_data()
-                    sheet.tablemodel.resetDataChanged()
-                    #sheet.EventWScalculate(Cells(5,5))
-                    #Application.Caller="Update"
-                    #sheet.EventWSchanged(Cells(5,5))
+            with open(filename, "rb") as read_file:
+                savedData = pickle.load(read_file)
+                logging.debug("Load Workbook:"+filename)
+                logging.debug("FileVersion:"+savedData["Version"])
+                workbookdata= savedData["Workbookdata"]
+                for sheetname in workbookdata.keys():
+                    sheet = self.Sheets(sheetname)
+                    if sheet == None:
+                        self.add_sheet(sheetname, from_sheet="Main",nocontrols=True,noredraw=True)
+                for sheet in self.sheets:
+                    data = workbookdata.get(sheet.Name,{})
+                    if data !={}:
+                        sheet.setData(data)
+                        sheet.init_data()
+                        sheet.tablemodel.resetDataChanged()
+                        #sheet.EventWScalculate(Cells(5,5))
+                        #Application.Caller="Update"
+                        #sheet.EventWSchanged(Cells(5,5))
         except BaseException as e:
             logging.debug(e, exc_info=True)            
             logging.debug("Load Workbook Error"+filename)

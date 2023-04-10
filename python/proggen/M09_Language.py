@@ -398,7 +398,7 @@ def __Update_Language_in_All_Sheets():
     P01.Application.ScreenUpdating = False
     DestLang = Get_ExcelLanguage()
     #DestLang = 1 ' debug
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         #If sh.Name <> LANGUAGES_SH And sh.Name <> GOTO_ACTIVATION_SH And sh.Name <> PAR_DESCRIPTION_SH Then ' 20.01.20: Old
         ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
         if Sh.Name == M02.START_SH or M28.Is_Data_Sheet(Sh.Name, Get_Language_Str(r'übersetzt')):

@@ -134,6 +134,7 @@ def AddSpaceToLen(s, MinLength):
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: s - ByVal 
 def AddSpaceToLenLeft(s, MinLength):
     #--------------------------------------------------------------------------------
+    s=str(s)
     while Len(s) < MinLength:
         s = r' ' + s
     fn_return_value = s

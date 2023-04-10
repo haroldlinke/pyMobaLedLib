@@ -204,7 +204,7 @@ def Save_Sheets_to_pgf(Name, FromAllSheets):
         fp = __Create_pgf_File(Name)
         if fp > 0:
             if P01.ActiveWindow.SelectedSheets["Count"] > 1:
-                for Sh in P01.ActiveWorkbook.Sheets:
+                for Sh in P01.ActiveWorkbook.sheets:
                     if M28.Is_Data_Sheet(Sh):
                         Res = __Save_Sheet_to_pgf(fp, Sh)
                         if Res == False:
@@ -229,7 +229,7 @@ def __Find_Sheet_with_matching_Page_ID(Page_ID):
     fn_return_value = None
     #Sh = P01.Worksheet
     #--------------------------------------------------------------------------------
-    for Sh in P01.ActiveWorkbook.Sheets:
+    for Sh in P01.ActiveWorkbook.sheets:
         if Sh.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL) == Page_ID:
             fn_return_value = Sh
             return fn_return_value
@@ -244,7 +244,7 @@ def __Copy_and_Clear_Sheet(SheetName, Page_ID):
         P01.MsgBox(M09.Get_Language_Str('Fehler: Es existiert keine passende Seite als Vorlage zum importieren der Daten'), vbCritical, M09.Get_Language_Str('Fehler: Seite kann nicht angelegt werden'))
         return fn_return_value
     else:
-        for s in P01.ActiveWorkbook.Sheets:
+        for s in P01.ActiveWorkbook.sheets:
             if M28.Is_Data_Sheet(s):
                 DstSh = s
         Sh.Copy(after=DstSh)
