@@ -176,7 +176,7 @@ def Remove_Selections_in_all_Data_Sheets():
     ScrUpd = P01.Application.ScreenUpdating
     P01.Application.ScreenUpdating = False
     OldSheet = P01.ActiveSheet.Name
-    for Sh in P01.Sheets:
+    for Sh in P01.sheets:
         Remove_Selection_in_Sheet(Sh)
     P01.Sheets(OldSheet).Select()
     P01.Application.ScreenUpdating = ScrUpd

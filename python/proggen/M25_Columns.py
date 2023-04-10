@@ -102,7 +102,7 @@ def Add_Icons_and_Lines():
     #Sh = P01.CWorksheet
     #--------------------------------
     P01.Application.EnableEvents = False
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if M28.Is_Data_Sheet(Sh):
             Make_sure_that_Col_Variables_match(Sh)
             with_variable0 = Sh
@@ -125,7 +125,7 @@ def Del_Icons_and_Lines():
     #Sh = Variant()
     #--------------------------------
     P01.Application.EnableEvents = False
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if M28.Is_Data_Sheet(Sh):
             Make_sure_that_Col_Variables_match(Sh)
             First_Col = MacIcon_Col

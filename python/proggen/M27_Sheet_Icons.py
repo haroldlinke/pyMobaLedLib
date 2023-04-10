@@ -231,7 +231,7 @@ def __Test_Show_Icons_Column_in_Sheet():
 def __Show_Hide_Icons_Column(Show):
     Sh = None
     #--------------------------------------------------
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if M28.Is_Data_Sheet(Sh):
             M25.Make_sure_that_Col_Variables_match(Sh)
             if Show:
@@ -268,7 +268,7 @@ def Update_Language_Name_Column_in_all_Sheets():
     #-----------------------------------------------------
     OldUpdating = P01.Application.ScreenUpdating
     P01.Application.ScreenUpdating = False
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if M28.Is_Data_Sheet(Sh):
             __Update_Language_Name_Column_in_Sheet(Sh)
     P01.Application.ScreenUpdating = OldUpdating
@@ -315,7 +315,7 @@ def Show_Hide_Column_in_all_Sheets(Show, ColName):
         __Show_Hide_Icons_Column(Show)
         M30.ShowHourGlassCursor(False)
     else:
-        for Sh in PG.ThisWorkbook.Sheets:
+        for Sh in PG.ThisWorkbook.sheets:
             if M28.Is_Data_Sheet(Sh):
                 M25.Make_sure_that_Col_Variables_match(Sh)
                 if (ColName == 'LanName_Col'):

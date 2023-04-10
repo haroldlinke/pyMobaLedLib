@@ -924,13 +924,13 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
                             SX_Ch = M25.Get_First_Number_of_Range(r, M25.SX_Channel_Col)
                             # ToDo: SX_Ch wird nur dann aktualisiert wenn Bit pos vorhanden ist und InCnt > 0. Ist das gut ?
                         if SX_Ch >= 0 and SX_Ch <= 99:
-                            if Bit_P >= 1 and Bit_P <= 8:
-                                Addr = SX_Ch * 8 + Bit_P - 1
-                                AddrComment = 'SX ' + M30.AddSpaceToLenLeft(SX_Ch, 2) + ',' + Bit_P + ': '
+                            if int(Bit_P) >= 1 and int(Bit_P) <= 8:
+                                Addr = SX_Ch * 8 + int(Bit_P) - 1
+                                AddrComment = 'SX ' + M30.AddSpaceToLenLeft(SX_Ch, 2) + ',' + str(Bit_P) + ': '
                             else:
-                                Add_to_Err(P01.Cells(r, M25.SX_Bitposi_Col), 'Wrong bitpos " & bp & " in row ' + r)
+                                Add_to_Err(P01.Cells(r, M25.SX_Bitposi_Col), 'Wrong bitpos " & bp & " in row ' + str(r))
                         else:
-                            Add_to_Err(P01.Cells(r, M25.SX_Channel_Col), 'Wrong SX channel in row ' + r)
+                            Add_to_Err(P01.Cells(r, M25.SX_Channel_Col), 'Wrong SX channel in row ' + str(r))
                 else:
                     if M25.Page_ID == 'DCC':
                         MaxAddr = 10240
