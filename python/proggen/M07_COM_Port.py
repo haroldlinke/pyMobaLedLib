@@ -78,7 +78,7 @@ import proggen.M30_Tools as M30
 import ExcelAPI.XLW_Workbook as P01
 import  proggen.F00_mainbuttons as F00
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 
 class DCB:

@@ -31,7 +31,7 @@
 # *
 # *
 # ***************************************************************************
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLF_FormGenerator as XLF
 
 from vb2py.vbfunctions import *

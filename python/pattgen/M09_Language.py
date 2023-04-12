@@ -5,7 +5,7 @@ import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M30_Tools as M30
 import ExcelAPI.XLC_Excel_Consts as X01
 import pattgen.M08_Load_Sheet_Data
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ Attention: One of the following preprcessor constants have to be defined in
  "Extras / Eigenschafteb VBA Projekt"'
@@ -427,6 +427,7 @@ def Get_German_Name(Desc):
 
 def Add_Entry_to_Languages_Sheet(GermanTxt):
     #------------------------------------------------------------
+    return #*HL
     if Get_ExcelLanguage() == 0:
         LSh = PG.ThisWorkbook.Sheets(M01.LANGUAGES_SH)
         if LSh!=None:

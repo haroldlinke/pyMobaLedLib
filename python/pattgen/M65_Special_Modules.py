@@ -9,8 +9,8 @@ import pattgen.M01a_Public_Constants_a_Var as M01a
 import proggen.M07_COM_Port as M07a
 import proggen.M07_COM_Port_New as M07b
 import proggen.M08_ARDUINO as M08
-import pattgen.Pattern_Generator as PG
-import proggen.Prog_Generator as ProgGen
+import mlpyproggen.Pattern_Generator as PG
+import mlpyproggen.Prog_Generator as ProgGen
 import proggen.M02_Public as M02
 
 import ExcelAPI.XLWA_WinAPI as X03

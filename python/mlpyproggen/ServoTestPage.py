@@ -417,7 +417,7 @@ class ServoTestPage(tk.Frame):
     def setParamData(self,key, value):
         self.controller.setParamData(key, value)
 
-    def connect(self):
+    def connect(self,port):
         pass
 
     def disconnect(self):

@@ -31,7 +31,7 @@
 # *
 # *
 # ***************************************************************************
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 import pattgen.Select_GotoNr_Form
 import pattgen.Select_COM_Port_UserForm
 import pattgen.MainMenu_Form

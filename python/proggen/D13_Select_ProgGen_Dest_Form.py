@@ -32,7 +32,7 @@
 # *
 # ***************************************************************************
 import tkinter as tk
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLF_FormGenerator as XLF
 
 

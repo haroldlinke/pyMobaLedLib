@@ -84,7 +84,7 @@ import  proggen.F00_mainbuttons as F00
 #import proggen.D02_Userform_Select_Typ_DCC as D02
 
 import ExcelAPI.XLW_Workbook as P01
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 from ExcelAPI.XLC_Excel_Consts import *
 
@@ -946,6 +946,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
         for i in vbForRange(0, OldRect_Cnt - 1):
             OldRect_List[i] = CLng(Rect_List_In_Row(i))
     InCnt = P01.val(P01.Cells(Row, M25.InCnt___Col))
+    #print("UpdateTestButton Row:",Row," Col:",M25.InCnt___Col," InCnt:",InCnt)
     if InCnt < 1:
         return
     ButtonCount = 1 * InCnt
@@ -956,6 +957,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
     M25.Make_sure_that_Col_Variables_match()
     M09.Set_Tast_Txt_Var()
     Addr = M25.Get_First_Number_of_Range(Row, AddrColumn)
+    #print("UpdateTestButton Row:",Row," Col:",AddrColumn," Addr:",Addr)
     if Addr == '' or P01.val(Addr) < 0:
         return
         # 04.05.20: Added: Or Val(Addr) < 0 to fix problems with the error returned by Get_First_Number_of_P01.Range() (Mail from Jürgen)

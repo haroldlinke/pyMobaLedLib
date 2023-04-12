@@ -65,7 +65,7 @@ import proggen.M60_CheckColors as M60
 import proggen.M80_Create_Mulitplexer as M80
 import proggen.D06_Userform_House as D06
 import proggen.D07_Userform_Other as D07
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import ExcelAPI.XLW_Workbook as P01
 

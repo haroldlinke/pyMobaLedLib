@@ -31,9 +31,9 @@
 # *
 # *
 # ***************************************************************************
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 import pattgen.M20_Morsecode as M20
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 import pattgen.M02_Main as M02
 import pattgen.Tabelle9 as PAT09
 

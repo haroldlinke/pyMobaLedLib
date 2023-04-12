@@ -41,7 +41,7 @@ import proggen.M09_Select_Macro as M09SM
 import proggen.M25_Columns as M25
 import proggen.M28_divers as M28
 import proggen.M30_Tools as M30
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 # fromx ExcelAPI.X02_Workbook import *
 import ExcelAPI.XLW_Workbook as P01

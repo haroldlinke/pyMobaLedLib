@@ -12,7 +12,7 @@ import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M02_Main as M02a
 import pattgen.M06_Goto_Graph
 import pattgen.D00_Forms as D00
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """--------------------------------------------------
 -------------------------------------------------------------------------------------------
@@ -460,6 +460,7 @@ def Load_Picture(Line, SourceDir):
     Edges = Split(M30.CorrectKomma(Params(0)), ';')
     # 02.07.19: Added: CorrectKomma()
     PicName = SourceDir + Params(1)
+    PicName=PicName.replace(".jpg",".png")
     # 25.11.19: First look in the source dir
     if Dir(PicName) == '':
         SecondDir = PG.ThisWorkbook.Path + '\\' + M01.ExampleDir + '\\'
@@ -475,6 +476,7 @@ def Load_Picture(Line, SourceDir):
     # Redraw everything to make sure that the picture is placed correctly
     # 12.01.20:
     # VB2PY (UntranslatedCode) On Error GoTo LoadError
+    
     X02.ActiveSheet.Shapes.AddPicture(PicName, linktofile= X01.msoFalse, savewithdocument= X01.msoCTrue, Left= Val(Edges(0))*X02.guifactor, Top= Correct_Top_Pos_by_Version(Val(Edges(1)))*X02.guifactor, Width= Val(Edges(2))*X02.guifactor, Height= Val(Edges(3))*X02.guifactor).Select()
     # 12.07.20: Old: Width:=-1, Height:=-1
     # VB2PY (UntranslatedCode) On Error GoTo 0

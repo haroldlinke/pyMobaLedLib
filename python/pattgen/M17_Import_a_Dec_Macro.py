@@ -7,7 +7,7 @@ import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M08_Load_Sheet_Data
 import pattgen.M11_To_Prog_Gen
 import pattgen.M30_Tools as M30
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ Decode Macro string into a Sheet
 ----------------------------------

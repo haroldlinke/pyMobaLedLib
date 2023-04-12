@@ -4,7 +4,7 @@ import pattgen.M14_Select_GotoAct
 import ExcelAPI.XLW_Workbook as X02
 import pattgen.M09_Language
 import pattgen.M06_Goto_Graph
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ Generates additional macros if the Goto mode is used
 
