@@ -4,7 +4,7 @@ import ExcelAPI.XLW_Workbook as X02
 import pattgen.M30_Tools as M30
 import pattgen.M09_Language
 import pattgen.M01_Public_Constants_a_Var as M01
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ Copy the program to %USERPROFILE%\Documents\Arduino\MobaLedLib_<Version>\
 ---------------------------------------------------------------------------------------------------------------------

@@ -4,7 +4,7 @@ import ExcelAPI.XLW_Workbook as X02
 import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M02_Main as M02
 import pattgen.M09_Language
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 import pattgen.D00_Forms
 
 """ Sheet Goto_Activation_Entries: (The Sheet can not be changed by the USER => We keep the constants)

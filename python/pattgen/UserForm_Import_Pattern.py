@@ -5,7 +5,7 @@ import pattgen.M09_Language
 import ExcelAPI.XLW_Workbook as X02
 import pattgen.M17_Import_a_Dec_Macro
 import pattgen.M80_Multiplexer_INI_Misc
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ 11.06.20:
 --------------------------------

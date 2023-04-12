@@ -300,7 +300,7 @@ class SerialMonitorPage(tk.Frame):
     def cancel(self):
         self.stop_process_serial()
         
-    def connect (self):
+    def connect (self,port):
         self.start_process_serial()
     
     def disconnect (self):

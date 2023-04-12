@@ -9,7 +9,7 @@ import pattgen.M07_Save_Sheet_Data
 import pattgen.M30_Tools as M30
 import pattgen.M65_Special_Modules
 import pattgen.M80_Multiplexer_INI_Handling
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 
 

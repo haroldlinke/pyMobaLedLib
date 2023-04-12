@@ -44,7 +44,7 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 from ExcelAPI.XLC_Excel_Consts import *
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import urllib.request 
 

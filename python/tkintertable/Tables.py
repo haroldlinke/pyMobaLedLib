@@ -833,7 +833,13 @@ class TableCanvas(Canvas):
                     columnwidth=colsizelist[colsizeidx]*factor
                     colsizeidx+=1
                 self.resizeColumn(col,columnwidth)
-                
+    
+    def moveshapes(self,delta_width,asofpos):
+        # move all shapes by delta_width after asofpos
+        for shape in self.model.shapelist:
+            if shape.Left > asofpos:
+                shape.Left -=delta_width
+
 
     def resizeColumn(self, col, width):
         """Resize a column by dragging"""
@@ -841,8 +847,16 @@ class TableCanvas(Canvas):
         #print 'resizing column', col
         #recalculate all col positions..
         colname=self.model.getColumnName(col)
+        
+        if colname in self.model.columnwidths:
+            old_width=self.model.columnwidths[colname]
+        else:
+            old_width = self.cellwidth      
+       
         self.model.columnwidths[colname]=width
         self.setColPositions()
+        col_pos=self.col_positions[col]
+        self.moveshapes(old_width-width,col_pos)
         self.redrawTable()
         self.drawSelectedCol(self.currentcol)
         return
@@ -2357,8 +2371,18 @@ class TableCanvas(Canvas):
                     if shape.ZOrder_Val==0:
                         self.tag_raise(shape.rectidx)
                     else:
-                        self.tag_lower(shape.rectidx)                    
-                    pass
+                        self.tag_lower(shape.rectidx)
+                    if shape.Width==None or shape.Height==None:
+                        self.coords(shape.rectidx,shape.Left, shape.Top)
+                    else:
+                        self.coords(shape.rectidx,shape.Left, shape.Top,shape.Left+shape.Width,shape.Top+shape.Height)
+                    if shape.textidx!=0:
+                        if shape.ZOrder_Val==0:
+                            self.tag_raise(shape.textidx)
+                        else:
+                            self.tag_lower(shape.textidx)
+                        self.coords(shape.textidx,int(shape.Left+shape.Width/2),int(shape.Top+shape.Height/2))
+                
                 #update shape
 
     def drawText(self, row, col, celltxt, fgcolor=None, align=None,font=None):

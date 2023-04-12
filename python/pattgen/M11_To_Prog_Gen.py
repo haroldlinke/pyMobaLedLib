@@ -10,7 +10,7 @@ import pattgen.M13_Goto_Act
 import pattgen.M06_Goto_Graph
 import pattgen.M14_Select_GotoAct
 import proggen.M50_Exchange as M50
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 import proggen.M06_Write_Header as M06
 
 """ Export macros to the Prog_Generator

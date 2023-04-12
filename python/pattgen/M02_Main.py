@@ -16,7 +16,7 @@ import pattgen.M14_Select_GotoAct
 import pattgen.M60_Select_LED
 import pattgen.M55_PWM_Data_Send
 import pattgen.D00_Forms as D00
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ Limmitted by the COUNT_VARARGS macro in MobaLedLib.h
 '# VB2PY (CheckDirective) VB2PY directive Ignore Text

@@ -80,7 +80,7 @@ import proggen.M30_Tools as M30
 #import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 PlatformKey_ROW = 3
 PlatformKey_COL = 3
@@ -253,7 +253,7 @@ def LastFilledRowIn_ChkAll(Sh):
     while First_Change_in_Line(with_variable2.Cells(Row, 1)):
         Row = Row - 1
         if Row == 0:
-            return fn_return_value
+            return 0
     fn_return_value = Row
     return fn_return_value
 

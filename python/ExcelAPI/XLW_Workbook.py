@@ -2029,17 +2029,25 @@ class CRange(str):
             self.ws.tablemodel = ActiveSheet.tablemodel
         max_cols = self.ws.tablemodel.getColumnCount()
         max_rows = self.ws.tablemodel.getRowCount()
-        if col < max_cols and row < max_rows:
+        if col <= max_cols and row <= max_rows:
             value = self.ws.tablemodel.getValueAt(row-1,col-1)
         else:
             value = ""
-        return value         
+        return value
 
     def set_value(self,value):
         row=self.start[0]
         col=self.start[1]        
         if self.ws.tablemodel == None:
             self.ws.tablemodel = ActiveSheet.tablemodel
+        if row >= self.ws.tablemodel.getRowCount():
+            #add rows
+            startrow = self.ws.tablemodel.getRowCount()-1
+            keys_Added = self.ws.tablemodel.autoAddRows(row-startrow)
+        if col >self.ws.tablemodel.getColumnCount():
+            #add columnsrows
+            pass
+        
         if row <=self.ws.tablemodel.getRowCount() and col <=self.ws.tablemodel.getColumnCount():
             curval = self.ws.tablemodel.getValueAt(row-1, col-1)
             if curval != value:
@@ -2047,6 +2055,8 @@ class CRange(str):
                 self.ws.table.event_row=row-1
                 self.ws.table.event_col=col-1
                 self.ws.Workbook.Synch_Evt_SheetChange(self.ws.table)
+           
+                
     Value = property(get_value, set_value, doc='value of first Cell in Range')
     
     def _Width(self):
@@ -2129,9 +2139,11 @@ class CRange(str):
         
     def check_if_empty_row(self):
         if self.ws.tablemodel == None:
-            self.ws.tablemodel = ActiveSheet.tablemodel        
-        cols = self.ws.tablemodel.getColumnCount()
+            self.ws.tablemodel = ActiveSheet.tablemodel
+        if self.Row > self.ws.tablemodel.getRowCount():
+            return True
         r=self.Row-1
+        cols = self.ws.tablemodel.getColumnCount()
         for c in range(0,cols):
             #absr = self.get_AbsoluteRow(r)
             val = self.ws.tablemodel.getValueAt(r,c)
@@ -2927,7 +2939,10 @@ class CShape(object):
     Left = property(get_left, set_left, doc='Shape-Left')
     
     def get_top(self):
-        return self.Top_val
+        if self.Tshape:
+            return self.Tshape.Top_val
+        else:
+            return self.Top_val
     
     def set_top(self, value):
         self.Top_val=value

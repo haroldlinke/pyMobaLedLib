@@ -46,7 +46,7 @@ import proggen.M09_Language as M09
 import proggen.M12_Copy_Prog as M12
 import proggen.M17_Import_old_Data as M17
 import ExcelAPI.XLW_Workbook as P01
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 import proggen.M22_Hide_UnHide as M22
 import proggen.M23_Add_Move_Del_Row as M23
 import proggen.M20_PageEvents_a_Functions as M20
@@ -361,7 +361,7 @@ def port_is_available(port):
         return port > 0
     elif type(port)==str or type(port)==P01.CRange:
         strport=str(port)
-        return not (strport.startswith("*") or strport=="COM?" or strport==" " or strport=="NO DEVICE")
+        return not (strport.startswith("*") or strport=="COM?" or strport==" " or strport=="NO DEVICE" or strport=="")
     return False
     
 def port_reset(port):

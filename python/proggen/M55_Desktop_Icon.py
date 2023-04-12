@@ -38,7 +38,7 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import ExcelAPI.XLW_Workbook as P01
 

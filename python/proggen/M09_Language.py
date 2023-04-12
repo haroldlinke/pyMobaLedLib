@@ -78,7 +78,7 @@ import proggen.M30_Tools as M30
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 
 """ Attention: One of the following preprcessor constants have to be defined in

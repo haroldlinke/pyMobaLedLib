@@ -78,7 +78,7 @@ import proggen.F00_mainbuttons as F00
 
 from ExcelAPI.XLC_Excel_Consts import *
 import ExcelAPI.XLW_Workbook as P01
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 import proggen.M09_Language as M09
 
 import logging

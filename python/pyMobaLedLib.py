@@ -64,8 +64,8 @@ from mlpyproggen.ColorCheckPage import ColorCheckPage
 #from mlpyproggen.EffectTestPage import EffectTestPage
 #from mlpyproggen.EffectMacroPage import EffectMacroPage
 from mlpyproggen.DCC_KeyboardPage import DCCKeyboardPage
-from proggen.Prog_Generator import Prog_GeneratorPage
-from pattgen.Pattern_Generator import Pattern_GeneratorPage
+from mlpyproggen.Prog_Generator import Prog_GeneratorPage
+from mlpyproggen.Pattern_Generator import Pattern_GeneratorPage
 import pattgen.MainMenu_Form as MainMenu
 from mlpyproggen.ServoTestPage import ServoTestPage
 from mlpyproggen.Z21MonitorPage import Z21MonitorPage
@@ -812,8 +812,8 @@ class pyMobaLedLibapp(tk.Tk):
     def startup_system(self):
         
         if True: #self.getConfigData("autoconnect"):
-            
-            if self.getConfigData("serportname").upper() == "NO DEVICE":
+            port_name = self.getConfigData("serportname").upper()
+            if port_name == "NO DEVICE" or port_name=="":
                 logging.debug("Portname: No DEVICE - show message")
                 macrodata = self.MacroDef.data.get("StartPage")
                 msg_no_device_title = macrodata.get("MSG_NO_DEVICE_title","")
@@ -965,7 +965,7 @@ class pyMobaLedLibapp(tk.Tk):
                 self.ARDUINO_current_portname = port
                 
                 for key in self.tabdict:
-                    self.tabdict[key].connect()
+                    self.tabdict[key].connect(port)
                     
                     
                 port_dcc_data = self.serial_port_dict.get(str(port),{})
@@ -1127,9 +1127,9 @@ class pyMobaLedLibapp(tk.Tk):
     def connect_if_not_connected(self):
         logging.debug("Connect_if_not_connected")
         if self.arduino:
-            return True
-        else:
-            return self.connect()
+            if self.arduino.isOpen():
+                return True
+        return self.connect()
 
     def checkconnection(self):
         #logging.debug("Check_connection")

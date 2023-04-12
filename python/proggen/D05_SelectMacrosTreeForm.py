@@ -40,7 +40,7 @@ from tkinter import ttk
 from tkinter.font import Font
 # fromx PIL import Image, ImageTk
 import uuid
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import proggen.M02_Public as M02
 import proggen.M03_Dialog as M03
@@ -64,7 +64,7 @@ import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 #import proggen.D09_StatusMsg_Userform as D09
 

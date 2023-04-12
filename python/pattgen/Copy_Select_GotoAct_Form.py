@@ -3,7 +3,7 @@ from vb2py.vbdebug import *
 import ExcelAPI.XLW_Workbook as X02
 import pattgen.M14_Select_GotoAct
 import pattgen.M30_Tools as M30
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ Select_GotoAct_Form
  ~~~~~~~~~~~~~~~~~

@@ -6,7 +6,7 @@ import ExcelAPI.XLC_Excel_Consts as X01
 import pattgen.M01_Public_Constants_a_Var as M01
 import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M09_Language as M09
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 import os
 
 """ Used with GetAsyncKeyState

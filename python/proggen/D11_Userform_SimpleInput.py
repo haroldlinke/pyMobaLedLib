@@ -36,7 +36,7 @@ from vb2py.vbdebug import *
 
 import tkinter as tk
 from tkinter import ttk
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 import proggen.M09_Language as M09
 
 class UserForm_SimpleInput:
