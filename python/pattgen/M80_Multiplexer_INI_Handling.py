@@ -14,7 +14,7 @@ import pattgen.M07_Save_Sheet_Data
 import pattgen.M12_Copy_Prog
 import pattgen.M08_Load_Sheet_Data
 import pattgen.D00_Forms as D00
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 import proggen.M02_Public as M02
 
 """--------------------------------------------------------------------------------------------'

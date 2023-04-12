@@ -6,7 +6,7 @@ import pattgen.M30_Tools as M30
 import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M03_Analog_Trend
 import pattgen.M05_Goto_Gr_Calc_Height
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ Number of Goto start points which is updated when Draw_All_Arrows is called
 -----------------------------

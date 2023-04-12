@@ -69,7 +69,7 @@ import proggen.M30_Tools as M30
 #import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 """ https://wellsr.com/vba/2019/excel/vba-playsound-to-play-system-sounds-and-wav-files/
 # VB2PY (CheckDirective) VB directive took path 1 on VBA7

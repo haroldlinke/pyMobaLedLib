@@ -63,7 +63,7 @@ import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import ExcelAPI.XLW_Workbook as P01
 
@@ -341,6 +341,7 @@ def __Read_Line(line):
     Col = Long()
 
     i = Long()
+    #print("__Read_line:",line)
     #----------------------------------------------------
     Parts = Split(line, vbTab)
     if Page_ID != __Import_Page_ID:

@@ -295,7 +295,7 @@ class ARDUINOConfigPage(tk.Frame):
         logging.debug("MenuRedo: %s",self.tabname)
         pass
     
-    def connect (self):
+    def connect (self,port):
         pass
     
     def disconnect (self):

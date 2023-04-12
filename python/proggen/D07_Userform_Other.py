@@ -44,7 +44,7 @@ from mlpyproggen.tooltip import Tooltip
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import proggen.M02_Public as M02
 import proggen.M03_Dialog as M03

@@ -12,7 +12,7 @@ import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M60_Select_LED
 import pattgen.M11_To_Prog_Gen
 import pattgen.M06_Goto_Graph
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ Send data over the WS281x LED protokol
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

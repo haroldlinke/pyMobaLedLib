@@ -48,7 +48,7 @@ import proggen.M25_Columns as M25
 import proggen.M02_Public as M02
 import proggen.M09_Language as M09
 import proggen.M30_Tools as M30
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 
 """--------------------------------------------------------------

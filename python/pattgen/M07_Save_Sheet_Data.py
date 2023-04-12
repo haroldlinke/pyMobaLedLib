@@ -8,7 +8,7 @@ import ExcelAPI.XLW_Workbook as X02
 import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M09_Language as M09
 import pattgen.M08_Load_Sheet_Data
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 import pattgen.D00_Forms as D00
 
 """ Concept for saving pictures:                                           12.07.20:
@@ -127,9 +127,9 @@ def Find_Row_with_Txt_in_Col(Sh, Col, Txt):
 def Print_Typ_and_Pos(FileNr, TypeName, o, pstr=''):
     #--------------------------------------------------------------------------------------------------------------
     if o.Rotation == 0:
-        VBFiles.writeText(FileNr, TypeName + Chr(M01.pcfSep) + str(o.Left) + ';' + str(o.Top) + ';' + str(o.Width) + ';' + str(o.Height))
+        VBFiles.writeText(FileNr, TypeName + Chr(M01.pcfSep) + str(o.Left/X02.guifactor) + ';' + str(o.Top/X02.guifactor) + ';' + str(o.Width/X02.guifactor) + ';' + str(o.Height/X02.guifactor))
     else:
-        VBFiles.writeText(FileNr, TypeName + Chr(M01.pcfSep) + str(o.Left) + ';' + str(o.Top) + ';' + str(o.Width) + ';' + str(o.Height) + ';' + str(o.Rotation))
+        VBFiles.writeText(FileNr, TypeName + Chr(M01.pcfSep) + str(o.Left/X02.guifactor) + ';' + str(o.Top/X02.guifactor) + ';' + str(o.Width/X02.guifactor) + ';' + str(o.Height/X02.guifactor) + ';' + str(o.Rotation))
         # Added .Rotation by Misha 30-6-2020.
     #The Print command always uses the decimal point undependent form the user options.
     if pstr != '':
@@ -348,7 +348,7 @@ def Get_TextBoxAttrib(o):
         if c.Font.Fill.ForeColor.rgb != ForColor or i == Len(o.TextFrame.Characters.Text):
             # 19.10.19:
             if ColorStart > 0:
-                _fn_return_value = Get_TextBoxAttrib() + 'F' + ColorStart + ',' + i - 1 + ',' + ForColor + ' '
+                _fn_return_value = _fn_return_value + 'F' + ColorStart + ',' + i - 1 + ',' + ForColor + ' '
             if c.Font.Fill.ForeColor.rgb != rgb(0, 0, 0):
                 ColorStart = i
             else:
@@ -360,10 +360,10 @@ def Get_TextBoxAttrib(o):
                 IsBold = True
         else:
             if IsBold:
-                _fn_return_value = Get_TextBoxAttrib() + 'B' + BoldStart + ',' + i - 1 + ' '
+                _fn_return_value = _fn_return_value + 'B' + BoldStart + ',' + i - 1 + ' '
                 IsBold = False
-    if Get_TextBoxAttrib() != '':
-        _fn_return_value = '{Attrib}' + Left(Get_TextBoxAttrib(), Len(Get_TextBoxAttrib()) - 1)
+    if _fn_return_value != '':
+        _fn_return_value = '{Attrib}' + Left(_fn_return_value, Len(_fn_return_value) - 1)
     return _fn_return_value
 
 def Save_Objects(FileNr, DestPath):

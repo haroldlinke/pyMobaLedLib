@@ -670,7 +670,7 @@ class Z21MonitorPage(tk.Frame):
         pass
         self.stop_process_Z21()
         
-    def connect (self):
+    def connect (self,port):
         pass
         #self.start_process_Z21()
     

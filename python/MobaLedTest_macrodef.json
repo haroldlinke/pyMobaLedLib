@@ -32,11 +32,11 @@
         "Kurzbeschreibung": "Einstellungsparameter",
         "Ausführliche Beschreibung": "Hier können Sie die Einstellungen für die ARDUINO IDE vornehmen. Dies wird hauptsächlich für LINUX benötigt.",
         "Params": [
-            "!ARDUINOConnected",
-            "!ARDUINOMessage",
-            "!ARDUINODetect",
-            "!ARDUINOParams",
-            "!ARDUINOMobaLedLib"
+            "ARDUINOConnected",
+            "ARDUINOMessage",
+            "ARDUINODetect",
+            "ARDUINOParams",
+            "ARDUINOMobaLedLib"
         ]
     },
     "ARDUINOMonitorPage": {

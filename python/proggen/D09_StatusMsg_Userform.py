@@ -44,7 +44,7 @@ from tkinter import ttk
 # fromx tkcolorpicker.spinbox import Spinbox
 # fromx tkcolorpicker.limitvar import LimitVar
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 #import proggen.M02_Public as M02
 #import proggen.M03_Dialog as M03

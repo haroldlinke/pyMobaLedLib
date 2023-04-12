@@ -212,7 +212,7 @@ class StartPage(tk.Frame):
     def send_command_to_ARDUINO(self,command):
         pass
 
-    def connect(self):
+    def connect(self,port):
         pass
 
     def disconnect(self):

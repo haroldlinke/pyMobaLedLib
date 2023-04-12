@@ -38,7 +38,7 @@ from vb2py.vbconstants import *
 import tkinter as tk
 from tkinter import ttk
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import proggen.M02_Public as M02
 import proggen.M03_Dialog as M03

@@ -3,7 +3,7 @@ from vb2py.vbdebug import *
 import ExcelAPI.XLWA_WinAPI as X03
 import ExcelAPI.XLW_Workbook as X02
 import pattgen.M01_Public_Constants_a_Var as M01
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ Mouse wheel support for list boxes
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

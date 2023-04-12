@@ -33,7 +33,7 @@
 # ***************************************************************************
 import tkinter as tk
 from tkinter import ttk
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 from vb2py.vbconstants import *
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *

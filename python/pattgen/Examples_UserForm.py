@@ -32,7 +32,7 @@
 # *
 # ***************************************************************************
 import tkinter as tk
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLF_FormGenerator as XLF
 import ExcelAPI.XLW_Workbook as X02
 
@@ -42,7 +42,7 @@ from vb2py.vbdebug import *
 import ExcelAPI.XLW_Workbook as X02
 import pattgen.M30_Tools as M30
 import pattgen.M01_Public_Constants_a_Var as M01
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 import proggen.M09_Language as M09
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27

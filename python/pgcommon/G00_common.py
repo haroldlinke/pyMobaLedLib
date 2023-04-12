@@ -38,7 +38,7 @@ import tkinter as tk
 from tkinter import ttk
 import sys
 import ExcelAPI.XLW_Workbook as X02
-#import pattgen.Pattern_Generator as PG
+#import mlpyproggen.Pattern_Generator as PG
 import pattgen.M09_Language as M09
 
 #**************************

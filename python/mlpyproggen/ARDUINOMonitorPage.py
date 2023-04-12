@@ -171,7 +171,7 @@ class ARDUINOMonitorPage(tk.Frame):
         logging.debug("ReUndo: %s",self.tabname)
         pass
     
-    def connect(self):    
+    def connect(self,port):    
         pass
     
     def disconnect(self):

@@ -413,7 +413,7 @@ class Prog_GeneratorPage(tk.Frame):
     def MenuRedo(self,_event=None):
         pass
 
-    def connect(self):
+    def connect(self,port):
         pass
 
     def disconnect(self):

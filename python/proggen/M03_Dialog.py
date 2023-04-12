@@ -44,7 +44,7 @@ import proggen.D01_Userform_DialogGuide1 as D01
 import proggen.D03_Userform_Description as D03
 import proggen.D04_Userform_Connector as D04
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 #import proggen.M02_Public as M02
 import proggen.M02_global_variables as M02GV

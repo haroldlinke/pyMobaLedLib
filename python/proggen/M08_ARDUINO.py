@@ -90,7 +90,7 @@ import  proggen.F00_mainbuttons as F00
 
 import ExcelAPI.XLW_Workbook as P01
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 """ Die MobaLedLib wird nur dann Installiert wenn sie nicht vorhanden ist
  - Das Excel sheet würde sich selber überschreiben

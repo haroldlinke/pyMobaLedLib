@@ -3,7 +3,7 @@ from vb2py.vbdebug import *
 import pattgen.M02_Main as M02a
 import ExcelAPI.XLW_Workbook as X02
 import pattgen.M01_Public_Constants_a_Var as M01
-import pattgen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 """ The constant "USE_SHAPE_MOVE_EVENT" has to be enabled in "Extras/Eigenschaften" in the VBA Editor
 # VB2PY (CheckDirective) VB directive took path 2 on USE_SHAPE_MOVE_EVENT

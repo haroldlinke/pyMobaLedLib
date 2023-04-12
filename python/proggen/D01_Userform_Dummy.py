@@ -32,7 +32,7 @@
 # *
 # ***************************************************************************
 import tkinter as tk
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 class UserForm_DialogGuide1:
     def __init__(self, value, title, labeltext = '' ):
