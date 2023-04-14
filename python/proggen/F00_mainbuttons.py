@@ -361,7 +361,10 @@ def port_is_available(port):
         return port > 0
     elif type(port)==str or type(port)==P01.CRange:
         strport=str(port)
-        return not (strport.startswith("*") or strport=="COM?" or strport==" " or strport=="NO DEVICE" or strport=="")
+        port_available = not (strport.startswith("*") or strport=="COM?" or strport==" " or strport=="NO DEVICE" or strport=="")
+        if port_available:
+            pass
+        return port_available
     return False
     
 def port_reset(port):

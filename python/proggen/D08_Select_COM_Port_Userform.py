@@ -371,25 +371,25 @@ class CSelect_COM_Port_UserForm:
         
         self.Red_Hint_Label = ttk.Label(self.top, text=Red_Hint,font=("Tahoma", 11),foreground="#FF0000",width=20,wraplength=125,relief=tk.FLAT, borderwidth=1)
         self.Red_Hint_Label.grid(row=0,column=2,columnspan=1,rowspan=2,sticky="ne",padx=10,pady=10)
-         
-        self.Com_Port_Label = ttk.Combobox(self.top, width=30,font=("Tahoma", 11))
-        self.Com_Port_Label.grid(row=3,column=0,sticky="nesw",padx=10,pady=10)
-        
-        self.Com_Port_Label ["value"] = ["valuelist"]
-        self.Com_Port_Label.set(0)
-        
-        self.Show_Unknown_CheckBox_var = tk.IntVar(master=self.top)
-        self.Show_Unknown_CheckBox_var.set(0)
-
-        self.Show_Unknown_CheckBox = tk.Checkbutton(self.top, text=M09.Get_Language_Str("Unbekante Ports anzeigen"),width=30,wraplength = 200,anchor="w",variable=self.Show_Unknown_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
-        self.Show_Unknown_CheckBox.grid(row=4, column=0, columnspan=2,sticky="nesw", padx=2, pady=2)
-        
-        self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=("Tahoma", 11),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
-        self.Hint_Label.grid(row=7,column=0,columnspan=2,rowspan=2,sticky="nesw",padx=10,pady=10)
-        
-        self.AvailPorts_Label = ttk.Label(self.top, text="",font=("Tahoma", 11),width=30, wraplength=350,relief=tk.FLAT, borderwidth=1)
-        self.AvailPorts_Label.grid(row=5,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
-        
+        if Show_ComPort: 
+            self.Com_Port_Label = ttk.Combobox(self.top, width=30,font=("Tahoma", 11))
+            self.Com_Port_Label.grid(row=3,column=0,sticky="nesw",padx=10,pady=10)
+            
+            self.Com_Port_Label ["value"] = ["valuelist"]
+            self.Com_Port_Label.set(0)
+            
+            self.Show_Unknown_CheckBox_var = tk.IntVar(master=self.top)
+            self.Show_Unknown_CheckBox_var.set(0)
+    
+            self.Show_Unknown_CheckBox = tk.Checkbutton(self.top, text=M09.Get_Language_Str("Unbekante Ports anzeigen"),width=30,wraplength = 200,anchor="w",variable=self.Show_Unknown_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
+            self.Show_Unknown_CheckBox.grid(row=4, column=0, columnspan=2,sticky="nesw", padx=2, pady=2)
+            
+            self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=("Tahoma", 11),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+            self.Hint_Label.grid(row=7,column=0,columnspan=2,rowspan=2,sticky="nesw",padx=10,pady=10)
+            
+            self.AvailPorts_Label = ttk.Label(self.top, text="",font=("Tahoma", 11),width=30, wraplength=350,relief=tk.FLAT, borderwidth=1)
+            self.AvailPorts_Label.grid(row=5,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
+            
         # crate buttons
         self.buttonlist = Buttons.split(";")
         
@@ -424,7 +424,8 @@ class CSelect_COM_Port_UserForm:
         __LocalPrintDebug = PrintDebug
         __OldSpinButton = - 1
         Pressed_Button = 0
-        self.Update_SpinButton(ComPort_IO)
+        if Show_ComPort:
+            self.Update_SpinButton(ComPort_IO)
         #SpinButton.Visible = Show_ComPort
         #if Show_ComPort:
         #    SpinButton.setFocus()
