@@ -711,7 +711,7 @@ class CWorkbook(object):
             #print ('file does not exist')
             return
         if filename:
-            self.LoadWorkbook(filename)
+            self.LoadWorkbook(filename,workbookname=self.Name)
         return
     
     def LoadPCF(self,filename=None):
@@ -744,6 +744,7 @@ class CWorkbook(object):
         try:
             saveData={}
             saveData["Version"]=self.controller.ProgVersion
+            saveData["DataVersion"] = self.controller.DataVersion
             saveData["Workbookdata"]=workbookdata
             pickle.dump(saveData,fd)
             fd.close()
@@ -752,7 +753,7 @@ class CWorkbook(object):
             logging.debug("Save Workbook Error: "+filename)            
         return
     
-    def LoadWorkbook(self,filename):
+    def LoadWorkbook(self,filename,workbookname=""):
         if shift_key:
             logging.debug("Load Workbook: Shift Key pressed:"+filename+" not loaded")
             return
@@ -765,7 +766,14 @@ class CWorkbook(object):
             with open(filename, "rb") as read_file:
                 savedData = pickle.load(read_file)
                 logging.debug("Load Workbook:"+filename)
-                logging.debug("FileVersion:"+savedData["Version"])
+                logging.debug("FileVersion:"+savedData.get("Version","000"))
+                dataversion = savedData.get("DataVersion","000")
+                if workbookname=="ProgGenerator":
+                    if int(dataversion) < int(self.controller.ProgGenMinDataVersion):
+                        return
+                elif workbookname =="PatternWorkbook":
+                    if int(dataversion) < int(self.controller.PattGenMinDataVersion):
+                        return                    
                 workbookdata= savedData["Workbookdata"]
                 for sheetname in workbookdata.keys():
                     sheet = self.Sheets(sheetname)

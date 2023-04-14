@@ -74,7 +74,7 @@ from mlpyproggen.StartPage import StartPage
 #from mlpyproggen.LEDListPage import LEDListPage
 from mlpyproggen.SoundCheckPage import SoundCheckPage
 from mlpyproggen.tooltip import Tooltip
-from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PALETTE, DEFAULT_PARAM, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, SIZEFACTOR,\
+from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PALETTE, DEFAULT_PARAM, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, DATA_VERSION, ProgGen_Min_Data_Version, Pattgen_Min_Data_Version, SIZEFACTOR,\
 PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1, SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ,DEBUG
 #from mlpyproggen.LedEffectTable import ledeffecttable_class
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,ScrolledFrame,HorizontalScrolledFrame
@@ -290,6 +290,9 @@ class pyMobaLedLibapp(tk.Tk):
         self.palette = {}
         self.connection_startup = False
         self.ProgVersion = PROG_VERSION
+        self.DataVersion = DATA_VERSION
+        self.ProgGenMinDataVersion = ProgGen_Min_Data_Version
+        self.PattGenMinDataVersion = Pattgen_Min_Data_Version
 
         tk.Tk.__init__(self, *args, **kwargs)
         tk.Tk.report_callback_exception = self.show_tkinter_exception
@@ -812,8 +815,8 @@ class pyMobaLedLibapp(tk.Tk):
     def startup_system(self):
         
         if True: #self.getConfigData("autoconnect"):
-            port_name = self.getConfigData("serportname").upper()
-            if port_name == "NO DEVICE" or port_name=="":
+            port_name = self.getConfigData("serportname")
+            if port_name.upper() == "NO DEVICE" or port_name=="":
                 logging.debug("Portname: No DEVICE - show message")
                 macrodata = self.MacroDef.data.get("StartPage")
                 msg_no_device_title = macrodata.get("MSG_NO_DEVICE_title","")
@@ -827,7 +830,8 @@ class pyMobaLedLibapp(tk.Tk):
                     ComPort=" "
                     res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
                     self.setConfigData("serportname",ComPort)
-                    #self.showFramebyName("ARDUINOConfigPage") 
+                    #self.showFramebyName("ARDUINOConfigPage")
+                    self.connect()
             else:
                 self.connect()
         
@@ -882,13 +886,19 @@ class pyMobaLedLibapp(tk.Tk):
                     ComPortColumn = M25.COMPort_COL
                     ComPort=" "
                     res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
-                    self.setConfigData("serportname",ComPort)
-                    #self.connect()
-                    #self.showFramebyName("ARDUINOConfigPage")                 
-                self.arduino = None
-                self.ARDUINO_status = ""
-                self.set_connectstatusmessage("Nicht Verbunden",fg="black")
-                return False
+                    if res:
+                        return self.connect(port=ComPort)
+                    else:
+                        self.arduino = None
+                        self.ARDUINO_status = ""
+                        self.set_connectstatusmessage("Nicht Verbunden",fg="black")
+                        return False                        
+                    #self.showFramebyName("ARDUINOConfigPage") 
+                else:
+                    self.arduino = None
+                    self.ARDUINO_status = ""
+                    self.set_connectstatusmessage("Nicht Verbunden",fg="black")
+                    return False
             # reset ARDUINO
             try:
                 #self.arduino.dtr = True
@@ -1413,6 +1423,8 @@ class pyMobaLedLibapp(tk.Tk):
             logging.debug("PyInstaller handling Error %s",e)            
         
     def setConfigData(self,key, value):
+        if key=="serportname":
+            print("setconfigdata:", key,value)
         self.ConfigData.data[key] = value
         
     def setConfigDataDict(self,param_dict):
