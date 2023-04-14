@@ -1442,8 +1442,8 @@ def Upload_the_Right_Arduino_Prog_if_needed():
             if F00.port_is_available(P01.Cells(M02.SH_VARS_ROW, M25.COMPort_COL).Value):
                 P01.CellDict[M02.SH_VARS_ROW, M25.COMPort_COL] = F00.port_set_busy(P01.Cells(M02.SH_VARS_ROW, M25.COMPort_COL).Value)
                 # Force to show the COM port dialog for the left Arduino            
-    else:
-        P01.CellDict[M02.SH_VARS_ROW, M25.R_UPLOD_COL] = 'R OK'
+        else:
+            P01.CellDict[M02.SH_VARS_ROW, M25.R_UPLOD_COL] = 'R OK'
     fn_return_value = True
     return fn_return_value
 
