@@ -963,7 +963,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
         # 04.05.20: Added: Or Val(Addr) < 0 to fix problems with the error returned by Get_First_Number_of_P01.Range() (Mail from Jürgen)
     if isSX:
         if P01.Cells(Row, M25.SX_Bitposi_Col) != '':
-            BitPos = P01.Cells(Row, M25.SX_Bitposi_Col)
+            BitPos = int(P01.Cells(Row, M25.SX_Bitposi_Col))
         if ( BitPos < 1 or BitPos > 8 ) :
             return
         Addr = Addr * 8 +  ( BitPos - 1 )
@@ -1030,8 +1030,8 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
             objButton = P01.ActiveSheet.Shapes.AddShape(msoShapeRectangle, objButton_Left, objButton_Top, objButton_Height, objButton_Width, Fill="#FF0000", name=objButton_Name)
         
         if P01.Cells(Row, M25.Inp_Typ_Col).Text == M09.OnOff_T:
-            if objButton.TextFrame2.TextRange.Text != TextOffset:
-                objButton.TextFrame2.TextRange.Text = TextOffset
+            if objButton.TextFrame2.TextRange.Text != str(TextOffset):
+                objButton.TextFrame2.TextRange.Text = str(TextOffset)
         else:
             if objButton.TextFrame2.TextRange.Text != ' ':
                 objButton.TextFrame2.TextRange.Text = ' '

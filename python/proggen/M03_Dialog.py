@@ -191,7 +191,7 @@ def Input_Address():
         Adresses_Channels = M09.Get_Language_Str('Adressen')
     if M25.Page_ID == 'CAN':
         MaxVal = 65535
-        MinVal = 1 #*HL
+        MinVal = 1 #*HL10
         # ??
     Inp = M25.Get_First_Number_of_Range(P01.ActiveCell().Row, M25.DCC_or_CAN_Add_Col + M25.SX_Channel_Col)
     while 1:
