@@ -45,7 +45,7 @@ class UserForm_DialogGuide1:
 
  
     def ok(self, event=None):
-        print ("Has escrito ...", self.e.get())
+        #print ("Has escrito ...", self.e.get())
         #self.valor.set(self.e.get())
         self.IsActive = False
         self.top.destroy()

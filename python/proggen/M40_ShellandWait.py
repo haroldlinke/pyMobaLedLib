@@ -174,6 +174,7 @@ def ShellAndWait(ShellCommand, TimeOutSeconds, ShellWindowState, BreakKey):
         return Timeout
     
     except Exception as error:
+        logging.debug("ShellandWait - "+str(error))
         print(error)
         return Failure
         

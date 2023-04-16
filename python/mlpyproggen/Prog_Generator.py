@@ -573,7 +573,7 @@ class Prog_GeneratorPage(tk.Frame):
         #---------------------------------------------------------
         #global Start_Compile_Time
         # Is called by OnTime
-        print(P01.Format(int(time.time()), 'hh:mm:ss')," write_update_compile_time")
+        #print(P01.Format(int(time.time()), 'hh:mm:ss')," write_update_compile_time")
         if self.Start_Compile_Time != 0 or Start:
             if Start:
                 self.Start_Compile_Time = int(time.time())
