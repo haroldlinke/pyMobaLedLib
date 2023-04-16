@@ -39,23 +39,24 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
-#from proggen.M02_Public import *
-#from proggen.M06_Write_Header_LED2Var import *
-#from proggen.M06_Write_Header_Sound import *
-#from proggen.M06_Write_Header_SW import *
-#from proggen.M08_ARDUINO import *
-#from proggen.M09_Language import *
-#from proggen.M09_Select_Macro import *
-#from proggen.M20_PageEvents_a_Functions import Update_Start_LedNr
-#from proggen.M25_Columns import *
-#from proggen.M28_divers import *
-#from proggen.M30_Tools import *
-#from proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M02_Public import *
+# fromx proggen.M06_Write_Header_LED2Var import *
+# fromx proggen.M06_Write_Header_Sound import *
+# fromx proggen.M06_Write_Header_SW import *
+# fromx proggen.M08_ARDUINO import *
+# fromx proggen.M09_Language import *
+# fromx proggen.M09_Select_Macro import *
+# fromx proggen.M20_PageEvents_a_Functions import Update_Start_LedNr
+# fromx proggen.M25_Columns import *
+# fromx proggen.M28_divers import *
+# fromx proggen.M30_Tools import *
+# fromx proggen.M80_Create_Mulitplexer import *
 
-#from ExcelAPI.P01_Workbook import *
-#from mlpyproggen.F_UserForm_Header_Created import *
+# fromx ExcelAPI.X02_Workbook import *
+# fromx mlpyproggen.F_UserForm_Header_Created import *
 
 import proggen.M02_Public as M02
+import proggen.M02a_Public as M02a
 #import proggen.M03_Dialog as M03
 import proggen.M06_Write_Header_LED2Var as M06LED
 import proggen.M06_Write_Header_Sound as M06Sound
@@ -78,9 +79,10 @@ import proggen.M39_Simulator as M39
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
+import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
-from ExcelAPI.X01_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
 
 """ Todo:
 
@@ -463,7 +465,8 @@ def Generate_Config_Line(LEDNr, Channel_or_define, r, Config_Col, Addr):
             return fn_return_value
         
         if M38.IsExtensionKey(Cmd):
-            if not M38.Add_Extension_Entry(Cmd):
+            res,Cmd = M38.Add_Extension_Entry(Cmd) #*HL ByRef
+            if not res:
                 fn_return_value = '#ERROR#'
                 P01.Cells(r, M25.Config__Col).Select()
             return fn_return_value        
@@ -511,6 +514,7 @@ def Generate_Config_Line(LEDNr, Channel_or_define, r, Config_Col, Addr):
 def Get_Typ_Const(Inp_Typ):
 #----------------------------------------------------------------
     M09.Set_Tast_Txt_Var()
+    Inp_Typ = str(Inp_Typ)
     if (Inp_Typ == M09.OnOff_T):
         fn_return_value = 'S_ONOFF,'
     elif (Inp_Typ == M09.Red_T):
@@ -891,7 +895,7 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
     
     # 04.03.22 Juergen: If shift key is pressed to configuration is sent to the simulator only, also if Autostart Option 3  = simulatorOnly
     shift_pressed = P01.GetAsyncKeyState(P01.__VK_SHIFT)
-    print("Shift_pressed:",shift_pressed)
+    Debug.Print("Shift_pressed: %s",shift_pressed)
     
     # 17.03.22 Juergen: shift key is reverses simualtor option
     #SimulatorOnly = Get_Num_Config_Var_Range("SimAutostart", 0, 3, 0) = 3 and GetAsyncKeyState(VK_SHIFT) = 0
@@ -902,7 +906,7 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
       
     #If SimulatorOnly And CreateFilesOnly = False And Get_BoardTyp() = "AM328" Then    
     
-    if SimulatorOnly and CreateFilesOnly == False and M02.Get_BoardTyp() == 'AM328':
+    if SimulatorOnly and CreateFilesOnly == False and M02a.Get_BoardTyp() == 'AM328':
         Debug.Print(" go to UploadToSimulator")
         fn_return_value = M39.UploadToSimulator(True)
         return fn_return_value
@@ -920,13 +924,13 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
                             SX_Ch = M25.Get_First_Number_of_Range(r, M25.SX_Channel_Col)
                             # ToDo: SX_Ch wird nur dann aktualisiert wenn Bit pos vorhanden ist und InCnt > 0. Ist das gut ?
                         if SX_Ch >= 0 and SX_Ch <= 99:
-                            if Bit_P >= 1 and Bit_P <= 8:
-                                Addr = SX_Ch * 8 + Bit_P - 1
-                                AddrComment = 'SX ' + M30.AddSpaceToLenLeft(SX_Ch, 2) + ',' + Bit_P + ': '
+                            if int(Bit_P) >= 1 and int(Bit_P) <= 8:
+                                Addr = SX_Ch * 8 + int(Bit_P) - 1
+                                AddrComment = 'SX ' + M30.AddSpaceToLenLeft(SX_Ch, 2) + ',' + str(Bit_P) + ': '
                             else:
-                                Add_to_Err(P01.Cells(r, M25.SX_Bitposi_Col), 'Wrong bitpos " & bp & " in row ' + r)
+                                Add_to_Err(P01.Cells(r, M25.SX_Bitposi_Col), 'Wrong bitpos " & bp & " in row ' + str(r))
                         else:
-                            Add_to_Err(P01.Cells(r, M25.SX_Channel_Col), 'Wrong SX channel in row ' + r)
+                            Add_to_Err(P01.Cells(r, M25.SX_Channel_Col), 'Wrong SX channel in row ' + str(r))
                 else:
                     if M25.Page_ID == 'DCC':
                         MaxAddr = 10240
@@ -1016,24 +1020,25 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     if Err != '':
         P01.MsgBox(Err + vbCr + vbCr + M09.Get_Language_Str('Ein neues Header file wurde nicht generiert!'), vbCritical, M09.Get_Language_Str('Es sind Fehler aufgetreten'))
         return fn_return_value
-    Name = P01.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + M02.Include_FileName
+    Name = PG.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + M02.Include_FileName
     Debug.Print("Write_Header - Filename:"+Name)
     Ext_AddrTxt=DelTailingEmptyLines(Ext_AddrTxt)
     Store_ValuesTxt=DelTailingEmptyLines(Store_ValuesTxt)
     InChTxt=DelTailingEmptyLines(InChTxt)
     InChTxt, Channel = M06SW.Create_Loc_InCh_Defines(InChTxt, Channel, LocInChNr)
-    p = InStrRev(P01.ThisWorkbook.Path, '/')
+    p = InStrRev(PG.ThisWorkbook.Path, '/')
     if p == 0:
-        p = InStrRev(P01.ThisWorkbook.Path, '/')
+        p = InStrRev(PG.ThisWorkbook.Path, '/')
     if p > 0:
-        ShortPath = Mid(P01.ThisWorkbook.Path, p + 1, 255) + ' '
+        pass #ShortPath = Mid(PG.ThisWorkbook.Path, p + 1, 255) + ' '
+    ShortPath = "Ver_"+ M02.Lib_Version_Nr+" "
     fp = FreeFile()
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
     #try:
     VBFiles.openFile(fp, Name, 'w') 
     VBFiles.writeText(fp, '// This file contains the ' + M25.Page_ID + ' and LED definitions.', '\n')
     VBFiles.writeText(fp, '//', '\n')
-    VBFiles.writeText(fp, '// It was automatically generated by the program ' + P01.ThisWorkbook.Name + ' ' + M02.Prog_Version + '      by Hardi', '\n')
+    VBFiles.writeText(fp, '// It was automatically generated by the program ' + PG.ThisWorkbook.Name + ' ' + M02.Prog_Version + '      by Hardi', '\n')
     VBFiles.writeText(fp, '// File creation: ' + P01.Date_str() + ' ' + P01.Time_str(), '\n')
     VBFiles.writeText(fp, '// (Attention: The display in the Arduino IDE is not updated if Options/External Editor is disabled)', '\n')
     VBFiles.writeText(fp, '', '\n')
@@ -1091,7 +1096,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     VBFiles.writeText(fp, '', '\n')
     Color_Test_Mode = M28.Get_String_Config_Var('Color_Test_Mode')
     select_variable_ = Left(UCase(Color_Test_Mode), 1)
-    if (select_variable_ == 'J') or (select_variable_ == 'Y') or (select_variable_ == '1'):
+    if True: #*HL (select_variable_ == 'J') or (select_variable_ == 'Y') or (select_variable_ == '1'):
         VBFiles.writeText(fp, '#define RECEIVE_LED_COLOR_PER_RS232' + vbCr, '\n')
     if M28.Get_Bool_Config_Var('USE_SPI_Communication') or M25.Page_ID == 'CAN':
         if M28.Get_Bool_Config_Var('USE_SPI_Communication'):
@@ -1254,7 +1259,8 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     if Channel - 1 > 250:
         P01.MsgBox(M09.Get_Language_Str('Fehler: Die Anzahl der verwendeten Eingangskanäle ist zu groß!' + vbCr + 'Es sind maximal 250 verfügbar. Die Konfiguration enthält aber ') + str(Channel - 1) + '.' + vbCr + vbCr + M09.Get_Language_Str('Die Eingangskanäle werden zum einlesen von DCC, Selectrix und CAN Daten benutzt. ' + vbCr + 'Außerdem werden sie als interne Zwischenspeicher benötigt.'), vbCritical, M09.Get_Language_Str('Anzahl der InCh Variablen überschritten'))
         M30.EndProg()
-    if ConfigTxt == '':
+        
+    if ConfigTxt == "" and ExtensionsActiveCount == 0:                       # 17.04.22: Juergen improve empty configuration warning
         P01.MsgBox(M09.Get_Language_Str('Achtung: Es ist keine einzige Zeile in der Spalte "Beleuchtung, Sound, oder andere Effekte" aktiv!' + vbCr + '=> Das Programm wird keine LEDs ansteuern'), vbCritical, M09.Get_Language_Str('Achtung: Die Konfiguration ist leer'))
         #*HLUserForm_Header_Created.DontShowAgain = False
     P01.Application.StatusBar = Time + M09.Get_Language_Str(': Header Datei \'') + Name + M09.Get_Language_Str('\' wurde erzeugt')

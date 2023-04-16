@@ -36,7 +36,7 @@ from vb2py.vbdebug import *
 
 import tkinter as tk
 from tkinter import ttk
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 import proggen.M09_Language as M09
 
 
@@ -70,9 +70,7 @@ class UserForm_Description:
         
         self.TextBox = tk.Text(self.top,height=20,width=40,wrap="word")
         self.TextBox.insert("end",Txt)
-        
-        self.top.grab_set()
-        
+
         self.top.resizable(False, False)  # This code helps to disable windows from resizing
         
         window_height = 800
@@ -87,7 +85,7 @@ class UserForm_Description:
         x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
         y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
         
-        self.top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))                 
+        self.top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))     
         
         if len(self.title) > 0: self.top.title(self.title)
         self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=("Tahoma", 11))
@@ -96,10 +94,11 @@ class UserForm_Description:
         self.label1.grid(row=0,column=0,columnspan=1,sticky="nesw",padx=10,pady=10)
         #self.label3.grid(row=2,column=0,columnspan=3,sticky="nesw",padx=10,pady=10)
         self.TextBox.grid(row=1,column=0,sticky="nesw",padx=10,pady=10)
-        self.TextBox.focus_set()
+        
         self.label2.grid(row=2,column=0,columnspan=1,rowspan=1,sticky="nesw",padx=10,pady=10)
 
         self.top.bind("<Return>", self.ok)
+        self.top.bind("<Escape>", self.cancel)
         self.button_frame = ttk.Frame(self.top)
         
         self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))
@@ -111,6 +110,12 @@ class UserForm_Description:
         self.button_frame.grid(row=3,column=0,sticky="e",padx=10,pady=1)
         
         self.IsActive = True
+        self.top.wait_visibility()
+        self.top.takefocus = True
+        self.top.focus_set()
+        self.top.focus_force()
+        self.top.grab_set()
+        self.TextBox.focus_set()
         self.controller.wait_window(self.top)
 
         return self.Userform_res

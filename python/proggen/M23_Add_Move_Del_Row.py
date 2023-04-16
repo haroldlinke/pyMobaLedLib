@@ -64,11 +64,11 @@ import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
@@ -190,7 +190,7 @@ def Proc_Copy_Row():
         for i in vbForRange(1, RowCnt):
             Rows(DestRow).EntireRow.Insert(Shift=xlDown, CopyOrigin=xlFormatFromLeftOrAbove)
         EndDestRow = DestRow + Selection.Rows.Count - 1
-        Rows[DestRow + ':' + EndDestRow] = Selection.EntireRow.Value
+        RowDict[DestRow + ':' + EndDestRow] = Selection.EntireRow.Value
         Range(Cells(DestRow, Selection.Column), Cells(EndDestRow, Selection.Column + Selection.Columns.Count - 1)).Select()
         Used_Rows_All_Borderlines()
         Format_Cells_to_Row(DestRow + Selection.Rows.Count)

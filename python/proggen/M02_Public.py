@@ -38,37 +38,9 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
-#from proggen.M30_Tools import *
 
-#from proggen.M30_Tools import Read_File_to_String
-
-#import proggen.Prog_Generator as PG
-
-#import proggen.M02_Public as M02
-#import proggen.M03_Dialog as M03
-#import proggen.M06_Write_Header as M06
-#import proggen.M06_Write_Header_LED2Var as M06LED
-#import proggen.M06_Write_Header_Sound as M06Sound
-#import proggen.M06_Write_Header_SW as M06SW
-#import proggen.M07_COM_Port as M07
-#import proggen.M08_ARDUINO as M08
-import proggen.M09_Language as M09
-#import proggen.M09_Select_Macro as M09SM
-#import proggen.M09_SelectMacro_Treeview as M09SMT
-#import proggen.M10_Par_Description as M10
-#import proggen.M20_PageEvents_a_Functions as M20
-import proggen.M25_Columns as M25
-#import proggen.M27_Sheet_Icons as M27
-#import proggen.M28_divers as M28
-import proggen.M30_Tools as M30
-#import proggen.M31_Sound as M31
-#import proggen.M37_Inst_Libraries as M37
-#import proggen.M60_CheckColors as M60
-#import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
-
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 
 """# VB2PY (CheckDirective) VB directive took path 1 on USE_SKETCHBOOK_DIR
@@ -79,17 +51,17 @@ import ExcelAPI.P01_Workbook as P01
 #
 # ##################################################### Public Const
 
-Lib_Version_Nr = '3.1.0'                                    # If changed check also "Exp_Prog_Gen_Version" in Pattern_Configurator
-Test_Sufix = 'F4'                                            # The Excel programs use the same version number than the library to avoid confusion
-Prog_Version = 'Ver. ' + Lib_Version_Nr + Test_Sufix        # A sufix could be used for beta version
-Prog_Version_Nr = Lib_Version_Nr + Test_Sufix               # Call Gen_Release_Version() to update all sheets
+Lib_Version_Nr = '4.0.9'                                   # If changed check also "Exp_Prog_Gen_Version" in Pattern_Configurator
+Test_Sufix = ''                                            # The Excel programs use the same version number than the library to avoid confusion
+Prog_Version = 'Ver. ' + Lib_Version_Nr + Test_Sufix       # A sufix could be used for beta version
+Prog_Version_Nr = Lib_Version_Nr + Test_Sufix              # Call Gen_Release_Version() to update all sheets
 DEBUG_CHANGEEVENT = False
 DEBUG_DCCSEND = False
 
 InoName_DCC = '23_A.DCC_Interface.ino'
 InoName__SX = '23_A.Selectrix_Interface.ino'
 
-Ino_Dir_LED = 'LEDs_Autoprog/'
+Ino_Dir_LED = 'LEDs_AutoProg/'
 InoName_LED = 'LEDs_AutoProg.ino'
 Cfg_Dir_LED = "Configuration/"
 CfgName_LED = "Configuration.cpp"
@@ -238,117 +210,3 @@ L2V_COM_OPERATORS = '< > = != & !&'
 MB_LED_NR_STR = 'D2 D3 D4 D5 A3 A2 A1 D7 D8 D9 D10 D11 D12 D13 A4 A5 A0'
 MB_LED_PIN_NR = '0  1  2  3  4  5  6  7  8  9  10  11  12  13  14 15 16'
 
-# ####################################################
-#
-# Public Functions
-#
-# ####################################################
-
-
-def Read_Sketchbook_Path_from_preferences_txt():
-    global Sketchbook_Path
-        
-    Name = String()
-
-    FileStr = String()
-    #---------------------------------------------------------------------
-    # Attention: The file uses UTF8
-    Name = Environ(Env_USERPROFILE) + AppLoc_Ardu + 'preferences.txt'
-    Debug.Print("Read_Sketchbook_Path_from_preference_txt - Name:"+Name)
-    FileStr = M30.Read_File_to_String(Name)
-    if FileStr != '#ERROR#':
-        Sketchbook_Path = M30.Get_Ini_Entry(FileStr, 'sketchbook.path=')
-        logging.debug("Sketchbookpath="+Sketchbook_Path)
-        #*HL Sketchbook_Path = M30.ConvertUTF8Str(M30.Get_Ini_Entry(FileStr, 'sketchbook.path='))
-        #ThisWorkbook.Sheets(LIBRARYS__SH).Range("Sketchbook_Path") = Sketchbook_Path
-        if Sketchbook_Path == '#ERROR#':
-            P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: beim lesen des \'sketchbook.path\' in \'#1#\''), "#1#", Name), vbCritical, M09.Get_Language_Str('Fehler beim Lesen der Datei:') + ' \'preferences.txt\'')
-            return fn_return_value
-        if Left(Sketchbook_Path, 2) == '\\\\':
-            P01.MsgBox(M09.Get_Language_Str('Fehler: Der Arduino \'sketchbook.path\' darf kein Netzlaufwerk sein:') + vbCr + '  \'' + Sketchbook_Path + '\'', vbCritical, M09.Get_Language_Str('Ungültiger Arduino \'sketchbook.path\''))
-            return fn_return_value
-        M30.CreateFolder(Sketchbook_Path + '/')
-        fn_return_value = True
-    return fn_return_value
-
-def Get_Sketchbook_Path():
-    global Sketchbook_Path
-    #----------------------------------------------
-    Debug.Print('Get_Sketchbook_Path called')
-    if Sketchbook_Path == '':
-        Read_Sketchbook_Path_from_preferences_txt()
-    fn_return_value = Sketchbook_Path
-    return fn_return_value
-
-def Get_SrcDirInLib():
-    fn_return_value = Get_Sketchbook_Path() + SrcDirInLib
-    return fn_return_value
-
-def Get_DestDir_All():
-    fn_return_value = Get_Sketchbook_Path() + DestDir_All
-    return fn_return_value
-
-def Get_MobaUserDir():
-    fn_return_value = Get_Sketchbook_Path() + MobaUserDir
-    return fn_return_value
-
-def Get_Ardu_LibDir():
-    fn_return_value = Get_Sketchbook_Path() + Ardu_LibDir
-    return fn_return_value
-
-def Get_SrcDirExamp():
-    fn_return_value = Get_Sketchbook_Path() + SrcDirExamp
-    return fn_return_value
-
-def Get_BoardTyp():
-    #---------------------------------------
-    # The build options for the ESP32 are something like "esp32:esp32:esp32..."
-    fn_return_value = 'AM328'
-    if InStr(P01.Cells(SH_VARS_ROW, M25.BUILDOP_COL), 'esp32') > 0:
-        fn_return_value = 'ESP32'
-    elif InStr(P01.Cells(SH_VARS_ROW, M25.BUILDOP_COL), 'rp2040') > 0:
-        fn_return_value = 'PICO'
-    else:
-        fn_return_value = 'AM328'
-    # Other types:
-    # "Every"           ' Nano Every
-    return fn_return_value
-
-# VB2PY (UntranslatedCode) Option Explicit
-
-""" Used Cmd colors:                 (See: https://ss64.com/nt/color.html)
- ~~~~~~~~~~~~~~~~
- 1F" ' White on Blue                     Arduino Comile DCC
- 2F" ' White on Green                    Arduino Comile SX
- 3F" ' White on Aqua                     Arduino Comile CAN
- 4F" ' Yellow on Red                     Error
- 5F" ' White on Purple                   Create_InstalLib_Cmd_file              Wird das noch gebraucht ? => Nein ==> Ist deaktiviert
- 80  ' Black on bright Gray              Do_Update_Script
- 79" ' Blue  on bright Gray              Restart_Cmd
- Links for 32 and 64 Bit Windows:
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- - General description: https://codekabinett.com/rdumps.php?Lang=2&targetDoc=windows-api-declaration-vba-64-bit
-   "Also new with VBA7 are the two new compiler constants Win64 and VBA7.
-    VBA7 is true if your code runs in the VBA7-Environment (Access/Office 2010 and above).
-    Win64 is true if your code actually runs in the 64-bit VBA environment.
-    Win64 is not true if you run a 32-Bit VBA Application on a 64-bit system."
- - Overview 32 / 64 Bit functions: https://jkp-ads.com/Articles/apideclarations.asp
- Following parts use declared external functions                 (List is not updated)
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- - M06_Write_Header:
-    - Detect if CTRL is pressed when the "Arduino" button is pressed
-      Public Sub Write_Header_File_and_Upload_to_Arduino()
- - M40_Mouse_Scroll
-    - Uses a lot of functions to be able to use the scroll wheel
- - M31_Sound
-    - Play a windows sound if the hook is enabled/disabled
-      BeepThis2()
- - M24_Mouse_Insert_Pos
-    - Mouse cursor if lines are moved (Mouse or Keyboard)
- - M40_ShellAndWait
-    - Start the Arduino Compiler
- - M30_Tools
-    - Sleep         => Some locatons
-    - ShellExecute  => EditFile_Click
-    - GetKeyState   => Not used
-"""

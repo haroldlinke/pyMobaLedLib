@@ -68,7 +68,7 @@ from tkcolorpicker.limitvar import LimitVar
 from mlpyproggen.lightgradientbar import LightGradientBar
 from mlpyproggen.colorwheel import ColorWheel
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, DEFAULT_PALETTE, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, PERCENT_BRIGHTNESS, BLINKFRQ, ARDUINO_WAITTIME
-#from mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
+# fromx mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
 import mlpyproggen.dictFile as dictFile
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
 
@@ -94,13 +94,13 @@ DE = {"Red": "Rot", "Green": "Grün", "Blue": "Blau",
       }
 
 try:
-    TR = EN
-    if getdefaultlocale()[0][:2] == 'fr':
-        TR = FR
-    else:
-        if getdefaultlocale()[0][:2] == 'de':
-            TR = DE
-except ValueError:
+    TR = DE
+    #if getdefaultlocale()[0][:2] == 'fr':
+    #    TR = FR
+    #else:
+    #    if getdefaultlocale()[0][:2] == 'de':
+    #        TR = DE
+except ValueError or TypeError:
     TR = EN
 
 
@@ -774,7 +774,7 @@ class ColorCheckPage(tk.Frame):
     def MenuRedo(self,_event=None):
         pass
     
-    def connect(self):
+    def connect(self,port):
         pass
 
     def disconnect(self):
@@ -784,16 +784,17 @@ class ColorCheckPage(tk.Frame):
     # End of Standardprocedures for every tabpage
     # ----------------------------------------------------------------    
     def update_palette_from_coltab(self,Colortable):
-        print("Palette:",self.palette)
+        #print("Palette:",self.palette)
+        if Colortable:
         
-        for index in range(0,len(Colortable)):
-            print("ColTab:", Colortable(index).r,Colortable(index).g,Colortable(index).b)
-       
-        index = 0
-        for key in self.palette.keys():
-            self.palette[key] = rgb_to_hexa(Colortable(index).r,Colortable(index).g,Colortable(index).b)
-            index = index+1
-        print("Palette:",self.palette)
+            for index in range(0,len(Colortable)):
+                print("ColTab:", Colortable(index).r,Colortable(index).g,Colortable(index).b)
+           
+            index = 0
+            for key in self.palette.keys():
+                self.palette[key] = rgb_to_hexa(Colortable(index).r,Colortable(index).g,Colortable(index).b)
+                index = index+1
+            #print("Palette:",self.palette)
         self._update_preview()
         return
     
@@ -1017,8 +1018,9 @@ class ColorCheckPage(tk.Frame):
                 if not self.controller.paramDataChanged:
                     answer = tk.messagebox.askyesno ('Zurück zur ColTab','Sie haben keine Daten geändert.\nIst das richtig (<ja> ancklicken)\n oder haben Sie vergessen, die Änderungen in der Palette zu speichern und möchten dies nachholen - mit <Rechter Maustaste>? (<Nein> ancklicken)',default='yes')
                     if answer == False:
-                        return # no cancelation                   
-                self.controller.checkcolor_callback(self.palette)
+                        return # no cancelation
+                if self.controller.checkcolor_callback:
+                    self.controller.checkcolor_callback(self.palette)
                 self.controller.showFramebyName("ProgGeneratorPage")
                 return
             else:
@@ -1259,7 +1261,7 @@ class ColorCheckPage(tk.Frame):
             #    self._send_ledcolor_to_ARDUINO(lednum_str,1,keycolor)                
             #    time.sleep(ARDUINO_WAITTIME)    
                 
-    def _get_color_from_ledtable(self,lednum):
+    def x_get_color_from_ledtable(self,lednum):
         lednum_int = int(lednum)
         lednum_int += self.controller.LED_baseadress
         lednum_str = '{:03}'.format(lednum_int)

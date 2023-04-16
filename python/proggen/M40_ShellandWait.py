@@ -36,10 +36,10 @@
 
 
 from vb2py.vbfunctions import *
-#from vb2py.vbdebug import *
+# fromx vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-#import proggen.Prog_Generator as PG
+#import mlpyproggen.Prog_Generator as PG
 import subprocess
 
 """ M40_ShellAndWait:

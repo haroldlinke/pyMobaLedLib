@@ -151,6 +151,7 @@ class _DebugClass:
         """Print debugging output"""
         if self._logger:
             self._logger.debug("\t".join([str(arg) for arg in args]))
+        #print("Logging.Debug")
         logging.debug("\t".join([str(arg) for arg in args]))
 
 
@@ -189,6 +190,9 @@ class Double(float):
 
 class Long(int):
     """Python version of VB's Long"""
+    
+class LongPtr(int):
+    """Python version of VB's LongPtr"""    
 
 
 class Boolean(int):
@@ -380,7 +384,7 @@ class _VBFiles:
             else:
                 old_file.close()
             #
-            self._channels[channelid] = open(filename, mode)
+            self._channels[channelid] = open(filename, mode,newline="\r\n")
         finally:
             self._lock.release()
 
@@ -407,8 +411,15 @@ class _VBFiles:
         and what the implications of chunking would be in a multithreaded app.
 
         We use the lock to prevent multiple reads.
-
+        
+        
         """
+        vars = []
+        f = self._channels[channelid]
+        line=f.readline()
+        line=line.replace("\r\n","")
+        return line
+        
         if separators is None:
             separators = ("\n", ",", "\t", "")
         #
@@ -432,6 +443,8 @@ class _VBFiles:
                         buffer = ""
                     else:
                         buffer += char
+                else:
+                    pass
         finally:
             self._lock.release()
         #	
@@ -442,6 +455,7 @@ class _VBFiles:
 
     def getLineInput(self, channelid, number=1):
         """Get data from a file one line at a time with no parsing"""
+        #return self.getInput(channelid, number, separators=("\n", ""), evaloutput=0)
         return self.getInput(channelid, number, separators=("\n", ""), evaloutput=0)
 
     def writeText(self, channelid, *args):

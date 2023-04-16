@@ -44,7 +44,7 @@ import proggen.D01_Userform_DialogGuide1 as D01
 import proggen.D03_Userform_Description as D03
 import proggen.D04_Userform_Connector as D04
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 #import proggen.M02_Public as M02
 import proggen.M02_global_variables as M02GV
@@ -69,9 +69,10 @@ import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
+import proggen.F00_mainbuttons as F00
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 
 """ Dialog guided input
@@ -90,12 +91,11 @@ def Dialog_Guided_Input():
     #-------------------------------
     M25.Make_sure_that_Col_Variables_match()
     if M30.First_Change_in_Line(P01.ActiveCell()):
-        UserForm_DialogGuide1 = D01.UserForm_DialogGuide1()
-        UserForm_DialogGuide1.Show()
+        F00.UserForm_DialogGuide1.Show()
         #while UserForm_DialogGuide1.IsActive:
         #    DoEvents()
         #if DialogGuideRes == vbAbort:
-        if UserForm_DialogGuide1.res == vbAbort:
+        if F00.UserForm_DialogGuide1.res == vbAbort:
             P01.ActiveSheet.Redraw_table()
             return
         #for i in vbForRange(1, 5):
@@ -107,6 +107,7 @@ def Dialog_Guided_Input():
             __Ask_Input_NextRow = True
             P01.ActiveSheet.Redraw_table()            
             Ask_External_Control()
+            P01.ActiveSheet.addrow_if_needed()
             if __Input_NextRow:
                 Debug.Print('ToDo: Prüfen of die nächste Zeile leer ist und geg. eine Zeile einfügen')
             if not (__Input_NextRow):
@@ -141,7 +142,7 @@ def Dialog_Guided_Input():
                 P01.MsgBox(M09.Get_Language_Str('Die ausgewählte Spalte sollte nur von erfahrenen Benutzern verändert werden.' + vbCr + 'Es existiert keine Dialog gestützte Eingabe.'), vbInformation, M09.Get_Language_Str('Spalte sollte nur von Experten verändert werden'))
             else:
                 P01.MsgBox(M09.Get_Language_Str('Für die Ausgewählte Spalte existiert noch kein Dialog'), vbInformation, M09.Get_Language_Str('Kein Dialog vorhanden'))
-    
+        P01.ActiveSheet.addrow_if_needed()
     P01.ActiveSheet.Redraw_table(do_bindings=True)
     return
     
@@ -190,12 +191,12 @@ def Input_Address():
         Adresses_Channels = M09.Get_Language_Str('Adressen')
     if M25.Page_ID == 'CAN':
         MaxVal = 65535
-        MinVal = 1 #*HL
+        MinVal = 1 #*HL10
         # ??
     Inp = M25.Get_First_Number_of_Range(P01.ActiveCell().Row, M25.DCC_or_CAN_Add_Col + M25.SX_Channel_Col)
     while 1:
         Inp = P01.InputBox(M09.Get_Language_Str('Bitte ') + M25.Page_ID + Txt + ' [' + str(MinVal) + '..' + str(MaxVal) + ']' + vbCr + vbCr + This_Addr_Channel + M09.Get_Language_Str(' muss bei der Zentrale zur Steuerung der Funktion angegeben werden.' + vbCr + vbCr + 'Achtung: Bei manchen Funktionen werden mehrere ') + Adresses_Channels + M09.Get_Language_Str(' belegt. ' + 'Das Programm ergänzt den Bereich automatisch (Beispiel: 23 - 24)' + vbCr + 'Es muss nur der Startwert ohne \'- 24\' eingegeben werden.') + vbCr + vbCr + M25.Page_ID + ' ' + Addr_Channel + ': ', M25.Page_ID + Txt, Default= Inp)
-        #Debug.Print "Res='" & Inp & "'" ' Debug
+        Debug.Print ("Res='" + Inp + "'") # Debug
         if InStr(Inp, '-') > 1:
             Inp = Left(Inp, InStr(Inp, '-'))
         if IsNumeric(Inp):
@@ -282,9 +283,9 @@ def Input_Description():
     Res = String()
     #-----------------------------
     
-    UserForm_Description = D03.UserForm_Description()
+    
     #UserForm_Description.setFocus(Target)
-    Res = UserForm_Description.ShowForm(P01.ActiveCell().Value)
+    Res = F00.UserForm_Description.ShowForm(P01.ActiveCell().Value)
     if Res != '<Abort>':
         with_2 = P01.Cells(P01.ActiveCell().Row, M25.Descrip_Col)
         with_2.Value = Res
@@ -296,8 +297,8 @@ def Input_Connector():
 
     #---------------------------
     r = P01.ActiveCell().Row
-    UserForm_Connector = D04.UserForm_Connector()
-    if UserForm_Connector.Start(P01.Cells(r, M25.Dist_Nr_Col), P01.Cells(r, M25.Conn_Nr_Col)):
+    
+    if F00.UserForm_Connector.Start(P01.Cells(r, M25.Dist_Nr_Col), P01.Cells(r, M25.Conn_Nr_Col)):
         P01.Application.EnableEvents = False
         P01.Cells(r, M25.Conn_Nr_Col + 1).Select()
         P01.Application.EnableEvents = True

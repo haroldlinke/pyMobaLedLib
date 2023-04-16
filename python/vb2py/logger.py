@@ -42,6 +42,7 @@ def getLogger(name, level=None):
     """Create a logger with the usual settings"""
     if level is None:
         level = int(Config["General", "LoggingLevel"])
+        #level=logging.DEBUG #*HL
     log = logging.getLogger(name)
     log.addHandler(main_handler)
     log.setLevel(level)

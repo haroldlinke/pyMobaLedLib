@@ -40,18 +40,18 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 
-#from proggen.M02_Public import *
-#from proggen.M06_Write_Header_LED2Var import *
-#from proggen.M06_Write_Header_Sound import *
-#from proggen.M06_Write_Header_SW import *
-#from proggen.M09_Language import *
-#from proggen.M09_Select_Macro import *
-#from proggen.M20_PageEvents_a_Functions import *
-#from proggen.M25_Columns import *
-#from proggen.M28_divers import *
-#from proggen.M30_Tools import *
+# fromx proggen.M02_Public import *
+# fromx proggen.M06_Write_Header_LED2Var import *
+# fromx proggen.M06_Write_Header_Sound import *
+# fromx proggen.M06_Write_Header_SW import *
+# fromx proggen.M09_Language import *
+# fromx proggen.M09_Select_Macro import *
+# fromx proggen.M20_PageEvents_a_Functions import *
+# fromx proggen.M25_Columns import *
+# fromx proggen.M28_divers import *
+# fromx proggen.M30_Tools import *
 
-#from proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M80_Create_Mulitplexer import *
 
 
 import proggen.M02_Public as M02
@@ -79,9 +79,9 @@ import proggen.M40_ShellandWait as M40
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 
 from vb2py.vbfunctions import *
@@ -102,7 +102,7 @@ def Packages_Dir_Available():
 def Create_Packages_Dir_if_not_Available():
     #------------------------------------------------
     if not Packages_Dir_Available():
-        M30.CreateFolder(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages\\')
+        M30.CreateFolder(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/')
 
 def Create_Build(BoardName, fp):
     #-------------------------------------
@@ -157,7 +157,7 @@ def Create_Build_Arduino(fp):
     PackageDestDir = M08.GetShortPath(Environ(M02.Env_USERPROFILE)) + M02.AppLoc_Ardu + 'packages\\arduino\\hardware\\avr\\' + M37.Get_Std_Arduino_Lib_Ver()
     if M37.Get_User_std_Arduino_Lib_Ver() == '':
         VBFiles.writeText(fp, 'robocopy "%aHome%\\hardware\\arduino\\avr" "' + PackageDestDir + '" /mir /s >nul', '\n')
-    VBFiles.writeText(fp, 'xcopy ' + M08.GetShortPath(P01.ThisWorkbook.Path) + '\\LEDs_AutoProg\\boards.local.txt "' + PackageDestDir + '\\" /d /y >nul', '\n')
+    VBFiles.writeText(fp, 'xcopy ' + M08.GetShortPath(PG.ThisWorkbook.Path) + '\\LEDs_AutoProg\\boards.local.txt "' + PackageDestDir + '\\" /d /y >nul', '\n')
     Create_Packages_Dir_if_not_Available()
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, 'REM *** Call the arduino builder ***', '\n')
@@ -272,7 +272,7 @@ def __Test_Create_PrivateBuild_cmd_if_missing():
 
     fp = Integer()
     #UT--------------------------------------------------
-    Name = P01.ThisWorkbook.Path + '\\LEDs_AutoProg\\privateBuild.cmd'
+    Name = PG.ThisWorkbook.Path + '\\LEDs_AutoProg\\privateBuild.cmd'
     VBFiles.openFile(fp, Name, 'w') 
     Create_Build('arduino', fp)
     VBFiles.closeFile(fp)

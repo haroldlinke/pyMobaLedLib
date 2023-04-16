@@ -68,7 +68,7 @@ from tkcolorpicker.limitvar import LimitVar
 from mlpyproggen.lightgradientbar import LightGradientBar
 from mlpyproggen.colorwheel import ColorWheel
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, DEFAULT_PALETTE, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, PERCENT_BRIGHTNESS, BLINKFRQ, ARDUINO_WAITTIME
-#from mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
+# fromx mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
 import mlpyproggen.dictFile as dictFile
 from locale import getdefaultlocale
 import re
@@ -188,7 +188,7 @@ class SoundCheckPage(tk.Frame):
     def setParamData(self,key, value):
         self.controller.setParamData(key, value)
 
-    def connect(self):
+    def connect(self,port):
         pass
 
     def disconnect(self):

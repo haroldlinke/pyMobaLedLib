@@ -63,11 +63,11 @@ import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
@@ -91,9 +91,9 @@ def __ParseJSON(json , Key='obj'):
     __token = __Tokenize(json)
     __dic = {}
     if __token(__p) == '{':
-        __ParseObj()(Key)
+        __ParseObj(Key)
     else:
-        __ParseArr()(Key)
+        __ParseArr(Key)
     fn_return_value = __dic
     return fn_return_value
 
@@ -104,7 +104,7 @@ def __ParseObj(Key):
     if (select_0 == ']'):
         pass
     elif (select_0 == '['):
-        __ParseArr()(Key)
+        __ParseArr(Key)
     elif (select_0 == '{'):
         if __token(__p + 1) == '}':
             __p = __p + 1
@@ -132,7 +132,7 @@ def __ParseArr(Key):
     if (select_1 == '}'):
         pass
     elif (select_1 == '{'):
-        __ParseObj()(Key + ArrayID(e))
+        __ParseObj(Key + ArrayID(e))
     elif (select_1 == '['):
         fn_return_value(Key)
     elif (select_1 == ']'):

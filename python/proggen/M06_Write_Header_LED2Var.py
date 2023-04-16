@@ -39,20 +39,20 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-#from proggen.M02_Public import *
-#from proggen.M06_Write_Header_LED2Var import *
-#from proggen.M06_Write_Header_Sound import *
-#from proggen.M06_Write_Header_SW import *
-#from proggen.M08_ARDUINO import *
-#from proggen.M09_Language import *
-#from proggen.M09_Select_Macro import *
-#from proggen.M20_PageEvents_a_Functions import *
-#from proggen.M25_Columns import *
-#from proggen.M28_divers import *
-#from proggen.M30_Tools import *
-#from proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M02_Public import *
+# fromx proggen.M06_Write_Header_LED2Var import *
+# fromx proggen.M06_Write_Header_Sound import *
+# fromx proggen.M06_Write_Header_SW import *
+# fromx proggen.M08_ARDUINO import *
+# fromx proggen.M09_Language import *
+# fromx proggen.M09_Select_Macro import *
+# fromx proggen.M20_PageEvents_a_Functions import *
+# fromx proggen.M25_Columns import *
+# fromx proggen.M28_divers import *
+# fromx proggen.M30_Tools import *
+# fromx proggen.M80_Create_Mulitplexer import *
 
-#from ExcelAPI.P01_Workbook import *
+# fromx ExcelAPI.X02_Workbook import *
 
 import proggen.M02_Public as M02
 import proggen.M03_Dialog as M03
@@ -77,7 +77,7 @@ import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 """ Header file generation for the LED_to_Var function
 """

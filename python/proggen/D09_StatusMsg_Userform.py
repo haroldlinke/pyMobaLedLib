@@ -34,17 +34,17 @@
 # 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
 # 2021-01-07 v4.02 HL: - Else:, ByRef check done - first PoC release
 
-#from vb2py.vbfunctions import *
-#from vb2py.vbdebug import *
-#from vb2py.vbconstants import *
+# fromx vb2py.vbfunctions import *
+# fromx vb2py.vbdebug import *
+# fromx vb2py.vbconstants import *
 
 import tkinter as tk
 from tkinter import ttk
-#from mlpyproggen.tooltip import Tooltip
-#from tkcolorpicker.spinbox import Spinbox
-#from tkcolorpicker.limitvar import LimitVar
+# fromx mlpyproggen.tooltip import Tooltip
+# fromx tkcolorpicker.spinbox import Spinbox
+# fromx tkcolorpicker.limitvar import LimitVar
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 #import proggen.M02_Public as M02
 #import proggen.M03_Dialog as M03
@@ -69,8 +69,8 @@ import proggen.Prog_Generator as PG
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
 
-#from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+# fromx ExcelAPI.X01_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 import logging
 
@@ -81,7 +81,7 @@ class CStatusMsg_UserForm():
         self.controller = PG.get_global_controller()
         self.IsActive = False
         self.title = "Bitte etwas Geduld..."
-        self.label1_txt = "Lade alle Beispiele\nBitte etwas Geduld"
+        self.label1_txt = ""
         self.label2_txt = "..."
         self.button1_txt = "Abbrechen"
         self.button2_txt = "Ok"
@@ -124,7 +124,7 @@ class CStatusMsg_UserForm():
     
         self.top.resizable(False, False)  # This code helps to disable windows from resizing
     
-        window_height = 100
+        window_height = 150
         window_width = 200
     
         screen_width = self.top.winfo_screenwidth()
@@ -179,21 +179,23 @@ class CStatusMsg_UserForm():
     
     def Set_Label(self, Msg):
         #----------------------------------
-        self.label1.configure(text=Msg)
-        self.top.update()
-        self.top.focus()
-        self.label_txt = Msg
-        #P01.set_statusmessage(self.label_txt +" "+ self.text)
+        if self. IsActive:
+            self.label1.configure(text=Msg)
+            self.top.update()
+            self.top.focus()
+            self.label_txt = Msg
+            #P01.set_statusmessage(self.label_txt +" "+ self.text)
     
     def Set_ActSheet_Label(self,Txt):
         #-------------------------------------------
         #ActSheet_Label = Txt
-        self.text=Txt
-        self.label2.configure(text=Txt)
-        self.top.update()
-        self.top.focus()
-        #P01.DoEvents()
-        #P01.set_statusmessage(self.label_txt +" "+ self.text)
+        if self.IsActive:
+            self.text=Txt
+            self.label2.configure(text=Txt)
+            self.top.update()
+            self.top.focus()
+            #P01.DoEvents()
+            #P01.set_statusmessage(self.label_txt +" "+ self.text)
     
     def ShowDialog(self, Label, Txt):
         #----------------------------------------------------

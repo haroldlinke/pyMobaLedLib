@@ -64,11 +64,12 @@ import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
+import proggen.F00_mainbuttons as F00
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 
 from vb2py.vbfunctions import *
@@ -120,7 +121,6 @@ IsLEDWindowVisible = None
 GetLEDWindowRect = None
 GetWrapperVersion = None
 
-x64 = False
 
 __AddressMapping = None
 
@@ -151,19 +151,19 @@ def loaddll():
     #       print("MLL_DLL not found")
     #       return
     
-        if x64:
-            dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x64\\MobaLedLibWrapper.dll'
+        if F00.is_64bit():
+            dllfilename = PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x64/MobaLedLibWrapper.dll'
         else:
-            dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x86\\MobaLedLibWrapper.dll'
+            dllfilename = PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x86/MobaLedLibWrapper.dll'
         
         Debug.Print("LoadDll:"+dllfilename)    
         MobaLedLibWrapper = ctypes.CDLL(dllfilename)
 
     except OSError:
-        print("Unable to load MLL_DLL")
+        Debug.Print("Unable to load MLL_DLL "+dllfilename)
         sys.exit()
     
-    print(f'Succesfully loaded the MLL_DLL"') 
+    print(f'Succesfully loaded the MLL_DLL'+dllfilename) 
     
     #Private Declare PtrSafe Function CreateSampleConfig Lib "MobaLedLibWrapper.dll" () As LongPtr
     CreateSampleConfig = MobaLedLibWrapper.CreateSampleConfig
@@ -221,21 +221,24 @@ def loaddll():
 def IsSimualtorAvailable():
     fn_return_value = False
     WrapperVersion = Long()
-    x64=False
-    if x64:
-        dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x64\\MobaLedLibWrapper.dll'
+    
+    if not P01.checkplatform("Windows"): # Simulator only in Windows available
+        return fn_return_value
+    
+    if F00.is_64bit():
+        dllfilename = PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x64/MobaLedLibWrapper.dll'
         Debug.Print("IsSimulatorAvailable:"+dllfilename)
         if Dir(dllfilename) == '':
             Debug.Print("IsSimulatorAvailable:"+dllfilename + " Not found")
             return fn_return_value
-        ChDir(P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x64')
+        ChDir(PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x64')
     else:
-        dllfilename = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x86\\MobaLedLibWrapper.dll'
+        dllfilename = PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x86/MobaLedLibWrapper.dll'
         Debug.Print("IsSimulatorAvailable:"+dllfilename)
         if Dir(dllfilename) == '':
             Debug.Print("IsSimulatorAvailable:"+dllfilename + " Not found")
             return fn_return_value
-        ChDir(P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'x86')
+        ChDir(PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'x86')
     # VB2PY (UntranslatedCode) On Error GoTo SimError
     # call any function to test binding
     loaddll()
@@ -295,7 +298,7 @@ def __LoadFile(FileName):
         return mybytearray,length
     except IOError:
         VBFiles.closeFile(fileInt)
-        print('Error While Opening the file!')
+        Debug.Print('Error While Opening the file!')
         return None
 
 def __LoadConfiguration():
@@ -312,7 +315,7 @@ def __LoadConfiguration():
 
     if not IsSimualtorAvailable():
         return
-    Buffer,buflen = __LoadFile(P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'LEDConfig.bin')
+    Buffer,buflen = __LoadFile(PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'LEDConfig.bin')
     dllBuffer = ctypes.create_string_buffer(Buffer)
 
     print(repr(dllBuffer.raw))
@@ -322,7 +325,7 @@ def __LoadConfiguration():
     res=CreateSimulator(dllBuffer, bufferLen)
     print(res)
     
-    Buffer, buflen=__LoadFile(P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'AddressConfig.bin')
+    Buffer, buflen=__LoadFile(PG.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'AddressConfig.bin')
     Debug.Print(Buffer)
     Length = buflen #len(Buffer) #UBound(Buffer) - LBound(Buffer) + 1
     __AddressMapping = {} #Scripting.Dictionary()
@@ -433,16 +436,17 @@ def UploadToSimulator(CreateHeaderFiles):
         fn_return_value = True
 
     if fn_return_value:
-        CommandStr = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + M02.CfgBuild_Script + " silent"
+        CommandStr = PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + M02.CfgBuild_Script + " silent"
         if __Create_Compile_Script():
             fn_return_value = M40.ShellAndWait(CommandStr, 0, vbMinimizedNoFocus, M40.PromptUser) == M40.Success
             if fn_return_value:
-                if Dir(P01.ThisWorkbook.Path + "\\" + M02.Cfg_Dir_LED + "result.txt") == "" :
+                if Dir(PG.ThisWorkbook.Path + "/" + M02.Cfg_Dir_LED + "result.txt") == "" :
                     OpenSimulator()
                 else:
                     #rerun command to show output to user
-                    CommandStr = P01.ThisWorkbook.Path + "\\" + M02.Cfg_Dir_LED + M02.CfgBuild_Script
-                    M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
+                    CommandStr = PG.ThisWorkbook.Path + "\\" + M02.Cfg_Dir_LED + M02.CfgBuild_Script
+                    Res = PG.get_dialog_parent().execute_shell_cmd(CommandStr,"Compile Simulator")
+                    #M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
         #*HL AppActivate(ActiveWorkbook.Windows(1).Caption)
         M30.Bring_Application_to_front()
     return fn_return_value
@@ -497,9 +501,9 @@ def __ConfigurationToFile():
                 VBFiles.closeFile(fn2)
                 fn2 = FreeFile()
                 if TypeName == '_ZL6Config':
-                    OutputFilename = P01.ThisWorkbook.Path + '\\LEDs_AutoProg\\LEDConfig.bin'
+                    OutputFilename = PG.ThisWorkbook.Path + '\\LEDs_AutoProg\\LEDConfig.bin'
                 elif TypeName == '_ZL8Ext_Addr':
-                    OutputFilename = P01.ThisWorkbook.Path + '\\LEDs_AutoProg\\DCCConfig.bin'
+                    OutputFilename = PG.ThisWorkbook.Path + '\\LEDs_AutoProg\\DCCConfig.bin'
                 if Dir(OutputFilename) != '':
                     Kill(OutputFilename)()
                 VBFiles.openFile(fn2, OutputFilename, 'b') 
@@ -514,13 +518,13 @@ def __Create_Compile_Script():
     Name = String()
 
     fp = Integer()
-    Name = P01.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + M02.CfgBuild_Script
+    Name = PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + M02.CfgBuild_Script
     Debug.Print("Create_Compile_Script:"+Name)
     fp = FreeFile()
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
     VBFiles.openFile(fp, Name, 'w') 
     VBFiles.writeText(fp, '@ECHO OFF', '\n')
-    VBFiles.writeText(fp, 'REM This file was generated by \'' + P01.ThisWorkbook.Name + '\'  ' + Time, '\n')
+    VBFiles.writeText(fp, 'REM This file was generated by \'' + PG.ThisWorkbook.Name + '\'  ' + Time, '\n')
     if M30.Win10_or_newer():
         VBFiles.writeText(fp, 'CHCP 65001 >NUL', '\n')
     VBFiles.writeText(fp, '', '\n')

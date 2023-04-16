@@ -58,15 +58,15 @@
 
 import tkinter as tk
 from tkinter import ttk,messagebox
-#from tkcolorpicker.functions import tk, ttk, round2, create_checkered_image, \
+# fromx tkcolorpicker.functions import tk, ttk, round2, create_checkered_image, \
 #    overlay, hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, col2hue, rgb_to_hsv, convert_K_to_RGB
-#from tkcolorpicker.alphabar import AlphaBar
-#from tkcolorpicker.gradientbar import GradientBar
-#from tkcolorpicker.lightgradientbar import LightGradientBar
-#from tkcolorpicker.colorsquare import ColorSquare
-#from tkcolorpicker.colorwheel import ColorWheel
-#from tkcolorpicker.spinbox import Spinbox
-#from tkcolorpicker.limitvar import LimitVar
+# fromx tkcolorpicker.alphabar import AlphaBar
+# fromx tkcolorpicker.gradientbar import GradientBar
+# fromx tkcolorpicker.lightgradientbar import LightGradientBar
+# fromx tkcolorpicker.colorsquare import ColorSquare
+# fromx tkcolorpicker.colorwheel import ColorWheel
+# fromx tkcolorpicker.spinbox import Spinbox
+# fromx tkcolorpicker.limitvar import LimitVar
 from mlpyproggen.configfile import ConfigFile
 from locale import getdefaultlocale
 #import re
@@ -428,7 +428,7 @@ class Z21MonitorPage(tk.Frame):
         
     def show_key_adresses(self,event=None):
         
-        filename = "..\\..\\LEDs_AutoProg.h"
+        filename = "../../LEDs_AutoProg.h"
         filedir = self.controller.mainfile_dir
         filepath1 = os.path.join(filedir, filename)
         
@@ -670,7 +670,7 @@ class Z21MonitorPage(tk.Frame):
         pass
         self.stop_process_Z21()
         
-    def connect (self):
+    def connect (self,port):
         pass
         #self.start_process_Z21()
     

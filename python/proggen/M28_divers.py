@@ -43,11 +43,13 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 import proggen.M25_Columns as M25
 import proggen.M02_Public as M02
 import proggen.M09_Language as M09
 import proggen.M30_Tools as M30
+import mlpyproggen.Prog_Generator as PG
+
 
 """--------------------------------------------------------------
 UT-----------------------------
@@ -77,7 +79,7 @@ UT----------------------------------
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
 def Is_Data_Sheet(Sh):
-    _ret = ""
+    _ret = False
     PageId = String()
     #--------------------------------------------------------------
     PageId = Sh.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)
@@ -96,7 +98,7 @@ def EnableAllButtons():
     Sh = Variant()
     #----------------------------
     # Enable all buttons in case they have been disabled by a crash
-    for Sh in P01.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if Is_Data_Sheet(Sh):
             Sh.EnableDisableAllButtons(True)
 
@@ -118,7 +120,7 @@ def Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets(ReleaseMode):
         Debug.Print('ActiveSheet Is Nothing in Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets')
         Debug.Print('Tritt beim ersten Start nach dem Download vom Internet auf (\'Geschützte Ansicht\')')
         Skip_Scroll_Down = True
-    for Sh in P01.ThisWorkbook.sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         if Is_Data_Sheet(Sh):
             _with1 = Sh
             M25.Make_sure_that_Col_Variables_match(Sh)
@@ -153,12 +155,12 @@ def Get_Bool_Config_Var(Name):
     #-------------------------------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo NotFound
     
-    _with2 = P01.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
+    _with2 = PG.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
     conf_value = UCase(Left(Trim(_with2.Value), 1))
     
-    #confsheet = P01.ThisWorkbook.Sheets(M02.ConfigSheet)
+    #confsheet = PG.ThisWorkbook.Sheets(M02.ConfigSheet)
     #conf_value = confsheet.find_in_col_ret_col_val(Name,4,3,cache=True)
-    if conf_value:
+    if conf_value !=None:
         if (conf_value == '') or (conf_value == 'N') or (conf_value == 'G') or (conf_value == 'A') or (conf_value == '0'):
             _ret = False
         else:
@@ -171,16 +173,16 @@ def Get_Bool_Config_Var(Name):
 
 def Get_Num_Config_Var(Name):
     _ret = -1
-    Str = String()
+    p_str = String()
     #------------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo NotFound
-    Str = P01.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
+    p_str = PG.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
     
-    #confsheet = P01.ThisWorkbook.Sheets(M02.ConfigSheet)
+    #confsheet = PG.ThisWorkbook.Sheets(M02.ConfigSheet)
     #Str = confsheet.find_in_col_ret_col_val(Name,4,3,cache=True)    
-    if Str:
-        if IsNumeric(Str):
-            _ret = P01.val(Str)
+    if p_str:
+        if IsNumeric(p_str):
+            _ret = P01.val(p_str)
         else:
             _ret = - 1
         return _ret
@@ -194,12 +196,12 @@ def Get_Num_Config_Var(Name):
 
 def Get_Num_Config_Var_Range(Name, Min, Max, Default=0):
     fn_return_value = None
-    Str = String()
+    p_str = String()
     #------------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo NotFound
     try:
         
-        value = P01.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
+        value = PG.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
         if value != None:
             fn_return_value = P01.val(value)
         else:
@@ -224,12 +226,12 @@ def __TestGet_Bool_Config_Var():
 def Set_Bool_Config_Var(Name, val):
     #-------------------------------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo NotFound
-    _with3 = P01.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
+    _with3 = PG.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
     #if val:
     #    val_str = M09.Get_Language_Str('Ja')
     #else:
     #    val_str = M09.Get_Language_Str('Nein')    
-    #confsheet = P01.ThisWorkbook.Sheets(M02.ConfigSheet)
+    #confsheet = PG.ThisWorkbook.Sheets(M02.ConfigSheet)
     #if confsheet.find_in_col_set_col_val(Name,4,3,val_str,cache=True):
     #    return True
     #else:
@@ -246,13 +248,13 @@ def Set_Bool_Config_Var(Name, val):
 
 def Get_String_Config_Var(Name):
     _ret = ""
-    print("Get_String_Config_Var:",Name)
+    Debug.Print("Get_String_Config_Var: %s",Name)
     #--------------------------------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo NotFound
-    _ret = P01.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
+    _ret = PG.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
     if _ret!=None:
-        return _ret
-    #confsheet = P01.ThisWorkbook.Sheets(M02.ConfigSheet)
+        return str(_ret)
+    #confsheet = PG.ThisWorkbook.Sheets(M02.ConfigSheet)
     #conf_value = confsheet.find_in_col_ret_col_val(Name,4,3,cache=True)    
     #if conf_value!=None:
     #    return conf_value
@@ -265,8 +267,8 @@ def Set_String_Config_Var(Name, val):
     #--------------------------------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo NotFound
     try:
-        P01.ThisWorkbook.Sheets(M02.ConfigSheet).Range_set(Name,val)
-    #confsheet = P01.ThisWorkbook.Sheets(M02.ConfigSheet)
+        PG.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name).Value=val
+    #confsheet = PG.ThisWorkbook.Sheets(M02.ConfigSheet)
     #if confsheet.find_in_col_set_col_val(Name,4,3,val,cache=True):
     #    return True
     except:  

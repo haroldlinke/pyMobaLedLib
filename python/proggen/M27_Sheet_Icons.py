@@ -34,17 +34,18 @@
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-from proggen.M02_Public import *
-from proggen.M09_Language import *
-from proggen.M09_Select_Macro import *
-#from proggen.M20_PageEvents_a_Functions import *
-from proggen.M25_Columns import *
-from proggen.M28_divers import *
-from proggen.M30_Tools import *
-from proggen.M80_Create_Mulitplexer import *
+from ExcelAPI.XLC_Excel_Consts import *
+import proggen.M02_Public as M02
+import proggen.M09_Language as M09
+import proggen.M09_Select_Macro as M09SM
+import proggen.M25_Columns as M25
+import proggen.M28_divers as M28
+import proggen.M30_Tools as M30
+import mlpyproggen.Prog_Generator as PG
 
-#from ExcelAPI.P01_Workbook import *
-import ExcelAPI.P01_Workbook as P01
+# fromx ExcelAPI.X02_Workbook import *
+import ExcelAPI.XLW_Workbook as P01
+
 
 """ ToDo: Untersuchen wie das bei anderen Skaliereungen aussieht
        - Excel          O.K.
@@ -59,7 +60,7 @@ __Icon_Top = 1
 def __Icon_Path():
     fn_return_value = None
     #-------------------------------------
-    fn_return_value = P01.ThisWorkbook.pyProgPath + '/icons/'
+    fn_return_value = PG.ThisWorkbook.pyProgPath + '/icons/'
     return fn_return_value
 
 def Add_Icon(Name, Row, Sh=None):
@@ -92,8 +93,8 @@ def Add_Icon(Name, Row, Sh=None):
         with_1.Width = __Icon_Size
     else:
         with_1.Height = __Icon_Size
-    with_1.Left = Sh.Cells(Row, MacIcon_Col).Left + __Icon_Left +  ( __Icon_Size - with_1.Width )  / 2
-    with_1.Top = Sh.Cells(Row, MacIcon_Col).Top + __Icon_Top
+    with_1.Left = Sh.Cells(Row, M25.MacIcon_Col).Left + __Icon_Left +  ( __Icon_Size - with_1.Width )  / 2
+    with_1.Top = Sh.Cells(Row, M25.MacIcon_Col).Top + __Icon_Top
     with_0.OnAction = 'SelectMacros_from_Icon'
     return
 
@@ -115,7 +116,7 @@ def Del_Icons(r):
 
     MaxLeft = Double()
 
-    #Sh = P01.Worksheet()
+    #Sh = P01.Worksheet
     #--------------------------------
     Sh = r.Parent
     with_2 = Sh
@@ -143,21 +144,21 @@ def __Test_Del_one_Icon_in_IconCol():
 def __Del_Icons_in_Col(Col, Sh):
     #---------------------------------------------------------
     with_4 = Sh
-    Del_Icons(with_4.Range(with_4.Cells(FirstDat_Row, Col), with_4.Cells(MAX_ROWS, Col)))
+    Del_Icons(with_4.Range(with_4.Cells(M02.FirstDat_Row, Col), with_4.Cells(M02.MAX_ROWS, Col)))
 
 def __Del_All_Icons_in_TypCol():
-    #Sh = P01.Worksheet()
+    #Sh = P01.Worksheet
     #------------------------------------
     Sh = P01.ActiveSheet
-    Make_sure_that_Col_Variables_match(Sh)
-    __Del_Icons_in_Col(Inp_Typ_Col, Sh)
+    M25.Make_sure_that_Col_Variables_match(Sh)
+    __Del_Icons_in_Col(M25.Inp_Typ_Col, Sh)
 
 def Del_Icons_in_IconCol():
-    #Sh = Worksheet()
+    #Sh = X02.Worksheet
     #--------------------------------
     Sh = P01.ActiveSheet
-    Make_sure_that_Col_Variables_match(Sh)
-    __Del_Icons_in_Col(MacIcon_Col, Sh)
+    M25.Make_sure_that_Col_Variables_match(Sh)
+    __Del_Icons_in_Col(M25.MacIcon_Col, Sh)
 
 def __Test_Add_All_Icons():
     File = String()
@@ -167,8 +168,8 @@ def __Test_Add_All_Icons():
     Row = 10
     File = Dir(__Icon_Path() + '*' + __Icon_Ext)
     while File != '':
-        Add_Icon(FileName(File), Row)
-        P01.CellDict[Row, LanName_Col] = FileName(File)
+        Add_Icon(M30.FileName(File), Row)
+        P01.CellDict[Row, M25.LanName_Col] = M30.FileName(File)
         Row = Row + 1
         File = Dir()
 
@@ -176,7 +177,7 @@ def __Show_Hide_Column_in_Sheet(Show, Col, Sh):
     fn_return_value = None
     #---------------------------------------------------------------------------------------------------
     # Return true if the state has been chenged
-    with_5 = Sh.Columns(ColumnLettersFromNr(Col) + ':' + ColumnLettersFromNr(Col)).EntireColumn
+    with_5 = Sh.Columns(M30.ColumnLettersFromNr(Col) + ':' + M30.ColumnLettersFromNr(Col)).EntireColumn
     if with_5.Hidden == Show:
         with_5.Hidden = not Show
         fn_return_value = True
@@ -184,9 +185,9 @@ def __Show_Hide_Column_in_Sheet(Show, Col, Sh):
 
 def __Hide_Icons_Column_in_Sheet(Sh):
     #------------------------------------------------------
-    Make_sure_that_Col_Variables_match(Sh)
-    if __Show_Hide_Column_in_Sheet(False, MacIcon_Col, Sh):
-        __Del_Icons_in_Col(MacIcon_Col, Sh)
+    M25.Make_sure_that_Col_Variables_match(Sh)
+    if __Show_Hide_Column_in_Sheet(False, M25.MacIcon_Col, Sh):
+        __Del_Icons_in_Col(M25.MacIcon_Col, Sh)
 
 def __Test_Hide_Icons_Column_in_Sheet():
     #UT------------------------------------------
@@ -197,9 +198,9 @@ def __Test_Hide_Icons_Column_in_Sheet():
 def FindMacro_and_Add_Icon_and_Name(MacroStr, Row, Sh, NameOnly=False):
     LibMacRow = int()
     #-------------------------------------------------------------------------------------------------------------------------------------
-    LibMacRow = Find_Macro_in_Lib_Macros_Sheet(MacroStr)
+    LibMacRow = M09SM.Find_Macro_in_Lib_Macros_Sheet(MacroStr)
     if LibMacRow > 0:
-        Add_Icon_and_Name(LibMacRow, Row, Sh, NameOnly=NameOnly)
+        M09SM.Add_Icon_and_Name(LibMacRow, Row, Sh, NameOnly=NameOnly)
     else:
         if InStr(MacroStr, 'Pattern') > 0:
             OldEvents = P01.Application.EnableEvents
@@ -216,9 +217,9 @@ def __Show_Icons_Column_in_Sheet(Sh):
     OldUpdating = P01.Application.ScreenUpdating
     P01.Application.ScreenUpdating = False
     M25.Make_sure_that_Col_Variables_match(Sh)
-    if __Show_Hide_Column_in_Sheet(True, MacIcon_Col, Sh):
-        for Row in vbForRange(FirstDat_Row, LastUsedRowIn(Sh)):
-            s = Sh.Cells(Row, Config__Col)
+    if __Show_Hide_Column_in_Sheet(True, M25.MacIcon_Col, Sh):
+        for Row in vbForRange(M02.FirstDat_Row,M30.LastUsedRowIn(Sh)):
+            s = Sh.Cells(Row, M25.Config__Col)
             if s != '':
                 FindMacro_and_Add_Icon_and_Name(s, Row, Sh)
     P01.Application.ScreenUpdating = OldUpdating
@@ -230,9 +231,9 @@ def __Test_Show_Icons_Column_in_Sheet():
 def __Show_Hide_Icons_Column(Show):
     Sh = None
     #--------------------------------------------------
-    for Sh in P01.ThisWorkbook.Sheets:
-        if Is_Data_Sheet(Sh):
-            Make_sure_that_Col_Variables_match(Sh)
+    for Sh in PG.ThisWorkbook.sheets:
+        if M28.Is_Data_Sheet(Sh):
+            M25.Make_sure_that_Col_Variables_match(Sh)
             if Show:
                 __Show_Icons_Column_in_Sheet(Sh)
             else:
@@ -259,7 +260,7 @@ def __Test_Update_Language_Name_Column_in_Sheet():
     __Update_Language_Name_Column_in_Sheet(P01.ActiveSheet)
 
 def Update_Language_Name_Column_in_all_Sheets():
-    Sh = None # P01.Worksheet()
+    Sh = None # P01.Worksheet
 
     Col = int()
 
@@ -267,8 +268,8 @@ def Update_Language_Name_Column_in_all_Sheets():
     #-----------------------------------------------------
     OldUpdating = P01.Application.ScreenUpdating
     P01.Application.ScreenUpdating = False
-    for Sh in P01.ThisWorkbook.Sheets:
-        if Is_Data_Sheet(Sh):
+    for Sh in PG.ThisWorkbook.sheets:
+        if M28.Is_Data_Sheet(Sh):
             __Update_Language_Name_Column_in_Sheet(Sh)
     P01.Application.ScreenUpdating = OldUpdating
 
@@ -281,12 +282,12 @@ def SelectMacros_from_Icon():
     #----------------------------------
     M25.Make_sure_that_Col_Variables_match()
     # VB2PY (UntranslatedCode) On Error GoTo NotFound
-    Button = P01.ActiveSheet.Shapes(P01.Application.caller)
+    Button = P01.ActiveSheet.get_Shape(P01.Application.caller)
     Top = Button.Top
-    for Row in vbForRange(LastUsedRow(), FirstDat_Row, - 1):
+    for Row in vbForRange(M30.LastUsedRow(), M02.FirstDat_Row, - 1):
         if P01.Cells(Row, 1).Top < Top:
-            P01.Cells(Row, MacIcon_Col).Select()
-            SelectMacros()
+            P01.Cells(Row, M25.MacIcon_Col).Select()
+            M09SM.SelectMacros()
             return
 
 def __Test_Hide_MacIcon_Column():
@@ -310,21 +311,21 @@ def __Test_Show_Config__Column():
 def Show_Hide_Column_in_all_Sheets(Show, ColName):
     #----------------------------------------------------------------------------
     if ColName == 'MacIcon_Col':
-        ShowHourGlassCursor(True)
+        M30.ShowHourGlassCursor(True)
         __Show_Hide_Icons_Column(Show)
-        ShowHourGlassCursor(False)
+        M30.ShowHourGlassCursor(False)
     else:
-        for Sh in P01.ThisWorkbook.Sheets:
-            if Is_Data_Sheet(Sh):
-                Make_sure_that_Col_Variables_match(Sh)
+        for Sh in PG.ThisWorkbook.sheets:
+            if M28.Is_Data_Sheet(Sh):
+                M25.Make_sure_that_Col_Variables_match(Sh)
                 if (ColName == 'LanName_Col'):
-                    Col = LanName_Col
+                    Col = M25.LanName_Col
                 elif (ColName == 'Config__Col'):
                     Col = M25.Config__Col
                 else:
                     P01.MsgBox('Unknown ColName: \'' + ColName + '\'', vbCritical, 'Internal Error')
                     Stop()
-                __Show_Hide_Column_in_Sheet()(Show, Col, Sh)
+                __Show_Hide_Column_in_Sheet(Show, Col, Sh)
 
 # VB2PY (UntranslatedCode) Option Explicit
 

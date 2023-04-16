@@ -709,7 +709,7 @@ from vb2py.vbdebug import *
 # 06.12.21: - Add Selectrix support for ESP32
 #           - fix issue with empty lines in libraries sheet
 # 10.12.21: - Add Macro RGB_Heartbeat_Color
-# 14.12.21: - Improve Macro RGB_Heartbeat_Color to support vriable pulse duration
+# 14.12.21: - Improve Macro RGB_Heartbeat_Color to support variable pulse duration
 #             Fix some typos
 # 16.12.21: - Add missing macros InCh_toTmpVar1 and BinCh_toTmpVar1
 #             mark those makros to disable status storage (Goto 0)
@@ -728,7 +728,17 @@ from vb2py.vbdebug import *
 # 17.03.22: - Simulator may switch between RGB and Single-LED view with doubelclick
 # 24.03.22: - fix DCC Offset bug with simulator
 #           - third simulator view displaying combined and single LED
-#
+# 09.04.22: - fix rebuild issue with ESP32
+#           - change ESP32SoftwareSerial library source to a bugfix repository - as
+#             long the bug isn't fixed in then main library
+# 17.04.22: - add Led2Var support to simulator
+#           - fix empty configuration warning if ony extensions are active
+#           - fix extensions include problem
+# 01.08.22: - fix CAN baudrate issue with ESP32 V1 chips
+# 03.08.22: - change release to 3.2.0
+# 09.08.22: - fix memory issue with Arduino Nano and ESP32 librarires
+#           - change release to 3.2.1
+
 # ToDo:
 # ~~~~~
 # - Pattern_Configurator:    27.11.21:

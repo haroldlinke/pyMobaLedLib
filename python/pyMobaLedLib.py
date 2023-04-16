@@ -61,28 +61,30 @@ from mlpyproggen.ConfigurationPage import ConfigurationPage
 from mlpyproggen.ARDUINOConfigPage import ARDUINOConfigPage
 from mlpyproggen.SerialMonitorPage import SerialMonitorPage, SerialThread
 from mlpyproggen.ColorCheckPage import ColorCheckPage
-from mlpyproggen.EffectTestPage import EffectTestPage
-from mlpyproggen.EffectMacroPage import EffectMacroPage
+#from mlpyproggen.EffectTestPage import EffectTestPage
+#from mlpyproggen.EffectMacroPage import EffectMacroPage
 from mlpyproggen.DCC_KeyboardPage import DCCKeyboardPage
-from proggen.Prog_Generator import Prog_GeneratorPage
-from pattgen.Pattern_Generator import Pattern_GeneratorPage
+from mlpyproggen.Prog_Generator import Prog_GeneratorPage
+from mlpyproggen.Pattern_Generator import Pattern_GeneratorPage
+import pattgen.MainMenu_Form as MainMenu
 from mlpyproggen.ServoTestPage import ServoTestPage
 from mlpyproggen.Z21MonitorPage import Z21MonitorPage
 from mlpyproggen.ARDUINOMonitorPage import ARDUINOMonitorPage
 from mlpyproggen.StartPage import StartPage
-from mlpyproggen.LEDListPage import LEDListPage
+#from mlpyproggen.LEDListPage import LEDListPage
 from mlpyproggen.SoundCheckPage import SoundCheckPage
 from mlpyproggen.tooltip import Tooltip
-from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PALETTE, DEFAULT_PARAM, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, SIZEFACTOR,\
-PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1, SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ
-from mlpyproggen.LedEffectTable import ledeffecttable_class
+from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PALETTE, DEFAULT_PARAM, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, DATA_VERSION, ProgGen_Min_Data_Version, Pattgen_Min_Data_Version, SIZEFACTOR,\
+PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1, SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ,DEBUG
+#from mlpyproggen.LedEffectTable import ledeffecttable_class
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,ScrolledFrame,HorizontalScrolledFrame
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
 from tkcolorpicker.functions import hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, col2hue, rgb_to_hsv, convert_K_to_RGB
 import platform
+import traceback
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 from locale import getdefaultlocale
 import os
@@ -92,10 +94,13 @@ import threading
 import queue
 import time
 import logging
+import logging.handlers
 import webbrowser
 import argparse
 import shutil
 from datetime import datetime
+import proggen.M07_COM_Port_New as M07New
+import proggen.M25_Columns as M25
 
 # --- Translation - not used
 EN = {}
@@ -140,11 +145,11 @@ def _(text):
 # ------------------------------
 
 
-tabClassList_all = ( StartPage, Prog_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_all = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_all_patterngen = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_mll_only = ( StartPage, Prog_GeneratorPage,  ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_mll_only = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_SetColTab = (ColorCheckPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, EffectTestPage, EffectMacroPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
 
 #tabClassList_all = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
@@ -167,7 +172,7 @@ ThreadEvent = None
 # Class LEDColorTest
 # ----------------------------------------------------------------
 
-class LEDColorTest(tk.Tk):
+class pyMobaLedLibapp(tk.Tk):
     
     # ----------------------------------------------------------------
     # LEDColorTest __init__
@@ -179,6 +184,7 @@ class LEDColorTest(tk.Tk):
         self.setcoltab_only = False
         caller_setcoltab = (caller == "SetColTab")
         self.colortest_only = COMMAND_LINE_ARG_DICT.get("colortest_only","")== "True"
+        self.loaddatafile = COMMAND_LINE_ARG_DICT["loaddatafile"]!="False"
         self.coltab = None
         self.checkcolor_callback = None
         self.ledhighlight = False
@@ -192,34 +198,34 @@ class LEDColorTest(tk.Tk):
         self.readConfigData()
         self.ARDUINO_current_portname = ""
         self.ARDUINO_status = ""
-        self.ledtable = {"000": "#FFFFFF"}
-        self.init_ledgrouptable = {
-                                "Gruppenname": {
-                                    "Name": "Gruppenname",
-                                    "params": {
-                                        "Group_Name": "Gruppenname",
-                                        "Group_Colour": "#FFFFFF",
-                                        "Group_Distributor": "",
-                                        "Group_Connector": "",
-                                        "Group_Comment": ""
-                                    }
-                                },
-                                "Gruppenname2": {
-                                    "Name": "Gruppenname",
-                                    "params": {
-                                        "Group_Name": "Gruppenname2",
-                                        "Group_Colour": "#FFFF00",
-                                        "Group_Distributor": "",
-                                        "Group_Connector": "",
-                                        "Group_Comment": ""
-                                    }
-                                }                                
-                            }        
-        self.ledeffecttable = ledeffecttable_class(self.init_ledgrouptable, self)
-        self.ledeffecttable.init_ledeffecttable()
+        #self.ledtable = {"000": "#FFFFFF"}
+        #self.init_ledgrouptable = {
+        #                        "Gruppenname": {
+        #                            "Name": "Gruppenname",
+        #                            "params": {
+        #                                "Group_Name": "Gruppenname",
+        #                                "Group_Colour": "#FFFFFF",
+        #                                "Group_Distributor": "",
+        #                                "Group_Connector": "",
+        #                                "Group_Comment": ""
+        #                            }
+        #                        },
+        #                        "Gruppenname2": {
+        #                            "Name": "Gruppenname",
+        #                            "params": {
+        #                                "Group_Name": "Gruppenname2",
+        #                                "Group_Colour": "#FFFF00",
+        #                                "Group_Distributor": "",
+        #                                "Group_Connector": "",
+        #                                "Group_Comment": ""
+        #                            }
+        #                        }                                
+        #                    }        
+        #self.ledeffecttable = ledeffecttable_class(self.init_ledgrouptable, self)
+        #self.ledeffecttable.init_ledeffecttable()
         self.colorpalette = {}
         self.macroparams_value = {}
-        self.ledeffect_label_list = {}
+        #self.ledeffect_label_list = {}
         self.macroparams_var = {"dummy": {}}
         self.persistent_param_dict = {}
         self.macroparam_frame_dict = {}
@@ -251,6 +257,13 @@ class LEDColorTest(tk.Tk):
         self.fontentry = self.get_font("FontLabel")
         self.fonttext = self.get_font("FontText")
         
+        self.fontpattgen_sizenormal = self.getConfigData("FontNormal")
+        self.fontpattgen_sizelarge = self.getConfigData("FontLarge")
+        self.fontpattgen_sizesmall = self.getConfigData("FontSmall")
+        self.fontpattgen_name = self.getConfigData("FontName")
+        self.defaultfontnormal = (self.fontpattgen_name, self.fontpattgen_sizenormal)
+        self.defaultfontsmall = (self.fontpattgen_name, self.fontpattgen_sizesmall)
+        self.defaultfontlarge = (self.fontpattgen_name, self.fontpattgen_sizelarge)
         self.cor_red = self.getConfigData("led_correction_r")
         self.cor_green = self.getConfigData("led_correction_g")
         self.cor_blue = self.getConfigData("led_correction_b")
@@ -276,28 +289,48 @@ class LEDColorTest(tk.Tk):
         self.paramDataChanged = False
         self.palette = {}
         self.connection_startup = False
+        self.ProgVersion = PROG_VERSION
+        self.DataVersion = DATA_VERSION
+        self.ProgGenMinDataVersion = ProgGen_Min_Data_Version
+        self.PattGenMinDataVersion = Pattgen_Min_Data_Version
 
         tk.Tk.__init__(self, *args, **kwargs)
+        tk.Tk.report_callback_exception = self.show_tkinter_exception
+        self.update()
+        
+        #print(self.getConfigData("pos_x"), self.getConfigData("pos_y"))
+        #print(self.getConfigData("win_height"), self.getConfigData("win_width"))
+        self.window_height= self.getConfigData("win_height")
+        
+        if self.window_height<500:
+            self.window_height=1080
+        self.window_width = self.getConfigData("win_width")
+        if self.window_width<500:
+            self.window_width=1920
+        self.pos_x= self.getConfigData("pos_x")
+        self.pos_y = self.getConfigData("pos_y")
+        
+        if self.getConfigData("pos_x") < 1920 and self.getConfigData("pos_y") < 1080:
+            self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))        
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         logging.debug("Screenwidht: %s Screenheight: %s",screen_width,screen_height)
-        geometry = self.winfo_geometry()
-        print(geometry)
+
         if screen_width<1280:
             SIZEFACTOR_width = screen_width/1280
-            window_width=screen_width
-        else:
-            window_width = 1920 # 1280
+            self.window_width=screen_width
         
         if screen_height < 900:
-            window_height=screen_height
-        else:
-            window_height=1000
+            self.window_height=screen_height
+            
+        logging.debug("Windowwidht: %s Windowheight: %s",self.window_width,self.window_height)
+        logging.debug("pos_x: %s pos_y: %s",self.pos_x,self.pos_y)
         
         if self.getConfigData("pos_x") < screen_width and self.getConfigData("pos_y") < screen_height:
-            self.geometry('%dx%d+%d+%d' % (window_width,window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))
+            self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))
         else:
-            self.geometry("%dx%d+0+0" % (window_width,window_height))
+            self.geometry("%dx%d+0+0" % (self.window_width,self.window_height))
+
         #geometry = self.winfo_geometry()
         #print(geometry, self.getConfigData("pos_x"), self.getConfigData("pos_y"))        
 
@@ -325,9 +358,13 @@ class LEDColorTest(tk.Tk):
         filemenu.add_command(label="MacroWorkbook von Datei lesen", command=self.OpenFileWorkbook)
         filemenu.add_command(label="MacroWorkbook speichern als", command=self.SaveFileWorkbook)
         filemenu.add_separator()
-        filemenu.add_command(label="Excel ProgGen PGF-Datei lesen", command=self.OpenFilePGF)
-        filemenu.add_command(label="Als Excel ProgGen PGF-Datei speichern", command=self.SaveFilePGF)
-        filemenu.add_separator()        
+        filemenu.add_command(label="ProgramGenerator: PGF-Datei lesen", command=self.OpenFilePGF)
+        filemenu.add_command(label="ProgramGenerator: PGF-Datei speichern", command=self.SaveFilePGF)
+        filemenu.add_separator()
+        filemenu.add_command(label="PatternGenerator: PCF-Datei lesen", command=self.OpenFilePCF)
+        filemenu.add_command(label="PatternGenerator: Alle Seiten als PCF-Datei speichern", command=self.SaveAllFilePCF)
+        filemenu.add_command(label="PatternGenerator: Aktuelle Seite als PCF-Datei speichern", command=self.SaveCurSheetFilePCF)
+        filemenu.add_separator()                
         filemenu.add_command(label="Beenden und Konfig-Daten speichern", command=self.ExitProg_with_save)
         filemenu.add_command(label="Beenden ohne Konfig-Daten zu speichern", command=self.ExitProg)
 
@@ -346,12 +383,12 @@ class LEDColorTest(tk.Tk):
         arduinomenu.add_command(label="Trennen", command=self.DisconnectArduino)
         arduinomenu.add_command(label="Alle LED aus", command=self.SwitchoffallLEDs)
         
-        optionsmenu = tk.Menu(menu)
-        menu.add_cascade(label="Optionen", menu=optionsmenu)
-        optionsmenu.add_command(label="Aktualisiere Bibliothek", command=self.update_library)
-        optionsmenu.add_command(label="Installiere Beta Test", command=self.install_Betatest)
-        optionsmenu.add_command(label="Status der Bibliotheken", command=self.library_status)
-        optionsmenu.add_command(label="Schnelle Bootloader installieren", command=self.install_fast_bootloader)
+        #optionsmenu = tk.Menu(menu)
+        #menu.add_cascade(label="Optionen", menu=optionsmenu)
+        #optionsmenu.add_command(label="Aktualisiere Bibliothek", command=self.update_library)
+        #optionsmenu.add_command(label="Installiere Beta Test", command=self.install_Betatest)
+        #optionsmenu.add_command(label="Status der Bibliotheken", command=self.library_status)
+        #optionsmenu.add_command(label="Schnelle Bootloader installieren", command=self.install_fast_bootloader)
         
         #patternconfmenu = tk.Menu(menu)
         #menu.add_cascade(label="Pattern Configurator", menu=patternconfmenu)
@@ -433,11 +470,12 @@ class LEDColorTest(tk.Tk):
         self.showFramebyName(startpagename)
         
         filedir = self.mainfile_dir # os.path.dirname(os.path.realpath(__file__))
-        
-        if self.getConfigData("AutoLoadWorkbooks"):
-            for wb in P01.Workbooks:
-                temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name)
-                wb.Load(filename=temp_workbook_filename)
+        self.update()
+        for wb in P01.Workbooks:
+            wb.init_workbook()
+            if self.getConfigData("AutoLoadWorkbooks"):
+                    temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name)
+                    wb.Load(filename=temp_workbook_filename)
         
         self.messageframe = ttk.Frame(self)
         
@@ -468,6 +506,19 @@ class LEDColorTest(tk.Tk):
 
         self.lift()
         self.grab_set()
+        
+    def show_tkinter_exception(self, exc,val,tb):
+        err = traceback.format_exception(exc,val,tb)
+        
+        messagestring = ""
+        for line in err:
+            messagestring+=line
+        messagebox.showerror('Exception',messagestring)
+        #print("Tkinter Exception:",messagestring)
+        logging.debug("Tkinter Exception:\n"+messagestring)
+        if DEBUG:
+            raise
+        
         
     def check_data_changed(self):
         return self.paramDataChanged or self.activeworkbook.check_Data_Changed()
@@ -523,6 +574,15 @@ class LEDColorTest(tk.Tk):
         #filepath = filedialog.askopenfilename(filetypes=[("LED List files","*.led.json"),("All JSON files","*.json")],defaultextension=".led.json")
         # filepath:
         self.activeworkbook.LoadPGF()
+        
+    def SaveAllFilePCF(self):
+        MainMenu.SaveAllExamplesButton_Click()
+        
+    def SaveCurSheetFilePCF(self):
+        MainMenu.SaveActualExampleButton_Click()
+
+    def OpenFilePCF(self):
+        MainMenu.LoadExampleButton_Click()
 
     def About(self):
         tk.messagebox("MobaCheckColor by Harold Linke")
@@ -584,14 +644,14 @@ class LEDColorTest(tk.Tk):
     def ExitProg_with_save(self):
         self.cancel_with_save()    
 
-    def saveLEDTabtoFile(self, filepath):
+    def xsaveLEDTabtoFile(self, filepath):
                
         temp_dict = {"ledeffecttable":self.ledeffecttable.get_table(),
                      "ledgrouptable" :self.ledeffecttable.mledgrouptable}
         
         saveDicttoFile(filepath, temp_dict)
 
-    def readLEDTabfromFile(self, filepath,tabselection=True):
+    def xreadLEDTabfromFile(self, filepath,tabselection=True):
         temp_dict = readDictFromFile(filepath)
         if temp_dict:
             temp_led_effect_table = temp_dict.get("ledeffecttable",{}) 
@@ -680,6 +740,26 @@ class LEDColorTest(tk.Tk):
                 self.cancel_without_save()
         else:
             self.cancel_without_save()
+            
+            
+    # ----------------------------------------------------------------
+    #  restart program
+    # ----------------------------------------------------------------
+    def restart(self):
+        logging.debug("Restart requested")
+        
+        answer = tk.messagebox.askyesnocancel ('Das Programm wird beendet und neu gestartet','Daten wurden verändert. Sollen die Daten gesichert werden?',default='no')
+        if answer == None:
+            return # no cancelation
+        if answer:
+            self.cancel_with_save() 
+        else:
+            self.cancel_without_save()
+        #restart program
+        logging.debug("Restart")
+        os.execv(sys.executable, ["python"]+sys.argv)
+        
+        #############################################
 
 
     def close_notification(self):
@@ -739,20 +819,26 @@ class LEDColorTest(tk.Tk):
     # ----------------------------------------------------------------             
     def startup_system(self):
         
-        if self.getConfigData("autoconnect"):
-            
-            if self.getConfigData("serportname").upper() == "NO DEVICE":
+        if True: #self.getConfigData("autoconnect"):
+            port_name = self.getConfigData("serportname")
+            if port_name.upper() == "NO DEVICE" or port_name=="":
                 logging.debug("Portname: No DEVICE - show message")
                 macrodata = self.MacroDef.data.get("StartPage")
                 msg_no_device_title = macrodata.get("MSG_NO_DEVICE_title","")
                 msg_no_device = macrodata.get("MSG_NO_DEVICE","")
                 answer = tk.messagebox.askyesnocancel (msg_no_device_title, msg_no_device, default='no')
+                logging.debug("Portname: No DEVICE question - answer:"+ answer)
                 if answer == None:
                     return
                 
                 if answer:
-                    
-                    self.showFramebyName("ARDUINOConfigPage") 
+                    logging.debug("pyMobaLedLib.startup_system: Show_USB_Port_Dialog")
+                    ComPortColumn = M25.COMPort_COL
+                    ComPort=" "
+                    res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
+                    self.setConfigData("serportname",ComPort)
+                    #self.showFramebyName("ARDUINOConfigPage")
+                    self.connect()
             else:
                 self.connect()
         
@@ -803,11 +889,23 @@ class LEDColorTest(tk.Tk):
                 if answer == None:
                     pass 
                 if answer:
-                    self.showFramebyName("ARDUINOConfigPage")                 
-                self.arduino = None
-                self.ARDUINO_status = ""
-                self.set_connectstatusmessage("Nicht Verbunden",fg="black")
-                return False
+                    #open ARDUINO Comport Selection
+                    ComPortColumn = M25.COMPort_COL
+                    ComPort=" "
+                    res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
+                    if res:
+                        return self.connect(port=ComPort)
+                    else:
+                        self.arduino = None
+                        self.ARDUINO_status = ""
+                        self.set_connectstatusmessage("Nicht Verbunden",fg="black")
+                        return False                        
+                    #self.showFramebyName("ARDUINOConfigPage") 
+                else:
+                    self.arduino = None
+                    self.ARDUINO_status = ""
+                    self.set_connectstatusmessage("Nicht Verbunden",fg="black")
+                    return False
             # reset ARDUINO
             try:
                 #self.arduino.dtr = True
@@ -884,10 +982,10 @@ class LEDColorTest(tk.Tk):
                 self.ARDUINO_current_portname = port
                 
                 for key in self.tabdict:
-                    self.tabdict[key].connect()
+                    self.tabdict[key].connect(port)
                     
                     
-                port_dcc_data = self.serial_port_dict.get(port,{})
+                port_dcc_data = self.serial_port_dict.get(str(port),{})
                 if port_dcc_data != {}:
                     port_dcc_data["ARDUINO"] = self.arduino
                 else:
@@ -1046,9 +1144,9 @@ class LEDColorTest(tk.Tk):
     def connect_if_not_connected(self):
         logging.debug("Connect_if_not_connected")
         if self.arduino:
-            return True
-        else:
-            return self.connect()
+            if self.arduino.isOpen():
+                return True
+        return self.connect()
 
     def checkconnection(self):
         #logging.debug("Check_connection")
@@ -1150,7 +1248,7 @@ class LEDColorTest(tk.Tk):
                 self.queue.put( ">> " + str(message))
             except BaseException as e:
                 logging.debug("Error write message to ARDUINO %s",message)
-                logging.debug(e)  
+                logging.debug(e)
     
     def set_maxLEDcnt(self,maxLEDcnt):
         self.maxLEDcnt = maxLEDcnt
@@ -1164,25 +1262,25 @@ class LEDColorTest(tk.Tk):
         else:
             return self.getConfigData("maxLEDcount")
         
-    def init_ledeffecttable(self):
+    def xinit_ledeffecttable(self):
         self.ledeffecttable.init_ledeffecttable()
  
-    def init_ledeffecttable_entry(self,keystr):
+    def xinit_ledeffecttable_entry(self,keystr):
         self.ledeffecttable.init_entry(keystr)
         
-    def ledeffecttable_copy_leds(self,start_int,cnt_int,dest_int):
+    def xledeffecttable_copy_leds(self,start_int,cnt_int,dest_int):
         self.ledeffecttable.copy_leds(start_int,cnt_int,dest_int)
 
-    def ledeffecttable_init_entries(self,start_int,cnt_int):
+    def xledeffecttable_init_entries(self,start_int,cnt_int):
         self.ledeffecttable.init_entries(start_int,cnt_int)
             
-    def ledeffecttable_move_leds(self,start_int,cnt_int,dest_int):
+    def xledeffecttable_move_leds(self,start_int,cnt_int,dest_int):
         self.ledeffecttable.move_leds(start_int,cnt_int,dest_int)
         
-    def ledeffecttable_insert_leds(self,start_int,cnt_int):
+    def xledeffecttable_insert_leds(self,start_int,cnt_int):
         self.ledeffecttable.insert_leds(start_int,cnt_int)
 
-    def ledeffecttable_remove_leds(self,remove_start_int,cnt_int):
+    def xledeffecttable_remove_leds(self,remove_start_int,cnt_int):
         self.ledeffecttable.remove_leds(remove_start_int,cnt_int)
 
                 
@@ -1268,9 +1366,6 @@ class LEDColorTest(tk.Tk):
             self.cor_red = self.getConfigData("led_correction_r")
             self.cor_green = self.getConfigData("led_correction_g")
             self.cor_blue = self.getConfigData("led_correction_b")
-        
-
-            
             
             
     def readConfigData(self):
@@ -1335,6 +1430,8 @@ class LEDColorTest(tk.Tk):
             logging.debug("PyInstaller handling Error %s",e)            
         
     def setConfigData(self,key, value):
+        if key=="serportname":
+            print("setconfigdata:", key,value)
         self.ConfigData.data[key] = value
         
     def setConfigDataDict(self,param_dict):
@@ -2627,9 +2724,14 @@ def img_resource_path(relative_path):
 
 COMMAND_LINE_ARG_DICT = {}
 
+logger=logging.getLogger(__name__)
+
 def main_entry():
+    global DEBUG
     
     global COMMAND_LINE_ARG_DICT
+    
+    #import wingdbstub
     
     if sys.hexversion < 0x030700F0:
         tk.messagebox.showerror("Wrong Python Version"+sys.version,"You need Python Version > 3.7 to run this Program")
@@ -2641,6 +2743,7 @@ def main_entry():
     parser = argparse.ArgumentParser(description='Generate MLL Programs') #,exit_on_error=False) seems to create a problem in some python versions
     parser.add_argument('--loglevel',choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"],help="Logginglevel to be printed into the logfile")
     parser.add_argument('--logfile',help="Logfilename")
+    parser.add_argument('--loaddatafile',choices=["True","False"],help="if <False> the last saved data will no be loaded")
     parser.add_argument('--startpage',choices=['StartPage', 'ColorCheckPage', 'Prog_GeneratorPage', 'SoundCheckPage', 'DCCKeyboardPage', 'ServoTestPage', 'Z21MonitorPage', 'SerialMonitorPage', 'ARDUINOMonitorPage', 'ConfigurationPage'],help="Name of the first page shown after start")
     parser.add_argument('--port',help="Name of the port where the ARDUINO is connected to")
     parser.add_argument('--z21simulator',choices=["True","False"],help="if <True> the Z21simulator will be started automatically")
@@ -2649,9 +2752,10 @@ def main_entry():
     try:
         args = parser.parse_args()
     except argparse.ArgumentError:
+        #print("Argument Error")
         logging.debug ('Catching an argumentError')
     
-    format = "%(asctime)s: %(message)s"
+    logging_format = '%(asctime)s - %(message)s'
     
     filedir = os.path.dirname(os.path.realpath(__file__))
     if args.logfile:
@@ -2660,36 +2764,55 @@ def main_entry():
         logfilename1=LOG_FILENAME
         
     if logfilename1 == "stdout":
-        logfilename=""
+        logfilename=None
     else:
         logfilename = os.path.join(filedir, logfilename1)
+    logging_level="DEBUG"
     
     if args.loglevel:
         logging_level = args.loglevel.upper()
         COMMAND_LINE_ARG_DICT["logging_level"]=logging_level
         if logging_level=="DEBUG":
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.DEBUG,datefmt="%H:%M:%S")
+            log_level=logging.DEBUG
+            DEBUG=True
         elif logging_level=="INFO":
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.INFO,datefmt="%H:%M:%S")
+            log_level=logging.INFO
         elif logging_level=="WARNING":
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.WARNING,datefmt="%H:%M:%S")
+            log_level=logging.WARNING
         elif logging_level=="ERROR":
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.ERROR,datefmt="%H:%M:%S")
+            log_level=logging.ERROR
         else:
-            logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.CRITICAL,datefmt="%H:%M:%S")
+            log_level=logging.CRITICAL
     else:
-        logging.basicConfig(format=format, filename=logfilename,filemode="w",level=logging.DEBUG,datefmt="%H:%M:%S")
-    logging.info("Python Version: %s",sys.version)
-    logging.info("MLL Proggenerator started %s", PROG_VERSION)
-    logging.info(" Platform: %s",platform.platform())
-    logging.debug("Installationfolder %s",filedir)
+        log_level=logging.DEBUG
+
+    logger.setLevel(log_level)
+    fh = logging.handlers.RotatingFileHandler(logfilename,maxBytes=1000000,backupCount=3)
+    fh.setLevel(log_level)
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(log_level)
+    # create formatter and add it to the handlers
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    fh.setFormatter(formatter)
+    # add the handlers to logger
+    logger.addHandler(ch)
+    logger.addHandler(fh)
+    logging.basicConfig(format=logging_format, filename=logfilename,filemode="w",level=log_level,datefmt="%H:%M:%S",force=True)
+
+    logger.info("Python Version: %s",sys.version)
+    logger.info("MLL Proggenerator started %s", PROG_VERSION)
+    logger.info(" Platform: %s",platform.platform())
+    logger.debug("Installationfolder %s",filedir)
+    logger.debug("Logging Level: %s Logfilename: %s",logging_level, logfilename)
     
     if args.startpage:
         COMMAND_LINE_ARG_DICT["startpagename"]=args.startpage
     else:
         COMMAND_LINE_ARG_DICT["startpagename"]="StartPage"
         
-    logging.info(" Startpage: %s",COMMAND_LINE_ARG_DICT["startpagename"])        
+    logger.info(" Startpage: %s",COMMAND_LINE_ARG_DICT["startpagename"])        
     if args.port:
         COMMAND_LINE_ARG_DICT["serportname"]=args.port
         
@@ -2701,6 +2824,11 @@ def main_entry():
         if (args.caller == "SetColTab"):
             COMMAND_LINE_ARG_DICT["caller"]= "SetColTab"
             COMMAND_LINE_ARG_DICT["startpagename"]='ColorCheckPage'
+            
+    if args.loaddatafile:
+        COMMAND_LINE_ARG_DICT["loaddatafile"]=args.loaddatafile
+    else:
+        COMMAND_LINE_ARG_DICT["loaddatafile"]=True
         
     # check if colortest only is needed
     try: #check if a COLORTESTONLY_FILE is in the main Dir 
@@ -2709,16 +2837,18 @@ def main_entry():
         open(filepath1, 'r').close()
         colortest_only = True
     except BaseException as e:
-        logging.debug(e)
+        logger.debug(e)
         colortest_only = False
         pass
     
     if colortest_only:
         COMMAND_LINE_ARG_DICT["colortest_only"]= "True"
         
-    logging.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
+    logger.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
     
-    app = LEDColorTest()
+    app = pyMobaLedLibapp()
+    tk_version = app.tk.call("info", "patchlevel")
+    logging.debug("TK-Version:"+tk_version)    
     
     app.setroot(app)
     

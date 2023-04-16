@@ -63,10 +63,11 @@ import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
+import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 """ ********************************************************************************
  Select macro using the treeView Dialog from JKP Application Development Services
@@ -176,7 +177,7 @@ def __Helper_Replace_Empty_Lines_in_Front_of_Cells():
 def Set_Lib_Macros_Test_Language(Test_Language):
     ListDataSh = P01.CWorksheet()
     #----------------------------------------------------------------
-    ListDataSh = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+    ListDataSh = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
     ListDataSh.Range['Test_Language'] = Test_Language
 
 def __Test_Set_Lib_Macros_Test_Language():

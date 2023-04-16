@@ -60,7 +60,7 @@ try:
 except ImportError:
     import Tkinter as tk
     import ttk
-#from PIL import Image, ImageDraw, ImageTk
+# fromx PIL import Image, ImageDraw, ImageTk
 from math import atan2, sqrt, pi
 import colorsys
 import math
