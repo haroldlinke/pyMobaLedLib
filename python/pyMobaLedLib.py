@@ -307,7 +307,9 @@ class pyMobaLedLibapp(tk.Tk):
         self.window_width = self.getConfigData("win_width")
         if self.window_width<500:
             self.window_width=1920
-                
+        self.pos_x= self.getConfigData("pos_x")
+        self.pos_y = self.getConfigData("pos_y")
+        
         if self.getConfigData("pos_x") < 1920 and self.getConfigData("pos_y") < 1080:
             self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))        
         screen_width = self.winfo_screenwidth()
@@ -320,6 +322,9 @@ class pyMobaLedLibapp(tk.Tk):
         
         if screen_height < 900:
             self.window_height=screen_height
+            
+        logging.debug("Windowwidht: %s Windowheight: %s",self.window_width,self.window_height)
+        logging.debug("pos_x: %s pos_y: %s",self.pos_x,self.pos_y)
         
         if self.getConfigData("pos_x") < screen_width and self.getConfigData("pos_y") < screen_height:
             self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))
@@ -822,10 +827,12 @@ class pyMobaLedLibapp(tk.Tk):
                 msg_no_device_title = macrodata.get("MSG_NO_DEVICE_title","")
                 msg_no_device = macrodata.get("MSG_NO_DEVICE","")
                 answer = tk.messagebox.askyesnocancel (msg_no_device_title, msg_no_device, default='no')
+                logging.debug("Portname: No DEVICE question - answer:"+ answer)
                 if answer == None:
                     return
                 
                 if answer:
+                    logging.debug("pyMobaLedLib.startup_system: Show_USB_Port_Dialog")
                     ComPortColumn = M25.COMPort_COL
                     ComPort=" "
                     res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
@@ -2840,6 +2847,8 @@ def main_entry():
     logger.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
     
     app = pyMobaLedLibapp()
+    tk_version = app.tk.call("info", "patchlevel")
+    logging.debug("TK-Version:"+tk_version)    
     
     app.setroot(app)
     

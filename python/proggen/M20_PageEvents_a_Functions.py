@@ -1070,7 +1070,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
         P01.ActiveSheet.Shapes.Delete(OldRect_List(i))
 
 def ResetTestButtons(keepStatus):
-    return #*HL
+    
     Row = Variant()
 
     First_Call = Boolean()
