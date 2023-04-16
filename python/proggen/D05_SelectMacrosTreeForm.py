@@ -776,7 +776,7 @@ class SelectMacrosTreeform:
         Debug.Print("searchTree")
 
         selections = self.tree.tag_has(str(searchvalue))
-        print(searchvalue, selections)
+        #print(searchvalue, selections)
         
         #for child in self.tree.get_children():
             #print(self.tree.item(child)['values'])

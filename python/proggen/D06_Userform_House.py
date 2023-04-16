@@ -271,7 +271,7 @@ class UserForm_House:
         P01.Center_Form(self.top)
         
     def dummy_proc(self, event=None):
-        print(event)
+        #print(event)
         pass
  
     def ok(self, event=None):

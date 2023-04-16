@@ -990,9 +990,10 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
         CommandStr = CommandStr + ' --pref build.path="' + BuildDirForScript + '"' + ' --preserve-temp-files'
         
     # remove "'" in front of the --board options
-    print(CommandStr)
+
+    #print(CommandStr)
     CommandStr = CommandStr.replace("'", "")
-    print(CommandStr)
+    #print(CommandStr)
 
     # filter the SerialDiscovery messages                                     ' 16.03.20:
     #CommandStr = CommandStr & " 2>&1 | find /v "" StatusLogger "" | find /v ""serial.SerialDiscovery"" | find /v ""fungsvorgang..."""

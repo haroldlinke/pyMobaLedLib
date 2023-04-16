@@ -318,12 +318,12 @@ def __LoadConfiguration():
     Buffer,buflen = __LoadFile(PG.ThisWorkbook.Path + '/' + M02.Cfg_Dir_LED + 'LEDConfig.bin')
     dllBuffer = ctypes.create_string_buffer(Buffer)
 
-    print(repr(dllBuffer.raw))
+    #print(repr(dllBuffer.raw))
     bufferLen = ctypes.c_int(buflen)
-    print(bufferLen,bufferLen.value)
+    #print(bufferLen,bufferLen.value)
     
     res=CreateSimulator(dllBuffer, bufferLen)
-    print(res)
+    #print(res)
     
     Buffer, buflen=__LoadFile(PG.ThisWorkbook.Path + '\\' + M02.Cfg_Dir_LED + 'AddressConfig.bin')
     Debug.Print(Buffer)
