@@ -45,7 +45,9 @@ class CSelect_GotoNr_Form:
 
  
     def ok(self, event=None):
+
         #print ("Has escrito ...", self.e.get())
+
         #self.valor.set(self.e.get())
         self.IsActive = False
         self.top.destroy()

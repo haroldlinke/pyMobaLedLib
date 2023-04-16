@@ -312,6 +312,7 @@ class pyMobaLedLibapp(tk.Tk):
         
         #if self.getConfigData("pos_x") < 1920 and self.getConfigData("pos_y") < 1080:
         #    self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))        
+
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         logging.debug("Screenwidht: %s Screenheight: %s",screen_width,screen_height)

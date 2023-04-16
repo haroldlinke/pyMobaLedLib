@@ -990,6 +990,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
         CommandStr = CommandStr + ' --pref build.path="' + BuildDirForScript + '"' + ' --preserve-temp-files'
         
     # remove "'" in front of the --board options
+
     #print(CommandStr)
     CommandStr = CommandStr.replace("'", "")
     #print(CommandStr)
