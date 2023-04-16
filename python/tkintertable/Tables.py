@@ -751,7 +751,7 @@ class TableCanvas(Canvas):
                     if findagain == 1 and cell in self.foundlist:
                         continue
                     if text.lower().find(searchstring.lower())!=-1:
-                        print ('found in',row,col)
+                        #print ('found in',row,col)
                         found=1
                         #highlight cell
                         self.delete('searchrect')
@@ -769,7 +769,7 @@ class TableCanvas(Canvas):
                         return row, col
         if found==0:
             self.delete('searchrect')
-            print ('nothing found')
+            #print ('nothing found')
             return None
 
     def showAll(self):
@@ -1598,7 +1598,7 @@ class TableCanvas(Canvas):
     def paste(self, event=None):
         """Copy from clipboard"""
 
-        print (self.parentframe.clipboard_get())
+        #print (self.parentframe.clipboard_get())
         return
 
     def copyCell(self, rows, cols=None):
@@ -2294,7 +2294,8 @@ class TableCanvas(Canvas):
                         self.tag_raise(shape.formwin)
                     elif shape.Shapetype == "picture" or shape.Shapetype==X01.msoPicture:
                         pass
-                        print("drawshape - Picture:", shape.Name)
+                        #print("drawshape - Picture:", shape.Name)
+
                         image_loaded=False
                         try:
                             image = PhotoImage(file=shape.Name)

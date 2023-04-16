@@ -341,7 +341,7 @@ class TableModel(object):
                 temp = copy.deepcopy(self.colors[key][currname])
                 self.colors[key][newname] = temp
                 del self.colors[key][currname]
-        print ('renamed')
+        #print ('renamed')
         #would also need to resolve all refs to this rec in formulas here!
         return
 
@@ -901,8 +901,8 @@ class TableModel(object):
             ncol = thiscol + offset
 
         newrecname, newcolname = self.getRecColNames(nrow, ncol)
-        print ('recname, colname', recname, colname)
-        print ('thisrow, col', thisrow, thiscol)
+        #print ('recname, colname', recname, colname)
+        #print ('thisrow, col', thisrow, thiscol)
         return newrecname, newcolname
 
     def appendtoFormula(self, formula, rowIndex, colIndex):
@@ -927,7 +927,7 @@ class TableModel(object):
         cells, ops = Formula.readExpression(frmla)
 
         for c in cells:
-            print (c)
+            #print (c)
             if type(c) is not ListType:
                 nc = c
             else:

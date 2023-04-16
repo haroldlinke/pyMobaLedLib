@@ -310,8 +310,9 @@ class pyMobaLedLibapp(tk.Tk):
         self.pos_x= self.getConfigData("pos_x")
         self.pos_y = self.getConfigData("pos_y")
         
-        if self.getConfigData("pos_x") < 1920 and self.getConfigData("pos_y") < 1080:
-            self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))        
+        #if self.getConfigData("pos_x") < 1920 and self.getConfigData("pos_y") < 1080:
+        #    self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))        
+
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         logging.debug("Screenwidht: %s Screenheight: %s",screen_width,screen_height)
@@ -821,26 +822,31 @@ class pyMobaLedLibapp(tk.Tk):
         
         if True: #self.getConfigData("autoconnect"):
             port_name = self.getConfigData("serportname")
-            if port_name.upper() == "NO DEVICE" or port_name=="":
-                logging.debug("Portname: No DEVICE - show message")
-                macrodata = self.MacroDef.data.get("StartPage")
-                msg_no_device_title = macrodata.get("MSG_NO_DEVICE_title","")
-                msg_no_device = macrodata.get("MSG_NO_DEVICE","")
-                answer = tk.messagebox.askyesnocancel (msg_no_device_title, msg_no_device, default='no')
-                logging.debug("Portname: No DEVICE question - answer:"+ answer)
-                if answer == None:
-                    return
-                
-                if answer:
-                    logging.debug("pyMobaLedLib.startup_system: Show_USB_Port_Dialog")
-                    ComPortColumn = M25.COMPort_COL
-                    ComPort=" "
-                    res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
-                    self.setConfigData("serportname",ComPort)
-                    #self.showFramebyName("ARDUINOConfigPage")
-                    self.connect()
-            else:
+            logging.debug("Portname: "+ str(port_name))
+            if P01.checkplatform("Darwin"):
+                logging.debug("startup-system: MAC - no NO DEVICE check")
                 self.connect()
+            else:
+                if port_name.upper() == "NO DEVICE" or port_name=="":
+                    logging.debug("startup-system: NO DEVICE  handling")
+                    macrodata = self.MacroDef.data.get("StartPage")
+                    msg_no_device_title = macrodata.get("MSG_NO_DEVICE_title","")
+                    msg_no_device = macrodata.get("MSG_NO_DEVICE","")
+                    answer = tk.messagebox.askyesnocancel (msg_no_device_title, msg_no_device, default='no')
+                    logging.debug("Portname: No DEVICE question - answer:"+ str(answer))
+                    if answer == None:
+                        return
+                    
+                    if answer==True:
+                        logging.debug("pyMobaLedLib.startup_system: Show_USB_Port_Dialog")
+                        ComPortColumn = M25.COMPort_COL
+                        ComPort=" "
+                        res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
+                        self.setConfigData("serportname",ComPort)
+                        #self.showFramebyName("ARDUINOConfigPage")
+                        self.connect()
+                else:
+                    self.connect()
         
     # ----------------------------------------------------------------
     # LEDColorTest connect ARDUINO
