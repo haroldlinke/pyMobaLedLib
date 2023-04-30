@@ -58,6 +58,7 @@ import proggen.M30_Tools as M30
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
+import mlpyproggen.Prog_Generator as PG
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
@@ -121,7 +122,7 @@ def Get_Par_Data(ParName):
     ActLanguage = M09.Get_ExcelLanguage()
     if ActLanguage != 0:
         Offs = 1
-    Sh = P01.Sheets(M02.PAR_DESCR_SH)
+    Sh = PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH)
     Row = __Get_ParDesc_Row(Sh, ParName)
     with_1 = Sh
     Typ = with_1.Cells(Row, ParType_COL)

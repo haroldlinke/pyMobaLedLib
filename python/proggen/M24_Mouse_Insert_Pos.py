@@ -187,7 +187,7 @@ def __Show_InsertLine_until_Mousepressed(MinRow, SheetName):
         OldUpdating = P01.Application.ScreenUpdating
         P01.Application.ScreenUpdating = False
         if __LastRow > 0:
-            __Normal_Line(P01.Sheets(SheetName), __LastRow)
+            __Normal_Line(PG.ThisWorkbook.Sheets(SheetName), __LastRow)
         if Row != 0:
             __LastRow = Row
         if __LeftMousePressed or __EnterKey_Pressed or __ESCButtonPressed or SheetName != P01.ActiveSheet().Name:

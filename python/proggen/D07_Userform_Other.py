@@ -206,6 +206,25 @@ class UserForm_Other():
         #End With
         return fn_return_value
     
+    def Check_Txt_Limit_to_MinMax(self, ParNr, Value):
+        _fn_return_value = None
+        Msg = String()
+        # 03.03.23 Juergen
+        #-------------------------------------------------------------------------------
+        # Return true if its within the alowed range
+        Msg = ''
+        if self.MinA(ParNr - 1) != '' and Len(Value) < P01.val(self.MinA(ParNr - 1)):
+            Msg = M09.Get_Language_Str('zu kurz!' + vbCr + 'Die minimal zulässiger Länge ist: ') + self.MinA(ParNr - 1)
+        elif self.MaxA(ParNr - 1) != '' and Len(Value) > P01.val(self.MaxA(ParNr - 1)):
+            Msg = M09.Get_Language_Str('zu lang!' + vbCr + 'Die maximal zulässige Länge ist: ') + self.MaxA(ParNr - 1)
+        if Msg != '':
+            #Controls('Par' + ParNr).setFocus()
+            P01.MsgBox(M09.Get_Language_Str('Der Parameter \'') + self.Controls.get('LabelPar' + str(ParNr),"key not found") + M09.Get_Language_Str('\' ist ') + Msg, vbInformation, M09.Get_Language_Str('Bereichsüberschreitung'))
+        else:
+            _fn_return_value = True
+        return _fn_return_value
+    
+    
     def LimmitActivInput(self, ct, MinVal, MaxVal):
         #--------------------------------------------------------------------------------
         with_0 = ct
@@ -326,6 +345,13 @@ class UserForm_Other():
                 return fn_return_value
         elif (select_1 == 'Txt'):
             Debug.Print('ToDo: Check parameter typ \'' + self.TypA(ParNr - 1) + '\'')
+        elif (select_1 == 'SheetName'):
+            # 03.03.23 Juergen
+            if self.Check_Txt_Limit_to_MinMax(ParNr, value) == False:
+                return fn_return_value
+            if not M30.WorksheetExists(value):
+                P01.MsgBox(M09.Get_Language_Str('Der angegebene Blattname existiert nicht: \'') + value + '\'', vbCritical, M09.Get_Language_Str('Fehler beim Einbinden eines Blattes'))
+                return fn_return_value            
         elif (select_1 == 'Mode'):
             Debug.Print('ToDo: Check parameter typ \'' + self.TypA(ParNr - 1) + '\'')
         elif (select_1 == 'List'):
@@ -990,6 +1016,9 @@ class UserForm_Other():
                                     #self.Controls['Par' + str(UsedParNr)].Width = w
                                     #with_5 = self.Controls('LabelPar' + str(UsedParNr))
                                     #with_5.Left = with_5.Left + w - self.DEFAULT_PAR_WIDTH
+                                elif (select_4 == 'wn'):
+                                    w = P01.val(Parts(1))
+                                    #self.Controls['Par' + str(UsedParNr)].Width = w
                                 elif (select_4 == 'Inv'):
                                     self.Invers[UsedParNr - 1] = True
                                     if ParVal == 0:
@@ -1056,7 +1085,7 @@ class UserForm_Other():
                 titlecolumn = 1
                 param_tooltip = Hint
                 combo_value_list = SelectValues
-                if param_type in ("Mode","Var"):
+                if param_type in ("Mode","Var","CmpMod","SheetName"):
                     param_type = "String"
                 self.ParamVar[paramkey] = self.create_widget(self.Param_Frame, row, column, paramkey, param_title, param_type, param_min, param_max, param_default, titlerow, titlecolumn, param_tooltip,combo_value_list=combo_value_list)
                 

@@ -75,6 +75,7 @@ import proggen.M09_Language as M09
 import proggen.M07_COM_Port as M07
 import proggen.M20_PageEvents_a_Functions as M20
 #import proggen.D08_Select_COM_Port_Userform as D08
+import pgcommon.G00_common as G00
 
 
 # --- Translation - not used
@@ -116,6 +117,7 @@ def get_dialog_parent():
     return dialog_parent
 ThreadEvent = None
 
+
 BUTTONLABELWIDTH = 10
 
 
@@ -137,16 +139,23 @@ class Prog_GeneratorPage(tk.Frame):
         self.default_smallfont   = self.controller.defaultfontsmall
         
         datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
-        datasheet_formating = { "HideCells" : ((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16),(1,"*")),
-                                "ProtectedCells"  : ((0,0),(1,0),("*",12),("*",13),("*",14),("*",15),("*",16)),
+        datasheet_formating = { "HideCells" : ((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16)),
+                                "ProtectedCells"  : ((0,"*"),(1,0),("*",12),("*",13),("*",14),("*",15),("*",16)),
+                                "ColumnWidth"     : (5,17,17,34,17,17,60,34,34,17,60,60,17,17,17),
                                 "left_click_callertype": "cell",
                                 "FontColor"       : { "1": {
                                                             "font"     : self.default_smallfont,
                                                             "fg"       : "#FFFF00",
                                                             "bg"       : "#0000FF",
-                                                            "Cells"    : ((0,"*"),(1,"*"))
+                                                            "Cells"    : ((0,"*"),)
                                                             },
                                                       "2": {
+                                                            "font"     : self.default_font,
+                                                            "fg"       : "#FFFF00",
+                                                            "bg"       : "#0000FF",
+                                                            "Cells"    : ((1,"*"),)
+                                                            },                                                      
+                                                      "3": {
                                                             "font"     : ("Wingdings",10),
                                                             "fg"       : "#000000",
                                                             "bg"       : "#FFFFFF",
@@ -163,35 +172,35 @@ class Prog_GeneratorPage(tk.Frame):
                                 
         sheetdict_PROGGEN={"DCC":
                     {"Name":"DCC",
-                     "Filename"  : "csv/DCC.csv",
+                     "Filename"  : "csv/Prog_Generator_MobaLedLib.xlsm",
                      "Fieldnames": datasheet_fieldnames,
                      "Formating" : datasheet_formating,
                      "SheetType" : "Datasheet"
                      },
                    "Selectrix":
                     {"Name":"Selectrix",
-                     "Filename"  : "csv/Selectrix.csv",
+                     "Filenamex"  : "csv/Selectrix.csv",
                      "Fieldnames": "A;Aktiv;Filter;Channel oder\nName[0..99];Bitposition\n[1..8];Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment",
                      "Formating" : datasheet_formating,
                      "SheetType" : "Datasheet"
                      },
                    "CAN":
                     {"Name":"CAN",
-                     "Filename"  : "csv/CAN.csv",
+                     "Filenamex"  : "csv/CAN.csv",
                      "Fieldnames": datasheet_fieldnames,
                      "Formating" : datasheet_formating,
                      "SheetType" : "Datasheet"
                      },
                    "Examples":
                     {"Name":"Examples",
-                     "Filename"  : "csv/Examples.csv",
+                     "Filenamex"  : "csv/Examples.csv",
                      "Fieldnames": datasheet_fieldnames,
                      "Formating" : datasheet_formating,
                      "SheetType" : "Datasheet"
                      },
                    "Config":
                     {"Name":"Config",
-                     "Filename":"csv/Config.csv",
+                     "Filenamex":"csv/Config.csv",
                      "Fieldnames": "A;B;C;D",
                      "SheetType" : "Config",
                      "Formating" : { "HideCells"       : (("*",3),),
@@ -213,18 +222,18 @@ class Prog_GeneratorPage(tk.Frame):
                     },
                    "Languages":
                     {"Name":"Languages",
-                     "Filename":"csv/Languages.csv",
+                     "Filenamex":"csv/Languages.csv",
                      "Fieldnames": "A;B;C;D;E;F;G;H;I"
                     },
                    "Lib_Macros":
                     {"Name":"Lib_Macros",
-                     "Filename":"csv/Lib_Macros.csv",
+                     "Filenamex":"csv/Lib_Macros.csv",
                      "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS"
                     },
                    "Libraries":
                     {"Name":"Libraries",
                      "SheetType" : "Libraries",
-                     "Filename":"csv/Libraries.csv",
+                     "Filenamex":"csv/Libraries.csv",
                      "Fieldnames": "A;B;C;D;E;F;G;H;I;J",
                      "Formating" : {"ProtectedCells"  : ((0,"*"),(1,"*"),(2,"*"),(3,"*"),(4,"*"),(5,"*"),(6,"*"),(7,"*")),
                                     "FontColor"       : { "1": {
@@ -245,17 +254,17 @@ class Prog_GeneratorPage(tk.Frame):
                     },
                    "Par_Description":
                     {"Name":"Par_Description",
-                     "Filename":"csv/Par_Description.csv",
+                     "Filenamex":"csv/Par_Description.csv",
                       "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K"
                     },
                    "Platform_Parameters":
                     {"Name":"Platform_Parameters",
-                     "Filename":"csv/Platform_Parameters.csv",
+                     "Filenamex":"csv/Platform_Parameters.csv",
                      "Fieldnames": "A;B;C;D;E"
                     },
                    "Named_Ranges":
                     {"Name":"Named_Ranges",
-                     "Filename":"csv/Named_Ranges.csv",
+                     "Filenamex":"csv/Named_Ranges.csv",
                      "Fieldnames": "A;B;C;D"
                     },
                    "Events": {"Workbook_Open"          : None,
@@ -474,6 +483,11 @@ class Prog_GeneratorPage(tk.Frame):
                          "text"     : "Lösche\nTabelle",
                          "padx"     : 10,
                          "tooltip"  : "Tabelle löschen"},
+                        {"Icon_name": "Btn_New_Table.png",
+                         "command"  : F00.NewSheet_Button_Click,
+                         "text"     : "Neue\nTabelle",
+                         "padx"     : 10,
+                         "tooltip"  : "Neue Tabelle einfügen"},                        
                         {"Icon_name": "Btn_Options.png",
                          "command"  : F00.Options_Button_Click,
                          "text"     : "Optionen",

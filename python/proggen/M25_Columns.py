@@ -46,7 +46,7 @@ from ExcelAPI.XLC_Excel_Consts import *
 import proggen.M02_Public as M02
 #import proggen.M02_global_variables as M02GV
 #import proggen.M03_Dialog as M03
-#import proggen.M06_Write_Header as M06
+import proggen.M06_Write_Header as M06
 #import proggen.M06_Write_Header_LED2Var as M06LED
 #import proggen.M06_Write_Header_Sound as M06Sound
 #import proggen.M06_Write_Header_SW as M06SW
@@ -254,7 +254,7 @@ def Get_Address_String(Row):
     #--------------------------------------------------------
     # Return true if the string in the address/selectrix channel column
     AddrCol = Get_Address_Col()
-    fn_return_value = Trim(P01.Cells(Row, AddrCol))
+    fn_return_value = M06.ExpandName(Trim(P01.Cells(Row, AddrCol)))
     return fn_return_value
 
 def Address_starts_with_a_Number(Row):

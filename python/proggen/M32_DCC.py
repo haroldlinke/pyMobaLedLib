@@ -44,6 +44,7 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLWA_WinAPI as XLWA
 
 import proggen.M02_Public as M02
 #import proggen.M02_global_variables as M02GV
@@ -151,11 +152,8 @@ def SendDCCAccessoryCommand(Addr, Direction):
     
     #if M39.IsSimulatorActive and P01.val(M07.ComPortPage().Cells(M02.SH_VARS_ROW, M25.COMPort_COL)) <= 0:
     if M39.IsSimulatorActive and F00.port_is_busy(M07.ComPortPage().Cells(M02.SH_VARS_ROW, M25.COMPort_COL)):
-            
         fn_return_value = True
         return fn_return_value
-    
-    
     if M07.Check_USB_Port_with_Dialog(M25.COMPort_COL) == False:
         return fn_return_value
         # 04.05.20: Added exit (Prior Check_USB_Port_with_Dialog ends the program in case of an error)
@@ -165,6 +163,24 @@ def SendDCCAccessoryCommand(Addr, Direction):
     ComPort = P01.Cells(M02.SH_VARS_ROW, M25.COMPort_COL)
     Output_Buffer = '@' + Left(str(Addr) + '   ', 4) + ' ' + Left(str(Direction) + ' ', 2) + ' 01' + Chr(10)
     send_command_to_ARDUINO(Output_Buffer,comport=ComPort)
+    fn_return_value=True    
+    if not fn_return_value:
+        _fn_return_value = False
+        return _fn_return_value
+    if M28.Get_Num_Config_Var('GEN_BUTTON_RELEASE_COM') > 0:
+        # 09.04.23: Juergen, don't simulate release if legacy mode is selected
+        while 1:
+            if P01.GetAsyncKeyState(0x1) == 0:
+                break
+            # 13.12.22: wait until button is released
+            XLWA.Sleep(10)
+            if not (True):
+                break
+        Output_Buffer = '@' + Left(Addr + '   ', 4) + ' ' + Left(Direction + ' ', 2) + ' 00' + Chr(10)
+        # 13.12.22: Also send the release    
+        send_command_to_ARDUINO(Output_Buffer,comport=ComPort)
+        fn_return_value=True
+    
     #fn_return_value = M07.SendMLLCommand(ComPort, Output_Buffer, UseHardwareHandshake, M02.DEBUG_DCCSEND)
     fn_return_value=True
 

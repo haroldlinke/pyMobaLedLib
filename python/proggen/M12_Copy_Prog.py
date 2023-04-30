@@ -46,6 +46,7 @@ import proggen.M02_Public as M02
 import proggen.M02a_Public as M02a
 import proggen.M09_Language as M09
 import proggen.M30_Tools as M30
+import proggen.M08_ARDUINO as M08
 import mlpyproggen.Prog_Generator as PG
 
 
@@ -88,7 +89,7 @@ def FileCopy_with_Check(DestDir, Name, SourceName=VBMissingArgument):
     # Could also copy a whole folder with all sub directories
     # If SourceName is empty the file/directory "Name" is copied from the program dir to DestDir
     # If a SourceName is given the file the source dir is extracted from the name.
-    SrcPath = PG.ThisWorkbook.Path + '/'
+    SrcPath = M08.GetWorkbookPath() + '/'
     SrcName = Name
     if SourceName != '':
         if M30.FilePath(SourceName) != '':
@@ -161,7 +162,7 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
     CopyMsg = String()
     #--------------------------------------------------
     # Return true if the programm was stored in the LibDir
-    if InStr(UCase(PG.ThisWorkbook.Path + '/'), UCase(M02a.Get_SrcDirInLib())) == 0:
+    if InStr(UCase(M08.GetWorkbookPath() + '/'), UCase(M02a.Get_SrcDirInLib())) == 0:
         return fn_return_value
     fn_return_value = True
     DidCopy = False
@@ -310,7 +311,7 @@ def CreateDesktopShortcut(LinkName, BookFullName, IconName=M02.DefaultIcon):
     # String variables
     # Initialize variables
     Sep = P01.Application.PathSeparator
-    Path = PG.ThisWorkbook.Path
+    Path =M08.GetWorkbookPath()
     # VB2PY (UntranslatedCode) On Error GoTo ErrHandle
     # The WScript.Shell object provides functions to read system
     # information and environment variables, work with the registry

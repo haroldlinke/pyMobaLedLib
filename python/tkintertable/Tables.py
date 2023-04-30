@@ -824,7 +824,7 @@ class TableCanvas(Canvas):
         self.showAll()
         return
    
-    def resizecolumns(self,colsizelist):
+    def resizecolumns(self,colsizelist,redraw=True):
         factor = 7
         if len(colsizelist)>0:
             colsizeidx=0
@@ -832,7 +832,7 @@ class TableCanvas(Canvas):
                 if colsizeidx<len(colsizelist):
                     columnwidth=colsizelist[colsizeidx]*factor
                     colsizeidx+=1
-                self.resizeColumn(col,columnwidth)
+                self.resizeColumn(col,columnwidth,redraw=redraw)
     
     def moveshapes(self,delta_width,asofpos):
         # move all shapes by delta_width after asofpos
@@ -841,7 +841,7 @@ class TableCanvas(Canvas):
                 shape.Left -=delta_width
 
 
-    def resizeColumn(self, col, width):
+    def resizeColumn(self, col, width, redraw=True):
         """Resize a column by dragging"""
 
         #print 'resizing column', col
@@ -857,8 +857,9 @@ class TableCanvas(Canvas):
         self.setColPositions()
         col_pos=self.col_positions[col]
         self.moveshapes(old_width-width,col_pos)
-        self.redrawTable()
-        self.drawSelectedCol(self.currentcol)
+        if redraw:
+            self.redrawTable()
+            self.drawSelectedCol(self.currentcol)
         return
 
     def get_currentRecord(self):

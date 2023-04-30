@@ -573,9 +573,9 @@ def __SelectMacros_Sub():
             # Changed by Misha 18-4-2020                                       ' 14.06.20: Added from Mishas version
             Parts = Split(Res, ',')
             if Left(MacroName, Len('Multiplexer')) == 'Multiplexer':  # mulitplexer not supported yet
-                P01.CellDict[DstRow, M25.LocInCh_Col] = M80.Count_Ones(P01.val(Parts(5))) + 1
+                P01.CellDict[DstRow, M25.LocInCh_Col] = M80.__Count_Ones(P01.val(Parts(5))) + 1
                 # 10.02.21: 20210206 Misha, Added + 1 because there is an zero pattern added.
-                P01.CellDict[ActiveCell().Row, M25.DCC_or_CAN_Add_Col].Value = Userform_Res_Address
+                P01.CellDict[P01.ActiveCell().Row, M25.DCC_or_CAN_Add_Col].Value = Userform_Res_Address
             else:
                 P01.CellDict[DstRow, M25.LocInCh_Col] = P01.val(_with2.Cells(SelRow, M02.SM_LocInCCOL))
             # End Changed by Misha 18-4-2020
@@ -613,7 +613,7 @@ def Find_Macro_in_Lib_Macros_Sheet(p_str):
 
     #c = Range()
     #---------------------------------------------------------------------------
-    _with3 = P01.Sheets(M02.LIBMACROS_SH)
+    _with3 = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
     p_str = Replace(p_str, 'HouseT(', 'House(')
     if InStr(p_str, '(') > 0:
         p_str = Split(p_str, '(')(0) + '('
@@ -625,6 +625,7 @@ def Find_Macro_in_Lib_Macros_Sheet(p_str):
         if _with3.Cells(c.Row, M02.SM_FindN_COL) != '':
             ## VB2PY (CheckDirective) VB directive took path 1 on True
             #           Why did the old function use the InStr function ?
+            #print("Find_Macro_in_Lib_Macros_Sheet:",p_str,_with3.Cells(c.Row, M02.SM_FindN_COL),c.Row,c.Column)
             if p_str == _with3.Cells(c.Row, M02.SM_FindN_COL):
                 _ret = c.Row
                 return _ret
@@ -667,7 +668,7 @@ def __Sort_by_Column(Col, SortFlag):
     OldUpdating = P01.Application.ScreenUpdating
     P01.Application.ScreenUpdating = False
     # Change_Links_to_Absolute                                              ' 20.10.21: Links are not used anymore because they also create problems if absolute links are used when the lines are sorted ;-(
-    Sh = P01.ActiveWorkbook.Worksheets(M02.LIBMACROS_SH)
+    Sh = PG.ThisWorkbook.Worksheets(M02.LIBMACROS_SH)
     _with6 = Sh
     _with6.Sort.SortFields.Clear()
     _with6.Sort.SortFields.Add(key=_with6.Range(_with6.Cells(__HeadRow, Col), _with6.Cells(M30.LastUsedRowIn(Sh), Col)), SortOn=xlSortOnValues, Order=xlAscending, DataOption=xlSortNormal)

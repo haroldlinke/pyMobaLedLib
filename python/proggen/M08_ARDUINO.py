@@ -83,6 +83,7 @@ import proggen.M40_ShellandWait as M40
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
+import proggen.M98_Ondrive as M98
 
 #import proggen.D08_Select_COM_Port_Userform as D08
 
@@ -185,6 +186,12 @@ def Find_ArduinoExe(data=False):
     #M30.EndProg()
     return "" #fn_return_value
 
+def GetWorkbookPath():
+    _fn_return_value = None
+    # 06.02.23: Jürgen
+    _fn_return_value = M98.GetLocalPath(PG.ThisWorkbook.Path)
+    return _fn_return_value
+
 def GetShortPath(Path):
     #fso = FileSystemObject()
     #-----------------------------------------------------
@@ -244,7 +251,7 @@ def Create_Start_Sub(BoardName, ResultName, ComPort, BuildOptions, InoName, SrcD
             FindStr = ' 2>&1 | find /v "Set log4j store directory" | find /v " StatusLogger " | find /v "serial.SerialDiscovery"'
             #*** 14.07.20: Faster way to compile from Jürgen (10 sec instead of 22 sec) ***
             # Create_PrivateBuild_cmd_if_missing SrcDir                           ' 28.10.20: Jürgen: Disabled
-            if True == M28.Get_Bool_Config_Var('Fast_Build_and_Upload'):
+            if False: #True == M28.Get_Bool_Config_Var('Fast_Build_and_Upload'):
                 Debug.Print("Fast Build and Upload")
                 OptParts = Split(BuildOptions, ' ')
                 if UBound(OptParts) >= 1:
@@ -269,6 +276,27 @@ def Create_Start_Sub(BoardName, ResultName, ComPort, BuildOptions, InoName, SrcD
                         VBFiles.writeText(fp, ')', '\n')
                         #CommandStr = "call privateBuild.cmd """ & FilePath(Find_ArduinoExe) & """ """ & InoName & """ " & ComPort & " """ & BuildOptOnly & """ " & BaudRate & "  """ & DelLast(Get_Ardu_LibDir()) & """"
                         FindStr = ''
+            else:
+                ## VB2PY (CheckDirective) VB directive took path 1 on 1
+                # Use a separate Build directory. => Speed up 12 sec instead of 18
+                BuildDir = Replace(Environ('APPDATA'), 'Roaming', '') + 'Arduino_Build_' + Replace(InoName, '.ino', '')
+                BuildDirForScript = '%APPDATA%\\..\\' + 'Arduino_Build_' + Replace(InoName, '.ino', '')
+                # to avoid nonprintables
+                if P01.Dir(BuildDir + '\\.') == '':
+                    # VB2PY (UntranslatedCode) On Error Resume Next
+                    # In case the directory is created but empty
+                    MkDir(BuildDir)
+                    # VB2PY (UntranslatedCode) On Error GoTo 0
+                    BuildDirForScript = '%APPDATA%\\..\\' + 'Arduino_Build_' + Replace(InoName, '.ino', '')
+                    #Debug.Print "BuildDir='" & BuildDir & "'"
+                # Other options:  --verbose-build --verbose-upload"
+                #   Boards  see: C:\Program Files (x86)\Arduino\hardware\arduino\avr\boards.txt
+                #   New Bootloader: nano.menu.cpu.atmega328=ATmega328P
+                CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + '" --upload --port ' + ComPort + ' ' + BuildOptions
+                if BuildDirForScript != '':
+                    CommandStr = CommandStr + ' --pref build.path="' + BuildDirForScript + '"' + ' --preserve-temp-files'
+                VBFiles.writeText(fp, CommandStr, '\n')
+            
             VBFiles.writeText(fp, 'IF ERRORLEVEL 1 ECHO Start_Arduino_Result: %ERRORLEVEL% > "' + ResultName + '"', '\n')
             VBFiles.writeText(fp, 'goto :eof', '\n')
             for i in vbForRange(1, 100):
@@ -756,6 +784,9 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
     # Ich habe jetzt mal das Neueste Board Paket für den Nano (1.8.1) Installiert. Mal schauen ob es
     # jetzt besser ist. Dummerweise habe ich mir nicht gemerkt welches Board Paket ich vorher hatte.
     # Es war irgend was mit 1.6?
+    # remove "'" in front of the --board options
+    BuildOptions = BuildOptions.replace("'", "")    
+    
     Debug.Print("Create_Cmd_file")
     if Dir(SrcDir + ResultName) != '':
         Kill(SrcDir + ResultName)
@@ -773,6 +804,7 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
     #   Boards  see: C:\P<rogram Files (x86)\Arduino\hardware\arduino\avr\boards.txt
     #   New Bootloader: nano.menu.cpu.atmega328=ATmega328P
     CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + '" --upload --port \\\\.\\' + ComPort + ' ' + BuildOptions
+
     if BuildDirForScript != '':
         CommandStr = CommandStr + ' --pref build.path="' + BuildDirForScript + '"' + ' --preserve-temp-files'
     if USE_SUBCOMMAND:
@@ -849,7 +881,7 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
         VBFiles.writeText(fp, 'ECHO    "      \\\\                                                                 "', '\n')
         VBFiles.writeText(fp, 'ECHO    "       \\\\                                                                "', '\n')
         VBFiles.writeText(fp, 'ECHO    "    ____\\\\___________________                                            "', '\n')
-        VBFiles.writeText(fp, 'ECHO    "   |  | [_] |O _________    _|  ' + M09.Get_Language_Str('Achtung: Es  wird nur der linke          "'), '\n')
+        VBFiles.writeText(fp, 'ECHO    "   |  | [_] |O _________    _|  ' + M09.Get_Language_Str('Achtung: Es wird nur der linke           "'), '\n')
         VBFiles.writeText(fp, 'ECHO    "   |  |     | |         |  |C|  ' + M09.Get_Language_Str('Arduino und ein MCP2515 CAN Modul        "'), '\n')
         VBFiles.writeText(fp, 'ECHO    "   |  |     | | MCP2515 |  |A|  ' + M09.Get_Language_Str('verwendet.                               "'), '\n')
         VBFiles.writeText(fp, 'ECHO    "   |  | LED | |   CAN   |  |N|                                           "', '\n')
@@ -1071,6 +1103,9 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
             # Display Dialog if the COM Port is negativ and ask the user to correct it
         # Now we are sure that the com port is positiv. Check if it could be accesed and get the Baud rate
         BuildOptions = P01.Cells(M02.SH_VARS_ROW, BuildOptColumn)
+        # remove leading "'"
+        if len(BuildOptions)>0 and BuildOptions[0]=="'":
+            BuildOptions = BuildOptions[1:]
         AutoDetect = InStr(BuildOptions, M02.AUTODETECT_STR) > 0
         if AutoDetect:
             BuildOptions = Trim(Replace(BuildOptions, M02.AUTODETECT_STR, ''))
@@ -1130,6 +1165,9 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
                             NewBrd = Get_New_Board_Type(FirmwareVer)
                 M28.Change_Board_Typ(LeftArduino, NewBrd)
                 BuildOptions = P01.Cells(M02.SH_VARS_ROW, BuildOptColumn)
+                # remove leading "'"
+                if len(BuildOptions)>0 and BuildOptions[0]=="'":
+                    BuildOptions = BuildOptions[1:]                
                 BuildOptions = Trim(Replace(BuildOptions, M02.AUTODETECT_STR, ''))
         if not (Retry):
             break
@@ -1320,7 +1358,7 @@ def Compile_and_Upload_LED_Prog_to_Arduino(CreateFilesOnly=False):
     if CreateFilesOnly == False:
         Doit = Upload_the_Right_Arduino_Prog_if_needed()
     if Doit:
-        fn_return_value = Compile_and_Upload_Prog_to_Arduino(M02.InoName_LED, M25.COMPort_COL, M25.BUILDOP_COL, PG.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED, CreateFilesOnly=CreateFilesOnly)
+        fn_return_value = Compile_and_Upload_Prog_to_Arduino(M02.InoName_LED, M25.COMPort_COL, M25.BUILDOP_COL, GetWorkbookPath() + '/' + M02.Ino_Dir_LED, CreateFilesOnly=CreateFilesOnly)
     return fn_return_value
 
 
@@ -1335,11 +1373,14 @@ def Create_Config_Header_File(Name):
         VBFiles.openFile(fp, Name, 'w') 
         VBFiles.writeText(fp, '// This file was generated by \'' + PG.ThisWorkbook.Name + '\'  ' + Time, '\n')
         VBFiles.writeText(fp, '', '\n')
-        VBFiles.writeText(fp, '// Eanble / disable the SPI mode according to the config steet in Excel', '\n')
+        VBFiles.writeText(fp, '// Eanble / disable the SPI mode according to the config sheet in Excel', '\n')
         if M28.Get_Bool_Config_Var('USE_SPI_Communication'):
             VBFiles.writeText(fp, '#define USE_SPI_SLAVE 1', '\n')
         else:
             VBFiles.writeText(fp, '#define USE_SPI_SLAVE 0', '\n')
+        WriteGenButtonReleaseDefine(( fp ))
+        # 09.04.23: GEN BUTTON RELEASE HANDLING
+    
         VBFiles.closeFile(fp)
         # VB2PY (UntranslatedCode) On Error GoTo 0
         fn_return_value = True
@@ -1350,6 +1391,17 @@ def Create_Config_Header_File(Name):
         P01.MsgBox(M09.Get_Language_Str('Fehler beim schreiben der Datei \'') + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler beim erzeugen der Arduino Header Datei'))
         fn_return_value = False
         return fn_return_value
+    
+def WriteGenButtonReleaseDefine(fp):
+    GenOption = Integer()
+    # 09.04.23: GEN BUTTON RELEASE HANDLING
+    #--------------------------------------------------------------------
+    GenOption = M28.Get_Num_Config_Var('GEN_BUTTON_RELEASE_COM')
+    if GenOption < 2 or GenOption > 3:
+        # legacy behavior, off or invalid value
+        VBFiles.writeText(fp, '#define GEN_BUTTON_RELEASE_COM GEN_OFF', '\n')
+    else:
+        VBFiles.writeText(fp, '#define GEN_BUTTON_RELEASE_COM ' + GenOption - 1, '\n')
 
 def Compile_and_Upload_Prog_to_Right_Arduino():
     InoName = String()
@@ -1369,7 +1421,7 @@ def Compile_and_Upload_Prog_to_Right_Arduino():
         P01.MsgBox('Interner Fehler: Undefined M25.Page_ID \'' + M25.Page_ID + '\' in Compile_and_Upload_Prog_to_Right_Arduino', vbCritical, 'Interner Fehler')
         Debug.Print('Compile_and_Upload_Prog_to_Right_Arduino: Interner Fehler: Undefined M25.Page_ID: ' + M25.Page_ID)
         M30.EndProg()
-    SrcDir = PG.ThisWorkbook.Path + '/../examples/' + M30.FileName(InoName) + '/'
+    SrcDir = GetWorkbookPath() + '/../examples/' + M30.FileName(InoName) + '/'
     if Dir(SrcDir + InoName) != '':
         Debug.Print('Programm aus lokalem Verzeichnis wird zum Upload verwendet: ' + SrcDir)
         P01.Application.StatusBar = 'Programm aus lokalem Verzeichnis wird zum Upload verwendet: ' + SrcDir

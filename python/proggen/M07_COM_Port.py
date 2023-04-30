@@ -256,7 +256,7 @@ def ComPortPage():
     fn_return_value = None
     #-----------------------------------------
     if M02.ComPortfromOnePage != '':
-        fn_return_value = P01.Sheets(M02.ComPortfromOnePage)
+        fn_return_value = PG.ThisWorkbook.Sheets(M02.ComPortfromOnePage)
     else:
         fn_return_value = P01.ActiveSheet
     return fn_return_value

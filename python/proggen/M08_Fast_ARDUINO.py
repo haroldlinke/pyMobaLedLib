@@ -157,7 +157,7 @@ def Create_Build_Arduino(fp):
     PackageDestDir = M08.GetShortPath(Environ(M02.Env_USERPROFILE)) + M02.AppLoc_Ardu + 'packages\\arduino\\hardware\\avr\\' + M37.Get_Std_Arduino_Lib_Ver()
     if M37.Get_User_std_Arduino_Lib_Ver() == '':
         VBFiles.writeText(fp, 'robocopy "%aHome%\\hardware\\arduino\\avr" "' + PackageDestDir + '" /mir /s >nul', '\n')
-    VBFiles.writeText(fp, 'xcopy ' + M08.GetShortPath(PG.ThisWorkbook.Path) + '\\LEDs_AutoProg\\boards.local.txt "' + PackageDestDir + '\\" /d /y >nul', '\n')
+    VBFiles.writeText(fp, 'xcopy ' + M08.GetShortPath(M08.GetWorkbookPath()) + '\\LEDs_AutoProg\\boards.local.txt "' + PackageDestDir + '\\" /d /y >nul', '\n')
     Create_Packages_Dir_if_not_Available()
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, 'REM *** Call the arduino builder ***', '\n')
@@ -272,7 +272,7 @@ def __Test_Create_PrivateBuild_cmd_if_missing():
 
     fp = Integer()
     #UT--------------------------------------------------
-    Name = PG.ThisWorkbook.Path + '\\LEDs_AutoProg\\privateBuild.cmd'
+    Name = M08.GetWorkbookPath() + '\\LEDs_AutoProg\\privateBuild.cmd'
     VBFiles.openFile(fp, Name, 'w') 
     Create_Build('arduino', fp)
     VBFiles.closeFile(fp)

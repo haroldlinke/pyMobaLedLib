@@ -45,6 +45,8 @@ from vb2py.vbconstants import *
 #import mlpyproggen.U01_userform as U01
 
 import proggen.M02_Public as M02
+import proggen.M02a_Public as M02a
+
 #import proggen.M03_Dialog as M03
 #import proggen.M06_Write_Header_LED2Var as M06LED
 #import proggen.M06_Write_Header_Sound as M06Sound
@@ -212,10 +214,11 @@ def __Blink_Arduino_LED():
         Debug.Print("Blink_LED end")
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ComPort_IO - ByRef 
-def Select_Arduino_w_Blinking_LEDs_Dialog(Caption, Title, Text, Picture, Buttons, ComPort_IO):
+def Select_Arduino_w_Blinking_LEDs_Dialog(Caption, Title, Text, Picture, IsArduino, Buttons, ComPort_IO):
     global __CheckCOMPort_Res
     fn_return_value = None
     Res = Long()
+    hint = String()
     #--------------------------------------------------------------------------------------
     # This function is called if several Arduinos have been detected
     # or if the COM port of the actual Arduino is buzy
@@ -238,7 +241,11 @@ def Select_Arduino_w_Blinking_LEDs_Dialog(Caption, Title, Text, Picture, Buttons
     #   0: If No COM Port is available
     #  >0: Selected COM Port
     # The variable "CheckCOMPort_Res" is >= 0 if the Port is available
-    fn_return_value, ComPort_IO = F00.Select_COM_Port_UserForm.ShowDialog(Caption, Title, Text, Picture, Buttons, '', True, M09.Get_Language_Str('Tipp: Der ausgewählte Arduino blinkt schnell'), ComPort_IO, __PRINT_DEBUG)
+    if IsArduino:
+        hint = M09.Get_Language_Str(( 'Tipp: Der ausgewählte Arduino blinkt schnell' )) #VBA Error?
+    else:
+        hint = ''    
+    fn_return_value, ComPort_IO = F00.Select_COM_Port_UserForm.ShowDialog(Caption, Title, Text, Picture, Buttons, '', True, hint, ComPort_IO, __PRINT_DEBUG)
     if __CheckCOMPort_Res < 0:
         ComPort_IO = F00.port_set_busy(ComPort_IO)
         # Port is buzy
@@ -249,7 +256,7 @@ def __Test_Select_Arduino_w_Blinking_LEDs_Dialog():
     ComPort = Long()
     #UT-----------------------------------------------------
     ComPort = 3
-    Debug.Print('Res=' + Select_Arduino_w_Blinking_LEDs_Dialog('LED_Image"Auswahl des Arduinos', 'New Title', 'Mit diesem Dialog wird der COM Port gewählt an den der Arduino angeschlossen ist.', 'LED_Image', 'H Hallo;T Test;O O', ComPort))
+    Debug.Print('Res=' + Select_Arduino_w_Blinking_LEDs_Dialog('LED_Image"Auswahl des Com Ports', 'New Title', 'Mit diesem Dialog wird der COM Port gewählt an den der Arduino angeschlossen ist.', 'LED_Image', 'H Hallo;T Test;O O', ComPort))
     Debug.Print('ComPort=' + ComPort)
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ComPort - ByRef 
@@ -263,6 +270,7 @@ def Show_USB_Port_Dialog(ComPortColumn, ComPort):
     #---------------------------------------------------------------------------------------------
     #ComPort = P01.val(P01.Cells(M02.SH_VARS_ROW, ComPortColumn))
     ComPort = P01.Cells(M02.SH_VARS_ROW, ComPortColumn)
+    IsArduino = True    # 06.03.23: Juergen for better ESP selection
     if F00.port_is_busy(ComPort):
         F00.port_reset(ComPort)
     #if ComPort < 0:
@@ -270,18 +278,22 @@ def Show_USB_Port_Dialog(ComPortColumn, ComPort):
     #if ComPort > 255:                       # 03.03.22: Juergen avoid overrun error
     #    ComPort = 0
     if (ComPortColumn == M25.COMPort_COL):
-        Picture = 'LED_image'
-        ArduName = 'LED'
+        if M02a.Get_BoardTyp() == 'ESP32':
+            Picture = 'ESP32_Image'
+            ArduName = 'ESP32'
+        else:
+            Picture = 'LED_Image'
+            ArduName = 'LED Arduino'
     elif (ComPortColumn == M25.COMPrtR_COL):
         Picture = 'DCC_image'
-        ArduName = M25.Page_ID
+        ArduName = M25.Page_ID + ' Arduino'
     elif (ComPortColumn == M25.COMPrtT_COL):
         Picture = 'Tiny_image'
-        ArduName = 'ISP'
+        ArduName = 'ISP Arduino'
     else:
         P01.MsgBox('Internal Error: Unsupported  ComPortColumn=' + str(ComPortColumn) + ' in \'USB_Port_Dialog()\'', vbCritical, 'Internal Error')
         M30.EndProg()
-    Res, ComPort = Select_Arduino_w_Blinking_LEDs_Dialog(M09.Get_Language_Str('Überprüfung des USB Ports'), M09.Get_Language_Str('Auswahl des Arduino COM Ports'), Replace(M09.Get_Language_Str('Mit diesem Dialog wird der COM Port überprüft ' + 'bzw. ausgewählt an den der #1# Arduino angeschlossen ist.' + vbCr + vbCr + 'OK, wenn die LEDs am richtigen Arduino schnell blinken.'), '#1#', ArduName), Picture, M09.Get_Language_Str(' ; A Abbruch; O Ok'), ComPort)
+    Res, ComPort = Select_Arduino_w_Blinking_LEDs_Dialog(M09.Get_Language_Str('Überprüfung des USB Ports'), M09.Get_Language_Str('Auswahl des Arduino COM Ports'), Replace(M09.Get_Language_Str('Es wird der COM Port überprüft ' + 'bzw. ausgewählt an den der #1# Arduino angeschlossen ist.' + vbCr + vbCr + 'OK, wenn die LEDs am richtigen Arduino schnell blinken.'), '#1#', ArduName), Picture, IsArduino, M09.Get_Language_Str(' ; A Abbruch; O Ok'), ComPort)
     fn_return_value = ( Res == 3 )
     return fn_return_value, ComPort
 

@@ -167,12 +167,12 @@ def __Save_Sheet_to_pgf(fp, Sh):
                     VBFiles.writeText(fp, vbTab + Replace(P01.Cells(r.Row, Col), vbLf, '{NewLine}'))
                 VBFiles.writeText(fp, '', '\n')
         # VB2PY (UntranslatedCode) On Error GoTo 0
-        P01.Sheets(OldSh).Select()
+        PG.ThisWorkbook.Sheets(OldSh).Select()
         fn_return_value = True
         return fn_return_value
     except:
         raise
-        P01.Sheets(OldSh).Select()
+        PG.ThisWorkbook.Sheets(OldSh).Select()
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
@@ -191,7 +191,7 @@ def __Save_SingleSheet_to_pgf(Name, Sh):
 
 def __Test_Save_SingleSheet_to_pgf():
     #-----------------------------------------
-    Debug.Print('Save_SingleSheet_to_pgf: ' + __Save_SingleSheet_to_pgf(PG.ThisWorkbook.Path + '\\Test.MLL_pgf', P01.ActiveSheet))
+    Debug.Print('Save_SingleSheet_to_pgf: ' + __Save_SingleSheet_to_pgf(M08.GetWorkbookPath() + '\\Test.MLL_pgf', P01.ActiveSheet))
 
 def Save_Sheets_to_pgf(Name, FromAllSheets):
     fn_return_value = None
@@ -223,7 +223,7 @@ def Save_Sheets_to_pgf(Name, FromAllSheets):
 
 def __Test_Save_Sheets_to_pgf():
     #UT----------------------------------
-    Debug.Print('Save_Sheets_to_pgf=' + Save_Sheets_to_pgf(PG.ThisWorkbook.Path + '\\Test_All.MLL_pgf', True))
+    Debug.Print('Save_Sheets_to_pgf=' + Save_Sheets_to_pgf(M08.GetWorkbookPath() + '\\Test_All.MLL_pgf', True))
 
 def __Find_Sheet_with_matching_Page_ID(Page_ID):
     fn_return_value = None
@@ -244,7 +244,7 @@ def __Copy_and_Clear_Sheet(SheetName, Page_ID):
         P01.MsgBox(M09.Get_Language_Str('Fehler: Es existiert keine passende Seite als Vorlage zum importieren der Daten'), vbCritical, M09.Get_Language_Str('Fehler: Seite kann nicht angelegt werden'))
         return fn_return_value
     else:
-        for s in P01.ActiveWorkbook.sheets:
+        for s in PG.ThisWorkbook.sheets:
             if M28.Is_Data_Sheet(s):
                 DstSh = s
         Sh.Copy(after=DstSh)
@@ -283,7 +283,7 @@ def __Open_or_Create_Sheet(SheetName, Inp_Page_ID, Name, ToActiveSheet):
                 return fn_return_value
             CreatedNewSheet = True
         else:
-            P01.Sheets(SheetName).Activate()
+            PG.ThisWorkbook.Sheets(SheetName).Activate()
         Page_ID = P01.ActiveSheet.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)
     __Import_Page_ID = Inp_Page_ID
     __First_Line = True
@@ -466,7 +466,7 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
                 __Check_Hidden_Lines()
                 if M28.Is_Data_Sheet(P01.ActiveSheet):
                     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
-                    M20.Update_Start_LedNr()
+                    #M20.Update_Start_LedNr() 17.04.23 removed - do it after import of all sheets is done (include feature)
                 Inp_Page_ID = Parts(1)
                 SheetName = Parts(2)
                 __AddedToFilterColumn = 0
@@ -490,6 +490,7 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
                                 if SheetCnt > 0:
                                     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
                                     # Add some reserve lines    ' 07.08.20:
+                                M20.Update_Start_LedNr()
                                 return fn_return_value
                 else:
                     SkipSheet = False
@@ -501,19 +502,23 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
                     LineNrInSheet = 1
                     F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Lade Seite \'') + SheetName + '\'', '...')
                     if not __Open_or_Create_Sheet(SheetName, Inp_Page_ID, Name, ToActiveSheet):
+                        M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                         return fn_return_value
             elif (select_0 == __Line_ID):
                 if not SkipSheet:
                     if not __Read_Line(lines(LNr)):
+                        M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                         return fn_return_value
                     F00.StatusMsg_UserForm.Set_ActSheet_Label('Line: ' + str(LineNrInSheet))
                     LineNrInSheet = LineNrInSheet + 1
             else:
                 P01.MsgBox(M09.Get_Language_Str('Fehler: Unbekannter Zeilentyp in Zeile:') + ' ' + LNr + vbCr + M09.Get_Language_Str('in der PGF Datei:') + vbCr + '  \'' + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler in PGF Datei'))
+                M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                 return fn_return_value
     __Check_Hidden_Lines()
     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
-    M20.Update_Start_LedNr()
+    #M20.Update_Start_LedNr()
+    M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
     fn_return_value = True
     P01.Unload(F00.StatusMsg_UserForm)
     P01.ActiveSheet.Redraw_table()

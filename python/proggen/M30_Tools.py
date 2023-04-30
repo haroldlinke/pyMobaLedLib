@@ -63,7 +63,7 @@ import proggen.M06_Write_Header as M06
 #import proggen.M06_Write_Header_Sound as M06Sound
 #import proggen.M06_Write_Header_SW as M06SW
 #import proggen.M07_COM_Port as M07
-#import proggen.M08_ARDUINO as M08
+import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
 #import proggen.M09_Select_Macro as M09SM
 #import proggen.M09_SelectMacro_Treeview as M09SMT
@@ -177,7 +177,7 @@ def LastUsedRowIn(Sheet):
     # return the last used row in the given sheet.
     # The sheet could be given as sheet name or as worksheets variable.
     if P01.VarType(Sheet) == vbString:
-        Sh = P01.Sheets(Sheet)
+        Sh = PG.ThisWorkbook.Sheets(Sheet)
     else:
         Sh = Sheet
     #*HL fn_return_value = Sh.UsedRange.Rows(Sh.UsedRange.Rows.Count).Row
@@ -194,7 +194,7 @@ def LastUsedColumnIn(Sheet):
     #Sh:P01.CWorksheet = Variant()
     #--------------------------------------------------
     if P01.VarType(Sheet) == vbString:
-        Sh = P01.Sheets(Sheet)
+        Sh = PG.ThisWorkbook.Sheets(Sheet)
     else:
         Sh = Sheet
     fn_return_value = Sh.LastUsedColumn #*HLSh.UsedRange.Columns(Sh.Columns.Count).Column
@@ -603,7 +603,7 @@ def Same_Name_already_open(FullName):
 def SheetEx(Name):
     #-------------------------------
     fn_return_value=False
-    for s in P01.ActiveWorkbook.sheets:
+    for s in PG.ThisWorkbook.sheets:
         if s.Name == Name:
             fn_return_value = True
             return fn_return_value
@@ -1342,7 +1342,7 @@ def Get_Platform_String(PlatformKey, ParName, EmptyCheck=False, Silent=False):
     if (PlatformKey + r'|' + ParName in PlatformParams.keys()): #*HL
         fn_return_value = PlatformParams.get(PlatformKey + r'|' + ParName) #*HL
         return fn_return_value
-    Sh = P01.Sheets(M02.PLATFORMS_SH)
+    Sh = PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH)
     r = Sh.Range(Sh.Cells(PlatformKey_ROW, PlatformKey_COL), Sh.Cells(PlatformKey_ROW, PlatformKey_COL + 99))
     f = r.Find(What= PlatformKey, LookIn= xlFormulas, LookAt= xlWhole, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
     if f is None:
@@ -1466,7 +1466,7 @@ def CreateHeaderFile(Platform, SheetName):
     if Sh is None:
         P01.MsgBox('The sheet ' + SheetName + ' does not exist')
         return
-    P01.Sheets(SheetName).Select()
+    PG.ThisWorkbook.Sheets(SheetName).Select()
     M25.Make_sure_that_Col_Variables_match()
     OriginalPlatform = P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL)
     if (Platform == 'ESP32'):
@@ -1479,9 +1479,9 @@ def CreateHeaderFile(Platform, SheetName):
         P01.MsgBox('The platform ' + Platform + ' is not supported')
         return
     if M06.Create_HeaderFile(True):
-        M12.FileCopy_with_Check(PG.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED, Platform + '_Header_' + SheetName + '.h', PG.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + M02.Include_FileName)
+        M12.FileCopy_with_Check(M08.GetWorkbookPath() + '/' + M02.Ino_Dir_LED, Platform + '_Header_' + SheetName + '.h', M08.GetWorkbookPath() + '/' + M02.Ino_Dir_LED + M02.Include_FileName)
     else:
-        TargetName = PG.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + Platform + '_Header_' + SheetName + '.h'
+        TargetName = M08.GetWorkbookPath() + '/' + M02.Ino_Dir_LED + Platform + '_Header_' + SheetName + '.h'
         if Dir(TargetName) != '':
             Kill(TargetName)
     P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = OriginalPlatform
@@ -1526,4 +1526,56 @@ def Matches(p_str, reg, matchIndex=VBMissingArgument, subMatchIndex=VBMissingArg
     fn_return_value = False
     return fn_return_value
 
+# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: SeachStr - ByVal 
+def FastFind(SeachStr, r):
+    _fn_return_value = None
+    # 14.02.23: Hardi
+    #--------------------------------------------------------------
+    # .Match is much faster then .find
+    # See: http://fastexcel.wordpress.com/2011/10/26/match-vs-find-vs-variant-array-vba-performance-shootout/
+    # The search is case insensitive ! Also if its located in a "Option Compare Binary" modul
+    # Filtered lines are also found.
+    # VB2PY (UntranslatedCode) On Error GoTo NotFound
+    _fn_return_value = P01.Application.WorksheetFunction.Match(SeachStr, r, 0)
+    return _fn_return_value
+
+# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: SeachStr - ByVal 
+# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: r - ByVal 
+def CSFastFind(SeachStr, r):
+    _fn_return_value = None
+    Offset = Long()
+    # 14.02.23: Hardi
+    #----------------------------------------------------------------------
+    # Case sensitive FastFind function
+    # Filtered lines are also found.
+    #
+    # The seach string must match exactly with the whole cell. Parts of the string are not found.
+    # VB2PY (UntranslatedCode) On Error GoTo Is_Sil_Sheet
+    _fn_return_value = P01.Application.WorksheetFunction.Match(SeachStr, r, 0)
+    if _fn_return_value > 0:
+        if r(_fn_return_value, 1) != SeachStr:
+            # Same case ?
+            if _fn_return_value < r.Count:
+                Offset = Offset + _fn_return_value
+                r = P01.Application.Intersect(r.Offset(_fn_return_value), r)
+                _fn_return_value = 0
+            else:
+                _fn_return_value = 0
+    if _fn_return_value > 0:
+        _fn_return_value = _fn_return_value + Offset
+    return _fn_return_value
+
+def WorksheetExists(SheetName):
+    _fn_return_value = None
+    TempSheetName = String()
+
+    # 15.02.23: Juergen
+    #----------------------------------------------------------------------
+    TempSheetName = UCase(SheetName)
+    for Sheet in PG.ThisWorkbook.sheets:
+        if TempSheetName == UCase(Sheet.Name):
+            _fn_return_value = True
+            return _fn_return_value
+    _fn_return_value = False
+    return _fn_return_value
 

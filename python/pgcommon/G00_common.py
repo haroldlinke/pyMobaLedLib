@@ -34,12 +34,11 @@
 
 from vb2py.vbfunctions import *
 # fromx vb2py.vbdebug import *
-import tkinter as tk
-from tkinter import ttk
 import sys
 import ExcelAPI.XLW_Workbook as X02
 #import mlpyproggen.Pattern_Generator as PG
 import pattgen.M09_Language as M09
+import pattgen.M30_Tools as M30
 
 #**************************
 #'  Port handling functions
@@ -80,6 +79,49 @@ def port_set_busy(port):
    
 def is_64bit() -> bool:
     return sys.maxsize > 2**32
+
+def Create_New_Sheet(SheetName, Add_to_Duplicate_Name='_Copy_', AfterSheetName=""):
+    #---------------------------------------------------------------------------------------------------------------------------------------
+    
+    OrgName = SheetName
+    SheetName = M30.Unic_SheetName(SheetName, Add_to_Duplicate_Name)
+    #ThisWorkbook.Activate
+    # 12.06.20: Prevent crash if prog. is started an other excel is open
+    #AfterSheet = X02.Sheets(X02.Sheets.Count) #*HL
+    #if M30.SheetEx(OrgName):
+    #    AfterSheet = X02.Sheets(OrgName)
+    #if AfterSheetName != '':
+    #    AfterSheet = X02.Sheets(AfterSheetName) #*HL
+    
+    AfterSheet=AfterSheetName #*HL
+    X02.Sheets(AfterSheetName).Copy(SheetName=SheetName,After=AfterSheet)
+    #PG.ThisWorkbook.Activate()
+    #X02.ActiveSheet.Name = SheetName
+    X02.Sheets(SheetName).Select()
+
+def New_Sheet():
+    CopyFromSheet = ""
+    Name = ""
+    #---------------------
+    # Is called if the "Neues Blatt" Button is pressed
+    #_select8 = X02.MsgBox(M09.Get_Language_Str('Sollen die Einstellungen des aktuellen Blatts übernommen werden?'), vbYesNoCancel + vbQuestion, M09.Get_Language_Str('Neues Blatt anlegen'))
+    #if (_select8 == vbCancel):
+    #    return
+    #elif (_select8 == vbYes):
+    CopyFromSheet = X02.ActiveSheet.Name
+    Name = X02.InputBox(M09.Get_Language_Str('Name des neuen Blattes?'), M09.Get_Language_Str('Neues Blatt anlegen'), M30.Unic_SheetName(CopyFromSheet, '_'))
+    if Name != '':
+        #if CopyFromSheet != '':
+            #TempName = PG.ThisWorkbook.Path + '\\' + M01.ExampleDir + '\\TempExample.MLL_pcf'
+            #pattgen.M07_Save_Sheet_Data.Save_One_Sheet(X02.Sheets(CopyFromSheet), TempName, False, M30.Unic_SheetName(Name, '_'))
+            #Load_Sheets(TempName, '', AfterSheetName=CopyFromSheet)
+        #else:
+        Create_New_Sheet(Name, Add_to_Duplicate_Name='_', AfterSheetName=CopyFromSheet)
+            #X02.RangeDict[M01.Macro_N_Rng] = M30.Replace_Illegal_Char(X02.ActiveSheet.Name)
+            #Add_by_Hardi()
+        #X02.Range(M01.FirstLEDTabRANGE).Select()
+        #M30.Protect_Active_Sheet()
+
 
 
 

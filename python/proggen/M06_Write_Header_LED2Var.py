@@ -82,19 +82,21 @@ import ExcelAPI.XLW_Workbook as P01
 """ Header file generation for the LED_to_Var function
 """
 
-__LED2Var_Tab = String()
+LED2Var_Tab = String()
 
-def Init_HeaderFile_Generation_LED2Var():
-    global __LED2Var_Tab
-    fn_return_value = None
+def Init_HeaderFile_Generation_LED2Var(firstSheet):
+    global LED2Var_Tab
+    _fn_return_value = None
     #--------------------------------------------------------------
-    __LED2Var_Tab = ''
-    fn_return_value = True
-    return fn_return_value
+    if firstSheet:
+        LED2Var_Tab = ''
+    _fn_return_value = True
+    return _fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Cmd - ByRef 
 def Add_LED2Var_Entry(Cmd, LEDNr):
-    fn_return_value = False
+    global LED2Var_Tab
+    _fn_return_value = False
     Parts = vbObjectInitialize(objtype=String)
 
     Typ = String()
@@ -117,19 +119,20 @@ def Add_LED2Var_Entry(Cmd, LEDNr):
         Typ = 'T_NOT_BIN_MASK'
     else:
         P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Falscher Typ \'#1#\' in der \'LED_to_Var\' Funktion'), "#1#", Parts(2)), vbCritical, M09.Get_Language_Str('Fehler: Falscher Typ in \'LED_to_Var\' Funktion'))
-        return fn_return_value
+        return _fn_return_value
     Offset = P01.val(Parts(1))
-    __LED2Var_Tab = __LED2Var_Tab + '        { ' + M30.AddSpaceToLen(Parts(0) + ',', 20) + M30.AddSpaceToLen(LEDNr + Offset // 3 + ',', 7) + M30.AddSpaceToLen('(' + Offset % 3, 5) + '<< 3) | ' + M30.AddSpaceToLen(Typ + ', ', 19) + M30.AddSpaceToLen(Parts(3), 4) + '},' + vbCr
+    LED2Var_Tab = LED2Var_Tab + '        { ' + M30.AddSpaceToLen(M06.ExpandName(Parts(0)) + ',', 20) + M30.AddSpaceToLen(str(LEDNr + Offset // 3) + ',', 7) + M30.AddSpaceToLen('(' + str(Offset % 3), 5) + '<< 3) | ' + M30.AddSpaceToLen(Typ + ', ', 19) + M30.AddSpaceToLen(Parts(3), 4) + '},' + vbCr    
+    #__LED2Var_Tab = __LED2Var_Tab + '        { ' + M30.AddSpaceToLen(Parts(0) + ',', 20) + M30.AddSpaceToLen(LEDNr + Offset // 3 + ',', 7) + M30.AddSpaceToLen('(' + Offset % 3, 5) + '<< 3) | ' + M30.AddSpaceToLen(Typ + ', ', 19) + M30.AddSpaceToLen(Parts(3), 4) + '},' + vbCr
     Cmd = '// ' + Cmd
-    fn_return_value = True
-    return fn_return_value, Cmd
+    _fn_return_value = True
+    return _fn_return_value, Cmd
 
 def Write_Header_File_LED2Var(fp):
-    global __LED2Var_Tab
+    global LED2Var_Tab
     
-    fn_return_value = None
+    _fn_return_value = None
     #------------------------------------------------------------------
-    if __LED2Var_Tab != '':
+    if LED2Var_Tab != '':
         VBFiles.writeText(fp, '// ----- LED to Var -----', '\n')
         VBFiles.writeText(fp, '  #define USE_LED_TO_VAR', '\n')
         VBFiles.writeText(fp, '', '\n')
@@ -147,15 +150,21 @@ def Write_Header_File_LED2Var(fp):
         VBFiles.writeText(fp, '      uint8_t  Offset_and_Typ; // ---oottt    Offset: 0..2', '\n')
         VBFiles.writeText(fp, '      uint8_t  Val;', '\n')
         VBFiles.writeText(fp, '      } __attribute__ ((packed)) LED2Var_Tab_T;', '\n')
+        # 05.11.20: Added: __attribute__ ((packed)) to be able to use it on oa 32 Bit platform
         VBFiles.writeText(fp, '', '\n')
+        VBFiles.writeText(fp, '#ifdef CONFIG_ONLY', '\n')
+        # 17.04.22 Juergen: add Simulator Led2Var feature
+        VBFiles.writeText(fp, '  const LED2Var_Tab_T LED2Var_Tab[] __attribute__ ((section (".MLLL2VConfig"))) =', '\n')
+        VBFiles.writeText(fp, '#else', '\n')
         VBFiles.writeText(fp, '  const PROGMEM LED2Var_Tab_T LED2Var_Tab[] =', '\n')
+        VBFiles.writeText(fp, '#endif', '\n')
         VBFiles.writeText(fp, '      {', '\n')
         VBFiles.writeText(fp, '        // Var name           LED_Nr LED Offset   Typ                Compare value', '\n')
-        VBFiles.writeText(fp, M30.DelLast(__LED2Var_Tab), '\n')
+        VBFiles.writeText(fp, M30.DelLast(LED2Var_Tab), '\n')
         VBFiles.writeText(fp, '      };', '\n')
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, '', '\n')
-    fn_return_value = True
-    return fn_return_value
+    _fn_return_value = True
+    return _fn_return_value
 
 # VB2PY (UntranslatedCode) Option Explicit

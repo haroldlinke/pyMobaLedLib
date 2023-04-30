@@ -186,7 +186,7 @@ def __Start_MobaLedCheckColors_py():
     OldDir = String()
     #--------------------------------------------------------
     OldDir = CurDir
-    DstDir = PG.ThisWorkbook.Path + '/' + __CHECKCOL_EXE_DIR
+    DstDir = M08.GetWorkbookPath() + '/' + __CHECKCOL_EXE_DIR
     # VB2PY (UntranslatedCode) On Error GoTo DirError
     ChDrive(DstDir)
     ChDir(DstDir)
@@ -208,7 +208,7 @@ def __Start_MobaLedCheckColors_exe():
     OldDir = String()
     #---------------------------------------------------------
     OldDir = CurDir
-    DstDir = PG.ThisWorkbook.Path + '\\' + __CHECKCOL_EXE_DIR
+    DstDir = M08.GetWorkbookPath() + '\\' + __CHECKCOL_EXE_DIR
     # VB2PY (UntranslatedCode) On Error GoTo DirError
     ChDrive(DstDir)
     ChDir(DstDir)
@@ -226,7 +226,7 @@ def Disconnect_CheckColors():
 
     Name = String()
     #----------------------------------
-    Name = PG.ThisWorkbook.Path + '/' + __CHECKCOL_DAT_DIR + __DISCONECTED_NAME
+    Name = M08.GetWorkbookPath() + '/' + __CHECKCOL_DAT_DIR + __DISCONECTED_NAME
     fp = FreeFile()
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
     VBFiles.openFile(fp, Name, 'w') 
@@ -252,7 +252,7 @@ def Close_CheckColors():
 def __Delete_CheckColors_CloseFile():
     Name = String()
     #-----------------------------------------
-    Name = PG.ThisWorkbook.Path + '/' + __CHECKCOL_EXE_DIR + __CLOSE_CHECKCOL_N
+    Name = M08.GetWorkbookPath() + '/' + __CHECKCOL_EXE_DIR + __CLOSE_CHECKCOL_N
     if Dir(Name) != '':
         Kill(Name)
 
@@ -273,7 +273,7 @@ def Write_ColTest_Only_File():
 def __Delete_ColTest_Only_File():
     Name = String()
     #-------------------------------------
-    Name = PG.ThisWorkbook.Path + '/' + __CHECKCOL_EXE_DIR + __COLTEST_ONLYFILE
+    Name = M08.GetWorkbookPath() + '/' + __CHECKCOL_EXE_DIR + __COLTEST_ONLYFILE
     if Dir(Name) != '':
         Kill(Name)
 
@@ -406,7 +406,7 @@ def Write_Default_CheckColors_Parameter_File():
 def __Open_Cfg_File_and_Get_Sp_and_Ep(Txt, Sp, Ep, FileName):
     fn_return_value = None
     #---------------------------------------------------------------------------------------------------------------------------------------------
-    FileName = PG.ThisWorkbook.Path + '/' + __CHECKCOL_DAT_DIR + __CONFIG_FILE_NAME
+    FileName = M08.GetWorkbookPath() + '/' + __CHECKCOL_DAT_DIR + __CONFIG_FILE_NAME
     Txt = Read_File_to_String(FileName)
     if Txt == '#ERROR#':
         return fn_return_value
@@ -511,7 +511,7 @@ def __Change_Comport_in_ConfigFile(ComNr):
 
     fp = Integer()
     #-------------------------------------------------------------------------
-    FileName = PG.ThisWorkbook.Path + '\\' + __CHECKCOL_DAT_DIR + __CONFIG_FILE_NAME
+    FileName = M08.GetWorkbookPath() + '\\' + __CHECKCOL_DAT_DIR + __CONFIG_FILE_NAME
     Txt = M30.Read_File_to_String(FileName)
     if Txt == '#ERROR#':
         return fn_return_value
@@ -759,7 +759,7 @@ def Open_MobaLedCheckColors(Callback, Dest_Sheet="", Dest_Row=-1):
     __ColTab_Dest_Sheet = Dest_Sheet
     __ColTab_Dest_Row = Dest_Row
     """
-    ProgDir = PG.ThisWorkbook.Path + '\\' + __CHECKCOL_EXE_DIR
+    ProgDir = M08.GetWorkbookPath() + '\\' + __CHECKCOL_EXE_DIR
     if Dir(ProgDir, vbDirectory) == '':
         #MsgBox Get_Language_Str("Fehler das Verzeichnis existiert nicht:") & vbCr & "  '" & ProgDir & "'", vbCritical, Get_Language_Str("CheckColors Verzeichnis nicht vorhanden")
         CreateFolder(ProgDir)
