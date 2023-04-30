@@ -401,6 +401,11 @@ class pyMobaLedLibapp(tk.Tk):
         menu.add_cascade(label="Hilfe", menu=helpmenu)
         helpmenu.add_command(label="Hilfe öffnen", command=self.OpenHelp)
         helpmenu.add_command(label="Über...", command=self.About)
+        
+        testmenu = tk.Menu(menu)
+        menu.add_cascade(label="Test", menu=testmenu)
+        testmenu.add_command(label="Excel-Datei importieren", command=self.OpenExcelWorkbook)
+        #filemenu.add_command(label="MacroWorkbook speichern als", command=self.SaveFileWorkbook)        
 
         # --- define container for tabs
         
@@ -517,7 +522,7 @@ class pyMobaLedLibapp(tk.Tk):
         messagebox.showerror('Exception',messagestring)
         #print("Tkinter Exception:",messagestring)
         logging.debug("Tkinter Exception:\n"+messagestring)
-        if DEBUG:
+        if DEBUG and not "Error in Dialog" in line:
             raise
         
         
@@ -590,6 +595,9 @@ class pyMobaLedLibapp(tk.Tk):
 
     def OpenHelp(self):
         self.call_helppage()
+        
+    def OpenExcelWorkbook(self):
+        self.activeworkbook.LoadExcelWorkbook()    
 
     def ResetColorPalette(self):
         frame = self.tabdict["ColorCheckPage"]
@@ -597,7 +605,8 @@ class pyMobaLedLibapp(tk.Tk):
 
     def MenuUndo(self,_event=None):
         for key in self.tabdict:
-            self.tabdict[key].MenuUndo() 
+            if hasattr(self.tabdict[key], "MenuUndo"):
+                self.tabdict[key].MenuUndo() 
     
     def MenuRedo(self,_event=None):
         for key in self.tabdict:
@@ -995,7 +1004,7 @@ class pyMobaLedLibapp(tk.Tk):
                 if port_dcc_data != {}:
                     port_dcc_data["ARDUINO"] = self.arduino
                 else:
-                    self.serial_port_dict[port] ={"dcc_address_range": (1,9999), 
+                    self.serial_port_dict[str(port)] ={"dcc_address_range": (1,9999), 
                                                   "ARDUINO" : self.arduino}
                     logging.info(" %s added to Z21 list",port)
                             
@@ -1137,7 +1146,7 @@ class pyMobaLedLibapp(tk.Tk):
                 self.tabdict[key].disconnect()
             #message = "#END\n"
             #self.send_to_ARDUINO(message)
-            message = "#X\r\n"
+            message = "#X\n"
             self.send_to_ARDUINO(message)
             logging.debug("close ARDUINO port %s",self.arduino.portstr)
             time.sleep(10*ARDUINO_WAITTIME)
@@ -1471,7 +1480,7 @@ class pyMobaLedLibapp(tk.Tk):
         #logging.info("onCheckDisconnectFile running")
         if os.path.isfile(DISCONNECT_FILENAME):
             self.led_off()
-            message = "#X\r\n"
+            message = "#X\n"
             self.send_to_ARDUINO(message)            
             self.disconnect()
 
@@ -2558,8 +2567,9 @@ class pyMobaLedLibapp(tk.Tk):
             self.after(100, self.process_serial)
 
     def start_process_serial_all(self):
-        SerialMonitorPage = self.getFramebyName("SerialMonitorPage")
-        SerialMonitorPage.start_process_serial()
+        print("pyMobaLedLib: start_process_serial_all")
+        #SerialMonitorPage = self.getFramebyName("SerialMonitorPage")
+        #SerialMonitorPage.start_process_serial()
         
         
         if False:
@@ -2581,6 +2591,7 @@ class pyMobaLedLibapp(tk.Tk):
 
     def stop_process_serial_all(self):
         logging.debug("Pyrog-Stop_process_serial")
+        print("pyMobaLedLib: stop_process_serial_all")
         SerialMonitorPage = self.getFramebyName("SerialMonitorPage")
         SerialMonitorPage.set_check_RMBUS(value=False)
         global ThreadEvent

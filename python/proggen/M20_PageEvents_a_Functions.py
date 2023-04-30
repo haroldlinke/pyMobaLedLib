@@ -207,7 +207,21 @@ def Row_Contains_Address_or_VarName(r):
     fn_return_value = True
     return fn_return_value
 
-def Update_Start_LedNr():
+def Update_All_Start_LedNr():
+    OldScreenupdating = Boolean()
+
+    Sh = Variant()
+    #---------------------------
+    OldScreenupdating = P01.Application.ScreenUpdating
+    P01.Application.ScreenUpdating = False
+    for Sh in PG.ThisWorkbook.Sheets:
+        if M28.Is_Data_Sheet(Sh):
+            Sh.Select()
+            Update_Start_LedNr()()
+    P01.Application.ScreenUpdating = OldScreenupdating
+
+def Update_Start_LedNr(firstRun=True):
+    _fn_return_value = None
     #OldEvents = Boolean()
 
     #display_Type = int()
@@ -219,22 +233,30 @@ def Update_Start_LedNr():
     LEDNr = vbObjectInitialize((M02.LED_CHANNELS,), Long)
 
     LastusedChannel = vbObjectInitialize((M02.LED_CHANNELS,), Long)
+    
+    LEDs_Channel = 0
+    
+    col = Long()
 
-    MaxLEDNr = vbObjectInitialize((M02.LED_CHANNELS,), Long)
+    r = Long()
 
-    r = int()
-
-    Nr = int()
+    Nr = Long()
     #------------------------------
     # Update the Start LedNr in all used rows
     OldEvents =  P01.Application.EnableEvents
     display_Type = M08.LEDNr_Display_Type
-    P01.Application.EnableEvents = False
+    if firstRun:
+        P01.Application.EnableEvents = False
+        # Prevent recursive calls ic cells are changed
+        # 26.04.20:  # 03.04.21 Juergen - try to find out if only the main LED Channel is in use
+        Max_LEDs_Channel = 0   # 10.03.2023 Juergen include feature
+        M06.IncludeStack = Collection()
+        M06.IncludeStack.Add(( P01.ActiveSheet.Name ))
+        M06.Clear_MaxLEDNr()    
     M25.Make_sure_that_Col_Variables_match()
     # 03.04.21 Juergen - try to find out if only the main LED Channel is in use
-    Max_LEDs_Channel = 0
-    LEDs_Channel = 0
     for row in P01.ActiveSheet.UsedRange_Rows():
+        # ToDo: Hier könnte man einen Eigenen Range definieren der erst ab der FirstDat_Row beginnt. Dann könnte die abfrage "If r >= FirstDat_Row Then" entfallen
         r = row.Row
         #*HL P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. Max LEDs Channel: "+str(r)))
         if r >= M02.FirstDat_Row:
@@ -242,6 +264,7 @@ def Update_Start_LedNr():
                 if P01.val(P01.Cells(r, M25.LED_Cha_Col)) > Max_LEDs_Channel:
                     Max_LEDs_Channel = P01.val(P01.Cells(r, M25.LED_Cha_Col))
     for row in P01.ActiveSheet.UsedRange_Rows():
+        # ToDo: Hier könnte man einen Eigenen Range definieren der erst ab der FirstDat_Row beginnt. Dann könnte die abfrage "If r >= FirstDat_Row Then" entfallen
         r = row.Row
         #P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. Update Start LED: "+str(r)))
         #print("Update Start LED: Row=",r)
@@ -284,17 +307,34 @@ def Update_Start_LedNr():
                         LEDNr[LEDs_Channel] = LEDNr(LEDs_Channel) + IncLEDNr
                 else:
                     LEDNr[LEDs_Channel] = LEDNr(LEDs_Channel) + M30.CellLinesSum(LEDs)
-            else:
-                Clear_LED_Nr_Columns(r)
-        if LEDNr(LEDs_Channel) > MaxLEDNr(LEDs_Channel):
-            MaxLEDNr[LEDs_Channel] = LEDNr(LEDs_Channel)
+            else: 
+                Cmd = Trim(P01.Cells(r, M25.Config__Col))
+                if P01.Rows(r).EntireRow.Hidden == False and P01.Cells(r, M02.Enable_Col) != '' and M06.IsIncludeMacro(Cmd):
+                    SheetName=""
+                    addressOffset = 0
+                    res, SheetName, addressOffset = M06.GetIncludeArgs(Cmd, SheetName, addressOffset)
+                    if M06.CheckIncludeSheet(SheetName, r):
+                        for idx in vbForRange(0, M02.LED_CHANNELS - 1):
+                            col = Get_LED_Nr_Column(idx)
+                            LEDNr[idx] = LEDNr(idx) + PG.ThisWorkbook.Worksheets(SheetName).Cells(M02.SH_VARS_ROW, col)
+                            if LEDNr(idx) > M06.MaxLEDNr(idx):
+                                M06.MaxLEDNr[idx] = LEDNr(idx)
+                            # 19.01.21:
+                else:                
+                    # Row is not activ
+                    Clear_LED_Nr_Columns(r)
+        if LEDNr(LEDs_Channel) > M06.MaxLEDNr(LEDs_Channel):
+            M06.MaxLEDNr[LEDs_Channel] = LEDNr(LEDs_Channel)
             # 19.01.21:
     # Write the Last LED number to row 1 (SH_VARS_ROW)
     for Nr in vbForRange(0, M02.LED_CHANNELS - 1):
         Col = Get_LED_Nr_Column(Nr)
-        P01.CellDict[M02.SH_VARS_ROW, Col] = MaxLEDNr(Nr) + UsedModules(LastusedChannel(Nr)) #*HL replaced P01.Cells with CellDict
+        M06.MaxLEDNr[Nr] = M06.MaxLEDNr(Nr) + UsedModules(LastusedChannel(Nr))
+        P01.CellDict[M02.SH_VARS_ROW, Col] = M06.MaxLEDNr(Nr)
     P01.Application.EnableEvents = OldEvents
+    _fn_return_value = M06.MaxLEDNr
     Clear_Formula_Errors()
+    return _fn_return_value
 
 def Get_LED_Nr(DefaultLedNr, Row, LED_Channel):
     LEDNr = String()

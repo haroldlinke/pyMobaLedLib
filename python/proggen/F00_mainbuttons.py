@@ -68,6 +68,7 @@ import proggen.D10_UserForm_Options as D10
 import proggen.D11_Userform_SimpleInput as D11
 import proggen.D12_Select_ProgGen_Src_Form as D12
 import proggen.D13_Select_ProgGen_Dest_Form as D13
+import pgcommon.G00_common as G00
 
 def Arduino_Button_Click(event=None):
     #---------------------------------
@@ -86,6 +87,11 @@ def ClearSheet_Button_Click():
     __Button_Pressed_Proc()
     M20.ClearSheet()
 
+def NewSheet_Button_Click():
+    #------------------------------------
+    __Button_Pressed_Proc()
+    G00.New_Sheet()    
+    
 def Dialog_Button_Click():
     #-------------------------------
     __Button_Pressed_Proc()
@@ -235,7 +241,7 @@ def Workbook_Open():
     PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible(False)
     M30.Check_Version()
     if P01.ActiveSheet.Name == M02.ConfigSheet:
-        P01.Sheets(M02.START_SH).Select()
+        PG.ThisWorkbook.Sheets(M02.START_SH).Select()
         # 30.05.20: In case one of the hidden sheets was active before
     M37.Init_Libraries_Page()
     M09.__Update_Language_in_All_Sheets()

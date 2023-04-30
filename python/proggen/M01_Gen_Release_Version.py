@@ -149,19 +149,19 @@ def __Release_or_Debug_Version(Release):
             # Activate the Filter                                              ' 02.03.20: ' 14.06.20: Filters ar no longer used in the release version
             #Range(Cells(Header_Row, Enable_Col), Cells(LastUsedRow(), LastUsedColumn())).AutoFilter Field:=2, Criteria1:="=B01", Operator:=xlOr, Criteria2:="="
     # Show / Hide the internal sheets
-    P01.Sheets(M02.LIBMACROS_SH).Visible(not Release)
-    P01.Sheets(M02.PAR_DESCR_SH).Visible(not Release)
-    P01.Sheets(M02.PLATFORMS_SH).Visible(not Release)
+    PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible(not Release)
+    PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible(not Release)
+    PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible(not Release)
     #Sheets("Farbentest").Visible = Not Release
     # Start sheet
-    #P01.Sheets(M02.START_SH).Select()
+    #PG.ThisWorkbook.Sheets(M02.START_SH).Select()
     #P01.ActiveSheet.Unprotect()
     #__Update_Version_InActSheet('M7')
     #if Release:
-    #    P01.Sheets(M02.START_SH).Protect(DrawingObjects=True, Contents=True, Scenarios=True)
-    #    P01.ActiveWindow.DisplayHeadings = False
+    #    PG.ThisWorkbook.Sheets(M02.START_SH).Protect(DrawingObjects=True, Contents=True, Scenarios=True)
+    #    PG.ThisWorkbook.ActiveWindow.DisplayHeadings = False
     #else:
-    #    P01.Sheets(M02.START_SH).Unprotect()
+    #    PG.ThisWorkbook.Sheets(M02.START_SH).Unprotect()
     if Release:
         __Set_Config_Default_Values_for_Release()
     M28.Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets(Release) 
@@ -195,9 +195,9 @@ def __Release_or_Debug_Version(Release):
                 P01.Columns(M25.LocInCh_Col).ColumnWidth = 4.71*factor
                 P01.Columns(M25.LED_Cha_Col).ColumnWidth = 4.71*factor
                 P01.Cells(M02.Header_Row + 1, M25.Descrip_Col).Select()
-        #P01.Sheets(M02.START_SH).Select()
+        #PG.ThisWorkbook.Sheets(M02.START_SH).Select()
     else:
-        P01.Sheets(LastSheet).Select()
+        PG.ThisWorkbook.Sheets(LastSheet).Select()
     if Release:
         M60.Write_Default_CheckColors_Parameter_File()
         # 01.12.19:
@@ -258,5 +258,5 @@ def __Set_Config_Default_Values_for_Release():
     M28.Set_String_Config_Var('SimAutostart', '0')
     M28.Set_String_Config_Var('SimOffset', '0')
     M28.Set_String_Config_Var('SimOnTop', '1')    
-
+    #M28.Set_String_Config_Var('GEN_BUTTON_RELEASE_COM', '0')
 # VB2PY (UntranslatedCode) Option Explicit

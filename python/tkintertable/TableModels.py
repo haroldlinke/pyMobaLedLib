@@ -69,7 +69,8 @@ class TableModel(object):
             self.createEmptyModel()
 
         if not set(self.reclist) == set(self.data.keys()):
-            print ('reclist does not match data keys')
+            #print ('reclist does not match data keys')
+            pass
         #restore last column order
         if hasattr(self, 'columnOrder') and self.columnOrder != None:
             self.columnNames=[]

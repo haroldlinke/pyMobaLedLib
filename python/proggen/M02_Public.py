@@ -51,10 +51,10 @@ import ExcelAPI.XLW_Workbook as P01
 #
 # ##################################################### Public Const
 
-Lib_Version_Nr = '4.0.9'                                   # If changed check also "Exp_Prog_Gen_Version" in Pattern_Configurator
-Test_Sufix = ''                                            # The Excel programs use the same version number than the library to avoid confusion
-Prog_Version = 'Ver. ' + Lib_Version_Nr + Test_Sufix       # A sufix could be used for beta version
-Prog_Version_Nr = Lib_Version_Nr + Test_Sufix              # Call Gen_Release_Version() to update all sheets
+Lib_Version_Nr = '3.2.1'                                   # If changed check also "Exp_Prog_Gen_Version" in Pattern_Configurator
+Test_Suffix = 'C'                                            # The Excel programs use the same version number than the library to avoid confusion
+Prog_Version = 'Ver. ' + Lib_Version_Nr + Test_Suffix       # A sufix could be used for beta version
+Prog_Version_Nr = Lib_Version_Nr + Test_Suffix              # Call Gen_Release_Version() to update all sheets
 DEBUG_CHANGEEVENT = False
 DEBUG_DCCSEND = False
 
@@ -183,12 +183,12 @@ SelectMacro_Res = String()
 Userform_Res = String()
 Userform_Res_Address = String()
 
-DialogGuideRes = int()
+DialogGuideRes = Long()
 #*HL HouseForm_Pos = WinPos_T()
 #*HL OtherForm_Pos = WinPos_T()
 
 Last_SelectedNr_Valid = Boolean()
-Last_SelectedNr = int()
+Last_SelectedNr = Long()
 
 ComPortfromOnePage = ''
 

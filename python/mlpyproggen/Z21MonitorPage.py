@@ -508,6 +508,7 @@ class Z21MonitorPage(tk.Frame):
                     dcc_adress_range = (1,9999)
                 self.controller.connect_Z21(port,dcc_adress_range)
         else:
+            print("Z21MonitorPage: Connect ARDUINO")
             self.controller.connect()
         self.controller.start_process_serial_all()
             
@@ -560,7 +561,7 @@ class Z21MonitorPage(tk.Frame):
     def get_RMBUS_DATA(self,groupidx=0):
         RMBUS_data_ba = self.RMBUS_DATA_bytearray.get(groupidx,{})
         self.send_RMBUS_DATA(RMBUS_data_ba,groupidx=groupidx)
-        self.controller.send_to_ARDUINO("?*\r\n")
+        self.controller.send_to_ARDUINO("?*\n")
         
     def convert_7bit_to_8bit(self,data_7bit_str):
         if True:
@@ -586,9 +587,11 @@ class Z21MonitorPage(tk.Frame):
         return output
 
     def notifyZ21_RMBUS_DATA(self, json_data_str):
-        #logging.debug("notifyZ21_RMBUS_DATA: %s",json_data_str)
+        logging.debug("notifyZ21_RMBUS_DATA: %s",json_data_str)
         RMBUS_DATA_dict = json.loads(json_data_str)
         rmbus_7bit_data_str = RMBUS_DATA_dict.get("RMBUS","")
+        if len(rmbus_7bit_data_str)==2 and rmbus_7bit_data_str[0]=="?":
+            return
         rmbus_data_bytearray = self.convert_7bit_to_8bit(bytearray.fromhex(rmbus_7bit_data_str))
         rmbus_data_str = rmbus_data_bytearray.hex()
         

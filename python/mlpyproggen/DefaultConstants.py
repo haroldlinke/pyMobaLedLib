@@ -58,10 +58,10 @@
 
 
 
-PROG_VERSION ="4.0.19.003 16.04.2023"
+PROG_VERSION ="4.0.20.001 30.04.2023"
 DATA_VERSION = "100"
-Pattgen_Min_Data_Version = "100"
-ProgGen_Min_Data_Version = "100"
+Pattgen_Min_Data_Version = "101"
+ProgGen_Min_Data_Version = "101"
 
 DEBUG = False
 

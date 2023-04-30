@@ -43,8 +43,9 @@ import platform
 import pathlib
 import re
 import json
+import openpyxl
 
-from tkintertable import TableCanvas,CTShape
+from tkintertable import TableCanvas,CTShape, TableModel
 import tkinter as tk
 from tkinter import ttk
 from ExcelAPI.XLC_Excel_Consts import *
@@ -493,9 +494,12 @@ class CWorkbook(object):
             self.default_font = self.controller.defaultfontnormal
 
             self.FullName = workbookFilename
+            self.ws_filename = None
+            self.wb = None
             style = ttk.Style(frame)
             style.configure('downtab.TNotebook', tabposition='sw')
             self.container = ttk.Notebook(frame, style="downtab.TNotebook")
+            self.container.bind("<Alt-B1-Motion>", self.reorder_tabs)
             
             self.container.grid_rowconfigure(0,weight=1)
             self.container.grid_columnconfigure(0,weight=1)                 
@@ -536,6 +540,14 @@ class CWorkbook(object):
         self.InitWorkbookFunction=None
         Worksheets = self.sheets
         self.open()
+        
+    def reorder_tabs(self,event):
+        try:
+            index = self.container.index(f"@{event.x},{event.y}")
+            self.container.insert(index, child=self.container.select())
+    
+        except tk.TclError:
+            pass    
         
     def shift_press(self,event):
         global shift_key
@@ -636,7 +648,12 @@ class CWorkbook(object):
         fieldnames = sheetname_prop.get("Fieldnames",None)
         if type(fieldnames) == str:
             fieldnames = fieldnames.split(";")
-        act_worksheet = CWorksheet(sheetname,workbook=self, csv_filepathname=(Path(self.pyProgPath) / sheetname_prop["Filename"]),frame=tabframe,fieldnames=fieldnames,formating_dict=formating_dict,Sheettype=sheettype,callback=callback,tabid=self.tabid,width=self.workbook_width,height=self.workbook_height)
+        filename=sheetname_prop.get("Filename",None)
+        if filename==None:
+            filepathname = self.ws_filename # take filename from first worksheet loaded (for excel workbooks)
+        else:
+            filepathname = Path(self.pyProgPath) / filename
+        act_worksheet = CWorksheet(sheetname,workbook=self, csv_filepathname=filepathname,frame=tabframe,fieldnames=fieldnames,formating_dict=formating_dict,Sheettype=sheettype,callback=callback,tabid=self.tabid,width=self.workbook_width,height=self.workbook_height)
         return act_worksheet
     
     def activate_sheet(self,sheetname):
@@ -713,6 +730,139 @@ class CWorkbook(object):
         if filename:
             self.LoadWorkbook(filename,workbookname=self.Name)
         return
+    
+    def is_datasheet(self,ws):
+        _ret = False
+        if self.Name=="PatternWorkbook":
+            cellA1 = ws["A1"].value
+            if cellA1 == "Normal Data Sheet":
+                _ret = True
+            else:
+                _ret = False
+        else:
+            cellB1 = ws["B1"].value
+            if cellB1!=None:
+                if ( InStr(M02.AllData_PgIDs, ' ' + cellB1 + ' ') > 0): 
+                    _ret = True
+            else:
+                _ret=False
+        return _ret
+
+    def LoadExcelWorkbook(self,filename=None):
+        """load Excelworkbook from a file"""
+        if filename == None:
+            filename = tk.filedialog.askopenfilename(parent=self.master,
+                                                      defaultextension='.xlsm',
+                                                      #initialdir=os.getcwd(),
+                                                      filetypes=[(self.Name+"-Excel","*.xlsm"),
+                                                        ("All files","*.*")])
+        if not os.path.exists(filename):
+            #print ('file does not exist')
+            return
+        if filename:
+            if self.ws_filename != filename:
+                self.wb = openpyxl.load_workbook(filename)
+                self.ws_filename = filename
+            sheetnames=self.wb.sheetnames
+            #print("Sheets:",sheetnames)
+            for sheetname in sheetnames:
+                ws = self.wb[sheetname]
+                if self.is_datasheet(ws):
+                    #print("Workbook:",self.Name)
+                    #load this sheet
+                    for row in ws.rows:
+                        for cell in row:
+                            if cell.value!=None:
+                                #print(cell,cell.value,cell.comment)
+                                #print(f'Row {cell.row}, Col {cell.column} = {cell.value}')
+                                #print(f'{cell.value=} is at {cell.coordinate=}')                    
+                                if cell.comment:
+                                    pass # print(cell.comment.text)
+                    named_range=wb.defined_names
+                    print(named_range)
+            # the destinations attribute contains a list of ranges in the definitions
+                       
+        return    
+    
+    def LoadSheetfromExcelWorkbook(self,worksheet, filename, fieldnames):
+        """load Excelworkbook from a file"""
+
+        if not os.path.exists(filename):
+            logging.debug ('file does not exist'+filename)
+            return
+        if filename:
+            if self.ws_filename != filename:
+                self.wb = openpyxl.load_workbook(filename)
+                self.ws_filename = filename
+
+            if worksheet.Name != "Named_Ranges":
+                if worksheet.Name in self.wb.sheetnames:
+                    xlws = self.wb[worksheet.Name]
+                else:
+                    xlws = self.wb["DCC"]
+                dictdata = {}
+                count=0                
+                for row in xlws.rows:
+                    rec_dict = {key: "" for key in fieldnames} # create empty row with fieldnames
+                    for cell in row:
+                        if cell.value!=None:
+                            if cell.data_type != "f": # no formulas
+                                #print(cell,cell.value,cell.comment)
+                                text=str(cell.value)
+                                if len(text)>0 and text[0]=="'": # remove leading '
+                                    text=text[1:]
+                                    #print(cell,text,cell.comment)
+                                if cell.comment:
+                                    #print(cell.comment.text)
+                                    text=text+"§"+cell.comment.text
+                                if cell.column < len(fieldnames):
+                                    rec_dict[fieldnames[cell.column-1]]=text
+                                else:
+                                    rec_dict[str(cell.column-1)]=text
+                                #print(f'Row {cell.row}, Col {cell.column} = {cell.value}')
+                                #print(f'{cell.value=} is at {cell.coordinate=}')
+                            else:
+                                #print("Formula:", cell.value)
+                                pass
+                    dictdata[count]=rec_dict
+                    count=count+1
+                worksheet.table.model = TableModel()
+                worksheet.table.model.importDict(dictdata)
+                worksheet.table.model.shapelist=[]                
+                worksheet.table.modelname=filename                            
+            else:
+                named_ranges=self.wb.defined_names
+                dictdata = {}
+                count = 0
+                for key in named_ranges.keys():
+                    named_range = named_ranges[key]
+                    rec_dict = {key: "" for key in fieldnames} # create empty row with fieldnames
+                    rec_dict[fieldnames[0]]=named_range.name
+                    attributes = named_range.attr_text
+                    attr_split=attributes.split("!")
+                    if len(attr_split)!=2:
+                        break                    
+                    rec_dict[fieldnames[1]]=attr_split[0] # sheetname
+                    colrow_str = attr_split[1]
+                    colrow_split=colrow_str.split("$")
+                    column_str = colrow_split[1]
+                    column = ord(column_str[0])-ord("A")+1
+                    row_str    = colrow_split[2]
+                    row    = int(row_str)
+                    rec_dict[fieldnames[2]]=column-1
+                    rec_dict[fieldnames[3]]=row-1
+                    dictdata[count]=rec_dict
+                    count=count+1
+                worksheet.table.model = TableModel()
+                print(repr(dictdata))
+                worksheet.table.model.importDict(dictdata)
+                worksheet.table.model.shapelist=[]                
+                worksheet.table.modelname=filename                      
+                
+
+            # the destinations attribute contains a list of ranges in the definitions
+                       
+        return        
     
     def LoadPCF(self,filename=None):
         """load PCF from a file"""
@@ -1040,15 +1190,19 @@ class CWorksheet(object):
                 #self.tablemodel = TableModel()
                 self.table = TableCanvas(frame, tablename=Name, model=None,width=self.width,height=self.height,default_font=self.default_font,scrollregion=(0,0,self.width,self.height),rightclickactions=self.rightclickactiondict,worksheet=self)
                 fileextension = os.path.splitext(self.csv_filepathname)[1]
-                if fileextension == ".csv":
+                fileextension = fileextension.upper()
+                if fileextension == ".CSV":
                     self.table.importCSV(filename=self.csv_filepathname, sep=';',fieldnames=self.fieldnames)
                 elif fileextension == ".MLL_PCF":
-                    self.Workbook.load
+                    self.Workbook.load()
+                elif fileextension == ".XLSM":
+                    self.Workbook.LoadSheetfromExcelWorkbook(self,self.csv_filepathname, self.fieldnames)
                 self.tablemodel = self.table.getModel()
                 if callback:
                     self.table.set_left_click_callback(self.left_click_callback)
             else:
                 return
+        self.table.show()
         if self.formating_dict:
             self.tablemodel.nodisplay = self.formating_dict.get("HideCells",[])
             self.tablemodel.hiderowslist = self.formating_dict.get("HideRows",[])
@@ -1057,7 +1211,7 @@ class CWorksheet(object):
             self.tablemodel.gridlist = self.formating_dict.get("GridList",[])
             self.tablemodel.ColumnAlignment = self.formating_dict.get("ColumnAlignment",{})
             colsizelist = self.formating_dict.get("ColumnWidth",[])
-            self.table.resizecolumns(colsizelist)
+            self.table.resizecolumns(colsizelist,redraw=True)
             rowheight=self.formating_dict.get("RowHeight",30)
             self.table.setRowHeight(rowheight)
             self.table.left_click_callertype=self.formating_dict.get("left_click_callertype",None)
@@ -1840,7 +1994,7 @@ class CRange(str):
         col=start[1]
         max_cols = ws.tablemodel.getColumnCount()
         max_rows = ws.tablemodel.getRowCount()
-        if col < max_cols and row < max_rows:
+        if col <= max_cols and row <= max_rows:
             value = ws.tablemodel.getValueAt(row-1,col-1)
         else:
             value = ""
@@ -2128,10 +2282,14 @@ class CRange(str):
             self.iter_start = after.start
         else:
             self.iter_start = None
+        #if self.ParentType=="Rows":
+        #    if self.end[1]==1:
+        #        self.end=(self.end[0],self._get_LastColumn())  # search in complete row
         for cell in self:
             cell_val=str(cell.Value)
             if cell_val == What:
                 return cell
+        return None
             
     def Offset(self, offset_row, offset_col):
         return self.offset(offset_row, offset_col)    
@@ -2157,7 +2315,7 @@ class CRange(str):
             val = self.ws.tablemodel.getValueAt(r,c)
             if val != None and val != '':
                 return False
-        return True    
+        return True
 
     def __iter__(self):
     #returning __iter__ object
@@ -2175,7 +2333,7 @@ class CRange(str):
         currentcell_col=self.currentcell[1]
         currentcell_row=self.currentcell[0]
         currentcell_col+=1
-        if currentcell_col>self.end[1]: 
+        if currentcell_col>self.end[1]:
             currentcell_row+=1
             currentcell_col = self.start[1]
             if currentcell_row > self.end[0]:
@@ -3053,6 +3211,21 @@ class CWorksheetFunction(object):
             if value>maxval:
                 maxval=value
         return maxval
+    
+    def Match(self,Lookup_value,Lookup_array, Match_type):
+    # Returns the relative position of an item in an array that matches a specified value in a specified order. Use Match instead of one of the Lookup functions when you need the position of an item in a range instead of the item itself.    
+    # Lookup_value: the value that you use to find the value that you want in a table.
+    # Lookup_array: a contiguous range of cells containing possible lookup values. Lookup_array must be an array or an array reference.    
+    # Match_type: the number -1, 0, or 1. Match_type specifies how Microsoft Excel matches lookup_value with values in lookup_array.
+    # Match returns the position of the matched value within lookup_array, not the value itself. For example, MATCH("b",{"a","b","c"},0) returns 2, the relative position of "b" within the array {"a","b","c"}.
+        res = Lookup_array.Find(Lookup_value)
+        if res == None:
+            return 0
+        else:
+            return res.Row
+    
+    def Min(self,*args):
+        return min(*args)    
         
         
 class CApplication(object):

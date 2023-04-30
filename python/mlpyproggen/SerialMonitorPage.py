@@ -204,7 +204,7 @@ class SerialMonitorPage(tk.Frame):
         self.controller.send_to_ARDUINO(message)
 
     def process_serial(self):
-        #print("process_serial: Start")
+        #print("Serial MonitorPage - process_serial: Start")
         textmessage = self.controller.checkconnection()
         if textmessage:
             self.text.insert("end", textmessage)
@@ -226,7 +226,7 @@ class SerialMonitorPage(tk.Frame):
                         self.text.yview("end")
                         if readtext.startswith("JSON:"):
                             json_str = readtext[5:]
-                            if self.z21page:
+                            if self.Z21page:
                                 self.Z21page.notifyZ21_RMBUS_DATA(json_str)
                         elif readtext.startswith("#?"):
                             temp_list = readtext.split(",")
@@ -249,7 +249,7 @@ class SerialMonitorPage(tk.Frame):
         if self.check_RMBUS:
             self.RMBUS_request_timer -= 1
             if self.RMBUS_request_timer == 0:
-                self.controller.send_to_ARDUINO("?*\r\n")
+                self.controller.send_to_ARDUINO("?*\n")
                 self.RMBUS_request_timer = self.RMBUS_request_timer_confvalue
         if self.monitor_serial:
             self.after(100, self.process_serial)
@@ -264,14 +264,15 @@ class SerialMonitorPage(tk.Frame):
             self.RMBUS_request_timer = self.RMBUS_request_timer_confvalue
         
         if value:
-            self.controller.send_to_ARDUINO("?+\r\n")
+            #self.controller.send_to_ARDUINO("?+\r\n")
             pass
         else:
-            self.controller.send_to_ARDUINO("?-\r\n")
+            #self.controller.send_to_ARDUINO("?-\r\n")
             pass
     
     def start_process_serial(self):
         global ThreadEvent
+        print("SerialMonitorPage: start_process_serial")
         ThreadEvent = threading.Event()
         ThreadEvent.set()
         time.sleep(2)
@@ -290,6 +291,7 @@ class SerialMonitorPage(tk.Frame):
 
     def stop_process_serial(self):
         logging.debug("stop_process_serial")
+        print("SerialMonitorPage: stop_process_serial")
         global ThreadEvent
         self.monitor_serial = False
         if ThreadEvent:
@@ -323,6 +325,8 @@ class ReadLine:
             while not ThreadEvent.is_set() and self.s != None and self.s.is_open:
                 i = max(1, min(2048, self.s.in_waiting))
                 data = self.s.read(1)
+                #print("readline from ARDUINO:",data)
+                #logging.debug("readline from ARDUINO:"+ str(data))
                 i = data.find(b"\n")
                 if i >= 0:
                     r = self.buf + data[:i+1]
@@ -382,9 +386,9 @@ class SerialThread(threading.Thread):
                         if len(text)>0:
                             try:
                                 self.queue.put(text.decode('utf-8'))
+                                logging.info("SerialThread (%s) got message: %s", self.serialport_name,str(text.decode('utf-8')))
                             except:
                                 self.queue.put(text)
-                                pass
-                            logging.info("SerialThread (%s) got message: %s", self.serialport_name,text.decode('utf-8'))
+                                logging.info("SerialThread (%s) got message: %s", self.serialport_name,str(text))
         logging.info("SerialThread (%s) received event. Exiting", self.serialport_name)
 

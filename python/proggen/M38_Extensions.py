@@ -331,12 +331,13 @@ def IsExtensionKey(Key):
     fn_return_value = InStr(str(Key), ExtensionKey) == 1
     return fn_return_value
 
-def Init_HeaderFile_Generation_Extension():
+def Init_HeaderFile_Generation_Extension(firstSheet):
     global __ExtensionsActive, __ExtensionLines
     fn_return_value = None
-    __ExtensionsActive = {} #Scripting.Dictionary()
-    __ExtensionLines = {} #Scripting.Dictionary()
-    __CollectExtensions()
+    if firstSheet:
+        __ExtensionsActive = {} #Scripting.Dictionary()
+        __ExtensionLines = {} #Scripting.Dictionary()
+        __CollectExtensions()
     fn_return_value = True
     return fn_return_value
 

@@ -58,7 +58,9 @@ from vb2py.vbdebug import *
 #  MobaLedLib: LED library for model railways
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#  Copyright (C) 2018, 2019, 2020, 2021  Hardi Stengelin: MobaLedLib@gmx.de
+#  Copyright (C) 2018, 2019, 2020, 2021, 2022  Hardi Stengelin: MobaLedLib@gmx.de
+#  Copyright (C) 2020, 2021, 2022  Jürgen Winkler: MobaLedLib@gmx.at
+#  Python-Version: Copyright (C) 2022, 2023  Harold Linke: harold.linke@t-online.de
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
@@ -675,7 +677,7 @@ from vb2py.vbdebug import *
 # 22.11.21: - Juergen: Add Excel version check
 # 26.11.21: - Hardi: Using a separate parameter name "Pin_NumberK80 for macro "SOUND_CHANNEL_DEFINITON()"
 #             and added the default text "KEY80_P1" because this macro is used not only by experts.
-#           - Test_Sufix = "RC4"
+#           - Test_Suffix = "RC4"
 #           - Disabled the "DebugMode" in the VBA Editor ("Extras/Eigenschaften") because otherwise
 #             Statistics are shown in the TreeView form head line
 #           - Corrected some embarrassing typos
@@ -712,8 +714,8 @@ from vb2py.vbdebug import *
 # 14.12.21: - Improve Macro RGB_Heartbeat_Color to support variable pulse duration
 #             Fix some typos
 # 16.12.21: - Add missing macros InCh_toTmpVar1 and BinCh_toTmpVar1
-#             mark those makros to disable status storage (Goto 0)
-#           - add handling of multiline makros in makro storage type detection
+#             mark those macros to disable status storage (Goto 0)
+#           - add handling of multiline macros in makro storage type detection
 # 21.12.21: - code changes to allow programmatic header file creation
 # 16.01.21: - fix bug in AnalogPattern
 # 21.01.22: - add experimental integration of PlatformIO build
@@ -738,7 +740,22 @@ from vb2py.vbdebug import *
 # 03.08.22: - change release to 3.2.0
 # 09.08.22: - fix memory issue with Arduino Nano and ESP32 librarires
 #           - change release to 3.2.1
-
+# 04.11.22: - fix SwitchC issue with ESP32
+#           - change release to 3.2.1A
+# 20.12.22: - add missing code for old "slow" build
+# 21.12.22: - fix issue that AVR build fails caused by vbcr in LEDs_Autoprog.h -> replace by vbcrlf
+#           - change release to 3.2.1B
+# 21.12.22: - add missing macros InCh_to_LocalVar, InCh_to_LocalVar1 and Bin_InCh_to_TmpVar1 to sheet Lib_Macros
+# 05.01.23: - Store_Status: support SwitchB, extend max. InCnt to 63, check max InCnt, use Set_Input for SwitchB
+# 14.01.23: - Add macro SingleLedSignal and SingleLedSignalEx
+#           - change release to 3.2.1C
+# 10.03.23: - Support of new imput type "feedback"
+#           - process CAN messages from ATTiny_CAN_GBM module
+#           - new macro include to include excel sub sheets
+#           - experminatal support of ProgGenerator stored in a Onedrive folder
+# 21.03.23: - if SEND_INPUT is enabled also SwitchA, SwitchD and Variable changes are notified
+# 09.04.23: - GEN_BUTTON_RELASE mode are now setable in config sheet
+# 18.04.23: - Finalize include sheet feature
 # ToDo:
 # ~~~~~
 # - Pattern_Configurator:    27.11.21:

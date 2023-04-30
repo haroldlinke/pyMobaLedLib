@@ -166,7 +166,7 @@ def __Helper_Replace_Empty_Lines_in_Front_of_Cells():
     Cnt = int()
     #---------------------------------------------------------
     # Some entries start with an additional empty line. I don't want to change them manualy...
-    P01.Sheets(M02.LIBMACROS_SH).Select()
+    PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Select()
     for c in P01.Range(P01.Cells(4, 1), P01.Cells(M30.LastUsedRow, M30.LastUsedColumn())):
         if c != '':
             while Len(c) > 1 and Left(LTrim(c), 1) == vbLf:

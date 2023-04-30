@@ -44,6 +44,7 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLWA_WinAPI as XLWA
 import mlpyproggen.Prog_Generator as PG
 
 import urllib.request 
@@ -618,7 +619,7 @@ def __Create_Do_Update_Script(Pause_at_End):
     #          0 if nothing has to be updated
     #          n number of necessary updates
     fp = FreeFile()
-    Name = PG.ThisWorkbook.Path + '/' + __UPDATE_LIB_CMD_NAME
+    Name = M08.GetWorkbookPath() + '/' + __UPDATE_LIB_CMD_NAME
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
     VBFiles.openFile(fp, Name, 'w') 
     VBFiles.writeText(fp, '@ECHO OFF', '\n')
@@ -1098,7 +1099,7 @@ def __Update_All_Selected_Libraries():
         if Dir('libraries/*', vbDirectory) == '':
             MkDir('libraries/')
         ChDir(M02.Sketchbook_Path + '/libraries/')
-        CommandStr = PG.ThisWorkbook.Path + '/' + __UPDATE_LIB_CMD_NAME
+        CommandStr = M08.GetWorkbookPath() + '/' + __UPDATE_LIB_CMD_NAME
         Res = PG.get_dialog_parent().execute_shell_cmd(CommandStr,"Install all selected Libraries")
         #Res = M40.ShellAndWait(CommandStr, 0, vbNormalFocus, M40.PromptUser)
         if (Res == M40.Success) or (Res == M40.Timeout):
@@ -1133,8 +1134,8 @@ def __Update_All_Selected_Libraries():
         
     __Stop_Status_Display()
     P01.Unload(F00.StatusMsg_UserForm)
-    P01.ChDrive(PG.ThisWorkbook.Path)
-    ChDir(PG.ThisWorkbook.Path)
+    P01.ChDrive(M08.GetWorkbookPath())
+    ChDir(M08.GetWorkbookPath())
     return fn_return_value
 
 def __Update_All_Selected_Libraries_Linux():
@@ -1217,8 +1218,8 @@ def __Update_All_Selected_Libraries_Linux():
         
     __Stop_Status_Display()
     P01.Unload(F00.StatusMsg_UserForm)
-    P01.ChDrive(PG.ThisWorkbook.Path)
-    ChDir(PG.ThisWorkbook.Path)
+    P01.ChDrive(M08.GetWorkbookPath())
+    ChDir(M08.GetWorkbookPath())
     return fn_return_value
 
 def __Select_Missing():
@@ -1280,7 +1281,7 @@ def __Create_Restart_Cmd():
     if M02a.Read_Sketchbook_Path_from_preferences_txt() == False:
         return fn_return_value
     fp = FreeFile()
-    Name = PG.ThisWorkbook.Path + '/' + __RESTART_PROGGEN_CMD
+    Name = M08.GetWorkbookPath() + '/' + __RESTART_PROGGEN_CMD
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
     VBFiles.openFile(fp, Name, 'w') 
     VBFiles.writeText(fp, '@ECHO OFF', '\n')
@@ -1327,7 +1328,7 @@ def __Create_Restart_Cmd():
     VBFiles.writeText(fp, 'Start Prog_Generator_MobaLedLib.xlsm', '\n')
     VBFiles.writeText(fp, 'EXIT', '\n')
     VBFiles.closeFile(fp)
-    fn_return_value = M08.GetShortPath(PG.ThisWorkbook.Path) + '/' + __RESTART_PROGGEN_CMD
+    fn_return_value = M08.GetShortPath(M08.GetWorkbookPath()) + '/' + __RESTART_PROGGEN_CMD
     return fn_return_value
     VBFiles.closeFile(fp)
     P01.MsgBox(M09.Get_Language_Str('Fehler beim schreiben der Datei \'') + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler beim erzeugen der Arduino Start Datei'))
@@ -1452,9 +1453,9 @@ def Delete_Selected():
             Kill(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache')
     Debug.Print('Waiting')
     for i in vbForRange(1, 30):
-        DoEvents()
+        P01.DoEvents()
         Debug.Print('.')
-        Sleep(100)
+        XLWA.Sleep(100)
     Debug.Print('')
     __Get_All_Library_States()
 
@@ -1505,7 +1506,7 @@ def Is_Lib_Installed(LibName):
     #-------------------------------------------------------------
     LastRow = M30.LastUsedRow(M02.LIBRARYS__SH)
     Row = __First_Dat_Row
-    with_5 = P01.Sheets(M02.LIBRARYS__SH)
+    with_5 = PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
     while Row <= LastRow:                                         # 06.12.2021 Juergen Fix issue with empty lines in sheet
         if with_5.Cells(Row, __Libr_Name_Col) == LibName:
             fn_return_value = ( with_5.Cells(Row, __Installed_Col) == 1 )
@@ -1519,7 +1520,7 @@ def Get_Lib_Version(LibName):
     #-------------------------------------------------------------
     LastRow = M30.LastUsedRowIn(M02.LIBRARYS__SH)
     Row = __First_Dat_Row
-    with_6 = P01.Sheets(M02.LIBRARYS__SH)
+    with_6 = PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
     while Row <= LastRow:                                       # 06.12.2021 Juergen Fix issue with empty lines in sheet
         if with_6.Cells(Row, __Libr_Name_Col) == LibName:
             fn_return_value = with_6.Cells(Row, __DetectVer_Col)
@@ -1534,7 +1535,7 @@ def Get_Required_Version(LibName):
     #-------------------------------------------------------------
     LastRow = M30.LastUsedRowIn(M02.LIBRARYS__SH)
     Row = __First_Dat_Row
-    with_7 = P01.Sheets(M02.LIBRARYS__SH)
+    with_7 = PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
     while Row <= LastRow:                                       # 06.12.2021 Juergen Fix issue with empty lines in sheet
         if with_7.Cells(Row, __Libr_Name_Col) == LibName:
             fn_return_value = with_7.Cells(Row, __Reque_Ver_Col)

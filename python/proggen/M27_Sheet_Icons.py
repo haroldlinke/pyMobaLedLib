@@ -36,6 +36,7 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from ExcelAPI.XLC_Excel_Consts import *
 import proggen.M02_Public as M02
+import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
 import proggen.M09_Select_Macro as M09SM
 import proggen.M25_Columns as M25

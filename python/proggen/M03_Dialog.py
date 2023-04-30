@@ -121,6 +121,8 @@ def Dialog_Guided_Input():
         if (ActiveCell.Column == M25.DCC_or_CAN_Add_Col) or (ActiveCell.Column == M25.SX_Channel_Col):
             if M25.SX_Bitposi_Col > 0:
                 SX_DataAvailable = P01.Cells(r, M25.SX_Bitposi_Col) != ''
+            else:
+                SX_DataAvailable = False
             if P01.Cells(r, M25.DCC_or_CAN_Add_Col + M25.SX_Channel_Col) == '' and not SX_DataAvailable:
                 Ask_External_Control()
             else:

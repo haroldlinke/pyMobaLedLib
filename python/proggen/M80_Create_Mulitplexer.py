@@ -376,7 +376,7 @@ def LedCount(Cmd):
     #   Added by Misha 2020-3-29
     #   Get number of LEDs used in this Multiplexer command
     OldSheet = P01.ActiveSheet
-    Worksheets(LIBMACROS_SH).Activate()
+    ThisWorkbook.Worksheets(LIBMACROS_SH).Activate()
     Row = 3
     r = ThisWorkbook.Sheets(LIBMACROS_SH).Range(ThisWorkbook.Sheets(LIBMACROS_SH).Cells(Row, 1), ThisWorkbook.Sheets(LIBMACROS_SH).Cells(ActiveCell.SpecialCells(xlLastCell).Row, 13))
     f = r.Find(What= Cmd, after= r.Cells(1, 1), LookIn= xlValues, LookAt= xlPart, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= False, SearchFormat= False)

@@ -303,7 +303,7 @@ class CSelect_COM_Port_UserForm:
         #  Caption     Dialog Caption
         #  Title       Dialog Title
         #  Text        Message in the text box on the top left side
-        #  Picture     Name of the picture to be shown. Available pictures: "LED_Image", "CAN_Image", "Tiny_Image", "DCC_Image"
+        #  Picture     Name of the picture to be shown. Available pictures: "LED_Image", "CAN_Image", "Tiny_Image", "DCC_Image" , "ESP32_Image"
         #  Buttons     List of 3 buttons with Accelerator. Example "H Hallo; A Abort; O Ok"  Two Buttons: " ; A Abort; "O Ok"
         #  ComPort_IO  is used as input and output
         # Return:
