@@ -858,8 +858,6 @@ class CWorkbook(object):
                 worksheet.table.model.importDict(dictdata)
                 worksheet.table.model.shapelist=[]                
                 worksheet.table.modelname=filename                      
-                
-
             # the destinations attribute contains a list of ranges in the definitions
                        
         return        
