@@ -26,13 +26,13 @@ For MAC installation you can find detailed instructions in the file MLL-MAC_Inst
 
 This Version is a Proof of Concept for a Python based MLL-Programm Generator that simulates the UserInterface of the Excel based Program Generator and can be used on Windows, Linux and Mac.
 
-The VBA code was translated 1 to 1 to Python using the Wedbased VB2PY-converter for the ProGenerator: 
+The VBA code was translated to Python using the Wedbased VB2PY-converter for the ProGenerator: 
 http://vb2py.sourceforge.net/online_conversion.html. Therefore some hidden errors are still possible due to incompatibilities of the translation.
 
 The VBA Code of the PatternGenerator was translated by an enhanced version of the VB2PY command line tool.
 
 History of Change
-V4.0.10.001 - 23.9.2023 - HL
+V4.0.10.001 - 23.3.2023 - HL
 - new: support for PNG images
 - new: pattern test support goto acts
 
