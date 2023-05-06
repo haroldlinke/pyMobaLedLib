@@ -357,6 +357,14 @@ class ColorCheckPage(tk.Frame):
         self.cor_red = self.getConfigData("led_correction_r")
         self.cor_green = self.getConfigData("led_correction_g")
         self.cor_blue = self.getConfigData("led_correction_b")
+        # correct error that old values are % based and new oon max value 255
+        max_cor=max(self.cor_red,self.cor_green,self.cor_blue)
+        factor = 255/max_cor
+        self.cor_red = int(self.cor_red*factor)
+        self.cor_green =int(self.cor_green*factor)
+        self.cor_blue =int(self.cor_blue*factor)
+        logging.debug("Colorcorrection:"+str(factor))
+        
 
         #title=_("MobaLedLib LED Farbentester " + PROG_VERSION)
         self.tab_frame = ttk.Frame(self.tab_main_frame,borderwidth=1,relief="ridge")

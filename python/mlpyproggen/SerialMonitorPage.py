@@ -326,7 +326,7 @@ class ReadLine:
                 i = max(1, min(2048, self.s.in_waiting))
                 data = self.s.read(1)
                 #print("readline from ARDUINO:",data)
-                #logging.debug("readline from ARDUINO:"+ str(data))
+                logging.debug("readline from ARDUINO:"+ str(data))
                 i = data.find(b"\n")
                 if i >= 0:
                     r = self.buf + data[:i+1]
