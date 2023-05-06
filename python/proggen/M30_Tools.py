@@ -720,8 +720,9 @@ def Read_File_to_String(FileName):
         # fn_return_value = Input(LOF(fp), fp)
         # VBFiles.closeFile(fp)
         return fn_return_value
-    except:
+    except BaseException as e:
         Debug.Print("Read_File_to_String: Fehler beim Lesen der Datei "+FileName)
+        logging.debug(e)
         P01.MsgBox(M09.Get_Language_Str(r'Fehler beim lesen der Datei:') + vbCr + r'  ' + FileName + r'', vbCritical, M09.Get_Language_Str(r'Fehler beim Datei lesen'))
         fn_return_value = r'#ERROR#'
         return fn_return_value

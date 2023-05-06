@@ -328,7 +328,7 @@ class pyMobaLedLibapp(tk.Tk):
         logging.debug("pos_x: %s pos_y: %s",self.pos_x,self.pos_y)
         
         if self.getConfigData("pos_x") < screen_width and self.getConfigData("pos_y") < screen_height:
-            self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))
+            self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.pos_x, self.pos_y))
         else:
             self.geometry("%dx%d+0+0" % (self.window_width,self.window_height))
 
@@ -403,8 +403,10 @@ class pyMobaLedLibapp(tk.Tk):
         helpmenu.add_command(label="Über...", command=self.About)
         
         testmenu = tk.Menu(menu)
-        menu.add_cascade(label="Test", menu=testmenu)
+        #menu.add_cascade(label="Test", menu=testmenu)
         testmenu.add_command(label="Excel-Datei importieren", command=self.OpenExcelWorkbook)
+        testmenu.add_command(label="Lines of Code", command=self.find_loc)
+                
         #filemenu.add_command(label="MacroWorkbook speichern als", command=self.SaveFileWorkbook)        
 
         # --- define container for tabs
@@ -590,6 +592,40 @@ class pyMobaLedLibapp(tk.Tk):
     def OpenFilePCF(self):
         MainMenu.LoadExampleButton_Click()
 
+    def find_loc(self,cd = os.curdir):
+        listdir = os.listdir(cd)
+        if len(listdir) == 0:
+            return 0
+        loc = 0;
+        files = []
+        folders = []
+        next_dirs = []
+        total_loc=0
+        for x in listdir:
+            path = os.path.join(cd, x)
+            if os.path.isfile(path):
+                if x.endswith(".py"):
+                    files.append(x)
+                    file = open(path, 'r')
+                    try:
+                        for line in file:
+                            if line == '':
+                                continue
+                            loc += 1
+                    except:
+                        pass
+            elif os.path.isdir(path):
+                folders.append(x)
+                next_dirs.append(path)
+        print(f'cd: {cd}')
+        print(f'files ({len(files)}): {files}')
+        print(f'dirs: {folders}')
+        print(f'loc: {loc}\n')
+        for next_dir in next_dirs:
+            loc += self.find_loc(next_dir)
+        
+        return loc
+
     def About(self):
         tk.messagebox("MobaCheckColor by Harold Linke")
 
@@ -687,6 +723,7 @@ class pyMobaLedLibapp(tk.Tk):
         logging.debug("Cancel_with_save2")
         self.setConfigData("pos_x", self.winfo_x())
         self.setConfigData("pos_y", self.winfo_y())
+        logging.debug("Cancel_Save_Data: pos_x=%s pos_y=%s",self.winfo_x(), self.winfo_y())
         self.save_persistent_params()
         self.SaveConfigData()
         self.SaveParamData()

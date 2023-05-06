@@ -774,14 +774,20 @@ def Add_Inp_and_DstVars(line, r):
     return _fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Channel - ByRef 
-def Print_DstVar_List(fp, Channel):
+def Print_DstVar_List(fp, Channel,Min_Channel):
     global DstVar_List
     
     Var = Variant()
     #-----------------------------------------------------------------
+    start_channel = Channel
+    
+    rm_number = start_channel-Min_Channel+List_Lenght(DstVar_List)-1
+    
     for Var in Split(Trim(DstVar_List), ' '):
-        VBFiles.writeText(fp, '#define ' + M30.AddSpaceToLen(Var, 22) + '  ' + str(Channel), '\n')
+        VBFiles.writeText(fp, '#define ' + M30.AddSpaceToLen(Var, 22) + '  ' + M30.AddSpaceToLen(str(Channel), 41) + '// Z21-RM-Rückmelder: Adresse:' + str(int(rm_number/8)+1) + " Eingang:" + str(int(rm_number%8)+1), '\n')
         Channel = Channel + 1
+        rm_number = rm_number - 1
+        
     return Channel
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Count - ByVal 
@@ -1111,7 +1117,7 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
         Min_Channel = WorksheetFunction.Min(Min_Channel, Channel)
         VBFiles.writeText(fp, '//*** Output Channels ***', '\n')
         VBFiles.writeText(fp, '#define START_VARIABLES   ' + M30.AddSpaceToLen(str(Channel), 41) + '// Define the start number for the variables.', '\n')
-        Channel = Print_DstVar_List(fp, Channel)
+        Channel = Print_DstVar_List(fp, Channel,Min_Channel)
         VBFiles.writeText(fp, '', '\n')
     if SwitchD_InpCnt > 0:
         VBFiles.writeText(fp, 'const PROGMEM uint8_t SwitchD_Pins[] = ' + M30.AddSpaceToLen('{ ' + Replace(SwitchD_InpLst, ' ', ',') + ' };', 28) + '// Array of pins which read switches \'D\'', '\n')
