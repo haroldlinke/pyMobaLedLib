@@ -384,7 +384,7 @@ class _VBFiles:
             else:
                 old_file.close()
             #
-            self._channels[channelid] = open(filename, mode,newline="\r\n")
+            self._channels[channelid] = open(filename, mode,newline="\r\n", encoding="utf-8")
         finally:
             self._lock.release()
 
