@@ -190,6 +190,7 @@ class ARDUINOMonitorPage(tk.Frame):
     def add_text_to_textwindow(self,text,highlight=""):
         date_time = datetime.now()
         d = date_time.strftime("%H:%M:%S")
+        text = str(text)
         textlines = text.split("\n")
         textmessage = ""
         for textline in textlines:
