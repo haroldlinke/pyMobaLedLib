@@ -2296,6 +2296,7 @@ class TableCanvas(Canvas):
                     elif shape.Shapetype == "picture" or shape.Shapetype==X01.msoPicture:
                         pass
                         #print("drawshape - Picture:", shape.Name)
+
                         image_loaded=False
                         try:
                             image = PhotoImage(file=shape.Name)
