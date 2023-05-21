@@ -315,7 +315,7 @@ class ReadLine:
 
     def readline(self):
         i = self.buf.find(b"\n")
-        toRead = 0
+        msg_length = 0
         result = ""
         if i >= 0:
             r = self.buf[:i+1]
@@ -323,47 +323,43 @@ class ReadLine:
             return r
         try:
             while not ThreadEvent.is_set() and self.s != None and self.s.is_open:
-                i = max(1, min(2048, self.s.in_waiting))
-                data = self.s.read(1)
-                #print("readline from ARDUINO:",data)
-                logging.debug("readline from ARDUINO:"+ str(data))
-                i = data.find(b"\n")
-                if i >= 0:
-                    r = self.buf + data[:i+1]
-                    self.buf[0:] = data[i+1:]
-                    return r
-                else:
-                    #for j in range(len(data)):
-                    if data >= b"x7F":
-                        if toRead >0 :
-                            logging.debug("SerialThread error in Feedback-String:"+str(data).hex)
-                        chkSum = int.from_bytes(data,byteorder = "big")
-                        toReadbyte = self.s.read(1)
-                        toRead = int.from_bytes(toReadbyte,byteorder = "big")
-                        chkSum ^= toRead
-                        result = "JSON:{\"RMBUS\": \""
-                        result_str = toReadbyte.hex()
-                        #result += result_str
-                        continue
-                    if toRead > 0:
-                        chkSum ^= int.from_bytes(data,byteorder = "big")
-                        if toRead >1:
-                            result_str = data.hex()
+                i = max(1, min(2048, self.s.in_waiting)) # any bytes in buffer
+                data = self.s.read(1)                    # read one byte  
+                logging.debug("readline from ARDUINO:"+ str(data)+ "("+str(data.hex())+")")
+                if data >= b"xD0": # binary communication detected, read one binary message
+                    chkSum = int.from_bytes(data,byteorder = "big")
+                    toReadbyte = self.s.read(1) # read length byte
+                    logging.debug("readline from ARDUINO length:"+ str(toReadbyte)+ "("+str(toReadbyte.hex())+")")
+                    msg_length = int.from_bytes(toReadbyte,byteorder = "big")
+                    chkSum ^= msg_length
+                    result = "JSON:{\"RMBUS\": \""
+                    for i in range(msg_length):
+                        Readbyte = self.s.read(1)
+                        logging.debug("readline from ARDUINO length:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
+                        ReadbyteInt = int.from_bytes(Readbyte,byteorder = "big")
+                        chkSum ^= ReadbyteInt
+                        if i < msg_length-1: # handle data bytes, last byte is for checksum only
+                            result_str = Readbyte.hex()
                             result += result_str
-                            toRead -= 1
-                        else:
-                            result += "\"}"
-                            if chkSum != 255:
-                                logging.debug("Checksum error in Feedback-String:"+ result)
-                            #logging.debug("Received from ARDUINO: " + result)
-                            return result
-                    self.buf.extend(data)
+                    result += "\"}"
+                    if chkSum != 255:
+                        logging.debug("Checksum error in Feedback-String:"+ result)
+                    return result
+                else:
+                    i = data.find(b"\n")
+                    if i >= 0:
+                        r = self.buf + data[:i+1]
+                        self.buf[0:] = data[i+1:]
+                        return r
+                self.buf.extend(data)
         except BaseException as e:
             logging.debug("Readline exception")
             logging.debug(e)
             traceback.print_exc()
             logging.debug("------------------")
             result = ""
+            logging.debug("Set ThreadEvent, Readline error")
+            ThreadEvent.set() 
             return result
 
 class SerialThread(threading.Thread):

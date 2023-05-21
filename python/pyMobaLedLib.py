@@ -184,6 +184,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.setcoltab_only = False
         caller_setcoltab = (caller == "SetColTab")
         self.colortest_only = COMMAND_LINE_ARG_DICT.get("colortest_only","")== "True"
+        self.executetests = COMMAND_LINE_ARG_DICT.get("test","")== "True"
         self.loaddatafile = COMMAND_LINE_ARG_DICT["loaddatafile"]!="False"
         self.coltab = None
         self.checkcolor_callback = None
@@ -506,7 +507,12 @@ class pyMobaLedLibapp(tk.Tk):
             # start the Z21 simulator
             frame = self.tabdict.get("Z21MonitorPage",None)
             if frame:
-                frame.start_process_Z21()           
+                frame.start_process_Z21()
+                
+        if COMMAND_LINE_ARG_DICT.get("test","")=="True":
+            self.executetests = True
+        else:
+            self.executetests = False
         
         self.focus_set()
         #self.wait_visibility()
@@ -2789,7 +2795,6 @@ def main_entry():
     if sys.hexversion < 0x030700F0:
         tk.messagebox.showerror("Wrong Python Version"+sys.version,"You need Python Version > 3.7 to run this Program")
         exit()
-        
     
     COMMAND_LINE_ARG_DICT = {}
     
@@ -2801,6 +2806,7 @@ def main_entry():
     parser.add_argument('--port',help="Name of the port where the ARDUINO is connected to")
     parser.add_argument('--z21simulator',choices=["True","False"],help="if <True> the Z21simulator will be started automatically")
     parser.add_argument('--caller',choices=["SetColTab",""],help="Only for MLL-ProgrammGenerator: If <SetColTab> only the Colorcheckpage is available and the chnage coltab is returned after closing the program")
+    parser.add_argument('--test',choices=["True","False"],help="if <True> test routines are started at start of program")
     
     try:
         args = parser.parse_args()
@@ -2882,6 +2888,9 @@ def main_entry():
         COMMAND_LINE_ARG_DICT["loaddatafile"]=args.loaddatafile
     else:
         COMMAND_LINE_ARG_DICT["loaddatafile"]=True
+        
+    if args.test:
+        COMMAND_LINE_ARG_DICT["test"]=args.test
         
     # check if colortest only is needed
     try: #check if a COLORTESTONLY_FILE is in the main Dir 

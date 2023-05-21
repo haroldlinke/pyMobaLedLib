@@ -781,12 +781,12 @@ def Print_DstVar_List(fp, Channel,Min_Channel):
     #-----------------------------------------------------------------
     start_channel = Channel
     
-    rm_number = start_channel-Min_Channel+List_Lenght(DstVar_List)-1
+    rm_number = start_channel - Min_Channel #+List_Lenght(DstVar_List)-1
     
     for Var in Split(Trim(DstVar_List), ' '):
         VBFiles.writeText(fp, '#define ' + M30.AddSpaceToLen(Var, 22) + '  ' + M30.AddSpaceToLen(str(Channel), 41) + '// Z21-RM-Rückmelder: Adresse:' + str(int(rm_number/8)+1) + " Eingang:" + str(int(rm_number%8)+1), '\n')
         Channel = Channel + 1
-        rm_number = rm_number - 1
+        rm_number = rm_number + 1
         
     return Channel
 
