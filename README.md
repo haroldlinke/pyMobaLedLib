@@ -32,6 +32,9 @@ http://vb2py.sourceforge.net/online_conversion.html. Therefore some hidden error
 The VBA Code of the PatternGenerator was translated by an enhanced version of the VB2PY command line tool.
 
 History of Change
+V4.0.25.001 - 93.02.2024 - HL
+- new Servo Test Page 2, support for new servo firmware from Eckhart
+
 V4.0.10.001 - 23.3.2023 - HL
 - new: support for PNG images
 - new: pattern test support goto acts
