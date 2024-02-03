@@ -87,7 +87,7 @@ Servo_Scale_Max = 210
 # Class ServoTestPage
 # ----------------------------------------------------------------
 
-class ServoTestPage(tk.Frame):
+class ServoTestPage1(tk.Frame):
 
     # ----------------------------------------------------------------
     # ServoTestPage __init__
@@ -97,7 +97,7 @@ class ServoTestPage(tk.Frame):
         
         tk.Frame.__init__(self, parent)
         
-        self.tabClassName = "ServoTestPage"
+        self.tabClassName = "ServoTestPage1"
         tk.Frame.__init__(self,parent)
         self.controller = controller
         

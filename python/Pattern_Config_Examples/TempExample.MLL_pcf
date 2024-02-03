@@ -1,27 +1,25 @@
-SheetName¯Main_1
-Version¯1
-Erste RGB LED: ¯0
-Startkanal der RGB LED: ¯0
-Schalter Nummer: ¯SI_1
-Anzahl der Ausgabe Kanäle: ¯2
-Bits pro Wert: ¯1
-Wert Min: ¯0
-Wert Max: ¯128
-Wert ausgeschaltet: ¯0
-Mode: ¯PM_NORMAL
-Analoges Überblenden: ¯
-Goto Mode: ¯
-Goto Aktivierung: ¯
-Grafische Anzeige: ¯1
-Spezial Mode: ¯
-RGB Modul Nummer: ¯
-Makro Name: ¯Wechselblinker
-Dauer¯1 Sec
-Goto Tabelle¯
-LED_Tab¯LED1¯x¯¯x
-LED_Tab¯LED2¯¯x¯¯x
-LED_Attr¯7¯
-LED_Attr¯7¯
-RGB_LED_CheckBox¯	0
-msoShapeOval¯432.9032258064516;157.41935483870967;12.258064516129032;12.258064516129032¯LED_M99O01L1
-msoShapeOval¯452.258064516129;157.41935483870967;12.258064516129032;12.258064516129032¯LED_M99O01L2
+SheetNameÂ¯Main_1
+VersionÂ¯1
+Erste RGB LED: Â¯0
+Startkanal der RGB LED: Â¯0
+Schalter Nummer: Â¯SI_1
+Anzahl der Ausgabe KanÃ¤le: Â¯2
+Bits pro Wert: Â¯1
+Wert Min: Â¯0
+Wert Max: Â¯128
+Wert ausgeschaltet: Â¯0
+Mode: Â¯PM_NORMAL
+Analoges Ãœberblenden: Â¯
+Goto Mode: Â¯
+Goto Aktivierung: Â¯
+Grafische Anzeige: Â¯1
+Spezial Mode: Â¯
+RGB Modul Nummer: Â¯
+Makro Name: Â¯Wechselblinker
+DauerÂ¯1 Sec
+Goto TabelleÂ¯
+LED_TabÂ¯LED1Â¯xÂ¯Â¯x
+LED_TabÂ¯LED2Â¯Â¯xÂ¯Â¯x
+LED_AttrÂ¯7Â¯
+LED_AttrÂ¯7Â¯
+RGB_LED_CheckBoxÂ¯	0

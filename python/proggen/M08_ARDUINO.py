@@ -127,7 +127,7 @@ def Test_Cmd_Admin():
     pass
 
 def Find_ArduinoExe(data=False):
-    private_startfile=False
+    private_startfile=PG.get_global_controller().getConfigData("startcmdcb")
     
     system_platform = platform.platform()
     Dirs = ""
@@ -176,9 +176,9 @@ def Find_ArduinoExe(data=False):
     
     if P01.MsgBox(M09.Get_Language_Str('Fehler: Die Arduino Entwicklungsumgebung ist nicht oder nicht im Standard Verzeichnis installiert.' + 
                                        vbCr + 'Das Programm muss abhängig vom Betriebssystem hier installiert sein:') + vbCr + Dirs + vbCr + vbCr +
-                  M09.Get_Language_Str('Achtung: Die \'App\' Version der Arduino IDE wird nicht unterstützt. ' + vbCr + 'Es muss die \'Windows Installer, for Windows XP and up\' Version installiert werden.' +
+                  M09.Get_Language_Str('Achtung: Die \'App\' Version der Arduino IDE wird nicht unterstützt. ' + vbCr + 'Es muss die \'Windows Installer, for Windows XP and up\' Version installiert werden.') +
                                        vbCr + vbCr +
-                                       'Soll die Arduino Webseite geöffnet werden damit die richtige Version herunter geladen werden kann ?'), 
+                                       'Auf der ARDUINO Einstellungsseite kann ein individueller Pfad zur ARDUINO-IDE <arduino_debug.exe> eingestellt werden.', 
                   vbCritical + vbYesNo, M09.Get_Language_Str('Fehler: \'') + ARDUINO_EXE + M09.Get_Language_Str('\' nicht gefunden')) == vbYes:
         logging.debug("Find ARDUINO exe - ARDUINO.Exe not found")
         #*HL Shell('Explorer "https://www.arduino.cc/en/main/software"')

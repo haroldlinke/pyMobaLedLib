@@ -67,7 +67,8 @@ from mlpyproggen.DCC_KeyboardPage import DCCKeyboardPage
 from mlpyproggen.Prog_Generator import Prog_GeneratorPage
 from mlpyproggen.Pattern_Generator import Pattern_GeneratorPage
 import pattgen.MainMenu_Form as MainMenu
-from mlpyproggen.ServoTestPage import ServoTestPage
+from mlpyproggen.ServoTestPage import ServoTestPage1
+from mlpyproggen.ServoTestPage2 import ServoTestPage2
 from mlpyproggen.Z21MonitorPage import Z21MonitorPage
 from mlpyproggen.ARDUINOMonitorPage import ARDUINOMonitorPage
 from mlpyproggen.StartPage import StartPage
@@ -145,9 +146,9 @@ def _(text):
 # ------------------------------
 
 
-tabClassList_all = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_all_patterngen = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_mll_only = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_all = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_all_patterngen = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_mll_only = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_SetColTab = (ColorCheckPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
