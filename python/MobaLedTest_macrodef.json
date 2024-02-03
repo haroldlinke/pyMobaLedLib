@@ -30,7 +30,7 @@
         "Button_4": "Individuellen Pfad zu ARDUINO Resourcen (libraries, examples) verwenden (nur MAC)",
         "Button_5": "Pfad zu ARDUINO Resourcen auswählen",
         "Kurzbeschreibung": "Einstellungsparameter",
-        "Ausführliche Beschreibung": "Hier können Sie die Einstellungen für die ARDUINO IDE vornehmen. Dies wird hauptsächlich für LINUX benötigt.",
+        "Ausführliche Beschreibung": "Hier können Sie die Einstellungen für die ARDUINO IDE vornehmen. Dies wird für LINUX und Mac benötigt, aberr auch bei Windows, wenn die ARDUINO IDE nicht ins Standardverzeichnis auf C: installiert wurde.",
         "Params": [
             "!ARDUINOConnected",
             "!ARDUINOMessage",
@@ -160,10 +160,10 @@
             "SerialMonitorInput"
         ]
     },
-    "ServoTestPage": {
-        "Typ": "ServoTestPage",
-        "Name": "ServoTestPage",
-        "MTabName": "Servo Test",
+    "ServoTestPage1": {
+        "Typ": "ServoTestPage1",
+        "Name": "ServoTestPage1",
+        "MTabName": "Servo Test 1",
         "Title": "MobaLedLib LED-Servotester",
         "Button_1": "",
         "Button_2": "",
@@ -173,6 +173,21 @@
         "Params": [
             "ServoAddress",
             "ServoChannel"
+        ]
+    },
+    "ServoTestPage2": {
+        "Typ": "ServoTestPage2",
+        "Name": "ServoTestPage2",
+        "MTabName": "Servo Test 2",
+        "Title": "MobaLedLib LED-Servotester (Eckharts Variante)",
+        "Button_1": "",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "Testen und Konfigurieren von Servos basierend uaf der Variante von Eckhart",
+        "Ausführliche Beschreibung": "Mit der Servoplatine von Hardi können über die MLL auch Servos angesteuert werden. Eckhart hat eine Variante programmiert, die auf den WS2811 chip verzichtet und eine bessere Kontrolle der Servostellung erlaubt. Auf dieser Seite können Sie den Servo testen und konfigurieren.\nMit dem Schieberegler kann die Position des Servos eingestellt werden.",
+        "Params": [
+            "ServoAddress",
+            "ServoControl"
         ]
     },
     "SoundCheckPage": {

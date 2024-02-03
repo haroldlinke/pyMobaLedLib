@@ -1644,6 +1644,18 @@
         "Input Text": "Servo Anschluss",
         "Hint": "Anschluss des Servos (RGB-Nummer des Anschlusses)"
     },
+    "ServoControl": {
+        "ParName": "ServoControl",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "ServoControl",
+        "Min": "0",
+        "Max": "5",
+        "Persistent": "True",
+        "Default": "0",
+        "Input Text": "Servo Control Byte",
+        "Hint": "Servo Control Byte (1=Normal, 2=std training, 3=wide training, 4=max speed, 5=reset)"
+    },
     "SoundAddress": {
         "ParName": "Sound_Address",
         "Cnt": "",
