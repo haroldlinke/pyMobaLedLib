@@ -1669,8 +1669,8 @@ class CWorksheet(object):
         self.table.do_bindings()
         if self.Workbook.Name=="ProgGenerator":
             Port=Cells(M02.SH_VARS_ROW, M25.COMPort_COL)
-            if F00.port_is_available(Port):    
-                self.controller.setConfigData("serportname",Port)
+            #if F00.port_is_available(Port):    
+            #    self.controller.setConfigData("serportname",Port)
         return
 
     def Copy(self,SheetName=None,After=None):
