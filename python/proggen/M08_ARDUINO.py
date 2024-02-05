@@ -501,7 +501,7 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         
     if M28.Get_Bool_Config_Var("Use_PlatformIO") == False:
         VBFiles.writeText(fp, '', '\n')
-        VBFiles.writeText(fp, "set ArduinoLib=" & GetShortPath(M30.DelLast(M02a.Get_Ardu_LibDir())), '\n')
+        VBFiles.writeText(fp, "set ArduinoLib=" + GetShortPath(M30.DelLast(M02a.Get_Ardu_LibDir())), '\n')
         VBFiles.writeText(fp, 'if not exist MyPrivateBuildScript.cmd (', '\n')
         VBFiles.writeText(fp, '       REM embedded Fast Build and Upload', '\n')
         VBFiles.writeText(fp, '       call :build "' + M30.FilePath(Find_ArduinoExe()) + '" "LEDs_AutoProg.ino" ' + ComPort + ' "' + BuildOptOnly + '" 115200  "%ArduinoLib%" esp32 %*', '\n')
