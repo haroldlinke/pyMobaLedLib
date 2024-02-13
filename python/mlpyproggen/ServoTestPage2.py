@@ -158,11 +158,11 @@ class ServoTestPage2(tk.Frame):
      
         servo_direct_position_frame.columnconfigure(0, weight=1)
         
-        self.buttonservostop=tk.Label(servo_direct_position_frame, text="ENTER",width=15,height=4,fg="black",relief="raised",font=self.fontbutton)
+        self.buttonEnter=tk.Label(servo_direct_position_frame, text="ENTER",width=15,height=4,fg="black",relief="raised",font=self.fontbutton)
 
-        self.controller.ToolTip(self.buttonservostop, text="Enter")
-        self.buttonservostop.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event,code=0))
-        self.buttonservostop.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=0))        
+        self.controller.ToolTip(self.buttonEnter, text="Enter")
+        self.buttonEnter.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event,code=0))
+        self.buttonEnter.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=0))        
                 
 
         self.servo_pos_var = tk.DoubleVar()
@@ -226,115 +226,7 @@ class ServoTestPage2(tk.Frame):
         self.button_cancel_mm_pos_speed.grid(row=3, column=0, padx=5, pady=5, sticky='ew')
         
         self.servo_scale.grid(row=0,column=1,sticky="")
-        self.buttonservostop.grid(row=0,column=0,sticky="",padx=20, pady=10)  
-        #servo_set_pos_speed_frame.grid(row=1, column=0, pady=5, padx=5, sticky="")
-        
-        #servo_set_speed_frame.grid(row=3, column=1, pady=10, padx=10, sticky="e")
-        
-        # ------------------- buttons
-        show_buttons=False
-        if show_buttons:
-            button_frame = ttk.Frame(self.tab_frame,relief="ridge", borderwidth=2,width=500)
-        
-            label1 = ttk.Label(button_frame, text='(Only for testing\nStep 1 - Select Servo').grid(row=1, column=0, sticky='e',
-                                                     padx=4, pady=4)
-            
-            button1=ttk.Button(button_frame, text="T225 Sel Servo 1",width=20, command=lambda: self.servo_prog_button(code=225))
-            button1.grid(row=1, column=1, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button1, text="Taster1\n[CTRL-o]")
-    
-            button2=ttk.Button(button_frame, text="T230 Sel Servo 2",width=20, command=lambda: self.servo_prog_button(code=230))
-            button2.grid(row=1, column=2, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button2, text="Taster2")
-            
-            button3=ttk.Button(button_frame, text="T235 Sel Servo 3",width=20, command=lambda: self.servo_prog_button(code=235))
-            button3.grid(row=1, column=3, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button3, text="Taster1\n[CTRL-o]")
-    
-            label2 = ttk.Label(button_frame, text='Step 2 - Select Task').grid(row=2, column=0, sticky='e',
-                                                     padx=4, pady=4)
-    
-            button4=ttk.Button(button_frame, text="T240 Set Min/Max",width=20, command=lambda: self.servo_prog_button(code=240))
-            button4.grid(row=2, column=1, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button4, text="Taster2")
-            
-            button5=ttk.Button(button_frame, text="T245 Set Speed",width=20, command=lambda: self.servo_prog_button(code=245))
-            button5.grid(row=2, column=3, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button5, text="Taster1\n[CTRL-o]")
-    
-            button6=ttk.Button(button_frame, text="T250 Start",width=20, command=lambda: self.servo_prog_button(code=250))
-            button6.grid(row=3, column=2, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button6, text="Taster2")
-            
-    
-            label3 = ttk.Label(button_frame, text='Step 3 - Set Min').grid(row=4, column=0, sticky='e',
-                                                     padx=4, pady=4)
-            
-            label4 = ttk.Label(button_frame, text='Step 4 - Set Max').grid(row=5, column=0, sticky='e',
-                                                     padx=4, pady=4)
-    
-            button9=ttk.Button(button_frame, text="T9 (205) Next step",width=20, command=lambda: self.servo_prog_button(code=205))
-            button9.grid(row=5, column=1, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button9, text="Taster2")
-    
-            label5 = ttk.Label(button_frame, text='Step 5 - use <<,<,>,>> to Set Max').grid(row=6, column=0, sticky='e',
-                                                     padx=4, pady=4)
-    
-            label6 = ttk.Label(button_frame, text='Step 6 - Store Max').grid(row=7, column=0, sticky='e',
-                                                     padx=4, pady=4)
-            button9a=ttk.Button(button_frame, text="T205 Next step",width=20, command=lambda: self.servo_prog_button(code=205))
-            button9a.grid(row=7, column=1, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button9a, text="Taster2")
-    
-            label6 = ttk.Label(button_frame, text='Step 6 - save and end').grid(row=8, column=0, sticky='e',
-                                                     padx=4, pady=4)
-            button10=ttk.Button(button_frame, text="T254 Save",width=20, command=lambda: self.servo_prog_button(code=254))
-            button10.grid(row=8, column=1, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button10, text="Taster2")
-            
-            button11=ttk.Button(button_frame, text="T0 Back to normal",width=20, command=lambda: self.servo_prog_button(code=0))
-            button11.grid(row=9, column=1, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button10, text="Taster2")                    
-            
-            button12=ttk.Button(button_frame, text="T220 High Pos",width=20, command=lambda: self.servo_prog_button(code=220))
-            button12.grid(row=10, column=1, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button12, text="Taster2")
-            
-            button13=ttk.Button(button_frame, text="T10 Low Pos",width=20, command=lambda: self.servo_prog_button(code=10))
-            button13.grid(row=10, column=3, padx=10, pady=(10, 4), sticky='w')
-            self.controller.ToolTip(button13, text="Taster2")
-            
-            
-        set_button_frame = ttk.Frame(servo_program_frame, relief="flat", borderwidth=0)
-
-        button7=tk.Label(set_button_frame, text="Dec <<",width=15,fg="black",relief="raised",font=self.fontbutton)
-        button7.grid(row=4, column=1, padx=10, pady=(10, 4), sticky='w')
-        self.controller.ToolTip(button7, text="T60 Dec <<")
-        button7.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event))
-        button7.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=60))
-        
-        button7a=tk.Label(set_button_frame, text="Dec <",width=15,fg="black",relief="raised",font=self.fontbutton)
-        button7a.grid(row=4, column=2, padx=10, pady=(10, 4), sticky='w')
-        self.controller.ToolTip(button7a, text="T90 Dec <<")
-        button7a.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event))
-        button7a.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=90))        
-        
-        #button7b=ttk.Button(set_button_frame, text="Stop",width=15, command=lambda: self.servo_prog_button(code=100))
-        #button7b.grid(row=4, column=3, padx=10, pady=(10, 4), sticky='w')
-        #self.controller.ToolTip(button7b, text="T100 Stop")
-        
-        button8=tk.Label(set_button_frame, text="Inc >",width=15,fg="black",relief="raised",font=self.fontbutton)
-        button8.grid(row=4, column=3, padx=10, pady=(10, 4), sticky='w')
-        self.controller.ToolTip(button8, text="T110 Inc >")
-        button8.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event))
-        button8.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=110))
-        
-        button8a=tk.Label(set_button_frame, text="Inc >>",width=15,fg="black",relief="raised",font=self.fontbutton)
-        button8a.grid(row=4, column=4, padx=10, pady=(10, 4), sticky='w')
-        self.controller.ToolTip(button8a, text="T140 Dec <<")
-        button8a.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event))
-        button8a.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=140))               
-
+        self.buttonEnter.grid(row=0,column=0,sticky="",padx=20, pady=10)  
 
         # --- placement
         self.frame.grid(row=0,column=0)
@@ -351,14 +243,9 @@ class ServoTestPage2(tk.Frame):
         # tab_frame
         direct_control_frame.grid(row=1, rowspan=1, column=0, pady=0, padx=5, sticky="")
         servo_program_frame.grid(row=2, column=0, pady=0, padx=5,sticky="ew")
-        #if show_buttons:
-        #    button_frame.grid(row=3, column=0, pady=0, padx=5,sticky="ew")
-        #set_button_frame.grid(row=4, column=0, pady=0, padx=5,sticky="ew")
-        
+
         self.tab_frame.grid_columnconfigure(0,weight=1)
-        #self.tab_frame.grid_columnconfigure(1,weight=0)
-        #self.tab_frame.grid_columnconfigure(2,weight=0)
-        #self.tab_frame.grid_columnconfigure(3,weight=1)
+
         self.tab_frame.grid_rowconfigure(3,weight=1)                
 
         # --- bindings
@@ -376,12 +263,7 @@ class ServoTestPage2(tk.Frame):
             pass
         except:
             pass
-
-        #self.setConfigData("lastLed"     , self.v_servo_address.get())
-        #self.setConfigData("lastservo_channel", self.v_servo_channel.get())
-        #self.setParamData("Lednum"   , self.v_servo_address.get())
-        #self.setParamData("servo_control" , self.v_servo_channel.get())
-        
+       
     def tabselected(self):
         logging.debug("Tabselected: %s",self.tabname)
         #self.controller.currentTabClass = self.tabClassName
@@ -424,24 +306,7 @@ class ServoTestPage2(tk.Frame):
 
     def disconnect(self):
         pass
-            
-    @staticmethod
-    def _select_all_spinbox(event):
-        """Select all entry content."""
-        event.widget.selection('range', 0, 'end')
-        return "break"
 
-    @staticmethod
-    def _select_all_entry(event):
-        """Select all entry content."""
-        event.widget.selection_range(0, 'end')
-        return "break"
-
-    def _unfocus(self, event):
-        """Unfocus palette items when click on bar or square."""
-        w = self.focus_get()
-        if w != self and 'spinbox' not in str(w) and 'entry' not in str(w):
-            self.focus_set()
             
     def servo_scale_focus_set(self,event=None):
         self.servo_scale.focus_set()
@@ -466,20 +331,14 @@ class ServoTestPage2(tk.Frame):
             
     def _update_servo_position(self, position):
         position_int=int(position)
-        if position_int in range(1,Servo_Min): # Limit 
-            position_int = Servo_Min
         self.servo_position = position_int
 
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl")
-        self._update_servo_channel(servo_address, servo_control, position_int)
-        
-    def _update_servo_speed(self, event=None):
-        speed=self.v_speed_0.get()
-        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl")        
-        self._update_servos(servo_address, speed, speed, speed)
+        servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
+        if servo_control in [1, 2, 3]:
 
+            self._update_servo_channel(servo_address, servo_control, position_int)
+        
     def _get_servo_channel_code(self, servo_control):
         # select the right servo
         if servo_control == 0:
@@ -615,16 +474,18 @@ class ServoTestPage2(tk.Frame):
     # send code to Servo
         event.widget.config(relief="sunken")
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl")
+        servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
         servo_position = self.servo_position
-        self._update_servos(servo_address,servo_position,8+servo_control,0)
+        if servo_control in [2, 3]: # add input bit only for pos training
+            servo_control += 8 # set input bit
+        self._update_servos(servo_address,servo_position,servo_control,0)
         
     def servo_prog_label_released(self,event=None,code=100):
     # send code to Servo
         event.widget.config(relief="raised")
         servo_position = self.servo_position
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl")
+        servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
         self._update_servos(servo_address,servo_position,servo_control,0)
         
     def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):

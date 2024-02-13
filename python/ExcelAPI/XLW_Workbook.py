@@ -306,7 +306,7 @@ def Unload(UserForm):
 def ChDrive(srcdir):
     #print("ChDrive:", srcdir)
     
-    if checkplatform=="Windows":
+    if checkplatform("Windows"):
         drive = srcdir[0:2]
         os.chdir(drive)
     return
