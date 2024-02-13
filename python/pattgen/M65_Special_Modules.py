@@ -1,5 +1,6 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
+from tkinter import filedialog
 import ExcelAPI.XLW_Workbook as X02
 import pattgen.M09_Language as M09
 import pattgen.M30_Tools as M30
@@ -120,6 +121,12 @@ def Create_Set_Fuses_Cmd_file(ResultName, Mode, DstDir):
         ClockTxt = '\'16 MHz (PLL)\''
         BODTxt = '\'B.O.D. Enabled (2.7V)\''
         # 04.08.20:
+    elif (_select57 == '16MHz, BOD 2.7V, Eckhart'):
+        LFuse = '0xE1'
+        HFuse = '0xD5'
+        ClockTxt = '\'16 MHz (PLL)\''
+        BODTxt = '\'B.O.D. Enabled (2.7V) Eckhart\''
+        # 04.08.20:        
     else:
         X02.MsgBox('Undefined Mode ')
         # & Mode & "' in 'Create_Set_Fuses_Cmd_file()'", vbCritical, "Internal Error"
@@ -173,9 +180,11 @@ def Create_Set_Fuses_Cmd_file(ResultName, Mode, DstDir):
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')
     # 07.08.20:
+    VBFiles.writeText(fp, '    ECHO *******************************************************************', '\n')
     VBFiles.writeText(fp, '    ECHO Error settung the fuses ;-(', '\n')
     VBFiles.writeText(fp, '    ECHO Starting second try', '\n')
-    VBFiles.writeText(fp, '    timeout /T 3 /nobreak', '\n')
+    VBFiles.writeText(fp, '    ECHO *******************************************************************', '\n')
+    #VBFiles.writeText(fp, '    timeout /T 3 /nobreak', '\n')
     VBFiles.writeText(fp, '    "' + Avrdude + '" ^', '\n')
     VBFiles.writeText(fp, '        "-C' + Avrdude_conf + '"  ^', '\n')
     VBFiles.writeText(fp, '        -v -pattiny85 -cstk500v1 -P%ComPort% -b19200 ^', '\n')
@@ -183,18 +192,21 @@ def Create_Set_Fuses_Cmd_file(ResultName, Mode, DstDir):
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '   )', '\n')
     VBFiles.writeText(fp, '', '\n')
-    VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')
+    
+    #VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')
     # 07.08.20:
-    VBFiles.writeText(fp, '    ECHO Error settung the fuses ;-(((', '\n')
-    VBFiles.writeText(fp, '    ECHO Starting third try', '\n')
-    VBFiles.writeText(fp, '    timeout /T 3 /nobreak', '\n')
-    VBFiles.writeText(fp, '    "' + Avrdude + '" ^', '\n')
-    VBFiles.writeText(fp, '        "-C' + Avrdude_conf + '"  ^', '\n')
-    VBFiles.writeText(fp, '        -v -pattiny85 -cstk500v1 -P%ComPort% -b19200 ^', '\n')
-    VBFiles.writeText(fp, '        -Uefuse:w:0xFF:m -Uhfuse:w:' + HFuse + ':m -Ulfuse:w:' + LFuse + ':m', '\n')
-    VBFiles.writeText(fp, '', '\n')
-    VBFiles.writeText(fp, '   )', '\n')
-    VBFiles.writeText(fp, '', '\n')
+    #VBFiles.writeText(fp, '   ******************************************************************************************', '\n')
+    #VBFiles.writeText(fp, '    ECHO Error settung the fuses ;-(((', '\n')
+    #VBFiles.writeText(fp, '    ECHO Starting third try', '\n')
+    #VBFiles.writeText(fp, '   ******************************************************************************************', '\n')
+    #VBFiles.writeText(fp, '    timeout /T 3 /nobreak', '\n')
+    #VBFiles.writeText(fp, '    "' + Avrdude + '" ^', '\n')
+    #VBFiles.writeText(fp, '        "-C' + Avrdude_conf + '"  ^', '\n')
+    #VBFiles.writeText(fp, '        -v -pattiny85 -cstk500v1 -P%ComPort% -b19200 ^', '\n')
+    #VBFiles.writeText(fp, '        -Uefuse:w:0xFF:m -Uhfuse:w:' + HFuse + ':m -Ulfuse:w:' + LFuse + ':m', '\n')
+    #VBFiles.writeText(fp, '', '\n')
+    #VBFiles.writeText(fp, '   )', '\n')
+    #VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')
     VBFiles.writeText(fp, '   REM White on RED', '\n')
     VBFiles.writeText(fp, '   COLOR 4F', '\n')
@@ -204,6 +216,7 @@ def Create_Set_Fuses_Cmd_file(ResultName, Mode, DstDir):
     VBFiles.writeText(fp, '   ECHO   *********************************************', '\n')
     VBFiles.writeText(fp, '   Pause', '\n')
     VBFiles.writeText(fp, '   )', '\n')
+    VBFiles.writeText(fp, 'Pause', '\n')
     VBFiles.closeFile(fp)
     # VB2PY (UntranslatedCode) On Error GoTo 0
     _fn_return_value = Name
@@ -218,8 +231,8 @@ def Test_Create_Set_Fuses_Cmd_file():
     Debug.Print(Create_Set_Fuses_Cmd_file(ResultName, '16MHz, BOD 2.7V', Replace(PG.ThisWorkbook.Path, 'extras', 'examples\\80.Modules\\02.CharlieplexTiny\\')))
 
 def Write_Fuses(ComPort, Mode, DstDir):
-    _fn_return_value = None
-    ResFile = String()
+    _fn_return_value = False
+    ResFile = "Write_Fuses_Result.txt"
 
     CommandStr = String()
 
@@ -231,10 +244,9 @@ def Write_Fuses(ComPort, Mode, DstDir):
         ChDir(M30.FilePath(CommandStr))
         #Res = M40.ShellAndWait(CommandStr + ' ' + ComPort, 0, vbNormalFocus, PromptUser)
         ProgGen.global_controller.disconnect()
-        ProgGen.dialog_parent.start_ARDUINO_program_cmd(CommandStr + ' ' + str(ComPort),arduino_type="Tiny") #*HL
-        Res = M40.Success
+        res = ProgGen.dialog_parent.start_ARDUINO_program_cmd(CommandStr + ' ' + str(ComPort),arduino_type="Tiny") #*HL
         # No timeout to be able to study the results in case of an error
-        _select58 = Res
+        _select58 = res
         if (_select58 == M40.Success) or (_select58 == M40.Timeout):
             # No additional error message. They have been shown in the DOS box
             pass
@@ -252,7 +264,7 @@ def Test_Write_Fuses_if_Wanted():
     # Write_Fuses "\\.\COM7", " 8MHz, BOD 2.7V", Replace(ThisWorkbook.Path, "extras", "examples\80.Modules\02.CharlieplexTiny\")
 
 def Compile_and_Upload(SrcDir, InoName, CommandStr, ResFile):
-    _fn_return_value = None
+    _fn_return_value = False
     Res = 0
 
     Start = Variant()
@@ -427,7 +439,7 @@ def Prog_Charlieplex():
         WorkDir = PG.ThisWorkbook.Path
     else:
         WorkDir = M01a.Get_SrcDirInLib()
-    WorkDir = Replace(WorkDir, 'Extras', 'examples\\80.Modules\\02.CharlieplexTiny\\', Compare= X01.vbTextCompare)
+    WorkDir = Replace(WorkDir, 'extras', 'examples\\80.Modules\\02.CharlieplexTiny\\', Compare= X01.vbTextCompare)
     if Compile_and_Upload_Prog_to_ATTiny('02.CharlieplexTiny.ino', WorkDir, '16MHz, BOD 2.7V'):
         # COMPrtT_COL,
         # 05.06.20: Removed: COMPrtT_COL
@@ -469,7 +481,7 @@ def Prog_Servo():
         WorkDir = PG.ThisWorkbook.Path
     else:
         WorkDir = M01a.Get_SrcDirInLib()
-    WorkDir = Replace(WorkDir, 'Extras', 'examples\\80.Modules\\01.ATTiny85_Servo\\', Compare= X01.vbTextCompare)
+    WorkDir = Replace(WorkDir, 'extras', 'examples\\80.Modules\\01.ATTiny85_Servo\\', Compare= X01.vbTextCompare)
     _select61 = X02.MsgBox(M09.Get_Language_Str('Bei der Servo Platine der Version 1.0 hat sich ein Fehler bei der Pin Definition des SMD WS2811 eingeschlichen ;-(' + vbCr + 'Das führt dazu, das der rote und grüne Kanal vertauscht sind.' + vbCr + vbCr + 'Korrektur der SMD WS2811 Pins?' + vbCr + vbCr + 'Ja:' + vbCr + 'Wenn die Platine vom 14.6.19 ist UND ein SMD WS2811 bestückt wurde' + vbCr + 'Nein:' + vbCr + 'Bei einer neueren Platine oder wenn ein DIL WS2811 verwendet wird'), vbQuestion + vbYesNoCancel, M09.Get_Language_Str('Korrektur der SMD WS2811 Pins?'))
     if (_select61 == vbCancel):
         return
@@ -484,6 +496,192 @@ def Prog_Servo():
         # 04.08.20: Old: " 8MHz, BOD 2.7V", " 8MHz, BOD 2.7V, RstAsIO"
         X02.MsgBox(M09.Get_Language_Str('Das "Betriebssystem" des Servo Moduls wurde erfolgreich programmiert.' + vbCr + 'Dieser Schritt ist nur ein mal pro Platine nötig.' + vbCr + 'Als nächstes sollten die Endpositionen und die Geschwindigkeiten eingestellt werden.' + vbCr + 'Das kann mit zwei verschiednen Programmen gemacht werden:' + vbCr + '- das Arduino Programm "01.Servo_Pos"' + vbCr + '- das "Farbtest" Programm von Harold (\'Prog_Generator\' Menü)"'), vbInformation, M09.Get_Language_Str('Programm erfolgreich zum ATTiny übertragen'))
 
+def Prog_Servo_2():
+    WorkDir = String()
+
+    #----------------------
+    PG.ThisWorkbook.Activate()
+    if LCase(Right(PG.ThisWorkbook.Path, Len('extras'))) == 'extras':
+        WorkDir = PG.ThisWorkbook.Path
+    else:
+        WorkDir = M01a.Get_SrcDirInLib()
+    WorkDir = Replace(WorkDir, 'extras', 'examples\\80.Modules\\04.ATTiny85_Servo2', Compare= X01.vbTextCompare)
+    
+    hexfile_name =  "RailMail-TinyServo.hex"
+    
+    if Dir(WorkDir + hexfile_name) == '':
+        # ask for filename - makefile or hexfile_name
+        
+        filenameandpath = filedialog.askopenfilename(filetypes=[("hex-File","*.hex"), ("makefile","makefile")])
+        if not filenameandpath:
+            return
+        if not os.path.exists(filenameandpath):
+            #print ('file does not exist')
+            return        
+        filepath,filename = os.path.split(filenameandpath) 
+        WorkDir = filepath
+        
+        if filename.lower() == "makefile":
+            # compile first
+            X02.ChDrive(WorkDir)
+            ChDir(WorkDir)
+            ProgGen.dialog_parent.start_ARDUINO_program_cmd("make servo",arduino_type="Tiny")
+            Res = M40.Success 
+            hexfile_name =  "RailMail-TinyServo.hex"
+        else:
+            hexfile_name = filename
+    if Dir(WorkDir + "/"+ hexfile_name) == '':
+        return
+    X02.ChDrive(WorkDir)
+    ChDir(WorkDir)    
+    
+    ComPortColumn = M01.COMPrtT_COL
+    # , ComPortColumn As Long
+    # 05.06.20: Removed: ComPortColumn because it was always set to COMPrtT_COL
+    #--------------------------------------------------------------------------------------------------------------------------------------------
+    # 07.08.20: Disabled
+
+    if Check_If_Arduino_could_be_programmed_PatGen() == False:
+        return
+    # 05.06.20:
+    # 07.08.20: Moved down
+    ComPort = Get_COMPortStr(ComPortColumn)
+    if Write_Fuses(ComPort, '16MHz, BOD 2.7V, Eckhart', WorkDir) == False:
+        return  
+    X03.Sleep(1000)
+
+    if Upload_HEX_to_ATTiny(ComPort, hexfile_name, WorkDir):
+        # 05.06.20: Removed: COMPrtT_COL
+        # 04.08.20: Old: " 8MHz, BOD 2.7V", " 8MHz, BOD 2.7V, RstAsIO"
+        X02.MsgBox(M09.Get_Language_Str('Das "Betriebssystem" des Servo Moduls wurde erfolgreich programmiert.' + vbCr + 'Dieser Schritt ist nur ein mal pro Platine nötig.' + vbCr + 'Als nächstes sollten die Endpositionen und die Geschwindigkeiten eingestellt werden.' + vbCr + 'Das kann mit zwei verschiednen Programmen gemacht werden:' + vbCr + '- das Arduino Programm "01.Servo_Pos"' + vbCr + '- das "Farbtest" Programm von Harold (\'Prog_Generator\' Menü)"'), vbInformation, M09.Get_Language_Str('Programm erfolgreich zum ATTiny übertragen'))
+
+def Upload_HEX_to_ATTiny(ComPort, Hexfilename, DstDir):
+    _fn_return_value = None
+    ResFile = "Upload_Hex_result.txt"
+
+    CommandStr = String()
+
+    #Res = ShellAndWaitResult()
+    #-------------------------------------------------------------------------------------------
+    CommandStr = Create_upload_hex_Cmd_file(ResFile, Hexfilename, DstDir)
+    if CommandStr != '':
+        X02.ChDrive(CommandStr)
+        ChDir(M30.FilePath(CommandStr))
+        #Res = M40.ShellAndWait(CommandStr + ' ' + ComPort, 0, vbNormalFocus, PromptUser)
+        ProgGen.global_controller.disconnect()
+        ProgGen.dialog_parent.start_ARDUINO_program_cmd(CommandStr + ' ' + str(ComPort),arduino_type="Tiny") #*HL
+        Res = M40.Success
+        # No timeout to be able to study the results in case of an error
+        _select58 = Res
+        if (_select58 == M40.Success) or (_select58 == M40.Timeout):
+            # No additional error message. They have been shown in the DOS box
+            pass
+        else:
+            X02.MsgBox(M09.Get_Language_Str('Fehler ') + str(Res) + M09.Get_Language_Str(' beim starten des Arduino Programms \'') + CommandStr + '\'', vbCritical, M09.Get_Language_Str('Fehler beim starten des Arduino programms'))
+        if Dir(ResFile) != '':
+            X02.MsgBox(M09.Get_Language_Str('Es ist ein Fehler beim setzen der Fuses aufgetreten ;-(' + vbCr + vbCr + 'Falls die blaue \'Reset as IOPin\' LED am Tiny_UniProg leuchtet, dann muss ' + 'die rechte Taste (\'Cng Reset Pin\') am Tiny_UniProc für eine Sekunde gedückt werden. ' + 'Damit wird der Reset Pin wieder aktiviert.' + vbCr + 'Wenn die Taste länger als 3 Sekunden gehalten wird, dann wird der Pin zum Ein/Ausgang umprogrammiert.' + vbCr + 'Das erkennt man an der blauen LED. Dieser Modus wird z.B. bei der Servo Platine benötigt.' + vbCr + vbCr + 'Wenn der Fehler immer wieder auftritt, dann kann ein Screenshot des ' + 'vorangegangenen Bildschirms zusammen mit einer ausführlichen Beschreibung an ' + vbCr + '  MobaLedLib@gmx.de' + vbCr + 'geschickt werden.'), vbInformation, M09.Get_Language_Str('Fehler schreiben der Fuses'))
+            return _fn_return_value
+        _fn_return_value = True
+    return _fn_return_value
+
+def Create_upload_hex_Cmd_file(ResultName, hexfile_name, DstDir):
+    _fn_return_value = None
+    Avrdude = String()
+    Avrdude_conf = String()
+    fp = Integer()
+
+    Name = String()
+    #-----------------------------------------------------------------------------------------------------------
+    if ResultName == '':
+        ResultName = 'Upload_Hex_Result.txt'
+    if Dir(ResultName) != '':
+        Kill(ResultName)
+    Avrdude = Find_Avrdude()
+    if Avrdude == '':
+        return _fn_return_value
+    Avrdude_conf = Find_Avrdude_conf()
+    if Avrdude_conf == '':
+        return _fn_return_value
+
+    fp = FreeFile()
+    Name = DstDir + "/" + 'upload_hex.cmd'
+    # VB2PY (UntranslatedCode) On Error GoTo WriteError
+    VBFiles.openFile(fp, Name, 'w') 
+    VBFiles.writeText(fp, '@ECHO OFF', '\n')
+    VBFiles.writeText(fp, 'REM This file was generated by \'' + PG.ThisWorkbook.Name + '\'  ' + str(X02.Time()), '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '@ECHO OFF', '\n')
+    VBFiles.writeText(fp, 'REM Upload hex-file to  ATTiny', '\n')
+    VBFiles.writeText(fp, 'REM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~', '\n')
+    VBFiles.writeText(fp, 'REM', '\n')
+    VBFiles.writeText(fp, 'REM   Hex-File:              ' + hexfile_name, '\n')
+    VBFiles.writeText(fp, 'REM', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'REM Schwarz auf Ocker', '\n')
+    VBFiles.writeText(fp, 'COLOR 60', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, Replace(M09.Get_Language_Str('ECHO Hochladen Hexfile fuer den ATTiny') + vbCr + 'ECHO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~' + vbCr + M09.Get_Language_Str('ECHO Der ATTiny85 muss dazu in die Tiny_UniProg Platine gesteckt sein.' + vbCr + 'ECHO Dieser Vorgang muss nur ein mal gemacht werden. Danach wird nur noch die geaenderte' + vbCr + 'ECHO Konfiguration vom Pattern_Configuartor aus zum ATTiny geschickt.'), vbCr, vbCrLf), '\n')
+    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'SET DefaultPort=5', '\n')
+    VBFiles.writeText(fp, 'SET ComPort=%1', '\n')
+    VBFiles.writeText(fp, 'IF NOT "%ComPort%" == "" Goto PortIsSet', '\n')
+    VBFiles.writeText(fp, '   SET /P PortNr=COM port Nummer an den der Tiny_UniProg angeschlossen ist [%DefaultPort%]:', '\n')
+    VBFiles.writeText(fp, '   IF "%PortNr%" == "" SET PortNr=%DefaultPort%', '\n')
+    VBFiles.writeText(fp, '   SET ComPort=\\\\.\\COM%PortNr%', '\n')
+    VBFiles.writeText(fp, ':PortIsSet', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '"' + Avrdude + '" ^', '\n')
+    VBFiles.writeText(fp, '    "-C' + Avrdude_conf + '"  ^', '\n')
+    # Print #fp, "    -v -pattiny85 -cstk500v1 -P%ComPort% -b19200 -e ^"
+    VBFiles.writeText(fp, '    -v -pattiny85 -c avrisp -P%ComPort% -b19200 ^', '\n')
+    # 24.07.20: Removed chip erase: -e
+    VBFiles.writeText(fp, '    -U flash:w:' + hexfile_name + ':i', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    #Print #fp, "ECHO avrdude result: %ERRORLEVEL%"
+    #Print #fp, "Pause"
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')
+    # 07.08.20:
+    VBFiles.writeText(fp, '    ECHO Error hochladen ;-(', '\n')
+    VBFiles.writeText(fp, '    ECHO Starting second try', '\n')
+    #VBFiles.writeText(fp, '    timeout /T 3 /nobreak', '\n')
+    VBFiles.writeText(fp, '    "' + Avrdude + '" ^', '\n')
+    VBFiles.writeText(fp, '        "-C' + Avrdude_conf + '"  ^', '\n')
+    VBFiles.writeText(fp, '        -v -pattiny85 -c avrisp  -P%ComPort% -b19200 ^', '\n')
+    VBFiles.writeText(fp, '        -U flash:w:' + hexfile_name + ':i', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '   )', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')
+    # 07.08.20:
+    VBFiles.writeText(fp, '    ECHO Error setting the fuses ;-(((', '\n')
+    VBFiles.writeText(fp, '    ECHO Starting third try', '\n')
+    #VBFiles.writeText(fp, '    timeout /T 3 /nobreak', '\n')
+    VBFiles.writeText(fp, '    "' + Avrdude + '" ^', '\n')
+    VBFiles.writeText(fp, '        "-C' + Avrdude_conf + '"  ^', '\n')
+    VBFiles.writeText(fp, '        -v -pattiny85 -c avrisp -P%ComPort% -b19200 ^', '\n')
+    VBFiles.writeText(fp, '        -Uflash:w:' + hexfile_name + ':i', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '   )', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')
+    VBFiles.writeText(fp, '   REM White on RED', '\n')
+    VBFiles.writeText(fp, '   COLOR 4F', '\n')
+    VBFiles.writeText(fp, '   ECHO Set_Fuses Result: %ERRORLEVEL% > "' + ResultName + '"', '\n')
+    VBFiles.writeText(fp, '   ECHO   *********************************************', '\n')
+    VBFiles.writeText(fp, '   ECHO  ' + M09.Get_Language_Str('* Da ist was schief gegangen ;-(            *') + '              ERRORLEVEL %ERRORLEVEL%', '\n')
+    VBFiles.writeText(fp, '   ECHO   *********************************************', '\n')
+    VBFiles.writeText(fp, '   Pause', '\n')
+    VBFiles.writeText(fp, '   )', '\n')
+    VBFiles.closeFile(fp)
+    # VB2PY (UntranslatedCode) On Error GoTo 0
+    _fn_return_value = Name
+    return _fn_return_value
+
+
 def Prog_ServoMP3():
     WorkDir = String()
 
@@ -494,7 +692,7 @@ def Prog_ServoMP3():
         WorkDir = PG.ThisWorkbook.Path
     else:
         WorkDir = M01a.Get_SrcDirInLib()
-    WorkDir = Replace(WorkDir, 'Extras', 'examples\\80.Modules\\03.ATTiny85_Sound\\', Compare= X01.vbTextCompare)
+    WorkDir = Replace(WorkDir, 'extras', 'examples\\80.Modules\\03.ATTiny85_Sound\\', Compare= X01.vbTextCompare)
     _select62 = X02.MsgBox(M09.Get_Language_Str('Bei der Servo Platine der Version 1.0 hat sich ein Fehler bei der Pin Definition des SMD WS2811 eingeschlichen ;-(' + vbCr + 'Das führt dazu, das der rote und grüne Kanal vertauscht sind.' + vbCr + vbCr + 'Korrektur der SMD WS2811 Pins?' + vbCr + vbCr + 'Ja:' + vbCr + 'Wenn die Platine vom 14.6.19 ist UND ein SMD WS2811 bestückt wurde' + vbCr + 'Nein:' + vbCr + 'Bei einer neueren Platine oder wenn ein DIL WS2811 verwendet wird'), vbQuestion + vbYesNoCancel, M09.Get_Language_Str('Korrektur der SMD WS2811 Pins?'))
     if (_select62 == vbCancel):
         return

@@ -162,6 +162,14 @@ def Prog_Servo_Button_Click():
     #'# VB2PY (CheckDirective) VB2PY directive Ignore Text
     #End If
 
+def Prog_Servo_2_Button_Click():
+    #------------------------------------
+    #If GetAsyncKeyState(VK_CONTROL) <> 0 Then
+    # 15.04.20: Disabled
+    pattgen.M65_Special_Modules.Prog_Servo_2()
+    #'# VB2PY (CheckDirective) VB2PY directive Ignore Text
+    #End If
+
 def Close3Button_Click():
     # 02.06.20: Misha
     #-------------------------------
@@ -314,7 +322,17 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                                                                       {"Name": "Prog_ServoMP3_Button","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                                                                                        "Caption": "Prog.Servo/MP3",
                                                                                                        "Command": Prog_ServoMP3_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 12,"Type": "CommandButton","Visible": True,"Width": 72},
-                                                                                                      ]}
+                                                                                                      ]},
+                                                                                  {"Name": "Page6",
+                                                                                   "Caption":"Servo 2",
+                                                                                   "Type": "Page","Visible": True,
+                                                                                   "Components"    : [{"Name": "Label64","BackColor": "#00000F","BorderColor": "#000006","BorderStyle"   : "fmBorderStyleNone",
+                                                                                                       "Caption": "Neue Servo Firmware von Eckhart\n\nDas Servo Modul kann bis zu 3 Servos ansteuern.\n\nZur Programmierung des ATTiny85 wird ein Programmieradapter benötigt (siehe oben) in der der ATTiny eingesteckt wird.\n\nAchtung: Die Software für das Servo Modul ist noch in der Entwicklung.",
+                                                                                                       "ControlTipText": "","ForeColor": "#000012", "Height": 96,"Left": 84,"TextAlign": "fmTextAlignLeft","Top": 12,"Type": "Label","Visible": True,"Width": 264},
+                                                                                                      {"Name": "Prog_Servo2_Button","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
+                                                                                                       "Caption": "Prog. Servo 2",
+                                                                                                       "Command": Prog_Servo_2_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 12,"Type": "CommandButton","Visible": True,"Width": 72}
+                                                                                                      ]},                                                                                  
                                                                                   ]}
                                                                ]},
                                            {"Name": "Page3",

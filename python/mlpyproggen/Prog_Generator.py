@@ -686,9 +686,9 @@ class Prog_GeneratorPage(tk.Frame):
         
         self.controller.showFramebyName("ARDUINOMonitorPage")
         
-        self.execute_shell_cmd(startfile,"Upload started")
+        res = self.execute_shell_cmd(startfile,"Upload started")
         self.Stop_Compile_Time_Display()
-        return 
+        return res
     
         try:
             self.process = subprocess.Popen(startfile, stdout=subprocess.PIPE,stderr=subprocess.STDOUT,stdin = subprocess.DEVNULL,shell=True)
@@ -757,7 +757,7 @@ class Prog_GeneratorPage(tk.Frame):
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")            
-        
+            return M40.Failure
         return rc
             
     def start_ARDUINO_program_Popen(self):

@@ -151,7 +151,10 @@ class DCCKeyboardPage(tk.Frame):
         
         # create buttons
         
-        base_address = int(self.controller.get_macroparam_val(self.tabClassName, "DCC BaseAddress"))
+        try:
+            base_address = int(self.controller.get_macroparam_val(self.tabClassName, "DCC BaseAddress"))
+        except:
+            base_address = 0
         row = 0
         in_button_frame =  ttk.Frame(self.main_frame, relief="ridge", borderwidth=1)
         self.buttonlist = []
