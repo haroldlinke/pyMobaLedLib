@@ -38,9 +38,9 @@ from vb2py.vbconstants import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter.font import Font
-#from PIL import Image, ImageTk
+# fromx PIL import Image, ImageTk
 import uuid
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import proggen.M02_Public as M02
 import proggen.M03_Dialog as M03
@@ -64,12 +64,13 @@ import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
+import mlpyproggen.Prog_Generator as PG
 
 #import proggen.D09_StatusMsg_Userform as D09
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 STD_FONT = ("SANS_SERIF",10)
 
@@ -96,7 +97,7 @@ class SelectMacrosTreeform:
     def ok(self, event=None):
         self.IsActive = False
         self.Select_Button_Click()
-        #self.Userform_res = value
+        #self.Userform_res = ""
         self.top.destroy()
         self.res = True
  
@@ -121,8 +122,8 @@ class SelectMacrosTreeform:
         
         self.entry1 = tk.Entry(self.top,width=10,textvariable=self.entry1_input)
         self.ActLanguage = M09.Get_ExcelLanguage()
+       
         
-        self.top.grab_set()
         
         self.top.resizable(False, False)  # This code helps to disable windows from resizing
         
@@ -192,9 +193,9 @@ class SelectMacrosTreeform:
                     icon=value[1]
                     row = value[2]
                     if icon:
-                        Tree.insert(Parent, 'end', uid, text=key,value=(description,str(row)),image=icon,tags=(str(row)))
+                        Tree.insert(Parent, 'end', uid, text=key,value=(description,str(row)),image=icon,tags=("node"))
                     else:
-                        Tree.insert(Parent, 'end', uid, text=key,value=(description,str(row)),tags=(str(row)))
+                        Tree.insert(Parent, 'end', uid, text=key,value=(description,str(row)),tags=("node"))
                     key_width = self.std_font.measure(key+"      ")
                     self.max_key_width = max(key_width, self.max_key_width)                
                     self.CreateMacroTree(Tree, uid, Filter, Dictionary[key])
@@ -233,7 +234,7 @@ class SelectMacrosTreeform:
         #record = item['#0']
         # show a message
         #print("click item:",item)
-        Sh = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+        Sh = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
         Key = item["values"][1] #val(Split(with_8.key, ' ')(0))
         self.ActKey = Key
         Row = P01.val(Split(Key, ' ')(0))
@@ -322,7 +323,7 @@ class SelectMacrosTreeform:
             #print("item_selected:",item)
             #showinfo(title='Information', message=','.join(record))
             
-            Sh = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+            Sh = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
             
             Key = item["values"][1] #val(Split(with_8.key, ' ')(0))
             self.ActKey = Key
@@ -376,7 +377,7 @@ class SelectMacrosTreeform:
             PicNamesArr[i] = M30.NoExt(Trim(PicNamesArrInp(i)))
         iconimagename = PicNamesArrInp[len(PicNamesArrInp)-1]
         if iconimagename !="":
-            iconfilename = P01.ThisWorkbook.pyProgPath + '/' + "icons/"+Trim(iconimagename)+".png"
+            iconfilename = PG.ThisWorkbook.pyProgPath + '/' + "icons/"+Trim(iconimagename)+".png"
             #pic1 = Image.open(iconfilename)           # Open the image like this first
             Debug.Print("MacroTree-addNode - iconFilename:"+iconfilename)
             self.pic2 = tk.PhotoImage(file=iconfilename)      # Then with PhotoImage. NOTE: self.root_pic2 =     and not     root_pic2 =
@@ -391,7 +392,7 @@ class SelectMacrosTreeform:
                 cur_dict_group = cur_dict.get(group,None)
                 if cur_dict_group==None:
                     cur_dict_group=cur_dict
-                    cur_dict[group]={"*"+group: (Description,self.pic2,str(Row))}
+                    cur_dict[group]={"*"+group: (Description,self.pic2,str(0))}
                     break
                 else:
                     cur_dict = cur_dict_group
@@ -431,7 +432,7 @@ class SelectMacrosTreeform:
         #if not __mcTree is None:
         #    __mcTree.NodesClear()
             #Some Treeview properties are retained for another session
-        ListDataSh = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+        ListDataSh = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
         Debug_Language = -1 #ListDataSh.Range('Test_Language')
         if Debug_Language == - 1:
             self.ActLanguage = M09.Get_ExcelLanguage()
@@ -576,7 +577,7 @@ class SelectMacrosTreeform:
         #-----------------------------------------
         #Debug.Print "mcTree_Click " & cNode.Key
         with_8 = cNode
-        Sh = ThisWorkbook.Sheets(LIBMACROS_SH)
+        Sh = PG.ThisWorkbook.Sheets(LIBMACROS_SH)
         __ActKey = with_8.key
         Row = val(Split(with_8.key, ' ')(0))
         Desc = Replace(Sh.Cells(Row, SM_DetailCOL + __ActLanguage * DeltaCol_Lib_Macro_Lang), '|', vbLf)
@@ -651,17 +652,17 @@ class SelectMacrosTreeform:
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: KeyAscii - ByVal 
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Shift - ByVal 
     def __Expert_CheckBox_KeyUp(KeyAscii, Shift):
-        __Send_Letters_to_TextBoxFilter()(KeyAscii, Shift)
+        __Send_Letters_to_TextBoxFilter(KeyAscii, Shift)
     
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: KeyAscii - ByVal 
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Shift - ByVal 
     def __Abort_Button_KeyUp(KeyAscii, Shift):
-        __Send_Letters_to_TextBoxFilter()(KeyAscii, Shift)
+        __Send_Letters_to_TextBoxFilter(KeyAscii, Shift)
     
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: KeyAscii - ByVal 
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Shift - ByVal 
     def __Select_Button_KeyUp(KeyAscii, Shift):
-        __Send_Letters_to_TextBoxFilter()(KeyAscii, Shift)
+        __Send_Letters_to_TextBoxFilter(KeyAscii, Shift)
     
     def Calc_SelectMacro_Res(self):
         Res = String()
@@ -671,7 +672,7 @@ class SelectMacrosTreeform:
         # Return the name and the row number in the ListDataSheet
         if self.ActKey != '' and IsNumeric(self.ActKey):
             Row = P01.val(self.ActKey)
-            with_9 = P01.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
+            with_9 = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
             Res = with_9.Cells(Row, M02.SM_Name__COL) + ',' + str(Row)
             self.Last_SelectedNr_Valid = True
             self.Last_SelectedNr = Row
@@ -703,13 +704,13 @@ class SelectMacrosTreeform:
     def __Expert_CheckBox_Click():
         #----------------------------------
         if not __InitializeTreeFrom_Activ:
-            __InitializeTreeFrom_Lib_Macros_Sheet()(TextBoxFilter.Value)
+            __InitializeTreeFrom_Lib_Macros_Sheet(TextBoxFilter.Value)
             M28.Set_String_Config_Var('Expert_Mode_aktivate', IIf(Expert_CheckBox, '1', '0'))
     
     def Update_TextBoxFilter():
         #---------------------------------
         if not __InitializeTreeFrom_Activ:
-            __InitializeTreeFrom_Lib_Macros_Sheet()(TextBoxFilter.Value)
+            __InitializeTreeFrom_Lib_Macros_Sheet(TextBoxFilter.Value)
     
     def __TextBoxFilter_Change():
         #---------------------------------
@@ -775,7 +776,7 @@ class SelectMacrosTreeform:
         Debug.Print("searchTree")
 
         selections = self.tree.tag_has(str(searchvalue))
-        print(searchvalue, selections)
+        #print(searchvalue, selections)
         
         #for child in self.tree.get_children():
             #print(self.tree.item(child)['values'])

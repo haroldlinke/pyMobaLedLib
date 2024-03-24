@@ -38,7 +38,7 @@ from vb2py.vbconstants import *
 import tkinter as tk
 from tkinter import ttk
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import proggen.M02_Public as M02
 import proggen.M03_Dialog as M03
@@ -63,8 +63,8 @@ import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 house_button_list_str = 'ROOM_DARK,ROOM_BRIGHT,ROOM_WARM_W,ROOM_RED,ROOM_D_RED,NL,ROOM_COL0,ROOM_COL1,ROOM_COL2,ROOM_COL3,ROOM_COL4,ROOM_COL5,ROOM_COL345,NL,FIRE,FIRED,FIREB,ROOM_CHIMNEY,ROOM_CHIMNEYD,ROOM_CHIMNEYB,NL,ROOM_TV0,ROOM_TV0_CHIMNEY,ROOM_TV0_CHIMNEYD,ROOM_TV0_CHIMNEYB,ROOM_TV1,ROOM_TV1_CHIMNEY,ROOM_TV1_CHIMNEYD,ROOM_TV1_CHIMNEYB,NL,NEON_LIGHT,NEON_LIGHT1,NEON_LIGHT2,NEON_LIGHT3,NEON_LIGHTD,NEON_LIGHT1D,NEON_LIGHT2D,NEON_LIGHT3D,NL,NEON_LIGHTM,NEON_LIGHT1M,NEON_LIGHT2M,NEON_LIGHT3M,NEON_LIGHTL,NEON_LIGHT1L,NEON_LIGHT2L,NEON_LIGHT3L,NL,NEON_DEF_D,NEON_DEF1D,NEON_DEF2D,NEON_DEF3D,CANDLE,CANDLE1,CANDLE2,CANDLE3,NL,SINGLE_LED1,SINGLE_LED2,SINGLE_LED3,SINGLE_LED1D,SINGLE_LED2D,SINGLE_LED3D,NL,GAS_LIGHT,GAS_LIGHT1,GAS_LIGHT2,GAS_LIGHT3,GAS_LIGHTD,GAS_LIGHT1D,GAS_LIGHT2D,GAS_LIGHT3D,NL,SKIP_ROOM,SKIP_ROOM'
 gaslights_button_list_str = 'NEON_LIGHT,NEON_LIGHT1,NEON_LIGHT2,NEON_LIGHT3,NEON_LIGHTD,NEON_LIGHT1D,NEON_LIGHT2D,NEON_LIGHT3D,NL,NEON_LIGHTM,NEON_LIGHT1M,NEON_LIGHT2M,NEON_LIGHT3M,NEON_LIGHTL,NEON_LIGHT1L,NEON_LIGHT2L,NEON_LIGHT3L,NL,NEON_DEF_D,NEON_DEF1D,NEON_DEF2D,NEON_DEF3D,CANDLE,CANDLE1,CANDLE2,CANDLE3,NL,SINGLE_LED1,SINGLE_LED2,SINGLE_LED3,SINGLE_LED1D,SINGLE_LED2D,SINGLE_LED3D,NL,GAS_LIGHT,GAS_LIGHT1,GAS_LIGHT2,GAS_LIGHT3,GAS_LIGHTD,GAS_LIGHT1D,GAS_LIGHT2D,GAS_LIGHT3D,NL,SKIP_ROOM,SKIP_ROOM'
@@ -271,7 +271,7 @@ class UserForm_House:
         P01.Center_Form(self.top)
         
     def dummy_proc(self, event=None):
-        print(event)
+        #print(event)
         pass
  
     def ok(self, event=None):
@@ -302,7 +302,7 @@ class UserForm_House:
 
     def house_button_cmd(self, button_label):
         
-        print("Button clicked ",button_label)
+        #print("Button clicked ",button_label)
         
         self.__Add_Room(button_label)
     
@@ -613,12 +613,12 @@ class UserForm_House:
         #    return
         self.__LED_CntList = self.__LED_CntList + self.__Get_LED_Channel_from_Name(Caption) + ' '
         txt = self.SelectedRooms_TextBox.get(1.0, tk.END+"-1c")
-        print("Txt:",txt,"Caption:",Caption)
+        #print("Txt:",txt,"Caption:",Caption)
         if self.SelectedRooms_TextBox.get(1.0, tk.END+"-1c") == '':
             self.SelectedRooms_TextBox.insert(tk.END+"-1c", Caption)
         else:
             curchar = self.SelectedRooms_TextBox.get(tk.INSERT)
-            print("curchar:",curchar)
+            #print("curchar:",curchar)
             if curchar == " ":
                 self.SelectedRooms_TextBox.insert(tk.INSERT, " " + Caption + ",")
             elif curchar == ",":

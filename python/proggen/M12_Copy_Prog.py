@@ -39,40 +39,19 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 import proggen.M02_Public as M02
-import proggen.M02_global_variables as M02GV
-import proggen.M03_Dialog as M03
-import proggen.M06_Write_Header as M06
-import proggen.M06_Write_Header_LED2Var as M06LED
-import proggen.M06_Write_Header_Sound as M06Sound
-import proggen.M06_Write_Header_SW as M06SW
-import proggen.M07_COM_Port as M07
-import proggen.M08_ARDUINO as M08
+import proggen.M02a_Public as M02a
 import proggen.M09_Language as M09
-import proggen.M09_Select_Macro as M09SM
-import proggen.M09_SelectMacro_Treeview as M09SMT
-import proggen.M10_Par_Description as M10
-import proggen.M20_PageEvents_a_Functions as M20
-import proggen.M25_Columns as M25
-import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
 import proggen.M30_Tools as M30
-import proggen.M31_Sound as M31
-import proggen.M37_Inst_Libraries as M37
-import proggen.M60_CheckColors as M60
-import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
-
-import proggen.Prog_Generator as PG
-
-import ExcelAPI.P01_Workbook as P01
-
-from ExcelAPI.X01_Excel_Consts import *
+import proggen.M08_ARDUINO as M08
+import mlpyproggen.Prog_Generator as PG
 
 
-from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
+
+
 
 """ Copy the program to %USERPROFILE%\Documents\Arduino\MobaLedLib_<Version>\
  To update the icon Cache in windows enter
@@ -110,7 +89,7 @@ def FileCopy_with_Check(DestDir, Name, SourceName=VBMissingArgument):
     # Could also copy a whole folder with all sub directories
     # If SourceName is empty the file/directory "Name" is copied from the program dir to DestDir
     # If a SourceName is given the file the source dir is extracted from the name.
-    SrcPath = P01.ThisWorkbook.Path + '\\'
+    SrcPath = M08.GetWorkbookPath() + '/'
     SrcName = Name
     if SourceName != '':
         if M30.FilePath(SourceName) != '':
@@ -157,7 +136,7 @@ def __Copy_File_With_new_Name_If_Exists(Name, DidCopy):
         if not FileCopy_with_Check(FullDestDir, M30.FileNameExt(CopyName), FullDestDir + M30.FileNameExt(Name)):
             return fn_return_value
         DidCopy = True
-        P01.MsgBox(M09.Get_Language_Str('Achtung: Die Datei \'') + M30.FileNameExt(Name) + M09.Get_Language_Str('\' existiert bereits im Verzeichnis') + vbCr + '  \'' + FullDestDir + '\'' + vbCr + vbCr + M09.Get_Language_Str('Das existierende Programm wurde unter dem Namen \'') + FileName(CopyName) + M09.Get_Language_Str('\' gesichert.') + vbCr + vbCr + M09.Get_Language_Str('Dieser Fehler tritt auf wenn das Programm mehrfach aus dem \'extras\' Verzeichnis ' + 'der Bibliothek gestartet wird.') + vbCr + M09.Get_Language_Str('Das Programm muss nur beim ersten mal nach der Installation der MobaLedLib aus dem ' + 'Bibliotheksverzeichnis gestartet werden. Dabei wird es in das oben genannte Verzeichnis ' + 'kopiert damit die Bibliothek unverändert bleibt.' + vbCr + 'Im folgenden wird ein Link auf dem Desktop kreiert über den das Programm in Zukunft gestartet wird.'), vbInformation, M09.Get_Language_Str('Programm existiert bereits (Mehrfacher Start aus \'extras\' Verzeichnis)'))
+        P01.MsgBox(M09.Get_Language_Str('Achtung: Die Datei \'') + M30.FileNameExt(Name) + M09.Get_Language_Str('\' existiert bereits im Verzeichnis') + vbCr + '  \'' + FullDestDir + '\'' + vbCr + vbCr + M09.Get_Language_Str('Das existierende Programm wurde unter dem Namen \'') + M30.FileName(CopyName) + M09.Get_Language_Str('\' gesichert.') + vbCr + vbCr + M09.Get_Language_Str('Dieser Fehler tritt auf wenn das Programm mehrfach aus dem \'extras\' Verzeichnis ' + 'der Bibliothek gestartet wird.') + vbCr + M09.Get_Language_Str('Das Programm muss nur beim ersten mal nach der Installation der MobaLedLib aus dem ' + 'Bibliotheksverzeichnis gestartet werden. Dabei wird es in das oben genannte Verzeichnis ' + 'kopiert damit die Bibliothek unverändert bleibt.' + vbCr + 'Im folgenden wird ein Link auf dem Desktop kreiert über den das Programm in Zukunft gestartet wird.'), vbInformation, M09.Get_Language_Str('Programm existiert bereits (Mehrfacher Start aus \'extras\' Verzeichnis)'))
     fn_return_value = True
     return fn_return_value
 
@@ -183,7 +162,7 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
     CopyMsg = String()
     #--------------------------------------------------
     # Return true if the programm was stored in the LibDir
-    if InStr(UCase(P01.ThisWorkbook.Path + '/'), UCase(M02.Get_SrcDirInLib())) == 0:
+    if InStr(UCase(M08.GetWorkbookPath() + '/'), UCase(M02a.Get_SrcDirInLib())) == 0:
         return fn_return_value
     fn_return_value = True
     DidCopy = False
@@ -245,14 +224,14 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
         # 14.06.20: Copy also the second program
     if not FileCopy_with_Check(FullDestDir, M02.SECOND_PROG + '.xlsm'):
         return fn_return_value
-    CreateDesktopShortcut()(M02.SECOND_LINK, FullDestDir + M02.SECOND_PROG + '.xlsm', M02.SECOND_ICON)
-    ProgName = FullDestDir + P01.ThisWorkbook.Name
+    CreateDesktopShortcut(M02.SECOND_LINK, FullDestDir + M02.SECOND_PROG + '.xlsm', M02.SECOND_ICON)
+    ProgName = FullDestDir + PG.ThisWorkbook.Name
     if not __Copy_File_With_new_Name_If_Exists(ProgName, DidCopy):
         return fn_return_value
         # 14.06.20: Moved in seperate function
     # VB2PY (UntranslatedCode) On Error GoTo ErrSaveAs
     P01.Application.DisplayAlerts = False
-    P01.ThisWorkbook.SaveAs(ProgName)
+    PG.ThisWorkbook.SaveAs(ProgName)
     P01.Application.DisplayAlerts = True
     # VB2PY (UntranslatedCode) On Error GoTo 0
     CopyMsg = M09.Get_Language_Str('Das Programm wurde in das Verzeichnis') + vbCr + '  \'' + FullDestDir + '\'' + vbCr + M09.Get_Language_Str('kopiert.') + vbCr + vbCr
@@ -261,7 +240,7 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
         P01.MsgBox(CopyMsg + M09.Get_Language_Str('In Zukunft kann das Programm über den Link') + vbCr + '   ' + Split(M02.DSKLINKNAME, ' ')(0) + vbCr + '   ' + Split(M02.DSKLINKNAME, ' ')(1) + vbCr + M09.Get_Language_Str('auf dem Desktop gestartet werden'), vbInformation, M09.Get_Language_Str('Programm kopiert und Link auf Desktop erzeugt'))
     else:
         P01.MsgBox(CopyMsg + M09.Get_Language_Str('Beim Anlegen des Links gab es Probleme ;-(' + vbCr + 'Das Programm kann trotzdem von der oben angegebenen Position aus gestartet werden.'), vbInformation, M09.Get_Language_Str('Programm kopiert'))
-    CreateDesktopShortcut()('Wiki MobaLedLib', M02.WikiPg_Link, M02.WikiPg_Icon)
+    CreateDesktopShortcut('Wiki MobaLedLib', M02.WikiPg_Link, M02.WikiPg_Icon)
     return fn_return_value
     P01.Application.DisplayAlerts = True
     P01.MsgBox(M09.Get_Language_Str('Fehler beim Speichern des Programms im Verzeichnis:') + vbCr + '  \'' + M30.FilePath(ProgName) + '\'', vbCritical, M09.Get_Language_Str('Fehler beim Speichen des Excel Programms'))
@@ -269,14 +248,14 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
 
 def __TestCreateDesktopShortcut():
     #UT------------------------------------
-    CreateDesktopShortcut()('Aber Hallo3', P01.ThisWorkbook.FullName)
+    CreateDesktopShortcut('Aber Hallo3', PG.ThisWorkbook.FullName)
 
 def __TestCreateWikiDesktopShortcut():
     #UT----------------------------------------
-    CreateDesktopShortcut()('Wiki MobaLedLib', M02.WikiPg_Link, M02.WikiPg_Icon)
+    CreateDesktopShortcut('Wiki MobaLedLib', M02.WikiPg_Link, M02.WikiPg_Icon)
 
 def CreateDesktopShortcut(LinkName, BookFullName, IconName=M02.DefaultIcon):
-    print("CreateDesktopShortcut not implemented:", LinkName)
+    Debug.Print("CreateDesktopShortcut not implemented: %s", LinkName)
     return False
 
     import winshell
@@ -332,7 +311,7 @@ def CreateDesktopShortcut(LinkName, BookFullName, IconName=M02.DefaultIcon):
     # String variables
     # Initialize variables
     Sep = P01.Application.PathSeparator
-    Path = P01.ThisWorkbook.Path
+    Path =M08.GetWorkbookPath()
     # VB2PY (UntranslatedCode) On Error GoTo ErrHandle
     # The WScript.Shell object provides functions to read system
     # information and environment variables, work with the registry

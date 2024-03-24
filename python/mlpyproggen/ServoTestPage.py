@@ -62,7 +62,7 @@ from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
 
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, DEFAULT_PALETTE, LARGE_FONT, NORMAL_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, PERCENT_BRIGHTNESS, BLINKFRQ
-#from mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
+# fromx mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
 import mlpyproggen.dictFile as dictFile
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
 from locale import getdefaultlocale
@@ -87,7 +87,7 @@ Servo_Scale_Max = 210
 # Class ServoTestPage
 # ----------------------------------------------------------------
 
-class ServoTestPage(tk.Frame):
+class ServoTestPage1(tk.Frame):
 
     # ----------------------------------------------------------------
     # ServoTestPage __init__
@@ -97,7 +97,7 @@ class ServoTestPage(tk.Frame):
         
         tk.Frame.__init__(self, parent)
         
-        self.tabClassName = "ServoTestPage"
+        self.tabClassName = "ServoTestPage1"
         tk.Frame.__init__(self,parent)
         self.controller = controller
         
@@ -417,7 +417,7 @@ class ServoTestPage(tk.Frame):
     def setParamData(self,key, value):
         self.controller.setParamData(key, value)
 
-    def connect(self):
+    def connect(self,port):
         pass
 
     def disconnect(self):

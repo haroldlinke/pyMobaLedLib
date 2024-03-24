@@ -44,7 +44,7 @@ from mlpyproggen.tooltip import Tooltip
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 import proggen.M02_Public as M02
 import proggen.M03_Dialog as M03
@@ -69,8 +69,8 @@ import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 import logging
 
@@ -122,6 +122,11 @@ class UserForm_Other():
     def show(self):
         
         self.IsActive = True
+        self.top.wait_visibility()
+        self.top.takefocus = True
+        self.top.focus_set()
+        self.top.focus_force()
+        self.top.grab_set()        
         self.controller.wait_window(self.top)
 
         return self.res
@@ -200,6 +205,25 @@ class UserForm_Other():
             fn_return_value = True
         #End With
         return fn_return_value
+    
+    def Check_Txt_Limit_to_MinMax(self, ParNr, Value):
+        _fn_return_value = None
+        Msg = String()
+        # 03.03.23 Juergen
+        #-------------------------------------------------------------------------------
+        # Return true if its within the alowed range
+        Msg = ''
+        if self.MinA(ParNr - 1) != '' and Len(Value) < P01.val(self.MinA(ParNr - 1)):
+            Msg = M09.Get_Language_Str('zu kurz!' + vbCr + 'Die minimal zulässiger Länge ist: ') + self.MinA(ParNr - 1)
+        elif self.MaxA(ParNr - 1) != '' and Len(Value) > P01.val(self.MaxA(ParNr - 1)):
+            Msg = M09.Get_Language_Str('zu lang!' + vbCr + 'Die maximal zulässige Länge ist: ') + self.MaxA(ParNr - 1)
+        if Msg != '':
+            #Controls('Par' + ParNr).setFocus()
+            P01.MsgBox(M09.Get_Language_Str('Der Parameter \'') + self.Controls.get('LabelPar' + str(ParNr),"key not found") + M09.Get_Language_Str('\' ist ') + Msg, vbInformation, M09.Get_Language_Str('Bereichsüberschreitung'))
+        else:
+            _fn_return_value = True
+        return _fn_return_value
+    
     
     def LimmitActivInput(self, ct, MinVal, MaxVal):
         #--------------------------------------------------------------------------------
@@ -288,7 +312,7 @@ class UserForm_Other():
         ShowErr = Boolean()
         #-------------------------------------------------------------------------------------
         if ParNr > self.MAX_PAR_CNT:
-            P01.MsgBox('Internal error in Check_Range()')
+            P01.MsgBox('Internal error in Check_Range', vbCritical,'Internal error in Check_Range')
             M30.EndProg()
         paramName = self.ParName[ParNr-1]
         parVariable = self.ParamVar.get(paramName)
@@ -321,6 +345,13 @@ class UserForm_Other():
                 return fn_return_value
         elif (select_1 == 'Txt'):
             Debug.Print('ToDo: Check parameter typ \'' + self.TypA(ParNr - 1) + '\'')
+        elif (select_1 == 'SheetName'):
+            # 03.03.23 Juergen
+            if self.Check_Txt_Limit_to_MinMax(ParNr, value) == False:
+                return fn_return_value
+            if not M30.WorksheetExists(value):
+                P01.MsgBox(M09.Get_Language_Str('Der angegebene Blattname existiert nicht: \'') + value + '\'', vbCritical, M09.Get_Language_Str('Fehler beim Einbinden eines Blattes'))
+                return fn_return_value            
         elif (select_1 == 'Mode'):
             Debug.Print('ToDo: Check parameter typ \'' + self.TypA(ParNr - 1) + '\'')
         elif (select_1 == 'List'):
@@ -880,15 +911,15 @@ class UserForm_Other():
             if OptionButton_All:
                 self.radiobtn1_txt = "Alle"
                 self.RB_OptionButton_All = tk.Radiobutton(self.LED_Kanal_Frame, text=self.radiobtn1_txt, variable=self.RB_Option_Button_var, value=1)
-                self.RB_OptionButton_All.grid(row=1,column=0,sticky="nesw",padx=10,pady=10)
+                self.RB_OptionButton_All.grid(row=1,column=0,sticky="w",padx=10,pady=10)
             if OptionButton_12:
                 self.radiobtn2_txt = "1&2 / Gelb"
                 self.RB_OptionButton_12 = tk.Radiobutton(self.LED_Kanal_Frame, text=self.radiobtn2_txt, variable=self.RB_Option_Button_var, value=2)
-                self.RB_OptionButton_12.grid(row=2,column=0,sticky="nesw",padx=10,pady=10)
+                self.RB_OptionButton_12.grid(row=2,column=0,sticky="w",padx=10,pady=10)
             if OptionButton_23:
                 self.radiobtn3_txt = "2&3/ Zyan"
                 self.RB_OptionButton_23 = tk.Radiobutton(self.LED_Kanal_Frame, text=self.radiobtn3_txt, variable=self.RB_Option_Button_var, value=3) 
-                self.RB_OptionButton_23.grid(row=3,column=0,sticky="nesw",padx=10,pady=10)
+                self.RB_OptionButton_23.grid(row=3,column=0,sticky="w",padx=10,pady=10)
             if OptionButton_C1:
                 self.radiobtn4_txt = "1 / Rot"
                 self.radiobtn5_txt = "2 / Grün"
@@ -896,9 +927,9 @@ class UserForm_Other():
                 self.RB_OptionButton_1 = tk.Radiobutton(self.LED_Kanal_Frame, text=self.radiobtn4_txt, variable=self.RB_Option_Button_var, value=4)
                 self.RB_OptionButton_2 = tk.Radiobutton(self.LED_Kanal_Frame, text=self.radiobtn5_txt, variable=self.RB_Option_Button_var, value=5)
                 self.RB_OptionButton_3 = tk.Radiobutton(self.LED_Kanal_Frame, text=self.radiobtn6_txt, variable=self.RB_Option_Button_var, value=6) 
-                self.RB_OptionButton_1.grid(row=1,column=1,sticky="nesw",padx=10,pady=10)
-                self.RB_OptionButton_2.grid(row=2,column=1,sticky="nesw",padx=10,pady=10)
-                self.RB_OptionButton_3.grid(row=3,column=1,sticky="nesw",padx=10,pady=10)
+                self.RB_OptionButton_1.grid(row=1,column=1,sticky="w",padx=10,pady=10)
+                self.RB_OptionButton_2.grid(row=2,column=1,sticky="w",padx=10,pady=10)
+                self.RB_OptionButton_3.grid(row=3,column=1,sticky="w",padx=10,pady=10)
                 
             self.LED_Kanal_Frame.grid(row=2,column=0,columnspan=2,sticky="w",padx=10,pady=10)
                 
@@ -943,7 +974,7 @@ class UserForm_Other():
             p = Trim(p)
             if Left(p, 1) != '#' and InStr(' Cx B_LED_Cx ', ' ' + p + ' ') == 0:
                 if UsedParNr >= self.MAX_PAR_CNT:
-                    P01.MsgBox('Internal error: The number of parameters is to large in Show_UserForm_Other()')
+                    P01.MsgBox('Internal error: The number of parameters is to large in Show_UserForm_Other()',vbCritical,"Internal Error")
                     M30.EndProg()
                 ParVal = ''
                 Typ, Min, Max, Def, Opt, InpTxt, Hint = M10.Get_Par_Data(p)
@@ -985,6 +1016,9 @@ class UserForm_Other():
                                     #self.Controls['Par' + str(UsedParNr)].Width = w
                                     #with_5 = self.Controls('LabelPar' + str(UsedParNr))
                                     #with_5.Left = with_5.Left + w - self.DEFAULT_PAR_WIDTH
+                                elif (select_4 == 'wn'):
+                                    w = P01.val(Parts(1))
+                                    #self.Controls['Par' + str(UsedParNr)].Width = w
                                 elif (select_4 == 'Inv'):
                                     self.Invers[UsedParNr - 1] = True
                                     if ParVal == 0:
@@ -1035,6 +1069,8 @@ class UserForm_Other():
                     if not validListEntry:
                         P01.MsgBox(Replace(Replace(Replace(M09.Get_Language_Str('Fehler: Der Parameter \'#1#\' hat einen ungültigen Wert #2#. Der Parameter wird auf den Standardwert #3# zurückgesetzt.'), '#1#', p), '#2#', ParVal), '#3#', Def), vbCritical, M09.Get_Language_Str('Parameter Fehler'))
                         ParVal = Def
+                if (Typ == "Logic"):
+                    Typ = "BigEntry"
                 self.Controls['Par' + str(UsedParNr) + 'Select'] = ParVal
                 self.Controls['Par' + str(UsedParNr)] = ParVal
                 
@@ -1051,7 +1087,7 @@ class UserForm_Other():
                 titlecolumn = 1
                 param_tooltip = Hint
                 combo_value_list = SelectValues
-                if param_type in ("Mode","Var"):
+                if param_type in ("Mode","Var","CmpMod","SheetName"):
                     param_type = "String"
                 self.ParamVar[paramkey] = self.create_widget(self.Param_Frame, row, column, paramkey, param_title, param_type, param_min, param_max, param_default, titlerow, titlecolumn, param_tooltip,combo_value_list=combo_value_list)
                 

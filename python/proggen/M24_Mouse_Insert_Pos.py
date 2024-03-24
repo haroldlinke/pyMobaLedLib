@@ -64,11 +64,11 @@ import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
@@ -175,7 +175,7 @@ def __Show_InsertLine_until_Mousepressed(MinRow, SheetName):
     if P01.GetAsyncKeyState(__VK_RETURN) != 0:
         __EnterKey_Pressed = True
     if MoveByKey:
-        P01.SetCursorPos(P01.ActiveWindow.ActivePane.PointsToScreenPixelsX(ActiveCell.Left +  ( ActiveCell.Width / 2 )), ActiveWindow.ActivePane.PointsToScreenPixelsY(ActiveCell.Top +  ( ActiveCell.Height / 2 )))
+        P01.SetCursorPos(P01.ActiveWindow.ActivePane.PointsToScreenPixelsX(ActiveCell().Left +  ( ActiveCell().Width / 2 )), ActiveWindow.ActivePane.PointsToScreenPixelsY(ActiveCell().Top +  ( ActiveCell().Height / 2 )))
         rng = P01.ActiveCell()
     else:
         rng = __GetRange(llCoord.Xcoord, llCoord.Ycoord)
@@ -187,7 +187,7 @@ def __Show_InsertLine_until_Mousepressed(MinRow, SheetName):
         OldUpdating = P01.Application.ScreenUpdating
         P01.Application.ScreenUpdating = False
         if __LastRow > 0:
-            __Normal_Line(P01.Sheets(SheetName), __LastRow)
+            __Normal_Line(PG.ThisWorkbook.Sheets(SheetName), __LastRow)
         if Row != 0:
             __LastRow = Row
         if __LeftMousePressed or __EnterKey_Pressed or __ESCButtonPressed or SheetName != P01.ActiveSheet().Name:
@@ -213,7 +213,7 @@ def Select_Move_Dest_by_Mouse(FirstCol, LastCol):
     __EnterKey_Pressed = False
     __ESCButtonPressed = False
     ShName = P01.ActiveSheet.Name
-    ShName.EnableMousePosition()
+    #HL ShName.EnableMousePosition()
     while __Show_InsertLine_until_Mousepressed(M02.FirstDat_Row, ShName) == False:
         pass
     #M30.KillTimer(0, __hTimer)

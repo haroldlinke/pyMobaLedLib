@@ -56,7 +56,16 @@
 # * License: http://creativecommons.org/licenses/by-sa/3.0/
 # ***************************************************************************
 
-PROG_VERSION ="LX4.19 05.04.2022"
+
+
+PROG_VERSION ="V3.2.1C1(5.1.0.001) 24.03.2024"
+DATA_VERSION = "102"
+Pattgen_Min_Data_Version = DATA_VERSION
+ProgGen_Min_Data_Version = DATA_VERSION
+
+DEBUG = False
+
+hexversion = 0x03010001
 LARGE_FONT= ("Verdana", 12)
 VERY_LARGE_FONT = ("Verdana", 14)
 NORMAL_FONT = ("Verdana", 10)
@@ -553,6 +562,8 @@ DEFAULT_CONFIG = {
                     "lastLed": 0,
                     "pos_x": 10,
                     "pos_y": 10,
+                    "win_height": 1080,
+                    "win_width" : 1920,
                     "colorview": 1,
                     "startpage": -1,
                     "startpagename" : "StartPage",
@@ -570,6 +581,8 @@ DEFAULT_CONFIG = {
                     "lastSoundImpuls": 200,
                     "startcmdcb": False,
                     "startcmd_filename": " ",
+                    "resourcePathcb": False,
+                    "resourcePath_filename": " ",                    
                     "ArduinoTypeName": "Nano/Uno (neu)",
                     "ArduinoTypeNumber": 1,
                     "Z21Data": {
@@ -612,6 +625,10 @@ DEFAULT_CONFIG = {
                     "FontLabel": "8",
                     "FontSpinbox": "8",
                     "FontScale" : "8",
+                    "FontName": "Arial",
+                    "FontNormal": 11,
+                    "FontLarge" : 14,
+                    "FontSmall" : 8,
                     "RMbusTimer": "0",
                     "ShowProgramGenerator": 1,
                     "ShowPatternGenerator": 0,

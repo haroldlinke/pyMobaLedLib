@@ -1,57 +1,9 @@
-# -*- coding: utf-8 -*-
-#
-#         Write header
-#
-# * Version: 4.02
-# * Author: Harold Linke
-# * Date: January 7, 2021
-# * Copyright: Harold Linke 2021
-# *
-# *
-# * MobaLedCheckColors on Github: https://github.com/haroldlinke/MobaLedCheckColors
-# *
-# *  
-# * https://github.com/Hardi-St/MobaLedLib
-# *
-# * MobaLedCheckColors is free software: you can redistribute it and/or modify
-# * it under the terms of the GNU General Public License as published by
-# * the Free Software Foundation, either version 3 of the License, or
-# * (at your option) any later version.
-# *
-# * MobaLedCheckColors is distributed in the hope that it will be useful,
-# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# * GNU General Public License for more details.
-# *
-# * You should have received a copy of the GNU General Public License
-# * along with this program.  if not, see <http://www.gnu.org/licenses/>.
-# *
-# *
-# ***************************************************************************
-
-#------------------------------------------------------------------------------
-# CHANGELOG:
-# 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
-# 2021-01-07 v4.02 HL: - Else:, ByRef check done, first PoC release
-
-
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-from vb2py.vbconstants import *
-
-
-import proggen.Prog_Generator as PG
-
-import ExcelAPI.P01_Workbook as P01
-
-from ExcelAPI.X01_Excel_Consts import *
-
-
-from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
-
-from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
+import pattgen.M06_Goto_Graph
+import pattgen.M30_Tools as M30
+import ExcelAPI.XLW_Workbook as X02
+import pattgen.M01_Public_Constants_a_Var as M01
 
 """ Different arangements:
 
@@ -76,7 +28,7 @@ class GotoListEntry_t:
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: GotoArrowTab - ByVal 
 def Calc_Height_GotoArrow(GotoArrowTab):
-    fn_return_value = None
+    _fn_return_value = None
     StrEnt = Variant()
 
     GotoList = vbObjectInitialize(objtype=GotoListEntry_t)
@@ -107,9 +59,12 @@ def Calc_Height_GotoArrow(GotoArrowTab):
         GotoList[Nr].Dist = Abs(GotoList(Nr).Start - GotoList(Nr).Ende)
         Nr = Nr + 1
     # Calc Inside_Cnt and OutsideCnt
+   
     for a in vbForRange(0, UBound(GotoList)):
         Min = GotoList(a).Min
         Max = GotoList(a).Max
+        GotoList[a].Inside_Cnt=0
+        GotoList[a].OutsideCnt=0        
         for t in vbForRange(0, UBound(GotoList)):
             if a != t:
                 if GotoList(t).Min <= Min and GotoList(t).Max >= Max:
@@ -118,15 +73,16 @@ def Calc_Height_GotoArrow(GotoArrowTab):
                     GotoList[a].Inside_Cnt = GotoList(a).Inside_Cnt + 1
     for Nr in vbForRange(0, UBound(GotoList)):
         h = ( 1 + GotoList(Nr).Inside_Cnt )  /  ( GotoList(Nr).OutsideCnt + GotoList(Nr).Inside_Cnt + 1 )
-        Res = Res + GotoList(Nr).Start + ',' + GotoList(Nr).Ende + ',' + h + ' '
-    fn_return_value = Left(Res, Len(Res) - 1)
-    return fn_return_value
+        Res = Res + str(GotoList(Nr).Start) + ',' + str(GotoList(Nr).Ende) + ',' + str(int(h)) + ' '
+    _fn_return_value = Left(Res, Len(Res) - 1)
+    return _fn_return_value
 
-def __Test_GotoArrow():
+def Test_GotoArrow():
     List_w_Height = String()
     #UT-------------------------
     List_w_Height = Calc_Height_GotoArrow('5,20 6,20 7,20 8,20 9,20 10,20 11,20 12,20 13,20 14,20 15,20 16,20 17,20 18,20 19,20')
-    Delete_Goto_Graph()
-    Draw_GotoArrowTab(List_w_Height, LastUsedColumnInRow(ActiveSheet, GoTo_Row))
+    # LocalVar Sound
+    pattgen.M06_Goto_Graph.Delete_Goto_Graph()
+    Draw_GotoArrowTab(List_w_Height, M30.LastUsedColumnInRow(X02.ActiveSheet, M01.GoTo_Row))
 
 # VB2PY (UntranslatedCode) Option Explicit

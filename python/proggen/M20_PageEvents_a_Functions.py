@@ -43,14 +43,14 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-#from proggen.M02_Public import *
-#from proggen.M08_ARDUINO import M08.LEDNr_Display_Type
-#from proggen.M25_Columns import Make_sure_that_Col_Variables_match #,LEDs____Col,LED_Cha_Col,LED_Nr__Col
+# fromx proggen.M02_Public import *
+# fromx proggen.M08_ARDUINO import M08.LEDNr_Display_Type
+# fromx proggen.M25_Columns import Make_sure_that_Col_Variables_match #,LEDs____Col,LED_Cha_Col,LED_Nr__Col
 #import proggen.M25_Columns as M25
 #import proggen.M30_Tools as M30
 #import proggen.M06_Write_Header as M06
 #import proggen.D02_Userform_Select_Typ_DCC as D02
-#from proggen.M06_Write_Header import Start_LED_Channel
+# fromx proggen.M06_Write_Header import Start_LED_Channel
 
 import proggen.M01_Gen_Release_Version as M01
 import proggen.M02_Public as M02
@@ -69,7 +69,7 @@ import proggen.M09_Select_Macro as M09SM
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-#import proggen.M28_divers as M28
+import proggen.M28_divers as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 import proggen.M32_DCC as M32
@@ -83,10 +83,10 @@ import  proggen.F00_mainbuttons as F00
 
 #import proggen.D02_Userform_Select_Typ_DCC as D02
 
-import ExcelAPI.P01_Workbook as P01
-import proggen.Prog_Generator as PG
+import ExcelAPI.XLW_Workbook as P01
+import mlpyproggen.Prog_Generator as PG
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 
 #Start_LED_Channel = vbObjectInitialize((M02.LED_CHANNELS - 1,), Long)
@@ -110,7 +110,7 @@ from ExcelAPI.X01_Excel_Consts import *
 """
 
 Global_Rect_List = vbObjectInitialize(objtype=String)
-PriorCell = None #P01.CCell("") #range() # HaLi test
+PriorCell = None  #range() #* HaLi test
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Line - ByVal 
 def Get_Parameter_from_Leds_Line(Line, ParNr):
@@ -207,7 +207,21 @@ def Row_Contains_Address_or_VarName(r):
     fn_return_value = True
     return fn_return_value
 
-def Update_Start_LedNr():
+def Update_All_Start_LedNr():
+    OldScreenupdating = Boolean()
+
+    Sh = Variant()
+    #---------------------------
+    OldScreenupdating = P01.Application.ScreenUpdating
+    P01.Application.ScreenUpdating = False
+    for Sh in PG.ThisWorkbook.Sheets:
+        if M28.Is_Data_Sheet(Sh):
+            Sh.Select()
+            Update_Start_LedNr()()
+    P01.Application.ScreenUpdating = OldScreenupdating
+
+def Update_Start_LedNr(firstRun=True):
+    _fn_return_value = None
     #OldEvents = Boolean()
 
     #display_Type = int()
@@ -219,22 +233,30 @@ def Update_Start_LedNr():
     LEDNr = vbObjectInitialize((M02.LED_CHANNELS,), Long)
 
     LastusedChannel = vbObjectInitialize((M02.LED_CHANNELS,), Long)
+    
+    LEDs_Channel = 0
+    
+    col = Long()
 
-    MaxLEDNr = vbObjectInitialize((M02.LED_CHANNELS,), Long)
+    r = Long()
 
-    r = int()
-
-    Nr = int()
+    Nr = Long()
     #------------------------------
     # Update the Start LedNr in all used rows
     OldEvents =  P01.Application.EnableEvents
     display_Type = M08.LEDNr_Display_Type
-    P01.Application.EnableEvents = False
+    if firstRun:
+        P01.Application.EnableEvents = False
+        # Prevent recursive calls ic cells are changed
+        # 26.04.20:  # 03.04.21 Juergen - try to find out if only the main LED Channel is in use
+        Max_LEDs_Channel = 0   # 10.03.2023 Juergen include feature
+        M06.IncludeStack = Collection()
+        M06.IncludeStack.Add(( P01.ActiveSheet.Name ))
+        M06.Clear_MaxLEDNr()    
     M25.Make_sure_that_Col_Variables_match()
     # 03.04.21 Juergen - try to find out if only the main LED Channel is in use
-    Max_LEDs_Channel = 0
-    LEDs_Channel = 0
     for row in P01.ActiveSheet.UsedRange_Rows():
+        # ToDo: Hier könnte man einen Eigenen Range definieren der erst ab der FirstDat_Row beginnt. Dann könnte die abfrage "If r >= FirstDat_Row Then" entfallen
         r = row.Row
         #*HL P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. Max LEDs Channel: "+str(r)))
         if r >= M02.FirstDat_Row:
@@ -242,6 +264,7 @@ def Update_Start_LedNr():
                 if P01.val(P01.Cells(r, M25.LED_Cha_Col)) > Max_LEDs_Channel:
                     Max_LEDs_Channel = P01.val(P01.Cells(r, M25.LED_Cha_Col))
     for row in P01.ActiveSheet.UsedRange_Rows():
+        # ToDo: Hier könnte man einen Eigenen Range definieren der erst ab der FirstDat_Row beginnt. Dann könnte die abfrage "If r >= FirstDat_Row Then" entfallen
         r = row.Row
         #P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. Update Start LED: "+str(r)))
         #print("Update Start LED: Row=",r)
@@ -284,24 +307,42 @@ def Update_Start_LedNr():
                         LEDNr[LEDs_Channel] = LEDNr(LEDs_Channel) + IncLEDNr
                 else:
                     LEDNr[LEDs_Channel] = LEDNr(LEDs_Channel) + M30.CellLinesSum(LEDs)
-            else:
-                Clear_LED_Nr_Columns(r)
-        if LEDNr(LEDs_Channel) > MaxLEDNr(LEDs_Channel):
-            MaxLEDNr[LEDs_Channel] = LEDNr(LEDs_Channel)
+            else: 
+                Cmd = Trim(P01.Cells(r, M25.Config__Col))
+                if P01.Rows(r).EntireRow.Hidden == False and P01.Cells(r, M02.Enable_Col) != '' and M06.IsIncludeMacro(Cmd):
+                    SheetName=""
+                    addressOffset = 0
+                    res, SheetName, addressOffset = M06.GetIncludeArgs(Cmd, SheetName, addressOffset)
+                    if M06.CheckIncludeSheet(SheetName, r):
+                        for idx in vbForRange(0, M02.LED_CHANNELS - 1):
+                            col = Get_LED_Nr_Column(idx)
+                            LEDNr[idx] = LEDNr(idx) + PG.ThisWorkbook.Worksheets(SheetName).Cells(M02.SH_VARS_ROW, col)
+                            if LEDNr(idx) > M06.MaxLEDNr(idx):
+                                M06.MaxLEDNr[idx] = LEDNr(idx)
+                            # 19.01.21:
+                else:                
+                    # Row is not activ
+                    Clear_LED_Nr_Columns(r)
+        if LEDNr(LEDs_Channel) > M06.MaxLEDNr(LEDs_Channel):
+            M06.MaxLEDNr[LEDs_Channel] = LEDNr(LEDs_Channel)
             # 19.01.21:
     # Write the Last LED number to row 1 (SH_VARS_ROW)
     for Nr in vbForRange(0, M02.LED_CHANNELS - 1):
         Col = Get_LED_Nr_Column(Nr)
-        P01.CellDict[M02.SH_VARS_ROW, Col] = MaxLEDNr(Nr) + UsedModules(LastusedChannel(Nr)) #*HL replaced P01.Cells with CellDict
+        M06.MaxLEDNr[Nr] = M06.MaxLEDNr(Nr) + UsedModules(LastusedChannel(Nr))
+        P01.CellDict[M02.SH_VARS_ROW, Col] = M06.MaxLEDNr(Nr)
     P01.Application.EnableEvents = OldEvents
+    _fn_return_value = M06.MaxLEDNr
     Clear_Formula_Errors()
+    return _fn_return_value
 
 def Get_LED_Nr(DefaultLedNr, Row, LED_Channel):
     LEDNr = String()
     #-----------------------------------------------------
     fn_return_value = int(DefaultLedNr)
     LEDNr = P01.Cells(Row, M25.LED_Nr__Col)
-    if LEDNr != '':
+    LEDNrstr=str(LEDNr)
+    if LEDNrstr != '':
         Pos = InStr(LEDNr, '-')
         if ( Pos < 1 ) :
             if Left(LEDNr, 1) == M02.SerialChannelPrefix:
@@ -406,9 +447,10 @@ def Update_Sum_Func():
     #---------------------------
     # The Sum function in the filter column is used to detect changes in the autofilter
     #  to update the "Start LedNr"
-    print("Update_Sum_Func called")
+    Debug.Print("Update_Sum_Func called")
+    return #*HL
     
-    P01.CellDict[M02.SH_VARS_ROW, M25.Filter__Col].FormulaR1C1 = '=SUM(R[1]C:R[' + M30.LastUsedRow() + ']C)'
+    P01.CellDict[M02.SH_VARS_ROW, M25.Filter__Col].FormulaR1C1 = '=SUM(R[1]C:R[' + str(M30.LastUsedRow()) + ']C)'
     
 
 def Col_is_in_Range(c, r):
@@ -441,7 +483,6 @@ def Select_Typ_by_Dialog(Target):
         if F00.UserForm_Select_Typ_SX.Userform_res !="":
             Target.set_value(F00.UserForm_Select_Typ_SX.Userform_res) #*HL        
     else:
-        #UserForm_Select_Typ_DCC = D02.UserForm_Select_Typ_DCC()
         F00.UserForm_Select_Typ_DCC.setFocus(Target)
         F00.UserForm_Select_Typ_DCC.Show()
         M02GV.Userform_Res = F00.UserForm_Select_Typ_DCC.Userform_res
@@ -492,7 +533,7 @@ def AutofilterAllColumns(EndRow):
 def Correct_Autofilter():
     #-------------------------------
     # Call this manualy in case the filter is corrupted
-    AutofilterAllColumns()(M30.LastUsedRow())
+    AutofilterAllColumns(M30.LastUsedRow())
 
 def Clear_Formula_Errors():
     return #*HL
@@ -576,7 +617,7 @@ def ClearSheet():
         P01.Application.EnableEvents = False
         M25.Make_sure_that_Col_Variables_match()
         P01.Rows(M02.FirstDat_Row + ':' + M30.LastUsedRow()).ClearContents()
-        P01.Rows[M02.FirstDat_Row + ':' + M30.LastUsedRow()].Hidden = False
+        P01.RowDict[M02.FirstDat_Row + ':' + M30.LastUsedRow()].Hidden = False
         P01.Rows('33:' + M30.LastUsedRow()).Delete(Shift=xlUp)
         P01.Cells(M02.FirstDat_Row, 1).Activate()
         P01.Application.GoTo(P01.ActiveCell(), True)
@@ -606,7 +647,7 @@ def Show_Help():
 def Proc_DoubleCkick(Sh, Target, Cancel):
     #----------------------------------------------------------------------------------------------
     M25.Make_sure_that_Col_Variables_match(Sh)
-    if M27.Is_Data_Sheet(P01.ActiveSheet):
+    if M28.Is_Data_Sheet(P01.ActiveSheet):
         if Target.Row >= M02.FirstDat_Row:
             if (Target.Column == M25.Config__Col) or (Target.Column == M25.MacIcon_Col) or (Target.Column == M25.LanName_Col):
                 Cancel = True
@@ -682,7 +723,7 @@ def Global_Worksheet_SelectionChange(Target):
                     Target.Value = ''
                 #BeepThis2('Windows Balloon.wav')
                 Update_Start_LedNr()
-                P01.ActiveCell.Offset(0, 1).Activate() #P01.Range(P01.ActiveCell.Address).Offset(0, 1).Activate() #*HL
+                P01.ActiveCell().Offset(0, 1).Activate() #P01.Range(P01.ActiveCell.Address).Offset(0, 1).Activate() #*HL
             elif (Target.Column == M25.Inp_Typ_Col):
                 Proc_Typ_Col(Target)
             elif (Target.Column == M25.Config__Col):
@@ -695,13 +736,13 @@ def Global_Worksheet_SelectionChange(Target):
                 # VB2PY (UntranslatedCode) On Error GoTo 0
                 if PriorCol <= Target.Column:
                     #P01.Range(P01.ActiveCell.Address).Offset(0, M25.LEDs____Col - Target.Column - 1).Activate() #*HL
-                    P01.ActiveCell.Offset(0, M25.LEDs____Col - Target.Column - 1).Activate() #*HL
-            PriorCell = P01.ActiveCell
+                    P01.ActiveCell().Offset(0, M25.LEDs____Col - Target.Column - 1).Activate() #*HL
+            PriorCell = P01.ActiveCell()
             P01.Application.EnableEvents = True
         elif Target.Row == M02.Header_Row:
             if not Target.Comment is None:
                 Target.Comment.Shape.Top = P01.ActiveWindow.Visible.Range.Top
-                Target.Comment.Shape.Left = P01.ActiveCell.Left
+                Target.Comment.Shape.Left = P01.ActiveCell().Left
                 #.Visible = True
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Target - ByVal 
@@ -848,7 +889,7 @@ def Update_StartValue(Row):
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Row - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: onValue=0 - ByVal 
-def Update_TestButtons(Row, onValue=0, First_Call=True):
+def Update_TestButtons(Row, onValue=0, First_Call=True, redraw=False):
     
     global Global_Rect_List
     #objButton = Shape()
@@ -918,7 +959,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
     LastRow = M30.LastUsedRow()
     ButtonPrefix = 'B'
     i = 1
-    if First_Call:
+    if First_Call and not redraw:
         Global_Rect_List = vbObjectInitialize(((1, LastRow),), str)
         while i <= P01.ActiveSheet.Shapes.Count():
             #  is it a SendButton Shape?
@@ -936,17 +977,21 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
                     Addr = M25.Get_First_Number_of_Range(P01.ActiveSheet.Shapes.getShape(i).TopLeftCell_Row, AddrColumn)
                     if Addr == '':
                         P01.ActiveSheet.Shapes.Delete(i)
-                        i = i - 1
             i = i + 1
     else:
-        if Global_Rect_List[Row] == '':
-            return
-        Rect_List_In_Row = Split(Trim(Global_Rect_List(Row)), ' ')
-        OldRect_Cnt = UBound(Rect_List_In_Row) + 1
-        OldRect_List = vbObjectInitialize((OldRect_Cnt - 1,), Variant)
-        for i in vbForRange(0, OldRect_Cnt - 1):
-            OldRect_List[i] = CLng(Rect_List_In_Row(i))
+        if redraw:
+            OldRect_Cnt = 0
+        else:
+            OldRect_Cnt = 0
+            if Global_Rect_List[Row] == '':
+                return
+            Rect_List_In_Row = Split(Trim(Global_Rect_List(Row)), ' ')
+            OldRect_Cnt = UBound(Rect_List_In_Row) + 1
+            OldRect_List = vbObjectInitialize((OldRect_Cnt - 1,), Variant)
+            for i in vbForRange(0, OldRect_Cnt - 1):
+                OldRect_List[i] = CLng(Rect_List_In_Row(i))
     InCnt = P01.val(P01.Cells(Row, M25.InCnt___Col))
+    #print("UpdateTestButton Row:",Row," Col:",M25.InCnt___Col," InCnt:",InCnt)
     if InCnt < 1:
         return
     ButtonCount = 1 * InCnt
@@ -957,12 +1002,13 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
     M25.Make_sure_that_Col_Variables_match()
     M09.Set_Tast_Txt_Var()
     Addr = M25.Get_First_Number_of_Range(Row, AddrColumn)
+    #print("UpdateTestButton Row:",Row," Col:",AddrColumn," Addr:",Addr)
     if Addr == '' or P01.val(Addr) < 0:
         return
         # 04.05.20: Added: Or Val(Addr) < 0 to fix problems with the error returned by Get_First_Number_of_P01.Range() (Mail from Jürgen)
     if isSX:
         if P01.Cells(Row, M25.SX_Bitposi_Col) != '':
-            BitPos = P01.Cells(Row, M25.SX_Bitposi_Col)
+            BitPos = int(P01.Cells(Row, M25.SX_Bitposi_Col))
         if ( BitPos < 1 or BitPos > 8 ) :
             return
         Addr = Addr * 8 +  ( BitPos - 1 )
@@ -1001,7 +1047,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
         if InCnt > 1:
             TextOffset = 0
             AltTextOffset = 1
-    Height = P01.Cells(Row, TargetColumn).Height()
+    Height = P01.Cells(Row, TargetColumn).Height
     if Height > 26: #13
         Height = 26 
     # increase minimum column size if needed
@@ -1011,7 +1057,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
     #*HL    P01.Range[P01.Cells(1, TargetColumn), P01.Cells(1, TargetColumn)].ColumnWidth = WorksheetFunction.RoundUp(i / factor, 1)
     for i in vbForRange(1, ButtonCount):
         if Used_OldRect < OldRect_Cnt:
-            objButton = P01.ActiveSheet.Shapes.getlist()[OldRect_List(Used_OldRect)]
+            objButton = P01.ActiveSheet.Shapes.getlist()[OldRect_List(Used_OldRect)-1]
             Used_OldRect = Used_OldRect + 1
         else:
             #*HLobjButton = P01.ActiveSheet.Shapes.AddShape(msoShapeRectangle, Row, TargetColumn, 0, 0, 0, 0)
@@ -1022,33 +1068,33 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
                 isSetToOn = True
         objButton_Name = ButtonPrefix + P01.Format(Addr, '0000') + '-' + P01.Format(Direction, '00') + '-' + P01.Format(ColorOffset, '00') + '-' + str(TextOffset)
         if NewCreated:
-            objButton_Left = P01.Cells(Row, TargetColumn).Left() + PixelOffset +  ( i - 1 )  * Height
-            objButton_Top = P01.Cells(Row, TargetColumn).Top() + 1
+            objButton_Left = P01.Cells(Row, TargetColumn).Left + PixelOffset +  ( i - 1 )  * Height
+            objButton_Top = P01.Cells(Row, TargetColumn).Top + 1
             objButton_Height = Height - 2
             objButton_Width = Height - 2
-            objButton = P01.ActiveSheet.Shapes.AddShape(objButton_Name, msoShapeRectangle, objButton_Left, objButton_Top, objButton_Height, objButton_Width, "#FF0000")
+            objButton = P01.ActiveSheet.Shapes.AddShape(msoShapeRectangle, objButton_Left, objButton_Top, objButton_Height, objButton_Width, Fill="#FF0000", name=objButton_Name)
         
         if P01.Cells(Row, M25.Inp_Typ_Col).Text == M09.OnOff_T:
-            if objButton.TextFrame2 != TextOffset:
-                objButton.TextFrame2 = TextOffset
+            if objButton.TextFrame2.TextRange.Text != str(TextOffset):
+                objButton.TextFrame2.TextRange.Text = str(TextOffset)
         else:
-            if objButton.TextFrame2 != ' ':
-                objButton.TextFrame2 = ' '
+            if objButton.TextFrame2.TextRange.Text != ' ':
+                objButton.TextFrame2.TextRange.Text = ' '
                 # No text because it's confusing if 0/1 is used for OnOff switches
         if NewCreated:
             objButton.OnAction = 'DCCSend'
             #objButton.DrawingObject.Border.Color = rgb(0, 0, 0)
             #objButton.TextFrame2.Text.Range.ParagraphFormat.Alignment = msoAlignCenter
-        objButton.Fill = GetButtonColor(ColorOffset)
+        objButton.Fill.ForeColor.rgb = GetButtonColor(ColorOffset)
         if toggle:
             altText = ButtonPrefix + P01.Format(Addr, '0000') + '-' + P01.Format(1 - Direction, '00') + '-' + P01.Format(ColorOffset + 1, '00') + '-' + str(AltTextOffset)
             if isSetToOn:
                 objButton.AlternativeText = objButton.Name
                 objButton.Name = altText
                 #*HLobjButton.TextFrame2.Text.Range.Text = Mid(objButton.Name, 13, 1)
-                objButton.TextFrame2 = Mid(objButton.Name, 13, 1)
+                objButton.TextFrame2.TextRange.Text = Mid(objButton.Name, 13, 1)
                 #*HLobjButton.Fill.ForeColor.rgb = GetButtonColor(P01.val(Mid(objButton.Name, 10, 2)))
-                objButton.Fill = GetButtonColor(P01.val(Mid(objButton.Name, 10, 2)))
+                objButton.Fill.ForeColor.rgb = GetButtonColor(P01.val(Mid(objButton.Name, 10, 2)))
             else:
                 objButton.AlternativeText = altText
         else:
@@ -1069,7 +1115,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
         P01.ActiveSheet.Shapes.Delete(OldRect_List(i))
 
 def ResetTestButtons(keepStatus):
-    return #*HL
+    
     Row = Variant()
 
     First_Call = Boolean()
@@ -1109,13 +1155,13 @@ def Test_ResetTestButtons():
 def GetButtonColor(Index):
     #----------------------------------------------------------
     if (Index == 0):
-        fn_return_value = P01.rgbtohex(255, 128, 128)
+        fn_return_value = P01.rgb2tkcolor(255, 128, 128)
     elif (Index == 1):
-        fn_return_value = P01.rgbtohex(128, 255, 128)
+        fn_return_value = P01.rgb2tkcolor(128, 255, 128)
     elif (Index == 2):
-        fn_return_value = P01.rgbtohex(255, 255, 128)
+        fn_return_value = P01.rgb2tkcolor(255, 255, 128)
     else:
-        fn_return_value = P01.rgbtohex(255, 255, 255)
+        fn_return_value = P01.rgb2tkcolor(255, 255, 255)
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Index - ByVal 

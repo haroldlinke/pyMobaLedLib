@@ -87,13 +87,13 @@ DE = {"Red": "Rot", "Green": "Grün", "Blue": "Blau",
       "Alpha": "Alpha", "Configuration": "Einstellungen"}
 
 try:
-    TR = EN
-    if getdefaultlocale()[0][:2] == 'fr':
-        TR = FR
-    else:
-        if getdefaultlocale()[0][:2] == 'de':
-            TR = DE
-except ValueError:
+    TR = DE
+    #if getdefaultlocale()[0][:2] == 'fr':
+    #    TR = FR
+    #else:
+    #    if getdefaultlocale()[0][:2] == 'de':
+    #        TR = DE
+except ValueError or TypeError:
     TR = EN
 
 
@@ -151,7 +151,10 @@ class DCCKeyboardPage(tk.Frame):
         
         # create buttons
         
-        base_address = int(self.controller.get_macroparam_val(self.tabClassName, "DCC BaseAddress"))
+        try:
+            base_address = int(self.controller.get_macroparam_val(self.tabClassName, "DCC BaseAddress"))
+        except:
+            base_address = 0
         row = 0
         in_button_frame =  ttk.Frame(self.main_frame, relief="ridge", borderwidth=1)
         self.buttonlist = []
@@ -216,7 +219,7 @@ class DCCKeyboardPage(tk.Frame):
     def MenuRedo(self,_event=None):
         pass
 
-    def connect(self):
+    def connect(self,port):
         pass
 
     def disconnect(self):

@@ -47,13 +47,15 @@ import subprocess
 import zipfile
 import platform
 import shutil
+import pathlib
 
-from ExcelAPI.X01_Excel_Consts import *
-#from proggen.M02_Public import Get_BoardTyp
+from ExcelAPI.XLC_Excel_Consts import *
+# fromx proggen.M02_Public import Get_BoardTyp
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 import proggen.M02_Public as M02
+import proggen.M02a_Public as M02a
 #import proggen.M02_global_variables as M02GV
 #import proggen.M03_Dialog as M03
 import proggen.M06_Write_Header as M06
@@ -61,11 +63,12 @@ import proggen.M06_Write_Header as M06
 #import proggen.M06_Write_Header_Sound as M06Sound
 #import proggen.M06_Write_Header_SW as M06SW
 #import proggen.M07_COM_Port as M07
-#import proggen.M08_ARDUINO as M08
+import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
 #import proggen.M09_Select_Macro as M09SM
 #import proggen.M09_SelectMacro_Treeview as M09SMT
 #import proggen.M10_Par_Description as M10
+import proggen.M12_Copy_Prog as M12
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
@@ -77,7 +80,7 @@ import proggen.M30_Tools as M30
 #import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 PlatformKey_ROW = 3
 PlatformKey_COL = 3
@@ -131,6 +134,7 @@ def AddSpaceToLen(s, MinLength):
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: s - ByVal 
 def AddSpaceToLenLeft(s, MinLength):
     #--------------------------------------------------------------------------------
+    s=str(s)
     while Len(s) < MinLength:
         s = r' ' + s
     fn_return_value = s
@@ -173,11 +177,11 @@ def LastUsedRowIn(Sheet):
     # return the last used row in the given sheet.
     # The sheet could be given as sheet name or as worksheets variable.
     if P01.VarType(Sheet) == vbString:
-        Sh = P01.Sheets(Sheet)
+        Sh = PG.ThisWorkbook.Sheets(Sheet)
     else:
         Sh = Sheet
     #*HL fn_return_value = Sh.UsedRange.Rows(Sh.UsedRange.Rows.Count).Row
-    fn_return_value = len(Sh.UsedRange_Rows())-1
+    fn_return_value = Sh.get_LastUsedRow() #len(Sh.UsedRange_Rows())-1
     Sh = None
     return fn_return_value
 
@@ -187,10 +191,10 @@ def LastUsedColumnInRow(Sh, Row):
     return fn_return_value
 
 def LastUsedColumnIn(Sheet):
-    Sh:P01.CWorksheet = Variant()
+    #Sh:P01.CWorksheet = Variant()
     #--------------------------------------------------
     if P01.VarType(Sheet) == vbString:
-        Sh = P01.Sheets(Sheet)
+        Sh = PG.ThisWorkbook.Sheets(Sheet)
     else:
         Sh = Sheet
     fn_return_value = Sh.LastUsedColumn #*HLSh.UsedRange.Columns(Sh.Columns.Count).Column
@@ -244,12 +248,12 @@ def First_Change_in_Line(Target):
 def LastFilledRowIn_ChkAll(Sh):
     Row = int()
     #-------------------------------------------------------------
-    Row = LastUsedRowIn(Sh)
+    Row = LastUsedRowIn(Sh)+1
     with_variable2 = Sh
     while First_Change_in_Line(with_variable2.Cells(Row, 1)):
         Row = Row - 1
         if Row == 0:
-            return fn_return_value
+            return 0
     fn_return_value = Row
     return fn_return_value
 
@@ -463,6 +467,7 @@ def ShowHourGlassCursor(bApply):
         # in some systems the cursor may fail to reset to default, this forces it
         GetCursorPos(pt)
         SetCursorPos(pt.X, pt.Y)
+        
 
 def IsHourGlassCursor():
     #---------------------------------------------
@@ -477,7 +482,8 @@ def EndProg():
     #ShowHourGlassCursor(False)
     P01.Application.EnableEvents = True
     P01.Application.ScreenUpdating = True
-    sys.exit(0)
+    Debug.Print("Error in Dialog: End_Prog()")
+    #test raise Exception("Error in Dialog")
 
 def ClearStatusbar():
     #--------------------------
@@ -597,7 +603,7 @@ def Same_Name_already_open(FullName):
 def SheetEx(Name):
     #-------------------------------
     fn_return_value=False
-    for s in P01.ActiveWorkbook.sheets:
+    for s in PG.ThisWorkbook.sheets:
         if s.Name == Name:
             fn_return_value = True
             return fn_return_value
@@ -714,8 +720,10 @@ def Read_File_to_String(FileName):
         # fn_return_value = Input(LOF(fp), fp)
         # VBFiles.closeFile(fp)
         return fn_return_value
-    except:
-        P01.MsgBox(M09.Get_Language_Str(r'Fehler beim lesen der Datei:') + vbCr + r'  '' + FileName() + r''', vbCritical, M09.Get_Language_Str(r'Fehler beim Datei lesen'))
+    except BaseException as e:
+        Debug.Print("Read_File_to_String: Fehler beim Lesen der Datei "+FileName)
+        logging.debug(e)
+        P01.MsgBox(M09.Get_Language_Str(r'Fehler beim lesen der Datei:') + vbCr + r'  ' + FileName + r'', vbCritical, M09.Get_Language_Str(r'Fehler beim Datei lesen'))
         fn_return_value = r'#ERROR#'
         return fn_return_value
 
@@ -807,7 +815,7 @@ def CreateFolder(sFolder):
     # VB2PY (UntranslatedCode) On Error GoTo ErrorHandler
     logging.debug("Create_Folder:"+sFolder)
     s = GetPathOnly(sFolder)
-    if P01.Dir(s) == r'':
+    if Dir(s) == r'':
         s = CreateFolder(s)
         MkDir(s)
     fn_return_value = sFolder
@@ -1058,7 +1066,7 @@ def Bring_to_front(hwnd):
     # See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setforegroundwindow
     # But it brings up excel again after the upload to the Arduino
     # Without this funchion an other program was activated after the upload for some reasons
-    P01.ThisWorkbook.Activate()
+    PG.ThisWorkbook.Activate()
     #*HL SetForegroundWindow(hwnd)
 
 def Replicate(RepeatString, NumOfTimes):
@@ -1146,28 +1154,27 @@ def ConvertUTF8Str(UTF8Str):
     return fn_return_value
 
 def Dir_is_Empty(DirName):
-    Res = String()
-    fn_return_value = False
+    
     #---------------------------------------------------------
-    # Return true it the directoriy contains at least one subdirectory or one file
-    Res = Dir(DirName + r'\*.*', vbDirectory)
-    while Res != r'':
-        if Res != r'' and Left(Res, 1) != r'.':
-            return fn_return_value
-        Res = Dir()
-    Res = Dir(DirName + r'\*.*')
-    while Res != r'':
-        if Res != r'' and Left(Res, 1) != r'.':
-            return fn_return_value
-        Res = Dir()
-    fn_return_value = True
-    return fn_return_value
+    # Return false it the directory contains at least one subdirectory or one file
+    searchpath = pathlib.Path(DirName)
+    if searchpath.exists():
+        pathlist=pathlib.Path(DirName).iterdir()
+        for path in pathlist:
+            if path !="":
+                return False
+        return True
+    return True
+
 
 def Get_First_SubDir(DirName):
     Res = String()
     fn_return_value=""
     #------------------------------------------------------------
-    Res = Dir(DirName + r'\*.*', vbDirectory)
+    if DirName[-1:]=="/":
+        DirName = DirName[:-1]
+        
+    Res = Dir(DirName + r'/*.*', vbDirectory)
     while Res != r'':
         if Res != r'' and Left(Res, 1) != r'.':
             fn_return_value = Res
@@ -1302,17 +1309,17 @@ def Clear_Platform_Parameter_Cache():
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ParName - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: EmptyCheck=False - ByVal 
 def Get_Current_Platform_String(ParName, EmptyCheck=False, Silent=False):
-    fn_return_value = Get_Platform_String(M02.Get_BoardTyp(), ParName, EmptyCheck, Silent)
+    fn_return_value = Get_Platform_String(M02a.Get_BoardTyp(), ParName, EmptyCheck, Silent)
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ParName - ByVal 
 def Get_Current_Platform_Bool(ParName, Silent=False):
-    fn_return_value = Get_Platform_Bool(M02.Get_BoardTyp(), ParName, Silent)
+    fn_return_value = Get_Platform_Bool(M02a.Get_BoardTyp(), ParName, Silent)
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ParName - ByVal 
 def Get_Current_Platform_Int(ParName, Silent=False):
-    fn_return_value = Get_Platform_Int(M02.Get_BoardTyp(), ParName, Silent)
+    fn_return_value = Get_Platform_Int(M02a.Get_BoardTyp(), ParName, Silent)
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: PlatformKey - ByVal 
@@ -1336,7 +1343,7 @@ def Get_Platform_String(PlatformKey, ParName, EmptyCheck=False, Silent=False):
     if (PlatformKey + r'|' + ParName in PlatformParams.keys()): #*HL
         fn_return_value = PlatformParams.get(PlatformKey + r'|' + ParName) #*HL
         return fn_return_value
-    Sh = P01.Sheets(M02.PLATFORMS_SH)
+    Sh = PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH)
     r = Sh.Range(Sh.Cells(PlatformKey_ROW, PlatformKey_COL), Sh.Cells(PlatformKey_ROW, PlatformKey_COL + 99))
     f = r.Find(What= PlatformKey, LookIn= xlFormulas, LookAt= xlWhole, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
     if f is None:
@@ -1422,14 +1429,14 @@ def Test_Get_Platform_String():
     #   false       false
     #   intGood         -22
     #   intBad          a44
-    Get_Platform_String()(r'ESP32', r'SPI_Pins')
-    Get_Platform_Bool()(r'AM328', r'TRUE')
-    Get_Platform_Bool()(r'AM328', r'TRue')
-    Get_Platform_Bool()(r'AM328', r'false')
-    Get_Platform_Bool()(r'AM328', r'0')
-    Get_Platform_Bool()(r'AM328', r'1')
-    Get_Platform_Int()(r'PICO', r'intGood')
-    Get_Platform_Int()(r'PICO', r'intBad')
+    Get_Platform_String(r'ESP32', r'SPI_Pins')
+    Get_Platform_Bool(r'AM328', r'TRUE')
+    Get_Platform_Bool(r'AM328', r'TRue')
+    Get_Platform_Bool(r'AM328', r'false')
+    Get_Platform_Bool(r'AM328', r'0')
+    Get_Platform_Bool(r'AM328', r'1')
+    Get_Platform_Int(r'PICO', r'intGood')
+    Get_Platform_Int(r'PICO', r'intBad')
 
 def Get_Act_ms():
     
@@ -1460,25 +1467,25 @@ def CreateHeaderFile(Platform, SheetName):
     if Sh is None:
         P01.MsgBox('The sheet ' + SheetName + ' does not exist')
         return
-    P01.Sheets(SheetName).Select()
+    PG.ThisWorkbook.Sheets(SheetName).Select()
     M25.Make_sure_that_Col_Variables_match()
     OriginalPlatform = P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL)
     if (Platform == 'ESP32'):
-        P01.Cells[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_ESP32
+        P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_ESP32
     elif (Platform == 'AM328'):
-        P01.Cells[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_NANO_NEW
+        P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_NANO_NEW
     elif (Platform == 'PICO'):
-        P01.Cells[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_PICO
+        P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_PICO
     else:
         P01.MsgBox('The platform ' + Platform + ' is not supported')
         return
     if M06.Create_HeaderFile(True):
-        FileCopy_with_Check(P01.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED, Platform + '_Header_' + SheetName + '.h', P01.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + M02.Include_FileName)
+        M12.FileCopy_with_Check(M08.GetWorkbookPath() + '/' + M02.Ino_Dir_LED, Platform + '_Header_' + SheetName + '.h', M08.GetWorkbookPath() + '/' + M02.Ino_Dir_LED + M02.Include_FileName)
     else:
-        TargetName = P01.ThisWorkbook.Path + '/' + M02.Ino_Dir_LED + Platform + '_Header_' + SheetName + '.h'
+        TargetName = M08.GetWorkbookPath() + '/' + M02.Ino_Dir_LED + Platform + '_Header_' + SheetName + '.h'
         if Dir(TargetName) != '':
             Kill(TargetName)
-    P01.Cells[M02.SH_VARS_ROW, M25.BUILDOP_COL] = OriginalPlatform
+    P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = OriginalPlatform
     
 def __IsValidPageId(ID):
     fn_return_value = True
@@ -1506,18 +1513,70 @@ def CreateAllHeaderFiles():
 """ 31.01.22: Juergen
 ---------------------------------------------------------------------------------------------------------------------------------
 """
-def Matches(Str, reg, matchIndex=VBMissingArgument, subMatchIndex=VBMissingArgument):
+def Matches(p_str, reg, matchIndex=VBMissingArgument, subMatchIndex=VBMissingArgument):
     #---------------------------------------------------------------------------------------------------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo ErrHandl
     fn_return_value = False
     regex = CreateObject('VBScript.RegExp')
     regex.Pattern = reg
     regex.Global = not ( matchIndex == 0 and subMatchIndex == 0 ) 
-    if regex.Test(Str):
-        Match = regex.Execute(Str)
+    if regex.Test(p_str):
+        Match = regex.Execute(p_str)
         fn_return_value = Match.Count == 1
         return fn_return_value
     fn_return_value = False
     return fn_return_value
 
+# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: SeachStr - ByVal 
+def FastFind(SeachStr, r):
+    _fn_return_value = None
+    # 14.02.23: Hardi
+    #--------------------------------------------------------------
+    # .Match is much faster then .find
+    # See: http://fastexcel.wordpress.com/2011/10/26/match-vs-find-vs-variant-array-vba-performance-shootout/
+    # The search is case insensitive ! Also if its located in a "Option Compare Binary" modul
+    # Filtered lines are also found.
+    # VB2PY (UntranslatedCode) On Error GoTo NotFound
+    _fn_return_value = P01.Application.WorksheetFunction.Match(SeachStr, r, 0)
+    return _fn_return_value
+
+# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: SeachStr - ByVal 
+# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: r - ByVal 
+def CSFastFind(SeachStr, r):
+    _fn_return_value = None
+    Offset = Long()
+    # 14.02.23: Hardi
+    #----------------------------------------------------------------------
+    # Case sensitive FastFind function
+    # Filtered lines are also found.
+    #
+    # The seach string must match exactly with the whole cell. Parts of the string are not found.
+    # VB2PY (UntranslatedCode) On Error GoTo Is_Sil_Sheet
+    _fn_return_value = P01.Application.WorksheetFunction.Match(SeachStr, r, 0)
+    if _fn_return_value > 0:
+        if r(_fn_return_value, 1) != SeachStr:
+            # Same case ?
+            if _fn_return_value < r.Count:
+                Offset = Offset + _fn_return_value
+                r = P01.Application.Intersect(r.Offset(_fn_return_value), r)
+                _fn_return_value = 0
+            else:
+                _fn_return_value = 0
+    if _fn_return_value > 0:
+        _fn_return_value = _fn_return_value + Offset
+    return _fn_return_value
+
+def WorksheetExists(SheetName):
+    _fn_return_value = None
+    TempSheetName = String()
+
+    # 15.02.23: Juergen
+    #----------------------------------------------------------------------
+    TempSheetName = UCase(SheetName)
+    for Sheet in PG.ThisWorkbook.sheets:
+        if TempSheetName == UCase(Sheet.Name):
+            _fn_return_value = True
+            return _fn_return_value
+    _fn_return_value = False
+    return _fn_return_value
 
