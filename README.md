@@ -32,8 +32,11 @@ http://vb2py.sourceforge.net/online_conversion.html. Therefore some hidden error
 The VBA Code of the PatternGenerator was translated by an enhanced version of the VB2PY command line tool.
 
 History of Change
-V4.0.25.001 - 93.02.2024 - HL
-- new Servo Test Page 2, support for new servo firmware from Eckhart
+V5.1.0.001 - 25.3.2024 - HL
+- restructuring Excel-VBA simulation- replacing Tkintertable with TKSheet
+- Beta test of PatternGenerator - Main Functionality is available
+- integration of PatternGenerator into ProgGenerator Macros: PatternConfig - Individuelle Pattern
+- new Macro: Servo Animation - providing a graphical user interface for servo animation
 
 V4.0.10.001 - 23.3.2023 - HL
 - new: support for PNG images

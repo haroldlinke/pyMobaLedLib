@@ -69,7 +69,7 @@ import proggen.M09_Select_Macro as M09SM
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-#import proggen.M28_divers as M28
+import proggen.M28_divers as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 import proggen.M32_DCC as M32
@@ -448,8 +448,10 @@ def Update_Sum_Func():
     # The Sum function in the filter column is used to detect changes in the autofilter
     #  to update the "Start LedNr"
     Debug.Print("Update_Sum_Func called")
+
+    return #*HL
     
-    P01.CellDict[M02.SH_VARS_ROW, M25.Filter__Col].FormulaR1C1 = '=SUM(R[1]C:R[' + M30.LastUsedRow() + ']C)'
+    P01.CellDict[M02.SH_VARS_ROW, M25.Filter__Col].FormulaR1C1 = '=SUM(R[1]C:R[' + str(M30.LastUsedRow()) + ']C)'
     
 
 def Col_is_in_Range(c, r):
@@ -646,7 +648,7 @@ def Show_Help():
 def Proc_DoubleCkick(Sh, Target, Cancel):
     #----------------------------------------------------------------------------------------------
     M25.Make_sure_that_Col_Variables_match(Sh)
-    if M27.Is_Data_Sheet(P01.ActiveSheet):
+    if M28.Is_Data_Sheet(P01.ActiveSheet):
         if Target.Row >= M02.FirstDat_Row:
             if (Target.Column == M25.Config__Col) or (Target.Column == M25.MacIcon_Col) or (Target.Column == M25.LanName_Col):
                 Cancel = True
@@ -888,7 +890,7 @@ def Update_StartValue(Row):
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Row - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: onValue=0 - ByVal 
-def Update_TestButtons(Row, onValue=0, First_Call=True):
+def Update_TestButtons(Row, onValue=0, First_Call=True, redraw=False):
     
     global Global_Rect_List
     #objButton = Shape()
@@ -958,7 +960,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
     LastRow = M30.LastUsedRow()
     ButtonPrefix = 'B'
     i = 1
-    if First_Call:
+    if First_Call and not redraw:
         Global_Rect_List = vbObjectInitialize(((1, LastRow),), str)
         while i <= P01.ActiveSheet.Shapes.Count():
             #  is it a SendButton Shape?
@@ -978,13 +980,17 @@ def Update_TestButtons(Row, onValue=0, First_Call=True):
                         P01.ActiveSheet.Shapes.Delete(i)
             i = i + 1
     else:
-        if Global_Rect_List[Row] == '':
-            return
-        Rect_List_In_Row = Split(Trim(Global_Rect_List(Row)), ' ')
-        OldRect_Cnt = UBound(Rect_List_In_Row) + 1
-        OldRect_List = vbObjectInitialize((OldRect_Cnt - 1,), Variant)
-        for i in vbForRange(0, OldRect_Cnt - 1):
-            OldRect_List[i] = CLng(Rect_List_In_Row(i))
+        if redraw:
+            OldRect_Cnt = 0
+        else:
+            OldRect_Cnt = 0
+            if Global_Rect_List[Row] == '':
+                return
+            Rect_List_In_Row = Split(Trim(Global_Rect_List(Row)), ' ')
+            OldRect_Cnt = UBound(Rect_List_In_Row) + 1
+            OldRect_List = vbObjectInitialize((OldRect_Cnt - 1,), Variant)
+            for i in vbForRange(0, OldRect_Cnt - 1):
+                OldRect_List[i] = CLng(Rect_List_In_Row(i))
     InCnt = P01.val(P01.Cells(Row, M25.InCnt___Col))
     #print("UpdateTestButton Row:",Row," Col:",M25.InCnt___Col," InCnt:",InCnt)
     if InCnt < 1:

@@ -1069,6 +1069,8 @@ class UserForm_Other():
                     if not validListEntry:
                         P01.MsgBox(Replace(Replace(Replace(M09.Get_Language_Str('Fehler: Der Parameter \'#1#\' hat einen ungültigen Wert #2#. Der Parameter wird auf den Standardwert #3# zurückgesetzt.'), '#1#', p), '#2#', ParVal), '#3#', Def), vbCritical, M09.Get_Language_Str('Parameter Fehler'))
                         ParVal = Def
+                if (Typ == "Logic"):
+                    Typ = "BigEntry"
                 self.Controls['Par' + str(UsedParNr) + 'Select'] = ParVal
                 self.Controls['Par' + str(UsedParNr)] = ParVal
                 

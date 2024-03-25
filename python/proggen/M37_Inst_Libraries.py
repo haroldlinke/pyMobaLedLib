@@ -826,7 +826,7 @@ def Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLList
     if P01.MsgBox(M09.Get_Language_Str(' Folgende ARDUINO Bibliotheken müssen aktualisiert werden:\nLibraries:' + repr(LibList)+"\nBoards:"+repr(BrdList)+"\nOthersource:"+repr(OthersourceList)+'\n Soll das Update ausgeführt werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('ARDUINO Bibilothem update')) != vbYes:
         # shutdown and restart
         return M40.Failure
-
+    Res=M40.Failure
     # *** Libraries ***
     if LibList != '':
         LibList = M30.DelLast(LibList)

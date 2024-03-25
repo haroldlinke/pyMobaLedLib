@@ -49,7 +49,9 @@ import ExcelAPI.XLW_Workbook as P01
 import mlpyproggen.Prog_Generator as PG
 import proggen.M22_Hide_UnHide as M22
 import proggen.M23_Add_Move_Del_Row as M23
+import proggen.M25_Columns as M25
 import proggen.M20_PageEvents_a_Functions as M20
+import proggen.M27_Sheet_Icons as M27
 import proggen.M28_divers as M28
 import proggen.M30_Tools as M30
 import proggen.M32_DCC as M32
@@ -68,6 +70,7 @@ import proggen.D10_UserForm_Options as D10
 import proggen.D11_Userform_SimpleInput as D11
 import proggen.D12_Select_ProgGen_Src_Form as D12
 import proggen.D13_Select_ProgGen_Dest_Form as D13
+import proggen.D15_Userform_PCAnim as D15
 import pgcommon.G00_common as G00
 
 def Arduino_Button_Click(event=None):
@@ -167,7 +170,7 @@ def Hide_Button_Click():
 
 def Insert_Button_Click():
     __Button_Pressed_Proc()
-    P01.ActiveSheet.addrow_after_current_row()
+    P01.ActiveSheet.addrow_before_current_row()
 
 def Del_Button_Click():
     #-----------------------------
@@ -183,9 +186,7 @@ def Move_Button_Click():
 def Copy_Button_Click():
     #------------------------------
     __Button_Pressed_Proc()
-    #notimplemented("Copy Row")
-    P01.ActiveSheet.addrow_after_current_row(copy=True)
-    #Proc_Copy_Row()
+    M23.Proc_Copy_Row()
 
 def Options_Button_Click():
     #----------------------------------
@@ -257,6 +258,7 @@ def Workbook_Open():
     if continue_update:
         M37.Install_Missing_Libraries_and_Board()
         M38.__Load_Extensions()
+        pass
     P01.Application.ScreenUpdating = True
     #if ENABLE_CRITICAL_EVENTS_WB:
     #    # Generate events for special actions
@@ -278,7 +280,7 @@ def Workbook_Open():
 
         
 def workbook_init(workbook):
-          
+
     M01.__Release_or_Debug_Version(True)
     
     if P01.checkplatform("Windows"):
@@ -309,14 +311,28 @@ def worksheet_init(act_worksheet):
 
     if act_worksheet.Datasheet:
         P01.ActiveSheet=act_worksheet
+        M25.Make_sure_that_Col_Variables_match(Sh=P01.ActiveSheet)
         for row in range(3,M30.LastUsedRow()):
             M20.Update_TestButtons(row,First_Call=first_call)
             M20.Update_StartValue(row)
             first_call=False
+            
+def worksheet_redraw(sheet):
+    if sheet.Datasheet and sheet.Name != "Examples":
+        P01.ActiveSheet=sheet
+        M25.Make_sure_that_Col_Variables_match(Sh=sheet)
+        for row in range(3,M30.LastUsedRow()):
+            MacroStr = P01.Cells(row, M25.Config__Col, ws=sheet)
+            if MacroStr != "":
+                M27.FindMacro_and_Add_Icon_and_Name(MacroStr, row, sheet)
+            M20.Update_TestButtons(row, redraw=True)
+            M20.Update_StartValue(row)
+            
+    
     
 def init_UserForms():
     global StatusMsg_UserForm, UserForm_Select_Typ_DCC, UserForm_Select_Typ_SX, Select_COM_Port_UserForm,UserForm_Options,UserForm_DialogGuide1,UserForm_Description,UserForm_Connector
-    global Userform_SimpleInput,Select_ProgGen_Src_Form, Select_ProgGen_Dest_Form
+    global Userform_SimpleInput,Select_ProgGen_Src_Form, Select_ProgGen_Dest_Form, UserForm_PCAnim
     
     UserForm_DialogGuide1 = D01.UserForm_DialogGuide1()
     UserForm_Select_Typ_DCC = D02.UserForm_Select_Typ_DCC()
@@ -329,6 +345,8 @@ def init_UserForms():
     Userform_SimpleInput = D11.UserForm_SimpleInput()
     Select_ProgGen_Src_Form = D12.CSelect_ProgGen_Src_Form(PG.global_controller)
     Select_ProgGen_Dest_Form = D13.CSelect_ProgGen_Dest_Form(PG.global_controller)
+    UserForm_PCAnim = D15.UserForm_PCAnim(PG.global_controller)
+
 
     
 def notimplemented(command):

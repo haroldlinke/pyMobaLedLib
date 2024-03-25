@@ -789,6 +789,19 @@
         "Input Text": "Servo Control Betriebsart",
         "Hint": "Betriebsart des Servos (1=Normal, 2=std training, 3=wide training, 4=max speed, 5=reset)"
     },
+    "ServoCRCold": {
+        "ParName": "ServoCRCold",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ServoCRCold",
+        "Min": "0",
+        "Max": "255",
+        "Persistent": "True",
+        "Default": "",
+        "Input Text": "Use Old CRC",
+        "Hint": "Alten CRC verwenden (nur für Experten)"
+    },
+    
     "SoundAddress": {
         "ParName": "Sound_Address",
         "Cnt": "",

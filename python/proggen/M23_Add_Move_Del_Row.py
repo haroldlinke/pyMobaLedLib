@@ -124,9 +124,10 @@ def Proc_Del_Row():
 
 def Proc_Move_Row():
     global __Move_Info_Shown
-    ActSh = String()
+
     #-------------------------
     ActSh = P01.ActiveSheet
+    ActSh.prepare_moveRows()
     if not __Move_Info_Shown:
         if P01.MsgBox(M09.Get_Language_Str('Mit dem \'Verschiebe Zeilen\' Knopf können eine oder mehrere Zeilen verschoben werden.' + vbCr + 'Damit kann die Reihenfolge der Beleuchtungen oder der anderen Effekte an die physikalisch vorgegebene ' + 'Anschlussreihenfolge angepasst werden.' + vbCr + vbCr + 'Die zu verschiebenden Zeilen markiert man mit der Maus oder Tastatur und der Großschreibetaste und betätigt den \'Verschieben\' Knopf. ' + 'Dann wählt man mit der Maus die neue Position der Zeilen. Eine Grüne Linie markiert dabei die Zielposition.' + vbCr + 'Mit der \'ESC\' Taste kann die Aktion abgebrochen werden.' + vbCr + vbCr + 'Achtung: Diese Meldung wird nur einmal pro Programmstart angezeigt.'), vbOKCancel, M09.Get_Language_Str('Funktionsweise des \'Verschiebe Zeilen\' Knopfes')) == vbCancel:
             return
@@ -134,8 +135,7 @@ def Proc_Move_Row():
     if P01.ActiveCell().Row < M02.FirstDat_Row:
         P01.MsgBox(M09.Get_Language_Str('Achtung: Zum verschieben von Zeilen müssen eine oder mehrere Zellen im Datenbereich der Tabelle markiert ' + 'sein. Die entsprechenden Zeilen können dann per Maus verschoben werden.' + vbCr + vbCr + 'Der gewählte Bereich liegt (teilweise) außerhalb des Datenbereichs'), vbInformation, M09.Get_Language_Str('Zu verschiebende Zeile muss im Datenbereich der Tabelle liegen'))
         return
-    
-    ActSh.moveRows()
+    ActSh.do_moveRows()
     M20.Update_Start_LedNr()
     
     """
@@ -175,33 +175,43 @@ def Proc_Move_Row():
     return
 
 def Proc_Copy_Row():
+    
+    ActSh = P01.ActiveSheet
+    #ActSh.do_copyRows()
+    #M20.Update_Start_LedNr()
+    #return
+
     OldUpdating = Boolean()
 
     OldEvents = Boolean()
     #-------------------------
-    Make_sure_that_Col_Variables_match()
-    OldUpdating = Application.ScreenUpdating
-    Application.ScreenUpdating = False
-    OldEvents = Application.EnableEvents
-    Application.EnableEvents = False
-    if Selection.Row >= FirstDat_Row:
-        DestRow = Selection.Row + Selection.Rows.Count
-        RowCnt = Selection.Rows.Count
+    M25.Make_sure_that_Col_Variables_match()
+    OldUpdating = P01.Application.ScreenUpdating
+    P01.Application.ScreenUpdating = False
+    OldEvents = P01.Application.EnableEvents
+    P01.Application.EnableEvents = False
+    if P01.Selection.Row >= M02.FirstDat_Row:
+        DestRow = P01.Selection.Row + len(P01.Selection.Rows()) ##.Count
+        RowCnt = len(P01.Selection.Rows()) #P01.Selection.Rows.Count
         for i in vbForRange(1, RowCnt):
-            Rows(DestRow).EntireRow.Insert(Shift=xlDown, CopyOrigin=xlFormatFromLeftOrAbove)
-        EndDestRow = DestRow + Selection.Rows.Count - 1
-        RowDict[DestRow + ':' + EndDestRow] = Selection.EntireRow.Value
-        Range(Cells(DestRow, Selection.Column), Cells(EndDestRow, Selection.Column + Selection.Columns.Count - 1)).Select()
-        Used_Rows_All_Borderlines()
-        Format_Cells_to_Row(DestRow + Selection.Rows.Count)
-        Update_Sum_Func()
+
+            P01.Rows(DestRow).EntireRow.Insert(Shift=xlDown, CopyOrigin=xlFormatFromLeftOrAbove)
+        EndDestRow = DestRow + RowCnt - 1
+        #P01.Cells(DestRow, P01.Selection.Column).Select()
+        
+        # copy row value to destinationrows - needs to be updated
+        P01.RowDict[str(DestRow) + ':' + str(EndDestRow)] = P01.Selection.EntireRow.Value
+        P01.Range(P01.Cells(DestRow, P01.Selection.Column), P01.Cells(EndDestRow, P01.Selection.Column + P01.Selection.Columns.Count - 1)).Select()
+        #Used_Rows_All_Borderlines()
+        #Format_Cells_to_Row(DestRow + Selection.Rows.Count)
+        M20.Update_Sum_Func()
         for Row in vbForRange(DestRow, DestRow + RowCnt):
-            s = Cells(Row, Config__Col)
+            s = P01.Cells(Row, M25.Config__Col)
             if s != '':
-                FindMacro_and_Add_Icon_and_Name(s, Row, ActiveSheet)
-    Update_Start_LedNr()
-    Application.ScreenUpdating = OldUpdating
-    Application.EnableEvents = OldEvents
+                M27.FindMacro_and_Add_Icon_and_Name(s, Row, P01.ActiveSheet)
+    M20.Update_Start_LedNr()
+    P01.Application.ScreenUpdating = OldUpdating
+    P01.Application.EnableEvents = OldEvents
 
 # VB2PY (UntranslatedCode) Option Explicit
 

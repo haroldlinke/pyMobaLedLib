@@ -132,7 +132,7 @@ def Copy_Pattern_Macro_Callback(OK_Pressed, SendToArduino, GoBack):
     Kanaele = int(PG.ThisWorkbook.ActiveSheet.Range('Kanaele'))
     Startkanal = int(PG.ThisWorkbook.ActiveSheet.Range('Startkanal'))
     if Kanaele % 3 == 0 and Startkanal == 0:
-        LEDs = Kanaele / 3
+        LEDs = int(Kanaele / 3)
     else:
         LEDs = 'C' + str(Startkanal + 1) + '-' + str(Startkanal + Kanaele)
     #Prog_Gen_Name = M30.FileNameExt(Get_Prog_Generator_Name())
@@ -213,6 +213,9 @@ def Check_Table_before_Copy(Send_to_Prog_Gen):
 def Select_Line_in_Prog_Gen_and_Call_Macro(Get_Dest, Macro_Callback):
     
     X02.activate_workbook("ProgGenerator")
+
+    PG.global_controller.showFramebyName("ProgGeneratorPage")
+
     M50.Select_Line_for_Patern_Config_and_Call_Macro(Get_Dest, Macro_Callback)  #*HL
     
     return #*HL

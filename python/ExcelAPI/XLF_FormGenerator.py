@@ -41,6 +41,8 @@ import sys
 import ExcelAPI.XLW_Workbook as X02
 import pattgen.M09_Language as M09
 import pattgen.D00_GlobalProcs as D00
+import tkcolorpicker.spinbox as SB
+
 
 
 # ##########################################################
@@ -76,7 +78,24 @@ class CControl_Template(object):
         self.Controls=[]
         self.Enabled = True
         self.Init_Value=None
-        
+
+    def get_selection(self):
+        sel_list = self.TKWidget.curselection()
+        if sel_list == ():
+            return 0
+        if len(sel_list) == 1:
+            return sel_list[0]
+        return sel_list
+    
+    def set_selection(self,value):
+        if value != None:
+            self.TKWidget.select_clear(0, "end")
+            if value != "":
+                self.TKWidget.selection_set(value)
+                self.TKWidget.activate(value)
+    
+    Selection = property(get_selection, set_selection, doc='Selected Entry of Listbox')
+
     def get_value(self):
         if self.TKVar:
             return self.TKVar.get()
@@ -111,6 +130,10 @@ class CControl_Template(object):
         res_line = self.list_choices[nr]
         res_split = str.split(res_line,":")
         return res_split[0]
+
+    def select(self, value):
+        # select page of MultiPage
+        self.TKWidget.select(value)
 
 def ToolTip(widget,text="", key="",button_1=False):
     if text:
@@ -147,9 +170,16 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             comp.Default = component_dict.get("Default",None)
             comp.Persistent = component_dict.get("Persistent",comp.Default)
             comp.Init_Value = persistent_controls.get(comp.Name,None)
+            if not comp.Init_Value:
+                comp.Init_Value = component_dict.get("Value",None)
             comp.Caption = M09.Get_Language_Str(component_dict.get("Caption",""))
             comp.AlternativeText = component_dict.get("AlternativeText","")
             comp.Font = component_dict.get("Font",defaultfont)
+            comp.SpecialEffect = component_dict.get("SpecialEffect","")
+            if comp.SpecialEffect == "fmSpecialEffectSunken":
+                comp.relief = tk.SUNKEN
+            else:
+                comp.relief = tk.FLAT
             width = component_dict.get("Width",0)
             height = component_dict.get("Height",0)
             if type(width)==int:
@@ -173,6 +203,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 container = ttk.Notebook(parent)
                 container.place(x=comp.Left,y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=container
+                setattr(dlg,comp.Name,comp)
                 for page_dict in mp_comp_list:
                     page=CControl_Template(Dlg=dlg)
                     page.Type = page_dict["Type"]
@@ -196,7 +227,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 else:
                     anchor="n"
                     justify=tk.CENTER
-                label=tk.Label(parent, text=comp.Caption,anchor=anchor, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,font=comp.Font) #,font=comp_font)
+                label=tk.Label(parent, text=comp.Caption,anchor=anchor, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,font=comp.Font, relief=comp.relief) #,font=comp_font)
                 label.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=label
                 if comp.ControlTipText!="":
@@ -240,8 +271,9 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 if comp.ControlTipText!="":
                     ToolTip(checkbutton, text=comp.ControlTipText)
             elif comp.Type == "TextBox":
-                textbox=tk.Text(parent, width=comp.Width,height=comp.Height,wrap= tk.WORD,font=comp.Font,relief=tk.FLAT) #,font=comp_font)
-                textbox.insert("1.0",comp.Caption)
+                textbox=tk.Text(parent, width=comp.Width,height=comp.Height,wrap= tk.WORD,font=comp.Font,relief=comp.relief) #,font=comp_font)
+                if comp.Caption != None:
+                    textbox.insert("1.0",comp.Caption)
                 charformat_dict = component_dict.get("CharFormat",None)
                 if charformat_dict==None:
                     charformat_dict=comp.format_dict # shape individual formats
@@ -264,31 +296,53 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                                     textbox.tag_config(tagname, font=font)
                                 if charformat.ForeGround:
                                     textbox.tag_config(tagname, foreground=charformat.ForeGround)
-                textbox.config(state=tk.DISABLED)
+
+                #textbox.config(state=tk.DISABLED)
                 textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                setattr(dlg,comp.Name,comp)
                 comp.TKWidget=textbox
                 if comp.ControlTipText!="":
                     ToolTip(textbox, text=comp.ControlTipText)                
+            elif comp.Type == "NumBox":
+                if comp.Init_Value:
+                    init_value=comp.Init_Value
+                else:
+                    init_value=0
+                comp.TKVar = tk.IntVar(value=init_value)
+                setattr(dlg,comp.Name,comp)
+                textbox=SB.Spinbox(parent, from_=0,to=65535,textvariable=comp.TKVar, width=comp.Width) #,font=comp_font)
+                if comp.Caption != None:
+                    textbox.insert("1.0",comp.Caption)
+                textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                comp.TKWidget=textbox
+                if comp.ControlTipText!="":
+                    ToolTip(textbox, text=comp.ControlTipText)                            
             elif comp.Type == "ListBox":
-                comp.TKVar = tk.StringVar(value=[])
+                if comp.Init_Value:
+                    init_value=comp.Init_Value # list of values
+                else:
+                    init_value=[]                
+                comp.TKVar = tk.StringVar(value=init_value)
                 setattr(dlg,comp.Name,comp)
                 #comp.Command = component_dict.get("Command",None)
                 #comp.Accelerator = component_dict.get("Accelerator","")
                 #if comp.Accelerator!="":
                 #    parent.bind(comp.Accelerator, Command)                    
-                listbox=tk.Listbox(parent, height=comp.Height, width=comp.Width,listvariable=comp.TKVar,font=comp.Font)
+                listbox=tk.Listbox(parent, height=comp.Height, width=comp.Width,listvariable=comp.TKVar,font=comp.Font,relief=comp.relief, exportselection = 0, selectmode=tk.SINGLE)
                 listbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=listbox
+                comp.Selection = component_dict.get("Selection",None)
                 if comp.ControlTipText!="":
                     ToolTip(listbox, text=comp.ControlTipText)                        
             elif comp.Type == "Frame":
                 frame = ttk.LabelFrame(parent,text=comp.Caption,borderwidth=1,relief=tk.RIDGE)
                 frame.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=frame
+                setattr(dlg,comp.Name,comp)
                 frame_comp = component_dict.get("Components",[])
                 generate_controls(frame_comp,frame,dlg=dlg)
                 if comp.ControlTipText!="":
-                    ToolTip(frame, text=comp.ControlTipText)                      
+                    ToolTip(frame, text=comp.ControlTipText)
             elif comp.Type == "Page":
                 mp_comp_list = component_dict["Components"]
                 generate_controls(mp_comp_list, parent, dlg=dlg)

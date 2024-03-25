@@ -21,10 +21,11 @@ def IsFilled(c):
     _fn_return_value = None
     #---------------------------------------
     _fn_return_value = Trim(c.Value) != ''
+    if isinstance(c.Value, list):
+        _fn_return_value = False
     return _fn_return_value
 
 def LastFilledColumn(Rng, LastRow):
-    
     _fn_return_value = None
     #*HL c = X02.Range()
 

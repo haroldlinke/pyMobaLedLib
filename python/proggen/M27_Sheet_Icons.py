@@ -79,24 +79,31 @@ def Add_Icon(Name, Row, Sh=None):
         return
     #if Sh.Columns(M25.MacIcon_Col).Hidden:
     #    return
-    Sh.Cells(Row,M25.MacIcon_Col).set_value({"Icon" : iconfilename})
+    #test Sh.Cells(Row,M25.MacIcon_Col).set_value({"Icon" : iconfilename})
     
-    return #*HL
+    #test return #*HL
 
     # VB2PY (UntranslatedCode) On Error GoTo ErrProc
-    Pic = Sh.Pictures.Insert(__Icon_Path() + Name + __Icon_Ext)
+    #test Pic = Sh.Pictures.Insert(__Icon_Path() + Name + __Icon_Ext)
+    Width = __Icon_Size
+    Left = Sh.Cells(Row, M25.MacIcon_Col).Left# + __Icon_Left +  ( __Icon_Size - Width )  / 2
+    Top = Sh.Cells(Row, M25.MacIcon_Col).Top# + __Icon_Top
+    Pic = Sh.addPicture(__Icon_Path() + Name + __Icon_Ext, Left, Top, __Icon_Size, __Icon_Size)
     # VB2PY (UntranslatedCode) On Error GoTo 0
     with_0 = Pic
     with_0.Locked = True
     with_0.Placement = xlMoveAndSize
-    with_1 = with_0.ShapeRange
-    if with_1.Width > with_1.Height:
-        with_1.Width = __Icon_Size
-    else:
-        with_1.Height = __Icon_Size
-    with_1.Left = Sh.Cells(Row, M25.MacIcon_Col).Left + __Icon_Left +  ( __Icon_Size - with_1.Width )  / 2
-    with_1.Top = Sh.Cells(Row, M25.MacIcon_Col).Top + __Icon_Top
+    #test with_1 = with_0.ShapeRange
+    #test if with_1.Width > with_1.Height:
+    #test     with_1.Width = __Icon_Size
+    #test else:
+    #test     with_1.Height = __Icon_Size
+    #test with_1.Left = Sh.Cells(Row, M25.MacIcon_Col).Left + __Icon_Left +  ( __Icon_Size - with_1.Width )  / 2
+    #test with_1.Top = Sh.Cells(Row, M25.MacIcon_Col).Top + __Icon_Top
     with_0.OnAction = 'SelectMacros_from_Icon'
+
+
+    Pic.updateShape()
     return
 
 def __Test_Add_Icon():

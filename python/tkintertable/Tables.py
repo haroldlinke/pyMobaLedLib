@@ -3567,7 +3567,7 @@ class CTShape(object):
         self.rectidx=0
         self.textidx=0
         self.formwin=None
-        self.tablename = tablecanvas.tablename
+        self.tablename = tablecanvas.name
         self.Left = Left
         self.Active = True
         self.Top = Top
@@ -3588,8 +3588,8 @@ class CTShape(object):
         self.LineColor = LineTKcolor
         self.OnAction = ""
         if Top !=None:
-            self.TopLeftCell_Row=tablecanvas.calc_row_from_y(Top)
-            self.TopLeftCell_Col=tablecanvas.calc_col_from_x(Left)
+            self.TopLeftCell_Row=ws.calc_row_from_y(Top)
+            self.TopLeftCell_Col=ws.calc_col_from_x(Left)
         else:
             self.TopLeftCell_Row=Row
             self.TopLeftCell_Col=Col

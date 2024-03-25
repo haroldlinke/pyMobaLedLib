@@ -204,7 +204,7 @@ Main_Menu_Form_RSC = {"UserForm":{
                         "Visible"       : True,
                         "Width"         : 395.25,
                         "Components"    : [{"Name":"Multipage1","Height": 372,"Left": 6,"Top": 6,"Type": "MultiPage","Visible": True,"Width": 372,                            
-                            "Components": [{"Name":"Page1","Caption":"Beispiele","Type": "Page","Visible": True,
+                            "Components": [{"Name":"page1","Caption":"Beispiele","Type": "Page","Visible": True,
                                 "Components":[{"Name":"Label3","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"Achtung: Bei den Schaltern wurde bewusst auf die 'Sind sie sicher...' Abfragen verzichtet. Wenn ein Knopf gedrückt wird, dann löst er die entsprechende Aktion sofort aus.",
                                                 "ControlTipText":"Tooltip1","ForeColor":"#000012","Height":30,"Left":6,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":300},
@@ -266,7 +266,7 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                               "Command":DeleteActualPageButton_Click,"ControlTipText":"","ForeColor":"#000012","Height":25,"Left":6,"Top":42,"Type":"CommandButton","Visible":True,"Width":114}
                                                              ]}
                                               ]},
-                                           {"Name": "Page2",
+                                           {"Name": "page2",
                                             "Caption": "Spezielle Module",
                                             "Type": "Page","Visible": True,
                                             "Components"    : [{"Name":"Label9","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
@@ -293,7 +293,7 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                                                     }]
                                                                 },
                                                                {"Name": "MultiPage2","BackColor": "#00000F","ControlTipText": "","ForeColor": "#000012","Height": 150,"Left": 6,"Top": 162,"Type": "MultiPage","Visible": True,"Width": 354,
-                                                                   "Components": [{"Name":"Page3",
+                                                                   "Components": [{"Name":"page4",
                                                                                    "Caption":"Charlieplexing",
                                                                                    "Type": "Page","Visible": True,
                                                                                    "Components": [{"Name": "Label12","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
@@ -303,7 +303,7 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                                                                    "Caption" : "Prog. Charlieplex",
                                                                                                    "Command" : Prog_Charlieplex_Button_Click,"ControlTipText": "","ForeColor": "#000012","Height": 25,"Left": 6,"Top": 12,"Type": "CommandButton","Visible": True,"Width": 72}
                                                                                                   ]},
-                                                                                  {"Name": "Page4",
+                                                                                  {"Name": "page5",
                                                                                    "Caption":"Servo",
                                                                                    "Type": "Page","Visible": True,
                                                                                    "Components"    : [{"Name": "Label4","BackColor": "#00000F","BorderColor": "#000006","BorderStyle"   : "fmBorderStyleNone",
@@ -313,7 +313,7 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                                                                        "Caption": "Prog. Servo",
                                                                                                        "Command": Prog_Servo_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 12,"Type": "CommandButton","Visible": True,"Width": 72}
                                                                                                       ]},
-                                                                                  {"Name": "Page5",
+                                                                                  {"Name": "page6",
                                                                                    "Caption":"Servo-MP3",
                                                                                    "Type": "Page","Visible": True,
                                                                                    "Components"    : [{"Name": "Label34","BackColor": "#00000F","BorderColor": "#000006","BorderStyle"   : "fmBorderStyleNone",
@@ -323,7 +323,7 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                                                                        "Caption": "Prog.Servo/MP3",
                                                                                                        "Command": Prog_ServoMP3_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 12,"Type": "CommandButton","Visible": True,"Width": 72},
                                                                                                       ]},
-                                                                                  {"Name": "Page6",
+                                                                                  {"Name": "page7",
                                                                                    "Caption":"Servo 2",
                                                                                    "Type": "Page","Visible": True,
                                                                                    "Components"    : [{"Name": "Label64","BackColor": "#00000F","BorderColor": "#000006","BorderStyle"   : "fmBorderStyleNone",
@@ -335,7 +335,7 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                                                                       ]},                                                                                  
                                                                                   ]}
                                                                ]},
-                                           {"Name": "Page3",
+                                           {"Name": "page3",
                                             "Caption": "Extras",
                                             "Type": "Page","Visible": True,
                                             "Components"    : [{"Name":"Label31","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
@@ -414,10 +414,14 @@ class CMainMenu_Form:
     def Show_Dialog(self):
         self.Show()
         
-    def Show(self):
+    def Show(self, page1=None, page2=None):
         self.IsActive = True
         self.__UserForm_Initialize()
         self.__UserForm_Activate()
+        if page1 != None:
+            self.Multipage1.select(page1)
+            if page2 != None:
+                self.MultiPage2.select(page2)
         self.controller.wait_window(self.Form)
         
     

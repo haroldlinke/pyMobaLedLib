@@ -205,13 +205,20 @@ def InStr(*args):
     if len(args) == 2:
         text, subtext = args
         return text.find(subtext) + 1
-    else:
+    elif len(args) == 3:
         start, text, subtext = args
         pos = text[start - 1:].find(subtext)
         if pos == -1:
             return 0
         else:
             return pos + start
+    else:
+        start, text, subtext,dummy = args
+        pos = text[start - 1:].find(subtext)
+        if pos == -1:
+            return 0
+        else:
+            return pos + start        
 
 
 def InStrRev(text, subtext, start=None, compare=None):
@@ -756,7 +763,7 @@ def vbForRange(start, stop, step=1):
 
     """
     num_repeats = (stop - start) / step
-    if num_repeats < 0:
+    if num_repeats < 0: 
         return
     current = start
     while num_repeats >= 0:

@@ -465,7 +465,7 @@ class CUserForm_Options:
             side="_L"
             self.Autodetect_Typ_L_CheckBox_var = tk.IntVar(master=self.top)
             self.Autodetect_Typ_L_CheckBox_var.set(0)
-            self.Autodetect_Typ_L_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_L_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
+            self.Autodetect_Typ_L_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_L_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0, command=self.__Autodetect_Typ_L_CheckBox_Click)
             self.Autodetect_Typ_L_CheckBox.grid(row=0, column=0,sticky="nw", padx=2, pady=2)                    
         else:
             side="_R"
@@ -473,7 +473,7 @@ class CUserForm_Options:
             self.Button_Setup(frame,M09.Get_Language_Str("Prog. Installieren"),self.__ProInstall_Button_Click,"U",Row=2)    
             self.Autodetect_Typ_R_CheckBox_var = tk.IntVar(master=self.top)
             self.Autodetect_Typ_R_CheckBox_var.set(0)
-            self.Autodetect_Typ_R_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_R_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
+            self.Autodetect_Typ_R_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_R_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0, command=self.__Autodetect_Typ_R_CheckBox_Click)
             self.Autodetect_Typ_R_CheckBox.grid(row=0, column=0,sticky="nw", padx=2, pady=2)                  
         
         for rb in self.radiobuttons.keys():

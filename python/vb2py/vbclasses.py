@@ -329,7 +329,7 @@ class VBArray(list):
 
     def createFromData(cls, data):
         """Create an array from some data"""
-        arr = cls(len(data))
+        arr = cls(len(data)-1)  #HL max size of arry should be len(data)-1
         arr.extend(data)
         return arr
 

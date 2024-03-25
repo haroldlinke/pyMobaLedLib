@@ -166,25 +166,25 @@ def Get_Additional_Goto_Activation_Macro(Act_Macro, InCnt, Loc_InCh):
         _select41 = Name
         if (_select41 == 'N_Buttons'):
             InCnt = pattgen.M06_Goto_Graph.Goto_Start_Points
-            Act_Macro = 'InCh_to_TmpVar(#InCh, ' + InCnt + ')' + vbLf
+            Act_Macro = 'InCh_to_TmpVar(#InCh, ' + str(InCnt) + ')' + vbLf
         elif (_select41 == 'N_Buttons1'):
             InCnt = pattgen.M06_Goto_Graph.Goto_Start_Points - 1
-            Act_Macro = 'InCh_to_TmpVar1(#InCh, ' + InCnt + ')' + vbLf
+            Act_Macro = 'InCh_to_TmpVar1(#InCh, ' + str(InCnt) + ')' + vbLf
             # 07.05.20:
         elif (_select41 == 'N_OneTimeBut'):
             InCnt = pattgen.M06_Goto_Graph.Goto_Start_Points
-            Act_Macro = 'InCh_to_LocalVar(#InCh, ' + InCnt + ')' + vbLf
+            Act_Macro = 'InCh_to_LocalVar(#InCh, ' + str(InCnt) + ')' + vbLf
             # 08.06.20:
         elif (_select41 == 'N_OneTimeBut1'):
             InCnt = pattgen.M06_Goto_Graph.Goto_Start_Points - 1
-            Act_Macro = 'InCh_to_LocalVar1(#InCh, ' + InCnt + ')' + vbLf
+            Act_Macro = 'InCh_to_LocalVar1(#InCh, ' + str(InCnt) + ')' + vbLf
             # 08.06.20:
         elif (_select41 == 'Binary'):
             InCnt = Bin_Start_Points
-            Act_Macro = 'Bin_InCh_to_TmpVar(#InCh, ' + InCnt + ')' + vbLf
+            Act_Macro = 'Bin_InCh_to_TmpVar(#InCh, ' + str(InCnt) + ')' + vbLf
         elif (_select41 == 'Binary1'):
             InCnt = Bin_Start_Points - 1
-            Act_Macro = 'Bin_InCh_to_TmpVar1(#InCh, ' + InCnt + ')' + vbLf
+            Act_Macro = 'Bin_InCh_to_TmpVar1(#InCh, ' + str(InCnt) + ')' + vbLf
             # 07.05.20:
         elif (_select41 == 'Counter'):
             InCnt = 1
@@ -211,15 +211,15 @@ def Get_Additional_Goto_Activation_Macro(Act_Macro, InCnt, Loc_InCh):
             if False == Select_Goto_Activation():
                 Act_Macro = 'ABORT'
         if Act_Macro == 'ERROR' or Act_Macro == 'ABORT':
-            X02.Workbooks(ActWB).Activate()
+            X02.activate_workbook(ActWB) # HL  X02.Workbooks(ActWB).Activate()
             return _fn_return_value, Act_Macro, InCnt, Loc_InCh #*HL ByRef
     if Act_Macro == 'Nothing':
         Act_Macro = ''
     else:
         Act_Macro = Comment + Act_Macro
     _fn_return_value = True
-    X02.Workbooks(ActWB).Activate()
-    return _fn_return_value, Act_Macro, InCnt, Loc_InCh #*HL ByRef
+    X02.activate_workbook(ActWB) # HL  X02.Workbooks(ActWB).Activate()
+    return _fn_return_value, Act_Macro, int(InCnt), int(Loc_InCh) #*HL ByRef
 
 def Test_Get_Additional_Goto_Activation_Macro():
     Act_Macro = String()

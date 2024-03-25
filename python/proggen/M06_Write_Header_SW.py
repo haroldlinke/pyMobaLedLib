@@ -132,7 +132,7 @@ def Check_if_all_Variables_in_sequece_of_N_exists(r, N):
         if Nr >= 0:
             Name = Left(Adr_or_Name, TxtLen)
             for i in vbForRange(Nr, Nr + N - 1):
-                if Valid_Var_Name(Name + i, r) == False:
+                if Valid_Var_Name(Name + str(i), r) == False:
                     return _fn_return_value
                     # At the moment Valid_Var_Name always returns true
     _fn_return_value = True

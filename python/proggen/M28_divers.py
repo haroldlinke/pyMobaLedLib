@@ -273,7 +273,7 @@ def Set_String_Config_Var(Name, val):
     #    return True
     except:  
         P01.MsgBox('Interner Fehler: Die Konfigurationsvariable \'' + Name + '\' wurde nicht im Sheet \'' + M02.ConfigSheet + '\' gefunden', vbCritical, 'Interner Fehler in Set_String_Config_Var')
-        M30.EndProg()
+        #test M30.EndProg()
 
 def Get_Old_Board(LeftArduino):
     _ret = ""

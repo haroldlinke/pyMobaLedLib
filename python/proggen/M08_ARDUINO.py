@@ -1231,7 +1231,6 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     #P01.Unload(UserForm_Options) # already done
     F00.StatusMsg_UserForm.ShowDialog(Replace(M09.Get_Language_Str('Programmiere #1# Arduino'), "#1#", ArduName) + vbCr + M30.FileNameExt(InoName), '...')
     
-    
     Fn_result, BuildOptions, DeviceSignature = Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, BuildOptColumn, BuildOptions, DeviceSignature,CreateFilesOnly=CreateFilesOnly)
     if Fn_result == False:
         Stop_Compile_Time_Display()

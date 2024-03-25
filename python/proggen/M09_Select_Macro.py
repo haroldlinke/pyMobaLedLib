@@ -80,7 +80,12 @@ import proggen.M60_CheckColors as M60
 import proggen.M80_Create_Mulitplexer as M80
 import proggen.D06_Userform_House as D06
 import proggen.D07_Userform_Other as D07
+import proggen.D14_Userform_PCAnim as D14
+import proggen.D15_Userform_PCAnim as D15
+import pattgen.M17_Import_a_Dec_Macro as PA17
+
 import mlpyproggen.Prog_Generator as PG
+import mlpyproggen.Pattern_Generator as PA
 
 import ExcelAPI.XLW_Workbook as P01
 
@@ -437,6 +442,30 @@ def Add_Icon_and_Name(SelRow, DstRow, Sh=None, NameOnly=False):
                 PicName = Trim(PicNamesArr(UBound(PicNamesArr)))
                 M27.Add_Icon(PicName, DstRow, Sh)
 
+def cleanConfigLine(configstr):
+    if configstr == "":
+        return configstr
+    if configstr.startswith("// Activation:"):
+        configlines = configstr.split("\n")
+        activityline = configlines[0]
+        index = activityline.find("#")
+        if index != -1:
+            activityline = activityline[:index-1]
+        resultline = activityline + "\n" + configlines[1] + "\n" + configlines[2]
+        return resultline
+    else:
+        return configstr
+
+def _call_patternconfigurator(ConfigLine, Row):
+    
+    #PG.global_controller.showFramebyName("PatternGeneratorPage")
+    ConfigLine = cleanConfigLine(ConfigLine)
+        
+    PA.ThisWorkbook.Activate()
+    P01.Sheets("PG-Temp").Select()
+    PA17.Import_From_Prog_Gen_Callback(True, "", ConfigLine, Row, overwrite_sheet=True)
+    PG.global_controller.showFramebyName("PatternGeneratorPage")
+
 def __SelectMacros_Sub():
     _ret = False
     Res="" #*HL
@@ -499,15 +528,18 @@ def __SelectMacros_Sub():
             return _ret
         elif (_select4 in ("EX.Constructor", "EX.Macro")):   # 31.01.22: Juergen add extensions
             Res = __Proc_General(LEDs, Macro, Description, LedChannels, Act_Channel, Def_Channel) # Empty typ
-            return _ret        
-        
-        
+            return _ret
+        elif (_select4 == 'PattConf'):
+            if MacroName == "Pattern":
+                _call_patternconfigurator(P01.Cells(P01.ActiveCell().Row, M25.Config__Col), P01.ActiveCell().Row)
+            else:
+                UserForm_PCAnim = D15.UserForm_PCAnim(PG.global_controller)
+                UserForm_PCAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
+                Res = UserForm_PCAnim.Userform_Res
         elif (_select4 == ''):
             Res = __Proc_General(LEDs, Macro, Description, LedChannels, Act_Channel, Def_Channel)
         else:
             P01.MsgBox('Unknown Dialog Typ \'' + DlgTyp + '\'', vbCritical, 'Program Error: SelectMacros_Sub')
-            
-            
         if Res != '':
             # If Left(Res, Len("$#define")) = "$#define" Then Res = Replace(Replace(Res, "(", "   "), ")", "") ' Remove the brackets     ' 14.01.20: ' 04.11.21: Commented because the bracets are necessary to parse the argument if the macro should be changed
             Parts = Split(Res, '$')
@@ -615,6 +647,9 @@ def Find_Macro_in_Lib_Macros_Sheet(p_str):
     #---------------------------------------------------------------------------
     _with3 = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
     p_str = Replace(p_str, 'HouseT(', 'House(')
+
+    p_str = Replace(p_str, "\n", " ")
+
     if InStr(p_str, '(') > 0:
         p_str = Split(p_str, '(')(0) + '('
         if p_str[:3]=="// ":

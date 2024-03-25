@@ -45,7 +45,7 @@
 # Kontakt ueber jbardewyck at t-online punkt de
 #******************************************************************************
 
-def CalcCrc4(crc, v_byte, bitlen):
+def CalcCrc4_old(crc, v_byte, bitlen):
     #if (bitlen / 8) > 0:
     #    validbits = 8
     #else:
@@ -61,17 +61,59 @@ def CalcCrc4(crc, v_byte, bitlen):
         c <<= 1
     return crc & 0xF
 
-def TinyRail_GenerateChecksum( controlValue, positionValueHigh, positionValueLow, compare=False):
-    controlNibble = controlValue << 4
-    crc4 = CalcCrc4( 0, controlNibble, 4)
+def TinyRail_GenerateChecksum_old( controlValue, positionValueHigh, positionValueLow, compare=False):
+    if controlValue != 0:
+        controlNibble = controlValue << 4
+        crc4 = CalcCrc4_old( 0, controlNibble, 4)
+    
+        crc4 = CalcCrc4_old( crc4, positionValueHigh, 8)
+        crc4 = CalcCrc4_old( crc4, positionValueLow, 8)
+        if ( compare):
+            if ( crc4 == ( controlValue >> 4)):
+                return 0
+            return 1; #checksum failed
+        return crc4
+    else:
+        return controlValue
 
-    crc4 = CalcCrc4( crc4, positionValueHigh, 8)
-    crc4 = CalcCrc4( crc4, positionValueLow, 8)
-    if ( compare):
-        if ( crc4 == ( controlValue >> 4)):
-            return 0
-        return 1; #checksum failed
-    return crc4
+def CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow):
+    
+    crc4 =  TinyRail_GenerateChecksum_old( controlValue, positionValueHigh, positionValueLow)
+    
+    newcontrolvalue = crc4<<4 | (controlValue & 0x0F)
+    
+    return newcontrolvalue
+
+def CalcCrc4(crc, v_byte, bitlen):
+    #if (bitlen / 8) > 0:
+    #    validbits = 8
+    #else:
+    #    validbits = bitlen % 8
+    validbits = bitlen # bitlen <= 8
+
+    c = v_byte
+    for i in range(validbits):
+        if ((crc ^ c) & 0x80) != 0:
+            crc = ( crc << 1) ^ 0x03
+        else:
+            crc <<= 1
+        c <<= 1
+    return crc
+
+def TinyRail_GenerateChecksum( controlValue, positionValueHigh, positionValueLow, compare=False):
+    if controlValue != 0:
+        controlNibble = controlValue << 4
+        crc4 = CalcCrc4( 0, controlNibble, 4)
+    
+        crc4 = CalcCrc4( crc4, positionValueHigh, 8)
+        crc4 = CalcCrc4( crc4, positionValueLow, 8)
+        if ( compare):
+            if ( crc4 & 0xF == ( controlValue >> 4)):
+                return 0
+            return 1; #checksum failed
+        return crc4
+    else:
+        return controlValue
 
 def CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow):
     
@@ -80,4 +122,3 @@ def CalculateControlValuewithChecksum (controlValue, positionValueHigh, position
     newcontrolvalue = crc4<<4 | (controlValue & 0x0F)
     
     return newcontrolvalue
-

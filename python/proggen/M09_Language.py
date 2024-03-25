@@ -627,7 +627,7 @@ def Get_Language_Str(Desc, GenError=False, Look_At=xlPart):
     #   to get the visual line breaks.
     #   In this case the cvLf must also be added in this function
     Use_CrLf = False
-    
+    _ret = Desc
     if Desc == r'':
         return _ret
         # 23.01.20:

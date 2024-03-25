@@ -171,29 +171,30 @@ class Pattern_GeneratorPage(tk.Frame):
         sheetdict_PatternGEN={"Main":
                     {"Name":"Main",
                      "Filename"  : "csv/PA_Main.csv",
-                     "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS",
-                     "Formating" : {"HideCells"       : ((0,0),),
+                     "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS;AT;AU;AV;AW;AX,AY;AZ;BA;BB;BC;BD;BE;BF;BG;BH;BI;BJ;BK;BL;BM;BN;BO;BP;BQ;BR;BS;BT;BU;BV;BW;BX,BY;BZ",
+                     "Formating" : {"HideCells"       : (("A1"), ),
                                     "HideRows"        : [12,15,16,17,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46],
                                     #"HideRows"        : [],
-                                    "ProtectedCells"  : (("*",0),("*",1),("*",2),("*",3)),
+                                    "ProtectedCells"  : (("A:D"), ),
                                     "GridList"        : {"1": ((27,4),(27,63)),
                                                          "2": ((46,4),(46,63)),
                                                          "3": ((48,3),(50,63))
                                                          },
-                                    "ColumnWidth"     : (5,17,1,8,22,7),
-                                    "ColumnAlignment" : {3:"e",12:"w"},
+                                    "ColumnWidth"     : (40,136,8,64,176,56,56,56,56,56,56,56,56,56),  #(5,17,1,8,22,7),
+                                    "ColumnAlignment" : {"ex": ("D"), 
+                                                         "wx": ("E", "F")
+                                                         }, 
                                     "RowHeight"       : 20,
                                     "FontColor"       : { "1": {
                                                                 "font"     : self.default_font,
                                                                 "fg"       : "#000000",
                                                                 "bg"       : "#FFFF00",
-                                                                "Cells"    : ((1,4),(2,4),(3,4),(4,4),(5,4),(6,4),(7,4),(8,4),(9,4),(10,4),(11,4),(12,4),(13,4),(14,4),(15,4),(21,4))
+                                                                "Cells"    : ("E2:E15", "E22")
                                                                 },
                                                         "default": {
                                                                "font"     : self.default_font,
                                                                "fg"       : "#000000",
-                                                               "bg"       : "#FFFFFF",
-                                                               "Cells"    : (("*","*"),)
+                                                               "bg"       : "#FFFFFF"
                                                                }
                                                         }
                                     },
@@ -374,6 +375,150 @@ class Pattern_GeneratorPage(tk.Frame):
                                                                   ]},                                           
                                 }
                      },
+                     "PG-Temp": {
+                        "Name":"PG-Temp",
+                                             "Filename"  : "csv/PA_Main.csv",
+                                             "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS;AT;AU;AV;AW;AX,AY;AZ;BA;BB;BC;BD;BE;BF;BG;BH;BI;BJ;BK;BL;BM;BN;BO;BP;BQ;BR;BS;BT;BU;BV;BW;BX,BY;BZ",
+                                             "Formating" : {"HideCells"       : (("A1"), ),
+                                                            "HideRows"        : [12,15,16,17,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46],
+                                                            #"HideRows"        : [],
+                                                            "ProtectedCells"  : (("A:D"), ),
+                                                            "GridList"        : {"1": ((27,4),(27,63)),
+                                                                                 "2": ((46,4),(46,63)),
+                                                                                 "3": ((48,3),(50,63))
+                                                                                 },
+                                                            "ColumnWidth"     : (40,136,8,64,176,56,56,56,56,56,56,56,56,56),  #(5,17,1,8,22,7),
+                                                            "ColumnAlignment" : {"ex": ("D"), 
+                                                                                 "wx": ("E", "F")
+                                                                                 }, 
+                                                            "RowHeight"       : 20,
+                                                            "FontColor"       : { "1": {
+                                                                                        "font"     : self.default_font,
+                                                                                        "fg"       : "#000000",
+                                                                                        "bg"       : "#FFFF00",
+                                                                                        "Cells"    : ("E2:E15", "E22")
+                                                                                        },
+                                                                                "default": {
+                                                                                       "font"     : self.default_font,
+                                                                                       "fg"       : "#000000",
+                                                                                       "bg"       : "#FFFFFF"
+                                                                                       }
+                                                                                }
+                                                            },
+                                             "SheetType" : "Datasheet",
+                                             "Controls" :  { "Default":{ "Components" : [{"Name":"Default",
+                                                                                          "Accelerator":"",
+                                                                                          "BackColor":"#00000F",
+                                                                                          "BorderColor":"#000006",
+                                                                                          "BorderStyle":"fmBorderStyleNone",
+                                                                                          "IconName":"",
+                                                                                          "Caption":"",
+                                                                                          "Command": None ,
+                                                                                          "ControlTipText":"",
+                                                                                          "ForeColor":"#000012",
+                                                                                          "Height":12,
+                                                                                          "Left":0,
+                                                                                          "Top":0,
+                                                                                          "Type":"",
+                                                                                          "Visible":True,
+                                                                                          "Width":12,
+                                                                                          "AlternativeText":"",
+                                                                                          "Font" : self.default_font,
+                                                                                          "CharFormat":{("1.0","1.end"): self.default_boldfont}}
+                                                                                         ]},
+                                                             "Form1": { "Name"           : "RGB_LED_CheckBox",
+                                                                        "AlternativeText":"Add_Del_Button",
+                                                                        "BackColor"     : "#FFFFFF",
+                                                                        "BorderColor"   : "#000012",
+                                                                        "Caption"       : "",
+                                                                        "Height"        : 12,
+                                                                        "Left"          : None,
+                                                                        "Col"           : 5,
+                                                                        "Top"           : None,
+                                                                        "Row"           : 48,
+                                                                        "Type"          : "FormWindow",
+                                                                        "Visible"       : True,
+                                                                        "Width"         : 100,
+                                                                        "Components"    : [{"Name":"Add_Col","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                                                            "Caption":"+",
+                                                                                            "Command": "Add_Col_Button_Click" ,"ControlTipText":"","ForeColor":"#000012","Height":12,"Left":0,"Top":1,"Type":"CommandButton","Visible":True,"Width":12,"AlternativeText":"Add_Del_Button"},
+                                                                                           {"Name":"Del_Button","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                                                            "Caption":"-",
+                                                                                            "Command": "Del_Col_Button_Click","ControlTipText":"","ForeColor":"#000012","Height":12,"Left":14,"Top":1,"Type":"CommandButton","Visible":True,"Width":12,"AlternativeText":"Add_Del_Button"},
+                                                                                           {"Name":"RGB_LED_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","Persistent":True,
+                                                                                            "Caption":"RGB LED",
+                                                                                            "ControlTipText":"","ForeColor":"#000012","Height":12,"Left":28,"Top":1,"Type":"CheckBox","Visible":True,"Width":60,"AlternativeText":"Add_Del_Button"},
+                                                                                         ]},
+                                                            "Form4": {  "Name"          : "Export",
+                                                                        "BackColor"     : "#FFFFFF",
+                                                                        "BorderColor"   : "#000012",
+                                                                        "Caption"       : "",
+                                                                        "Height"        : "2.7c",
+                                                                        "Left"          : None,
+                                                                        "Col"           : 2,
+                                                                        "Top"           : None,
+                                                                        "Row"           : 49,
+                                                                        "Type"          : "FormWindow",
+                                                                        "Visible"       : True,
+                                                                        "Width"         : "2c",
+                                                                        "Components"    : [{"Name":"Export","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"Btn_PA_Prog_Gen.png",
+                                                                                            "Caption":"Zurück zum ProgrammGenerator",
+                                                                                            "Command": "PAT09.Prog_Generator_Button_Click" ,"ControlTipText":"Zurück zum ProgrammGenerator","ForeColor":"#000012","Height":"2.7c","Left":0,"Top":0,"Type":"CommandButton","Visible":True,"Width":"2c"},
+                                                                                          ]},
+                                                            "Form6": {  "Name"          : "Test_Leds_M99O01",
+                                                                        "BackColor"     : "#FFFFFF",
+                                                                        "BorderColor"   : "#000012",
+                                                                        "Caption"       : "",
+                                                                        "Height"        : 24,
+                                                                        "Left"          : None,
+                                                                        "Col"           : 9,
+                                                                        "Top"           : None,
+                                                                        "Row"           : 14,                                        
+                                                                        "Type"          : "FormWindow",
+                                                                        "Visible"       : True,
+                                                                        "Width"         : 74,
+                                                                        "Components"    : [{"Name":"Test_Leds_M99O01","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                                                                            "Caption":"Test Pattern",
+                                                                                            "Command": "button_testen_cmd" ,"ControlTipText":"Pattern Testen","ForeColor":"#000012","Height":20,"Left":2,"Top":2,"Type":"CommandButton","Visible":True,"Width":70},
+                                                                                          ]},
+                                                            "Form7": {  "Name"          : "ReCalc",
+                                                                        "BackColor"     : "#FFFFFF",
+                                                                        "BorderColor"   : "#000012",
+                                                                        "Caption"       : "",
+                                                                        "Height"        : 24,
+                                                                        "Left"          : None,
+                                                                        "Col"           : 6,
+                                                                        "Top"           : None,
+                                                                        "Row"           : 14,                                        
+                                                                        "Type"          : "FormWindow",
+                                                                        "Visible"       : True,
+                                                                        "Width"         : 74,
+                                                                        "Components"    : [{"Name":"ReCalc","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                                                                            "Caption":"Aktualisieren",
+                                                                                            "Command": "button_aktualisieren_cmd" ,"ControlTipText":"Grafik aktualisieren und Neuberechnen","ForeColor":"#000012","Height":20,"Left":2,"Top":2,"Type":"CommandButton","Visible":True,"Width":70},
+                                                                                          ]},
+                                                            "Form9": {  "Name"          : "TextBox1",
+                                                                        "BackColor"     : "#FFFFFF",
+                                                                        "BorderColor"   : "#000012",
+                                                                        "Caption"       : "",
+                                                                        "Height"        : 148,
+                                                                        "Left"          : None,
+                                                                        "Col"           : 12,
+                                                                        "Top"           : None,
+                                                                        "Row"           : 1,
+                                                                        "Type"          : "FormWindow",
+                                                                        "Visible"       : True,
+                                                                        "Width"         : 600,
+                                                                        "Components"    : [{"Name":"Text_Box1","BackColor":"#00000F",
+                                                                                            "Caption": "Mit diesem Blatt kann die Konfiguration eines LED Musters, übernommen vom Programm-Generator, bearbeitet werden.\nDie Gelb hinterlegten Felder und die Tabellen können verändert werden.\nDie Spalten der Tabelle beschreiben einen Abschnitt des Musters welches für eine bestimmte Zeit angezeigt wird. Die Dauer wird in der ersten Tabelle eingetragen."+
+                                                                                                       "Die Zeiten können in Minuten ('Min') oder Sekunden ('Sec'= angegeben werden. Wird keine Einheit angegeben dann ist die Zeitangabe in Millisekunden ('ms').\n"+
+                                                                                                       "Achtung zwischen Zahl und Einheit muss ein Leerzeichen stehen und die Groß- und Kleinschreibung muss exakt stimmen. Wenn Spalten die gleiche Anzeigedauer haben, dann sollte die Zeit nur in den ersten Spalten angegeben werden zur Minimierung des Speicherverbrauchs. Die Folgenden Zeilen können als Formel Angegeben werden damit man sieht wie lange der Abschnitt dauert. Im Beispiel unten ist das bei den Spalten 4 bis 8 gemacht.\n"+
+                                                                                                       "In der zweiten Tabelle wird mit einem x markiert welche LED in dem Abschnitt leuchten soll. Wenn mehrere Helligkeiststufen benutzt werden, dann wird die Helligkeit als Zahl eingetragen. Die Anzahl der Abschnitte wird automatisch anhand der eingetragenen Markierungen bestimmt. Wenn am Ende leere Abschnitte verwendet werden sollen, dann muss in die letzte Spalte ein Punkt eingefügt werden.\n" +
+                                                                                                       "Zurück zum ProgrammGenerator gelangt man mit dem -ProgrammGenerator-Button. Die Änderungen werden dann automatisch übernomen.",
+                                                                                            "ForeColor":"#000012","Height":148,"Left":0,"Top":0,"Type":"TextBox","Visible":True,"Width":600,"CharFormat":{("1.0","1.end"): self.default_boldfont}},
+                                                                                          ]},
+                                                            }
+                        },                    
                     "Languages":
                       {"Name":"Languages",
                        "Filename"  : "csv/PA_Languages.csv",
@@ -383,7 +528,7 @@ class Pattern_GeneratorPage(tk.Frame):
                    "Goto_Activation_Entries":
                     {"Name":"Goto_Activation_Entries",
                      "Filename"  : "csv/PA_Goto_Activation_Entries.csv",
-                     "Fieldnames": "A;B;C;D;E;F",
+                     "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z",
                      "Formating" : {},
                      },
                    "Special_Mode_Dlg":
@@ -408,7 +553,7 @@ class Pattern_GeneratorPage(tk.Frame):
                               "SheetDeactivate"        : pattgen.Tabelle9.Worksheet_Deactivate,
                               "SheetTableUpdate"       : None,
                               "SheetCalculate"         : Calc_Worksheet,
-                              "SheetBeforeDoubleClick" : None,
+                              "SheetBeforeDoubleClick" : pattgen.DieseArbeitsmappe.Workbook_SheetBeforeDoubleClick,
                               "SheetChange"            : pattgen.Tabelle9.Worksheet_Change,
                               "SheetSelectionChange"   : pattgen.Tabelle9.Worksheet_SelectionChange,
                               "SheetReturnKey"         : M02.Global_On_Enter_Proc,
@@ -491,7 +636,7 @@ class Pattern_GeneratorPage(tk.Frame):
         #in_button_frame.grid(row=2, column=0, sticky="n", padx=4, pady=4)
         
         for sheet in self.workbook.sheets:
-            sheet.tablemodel.resetDataChanged()
+            pass #test sheet.tablemodel.resetDataChanged()
             
         D00.init_UserForms()
 

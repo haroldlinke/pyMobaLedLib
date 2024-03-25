@@ -237,6 +237,12 @@ def Calc_Worksheet(ws,cell=None):
     Zeiten=E31
     setcellfromvariable(ws, "E31",E31)
     
+
+    #* "E32" WENN(ODER(Analoges_Überblenden="";Analoges_Überblenden=0;Analoges_Überblenden="N";Analoges_Überblenden="n");"";WENN(Analoges_Überblenden="X";"X";"A"))
+    E33 = IF (OR(Analoges_Überblenden=="",Analoges_Überblenden=="0",Analoges_Überblenden=="N"), "", IF(Analoges_Überblenden=="X","X","A") ) 
+    Analog = E33
+    setcellfromvariable(ws, "E33",E33)
+        
     #* "E34" <f>CONCATENATE(Analog,"PatternT",64-COUNTIF(E29:BP29,""),"(")</f> -> Start
     E34=CONCATENATE(Analog,"PatternT",64-COUNTIF(X02.Range("E29:BP29"),""),"(")
     Start=E34
@@ -382,7 +388,7 @@ def WS_Conditional_Formating(ws,changedCell):
     if convertCell2Excel(changedCell)=="E5":
         #extend grid
         value=int(changedCell)
-        ws.table.changeGrid(2,((48,3),(48+value+1,63)))
+        ws.changeGrid(2,((48,3),(48+value+1,63)))
         
 
     

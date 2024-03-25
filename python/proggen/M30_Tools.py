@@ -483,7 +483,7 @@ def EndProg():
     P01.Application.EnableEvents = True
     P01.Application.ScreenUpdating = True
     Debug.Print("Error in Dialog: End_Prog()")
-    raise Exception("Error in Dialog")
+    #test raise Exception("Error in Dialog")
 
 def ClearStatusbar():
     #--------------------------

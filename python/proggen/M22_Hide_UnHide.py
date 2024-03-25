@@ -77,7 +77,6 @@ from vb2py.vbdebug import *
 ---------------------------
 """
 
-
 def Proc_Hide_Unhide():
     OldScreenupdating = Boolean()
 

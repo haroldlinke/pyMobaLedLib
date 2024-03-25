@@ -991,7 +991,7 @@ def GetOnOffStoreType(r, Addr, Inp_TypR, Channel_or_define):
     if Addr >= 0 and TypConst == 'S_ONOFF,':
         _fn_return_value = M02.SST_S_ONOFF
         return _fn_return_value
-    value = str(P01.Cells(r, M25.InCnt___Col))
+    value = P01.Cells(r, M25.InCnt___Col).Value #HL
     if  P01.Cells(r, M25.LED_Nr__Col) != '' and  value !='':
         if int(value) > 1:
             _fn_return_value = M02.SST_TRIGGER

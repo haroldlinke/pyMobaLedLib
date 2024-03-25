@@ -86,6 +86,7 @@ import platform
 import traceback
 
 import ExcelAPI.XLW_Workbook as P01
+from mlpyproggen.tooltip import Tooltip_Canvas
 
 from locale import getdefaultlocale
 import os
@@ -151,7 +152,7 @@ tabClassList_all_patterngen = ( StartPage, Prog_GeneratorPage, Pattern_Generator
 tabClassList_mll_only = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_SetColTab = (ColorCheckPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-
+tabClassList_tksheet_test = ( StartPage, Prog_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
 #tabClassList_all = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
@@ -295,6 +296,8 @@ class pyMobaLedLibapp(tk.Tk):
         self.DataVersion = DATA_VERSION
         self.ProgGenMinDataVersion = ProgGen_Min_Data_Version
         self.PattGenMinDataVersion = Pattgen_Min_Data_Version
+        
+        self.tooltip_var_dict = {}
 
         tk.Tk.__init__(self, *args, **kwargs)
         tk.Tk.report_callback_exception = self.show_tkinter_exception
@@ -462,7 +465,7 @@ class pyMobaLedLibapp(tk.Tk):
                     tabClassList = tabClassList_all_patterngen
             else:
                 tabClassList = tabClassList_mll_only
-        
+        #tabClassList = tabClassList_tksheet_test #test
         
         for tabClass in tabClassList:
             frame = tabClass(self.container,self)
@@ -533,7 +536,27 @@ class pyMobaLedLibapp(tk.Tk):
         logging.debug("Tkinter Exception:\n"+messagestring)
         if DEBUG and not "Error in Dialog" in line:
             raise
-        
+   
+    #def ToolTip_canvas_hideall(self):
+    #    for objid in self.tooltip_var_dict.keys():
+    #        tooltip_var = self.tooltip_var_dict.get(objid,None)
+    #        if tooltip_var!= None:
+    #            tooltip_var.unschedule()
+    #            tooltip_var.hide()            
+    #    return      
+
+    #def ToolTip_canvas(self, canvas, objid,text="",button_1=False):
+    #    tooltiptext = text
+    #    tooltip_var = self.tooltip_var_dict.get(objid,None)
+    #    if tooltip_var==None:
+    #        tooltip_var=Tooltip_Canvas(canvas, objid, text=tooltiptext,button_1=button_1,controller=self)
+    #        self.tooltip_var_dict[objid] = tooltip_var
+    #    else:
+    #        tooltip_var.unschedule()
+    #        tooltip_var.hide()
+    #        tooltip_var.update_text(text)
+    #    return       
+           
         
     def check_data_changed(self):
         return self.paramDataChanged or self.activeworkbook.check_Data_Changed()
@@ -2912,7 +2935,7 @@ def main_entry():
     
     app = pyMobaLedLibapp()
     tk_version = app.tk.call("info", "patchlevel")
-    logging.debug("TK-Version:"+tk_version)    
+    logging.debug("TK-Version:"+tk_version)
     
     app.setroot(app)
     

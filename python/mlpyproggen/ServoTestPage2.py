@@ -60,7 +60,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
-from tools.CRCalgorithms import CalculateControlValuewithChecksum
+from tools.CRCalgorithms import CalculateControlValuewithChecksum, CalculateControlValuewithChecksum_old
 
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, DEFAULT_PALETTE, LARGE_FONT, NORMAL_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, PERCENT_BRIGHTNESS, BLINKFRQ
 # fromx mlpyproggen.dictFile import saveDicttoFile, readDictFromFile
@@ -70,6 +70,7 @@ from locale import getdefaultlocale
 import re
 import time
 import logging
+import pattgen.D00_Forms as D00
 
 PERCENT_BRIGHTNESS = 1  # 1 = Show the brightnes as percent, 0 = Show the brightnes as ">>>"# 03.12.19:
 
@@ -162,8 +163,13 @@ class ServoTestPage2(tk.Frame):
 
         self.controller.ToolTip(self.buttonEnter, text="Enter")
         self.buttonEnter.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event,code=0))
-        self.buttonEnter.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=0))        
-                
+        self.buttonEnter.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=0))
+        
+        self.buttonProgramServo=ttk.Button(servo_direct_position_frame, text="Servo Programmieren", command=self.servo_program_button, style='my.TButton')
+
+        self.controller.ToolTip(self.buttonProgramServo, text="Servo Programm auf den Servo hochladen")
+        #self.buttonEnter.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event,code=0))
+        #self.buttonEnter.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=0))                
 
         self.servo_pos_var = tk.DoubleVar()
         self.servo_pos_var.set(0)
@@ -176,57 +182,15 @@ class ServoTestPage2(tk.Frame):
         self.servo_scale.bind("<Button-1>", self.servo_scale_focus_set)
         self.servo_position = 0
         
-        # constants
-        select_servo0 = 225
-        select_servo1 = 230
-        select_servo2 = 235
-        
-        select_set_min_max_pos = 240
-        
-        select_set_speed = 245
-        
-        set_speed_by_button = 250
-        
-        save_changes = 254
-        
-        save_position = 205
-        
-        back_to_normal = 0
-        
-        lowPos = 1
-        
-        high_pos = 220
-        
         servo_program_frame =ttk.Frame(self.tab_frame,relief="flat", borderwidth=0,width=500)
-        #sp_label1 = ttk.Label(servo_program_frame, text='Servo Programmieren').grid(row=0, column=0, sticky='ew',padx=4, pady=4)
-
+        
         # ------------- SERVO Pos
         s = ttk.Style()
         s.configure('my.TButton', font=self.fontbutton)
                 
-        servo_set_pos_speed_frame = ttk.Frame(servo_program_frame,relief="flat", borderwidth=0)
-        ssp_label1 = ttk.Label(servo_set_pos_speed_frame, text='Programmierung von Min/Max Position und Geschwindigkeit',font=self.fontlabel)
-        ssp_label1.grid(row=0, column=0, sticky='',padx=5, pady=5)
-       
-        self.button_cancel_mm_pos_speed=ttk.Button(servo_set_pos_speed_frame, text="Beende Programmierung ohne Speichern", command=self._cancel_set_min_max_pos,style='my.TButton')
-        self.controller.ToolTip(self.button_cancel_mm_pos_speed, text="Beende die Programmierung ohne zu Speichern")
-        
-        #self.status = "Save Min Pos"
-        self.status = "Start Min Pos"
-
-        self.ssp_label2 = ttk.Label(servo_set_pos_speed_frame, text="",width=60,font=self.fontlabel)
-        
-        
-        #self.button_start_save_mm_pos=ttk.Button(servo_set_pos_frame, text="Beende Min Pos programmieren",width=40, command=self._save_min_max_pos)
-        self.button_start_save_mm_pos=ttk.Button(servo_set_pos_speed_frame, text="Starte Min-Max Pos/Speed programmieren", command=self._save_min_max_pos, style='my.TButton')
-        self.controller.ToolTip(self.button_start_save_mm_pos, text="Startet die Min/Max und Geschwindigkeitsprogrammierung und geht zum nächsten Schritt")
-        
-        self.button_start_save_mm_pos.grid(row=1, column=0, padx=5, pady=5, sticky='ew')
-        self.ssp_label2.grid(row=2, column=0, sticky='ew',padx=5, pady=5)
-        self.button_cancel_mm_pos_speed.grid(row=3, column=0, padx=5, pady=5, sticky='ew')
-        
         self.servo_scale.grid(row=0,column=1,sticky="")
-        self.buttonEnter.grid(row=0,column=0,sticky="",padx=20, pady=10)  
+        self.buttonEnter.grid(row=0,column=0,sticky="",padx=20, pady=10)
+        self.buttonProgramServo.grid(row=0,column=2,sticky="",padx=20, pady=10)  
 
         # --- placement
         self.frame.grid(row=0,column=0)
@@ -319,16 +283,6 @@ class ServoTestPage2(tk.Frame):
         #else:
         #    self._update_servos(servo_address, 1, 1, position)
 
-    def servo_pos_inc(self,event):
-        #var = self.servo_pos_var.get()
-        #self.servo_pos_var.set(var + 1)
-        pass
-        
-    def servo_pos_dec(self,event):
-        #var = self.servo_pos_var.get()
-        #self.servo_pos_var.set(var - 1)
-        pass
-            
     def _update_servo_position(self, position):
         position_int=int(position)
         self.servo_position = position_int
@@ -338,121 +292,6 @@ class ServoTestPage2(tk.Frame):
         if servo_control in [1, 2, 3]:
 
             self._update_servo_channel(servo_address, servo_control, position_int)
-        
-    def _get_servo_channel_code(self, servo_control):
-        # select the right servo
-        if servo_control == 0:
-            return 225
-        elif servo_control == 1:
-            return 230
-        else:
-            return 235
-
-            
-    def _cancel_set_min_max_pos(self, event=None):
-        # select the right servo
-        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl")
-                
-        #send code to ARDUINO
-        self._update_servos(servo_address, 0, 0, 0)
-        
-        self.status = "Start Min Pos"
-        self.ssp_label2.config(background="white",text="")
-        self.button_start_save_mm_pos.config(text="Starte Min-Max Pos/Speed programmieren")
-        
-    def _save_min_max_pos(self, event=None):
-        
-        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl")
-        servo_channel_code = self._get_servo_channel_code(servo_control)        
-        
-        if self.status == "Start Min Pos":
-            #send code to ARDUINO
-            self._update_servos(servo_address, servo_channel_code, 0, 0)
-            # send "start pos setting"
-            self._update_servos(servo_address, 240, 0, 0)
-             # send "start min pos setting"
-            self._update_servos(servo_address, 250, 0, 0)
-            self.ssp_label2.config(background="#ffff05",text="Bewege den Servo zur Min Position mit den <<,<,>,>> Tastern")        
-            self.button_start_save_mm_pos.config(text="Gehe zu Max Pos programmieren")
-            self.status = "Save Min Pos"
-        elif self.status == "Save Min Pos":
-            self.status = "Save Max Pos"
-            self.ssp_label2.config(text="Bewege den Servo zur Max Position mit den <<,<,>,>> Tastern")
-            #send "save"-code to ARDUINO
-            self._update_servos(servo_address, 205, 0, 0)
-            self.button_start_save_mm_pos.config(text="Beende Max Pos programmieren")
-        elif self.status == "Save Max Pos":
-            self.status = "Save Speed"
-            self.ssp_label2.config(text="Stelle die Geschwindigkeit mit mit den <<,<,>,>> Tastern ein")
-            self.button_start_save_mm_pos.config(text="Beende Speed programmieren")
-        
-            #send PWMButton1-code to ARDUINO
-            self._update_servos(servo_address, 205, 0, 0)
-            
-            #send speed-code to ARDUINO
-            self._update_servos(servo_address, 245, 0, 0)
-            
-            # send "set speed"
-            self._update_servos(servo_address, 250, 0, 0)            
-
-        else:
-            self.status = "Start Min Pos"
-            self.ssp_label2.config(background="white",text="")
-            self.button_start_save_mm_pos.config(text="Starte Min-Max Pos/Speed programmieren")
-        
-            #send "end"-code to ARDUINO
-            self._update_servos(servo_address, 254, 0, 0)
-            
-            #send "back to normal"-code to ARDUINO
-            self._update_servos(servo_address, 0, 0, 0)        
-
-    def _save_min_max_pos2(self, event=None):
-        
-        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl")
-        servo_channel_code = self._get_servo_channel_code(servo_control)        
-        
-        if self.status == "Save Min Pos":
-            self.status = "Save Max Pos"
-            self.ssp_label2.config(text="Bewege den Servo zur Max Position mit den <<,<,>,>> Tastern")
-            #send "save"-code to ARDUINO
-            self._update_servos(servo_address, 205, 0, 0)
-            self.button_start_save_mm_pos.config(text="Beende Max Pos programmieren")
-        elif self.status == "Save Max Pos":
-            self.status = "Save Speed"
-            self.ssp_label2.config(text="Stelle die Geschwindigkeit mit mit den <<,<,>,>> Tastern ein")
-            self.button_start_save_mm_pos.config(text="Beende Speed programmieren")
-        
-            #send PWMButton1-code to ARDUINO
-            self._update_servos(servo_address, 205, 0, 0)
-            
-            #send speed-code to ARDUINO
-            self._update_servos(servo_address, 245, 0, 0)
-            
-            # send "set speed"
-            self._update_servos(servo_address, 250, 0, 0)            
-
-        else:
-            self.status = "Save Min Pos"
-            self.ssp_label2.config(background="white",text="")
-            self.button_start_save_mm_pos.config(text="Beende Min Pos programmieren")
-        
-            #send "end"-code to ARDUINO
-            self._update_servos(servo_address, 254, 0, 0)
-            
-            #send "back to normal"-code to ARDUINO
-            self._update_servos(servo_address, 0, 0, 0)        
-        
-    def _update_set_servo_position(self, event=None):
-        servo_position = self.servo_position
-        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl")
-
-    def _update_servo_address(self, event=None):
-        self.servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        self.servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl") 
         
     def led_off(self,_event=None):
     # switch off all LED
@@ -464,12 +303,10 @@ class ServoTestPage2(tk.Frame):
         self.controller.send_to_ARDUINO(message)
         #self.controller.ledtable.clear()
         
-    def servo_prog_button(self,event=None,code=0):
+    def servo_program_button(self,event=None,code=0):
     # send code to Servo
-        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = self.controller.get_macroparam_val(self.tabClassName, "ServoControl")        
-        self._update_servos(servo_address,code,0,0)
-        
+        D00.MainMenu_Form.Show(page1=1, page2=3)
+         
     def servo_prog_label_pressed(self,event=None,code=0):
     # send code to Servo
         event.widget.config(relief="sunken")
@@ -489,7 +326,11 @@ class ServoTestPage2(tk.Frame):
         self._update_servos(servo_address,servo_position,servo_control,0)
         
     def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):
-        newcontrolValue =  CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow)
+        servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCOld"))
+        if servo_use_old_crc:
+            newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow)
+        else:
+            newcontrolValue =  CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow)
         if self.controller.mobaledlib_version == 1:
             message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(newcontrolValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
         else:

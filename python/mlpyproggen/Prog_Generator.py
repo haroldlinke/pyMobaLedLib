@@ -51,6 +51,7 @@ from ExcelAPI.XLW_Workbook import create_workbook
 import proggen.M02_Public as M02
 import proggen.M08_ARDUINO as M08
 import proggen.M40_ShellandWait as M40
+import proggen.DieseArbeitsmappe as AM
 
 import ExcelAPI.XLW_Workbook as P01
 
@@ -139,37 +140,37 @@ class Prog_GeneratorPage(tk.Frame):
         self.default_smallfont   = self.controller.defaultfontsmall
         
         datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
-        datasheet_formating = { "HideCells" : ((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16)),
-                                "ProtectedCells"  : ((0,"*"),(1,0),("*",12),("*",13),("*",14),("*",15),("*",16)),
+        datasheet_formating = { "HideCells" : ("A1:C1", "E1"), #((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16)),
+                                "ProtectedCells"  : (("1:2","M:Q") ),
                                 "ColumnWidth"     : (5,17,17,34,17,17,60,34,34,17,60,60,17,17,17),
                                 "left_click_callertype": "cell",
-                                "FontColor"       : { "1": {
-                                                            "font"     : self.default_smallfont,
-                                                            "fg"       : "#FFFF00",
-                                                            "bg"       : "#0000FF",
-                                                            "Cells"    : ((0,"*"),)
-                                                            },
-                                                      "2": {
-                                                            "font"     : self.default_font,
-                                                            "fg"       : "#FFFF00",
-                                                            "bg"       : "#0000FF",
-                                                            "Cells"    : ((1,"*"),)
-                                                            },                                                      
-                                                      "3": {
+                                "FontColor"       : {"1": {
                                                             "font"     : ("Wingdings",10),
                                                             "fg"       : "#000000",
                                                             "bg"       : "#FFFFFF",
-                                                            "Cells"    : (("*",1),)
-                                                            },                                                          
+                                                            "Cells"    : ("B", ),
+                                                            },                                
+                                                     "2": {
+                                                            "font"     : self.default_smallfont,
+                                                            "fg"       : "#FFFF00",
+                                                            "bg"       : "#0000FF",
+                                                            "Cells"    : ("1", ), 
+                                                            },
+                                                     "3": {
+                                                            "font"     : self.default_font,
+                                                            "fg"       : "#FFFF00",
+                                                            "bg"       : "#0000FF",
+                                                            "Cells"    : ("2", ),
+                                                            },                                                      
+                          
                                                     "default": {
                                                            "font"     : self.default_font,
                                                            "fg"       : "#000000",
                                                            "bg"       : "#FFFFFF",
-                                                           "Cells"    : (("*","*"),)
                                                            }
                                         }
                             }
-                                
+
         sheetdict_PROGGEN={"DCC":
                     {"Name":"DCC",
                      "Filename"  : "csv/Prog_Generator_MobaLedLib.xlsm",
@@ -203,19 +204,18 @@ class Prog_GeneratorPage(tk.Frame):
                      "Filenamex":"csv/Config.csv",
                      "Fieldnames": "A;B;C;D",
                      "SheetType" : "Config",
-                     "Formating" : { "HideCells"       : (("*",3),),
-                                    "ProtectedCells"  : ( ("*",1),("*",3)),
+                     "Formating" : { "HideCells"       : ((None,3),),
+                                    "ProtectedCells"  : ( (None,1),(None,3)),
                                     "FontColor"       : { "1": {
                                                                 "font"     : self.default_font ,
                                                                 "fg"       : "#0000FF",
                                                                 "bg"       : "#FFFFFF",
-                                                                "Cells"    : ((0,"*"),)
+                                                                "Cells"    : ((0,None),),
                                                                 },
                                                         "default": {
                                                                "font"     : self.default_font ,
                                                                "fg"       : "#000000",
-                                                               "bg"       : "#FFFFFF",
-                                                               "Cells"    : (("*","*"),)
+                                                               "bg"       : "#FFFFFF"
                                                                }
                                                         }
                                     }
@@ -235,18 +235,18 @@ class Prog_GeneratorPage(tk.Frame):
                      "SheetType" : "Libraries",
                      "Filenamex":"csv/Libraries.csv",
                      "Fieldnames": "A;B;C;D;E;F;G;H;I;J",
-                     "Formating" : {"ProtectedCells"  : ((0,"*"),(1,"*"),(2,"*"),(3,"*"),(4,"*"),(5,"*"),(6,"*"),(7,"*")),
+                     "Formating" : {"ProtectedCells"  : #((0,"*"),(1,"*"),(2,"*"),(3,"*"),(4,"*"),(5,"*"),(6,"*"),(7,"*")),
+                                                        ["1:8"], 
                                     "FontColor"       : { "1": {
                                                                 "font"     : self.default_font ,
                                                                 "fg"       : "#FFFF00",
                                                                 "bg"       : "#0000FF",
-                                                                "Cells"    : ((6,"*"),)
+                                                                "Cells"    : ((6,None), ),
                                                                 },
                                                         "default": {
                                                                "font"     : self.default_font ,
                                                                "fg"       : "#000000",
                                                                "bg"       : "#FFFFFF",
-                                                               "Cells"    : (("*","*"),)
                                                                }
                                                         },
                                     "left_click_callertype": "cell"
@@ -273,11 +273,12 @@ class Prog_GeneratorPage(tk.Frame):
                               "SheetDeactivate"        : None,
                               "SheetTableUpdate"       : None,
                               "SheetCalculate"         : None,
-                              "SheetBeforeDoubleClick" : None,
+                              "SheetBeforeDoubleClick" : AM.Workbook_SheetBeforeDoubleClick,
                               "SheetChange"            : M20.Global_Worksheet_Change,
                               "SheetSelectionChange"   : None,
                               "SheetReturnKey"         : None,
-                              "NewSheet"               : None
+                              "NewSheet"               : None,
+                              "Worksheet_Redraw"       : F00.worksheet_redraw
                    }           
                 }        
         
@@ -370,7 +371,7 @@ class Prog_GeneratorPage(tk.Frame):
         #in_button_frame.grid(row=2, column=0, sticky="n", padx=4, pady=4)
         
         for sheet in self.workbook.sheets:
-            sheet.tablemodel.resetDataChanged()
+            pass #test sheet.tablemodel.resetDataChanged()
         
         self.workbook.activate_sheet(start_sheet)
             
@@ -941,17 +942,13 @@ class Prog_GeneratorPage(tk.Frame):
     def checkcolor(self,ColorTable,callback=None):
         self.controller.coltab = ColorTable
         self.controller.checkcolor_callback = callback
-        self.controller.showFramebyName("ColorCheckPage")    
-    
-    
-
+        self.controller.showFramebyName("ColorCheckPage")
+        
 def wschangedcallback(changedcell):
-    
     #print ("wschangedcallback ",changedcell.Row,":",changedcell.Column)
     M20.Global_Worksheet_Change(changedcell)
     
 def wsselectedcallback(changedcell):
-    
     #print ("wsselectedcallback ",changedcell.Row,":",changedcell.Column)
     M20.Global_Worksheet_SelectionChange(changedcell)
     

@@ -213,7 +213,7 @@ def Select_Move_Dest_by_Mouse(FirstCol, LastCol):
     __EnterKey_Pressed = False
     __ESCButtonPressed = False
     ShName = P01.ActiveSheet.Name
-    ShName.EnableMousePosition()
+    #HL ShName.EnableMousePosition()
     while __Show_InsertLine_until_Mousepressed(M02.FirstDat_Row, ShName) == False:
         pass
     #M30.KillTimer(0, __hTimer)
