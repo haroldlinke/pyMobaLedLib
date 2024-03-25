@@ -44,6 +44,7 @@ import pattgen.D00_GlobalProcs as D00
 import tkcolorpicker.spinbox as SB
 
 
+
 # ##########################################################
 # Generate Forms
 # ##########################################################
@@ -94,7 +95,7 @@ class CControl_Template(object):
                 self.TKWidget.activate(value)
     
     Selection = property(get_selection, set_selection, doc='Selected Entry of Listbox')
-    
+
     def get_value(self):
         if self.TKVar:
             return self.TKVar.get()
@@ -129,7 +130,7 @@ class CControl_Template(object):
         res_line = self.list_choices[nr]
         res_split = str.split(res_line,":")
         return res_split[0]
-    
+
     def select(self, value):
         # select page of MultiPage
         self.TKWidget.select(value)
@@ -295,6 +296,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                                     textbox.tag_config(tagname, font=font)
                                 if charformat.ForeGround:
                                     textbox.tag_config(tagname, foreground=charformat.ForeGround)
+
                 #textbox.config(state=tk.DISABLED)
                 textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 setattr(dlg,comp.Name,comp)

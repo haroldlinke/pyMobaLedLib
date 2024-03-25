@@ -122,5 +122,3 @@ def CalculateControlValuewithChecksum (controlValue, positionValueHigh, position
     newcontrolvalue = crc4<<4 | (controlValue & 0x0F)
     
     return newcontrolvalue
-
-

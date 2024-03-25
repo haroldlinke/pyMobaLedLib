@@ -213,7 +213,9 @@ def Check_Table_before_Copy(Send_to_Prog_Gen):
 def Select_Line_in_Prog_Gen_and_Call_Macro(Get_Dest, Macro_Callback):
     
     X02.activate_workbook("ProgGenerator")
+
     PG.global_controller.showFramebyName("ProgGeneratorPage")
+
     M50.Select_Line_for_Patern_Config_and_Call_Macro(Get_Dest, Macro_Callback)  #*HL
     
     return #*HL

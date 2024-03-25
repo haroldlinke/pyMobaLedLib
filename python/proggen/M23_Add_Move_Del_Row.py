@@ -194,6 +194,7 @@ def Proc_Copy_Row():
         DestRow = P01.Selection.Row + len(P01.Selection.Rows()) ##.Count
         RowCnt = len(P01.Selection.Rows()) #P01.Selection.Rows.Count
         for i in vbForRange(1, RowCnt):
+
             P01.Rows(DestRow).EntireRow.Insert(Shift=xlDown, CopyOrigin=xlFormatFromLeftOrAbove)
         EndDestRow = DestRow + RowCnt - 1
         #P01.Cells(DestRow, P01.Selection.Column).Select()

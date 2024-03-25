@@ -154,9 +154,6 @@ tabClassList_SetColTab = (ColorCheckPage, SerialMonitorPage, ARDUINOConfigPage, 
 tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_tksheet_test = ( StartPage, Prog_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
-
-
-
 #tabClassList_all = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
 

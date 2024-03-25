@@ -794,7 +794,6 @@ class CWorkbook(object):
     
     def LoadSheetfromExcelWorkbook(self,worksheet, filename, fieldnames):
         """load Excelworkbook from a file"""
-        
         if not os.path.exists(filename):
             logging.debug ('file does not exist'+filename)
             return
@@ -1311,7 +1310,6 @@ class CWorksheet(object):
         self.persistent_controls_dict = {}
         self.RangeDict = CRangeDict()
         self.wsInitDataFunction=None
-
         
     def init_data(self):
         if self.wsInitDataFunction:
@@ -2236,7 +2234,6 @@ class CWorksheet(object):
                 self.Redraw_table()
             
     def EventWSselected(self, selectedcell):
-        
         if self.wsselected_callback and Application.EnableEvents:
             self.wsselected_callback(selectedcell)
             
@@ -2956,7 +2953,6 @@ class CRange(str):
                 self.ws.tksheet.event_row=row-1
                 self.ws.tksheet.event_col=col-1
                 self.ws.Workbook.Synch_Evt_SheetChange(self.ws.tksheet)
-           
                 
     Value = property(get_value, set_value, doc='value of first Cell in Range')
     
@@ -2998,7 +2994,6 @@ class CRange(str):
             self.ws.tksheet.insert_rows(rows=self.end[0]-self.start[0]+1, idx=self.start[0]-1)
         else:
             print("Error")
-    
 
 # Methods
     def Activate(self):
@@ -3579,7 +3574,6 @@ class CColumn(object):
         self.Hidden = False
         self.rowrange=rowrange
         #self.Cells = CRange(rowrange,(colnumber,colnumber))
-    
         
     def get_columnwidth(self):
         return self.columnwidth
@@ -3948,7 +3942,6 @@ class CShape(object):
             button = control_dict[0]
             button_command = D00.globalprocs.get(value,None)
             button["Command"]=button_command
-            
 
     OnAction = property(get_OnAction, set_OnAction, doc='Shape-OnAction')        
 

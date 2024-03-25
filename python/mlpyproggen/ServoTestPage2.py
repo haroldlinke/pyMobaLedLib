@@ -170,7 +170,6 @@ class ServoTestPage2(tk.Frame):
         self.controller.ToolTip(self.buttonProgramServo, text="Servo Programm auf den Servo hochladen")
         #self.buttonEnter.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event,code=0))
         #self.buttonEnter.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=0))                
-                
 
         self.servo_pos_var = tk.DoubleVar()
         self.servo_pos_var.set(0)
@@ -283,7 +282,7 @@ class ServoTestPage2(tk.Frame):
         #    self._update_servos(servo_address, 1, position, 1)
         #else:
         #    self._update_servos(servo_address, 1, 1, position)
-      
+
     def _update_servo_position(self, position):
         position_int=int(position)
         self.servo_position = position_int
@@ -307,8 +306,7 @@ class ServoTestPage2(tk.Frame):
     def servo_program_button(self,event=None,code=0):
     # send code to Servo
         D00.MainMenu_Form.Show(page1=1, page2=3)
-        
-        
+         
     def servo_prog_label_pressed(self,event=None,code=0):
     # send code to Servo
         event.widget.config(relief="sunken")
