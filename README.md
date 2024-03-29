@@ -7,7 +7,7 @@ This Branch is based on LX4.19 of the Linux version of MobaLedLib_pyProgGen
 
 Requirements:
 - ARDUINO IDE and MobaledLib > 3.2.1 has to be installed
-- Python >V3.7.0
+- Python >V3.9.0
 
 Principal Installation using Python files
 1. search for the folder ARDUINO HOME/Arduino

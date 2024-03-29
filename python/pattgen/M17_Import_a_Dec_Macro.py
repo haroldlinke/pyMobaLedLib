@@ -379,12 +379,10 @@ def Import_From_Prog_Gen_Callback(OK_Pressed, Description, Macro, Row, overwrite
     if Right(Description, Len(M01.FROM_PAT_CONFIG_TXT)) == M01.FROM_PAT_CONFIG_TXT:
         MacroName = Replace(Left(Description, Len(Description) - Len(M01.FROM_PAT_CONFIG_TXT)), ' ', '_')
         MacroName = M30.ValidNameCharacters(MacroName)
-
     if not overwrite_sheet:
         _select38 = X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Soll die Zeile in das aktuelle Blatt eingefügt werden?' + vbCr + vbCr + 'Ja: Die Daten in diesem Blatt werden überschrieben' + vbCr + 'Nein: Es wird ein neues Blatt angelegt'), vbYesNoCancel + Add_To_This_Sheet_Default_Answer, pattgen.M09_Language.Get_Language_Str('Daten in aktuelles oder neues Blatt einfügen'))
     else:
         _select38 = vbYes
-
     if (_select38 == vbYes):
         # Nothing
         Add_To_This_Sheet_Default_Answer = 1

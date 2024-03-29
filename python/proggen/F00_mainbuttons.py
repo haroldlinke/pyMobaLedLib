@@ -280,7 +280,6 @@ def Workbook_Open():
 
         
 def workbook_init(workbook):
-
     M01.__Release_or_Debug_Version(True)
     
     if P01.checkplatform("Windows"):
@@ -346,7 +345,6 @@ def init_UserForms():
     Select_ProgGen_Src_Form = D12.CSelect_ProgGen_Src_Form(PG.global_controller)
     Select_ProgGen_Dest_Form = D13.CSelect_ProgGen_Dest_Form(PG.global_controller)
     UserForm_PCAnim = D15.UserForm_PCAnim(PG.global_controller)
-
 
     
 def notimplemented(command):

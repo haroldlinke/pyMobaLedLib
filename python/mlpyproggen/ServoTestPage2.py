@@ -306,7 +306,7 @@ class ServoTestPage2(tk.Frame):
     def servo_program_button(self,event=None,code=0):
     # send code to Servo
         D00.MainMenu_Form.Show(page1=1, page2=3)
-         
+        
     def servo_prog_label_pressed(self,event=None,code=0):
     # send code to Servo
         event.widget.config(relief="sunken")
@@ -326,7 +326,9 @@ class ServoTestPage2(tk.Frame):
         self._update_servos(servo_address,servo_position,servo_control,0)
         
     def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):
-        servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCOld"))
+
+        servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
+
         if servo_use_old_crc:
             newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow)
         else:

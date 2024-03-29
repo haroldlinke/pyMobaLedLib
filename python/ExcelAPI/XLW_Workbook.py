@@ -615,7 +615,7 @@ class CWorkbook(object):
         return
         
                 
-    def add_sheet(self,sheetname: str,from_sheet: str|None =None,After: str|None=None,nocontrols: bool=False,noredraw: bool=False):
+    def add_sheet(self,sheetname ,from_sheet=None,After=None,nocontrols=False,noredraw=False):
         tabframe = ttk.Frame(self.container,relief="ridge", borderwidth=1)
         act_worksheet = self.new_sheet(sheetname,tabframe,from_sheet=from_sheet)
         tabframe.sheetname = sheetname
@@ -643,8 +643,8 @@ class CWorkbook(object):
             act_worksheet.Visible(False)
             #self.container.tab(tabframe,state="hidden")
         self.tabid += 1
-           
-    def new_sheet(self,sheetname: str,tabframe: tk.Frame,from_sheet: str|None=None) -> Object:
+
+    def new_sheet(self,sheetname,tabframe: tk.Frame,from_sheet=None) -> Object:
         if from_sheet==None:
             sheetname_prop = self.sheetdict.get(sheetname)
         else:
@@ -681,7 +681,7 @@ class CWorkbook(object):
             #newtab.tabselected()
         logging.debug("TabChanged %s - %s",self.oldTabName,newtab_name)        
         
-    def Sheets(self,name: str|None = None) -> Object:
+    def Sheets(self,name=None) -> Object:
         if name==None:
             return self.sheets        
         if self.sheets != None:
@@ -794,6 +794,7 @@ class CWorkbook(object):
     
     def LoadSheetfromExcelWorkbook(self,worksheet, filename, fieldnames):
         """load Excelworkbook from a file"""
+        
         if not os.path.exists(filename):
             logging.debug ('file does not exist'+filename)
             return
