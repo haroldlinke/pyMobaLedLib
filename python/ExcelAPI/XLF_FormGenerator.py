@@ -94,7 +94,7 @@ class CControl_Template(object):
                 self.TKWidget.activate(value)
     
     Selection = property(get_selection, set_selection, doc='Selected Entry of Listbox')
-    
+
     def get_value(self):
         if self.TKVar:
             return self.TKVar.get()

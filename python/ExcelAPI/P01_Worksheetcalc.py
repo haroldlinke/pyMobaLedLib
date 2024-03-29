@@ -236,7 +236,7 @@ def Calc_Worksheet(ws,cell=None):
     E31=M02.Calc_TimesStr(X02.Range("F28:BQ28"),Mode)
     Zeiten=E31
     setcellfromvariable(ws, "E31",E31)
-    
+
     #* "E32" WENN(ODER(Analoges_Überblenden="";Analoges_Überblenden=0;Analoges_Überblenden="N";Analoges_Überblenden="n");"";WENN(Analoges_Überblenden="X";"X";"A"))
     E33 = IF (OR(Analoges_Überblenden=="",Analoges_Überblenden=="0",Analoges_Überblenden=="N"), "", IF(Analoges_Überblenden=="X","X","A") ) 
     Analog = E33

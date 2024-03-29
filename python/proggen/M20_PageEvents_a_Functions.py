@@ -448,6 +448,7 @@ def Update_Sum_Func():
     # The Sum function in the filter column is used to detect changes in the autofilter
     #  to update the "Start LedNr"
     Debug.Print("Update_Sum_Func called")
+
     return #*HL
     
     P01.CellDict[M02.SH_VARS_ROW, M25.Filter__Col].FormulaR1C1 = '=SUM(R[1]C:R[' + str(M30.LastUsedRow()) + ']C)'

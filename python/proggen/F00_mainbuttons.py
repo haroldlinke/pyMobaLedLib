@@ -280,7 +280,6 @@ def Workbook_Open():
 
         
 def workbook_init(workbook):
-    
     M01.__Release_or_Debug_Version(True)
     
     if P01.checkplatform("Windows"):

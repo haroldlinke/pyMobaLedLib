@@ -358,6 +358,7 @@ def Import_GotoActivation(Line):
         ActTxt = Mid(Line, Len(ActStr) + 1)
         X02.RangeDict['Goto_Aktivierung'] = ActTxt
 
+
 def Import_From_Prog_Gen_Callback(OK_Pressed, Description, Macro, Row, overwrite_sheet=False):
     global Add_To_This_Sheet_Default_Answer
     MacroName = String()
