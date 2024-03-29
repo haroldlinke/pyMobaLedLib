@@ -41,6 +41,7 @@ from vb2py.vbconstants import *
 
 import tkinter as tk
 from tkinter import ttk
+import urllib
 from mlpyproggen.tooltip import Tooltip
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
@@ -73,9 +74,11 @@ import proggen.M37_Inst_Libraries as M37
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
-import proggen.Prog_Generator as PG
+import proggen.F00_mainbuttons as F00
+
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
+import mlpyproggen.Prog_Generator as PG
 import proggen.M09_Language as M09
 
 import logging
@@ -264,37 +267,37 @@ class CUserForm_Options:
             Col = M25.BUILDOP_COL
             Side = 'L'
             BuildOpt = P01.Cells(M02.SH_VARS_ROW, Col)
-            self.Autodetect_Typ_L_CheckBox_var.set(InStr(BuildOpt, M02.AUTODETECT_STR) > 0)
+            self.Autodetect_Typ_L_CheckBox_var.set(InStr(str(BuildOpt), M02.AUTODETECT_STR) > 0)
         else:
             Col = M25.BUILDOpRCOL
             Side = 'R'
             BuildOpt = P01.Cells(M02.SH_VARS_ROW, Col)
-            self.Autodetect_Typ_R_CheckBox_var.set(InStr(BuildOpt, M02.AUTODETECT_STR) > 0)
-        if InStr(BuildOpt, M02.BOARD_NANO_OLD) > 0:
+            self.Autodetect_Typ_R_CheckBox_var.set(InStr(str(BuildOpt), M02.AUTODETECT_STR) > 0)
+        if InStr(str(BuildOpt), M02.BOARD_NANO_OLD) > 0:
             self.Controls['Nano_Normal_' + Side].Value = True
             return
-        if InStr(BuildOpt, M02.BOARD_NANO_FULL) > 0:
+        if InStr(str(BuildOpt), M02.BOARD_NANO_FULL) > 0:
             self.Controls['Nano_Full_' + Side].Value = True
             return
             # 28.10.20:
-        if InStr(BuildOpt, M02.BOARD_NANO_NEW) > 0:
+        if InStr(str(BuildOpt), M02.BOARD_NANO_NEW) > 0:
             self.Controls['Nano_New_' + Side].Value = True
             return
-        if InStr(BuildOpt, M02.BOARD_UNO_NORM) > 0:
+        if InStr(str(BuildOpt), M02.BOARD_UNO_NORM) > 0:
             self.Controls['Uno_' + Side].Value = True
             return
-        if InStr(BuildOpt, M02.BOARD_NANO_EVERY) > 0:
+        if InStr(str(BuildOpt), M02.BOARD_NANO_EVERY) > 0:
             return
             # currently no option in GUI, but that's ok, as ATMEGA4809 is currently unsupported 28.10.20: Jürgen
-        if InStr(BuildOpt, M02.BOARD_ESP32) > 0 and Side == 'L' and M37.ESP32_Lib_Installed():
+        if InStr(str(BuildOpt), M02.BOARD_ESP32) > 0 and Side == 'L' and M37.ESP32_Lib_Installed():
             self.Controls['ESP32_L'].Value = True
             return
             # 11.11.20:
-        if InStr(BuildOpt, M02.BOARD_PICO) > 0 and Side == 'L' and M37.PICO_Lib_Installed():
+        if InStr(str(BuildOpt), M02.BOARD_PICO) > 0 and Side == 'L' and M37.PICO_Lib_Installed():
             self.Controls['PICO_L'].Value = True
             return
             # 18.04.21: Juergen
-        if InStr(BuildOpt, '--board ') > 0:
+        if InStr(str(BuildOpt), '--board ') > 0:
             self.Controls['Nano_Normal_' + Side].Value = False
             self.Controls['Nano_New_' + Side].Value = False
             self.Controls['Uno_' + Side].Value = False
@@ -333,6 +336,98 @@ class CUserForm_Options:
         #-------------------------------------------
         self.Hide()
         M37.Update_MobaLedLib_from_Arduino_and_Restart_Excel()
+        
+        
+    def copytree(self, src, dst, symlinks=False, ignore=None):
+        names = os.listdir(src)
+        if ignore is not None:
+            ignored_names = ignore(src, names)
+        else:
+            ignored_names = set()
+            
+        if not os.path.exists(dst):
+            os.makedirs(dst)
+            
+        errors = []
+        for name in names:
+            if name in ignored_names:
+                continue
+            srcname = os.path.join(src, name)
+            dstname = os.path.join(dst, name)
+            try:
+                if symlinks and os.path.islink(srcname):
+                    linkto = os.readlink(srcname)
+                    os.symlink(linkto, dstname)
+                elif os.path.isdir(srcname):
+                    self.copytree(srcname, dstname, symlinks, ignore)
+                else:
+                    shutil.copy2(srcname, dstname)
+                # XXX What about devices, sockets etc.?
+            except (IOError, os.error) as why:
+                errors.append((srcname, dstname, str(why)))
+            # catch the Error from the recursive copytree so that we can
+            # continue with other files
+            except BaseException as err:
+                errors.extend(err.args[0])
+        try:
+            shutil.copystat(src, dst)
+        except WindowsError:
+            # can't copy file access times on Windows
+            pass
+        except OSError as why:
+            errors.extend((src, dst, str(why)))
+        if errors:
+            raise Error(errors) 
+        
+    def show_download_status(self,a,b,c):
+        
+            '''''Callback function 
+            @a:Downloaded data block 
+            @b:Block size 
+            @c:Size of the remote file 
+            '''  
+            per=100.0*a*b/c  
+            if per>100:  
+                per=100  
+            #print '%.2f%%' % per          
+        
+            F00.StatusMsg_UserForm.Set_ActSheet_Label(P01.Format(int(time.time()) - M37.Update_Time, 'hh:mm:ss')+"\n"+str(a*b))
+        
+    def __Update_pyMobaLedLib_Button_Click(self):
+        self.Hide()
+        if P01.MsgBox(M09.Get_Language_Str('Soll die Python MobaLedLib aktualisiert werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) != vbYes:
+            return
+        F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Python MobaLedLib Programm'), '')
+        URL= "https://github.com/HaroldLinke/pyMobaLedLib/archive/master.zip"
+        try:
+            
+            workbookpath = PG.ThisWorkbook.Path
+            workbookpath2 = os.path.dirname(workbookpath)
+            workbookpath3 = os.path.dirname(workbookpath2)
+            zipfilenamepath = workbookpath3+"/pyMobaLedLib.zip"
+            F00.StatusMsg_UserForm.Set_Label("Download Python MobaLedLib Programm")
+            urllib.request.urlretrieve(URL, zipfilenamepath,self.show_download_status)
+            
+            F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programm")
+            M30.UnzipAFile(zipfilenamepath,workbookpath3)
+            srcpath = workbookpath3+"/pyMobaLedLib-master/python"
+            dstpath = workbookpath3+"/pyMobaLedLib/python"
+            if not dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy when destination is development folder
+                F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
+                self.copytree(srcpath,dstpath)
+            
+            
+            if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
+                # shutdown and restart
+                PG.global_controller.restart()
+            
+        except BaseException as e:
+            Debug.Print("Update_MobLaedLib exception:",e)
+            P01.MsgBox(M09.Get_Language_Str('Fehler beim Download oder Installieren?'),vbInformation, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib'))
+   
+        P01.Unload(F00.StatusMsg_UserForm)
+        
+        
     
     def __Update_Beta_Button_Click(self):
         #-------------------------------------
@@ -342,8 +437,8 @@ class CUserForm_Options:
     def __Show_Lib_and_Board_Page_Button_Click(self):
         #-------------------------------------------------
         self.Hide()
-        with_1 = P01.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
-        with_1.Visible = True
+        with_1 = PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
+        with_1.Visible(True)
         with_1.Select()
         
     def Button_Setup(self,button_frame,Text,Command,Accelerator,Row=0,label_text="",state=tk.NORMAL):
@@ -370,7 +465,7 @@ class CUserForm_Options:
             side="_L"
             self.Autodetect_Typ_L_CheckBox_var = tk.IntVar(master=self.top)
             self.Autodetect_Typ_L_CheckBox_var.set(0)
-            self.Autodetect_Typ_L_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_L_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
+            self.Autodetect_Typ_L_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_L_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0, command=self.__Autodetect_Typ_L_CheckBox_Click)
             self.Autodetect_Typ_L_CheckBox.grid(row=0, column=0,sticky="nw", padx=2, pady=2)                    
         else:
             side="_R"
@@ -378,7 +473,7 @@ class CUserForm_Options:
             self.Button_Setup(frame,M09.Get_Language_Str("Prog. Installieren"),self.__ProInstall_Button_Click,"U",Row=2)    
             self.Autodetect_Typ_R_CheckBox_var = tk.IntVar(master=self.top)
             self.Autodetect_Typ_R_CheckBox_var.set(0)
-            self.Autodetect_Typ_R_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_R_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
+            self.Autodetect_Typ_R_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_R_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0, command=self.__Autodetect_Typ_R_CheckBox_Click)
             self.Autodetect_Typ_R_CheckBox.grid(row=0, column=0,sticky="nw", padx=2, pady=2)                  
         
         for rb in self.radiobuttons.keys():
@@ -476,6 +571,7 @@ class CUserForm_Options:
         self.Button_Setup(Update_frame,M09.Get_Language_Str("Aktualisiere Bibliotheke"),self.__Update_to_Arduino_Button_Click,"",Row=0,label_text="Aktualisiert die MobaLedLib auf den offiziellen freigegebenen Stand welcher in der Arduino IDE verfügbar ist.")
         self.Button_Setup(Update_frame,M09.Get_Language_Str("Installiere Beta Test"),self.__Update_Beta_Button_Click,"",Row=1,label_text="Installiert die Beta Test Version der MobaLedLib Bibliothek.\n(Nur für Experten)")
         self.Button_Setup(Update_frame,M09.Get_Language_Str("Status der Bibliotheken"),self.__Show_Lib_and_Board_Page_Button_Click,"",Row=2,label_text="Zeigt den Status aller installierten Bibliotheken und Boards an.")
+        self.Button_Setup(Update_frame,M09.Get_Language_Str("Aktualisiere pyMobLedLib"),self.__Update_pyMobaLedLib_Button_Click,"",Row=3,label_text="Aktualisiert pyMobaLedLib auf die neueste Version.")
                        
         Bootloader_frame = tk.Frame(self.container)
         Bootloader_frame_Name = M09.Get_Language_Str("Bootloader")

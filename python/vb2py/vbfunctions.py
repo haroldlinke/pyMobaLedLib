@@ -55,6 +55,9 @@ def Array(*args):
         array[idx] = args[idx]
     return array
 
+def Call(**params):
+    """Call a function from string"""
+    eval(*args)
 
 def CBool(num):
     """Return the boolean version of a number"""
@@ -108,11 +111,15 @@ def Dir(path=None,pathtype=vbDirectory):
 
     """
     global _last_files
+    
     if path:
+        Debug.Print("Dir:"+path)
         _last_files = glob.glob(path)
     if _last_files:
+        Debug.Print("_last_files:"+repr(_last_files))
         return os.path.split(_last_files.pop(0))[1]  # VB just returns the filename, not full path
     else:
+        Debug.Print("_last_files: None")
         return ""
 
 
@@ -158,7 +165,6 @@ def FileLen(filename):
     """Return the length of a given file"""
     return os.stat(str(filename))[6]
 
-
 def Filter(sourcesarray, match, include=1):
     """Returns a zero-based array containing subset of a string array based on a specified filter criteria"""
     if include:
@@ -199,13 +205,20 @@ def InStr(*args):
     if len(args) == 2:
         text, subtext = args
         return text.find(subtext) + 1
-    else:
+    elif len(args) == 3:
         start, text, subtext = args
         pos = text[start - 1:].find(subtext)
         if pos == -1:
             return 0
         else:
             return pos + start
+    else:
+        start, text, subtext,dummy = args
+        pos = text[start - 1:].find(subtext)
+        if pos == -1:
+            return 0
+        else:
+            return pos + start        
 
 
 def InStrRev(text, subtext, start=None, compare=None):
@@ -227,6 +240,8 @@ def Int(value):
     if -32767 <= n <= 32767:
         return int(n)
     else:
+        return int(n) #*HL change
+    
         raise ValueError("Out of range in Int (%s)" % n)
 
 
@@ -427,7 +442,7 @@ def RGB(r, g, b):
     return ((bm * 256) + gm) * 256 + rm
 
 
-def Replace(expression, find, replace, start=1, count=-1):
+def Replace(expression, find, replace, start=1, count=-1,Compare=None):
     """Returns a string in which a specified substring has been replaced with another
     substring a specified number of times
 
@@ -727,10 +742,14 @@ def Val(text):
     quicker.
 
     """
+    if type(text)!=str: #*HL if text is not string then return it without change (might be int or float)
+        return text
     best = 0
     for idx in range(len(text)):
         try:
             best = float(text[:idx + 1])
+            if (best - int(best)) == 0:
+                best=int(best)
         except ValueError:
             pass
     return best
@@ -744,7 +763,7 @@ def vbForRange(start, stop, step=1):
 
     """
     num_repeats = (stop - start) / step
-    if num_repeats < 0:
+    if num_repeats < 0: 
         return
     current = start
     while num_repeats >= 0:

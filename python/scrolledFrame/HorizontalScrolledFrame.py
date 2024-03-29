@@ -1,4 +1,4 @@
-from tkinter import *   # from x import * is bad practice
+from tkinter import *   # fromx x import * is bad practice
 from tkinter import ttk
 
 # http://tkinter.unpythonic.net/wiki/VerticalScrolledFrame

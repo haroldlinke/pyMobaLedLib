@@ -1,0 +1,188 @@
+Implementation Remarks - status: 25.3.2024
+
+Minimum Python Version: 3.10
+
+Standard Python Installation
+
+Using Standard TKinter for Windows creation
+
+All specific modules are included in the package
+
+Entry point: pyMobaLedLib.py - main_entry()
+
+Call parameters: 
+'--loglevel',choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"],help="Logginglevel to be printed into the logfile"
+'--logfile',help="Logfilename"
+'--loaddatafile',choices=["True","False"],help="if <False> the last saved data will no be loaded")
+'--startpage',choices=['StartPage', 'ColorCheckPage', 'Prog_GeneratorPage', 'SoundCheckPage', 'DCCKeyboardPage', 'ServoTestPage', 'Z21MonitorPage', 'SerialMonitorPage', 'ARDUINOMonitorPage', 'ConfigurationPage'],help="Name of the first page shown after start"
+'--port',help="Name of the port where the ARDUINO is connected to"
+'--z21simulator',choices=["True","False"],help="if <True> the Z21simulator will be started automatically"
+'--caller',choices=["SetColTab",""],help="Only for MLL-ProgrammGenerator: If <SetColTab> only the Colorcheckpage is available and the chnage coltab is returned after closing the program"
+'--test',choices=["True","False"],help="if <True> test routines are started at start of program"
+
+Following pages are created:
+StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage
+
+Each page has its own Class and its own module 
+location: mlpyproggen\pagename.py
+
+Pages are generate by the function create_macroparam_frame(self.main_frame,self.tabClassName, maxcolumns=4,startrow=1,style="CONFIGPage") located in pyMobaLedLib.py
+
+This functions uses a page description located in the file MobaLedTest_macrodef.json
+
+This is the example for the configuration page:
+    "ConfigurationPage": {
+        "Typ": "ConfigurationPage",
+        "Name": "ConfigurationPage",
+        "MTabName": "Einstellungen",
+        "Title": "Einstellungen",
+        "Button_1": "Geänderte Einstellungen übernehmen",
+        "Button_2": "n",
+        "Button_3": "",
+        "Kurzbeschreibung": "Einstellungsparameter",
+        "Ausführliche Beschreibung": "pyProgramGenerator Einstellungen\n\r\n\rHier können Sie die Grundeinstellungen für das Programm an Ihre Wünsche anpassen.",
+        "Params": [
+            "Farbauswahl",
+            "ShowProgramGenerator",
+            "ShowPatternGenerator",
+            "ShowHiddentables",
+            "AutoLoadWorkbooks",
+            "UseCOM_Port_UserForm",
+            "Startseite",
+            "Language",
+            "LEDchannel",
+            "MaxLEDcnt",
+            "LEDColourCorrection",
+            "RMbusTimer",
+            "UseZ21Data",
+            "Z21Data",
+            "FontConfig",
+            "FontConfig_PattGen"
+        ]
+        
+The parameters are defined in the file : MobaLedTest_macroparamdef.json
+
+Example:
+    "Farbauswahl": {
+        "ParName": "Farbauswahl",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Values": [
+            "HSV",
+            "Farbrad"
+        ],
+        "ValuesText": [
+            "HSV-Farbton",
+            "Farbrad"
+        ],
+        "ConfigName": [
+            "",
+            "colorview"
+        ],
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Farbauswahl",
+        "Hint": "Farbauswahl - Neustart notwendig"
+    },
+The parameter definition follows the parameters defined by Hardi in the MLL-Excel Program.
+
+Special pages are the Prog_Generator.py and Pattern_Generator.py
+
+These pages simulate the Excel user interface of the MLL-PatternConfigurator and ProgramGenerator.
+This simulation is based on a translation of the Excel VBA Code to Python and Excel-VBA emulation and a module providing the basic sheet handling.
+
+Translation of VBA-Code to Python:
+The Prog_Generator was the first Excel program translated.
+The VBA code was translated to Python using the Webbased VB2PY-converter: http://vb2py.sourceforge.net/online_conversion.html.
+Unfortunately this converter is not working anymore.
+As teh Excel emulation was very basic, a lot of orignal VBA code was replaced by handwritten Python code.
+The UI-forms are mainly created by hand using TKinter.widgets.
+
+The PatternGenerator followed 1 year later.
+As the webbased conversion was not available anymore the VBA Code of the PatternGenerator was translated by an enhanced version of the VB2PY command line tool.
+My goal was to change as little as possible in the generated code.
+
+The Interface between the translated VBA-Code and the Spreadsheet, is located in the file ExcelAPI\XLW_Workbook.py
+The UI-forms now behave similar to the VBA forms. This is realized by using the function generate_form from ExcelAPI\XLF_FormGenerator.py
+This function takes a python Dict that defines the forms with all controls.
+The parameters in the Dict are based on the original VBA parameters. This makes it easy to recreate a VBA-Form for Python as the parameters have only to be copied by hand from the Excel-UI-Tool into the Dict description.
+
+e.g.
+
+self.Examples_UserForm_RSC = {"UserForm":{
+            "Name"          : "Examples_UserForm",
+                                "BackColor"     : "#000008",
+                                "BorderColor"   : "#000012",
+                                "Caption"       : "Beispiele Laden",
+                                "Height"        : 284,
+                                "Left"          : 0,
+                                "Top"           : 0,
+                                "Type"          : "MainWindow",
+                                "Visible"       : True,
+                                "Width"         : 229,
+                                "Components"    : [{"Name":"Label1","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Auswahl der Beispiele",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":24,"Left":18,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":192},
+
+                                                   {"Name":"Abort_Button","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Abbrechen",
+                                                    "Command": self.Abort_Button_Click ,"ControlTipText":"","ForeColor":"#000012","Height":24,"Left":48,"Top":222,"Type":"CommandButton","Visible":True,"Width":72},
+                                                   
+                                                   {"Name":"OK_Button","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Auswahl",
+                                                    "Command": self.OK_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":24,"Left":132,"Top":222,"Type":"CommandButton","Visible":True,"Width":72},
+                                                   
+                                                   {"Name":"All_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Alle Beispiele",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":30,"Type":"CheckBox","Visible":True,"Width":185},
+
+                                                   {"Name":"Basic_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Allgemein",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":54,"Type":"CheckBox","Visible":True,"Width":185},
+
+                                                   {"Name":"Charlieplexing_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Charlieplexing",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":180,"Type":"CheckBox","Visible":True,"Width":185},
+
+                                                   {"Name":"ConstrWarnLight_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Baustellenlichter",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":90,"Type":"CheckBox","Visible":True,"Width":185},
+
+                                                   {"Name":"Illuminations_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Illuminations",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":198,"Type":"CheckBox","Visible":True,"Width":185},
+
+                                                   {"Name":"Signals_3D_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Signale 3D Druck RGB LEDs",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":126,"Type":"CheckBox","Visible":True,"Width":185},
+
+                                                   {"Name":"Signals_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Signale",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":108,"Type":"CheckBox","Visible":True,"Width":185},
+
+                                                   {"Name":"Sounds_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Sounds",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":144,"Type":"CheckBox","Visible":True,"Width":185},
+
+                                                   {"Name":"Status_Buttons_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Taster mit Status Anzeige",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":162,"Type":"CheckBox","Visible":True,"Width":185},
+
+                                                   {"Name":"Traffic_Lights_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    "Caption":"Ampeln",
+                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":72,"Type":"CheckBox","Visible":True,"Width":185},
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+                                                   ]}
+                                             }
+                                             
+The values for Height, Left, Top and Width are the VBA values and are translated into Tkinter values internally.
+
+The translated python modules are located in following folders:
+
+ProgramGenerator: proggen
+PatternConfigurator: pattgen
+
+The filenames are the original VBA module names.
+
+to be continued .....

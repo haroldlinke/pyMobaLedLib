@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+
 """
     Module implementing the TableModel class that manages data for
     it's associated TableCanvas.
@@ -67,7 +69,8 @@ class TableModel(object):
             self.createEmptyModel()
 
         if not set(self.reclist) == set(self.data.keys()):
-            print ('reclist does not match data keys')
+            #print ('reclist does not match data keys')
+            pass
         #restore last column order
         if hasattr(self, 'columnOrder') and self.columnOrder != None:
             self.columnNames=[]
@@ -112,6 +115,8 @@ class TableModel(object):
         #self.editable={}
         self.nodisplay = []
         self.hiderowslist = []
+        self.rowheightlist = {}
+        self.default_rowheight = 12
         self.ColumnAlignment = {}
         self.protected_cells = [] #*HL  list of cells that are not editable ("*",col) and (row,"*") for rows and columns
         self.shapelist = [] #*HL list of shapes
@@ -153,7 +158,7 @@ class TableModel(object):
             return None
 
         #takes first row as field names
-        dictreader = csv.DictReader(open(filename, "r"), delimiter=sep,fieldnames=fieldnames)
+        dictreader = csv.DictReader(open(filename, "r",encoding="utf8"), delimiter=sep,fieldnames=fieldnames)
         dictdata = {}
         count=0
         for rec in dictreader:
@@ -210,8 +215,11 @@ class TableModel(object):
         data["protected_cells"] = self.protected_cells
         data["format_cells"]=self.format_cells
         data["columnwidths"]=self.columnwidths
+        data["rowheightlist"]=self.rowheightlist
         data["rowwidths"]=self.rowwidths
         data["shapelist"]=self.shapelist
+        #print("GetData****Shapelist************")
+        #repr(self.shapelist)
         return data
 
     def getAllCells(self):
@@ -334,7 +342,7 @@ class TableModel(object):
                 temp = copy.deepcopy(self.colors[key][currname])
                 self.colors[key][newname] = temp
                 del self.colors[key][currname]
-        print ('renamed')
+        #print ('renamed')
         #would also need to resolve all refs to this rec in formulas here!
         return
 
@@ -469,14 +477,15 @@ class TableModel(object):
         return key
     
     def deleteShapeatRow(self,y1,y2):
-        deleteList=[]
-        index=0
+        #deleteList=[]
+        #index=0
         for shape in self.shapelist:
             if shape.Top in range(y1,y2):
-                deleteList.insert(0, index)
-        if len(deleteList)>0:
-            for item in deleteList:
-                del self.shapelist[item]
+                shape.set_activeflag(False)
+        #        deleteList.insert(0, index)
+        #if len(deleteList)>0:
+        #    for item in deleteList:
+        #        self.shapelist[item].Active=False
         self.moveShapesVertical(y1,deltaY=y1-y2)
         self.setDataChanged()
 
@@ -560,7 +569,7 @@ class TableModel(object):
     
     def moveRow(self,srckeylist=None,destindex=None,minY1=None,maxY1=0,deltaY=0,deleteY=0):
         if srckeylist and destindex:
-            print("MoveRow:",srckeylist,destindex)
+            #print("MoveRow:",srckeylist,destindex)
             for key in srckeylist:
                 self.reclist.remove(key)
             self.reclist[destindex:destindex]=srckeylist
@@ -778,7 +787,8 @@ class TableModel(object):
 
     def setValueAt(self, value, rowIndex, columnIndex):
         """Changed the dictionary when cell is updated by user"""
-
+        if value==None:
+            value=""
         name = self.getRecName(rowIndex)
         colname = self.getColumnName(columnIndex)
         coltype = self.columntypes[colname]
@@ -791,6 +801,9 @@ class TableModel(object):
             except:
                 pass
         else:
+            if type(value) != str and type(value) != int:
+                print(str(type(value)))
+                #print("Set Value at error:",name,colname,value)
             self.data[name][colname] = value
         self.updateLastUsedRow(rowIndex)
         self.setDataChanged()
@@ -825,7 +838,7 @@ class TableModel(object):
             else:
                 fgcolor = None
                 bgcolor = None
-                font    = None                
+                font    = None
         else:
             fgcolor = None
             bgcolor = None
@@ -841,7 +854,16 @@ class TableModel(object):
         if name in self.colors[key] and colname in self.colors[key][name]:
             return self.colors[key][name][colname]
         else:
-            return None
+            #return None
+            fgcolor,bgcolor,font = self.getCellFormatAt(rowIndex, columnIndex)
+            if key=="bg":
+                return bgcolor
+            elif key=="font":
+                return font
+            else:
+                return fgcolor
+        
+        
 
     def setColorAt(self, rowIndex, columnIndex, color, key='bg'):
         """Set color"""
@@ -880,8 +902,8 @@ class TableModel(object):
             ncol = thiscol + offset
 
         newrecname, newcolname = self.getRecColNames(nrow, ncol)
-        print ('recname, colname', recname, colname)
-        print ('thisrow, col', thisrow, thiscol)
+        #print ('recname, colname', recname, colname)
+        #print ('thisrow, col', thisrow, thiscol)
         return newrecname, newcolname
 
     def appendtoFormula(self, formula, rowIndex, colIndex):
@@ -906,7 +928,7 @@ class TableModel(object):
         cells, ops = Formula.readExpression(frmla)
 
         for c in cells:
-            print (c)
+            #print (c)
             if type(c) is not ListType:
                 nc = c
             else:

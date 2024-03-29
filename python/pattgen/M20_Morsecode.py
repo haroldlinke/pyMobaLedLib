@@ -1,53 +1,10 @@
-# -*- coding: utf-8 -*-
-#
-#         Write header
-#
-# * Version: 4.02
-# * Author: Harold Linke
-# * Date: January 7, 2021
-# * Copyright: Harold Linke 2021
-# *
-# *
-# * MobaLedCheckColors on Github: https://github.com/haroldlinke/MobaLedCheckColors
-# *
-# *  
-# * https://github.com/Hardi-St/MobaLedLib
-# *
-# * MobaLedCheckColors is free software: you can redistribute it and/or modify
-# * it under the terms of the GNU General Public License as published by
-# * the Free Software Foundation, either version 3 of the License, or
-# * (at your option) any later version.
-# *
-# * MobaLedCheckColors is distributed in the hope that it will be useful,
-# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# * GNU General Public License for more details.
-# *
-# * You should have received a copy of the GNU General Public License
-# * along with this program.  if not, see <http://www.gnu.org/licenses/>.
-# *
-# *
-# ***************************************************************************
-
-#------------------------------------------------------------------------------
-# CHANGELOG:
-# 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
-# 2021-01-07 v4.02 HL: - Else:, ByRef check done, first PoC release
-
-
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-from vb2py.vbconstants import *
-
-
-import proggen.Prog_Generator as PG
-
-import ExcelAPI.P01_Workbook as P01
-
-from ExcelAPI.X01_Excel_Consts import *
-
-from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
+import pattgen.M09_Language
+import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLC_Excel_Consts as X01
+import pattgen.M01_Public_Constants_a_Var as M01
+import ExcelAPI.XLWA_WinAPI as X03
 
 """ This Modul has been written by Lorenz
  with some smal modifications by Hardi
@@ -72,21 +29,22 @@ UT----------------------------------
 """
 
 
-def __Add_Kursive_Text(r, Txt):
+def Add_Kursive_Text(r, Txt):
+    return '*HL'
     Parts = vbObjectInitialize(objtype=String)
     #------------------------------------------------------
-    Parts = Split(Get_Language_Str(Txt), '#')
+    Parts = Split(pattgen.M09_Language.Get_Language_Str(Txt), '#')
     if UBound(Parts) != 2:
-        MsgBox('Error: In the Language sheet. The text \'' + Txt + '\' must contain the startposition and the length of the cursive part', vbCritical, 'Internal Error')
+        X02.MsgBox('Error: In the Language sheet. The text \'' + Txt + '\' must contain the startposition and the length of the cursive part', vbCritical, 'Internal Error')
         r = Txt
     else:
         r = Parts(2)
-        r.Characters[Start= Val(Parts(0)), Length= Val(Parts(1))].Font.FontStyle = 'Italic'
+        r.Characters(Start= Val(Parts(0)), Length= Val(Parts(1))).Font.FontStyle = 'Italic'  #*HL
 
-def __Test_Bold():
+def Test_Bold():
     #UT------------
     # Attention: Place the cursor to the destination cell for the test
-    __Add_Kursive_Text(ActiveCell, '7#3#Dauer Dit in ms')
+    Add_Kursive_Text(X02.ActiveCell(), '7#3#Dauer Dit in ms')
 
 def Make_Morsecode_Init():
     Oldupdating = Boolean()
@@ -94,53 +52,56 @@ def Make_Morsecode_Init():
     OldEvents = Boolean()
     #-------------------------------
     # Ist called when the sheet is copied with the "Neues Blatt" button or loaded from a file
-    Oldupdating = Application.ScreenUpdating
-    OldEvents = Application.EnableEvents
-    Application.ScreenUpdating = False
-    Application.EnableEvents = False
-    Range['M2'] = Get_Language_Str('Morsetext')
-    __Add_Kursive_Text(Range('M3'), '7#3#Dauer Dit in ms')
-    Range['M4'] = Get_Language_Str('Spruchanfang/-ende senden')
-    Range['M5'] = Get_Language_Str('Nach dem Erstellen vorführen')
-    Range['M5'].HorizontalAlignment = xlRight
-    Range['N2'] = Get_Language_Str('{SOS} Rettet Hardi')
-    Range['N3'] = '240'
-    Range['N4'] = Get_Language_Str('Nein')
-    Range['N5'] = Get_Language_Str('Ja')
-    Range['N2:N5'].Interior.Color = 65535
-    Range['O2:P2'].Interior.Color = 65535
-    __Hide_Second_Pic()
-    Application.ScreenUpdating = Oldupdating
-    Application.EnableEvents = OldEvents
-    #Button_Init_Proc_Finished = True                                                         ' 05.01.22: Juergen call init function synchronous
-    ##If VBA6 Then                                                                              ' 05.01.22: Juergen call init function synchronous
+    Oldupdating = X02.Application.ScreenUpdating
+    OldEvents = X02.Application.EnableEvents
+    X02.Application.ScreenUpdating = False
+    X02.Application.EnableEvents = False
+    X02.RangeDict['M2'] = pattgen.M09_Language.Get_Language_Str('Morsetext')
+    Add_Kursive_Text(X02.Range('M3'), '7#3#Dauer Dit in ms')
+    X02.RangeDict['M4'] = pattgen.M09_Language.Get_Language_Str('Spruchanfang/-ende senden')
+    X02.RangeDict['M5'] = pattgen.M09_Language.Get_Language_Str('Nach dem Erstellen vorführen')
+    X02.RangeDict['M5'].HorizontalAlignment = X01.xlRight
+    X02.RangeDict['N2'] = pattgen.M09_Language.Get_Language_Str('{SOS} Rettet Hardi')
+    X02.RangeDict['N3'] = '240'
+    X02.RangeDict['N4'] = pattgen.M09_Language.Get_Language_Str('Nein')
+    X02.RangeDict['N5'] = pattgen.M09_Language.Get_Language_Str('Ja')
+    X02.RangeDict['N2:N5'].Interior.Color = 65535
+    X02.RangeDict['O2:P2'].Interior.Color = 65535
+    Hide_Second_Pic()
+    X02.Application.ScreenUpdating = Oldupdating
+    X02.Application.EnableEvents = OldEvents
+    #Button_Init_Proc_Finished = True
+    # 05.01.22: Juergen call init function synchronous
+    ##If VBA6 Then
+    # 05.01.22: Juergen call init function synchronous
     #  Debug.Print "Button_Init_Proc_Finished=" & Button_Init_Proc_Finished
     #  DoEvents
     ##End If
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Zellcounter - ByRef 
-def __One_Char(Zeichencode, Zellcounter, Morsezeichen):
+def One_Char(Zeichencode, Zellcounter, Morsezeichen):
     Zaehlerincode = Integer()
 
     c = String()
     #---------------------------------------------------------------------------------------------------
     c = Chr(Zeichencode)
     for Zaehlerincode in vbForRange(1, Len(Morsezeichen(Zeichencode))):
-        select_0 = Mid(Morsezeichen(Zeichencode), Zaehlerincode, 1)
-        if (select_0 == '·'):
-            Cells[LEDsTAB_R + 0, Zellcounter].Value = 'X'
-            Cells[LEDsTAB_R + 2, Zellcounter].Value = '.'
-            Cells[LEDsTAB_R + 1, Zellcounter].Value = c
+        _select28 = Mid(Morsezeichen(Zeichencode), Zaehlerincode, 1)
+        if (_select28 == '·'):
+            X02.CellDict[M01.LEDsTAB_R + 0, Zellcounter].Value = 'X'
+            X02.CellDict[M01.LEDsTAB_R + 2, Zellcounter].Value = '.'
+            X02.CellDict[M01.LEDsTAB_R + 1, Zellcounter].Value = c
             Zellcounter = Zellcounter + 1
-        elif (select_0 == '-'):
-            Range[Cells(LEDsTAB_R + 0, Zellcounter), Cells(LEDsTAB_R + 0, Zellcounter + 2)].Value = 'X'
-            Range[Cells(LEDsTAB_R + 2, Zellcounter), Cells(LEDsTAB_R + 2, Zellcounter + 2)].Value = '-'
-            Range[Cells(LEDsTAB_R + 1, Zellcounter), Cells(LEDsTAB_R + 1, Zellcounter + 2)].Value = c
+        elif (_select28 == '-'):
+            X02.Range(X02.Cells(M01.LEDsTAB_R + 0, Zellcounter), X02.Cells(M01.LEDsTAB_R + 0, Zellcounter + 2)).Value = 'X'
+            X02.Range(X02.Cells(M01.LEDsTAB_R + 2, Zellcounter), X02.Cells(M01.LEDsTAB_R + 2, Zellcounter + 2)).Value = '-'
+            X02.Range(X02.Cells(M01.LEDsTAB_R + 1, Zellcounter), X02.Cells(M01.LEDsTAB_R + 1, Zellcounter + 2)).Value = c
             Zellcounter = Zellcounter + 3
-        elif (select_0 == '_') or (select_0 == ' '):
+        elif (_select28 == '_') or (_select28 == ' '):
             Zellcounter = Zellcounter + 1
         else:
-            MsgBox('Wrong character in \'Morsezeichen(' + Zeichencode + ')\'', vbCritical, 'Interner Fehler')
+            X02.MsgBox('Wrong character in \'Morsezeichen(' + Zeichencode + ')\'', vbCritical, 'Interner Fehler')
+    return Zellcounter #*HL ByRef
 
 def Make_Morsecode():
     Zaehler = Double()
@@ -160,9 +121,10 @@ def Make_Morsecode():
     WrongChar = String()
     #------------------------------------------------------------------------------------------------------------------------------------
     #Dim Zaehlerincode As Integer
-    Application.EnableEvents = False
-    Application.ScreenUpdating = False
-    Application.Calculation = xlCalculationManual
+    X02.Application.EnableEvents = False
+    # 17.10.19: Hardi:
+    X02.Application.ScreenUpdating = False
+    X02.Application.Calculation = X01.xlCalculationManual
     # Morsetable corresponding to ASCII codes
     Morsezeichen[32] = '_'
     # Additional codes from https://de.wikipedia.org/wiki/Morsezeichen#@-Zeichen  19.10.19: Hardi
@@ -173,25 +135,42 @@ def Make_Morsecode():
     Morsezeichen[Asc('È')] = '· - · · -'
     Morsezeichen[Asc('É')] = '· · - · ·'
     Morsezeichen[Asc('Ö')] = '- - - ·'
+    #  (OE)
     Morsezeichen[Asc('Ü')] = '· · - -'
     # ??       "- - - -" CH
     Morsezeichen[Asc('ß')] = '· · · - - · ·'
+    #  (SZ)
     Morsezeichen[Asc('Ñ')] = '- - · - -'
     Morsezeichen[Asc('.')] = '· - · - · -'
+    #  (AAA)
     Morsezeichen[Asc(',')] = '- - · · - -'
+    #  (MIM)
     Morsezeichen[Asc(':')] = '- - - · · ·'
+    #  (OS)
     Morsezeichen[Asc(';')] = '- · - · - ·'
+    #  (NNN)
     Morsezeichen[Asc('?')] = '· · - - · ·'
+    #  (IMI)
     Morsezeichen[Asc('-')] = '- · · · · -'
+    #  (BA)
     Morsezeichen[Asc('_')] = '· · - - · -'
+    #  (UK)
     Morsezeichen[Asc('(')] = '- · - - ·'
+    #  (KN)
     Morsezeichen[Asc(')')] = '- · - - · -'
+    #  (KK)
     Morsezeichen[Asc('\'')] = '· - - - - ·'
+    #  (JN)
     Morsezeichen[Asc('=')] = '- · · · -'
+    #  (BT)
     Morsezeichen[Asc('+')] = '· - · - ·'
+    #  (AR)
     Morsezeichen[Asc('/')] = '- · · - ·'
+    #  (DN)
     Morsezeichen[Asc('@')] = '· - - · - ·'
+    #  (AC)
     Morsezeichen[48] = '-_-_-_-_-'
+    # 0
     Morsezeichen[49] = '·_-_-_-_-'
     Morsezeichen[50] = '·_·_-_-_-'
     Morsezeichen[51] = '·_·_·_-_-'
@@ -201,7 +180,9 @@ def Make_Morsecode():
     Morsezeichen[55] = '-_-_·_·_·'
     Morsezeichen[56] = '-_-_-_·_·'
     Morsezeichen[57] = '-_-_-_-_·'
+    # 9
     Morsezeichen[65] = '·_-'
+    # A
     Morsezeichen[66] = '-_·_·_·'
     Morsezeichen[67] = '-_·_-_·'
     Morsezeichen[68] = '-_·_·'
@@ -227,73 +208,90 @@ def Make_Morsecode():
     Morsezeichen[88] = '-_·_·_-'
     Morsezeichen[89] = '-_·_-_-'
     Morsezeichen[90] = '-_-_·_·'
-    Zellcounter = Dauer_Col1
-    Morsecode = Cells(2, 14).Value
-    Ditdauer = Cells(3, 14).Value
-    Spruchanfangende = Cells(4, 14).Value
-    if Spruchanfangende == Get_Language_Str('Ja'):
+    # Z
+    Zellcounter = M01.Dauer_Col1
+    # Number of Cell to fill with LED command
+    Morsecode = X02.Cells(2, 14).Value
+    # String contains morse text to send
+    Ditdauer = X02.Cells(3, 14).Value
+    # Duration of Dit
+    Spruchanfangende = X02.Cells(4, 14).Value
+    if Spruchanfangende == pattgen.M09_Language.Get_Language_Str('Ja'):
         Morsecode = 'KA ' + Morsecode + 'AR'
-    Range(Dauer_Rng).ClearContents()
-    Range(LEDs__TAB).ClearContents()
-    Range(GoTo_RNG).ClearContents()
+        # Add start and end codes to morsecode
+    # send start and end code yes/no
+    X02.Range(M01.Dauer_Rng).ClearContents()
+    X02.Range(M01.LEDs__TAB).ClearContents()
+    X02.Range(M01.GoTo_RNG).ClearContents()
     Morsecode = UCase(Morsecode)
-    Cells[Dauer_Row, Zellcounter].Value = Ditdauer
+    # Set all Letters in Morsecode to uppercase
+    X02.CellDict[M01.Dauer_Row, Zellcounter].Value = Ditdauer
+    # Duration Ditdauer into first cell of "Dauer"
     for Zaehler in vbForRange(1, Len(Morsecode)):
+        # Loop for length of morse code sentence
         c = Mid(Morsecode, Zaehler, 1)
         Zeichencode = Asc(c)
         if c != '{' and Morsezeichen(Zeichencode) == '':
+            # 19.10.19: Hardi
             if InStr(WrongChar, c) == 0:
                 WrongChar = WrongChar + c + ' '
         if c == '{':
+            # Handle special signals
+            # 19.10.19: Hardi
             Parts = Split(Mid(Morsecode, Zaehler), '}')
-            select_1 = Mid(Parts(0), 2)
-            if (select_1 == 'KA') or (select_1 == 'BT') or (select_1 == 'AR') or (select_1 == 'VE') or (select_1 == 'SK') or (select_1 == 'SOS') or (select_1 == 'HH') or (select_1 == 'OE') or (select_1 == 'SZ') or (select_1 == 'AAA') or (select_1 == 'MIM') or (select_1 == 'OS') or (select_1 == 'NNN') or (select_1 == 'IMI') or (select_1 == 'BA') or (select_1 == 'UK') or (select_1 == 'KN') or (select_1 == 'KK') or (select_1 == 'JN') or (select_1 == 'BT') or (select_1 == 'AR') or (select_1 == 'DN') or (select_1 == 'AC'):
+            _select29 = Mid(Parts(0), 2)
+            if (_select29 == 'KA') or (_select29 == 'BT') or (_select29 == 'AR') or (_select29 == 'VE') or (_select29 == 'SK') or (_select29 == 'SOS') or (_select29 == 'HH') or (_select29 == 'OE') or (_select29 == 'SZ') or (_select29 == 'AAA') or (_select29 == 'MIM') or (_select29 == 'OS') or (_select29 == 'NNN') or (_select29 == 'IMI') or (_select29 == 'BA') or (_select29 == 'UK') or (_select29 == 'KN') or (_select29 == 'KK') or (_select29 == 'JN') or (_select29 == 'BT') or (_select29 == 'AR') or (_select29 == 'DN') or (_select29 == 'AC'):
                 for ix in vbForRange(2, Len(Parts(0))):
-                    __One_Char(Asc(Mid(Parts(0), ix, 1)), Zellcounter, Morsezeichen)
+                    Zellcounter = One_Char(Asc(Mid(Parts(0), ix, 1)), Zellcounter, Morsezeichen)
                     Zellcounter = Zellcounter + 1
             else:
-                MsgBox(Get_Language_Str('Unbekanntes Spezial Signal \'') + Parts(0) + '}\'', vbCritical, Get_Language_Str('Unbekanntes Signal'))
+                X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Unbekanntes Spezial Signal \'') + Parts(0) + '}\'', vbCritical, pattgen.M09_Language.Get_Language_Str('Unbekanntes Signal'))
             Zaehler = Zaehler + Len(Parts(0)) + 1
         else:
             ## VB2PY (CheckDirective) VB directive took path 1 on 1
-            __One_Char(Zeichencode, Zellcounter, Morsezeichen)
+            Zellcounter = One_Char(Zeichencode, Zellcounter, Morsezeichen)
         Zellcounter = Zellcounter + 3
     Zellcounter = Zellcounter - 3
-    Cells[LEDsTAB_R + 0, Zellcounter] = '.'
+    # 17.10.19: Hardi
+    X02.CellDict[M01.LEDsTAB_R + 0, Zellcounter] = '.'
+    # Turn of the led at the end of the code
     if WrongChar != '':
-        MsgBox(Get_Language_Str('Achtung die folgenden Zeichen existieren nicht im Morse Alphabet:') + vbCr + '  ' + WrongChar + vbCr + Get_Language_Str('Die Zeichen wurden weggelassen'), vbCritical, Get_Language_Str('Falsche Zeichen erkannt'))
+        X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Achtung die folgenden Zeichen existieren nicht im Morse Alphabet:') + vbCr + '  ' + WrongChar + vbCr + pattgen.M09_Language.Get_Language_Str('Die Zeichen wurden weggelassen'), vbCritical, pattgen.M09_Language.Get_Language_Str('Falsche Zeichen erkannt'))
     if Zellcounter > 148 + 5:
-        MsgBox(Get_Language_Str('Der Morsecode ist zu lang (') + Zellcounter - 5 + Get_Language_Str('). Maximal 148 Abschnitte sind möglich.'), vbInformation, Get_Language_Str('Morsecode zu lang'))
+        X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Der Morsecode ist zu lang (') + Zellcounter - 5 + pattgen.M09_Language.Get_Language_Str('). Maximal 148 Abschnitte sind möglich.'), vbInformation, pattgen.M09_Language.Get_Language_Str('Morsecode zu lang'))
         # Problem: Der Range mit dem die Macros "CalculatePattern", ... aufgerufen werden ist nicht größer
         #          damit die Berechnung bei anderen sheets nicht zu lange dauert.
         #          => Erst mal muss diese Länge reichen.
-    Application.EnableEvents = True
-    Application.ScreenUpdating = True
-    Application.Calculation = xlCalculationAutomatic
-    ActiveSheet.Calculate()
-    if Cells(5, 14).Value == Get_Language_Str('Ja') or Cells(5, 14).Value == 'Ja':
-        __Simulate_MorseCode(Ditdauer, Zellcounter)
+    X02.Application.EnableEvents = True
+    X02.Application.ScreenUpdating = True
+    X02.Application.Calculation = X01.xlCalculationAutomatic
+    X02.ActiveSheet.Calculate()
+    if X02.Cells(5, 14).Value == pattgen.M09_Language.Get_Language_Str('Ja') or X02.Cells(5, 14).Value == 'Ja':
+        # 12.02.20: Added 'Or Cells(5, 14).Value = "Ja"' for tests. Normaly the answers are also translated
+        Simulate_MorseCode(Ditdauer, Zellcounter)
 
-def __Find_Second_Pic():
-    fn_return_value = None
+def Find_Second_Pic():
+    _fn_return_value = None
     o = Variant()
 
     Nr = Integer()
     #--------------------------------------------
-    for o in ActiveSheet.Shapes:
-        #If o.Type <> msoComment Then o.Select ' Debug
-        if (o.Type == msoPicture) or (o.Type == msoLinkedPicture):
+    for o in X02.ActiveSheet.Shapes:
+        #If o.Type <> msoComment Then o.Select
+        # Debug
+        _select30 = o.Type
+        if (_select30 == X01.msoPicture) or (_select30 == X01.msoLinkedPicture):
             if o.Name != 'MainMenu':
                 Nr = Nr + 1
                 if Nr == 2:
-                    fn_return_value = o
-                    return fn_return_value
-    fn_return_value = None
-    return fn_return_value
+                    _fn_return_value = o
+                    return _fn_return_value
+    _fn_return_value = None
+    return _fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Ditdauer - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Zellcounter - ByVal 
-def __Simulate_MorseCode(Ditdauer, Zellcounter):
+def Simulate_MorseCode(Ditdauer, Zellcounter):
     Led_An = Variant()
 
     i = Integer()
@@ -302,37 +300,41 @@ def __Simulate_MorseCode(Ditdauer, Zellcounter):
 
     StartActCell = Long()
     #--------------------------------------------------------------------------------
-    Led_An = __Find_Second_Pic()
-    Application.Cursor = xlWait
-    for Zaehler in vbForRange(LEDsTAB_C, Zellcounter):
-        if Cells(LEDsTAB_R, Zaehler).Value == 'X':
+    Led_An = Find_Second_Pic()
+    X02.Application.Cursor = X01.xlWait
+    # Otherwise the cursor flashes
+    for Zaehler in vbForRange(M01.LEDsTAB_C, Zellcounter):
+        if X02.Cells(M01.LEDsTAB_R, Zaehler).Value == 'X':
             if StartActCell == 0:
                 StartActCell = Zaehler
-            Cells[LEDsTAB_R + 1, Zaehler].Interior.ColorIndex = 6
+            X02.CellDict[M01.LEDsTAB_R + 1, Zaehler].Interior.ColorIndex = 6
         else:
             if StartActCell > 0:
-                Range[Cells(LEDsTAB_R + 1, StartActCell), Cells(LEDsTAB_R + 1, Zaehler)].Interior.ColorIndex = 2
+                X02.Range(X02.Cells(M01.LEDsTAB_R + 1, StartActCell), X02.Cells(M01.LEDsTAB_R + 1, Zaehler)).Interior.ColorIndex = 2
                 StartActCell = 0
-        Led_An.Visible = ( Cells(LEDsTAB_R, Zaehler).Value == 'X' ) 
-        ActiveSheet.Calculate()
-        DoEvents()
-        Sleep(Ditdauer)
+        Led_An.Visible = ( X02.Cells(M01.LEDsTAB_R, Zaehler).Value == 'X' )
+        # Show / Hide the flash light
+        X02.ActiveSheet.Calculate()
+        X02.DoEvents()
+        X03.Sleep(Ditdauer)
+    Zaehler += 1 #* loop variable in Python 1 less as in VBA
     #Cells(LEDsTAB_R+1, Zaehler - 1).Interior.ColorIndex = 2
     if StartActCell > 0:
-        Range[Cells(LEDsTAB_R + 1, StartActCell), Cells(LEDsTAB_R + 1, Zaehler)].Interior.ColorIndex = 2
+        X02.Range(X02.Cells(M01.LEDsTAB_R + 1, StartActCell), X02.Cells(M01.LEDsTAB_R + 1, Zaehler)).Interior.ColorIndex = 2
     Led_An.Visible = False
-    Application.Cursor = xlDefault
+    X02.Application.Cursor = X01.xlDefault
 
-def __Test_Simulate_MorseCode():
+def Test_Simulate_MorseCode():
     #UT----------------------------------
-    __Simulate_MorseCode(240, 30)
+    Simulate_MorseCode(240, 30)
 
-def __Hide_Second_Pic():
+def Hide_Second_Pic():
+    
     Led_An = Variant()
     #----------------------------
-    Led_An = __Find_Second_Pic()
+    Led_An = Find_Second_Pic()
     if Led_An is None:
-        MsgBox(Get_Language_Str('Fehler die Bilder wurden nicht geladen. Bitte sicherstellen, dass sie in der \'MLL_pcf\' Datei VOR dem Button (msoFormControl) stehen.'), vbCritical, Get_Language_Str('Fehler in Beispiel Datei'))
+        X02.MsgBox(pattgen.M09_Language.Get_Language_Str('Fehler die Bilder wurden nicht geladen. Bitte sicherstellen, dass sie in der \'MLL_pcf\' Datei VOR dem Button (msoFormControl) stehen.'), vbCritical, pattgen.M09_Language.Get_Language_Str('Fehler in Beispiel Datei'))
     else:
         Led_An.Visible = False
 

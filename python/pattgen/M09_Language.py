@@ -1,58 +1,11 @@
-# -*- coding: utf-8 -*-
-#
-#         Write header
-#
-# * Version: 4.02
-# * Author: Harold Linke
-# * Date: January 7, 2021
-# * Copyright: Harold Linke 2021
-# *
-# *
-# * MobaLedCheckColors on Github: https://github.com/haroldlinke/MobaLedCheckColors
-# *
-# *  
-# * https://github.com/Hardi-St/MobaLedLib
-# *
-# * MobaLedCheckColors is free software: you can redistribute it and/or modify
-# * it under the terms of the GNU General Public License as published by
-# * the Free Software Foundation, either version 3 of the License, or
-# * (at your option) any later version.
-# *
-# * MobaLedCheckColors is distributed in the hope that it will be useful,
-# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# * GNU General Public License for more details.
-# *
-# * You should have received a copy of the GNU General Public License
-# * along with this program.  if not, see <http://www.gnu.org/licenses/>.
-# *
-# *
-# ***************************************************************************
-
-#------------------------------------------------------------------------------
-# CHANGELOG:
-# 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
-# 2021-01-07 v4.02 HL: - Else:, ByRef check done, first PoC release
-
-
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-from vb2py.vbconstants import *
-
-
-import proggen.Prog_Generator as PG
-
-import ExcelAPI.P01_Workbook as P01
-
-from ExcelAPI.X01_Excel_Consts import *
-
-
-from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
-
-
-from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
+import ExcelAPI.XLW_Workbook as X02
+import pattgen.M01_Public_Constants_a_Var as M01
+import pattgen.M30_Tools as M30
+import ExcelAPI.XLC_Excel_Consts as X01
+import pattgen.M08_Load_Sheet_Data
+import mlpyproggen.Pattern_Generator as PG
 
 """ Attention: One of the following preprcessor constants have to be defined in
  "Extras / Eigenschafteb VBA Projekt"'
@@ -69,7 +22,8 @@ from vb2py.vbdebug import *
   4 = Italian  (Prog_Generator only)
   5 = Spain        "
  Strings which have not been translated could be found with
- The seach expression '[!r]("'  and ' "'   (Without ')
+ The seach expression '[!r]("'  and
+ "'   (Without ')
  and enabled "Mit Mustervergleich"
    See also: https://docs.microsoft.com/de-de/office/vba/language/reference/user-interface-help/wildcard-characters-used-in-string-comparisons
  They could be translated by inserting 'Get_Language_Str'
@@ -125,7 +79,8 @@ from vb2py.vbdebug import *
 
 
 
- Language specific messages in the example sheets                          ' 11.02.20:
+ Language specific messages in the example sheets
+ 11.02.20:
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Different languages could be used in the "msoTextBox" lines in the example sheets.
  The language number is added to the token:
@@ -144,23 +99,31 @@ from vb2py.vbdebug import *
 
 
 
+ Row number 3 in the languages sheet
+ This column contains the typ in the languages sheet
+ This column contains parameters in the languages sheet
+ This is the first column used for the translations in then languages sheet
  Debuging with othwer languages
+ -1 = Disable, 0 = German, 1 = Englisch, 2 = Dutch
  If this flag is not set the language could be changed
  temporary with the function "Test_Translations()"
+ Is used to simulate a different language for tests Check_Languages = true
+ The language number which should be used for the test
+ "Rot"
+ "Grün"
+ "AnAus"
+ "Tast"
 --------------------------------------------------------------------------------------------------------------
 UT-------------------------------------------------------
-# VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
--------------------------------------------------------------------------------
-# VB2PY (CheckDirective) VB directive took path 1 on 0
--------------------------------------------------
+# VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
+# VB2PY (CheckDirective) VB directive took path 2 on 0
 --------------------------------------------------------------------
 UT--------------------------------------------
 ----------------------------------
 # VB2PY (CheckDirective) VB directive took path 1 on PATTERN_CONFIG_PROG
+ 04.06.20: Old block in Pattern_config
 -----------------------------------
-# VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-------------------------------------------
-----------------------------------------------
+# VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
 ---------------------------------------------
 UT---------------------------------
 -------------------------------------------------------------
@@ -170,6 +133,7 @@ UT-------------------------------------
 ------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------
 # VB2PY (CheckDirective) VB directive took path 1 on True
+ 28.01.20:
 ------------------------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------
@@ -184,222 +148,165 @@ FirstLangRow = 3
 LangType_Col = 1
 LangParamCol = 2
 FirstLangCol = 3
-__Simulate_Language = - 1
-__Check_Languages = Boolean()
-__Test_Language = Integer()
+Simulate_Language = - 1
+Check_Languages = Boolean()
+Test_Language = Integer()
 Red_T = String()
 Green_T = String()
 OnOff_T = String()
 Tast_T = String()
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
-def __Update_Language_in_Sheet(Sh, DestLang):
-    fn_return_value = None
-    LSh = Worksheet()
+def Update_Language_in_Sheet(Sh, DestLang):
+    _fn_return_value = None
+    LSh = X02.Worksheet()
+    # Old Name: Update_Language_in_Pattern_Config_Sheet
     #--------------------------------------------------------------------------------------------------------------
-    ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-    Make_sure_that_Col_Variables_match(Sh)
+    ## VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
     #Set OldSel = Selection
-    LSh = ThisWorkbook.Sheets(LANGUAGES_SH)
-    with_0 = Sh
+    LSh = PG.ThisWorkbook.Sheets(M01.LANGUAGES_SH)
+    _with39 = Sh
     # Check if the language has to be changed by comparing the first string
     # Check the actual used language in the sheet
     ActLang = - 1
-    FirstMsg = with_0.Range(LSh.Cells(FirstLangRow, LangParamCol))
-    for c in vbForRange(FirstLangCol, LastUsedColumnInRow(LSh, FirstLangRow)):
+    FirstMsg = _with39.Range(LSh.Cells(FirstLangRow, LangParamCol))
+    for c in vbForRange(FirstLangCol, M30.LastUsedColumnInRow(LSh, FirstLangRow)):
         if FirstMsg == LSh.Cells(FirstLangRow, c):
             ActLang = c - FirstLangCol
             break
     if ActLang == - 1:
-        MsgBox('Error: \'' + FirstMsg + '\' not found in the \'Languages\' sheet', vbCritical, 'Language Error')
-        return fn_return_value
+        X02.MsgBox('Error: \'' + FirstMsg + '\' not found in the \'Languages\' sheet', vbCritical, 'Language Error')
+        return _fn_return_value
     if ( ActLang == DestLang ) :
-        return fn_return_value
-        # Language is correct
+        return _fn_return_value
+    # Language is correct
     # Unprotect the sheet
     WasProtected = Sh.ProtectContents
+    # 04.06.20: In Prog_Gen ActiveSheet... was used
     if WasProtected:
         Sh.Unprotect()
     # Debug
-    MaxLang = LastUsedColumnInRow(LSh, FirstLangRow) - FirstLangCol
+    MaxLang = M30.LastUsedColumnInRow(LSh, FirstLangRow) - FirstLangCol
     if DestLang == - 1:
+        # -1 could be used for debugging
         DestLang = ActLang + 1
         if ActLang >= MaxLang:
             DestLang = 0
     # Replace the texts
     LangCol = FirstLangCol + DestLang
-    for r in vbForRange(FirstLangRow, LastUsedRowIn(LSh)):
+    for r in vbForRange(FirstLangRow, M30.LastUsedRowIn(LSh)):
         Param = LSh.Cells(r, LangParamCol)
         if Param != '':
             tmp = LSh.Cells(r, LangCol)
-            select_0 = LSh.Cells(r, LangType_Col)
-            if (select_0 == ''):
+            _select25 = LSh.Cells(r, LangType_Col)
+            if (_select25 == ''):
+                # Nothing
                 pass
-            elif (select_0 == 'Cell'):
-                with_0.Range[Param].FormulaR1C1 = tmp
-                ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-            elif (select_0 == 'Cell_DCC'):
-                if Page_ID == 'DCC':
-                    with_0.Range[Param].FormulaR1C1 = tmp
-                    # Cell values and formulas
-            elif (select_0 == 'Cell_SX'):
-                if Page_ID == 'Selectrix':
-                    with_0.Range[Param].FormulaR1C1 = tmp
-                    # Cell values and formulas
-            elif (select_0 == 'Cell_CAN'):
-                if Page_ID == 'CAN':
-                    with_0.Range[Param].FormulaR1C1 = tmp
-                    # Cell values and formulas
-            elif (select_0 == 'NumberFormat'):
-                with_0.Range[Param].NumberFormat = tmp
-            elif (select_0 == 'Button'):
-                ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-                with_0.Shapes.Range(Array(Param)).Select()
-                Selection.Characters.Text = tmp
-            elif (select_0 == 'Comment'):
-                with_1 = with_0.Range(Param).Comment
-                with_1.Text(Text=Replace(tmp, vbLf, Chr(10)))
-                with_1.Shape.TextFrame.Characters[1, Len(tmp)].Font.Bold = False
-                ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-            elif (select_0 == 'Comment_DCC'):
-                if Page_ID == 'DCC':
-                    with_2 = with_0.Range(Param).Comment
-                    with_2.Text(Text=Replace(tmp, vbLf, Chr(10)))
-                    with_2.Shape.TextFrame.Characters[1, Len(tmp)].Font.Bold = False
-            elif (select_0 == 'Comment_SX'):
-                if Page_ID == 'Selectrix':
-                    with_3 = with_0.Range(Param).Comment
-                    with_3.Text(Text=Replace(tmp, vbLf, Chr(10)))
-                    with_3.Shape.TextFrame.Characters[1, Len(tmp)].Font.Bold = False
-            elif (select_0 == 'Comment_CAN'):
-                if Page_ID == 'CAN':
-                    with_4 = with_0.Range(Param).Comment
-                    with_4.Text(Text=Replace(tmp, vbLf, Chr(10)))
-                    with_4.Shape.TextFrame.Characters[1, Len(tmp)].Font.Bold = False
-            elif (select_0 == 'ErrorMessage'):
-                with_0.Range[Param].Validation.ErrorMessage = tmp
-            elif (select_0 == 'ErrorTitle'):
-                with_0.Range[Param].Validation.ErrorTitle = tmp
+            elif (_select25 == 'Cell'):
+                _with39.Range[Param].FormulaR1C1 = tmp
+                # Cell values and formulas
+                ## VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
+            elif (_select25 == 'NumberFormat'):
+                _with39.Range[Param].NumberFormat = tmp
+            elif (_select25 == 'Button'):
+                ## VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
+                _with39.Shapes.Range[Array(Param)].Item[1].DrawingObject.Caption = tmp
+            elif (_select25 == 'Comment'):
+                # Comments
+                _with40 = _with39.Range(Param).Comment
+                _with40.Text(Text=Replace(tmp, vbLf, Chr(10)))
+                _with40.Shape.TextFrame.Characters[1, Len(tmp)].Font.Bold = False
+                # ToDo: Bolt aus Sheet lesen
+                ## VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
+            elif (_select25 == 'ErrorMessage'):
+                _with39.Range[Param].Validation.ErrorMessage = tmp
+            elif (_select25 == 'ErrorTitle'):
+                _with39.Range[Param].Validation.ErrorTitle = tmp
                 # ToDo Warnungen
     if WasProtected:
-        Protect_Active_Sheet()
+        M30.Protect_Active_Sheet()
     #OldSel.Select
-    fn_return_value = True
-    #Debug.Print "Updated Language in " & Sh.Name ' Debug
-    return fn_return_value
+    _fn_return_value = True
+    #Debug.Print "Updated Language in " & Sh.Name
+    # Debug
+    return _fn_return_value
 
-def __Test_Update_Language_in_Sheet():
+def Test_Update_Language_in_Sheet():
     OldEvents = Boolean()
 
     OldUpdate = Boolean()
     #UT-------------------------------------------------------
     # Switches to the next language
-    OldEvents = Application.EnableEvents
-    OldUpdate = Application.ScreenUpdating
-    Application.EnableEvents = False
-    Application.ScreenUpdating = False
-    __Update_Language_in_Sheet()(ActiveSheet, - 1)
-    Application.EnableEvents = OldEvents
-    Application.ScreenUpdating = OldUpdate
-
-def __Update_Language_in_Config_Sheet(DestLang):
-    fn_return_value = None
-    Row = Long()
-
-    Col = Long()
-
-    Sh = Worksheet()
-    #-------------------------------------------------------------------------------
-    Col = 2
-    Sh = ThisWorkbook.Sheets(ConfigSheet)
-    with_5 = Sh
-    if with_5.Range('A1') == DestLang:
-        return fn_return_value
-        # Pos A1 contains the actual language number (White text on white ground)
-    for Row in vbForRange(1, LastUsedRowIn(Sh)):
-        with_6 = with_5.Cells(Row, Col)
-        if with_6.Value != '':
-            with_6.Value = Get_Language_Str(with_6.Value)
-        if not with_6.Comment is None:
-            with_6.Comment.Text(Text=Get_Language_Str(with_6.Comment.Text))
-    # Special cells
-    with_7 = with_5.Range('Lib_Installed_other')
-    if with_7.Value != '':
-        with_7.Value = Get_Language_Str(with_7.Value)
-    with_5.Range['A1'] = DestLang
-    fn_return_value = True
-    return fn_return_value
-
-def __Test_Update_Language_in_Config_Sheet():
-    #-------------------------------------------------
-    __Test_Language = 0
-    __Check_Languages = 1
-    Debug.Print(__Update_Language_in_Config_Sheet(__Test_Language))
+    OldEvents = X02.Application.EnableEvents
+    OldUpdate = X02.Application.ScreenUpdating
+    X02.Application.EnableEvents = False
+    X02.Application.ScreenUpdating = False
+    Update_Language_in_Sheet(X02.ActiveSheet, - 1)
+    X02.Application.EnableEvents = OldEvents
+    X02.Application.ScreenUpdating = OldUpdate
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
-def __Activate_Language_in_Example_Sheet(Sh):
+def Activate_Language_in_Example_Sheet(Sh):
     o = Variant()
 
     ActLanguage = Integer()
 
     LanguageNr = Integer()
+    # 11.02.20:
     #--------------------------------------------------------------------
     ActLanguage = Get_ExcelLanguage()
     for o in Sh.Shapes:
-        if (o.Type == msoTextBox):
+        _select26 = o.Type
+        if (_select26 == X01.msoTextBox):
+            # 17: TextBox
             if Left(o.Name, Len('Goto_Graph')) != 'Goto_Graph' and o.Name != 'InternalTextBox':
+                # "InternalTextBox" = "by Hardi"
                 if Left(o.AlternativeText, Len('Language: ')) == 'Language: ':
+                    #  11.02.20:
                     LanguageNr = Val(Mid(o.AlternativeText, Len('Language: ') + 1))
                     o.Visible = ( LanguageNr == ActLanguage )
-        elif (o.Type == msoFormControl):
+        elif (_select26 == msoFormControl):
+            # 8: Button
+            # 19.10.19:
             if o.AlternativeText != '_Internal_Button_' and o.AlternativeText != 'Add_Del_Button':
                 if Left(o.AlternativeText, Len('Language: ')) == 'Language: ':
                     LanguageNr = Val(Mid(o.AlternativeText, Len('Language: ') + 1))
                     o.Visible = ( LanguageNr == ActLanguage )
                 #ToDo     Print_Typ_and_Pos FileNr, "msoFormControl", o, o.AlternativeText & Chr(pcfSep) & Replace(o.OnAction, ThisWorkbook.Name & "!", "")
-            ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-            # Translate the buttons.
-            # Attention: This part is not working in the Pattern_Configurator.
-            #            ==> It overwrites the Button texts ;-(
-            #            The problem is, that the buttons already had an alternative text. (05.06.20: Deleted the text)
-            #            => At the moment (05.06.20) the Buttons "Import vom Prog. Gen.",
-            #               "Programm Genarator" and "Zum Modul schicken" are not translated
-        elif (o.Type == msoOLEControlObject):
-            if o.AlternativeText == '':
-                o.AlternativeText = o.DrawingObject.Object.Caption
-                # Store the original text
-            o.DrawingObject.Object.Caption = Get_Language_Str(o.AlternativeText)
-            # Todo: Change also the activation key
+            ## VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
 
-def __Activate_Language_in_Active_Sheet():
+def Activate_Language_in_Active_Sheet():
     #UT--------------------------------------------
-    __Activate_Language_in_Example_Sheet(ActiveSheet)
+    Activate_Language_in_Example_Sheet(X02.ActiveSheet)
 
-def __Update_Language_in_All_Sheets():
+def Update_Language_in_All_Sheets():
     OldEvents = Boolean()
 
     OldUpdate = Boolean()
 
-    OldSheet = Worksheet()
+    OldSheet = X02.Worksheet()
 
     Sh = Variant()
 
     DestLang = Integer()
 
     Initialized = Boolean()
+    # 25.02.20: Old name: Update_Language_in_All_Pattern_Config_Sheets
     #----------------------------------
     # Set the language of all sheets to the active display language in excel
-    OldSheet = ActiveSheet
-    OldEvents = Application.EnableEvents
-    OldUpdate = Application.ScreenUpdating
-    Application.EnableEvents = False
-    Application.ScreenUpdating = False
+    OldSheet = X02.ActiveSheet
+    OldEvents = X02.Application.EnableEvents
+    OldUpdate = X02.Application.ScreenUpdating
+    X02.Application.EnableEvents = False
+    X02.Application.ScreenUpdating = False
     DestLang = Get_ExcelLanguage()
-    #DestLang = 1 ' debug
-    for Sh in ThisWorkbook.Sheets:
-        #If sh.Name <> LANGUAGES_SH And sh.Name <> GOTO_ACTIVATION_SH And sh.Name <> PAR_DESCRIPTION_SH Then ' 20.01.20: Old
+    #DestLang = 1
+    # debug
+    for Sh in PG.ThisWorkbook.sheets:
+        #If sh.Name <> LANGUAGES_SH And sh.Name <> GOTO_ACTIVATION_SH And sh.Name <> PAR_DESCRIPTION_SH Then
+        # 20.01.20: Old
         ## VB2PY (CheckDirective) VB directive took path 1 on PATTERN_CONFIG_PROG
-        if Sh.Name == MAIN_SH or Is_Normal_Data_Sheet(Sh.Name, Get_Language_Str('übersetzt')):
+        if Sh.Name == M01.MAIN_SH or pattgen.M08_Load_Sheet_Data.Is_Normal_Data_Sheet(Sh.Name, Get_Language_Str('übersetzt')):
             if not Initialized:
                 StatusMsg_UserForm.Set_Label(Get_Language_Str('Umstellung der Sprache'))
                 #12.02.20:
@@ -407,54 +314,38 @@ def __Update_Language_in_All_Sheets():
             if not Initialized:
                 StatusMsg_UserForm.Show()
             Initialized = True
-            # 07.03.20: sh.Activate ' Necessary for the button names ;-(
+            # 07.03.20: sh.Activate
+            # Necessary for the button names ;-(
             ## VB2PY (CheckDirective) VB directive took path 1 on PATTERN_CONFIG_PROG
             if Sh.Name != 'Multiplexer':
+                # 23.06.20:
                 Translate_Standard_Description_Box_in_Sheet(Sh)
-                if __Update_Language_in_Sheet(Sh, DestLang) == False and Sh.Name == MAIN_SH:
+                # 07.03.20: Using new function which doesn't need the active sheet
+                if Update_Language_in_Sheet(Sh, DestLang) == False and Sh.Name == M01.MAIN_SH:
                     break
-            ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-            if Is_Data_Sheet(Sh):
-                if __Update_Language_in_Sheet(Sh, DestLang):
-                    Translate_Example_Texts_in_Sheet(Sh)
-            __Activate_Language_in_Example_Sheet(Sh)
-    ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-    __Update_Language_in_Config_Sheet()(DestLang)
-    Unload(StatusMsg_UserForm)
+            ## VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
+            Activate_Language_in_Example_Sheet(Sh)
+    ## VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
+    X02.Unload(StatusMsg_UserForm)
     if not OldSheet is None:
+        # 01.05.20: Prevent crash if downloaded from the internet when the Savety messages is shown
         OldSheet.Activate()
-    Application.EnableEvents = OldEvents
-    Application.ScreenUpdating = OldUpdate
+    X02.Application.EnableEvents = OldEvents
+    X02.Application.ScreenUpdating = OldUpdate
 
 def Check_SIMULATE_LANGUAGE():
     #-----------------------------------
-    if __Simulate_Language >= 0:
-        MsgBox('Attention the compiler switch \'SIMULATE_LANGUAGE\' is set to ' + __Simulate_Language + vbCr + 'This is used to test the languages. It must be disabled in the release version!', vbInformation)
-
-def __Get_Language_Def():
-    fn_return_value = None
-    LangStr = String()
-    #------------------------------------------
-    LangStr = ThisWorkbook.Sheets(ConfigSheet).Range('Language_Def')
-    if IsNumeric(LangStr):
-        fn_return_value = Val(LangStr)
-    else:
-        fn_return_value = - 1
-    return fn_return_value
-
-def Set_Language_Def(LanguageNr):
-    #----------------------------------------------
-    ThisWorkbook.Sheets[ConfigSheet].Range['Language_Def'] = LanguageNr
+    if Simulate_Language >= 0:
+        X02.MsgBox('Attention the compiler switch \'SIMULATE_LANGUAGE\' is set to ' + Simulate_Language + vbCr + 'This is used to test the languages. It must be disabled in the release version!', vbInformation)
 
 def Get_ExcelLanguage():
-    fn_return_value = None
-    Simulate_Language = Long()
+    _fn_return_value = None
     #---------------------------------------------
     # Return a number corrosponding to the actual language used in excel
     #  0 = German
     #  1 = English and all other languages
     #  2 = Dutch
-    #  3 = French
+    #  3 = French�
     #  4 = Italian    (Only in the Prog_Generator)
     #  5 = Spain        "
     # The number must match to the position in the language strings in M6_Language_Constants
@@ -462,42 +353,43 @@ def Get_ExcelLanguage():
     # Is working if the office language is changed or the Window language
     ## VB2PY (CheckDirective) VB directive took path 1 on PATTERN_CONFIG_PROG
     if Simulate_Language >= 0:
-        fn_return_value = Simulate_Language
-        return fn_return_value
-    if __Check_Languages:
-        fn_return_value = __Test_Language
-        return fn_return_value
-    fn_return_value = 1
-    ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-    Simulate_Language = __Get_Language_Def()
-    if Simulate_Language >= 0:
-        fn_return_value = Simulate_Language
-        return fn_return_value
+        _fn_return_value = Simulate_Language
+        return _fn_return_value
+    if Check_Languages:
+        # 20.01.20:
+        _fn_return_value = Test_Language
+        return _fn_return_value
+    _fn_return_value = 1
+    ## VB2PY (CheckDirective) VB directive took path 2 on PROG_GENERATOR_PROG
     #Debug.Print "Achtung: Get_ExcelLanguage() liefert immer 1"
     #Exit Function
-    select_2 = Application.LanguageSettings.LanguageID(msoLanguageIDUI)
+    _select27 = X02.Application.LanguageSettings.LanguageID(X01.msoLanguageIDUI)
 # Language ID's: https://docs.microsoft.com/en-us/previous-versions/office/developer/office-2007/aa432635(v=office.12)
-    if (select_2 == msoLanguageIDGerman) or (select_2 == msoLanguageIDGermanAustria) or (select_2 == msoLanguageIDGermanLiechtenstein) or (select_2 == msoLanguageIDGermanLuxembourg) or (select_2 == msoLanguageIDSwissGerman):
-        fn_return_value = 0
-    elif (select_2 == msoLanguageIDDutch) or (select_2 == msoLanguageIDBelgianDutch):
-        fn_return_value = 2
-    elif (select_2 == msoLanguageIDFrench) or (select_2 == msoLanguageIDBelgianFrench) or (select_2 == msoLanguageIDFrenchCameroon) or (select_2 == msoLanguageIDFrenchCanadian) or (select_2 == msoLanguageIDFrenchCotedIvoire) or (select_2 == msoLanguageIDFrenchHaiti) or (select_2 == msoLanguageIDFrenchLuxembourg) or (select_2 == msoLanguageIDFrenchMali) or (select_2 == msoLanguageIDFrenchMonaco) or (select_2 == msoLanguageIDFrenchMorocco) or (select_2 == msoLanguageIDFrenchReunion) or (select_2 == msoLanguageIDFrenchSenegal) or (select_2 == msoLanguageIDFrenchWestIndies) or (select_2 == msoLanguageIDSwissFrench):
-        fn_return_value = 3
-    elif (select_2 == msoLanguageIDItalian) or (select_2 == msoLanguageIDSwissItalian):
-        fn_return_value = 4
-    elif (select_2 == msoLanguageIDSpanish) or (select_2 == msoLanguageIDSpanishArgentina) or (select_2 == msoLanguageIDSpanishBolivia) or (select_2 == msoLanguageIDSpanishChile) or (select_2 == msoLanguageIDSpanishColombia) or (select_2 == msoLanguageIDSpanishCostaRica) or (select_2 == msoLanguageIDSpanishDominicanRepublic) or (select_2 == msoLanguageIDSpanishEcuador) or (select_2 == msoLanguageIDSpanishElSalvador) or (select_2 == msoLanguageIDSpanishGuatemala) or (select_2 == msoLanguageIDSpanishHonduras) or (select_2 == msoLanguageIDSpanishModernSort) or (select_2 == msoLanguageIDSpanishNicaragua) or (select_2 == msoLanguageIDSpanishPanama) or (select_2 == msoLanguageIDSpanishParaguay) or (select_2 == msoLanguageIDSpanishPeru) or (select_2 == msoLanguageIDSpanishPuertoRico) or (select_2 == msoLanguageIDSpanishUruguay) or (select_2 == msoLanguageIDSpanishVenezuela) or (select_2 == msoLanguageIDMexicanSpanish):
-        fn_return_value = 5
-    #05.07.20: Get_ExcelLanguage = 1     '  For testing by Misha 2-7-2020.
-    return fn_return_value
+    if (_select27 == X01.msoLanguageIDGerman) or (_select27 == X01.msoLanguageIDGermanAustria) or (_select27 == X01.msoLanguageIDGermanLiechtenstein) or (_select27 == X01.msoLanguageIDGermanLuxembourg) or (_select27 == X01.msoLanguageIDSwissGerman):
+        _fn_return_value = 0
+    elif (_select27 == X01.msoLanguageIDDutch) or (_select27 == X01.msoLanguageIDBelgianDutch):
+        #   Added by Misha 24-2-2020
+        _fn_return_value = 2
+    elif (_select27 == X01.msoLanguageIDFrench) or (_select27 == X01.msoLanguageIDBelgianFrench) or (_select27 == X01.msoLanguageIDFrenchCameroon) or (_select27 == X01.msoLanguageIDFrenchCanadian) or (_select27 == X01.msoLanguageIDFrenchCotedIvoire) or (_select27 == X01.msoLanguageIDFrenchHaiti) or (_select27 == X01.msoLanguageIDFrenchLuxembourg) or (_select27 == X01.msoLanguageIDFrenchMali) or (_select27 == X01.msoLanguageIDFrenchMonaco) or (_select27 == X01.msoLanguageIDFrenchMorocco) or (_select27 == X01.msoLanguageIDFrenchReunion) or (_select27 == X01.msoLanguageIDFrenchSenegal) or (_select27 == X01.msoLanguageIDFrenchWestIndies) or (_select27 == X01.msoLanguageIDSwissFrench):
+        # Not defined at Exel 2016? msoLanguageIDFranchCongoDRC
+        _fn_return_value = 3
+        # ' Added by Misha 24-2-2020
+    elif (_select27 == X01.msoLanguageIDItalian) or (_select27 == X01.msoLanguageIDSwissItalian):
+        _fn_return_value = 4
+    elif (_select27 == X01.msoLanguageIDSpanish) or (_select27 == X01.msoLanguageIDSpanishArgentina) or (_select27 == X01.msoLanguageIDSpanishBolivia) or (_select27 == X01.msoLanguageIDSpanishChile) or (_select27 == X01.msoLanguageIDSpanishColombia) or (_select27 == X01.msoLanguageIDSpanishCostaRica) or (_select27 == X01.msoLanguageIDSpanishDominicanRepublic) or (_select27 == X01.msoLanguageIDSpanishEcuador) or (_select27 == X01.msoLanguageIDSpanishElSalvador) or (_select27 == X01.msoLanguageIDSpanishGuatemala) or (_select27 == X01.msoLanguageIDSpanishHonduras) or (_select27 == X01.msoLanguageIDSpanishModernSort) or (_select27 == X01.msoLanguageIDSpanishNicaragua) or (_select27 == X01.msoLanguageIDSpanishPanama) or (_select27 == X01.msoLanguageIDSpanishParaguay) or (_select27 == X01.msoLanguageIDSpanishPeru) or (_select27 == X01.msoLanguageIDSpanishPuertoRico) or (_select27 == X01.msoLanguageIDSpanishUruguay) or (_select27 == X01.msoLanguageIDSpanishVenezuela) or (_select27 == X01.msoLanguageIDMexicanSpanish):
+        _fn_return_value = 5
+    #05.07.20: Get_ExcelLanguage = 1
+    #  For testing by Misha 2-7-2020.
+    return _fn_return_value
 
-def __Test_Get_ExcelLanguage():
+def Test_Get_ExcelLanguage():
     #UT---------------------------------
     Debug.Print('Get_ExcelLanguage()=' + Get_ExcelLanguage())
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Desc - ByVal 
-def __Find_Cell_Pos_by_Name(Desc):
-    fn_return_value = None
-    LSh = Worksheet()
+def Find_Cell_Pos_by_Name(Desc):
+    _fn_return_value = ""
+    LSh = X02.Worksheet()
 
     Res = Variant()
     #-------------------------------------------------------------
@@ -505,43 +397,45 @@ def __Find_Cell_Pos_by_Name(Desc):
     # destination position as string.
     #
     # If Desc is not found "" is returned
-    LSh = ThisWorkbook.Sheets(LANGUAGES_SH)
-    with_8 = LSh
-    Res = LSh.Cells.Find(What= Desc, After= with_8.Range('A1'), LookIn= xlFormulas, LookAt= xlPart, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
+    LSh = PG.ThisWorkbook.Sheets(M01.LANGUAGES_SH)
+    _with41 = LSh
+    Res = LSh.CellsFind.Find(What= Desc, After= _with41.Range('A1'), LookIn= X01.xlFormulas, LookAt= X01.xlPart, SearchOrder= X01.xlByRows, SearchDirection= X01.xlNext, MatchCase= True, SearchFormat= False) #*HL
     if not Res is None:
-        fn_return_value = with_8.Cells(Res.Row, LangParamCol).Value
-    return fn_return_value
+        _fn_return_value = _with41.Cells(Res.Row, LangParamCol).Value
+    return _fn_return_value
 
-def __Test_Find_Cell_Pos_by_Name():
+def Test_Find_Cell_Pos_by_Name():
     #UT-------------------------------------
-    Debug.Print('Find_Cell_Pos_by_Name("Bits pro Wert:")=\'' + __Find_Cell_Pos_by_Name('Bits pro Wert:') + '\'')
-    Debug.Print('Find_Cell_Pos_by_Name("Bits per value:")=\'' + __Find_Cell_Pos_by_Name('Bits per value:') + '\'')
+    Debug.Print('Find_Cell_Pos_by_Name("Bits pro Wert:")=\'' + Find_Cell_Pos_by_Name('Bits pro Wert:') + '\'')
+    Debug.Print('Find_Cell_Pos_by_Name("Bits per value:")=\'' + Find_Cell_Pos_by_Name('Bits per value:') + '\'')
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Desc - ByVal 
-def __Get_German_Name(Desc):
-    fn_return_value = None
-    LSh = Worksheet()
+def Get_German_Name(Desc):
+    _fn_return_value = None
+    LSh = X02.Worksheet()
 
     Res = Variant()
     #-------------------------------------------------------
-    LSh = ThisWorkbook.Sheets(LANGUAGES_SH)
-    with_9 = LSh
-    Res = LSh.Cells.Find(What= Desc, After= with_9.Range('A1'), LookIn= xlFormulas, LookAt= xlPart, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
+    LSh = PG.ThisWorkbook.Sheets(M01.LANGUAGES_SH)
+    _with42 = LSh
+    Res = LSh.CellsFind.Find(What= Desc, After= _with42.Range('A1'), LookIn= X01.xlFormulas, LookAt= X01.xlPart, SearchOrder= X01.xlByRows, SearchDirection= X01.xlNext, MatchCase= True, SearchFormat= False)
     if not Res is None:
-        fn_return_value = with_9.Cells(Res.Row, FirstLangCol).Value
+        _fn_return_value = _with42.Cells(Res.Row, FirstLangCol).Value
     else:
-        MsgBox('Error \'' + Desc + '\' not found in \'Get_German_Name\'', vbCritical, 'Error')
-    return fn_return_value
+        X02.MsgBox('Error \'' + Desc + '\' not found in \'Get_German_Name\'', vbCritical, 'Error')
+    return _fn_return_value
 
-def __Add_Entry_to_Languages_Sheet(GermanTxt):
+def Add_Entry_to_Languages_Sheet(GermanTxt):
     #------------------------------------------------------------
+    return #*HL
     if Get_ExcelLanguage() == 0:
-        LSh = ThisWorkbook.Sheets(LANGUAGES_SH)
-        with_10 = LSh
-        Row = LastUsedRowIn(LSh) + 1
-        with_10.Cells[Row, FirstLangCol] = GermanTxt
+        LSh = PG.ThisWorkbook.Sheets(M01.LANGUAGES_SH)
+        if LSh!=None:
+            _with43 = LSh
+            Row = M30.LastUsedRowIn(LSh) + 1
+            _with43.CellDict[Row, FirstLangCol] = GermanTxt
 
-def __Debug_Find_Diff(S1, s2):
+def Debug_Find_Diff(S1, s2):
     i = Long()
     #------------------------------------------------------
     Debug.Print('Len:' + Len(S1) + '  ' + Len(s2))
@@ -558,58 +452,40 @@ def __Debug_Find_Diff(S1, s2):
     Debug.Print('Strings are equal')
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Desc - ByVal 
-# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Look_At=xlPart - ByVal 
-def Find_Language_Str_Row(Desc, Look_At=xlPart):
-    fn_return_value = None
-    LSh = Worksheet()
+# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Look_At=X01.xlPart - ByVal 
+def Find_Language_Str_Row(Desc, Look_At=X01.xlPart):
+    _fn_return_value = None
+    LSh = X02.Worksheet()
 
     Res = Variant()
     #--------------------------------------------------------------------------------------------------------------
-    LSh = ThisWorkbook.Sheets(LANGUAGES_SH)
-    with_11 = LSh
+    LSh = PG.ThisWorkbook.Sheets(M01.LANGUAGES_SH)
+    if LSh==None:
+        return 0
+    _with44 = LSh
     # VB2PY (UntranslatedCode) On Error Resume Next
+    # In case the Description is missing
     # Maximal length for the find command: 255
-    Start = with_11.Range('A1')
+    Start = _with44.Range('A1')
     Desc = RTrim(Desc)
-    while 1:
-        if Len(Desc) > 90:
-            Look_At = xlPart
-        Res = LSh.Cells.Find(What= Left(Desc, 90), After= Start, LookIn= xlFormulas, LookAt= Look_At, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= True)
-        if Look_At == xlPart and not IsEmpty(Res):
-            Retry = ( RTrim(Res.Value) != RTrim(Desc) )  
-            #Debug_Find_Diff Res.Value, Desc ' Debug
-            if Retry:
-                #If Len(Desc) >= 255 Then
-                #   Debug.Print "Debug long string in Get_Language_Str"
-                #End If
-                Start = Res
-                if FirstPos is None:
-                    FirstPos = Res
-                else:
-                    if Res.Address == FirstPos.Address:
-                        Retry = False
-                        Res = None
-        if not (Retry):
-            break
-    # VB2PY (UntranslatedCode) On Error GoTo 0
-    if not IsEmpty(Res):
-        if not Res is None:
-            fn_return_value = Res.Row
-            ## VB2PY (CheckDirective) VB directive took path 1 on 0
-            with_12 = Res.Interior
-            with_12.PatternColorIndex = xlAutomatic
-            with_12.Color = 5296274
-    return fn_return_value
+    ## VB2PY (CheckDirective) VB2PY Python directive
+    Res = LSh.find_in_col_ret_row(Desc, FirstLangCol)
+    if not Res is None:
+        _fn_return_value = Int(Res)
+    else:
+        _fn_return_value = 0
+    return _fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Desc - ByVal 
-# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Look_At=xlPart - ByVal 
-def Get_Language_Str(Desc, GenError=False, Look_At=xlPart):
-    fn_return_value = None
+# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Look_At=X01.xlPart - ByVal 
+def Get_Language_Str(Desc, GenError=False, Look_At=X01.xlPart):
+    _fn_return_value = None
     Use_CrLf = Boolean()
 
     Res = String()
     #------------------------------------------------------------------------------------------------------------------------------------------------
-    # Replace the vbCr in the input string to be able to find in in the "Languages" sheet      ' 30.01.20:
+    # Replace the vbCr in the input string to be able to find in in the "Languages" sheet
+    # 30.01.20:
     # Problem:
     # vbCr cant be used in an excel table (Languages sheet)
     # => It is replaced by '|' in the sheet
@@ -621,66 +497,81 @@ def Get_Language_Str(Desc, GenError=False, Look_At=xlPart):
     #   to get the visual line breaks.
     #   In this case the cvLf must also be added in this function
     if Desc == '':
-        return fn_return_value
-        # 23.01.20:
+        return _fn_return_value
+    # 23.01.20:
     Desc = Replace(Desc, '| ', '|')
+    # 24.02.20: Added because of Misha's improvement
     if InStr(Desc, vbCr + vbLf) > 0:
         Use_CrLf = True
         Desc = Replace(Desc, vbCr, '|')
     else:
+        # no combination of vbCr & vbLf used => Add vbLf for the check
         Desc = Replace(Desc, vbCr, '|' + vbLf)
-    Res = __Get_Language_Str_Sub(Desc, GenError, Look_At)
+    Res = Get_Language_Str_Sub(Desc, GenError, Look_At)
     if Use_CrLf:
-        fn_return_value = Replace(Res, '|', vbCr)
+        _fn_return_value = Replace(Res, '|', vbCr)
     else:
-        fn_return_value = Replace(Res, '|' + vbLf, vbCr)
-    return fn_return_value
+        _fn_return_value = Replace(Res, '|' + vbLf, vbCr)
+    return _fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Desc - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Look_At - ByVal 
-def __Get_Language_Str_Sub(Desc, GenError, Look_At):
-    fn_return_value = None
+def Get_Language_Str_Sub(Desc, GenError, Look_At):
+    _fn_return_value = None
     Row = Long()
 
-    LSh = Worksheet()
+    return_value = String()
+
+    LSh = X02.Worksheet()
     #-------------------------------------------------------------------------------------------------------------------
     # Find the given Desc in the language sheet and return the
     # string in the actual language
     #
     if IsNumeric(Desc):
-        fn_return_value = Desc
-        return fn_return_value
+        _fn_return_value = Desc
+        return _fn_return_value
+    _fn_return_value = ''
     Row = Find_Language_Str_Row(Desc, Look_At)
-    LSh = ThisWorkbook.Sheets(LANGUAGES_SH)
-    with_13 = LSh
+    LSh = PG.ThisWorkbook.Sheets(M01.LANGUAGES_SH)
+    _with45 = LSh
     if Row > 0:
-        fn_return_value = with_13.Cells(Row, FirstLangCol + Get_ExcelLanguage()).Value
-        if __Get_Language_Str_Sub() != '':
-            return fn_return_value
+        return_value = _with45.Cells(Row, FirstLangCol + Get_ExcelLanguage()).Value
+        if return_value != '':
+            # 25.01.20: Prior the function was left with an empty result ;-( Now a message is generated an the Germal text is used
+            _fn_return_value = return_value
+            return _fn_return_value
     # The language string was not found
     if GenError:
-        MsgBox('Error translation missing in sheet \'Languages\' for:' + vbCr + '  \'' + Desc + '\'', vbCritical, 'Error: Translation missing')
+        X02.MsgBox('Error translation missing in sheet \'Languages\' for:' + vbCr + '  \'' + Desc + '\'', vbCritical, 'Error: Translation missing')
     else:
         Debug.Print('*** Translation not found for:' + vbCr + Desc)
     if Row > 0:
-        fn_return_value = with_13.Cells(Row, FirstLangCol + 1).Value
-        # Use the Enlish text if available  ' 26.01.20:
-    if __Get_Language_Str_Sub() == '':
-        fn_return_value = Desc
-    __Add_Entry_to_Languages_Sheet(Desc)
-    return fn_return_value
+        return_value = _with45.Cells(Row, FirstLangCol + 1).Value
+    # Use the Enlish text if available
+    # 26.01.20:
+    if return_value == '':
+        _fn_return_value = Desc
+    else:
+        _fn_return_value = return_value
+    Add_Entry_to_Languages_Sheet(Desc)
+    # Add the german text to the 'Languages' sheet
+    # 24.01.20:
+    return _fn_return_value
 
-def __Change_Lang_in_MultiPage(o):
+def Change_Lang_in_MultiPage(o):
     Pg = Variant()
+    # 25.01.20:
     #-------------------------------------------------
     for Pg in o.Pages:
-        #Pg.Caption = Replace(Get_Language_Str(Replace(Pg.Caption, vbCr, "|"), False, xlWhole), "|", vbCr)   ' Old 30.01.20:
-        Pg.Caption = Get_Language_Str(Pg.Caption, False, xlWhole)
+        #Pg.Caption = Replace(Get_Language_Str(Replace(Pg.Caption, vbCr, "|"), False, xlWhole), "|", vbCr)
+        # Old 30.01.20:
+        Pg.Caption = Get_Language_Str(Pg.Caption, False, X01.xlWhole)
 
-def __Change_Language_in_Dialog(dlg):
+def Change_Language_in_Dialog(dlg):
     o = Variant()
     #-------------------------------------------
     dlg.Caption = Get_Language_Str(dlg.Caption)
+    # 25.01.20:
     for o in dlg.Controls:
         if o.ControlTipText != '':
             o.ControlTipText = Get_Language_Str(o.ControlTipText)
@@ -689,22 +580,27 @@ def __Change_Language_in_Dialog(dlg):
         #   Debug.Print "Debug"
         #End If
         # VB2PY (UntranslatedCode) On Error Resume Next
+        # Problem: if o.Caption doesn't exist "<Objekt unterstützt diese Eigenschaft oder Methode nicht>"
         if Left(o.Name, Len('MultiPage')) == 'MultiPage':
-            __Change_Lang_in_MultiPage(o)
+            Change_Lang_in_MultiPage(o)
         elif Left(o.Name, Len('ListBox')) == 'ListBox':
             # There is no constant text in the ListBox dialog. It is loaded dymanicaly
             pass
         elif o.Caption != 'by Hardi' and Left(o.Caption, 4) != 'http' and o.Caption != '*' and o.Caption != 'J':
-            #o.Caption = Replace(Get_Language_Str(Replace(o.Caption, vbCr, "|"), False, xlWhole), "|", vbCr)   ' 30.01.20: Old:
-            o.Caption = Get_Language_Str(o.Caption, False, xlWhole)
+            # "J" = Smilly in "Wait_CheckColors_Form"
+            #o.Caption = Replace(Get_Language_Str(Replace(o.Caption, vbCr, "|"), False, xlWhole), "|", vbCr)
+            # 30.01.20: Old:
+            o.Caption = Get_Language_Str(o.Caption, False, X01.xlWhole)
         # VB2PY (UntranslatedCode) On Error GoTo 0
 
-def __Test_Change_Language_in_Dialog():
+def Test_Change_Language_in_Dialog():
     #UT---------------------------------
     ## VB2PY (CheckDirective) VB directive took path 1 on PATTERN_CONFIG_PROG
     Copy_Select_GotoAct_Form.Show()
 
 def Set_Tast_Txt_Var(ForceUpdate=VBMissingArgument):
+    global Red_T, Green_T, OnOff_T, Tast_T
+    # 06.03.20:
     #-----------------------------------------------------------
     if ForceUpdate or Red_T == '':
         Red_T = Get_Language_Str('Rot')
@@ -712,79 +608,74 @@ def Set_Tast_Txt_Var(ForceUpdate=VBMissingArgument):
         OnOff_T = Get_Language_Str('AnAus')
         Tast_T = Get_Language_Str('Tast')
 
-def __Get_Dialog_Nr(Name):
-    fn_return_value = None
+def Get_Dialog_Nr(Name):
+    _fn_return_value = None
     o = Variant()
 
     Nr = Long()
+    # 23.06.20:
     #-----------------------------------------------------
     # Get the number of a loaded dialog
     # Generate an error message and abort the progra if the dialog is not available
     for o in UserForms:
         if o.Name == Name:
-            fn_return_value = Nr
-            return fn_return_value
+            _fn_return_value = Nr
+            return _fn_return_value
         Nr = Nr + 1
-    MsgBox('Internal Error: The Dialog \'' + Name + '\' is not loaded for some reasons', vbCritical, 'Internal Error')
-    EndProg()
-    return fn_return_value
+    X02.MsgBox('Internal Error: The Dialog \'' + Name + '\' is not loaded for some reasons', vbCritical, 'Internal Error')
+    M30.EndProg()
+    return _fn_return_value
 
-def __Test_Translations():
+def Test_Translations():
+    global Check_Languages, Test_Language
     Res = String()
 
     c = Object()
     #UT----------------------------
     # Check it the translation works correct
-    __Check_Languages = True
+    Check_Languages = True
     Debug.Print(vbCr + '-------------------------------------------')
-    Res = InputBox('Input the Language number' + vbCr + ' 0 = German' + vbCr + ' 1 = English' + vbCr + ' 2 = Dutch' + vbCr + ' 3 = French' + vbCr + ' 4 = Italian' + vbCr + ' 5 = Spain')
+    Res = X02.InputBox('Input the Language number' + vbCr + ' 0 = German' + vbCr + ' 1 = English' + vbCr + ' 2 = Dutch' + vbCr + ' 3 = French' + vbCr + ' 4 = Italian' + vbCr + ' 5 = Spain')
     if not IsNumeric(Res):
         return
-    __Test_Language = Val(Res)
+    Test_Language = Val(Res)
     ## VB2PY (CheckDirective) VB directive took path 1 on PATTERN_CONFIG_PROG
-    if ActiveSheet.Name == 'Multiplexer':
-        Sheets(MAIN_SH).Select()
-        # Otherwise the standard sheet description is moved to the Multiplexewr sheet for some reasons
-    __Update_Language_in_All_Sheets()
+    # 23.06.20:
+    if X02.ActiveSheet.Name == 'Multiplexer':
+        X02.Sheets(M01.MAIN_SH).Select()
+    # Otherwise the standard sheet description is moved to the Multiplexewr sheet for some reasons
+    Update_Language_in_All_Sheets()
+    # Is also used in the Prog_Generator
     ## VB2PY (CheckDirective) VB directive took path 1 on 1
-    for c in ThisWorkbook.VBProject.VBComponents:
+    # Loop over all userforms
+    # 11.06.20:
+    for c in PG.ThisWorkbook.VBProject.VBComponents:
+        # Enable: Excel Options > Trust Centre > Macro Settings > Trust access to the VBA Project object model
         if c.Type == 3:
             # VB2PY (UntranslatedCode) On Error GoTo Err_Change_Language_in_Dialog
             if c.Designer is None:
-                __Change_Language_in_Dialog(UserForms(__Get_Dialog_Nr(c.Name)))
+                # Dialog is already loaded
+                # 23.06.20: Prevent crash if teh dialog was already open
+                Change_Language_in_Dialog(UserForms(Get_Dialog_Nr(c.Name)))
             else:
-                __Change_Language_in_Dialog(c.Designer)
+                Change_Language_in_Dialog(c.Designer)
             # VB2PY (UntranslatedCode) On Error GoTo 0
     return
-    MsgBox('Internal error: Error changing the language in the dialog \'' + c.Name + '\'' + vbCr + 'For some reasons \'c.Designer\' is nothing when the dialog was called before.' + 'All variables are cleared now. Please try it again.')
-    EndProg()
-    ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-    __Change_Language_in_Dialog(Select_ProgGen_Dest_Form)
-    __Change_Language_in_Dialog(Select_ProgGen_Src_Form)
-    __Change_Language_in_Dialog(SelectMacros_Form)
-    __Change_Language_in_Dialog(StatusMsg_UserForm)
-    __Change_Language_in_Dialog(UserForm_Connector)
-    __Change_Language_in_Dialog(UserForm_Description)
-    __Change_Language_in_Dialog(UserForm_DialogGuide1)
-    __Change_Language_in_Dialog(UserForm_Header_Created)
-    __Change_Language_in_Dialog(UserForm_House)
-    __Change_Language_in_Dialog(UserForm_Options)
-    __Change_Language_in_Dialog(UserForm_Other)
-    __Change_Language_in_Dialog(UserForm_Protokoll_Auswahl)
-    __Change_Language_in_Dialog(UserForm_Select_Typ_DCC)
-    __Change_Language_in_Dialog(UserForm_Select_Typ_SX)
-    __Change_Language_in_Dialog(Wait_CheckColors_Form)
-    __Change_Language_in_Dialog(Import_Hide_Unhide)
-    __Change_Language_in_Dialog(Select_COM_Port_UserForm)
-    assert False, '# UNTRANSLATED VB LINE #795 [#End If]'
+    X02.MsgBox('Internal error: Error changing the language in the dialog \'' + c.Name + '\'' + vbCr + 'For some reasons \'c.Designer\' is nothing when the dialog was called before.' + 'All variables are cleared now. Please try it again.')
+    M30.EndProg()
+    # Clear all variables
+    #'# VB2PY (CheckDirective) VB2PY directive Ignore Text
     Set_Tast_Txt_Var(ForceUpdate=True)
-    #UserForm_DialogGuide1.Show ' Debug
+    # 06.03.20:
+    #UserForm_DialogGuide1.Show
+    # Debug
 
-def __Test_Userform():
+def Test_Userform():
     c = Object()
-    for c in ThisWorkbook.VBProject.VBComponents:
+    for c in PG.ThisWorkbook.VBProject.VBComponents:
+        # Enable: Excel Options > Trust Centre > Macro Settings > Trust access to the VBA Project object model
         if c.Name == 'MainMenu_Form':
             if c.Type == 3:
-                MsgBox(c.Name)
+                X02.MsgBox(c.Name)
 
 # VB2PY (UntranslatedCode) Option Explicit

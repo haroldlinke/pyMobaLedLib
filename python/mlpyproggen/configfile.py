@@ -131,3 +131,5 @@ class ConfigFile():
         # Write JSON file
         with open(self.filepath, 'w', encoding='utf8') as outfile:
             json.dump(self.data, outfile, ensure_ascii=False, indent=4)
+        logging.debug("ConfigFile-Save:" + self.filepath)
+        #print("ConfigFile-Save:" + self.filepath, "Port:",self.data.get("serportname"))

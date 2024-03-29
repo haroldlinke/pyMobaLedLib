@@ -39,17 +39,17 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-#from proggen.M02_Public import *
+# fromx proggen.M02_Public import *
 
-#from proggen.M28_divers import *
-#from proggen.M30_Tools import *
-#from proggen.M09_Translate_Examples import *
+# fromx proggen.M28_divers import *
+# fromx proggen.M30_Tools import *
+# fromx proggen.M09_Translate_Examples import *
 
-#from proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M80_Create_Mulitplexer import *
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 #import proggen.M09_Translate_Examples as M09TL
 
@@ -78,6 +78,7 @@ import proggen.M30_Tools as M30
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
+import mlpyproggen.Prog_Generator as PG
 
 
 """ Attention: One of the following preprcessor constants have to be defined in
@@ -195,7 +196,7 @@ def __Update_Language_in_Sheet(Sh, DestLang):
     ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
     M25.Make_sure_that_Col_Variables_match(Sh)
     #Set OldSel = Selection
-    LSh = P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
+    LSh = PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
     _with0 = Sh
     # Check if the language has to be changed by comparing the first string
     # Check the actual used language in the sheet
@@ -296,7 +297,7 @@ def __Test_Update_Language_in_Sheet():
     OldUpdate = P01.Application.ScreenUpdating
     P01.Application.EnableEvents = False
     P01.Application.ScreenUpdating = False
-    __Update_Language_in_Sheet()(P01.ActiveSheet, - 1)
+    __Update_Language_in_Sheet(P01.ActiveSheet, - 1)
     P01.Application.EnableEvents = OldEvents
     P01.Application.ScreenUpdating = OldUpdate
 
@@ -309,7 +310,7 @@ def __Update_Language_in_Config_Sheet(DestLang):
     Sh = P01.CWorksheet()
     #-------------------------------------------------------------------------------
     Col = 2
-    Sh = P01.ThisWorkbook.Sheets(M02.ConfigSheet)
+    Sh = PG.ThisWorkbook.Sheets(M02.ConfigSheet)
     _with5 = Sh
     if _with5.Range(r'A1') == DestLang:
         return _ret
@@ -397,7 +398,7 @@ def __Update_Language_in_All_Sheets():
     P01.Application.ScreenUpdating = False
     DestLang = Get_ExcelLanguage()
     #DestLang = 1 ' debug
-    for Sh in P01.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.sheets:
         #If sh.Name <> LANGUAGES_SH And sh.Name <> GOTO_ACTIVATION_SH And sh.Name <> PAR_DESCRIPTION_SH Then ' 20.01.20: Old
         ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
         if Sh.Name == M02.START_SH or M28.Is_Data_Sheet(Sh.Name, Get_Language_Str(r'übersetzt')):
@@ -415,7 +416,7 @@ def __Update_Language_in_All_Sheets():
                     Translate_Example_Texts_in_Sheet(Sh)
             __Activate_Language_in_Example_Sheet(Sh)
     ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
-    __Update_Language_in_Config_Sheet()(DestLang)
+    __Update_Language_in_Config_Sheet(DestLang)
     M27.Update_Language_Name_Column_in_all_Sheets()
     #*HL U01.Unload(StatusMsg_UserForm)
     if not OldSheet is None:
@@ -433,7 +434,7 @@ def __Get_Language_Def():
     _ret = False
     LangStr = String()
     #------------------------------------------
-    LangStr = P01.ThisWorkbook.Sheets(M02.ConfigSheet).Range(r'Language_Def')
+    LangStr = str(PG.ThisWorkbook.Sheets(M02.ConfigSheet).Range(r'Language_Def'))
     if IsNumeric(LangStr):
         _ret = P01.val(LangStr)
     else:
@@ -442,7 +443,7 @@ def __Get_Language_Def():
 
 def Set_Language_Def(LanguageNr):
     #----------------------------------------------
-    P01.ThisWorkbook.Sheets[M02.ConfigSheet].Range[r'Language_Def'] = LanguageNr
+    PG.ThisWorkbook.Sheets[M02.ConfigSheet].Range[r'Language_Def'] = LanguageNr
 
 def Get_ExcelLanguage():
     global __Simulate_Language,__Check_Languages
@@ -505,7 +506,7 @@ def __Find_Cell_Pos_by_Name(Desc):
     # destination position as string.
     #
     # If Desc is not found "" is returned
-    LSh = P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
+    LSh = PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
     _with8 = LSh
     Res = LSh.Cells.Find(What= Desc, after= _with8.Range(r'A1'), LookIn= xlFormulas, LookAt= xlPart, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
     if not Res is None:
@@ -525,7 +526,7 @@ def __Get_German_Name(Desc):
 
     #Res = Variant()
     #-------------------------------------------------------
-    LSh = P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
+    LSh = PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
     _with9 = LSh
     Res = LSh.Cells.Find(What= Desc, after= _with9.Range(r'A1'), LookIn= xlFormulas, LookAt= xlPart, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
     if not Res is None:
@@ -537,7 +538,7 @@ def __Get_German_Name(Desc):
 def __Add_Entry_to_Languages_Sheet(GermanTxt):
     #------------------------------------------------------------
     if Get_ExcelLanguage() == 0:
-        LSh = P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
+        LSh = PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
         _with10 = LSh
         Row = M30.LastUsedRowIn(LSh) + 1
         _with10.CellDict[Row, FirstLangCol] = GermanTxt
@@ -562,11 +563,11 @@ def __Debug_Find_Diff(s1, s2):
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Look_At=xlPart - ByVal 
 def Find_Language_Str_Row(Desc, Look_At=xlPart):
     _ret = ""
-    #LSh = Worksheet()
+    #LSh = X02.Worksheet
 
     #Res = Variant()
     #--------------------------------------------------------------------------------------------------------------
-    LSh = P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
+    LSh = PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
     _with11 = LSh
     # VB2PY (UntranslatedCode) On Error Resume Next
     # Maximal length for the find command: 255
@@ -626,7 +627,7 @@ def Get_Language_Str(Desc, GenError=False, Look_At=xlPart):
     #   to get the visual line breaks.
     #   In this case the cvLf must also be added in this function
     Use_CrLf = False
-    
+    _ret = Desc
     if Desc == r'':
         return _ret
         # 23.01.20:
@@ -657,7 +658,7 @@ def __Get_Language_Str_Sub(Desc, GenError, Look_At):
         _ret = Desc
         return _ret
     
-    LSh = P01.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
+    LSh = PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
     
     _ret = LSh.find_in_col_ret_col_val(Desc,FirstLangCol,FirstLangCol + Get_ExcelLanguage(),cache=True)
     

@@ -63,13 +63,13 @@ import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 import  proggen.F00_mainbuttons as F00
 
-from ExcelAPI.X01_Excel_Consts import *
+from ExcelAPI.XLC_Excel_Consts import *
 
 
 from vb2py.vbfunctions import *
@@ -142,7 +142,7 @@ def __Save_Sheet_to_pgf(fp, Sh):
         Sh.Select()
         Page_ID = P01.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)
         VBFiles.writeText(fp, __SheetID + vbTab, Page_ID + vbTab + Sh.Name, '\n')
-        if len(P01.Selection.Cells) > 1:
+        if P01.Selection.Cells.Count > 1:
             rng = P01.Selection
         else:
             rng = P01.Range(P01.Cells(M02.FirstDat_Row, 1), P01.Cells(M30.LastFilledRowIn_ChkAll(Sh), 1))
@@ -167,12 +167,12 @@ def __Save_Sheet_to_pgf(fp, Sh):
                     VBFiles.writeText(fp, vbTab + Replace(P01.Cells(r.Row, Col), vbLf, '{NewLine}'))
                 VBFiles.writeText(fp, '', '\n')
         # VB2PY (UntranslatedCode) On Error GoTo 0
-        P01.Sheets(OldSh).Select()
+        PG.ThisWorkbook.Sheets(OldSh).Select()
         fn_return_value = True
         return fn_return_value
     except:
         raise
-        P01.Sheets(OldSh).Select()
+        PG.ThisWorkbook.Sheets(OldSh).Select()
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
@@ -191,7 +191,7 @@ def __Save_SingleSheet_to_pgf(Name, Sh):
 
 def __Test_Save_SingleSheet_to_pgf():
     #-----------------------------------------
-    Debug.Print('Save_SingleSheet_to_pgf: ' + __Save_SingleSheet_to_pgf(P01.ThisWorkbook.Path + '\\Test.MLL_pgf', P01.ActiveSheet))
+    Debug.Print('Save_SingleSheet_to_pgf: ' + __Save_SingleSheet_to_pgf(M08.GetWorkbookPath() + '\\Test.MLL_pgf', P01.ActiveSheet))
 
 def Save_Sheets_to_pgf(Name, FromAllSheets):
     fn_return_value = None
@@ -204,7 +204,7 @@ def Save_Sheets_to_pgf(Name, FromAllSheets):
         fp = __Create_pgf_File(Name)
         if fp > 0:
             if P01.ActiveWindow.SelectedSheets["Count"] > 1:
-                for Sh in P01.ActiveWorkbook.Sheets:
+                for Sh in P01.ActiveWorkbook.sheets:
                     if M28.Is_Data_Sheet(Sh):
                         Res = __Save_Sheet_to_pgf(fp, Sh)
                         if Res == False:
@@ -223,13 +223,13 @@ def Save_Sheets_to_pgf(Name, FromAllSheets):
 
 def __Test_Save_Sheets_to_pgf():
     #UT----------------------------------
-    Debug.Print('Save_Sheets_to_pgf=' + Save_Sheets_to_pgf(P01.ThisWorkbook.Path + '\\Test_All.MLL_pgf', True))
+    Debug.Print('Save_Sheets_to_pgf=' + Save_Sheets_to_pgf(M08.GetWorkbookPath() + '\\Test_All.MLL_pgf', True))
 
 def __Find_Sheet_with_matching_Page_ID(Page_ID):
     fn_return_value = None
-    #Sh = P01.Worksheet()
+    #Sh = P01.Worksheet
     #--------------------------------------------------------------------------------
-    for Sh in P01.ActiveWorkbook.Sheets:
+    for Sh in P01.ActiveWorkbook.sheets:
         if Sh.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL) == Page_ID:
             fn_return_value = Sh
             return fn_return_value
@@ -237,14 +237,14 @@ def __Find_Sheet_with_matching_Page_ID(Page_ID):
 
 def __Copy_and_Clear_Sheet(SheetName, Page_ID):
     fn_return_value = None
-    #Sh = P01.Worksheet()
+    #Sh = P01.Worksheet
     #---------------------------------------------------------------------------------------
     Sh = __Find_Sheet_with_matching_Page_ID(Page_ID)
     if Sh is None:
         P01.MsgBox(M09.Get_Language_Str('Fehler: Es existiert keine passende Seite als Vorlage zum importieren der Daten'), vbCritical, M09.Get_Language_Str('Fehler: Seite kann nicht angelegt werden'))
         return fn_return_value
     else:
-        for s in P01.ActiveWorkbook.Sheets:
+        for s in PG.ThisWorkbook.sheets:
             if M28.Is_Data_Sheet(s):
                 DstSh = s
         Sh.Copy(after=DstSh)
@@ -283,7 +283,7 @@ def __Open_or_Create_Sheet(SheetName, Inp_Page_ID, Name, ToActiveSheet):
                 return fn_return_value
             CreatedNewSheet = True
         else:
-            P01.Sheets(SheetName).Activate()
+            PG.ThisWorkbook.Sheets(SheetName).Activate()
         Page_ID = P01.ActiveSheet.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)
     __Import_Page_ID = Inp_Page_ID
     __First_Line = True
@@ -341,6 +341,7 @@ def __Read_Line(line):
     Col = Long()
 
     i = Long()
+    #print("__Read_line:",line)
     #----------------------------------------------------
     Parts = Split(line, vbTab)
     if Page_ID != __Import_Page_ID:
@@ -465,7 +466,7 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
                 __Check_Hidden_Lines()
                 if M28.Is_Data_Sheet(P01.ActiveSheet):
                     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
-                    M20.Update_Start_LedNr()
+                    #M20.Update_Start_LedNr() 17.04.23 removed - do it after import of all sheets is done (include feature)
                 Inp_Page_ID = Parts(1)
                 SheetName = Parts(2)
                 __AddedToFilterColumn = 0
@@ -489,6 +490,7 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
                                 if SheetCnt > 0:
                                     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
                                     # Add some reserve lines    ' 07.08.20:
+                                M20.Update_Start_LedNr()
                                 return fn_return_value
                 else:
                     SkipSheet = False
@@ -500,20 +502,26 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
                     LineNrInSheet = 1
                     F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Lade Seite \'') + SheetName + '\'', '...')
                     if not __Open_or_Create_Sheet(SheetName, Inp_Page_ID, Name, ToActiveSheet):
+                        M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                         return fn_return_value
             elif (select_0 == __Line_ID):
                 if not SkipSheet:
                     if not __Read_Line(lines(LNr)):
+                        M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                         return fn_return_value
                     F00.StatusMsg_UserForm.Set_ActSheet_Label('Line: ' + str(LineNrInSheet))
                     LineNrInSheet = LineNrInSheet + 1
             else:
                 P01.MsgBox(M09.Get_Language_Str('Fehler: Unbekannter Zeilentyp in Zeile:') + ' ' + LNr + vbCr + M09.Get_Language_Str('in der PGF Datei:') + vbCr + '  \'' + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler in PGF Datei'))
+                M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                 return fn_return_value
     __Check_Hidden_Lines()
     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
-    M20.Update_Start_LedNr()
+    #M20.Update_Start_LedNr()
+    M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
     fn_return_value = True
+    P01.Unload(F00.StatusMsg_UserForm)
+    P01.ActiveSheet.Redraw_table()
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Name - ByVal 
@@ -542,9 +550,9 @@ def Read_PGF(Name, ToActiveSheet=False):
     Parts = Split(lines(0), vbTab)
     Err = ( UBound(Parts) < 2 )
     if not Err:
-        Err = ( Parts(0) != __Head_ID )
+        Err = ( str(Parts(0)) != __Head_ID )
     if not Err:
-        Err = ( Parts(1) != PGF_Identification )
+        Err = ( str(Parts(1)) != PGF_Identification )
     if not Err:
         ScrUpd = P01.Application.ScreenUpdating
         P01.Application.ScreenUpdating = False
@@ -571,7 +579,7 @@ def Get_MyExampleDir():
     fn_return_value = None
     Dir = [] 
     #-------------------------------------------
-    Dir = Environ('USERPROFILE') + '/Documents/' + M02.MyExampleDir
+    Dir = Environ(M02.Env_USERPROFILE) + '/Documents/' + M02.MyExampleDir
     M30.CreateFolder(Dir + '/')
     fn_return_value = Dir
     return fn_return_value
@@ -600,7 +608,10 @@ def Save_Data_to_File():
     #-----------------------------
     # Is called from the options dialog
     __Achtivate_MyExampleDir_if_called_the_first_time()
-    ExampleName = 'Prog_Gen_Data_' + Replace(P01.Date_str(), '.', '_')
+    datestr = P01.Date_str()
+    datestr = datestr.replace(".","_")
+    datestr = datestr.replace("/","_")
+    ExampleName = 'Prog_Gen_Data_' + datestr
     Res = P01.Application.GetSaveAsFilename(InitialFileName= ExampleName, fileFilter= M09.Get_Language_Str('Program Generator File (*.MLL_pgf), *.MLL_pgf'), Title= M09.Get_Language_Str('Dateiname zum abspeichern der Daten angeben'))
     if Res:
         #*HL if Dir(Res) != '':

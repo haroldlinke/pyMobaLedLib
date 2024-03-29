@@ -43,7 +43,7 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 import proggen.M02_Public as M02
 #import proggen.M02_global_variables as M02GV
@@ -69,7 +69,7 @@ import proggen.M30_Tools as M30
 #import proggen.M70_Exp_Libraries as M70
 import proggen.M80_Create_Mulitplexer as M80
 
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 """ https://wellsr.com/vba/2019/excel/vba-playsound-to-play-system-sounds-and-wav-files/
 # VB2PY (CheckDirective) VB directive took path 1 on VBA7
@@ -132,7 +132,7 @@ def BeepThis2(ThisSound='Beep', ThisValue=VBMissingArgument, ThisCount=1, Wait=F
             ThisSound = ThisSound + '.wav'
         sPath = ThisSound
         if Dir(sPath) == '':
-            sPath = ActiveWorkbook.Path + '\\' + ThisSound
+            sPath = P01.ActiveWorkbook.Path + '/' + ThisSound
             if Dir(sPath) == '':
                 sPath = Environ('SystemRoot') + sMedia + ThisSound
         flags = __SND_FILENAME
@@ -157,7 +157,7 @@ def __Test_BeepThis1():
     #BeepThis2 "Default"
     #BeepThis2 "Asterisk"
     #BeepThis2 "Fax"
-    BeepThis2()('Windows Information Bar.wav', VBGetMissingArgument(BeepThis2(), 1), VBGetMissingArgument(BeepThis2(), 2), True)
+    BeepThis2('Windows Information Bar.wav', VBGetMissingArgument(BeepThis2(), 1), VBGetMissingArgument(BeepThis2(), 2), True)
 
 # VB2PY (UntranslatedCode) Option Explicit
 # VB2PY (UntranslatedCode) Public Declare PtrSafe Function PlaySound Lib "winmm.dll" Alias "PlaySoundA" (ByVal lpszName As String, ByVal hModule As LongPtr, ByVal dwFlags As Long) As Long

@@ -32,7 +32,7 @@
 # *
 # ***************************************************************************
 import tkinter as tk
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 
 class UserForm_DialogGuide1:
     def __init__(self, value, title, labeltext = '' ):
@@ -45,7 +45,7 @@ class UserForm_DialogGuide1:
 
  
     def ok(self, event=None):
-        print ("Has escrito ...", self.e.get())
+        #print ("Has escrito ...", self.e.get())
         #self.valor.set(self.e.get())
         self.IsActive = False
         self.top.destroy()

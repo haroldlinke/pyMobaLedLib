@@ -70,9 +70,9 @@ import proggen.M30_Tools as M30
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
-import proggen.Prog_Generator as PG
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
+import mlpyproggen.Prog_Generator as PG
 import proggen.M09_Language as M09
 
 import logging
@@ -223,8 +223,8 @@ class CSelect_COM_Port_UserForm:
                 LocalComPorts.append(" ")
             M07.CheckCOMPort_Txt = PortNames[SpinButton]
             tmp_comport = LocalComPorts[SpinButton]
-            #if tmp_comport==" ":
-            #    tmp_comport = "999"
+            if tmp_comport==" ":
+                tmp_comport = "999"
             #if IsNumeric(tmp_comport):
             #    M07.CheckCOMPort = int(tmp_comport)
             #else:
@@ -251,7 +251,7 @@ class CSelect_COM_Port_UserForm:
             self.AvailPorts_Label.configure(text=M30.DelLast(PortsStr))
             OldL_ComPorts = LocalComPorts
         else:
-            M07.CheckCOMPort = " "#999
+            M07.CheckCOMPort = "999"#999
             self.AvailPorts_Label.configure(text='')
             COM_Port_Label = ' -'
     
@@ -284,16 +284,16 @@ class CSelect_COM_Port_UserForm:
     def ShowDialog(self, Caption, Title, Text, Picture, Buttons, FocusButton, Show_ComPort, Red_Hint, ComPort_IO, PrintDebug=False):
         global COM_Port_Label,PortNames,LocalPrintDebug,LocalComPorts,__LocalPrintDebug, __OldSpinButton,__LocalShow_ComPort,Pressed_Button
         Debug.Print("Select_Com_Port_UserForm-Showdialog")
-        if  not PG.dialog_parent.getConfigData("UseCOM_Port_UserForm"):
-            Debug.Print("UseCOM_Port_UserForm=True")
-            fn_return_value = 3
-            serportname = PG.dialog_parent.getConfigData("serportname")
+        #if  not PG.dialog_parent.getConfigData("UseCOM_Port_UserForm"):
+        #    Debug.Print("UseCOM_Port_UserForm=True")
+        #    fn_return_value = 3
+        #    serportname = PG.dialog_parent.getConfigData("serportname")
 
-            if serportname[:3]=="COM":
-                serportname=int(serportname[3:])
-            
-            return fn_return_value,serportname
-        
+        #    if serportname[:3]=="COM":
+        #        serportname=int(serportname[3:])
+        #    
+        #    return fn_return_value,serportname
+        # 
             
         c = Variant()
     
@@ -303,7 +303,7 @@ class CSelect_COM_Port_UserForm:
         #  Caption     Dialog Caption
         #  Title       Dialog Title
         #  Text        Message in the text box on the top left side
-        #  Picture     Name of the picture to be shown. Available pictures: "LED_Image", "CAN_Image", "Tiny_Image", "DCC_Image"
+        #  Picture     Name of the picture to be shown. Available pictures: "LED_Image", "CAN_Image", "Tiny_Image", "DCC_Image" , "ESP32_Image"
         #  Buttons     List of 3 buttons with Accelerator. Example "H Hallo; A Abort; O Ok"  Two Buttons: " ; A Abort; "O Ok"
         #  ComPort_IO  is used as input and output
         # Return:
@@ -371,25 +371,31 @@ class CSelect_COM_Port_UserForm:
         
         self.Red_Hint_Label = ttk.Label(self.top, text=Red_Hint,font=("Tahoma", 11),foreground="#FF0000",width=20,wraplength=125,relief=tk.FLAT, borderwidth=1)
         self.Red_Hint_Label.grid(row=0,column=2,columnspan=1,rowspan=2,sticky="ne",padx=10,pady=10)
-         
-        self.Com_Port_Label = ttk.Combobox(self.top, width=30,font=("Tahoma", 11))
-        self.Com_Port_Label.grid(row=3,column=0,sticky="nesw",padx=10,pady=10)
-        
-        self.Com_Port_Label ["value"] = ["valuelist"]
-        self.Com_Port_Label.set(0)
-        
-        self.Show_Unknown_CheckBox_var = tk.IntVar(master=self.top)
-        self.Show_Unknown_CheckBox_var.set(0)
-
-        self.Show_Unknown_CheckBox = tk.Checkbutton(self.top, text=M09.Get_Language_Str("Unbekante Ports anzeigen"),width=30,wraplength = 200,anchor="w",variable=self.Show_Unknown_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
-        self.Show_Unknown_CheckBox.grid(row=4, column=0, columnspan=2,sticky="nesw", padx=2, pady=2)
-        
-        self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=("Tahoma", 11),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
-        self.Hint_Label.grid(row=7,column=0,columnspan=2,rowspan=2,sticky="nesw",padx=10,pady=10)
-        
-        self.AvailPorts_Label = ttk.Label(self.top, text="",font=("Tahoma", 11),width=30, wraplength=350,relief=tk.FLAT, borderwidth=1)
-        self.AvailPorts_Label.grid(row=5,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
-        
+        if Show_ComPort: 
+            self.Com_Port_Label = ttk.Combobox(self.top, width=30,font=("Tahoma", 11))
+            self.Com_Port_Label.grid(row=3,column=0,sticky="nesw",padx=10,pady=10)
+            
+            self.Com_Port_Label ["value"] = ["valuelist"]
+            self.Com_Port_Label.set(0)
+            
+            self.Show_Unknown_CheckBox_var = tk.IntVar(master=self.top)
+            if P01.checkplatform("Darwin"):
+                self.Show_Unknown_CheckBox_var.set(1)
+            else:
+                self.Show_Unknown_CheckBox_var.set(0)
+    
+            self.Show_Unknown_CheckBox = tk.Checkbutton(self.top, text=M09.Get_Language_Str("Unbekante Ports anzeigen"),width=30,wraplength = 200,anchor="w",variable=self.Show_Unknown_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
+            self.Show_Unknown_CheckBox.grid(row=4, column=0, columnspan=2,sticky="nesw", padx=2, pady=2)
+            
+            if P01.checkplatform("Darwin"):
+                self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("ACHTUNG: Beim MAC funktioniert die automatische ARDUINO Erkennung nicht. Bitte unbedingt den richtigen ARDUINO Typ in den Optionen einstellen!\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=("Tahoma", 11),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+            else:           
+                self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=("Tahoma", 11),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+            self.Hint_Label.grid(row=7,column=0,columnspan=2,rowspan=2,sticky="nesw",padx=10,pady=10)
+            
+            self.AvailPorts_Label = ttk.Label(self.top, text="",font=("Tahoma", 11),width=30, wraplength=350,relief=tk.FLAT, borderwidth=1)
+            self.AvailPorts_Label.grid(row=5,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
+            
         # crate buttons
         self.buttonlist = Buttons.split(";")
         
@@ -424,7 +430,8 @@ class CSelect_COM_Port_UserForm:
         __LocalPrintDebug = PrintDebug
         __OldSpinButton = - 1
         Pressed_Button = 0
-        self.Update_SpinButton(ComPort_IO)
+        if Show_ComPort:
+            self.Update_SpinButton(ComPort_IO)
         #SpinButton.Visible = Show_ComPort
         #if Show_ComPort:
         #    SpinButton.setFocus()

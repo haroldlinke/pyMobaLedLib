@@ -58,14 +58,15 @@ import proggen.M30_Tools as M30
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
+import mlpyproggen.Prog_Generator as PG
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 
-from ExcelAPI.X01_Excel_Consts import *
-import ExcelAPI.P01_Workbook as P01
+from ExcelAPI.XLC_Excel_Consts import *
+import ExcelAPI.XLW_Workbook as P01
 
 ParName_COL = 1
 Par_Cnt_COL = 2
@@ -90,14 +91,13 @@ def __Get_ParDesc_Row(Sh, Name):
     #------------------------------------------------------------------------
     with_0 = Sh
     r = with_0.Range(with_0.Cells(1, ParName_COL), with_0.Cells(M30.LastUsedRowIn(Sh), ParName_COL))
-    #f = r.Find(What= Name, after= r.Cells(__FirstDatRow, 1), LookIn= xlFormulas, LookAt= xlWhole, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
-    f_row=r.Cells.index(Name)+1 #*HL
-    if f_row is None:
+    f = r.Find(What= Name, after= r.CellsFct(__FirstDatRow, 1), LookIn= xlFormulas, LookAt= xlWhole, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False)
+    if f is None:
         Debug.Print('Fehlender Parameter: ' + Name)
         P01.MsgBox('Fehler: Der Parameter Name \'' + Name + '\' wurde nicht im Sheet \'' + Sh.Name + '\' gefunden!', vbCritical, 'Internal Error')
         M30.EndProg()
     else:
-        fn_return_value = f_row
+        fn_return_value = f.Row
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ParName - ByVal 
@@ -113,7 +113,7 @@ def Get_Par_Data(ParName):
 
     Row = int()
 
-    #Sh = Worksheet()
+    #Sh = X02.Worksheet
 
     ActLanguage = Integer()
 
@@ -122,7 +122,7 @@ def Get_Par_Data(ParName):
     ActLanguage = M09.Get_ExcelLanguage()
     if ActLanguage != 0:
         Offs = 1
-    Sh = P01.Sheets(M02.PAR_DESCR_SH)
+    Sh = PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH)
     Row = __Get_ParDesc_Row(Sh, ParName)
     with_1 = Sh
     Typ = with_1.Cells(Row, ParType_COL)

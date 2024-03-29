@@ -190,6 +190,7 @@ class Tooltip_Canvas:
         self.pad = pad
         self.id = None
         self.tw = None
+        #print("Tooltip create Objid:",objid, text)
 
     def onEnter(self, event=None):
         #if self.controller==None or not self.controller.edit_active:
@@ -256,6 +257,7 @@ class Tooltip_Canvas:
 
             return x1, y1
 
+        print("Tooltip show Objid:",self.objid, self.text)
         bg = self.bg
         pad = self.pad
         widget = self.widget

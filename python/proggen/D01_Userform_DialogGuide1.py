@@ -33,9 +33,9 @@
 # ***************************************************************************
 import tkinter as tk
 from tkinter import ttk
-import proggen.Prog_Generator as PG
+import mlpyproggen.Prog_Generator as PG
 from vb2py.vbconstants import *
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 import proggen.M09_Language as M09
 
 class UserForm_DialogGuide1:
@@ -95,7 +95,8 @@ class UserForm_DialogGuide1:
         self.label2.grid(row=1,column=0,columnspan=3,sticky="nesw",padx=10,pady=10)
         self.label3.grid(row=2,column=0,columnspan=3,sticky="nesw",padx=10,pady=10)
         
-        self.top.bind("<Return>", self.ok)
+        PG.global_controller.bind("<Return>", self.ok)
+        PG.global_controller.bind("<Escape>",self.cancel)
         
         self.button_frame = ttk.Frame(self.top)
         

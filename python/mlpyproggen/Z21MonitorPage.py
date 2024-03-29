@@ -58,15 +58,15 @@
 
 import tkinter as tk
 from tkinter import ttk,messagebox
-#from tkcolorpicker.functions import tk, ttk, round2, create_checkered_image, \
+# fromx tkcolorpicker.functions import tk, ttk, round2, create_checkered_image, \
 #    overlay, hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, col2hue, rgb_to_hsv, convert_K_to_RGB
-#from tkcolorpicker.alphabar import AlphaBar
-#from tkcolorpicker.gradientbar import GradientBar
-#from tkcolorpicker.lightgradientbar import LightGradientBar
-#from tkcolorpicker.colorsquare import ColorSquare
-#from tkcolorpicker.colorwheel import ColorWheel
-#from tkcolorpicker.spinbox import Spinbox
-#from tkcolorpicker.limitvar import LimitVar
+# fromx tkcolorpicker.alphabar import AlphaBar
+# fromx tkcolorpicker.gradientbar import GradientBar
+# fromx tkcolorpicker.lightgradientbar import LightGradientBar
+# fromx tkcolorpicker.colorsquare import ColorSquare
+# fromx tkcolorpicker.colorwheel import ColorWheel
+# fromx tkcolorpicker.spinbox import Spinbox
+# fromx tkcolorpicker.limitvar import LimitVar
 from mlpyproggen.configfile import ConfigFile
 from locale import getdefaultlocale
 #import re
@@ -82,6 +82,9 @@ import logging
 #import concurrent.futures
 #import random
 #import webbrowser
+
+import proggen.M08_ARDUINO as M08
+import proggen.M02_Public as M02
 from datetime import datetime
 import json
 
@@ -260,6 +263,8 @@ ThreadEvent_Z21 = None
 class Z21MonitorPage(tk.Frame):
     
     def __init__(self, parent, controller):
+        if controller.executetests:
+            self.test_convert_7bit_to_8bit()
         self.tabClassName = "Z21MonitorPage"
         tk.Frame.__init__(self,parent)
         self.controller = controller
@@ -414,25 +419,12 @@ class Z21MonitorPage(tk.Frame):
         logging.debug ("Z21_Stop")
         self.stop_process_Z21()
         
-    def show_key_adress_for_switch(self,searchstring):
-        matches = [match for match in self.file_data if searchstring in match]
-        if matches != []:
-            searchstring_len = len(searchstring)
-            for line in matches:
-                line1 = line[searchstring_len+3:]
-                line2 = line1.replace(" ","")
-                number = int(line2) - self.start_switches_1+1   
-                adress = 1 + int( (number-1) /8 )
-                port = 1 + ( (number-1) % 8 )
-                self.add_text_to_textwindow(line[:searchstring_len+3]+" Adresse: "+str(adress)+" Eingang: "+ str(port))        
+    def show_key_adress_for_variables(self,text):
+        self.add_text_to_textwindow(text)
         
     def show_key_adresses(self,event=None):
-        
-        filename = "..\\..\\LEDs_AutoProg.h"
-        filedir = self.controller.mainfile_dir
-        filepath1 = os.path.join(filedir, filename)
-        
-        filepath = os.path.normpath(filepath1)
+
+        filepath = M08.GetWorkbookPath() + '/' + M02.Ino_Dir_LED + M02.Include_FileName
         try:
             with open (filepath, "r") as myfile:
                 self.file_data=myfile.readlines()
@@ -441,25 +433,26 @@ class Z21MonitorPage(tk.Frame):
             self.add_text_to_textwindow("Datei: "+filepath + " nicht gefunden")
             return
             
-        searchstring = "#define START_SWITCHES_1"
+        searchstring1 = "//*** Output Channels ***\n"
+        searchstring2 = "#define START_SEND_INPUTS"
+        
+        varlist_found=False
+        
+        for line in self.file_data:
+            if line==searchstring1:
+                varlist_found=True
+            if varlist_found:
+                if line.startswith(searchstring2):
+                    break
+                else:
+                    self.add_text_to_textwindow(line)
             
-        matches = [match for match in self.file_data if searchstring in match]
-        if matches == []:
-            self.add_text_to_textwindow("Keine Taster definiert")
-        else:
-            searchstring_len = len(searchstring)
-            st1 = matches[0]
-                  
-            st2 = st1[searchstring_len:searchstring_len+3]
-            st2 = st2.replace(" ","")
-                   
-            self.start_switches_1 = int(st2)
             
-            self.show_key_adress_for_switch("#define SwitchB")
-            self.show_key_adress_for_switch("#define SwitchD")
+
+
         
     def add_text_to_textwindow(self,text):
-        self.text.insert("end", text+"\n")
+        self.text.insert("end", text)
         self.text.yview("end")        
 
     def process_Z21(self):
@@ -508,6 +501,7 @@ class Z21MonitorPage(tk.Frame):
                     dcc_adress_range = (1,9999)
                 self.controller.connect_Z21(port,dcc_adress_range)
         else:
+            print("Z21MonitorPage: Connect ARDUINO")
             self.controller.connect()
         self.controller.start_process_serial_all()
             
@@ -560,37 +554,82 @@ class Z21MonitorPage(tk.Frame):
     def get_RMBUS_DATA(self,groupidx=0):
         RMBUS_data_ba = self.RMBUS_DATA_bytearray.get(groupidx,{})
         self.send_RMBUS_DATA(RMBUS_data_ba,groupidx=groupidx)
-        self.controller.send_to_ARDUINO("?*\r\n")
+        self.controller.send_to_ARDUINO("?*\n")
         
-    def convert_7bit_to_8bit(self,data_7bit_str):
+    def convert_7bit_to_8bit_old(self,data_7bit_str):
+        
+        # php code from https://prlbr.de/2011/05/7-bit-8-bit-konvertierung/
         if True:
             up = (1, 3, 7, 15, 31, 63, 127)    
             down = (255, 254, 252, 248, 240, 224, 192, 128)        
             output = bytearray()
             carry = 0
+
             for i in range(0,len(data_7bit_str)):
                 # calculate the round number modulo 8
                 r = i % 8
                 # represent an input byte as a 7-bit integer
-                integer = int(data_7bit_str[i]);
+                integer =(data_7bit_str[i])
                 # add an 8-bit output byte created from the 8 - r bits carry
                 # and r bits from the 7-bit integer
                 if (r != 0):
-                    output.extend((carry | (integer & up[r - 1])<<(8-r)).to_bytes(1,"big"))
+                    output.extend((carry | (integer & up[r - 1])).to_bytes(length=1,byteorder="big"))
                     # save the other 7 - r bits of the 7-bit integer as new carry
-                carry = (integer >> r) #& down[r]
-            #if r>0: # add last byte
-            output.extend((carry).to_bytes(1,"big"))
+                carry = (integer << 1) & down[r]
+            if carry != 0:
+                output.extend(carry.to_bytes(length=1,byteorder="big"))
         else:
             output = data_7bit_str
         return output
+    
+    def test_convert_7bit_to_8bit(self):
+        bytestring = b'\x40\x00'
+        print(self.convert_7bit_to_8bit(bytestring))
+        bytestring = b'\x00\x40'
+        print(self.convert_7bit_to_8bit(bytestring))        
+        data_7bit_str=b"\x7F\x7F"
+        v8bit_str=self.convert_7bit_to_8bit(data_7bit_str)
+        print("test_convert_7bit_to_8bit:",data_7bit_str,v8bit_str)
+        
+    def convert_7bit_to_8bit(self,bytestring):
+        
+        result = bytearray()
+        countbits = 7
+        byte = 0
+        for i in range(0, len(bytestring)):
+            testbyte = bytestring[i]
+            for j in range(7,0,-1):
+                    bit = (testbyte >> (j-1)) & 1
+                    if countbits==0:
+                        byte |= bit << (7)
+                        result.append(byte)
+                        countbits=7
+                        byte=0
+                    else:
+                        byte |= bit << (7-countbits)
+                        countbits-=1
+        if countbits != 0:
+            result.append(byte)
+        print("convert_7bit_to_8bit: Input:")
+        for my_byte in bytestring:
+            print(f'{my_byte:0>8b}', end=' ')
+        print(" Output:")    
+        for my_byte in result:
+            print(f'{my_byte:0>8b}', end=' ')
+        print("\n")
+        return bytes(result)
 
+    
     def notifyZ21_RMBUS_DATA(self, json_data_str):
-        #logging.debug("notifyZ21_RMBUS_DATA: %s",json_data_str)
+        logging.debug("notifyZ21_RMBUS_DATA: %s",json_data_str)
         RMBUS_DATA_dict = json.loads(json_data_str)
         rmbus_7bit_data_str = RMBUS_DATA_dict.get("RMBUS","")
+        logging.debug("notifyZ21_RMBUS_DATA 7bit: %s",rmbus_7bit_data_str)
+        if len(rmbus_7bit_data_str)==2 and rmbus_7bit_data_str[0]=="?":
+            return
         rmbus_data_bytearray = self.convert_7bit_to_8bit(bytearray.fromhex(rmbus_7bit_data_str))
         rmbus_data_str = rmbus_data_bytearray.hex()
+        logging.debug("notifyZ21_RMBUS_DATA data_str: %s",rmbus_data_str)
         
         if rmbus_data_str != "":
             group_idx = 0
@@ -670,7 +709,7 @@ class Z21MonitorPage(tk.Frame):
         pass
         self.stop_process_Z21()
         
-    def connect (self):
+    def connect (self,port):
         pass
         #self.start_process_Z21()
     

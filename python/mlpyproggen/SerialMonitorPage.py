@@ -59,15 +59,15 @@
 import tkinter as tk
 import traceback
 from tkinter import ttk,messagebox
-#from tkcolorpicker.functions import tk, ttk, round2, create_checkered_image, \
+# fromx tkcolorpicker.functions import tk, ttk, round2, create_checkered_image, \
 #    overlay, hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, col2hue, rgb_to_hsv, convert_K_to_RGB
-#from tkcolorpicker.alphabar import AlphaBar
-#from tkcolorpicker.gradientbar import GradientBar
-#from tkcolorpicker.lightgradientbar import LightGradientBar
-#from tkcolorpicker.colorsquare import ColorSquare
-#from tkcolorpicker.colorwheel import ColorWheel
-#from tkcolorpicker.spinbox import Spinbox
-#from tkcolorpicker.limitvar import LimitVar
+# fromx tkcolorpicker.alphabar import AlphaBar
+# fromx tkcolorpicker.gradientbar import GradientBar
+# fromx tkcolorpicker.lightgradientbar import LightGradientBar
+# fromx tkcolorpicker.colorsquare import ColorSquare
+# fromx tkcolorpicker.colorwheel import ColorWheel
+# fromx tkcolorpicker.spinbox import Spinbox
+# fromx tkcolorpicker.limitvar import LimitVar
 from mlpyproggen.configfile import ConfigFile
 from locale import getdefaultlocale
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
@@ -204,7 +204,7 @@ class SerialMonitorPage(tk.Frame):
         self.controller.send_to_ARDUINO(message)
 
     def process_serial(self):
-        #print("process_serial: Start")
+        #print("Serial MonitorPage - process_serial: Start")
         textmessage = self.controller.checkconnection()
         if textmessage:
             self.text.insert("end", textmessage)
@@ -226,7 +226,7 @@ class SerialMonitorPage(tk.Frame):
                         self.text.yview("end")
                         if readtext.startswith("JSON:"):
                             json_str = readtext[5:]
-                            if self.z21page:
+                            if self.Z21page:
                                 self.Z21page.notifyZ21_RMBUS_DATA(json_str)
                         elif readtext.startswith("#?"):
                             temp_list = readtext.split(",")
@@ -249,7 +249,7 @@ class SerialMonitorPage(tk.Frame):
         if self.check_RMBUS:
             self.RMBUS_request_timer -= 1
             if self.RMBUS_request_timer == 0:
-                self.controller.send_to_ARDUINO("?*\r\n")
+                self.controller.send_to_ARDUINO("?*\n")
                 self.RMBUS_request_timer = self.RMBUS_request_timer_confvalue
         if self.monitor_serial:
             self.after(100, self.process_serial)
@@ -264,14 +264,15 @@ class SerialMonitorPage(tk.Frame):
             self.RMBUS_request_timer = self.RMBUS_request_timer_confvalue
         
         if value:
-            self.controller.send_to_ARDUINO("?+\r\n")
+            #self.controller.send_to_ARDUINO("?+\r\n")
             pass
         else:
-            self.controller.send_to_ARDUINO("?-\r\n")
+            #self.controller.send_to_ARDUINO("?-\r\n")
             pass
     
     def start_process_serial(self):
         global ThreadEvent
+        print("SerialMonitorPage: start_process_serial")
         ThreadEvent = threading.Event()
         ThreadEvent.set()
         time.sleep(2)
@@ -290,6 +291,7 @@ class SerialMonitorPage(tk.Frame):
 
     def stop_process_serial(self):
         logging.debug("stop_process_serial")
+        print("SerialMonitorPage: stop_process_serial")
         global ThreadEvent
         self.monitor_serial = False
         if ThreadEvent:
@@ -300,7 +302,7 @@ class SerialMonitorPage(tk.Frame):
     def cancel(self):
         self.stop_process_serial()
         
-    def connect (self):
+    def connect (self,port):
         self.start_process_serial()
     
     def disconnect (self):
@@ -313,7 +315,7 @@ class ReadLine:
 
     def readline(self):
         i = self.buf.find(b"\n")
-        toRead = 0
+        msg_length = 0
         result = ""
         if i >= 0:
             r = self.buf[:i+1]
@@ -321,45 +323,43 @@ class ReadLine:
             return r
         try:
             while not ThreadEvent.is_set() and self.s != None and self.s.is_open:
-                i = max(1, min(2048, self.s.in_waiting))
-                data = self.s.read(1)
-                i = data.find(b"\n")
-                if i >= 0:
-                    r = self.buf + data[:i+1]
-                    self.buf[0:] = data[i+1:]
-                    return r
-                else:
-                    #for j in range(len(data)):
-                    if data >= b"x7F":
-                        if toRead >0 :
-                            logging.debug("SerialThread error in Feedback-String:"+str(data).hex)
-                        chkSum = int.from_bytes(data,byteorder = "big")
-                        toReadbyte = self.s.read(1)
-                        toRead = int.from_bytes(toReadbyte,byteorder = "big")
-                        chkSum ^= toRead
-                        result = "JSON:{\"RMBUS\": \""
-                        result_str = toReadbyte.hex()
-                        #result += result_str
-                        continue
-                    if toRead > 0:
-                        chkSum ^= int.from_bytes(data,byteorder = "big")
-                        if toRead >1:
-                            result_str = data.hex()
+                i = max(1, min(2048, self.s.in_waiting)) # any bytes in buffer
+                data = self.s.read(1)                    # read one byte  
+                logging.debug("readline from ARDUINO:"+ str(data)+ "("+str(data.hex())+")")
+                if data >= b"xD0": # binary communication detected, read one binary message
+                    chkSum = int.from_bytes(data,byteorder = "big")
+                    toReadbyte = self.s.read(1) # read length byte
+                    logging.debug("readline from ARDUINO length:"+ str(toReadbyte)+ "("+str(toReadbyte.hex())+")")
+                    msg_length = int.from_bytes(toReadbyte,byteorder = "big")
+                    chkSum ^= msg_length
+                    result = "JSON:{\"RMBUS\": \""
+                    for i in range(msg_length):
+                        Readbyte = self.s.read(1)
+                        logging.debug("readline from ARDUINO length:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
+                        ReadbyteInt = int.from_bytes(Readbyte,byteorder = "big")
+                        chkSum ^= ReadbyteInt
+                        if i < msg_length-1: # handle data bytes, last byte is for checksum only
+                            result_str = Readbyte.hex()
                             result += result_str
-                            toRead -= 1
-                        else:
-                            result += "\"}"
-                            if chkSum != 255:
-                                logging.debug("Checksum error in Feedback-String:"+ result)
-                            #logging.debug("Received from ARDUINO: " + result)
-                            return result
-                    self.buf.extend(data)
+                    result += "\"}"
+                    if chkSum != 255:
+                        logging.debug("Checksum error in Feedback-String:"+ result)
+                    return result
+                else:
+                    i = data.find(b"\n")
+                    if i >= 0:
+                        r = self.buf + data[:i+1]
+                        self.buf[0:] = data[i+1:]
+                        return r
+                self.buf.extend(data)
         except BaseException as e:
             logging.debug("Readline exception")
             logging.debug(e)
             traceback.print_exc()
             logging.debug("------------------")
             result = ""
+            logging.debug("Set ThreadEvent, Readline error")
+            ThreadEvent.set() 
             return result
 
 class SerialThread(threading.Thread):
@@ -382,9 +382,9 @@ class SerialThread(threading.Thread):
                         if len(text)>0:
                             try:
                                 self.queue.put(text.decode('utf-8'))
+                                logging.info("SerialThread (%s) got message: %s", self.serialport_name,str(text.decode('utf-8')))
                             except:
                                 self.queue.put(text)
-                                pass
-                            logging.info("SerialThread (%s) got message: %s", self.serialport_name,text.decode('utf-8'))
+                                logging.info("SerialThread (%s) got message: %s", self.serialport_name,str(text))
         logging.info("SerialThread (%s) received event. Exiting", self.serialport_name)
 

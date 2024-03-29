@@ -39,20 +39,20 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-#from proggen.M02_Public import *
-#from proggen.M06_Write_Header_LED2Var import *
-#from proggen.M06_Write_Header_Sound import *
-#from proggen.M06_Write_Header_SW import *
-#from proggen.M08_ARDUINO import *
-#from proggen.M09_Language import *
-#from proggen.M09_Select_Macro import *
-#from proggen.M20_PageEvents_a_Functions import *
-#from proggen.M25_Columns import *
-#from proggen.M28_divers import *
-#from proggen.M30_Tools import *
-#from proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M02_Public import *
+# fromx proggen.M06_Write_Header_LED2Var import *
+# fromx proggen.M06_Write_Header_Sound import *
+# fromx proggen.M06_Write_Header_SW import *
+# fromx proggen.M08_ARDUINO import *
+# fromx proggen.M09_Language import *
+# fromx proggen.M09_Select_Macro import *
+# fromx proggen.M20_PageEvents_a_Functions import *
+# fromx proggen.M25_Columns import *
+# fromx proggen.M28_divers import *
+# fromx proggen.M30_Tools import *
+# fromx proggen.M80_Create_Mulitplexer import *
 
-#from ExcelAPI.P01_Workbook import *
+# fromx ExcelAPI.X02_Workbook import *
 
 import proggen.M02_Public as M02
 import proggen.M02_Scripting as Scripting
@@ -77,31 +77,32 @@ import proggen.M09_Language as M09
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
+#*HL import proggen.clsNode
 
-import ExcelAPI.P01_Workbook as P01
+import ExcelAPI.XLW_Workbook as P01
 
 
 """ Header file generation for the Sound functions
 
 """
 
-__SoundLines = Scripting.Dictionary()
+SoundLines = Scripting.Dictionary()
 
-def Init_HeaderFile_Generation_Sound():
-    global __SoundLines
+def Init_HeaderFile_Generation_Sound(firstSheet):
+    global SoundLines
     
-    fn_return_value = False
+    _fn_return_value = False
     #--------------------------------------------------------------
-    __SoundLines = Scripting.Dictionary()
-    fn_return_value = True
+    SoundLines = Scripting.Dictionary()
+    _fn_return_value = True
     #UseFullPacketMode = false                                                ' 19.10.21: Always use the full packed mode because this mode could be used with both types of JQ6500 modules
-    return fn_return_value
+    return _fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Cmd - ByRef 
 def Add_SoundPin_Entry(Cmd, Channel):
-    global __SoundLines
+    global SoundLines
     
-    fn_return_value = False
+    _fn_return_value = False
     Parts = vbObjectInitialize(objtype=String)
 
     #Typ = String()
@@ -112,75 +113,78 @@ def Add_SoundPin_Entry(Cmd, Channel):
     Parts = Split(Replace(Replace(Replace(Trim(Cmd), M02.SF_SERIAL_SOUND_PIN, ''), ')', ''), ' ', ''), ',')
     if UBound(Parts) - LBound(Parts) != 1:
         # todo
-        return fn_return_value
+        return _fn_return_value
     
     fret, M02.SF_SERIAL_SOUND_PIN = M06SW.Set_PinNrLst_if_Matching(M02.SF_SERIAL_SOUND_PIN + Parts(0) + ')', M02.SF_SERIAL_SOUND_PIN, Pin, 'O', 1)
     if fret == False:
-        return fn_return_value
+        return _fn_return_value
     if M06SW.No_Duplicates_in_two_Lists('Sound', Serial_PinLst, Pin, M02.SF_SERIAL_SOUND_PIN) == False:
-        return fn_return_value
+        return _fn_return_value
     Serial_PinLst = Serial_PinLst + Pin + ' '
-    if not __Check_Sound_Duplicates():
-        return fn_return_value
-    playerClass = __GetPlayerClass(Parts(1))
+    if not Check_Sound_Duplicates():
+        return _fn_return_value
+    playerClass = GetPlayerClass(Parts(1))
     if playerClass == '':
         P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Soundmodul Typ \'#1#\' wird nicht unterstützt.'), "#1#", Parts(1)), vbCritical, 'Fehler: Soundmodul')
-        return fn_return_value
-    if __SoundLines.Exists(Channel):
+        return _fn_return_value
+    if SoundLines.Exists(Channel):
         P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Sound Kanal \'#1#\' ist schon definiert.'), "#1#", Channel), vbCritical, 'Fehler: Soundmodul')
-        return fn_return_value
+        return _fn_return_value
     #If Parts(1) = "JQ6500_AA" Then UseFullPacketMode = True                 ' 19.10.21: Always use the full packed mode because this mode could be used with both types of JQ6500 modules
-    __SoundLines.Add(Channel, Array(Pin, playerClass))
+    SoundLines.Add(Channel, Array(Pin, playerClass))
     Cmd = '// ' + Cmd
-    fn_return_value = True
-    return fn_return_value, Cmd
+    _fn_return_value = True
+    return _fn_return_value, Cmd
 
-def __GetPlayerClass(moduleType):
-    fn_return_value = False
-    if (moduleType == 'JQ6500'):
-        fn_return_value = 'JQ6500SoundPlayer'
-    elif (moduleType == 'JQ6500_AA'):
-        fn_return_value = 'JQ6500SoundPlayer'
-    elif (moduleType == 'MP3-TF-16P'):
-        fn_return_value = 'MP3TF16PSoundPlayer'
-    elif (moduleType == 'MP3-TF-16P-NO-CRC'):
-        fn_return_value = 'MP3TF16PNoCRCSoundPlayer'
+def GetPlayerClass(moduleType):
+    _fn_return_value = False
+    _select83 = moduleType
+    if (_select83 == 'JQ6500'):
+        _fn_return_value = 'JQ6500SoundPlayer'
+    elif (_select83 == 'JQ6500_AA'):
+        _fn_return_value = 'JQ6500SoundPlayer'
+    elif (_select83 == 'MP3-TF-16P'):
+        _fn_return_value = 'MP3TF16PSoundPlayer'
+    elif (_select83 == 'MP3-TF-16P-NO-CRC'):
+        _fn_return_value = 'MP3TF16PNoCRCSoundPlayer'
     else:
-        fn_return_value = ''
-    return fn_return_value
+        _fn_return_value = ''
+    return _fn_return_value
 
 def Write_Header_File_Sound_Before_Config(fp):
-    global __SoundLines
+    global SoundLines
     
-    fn_return_value = False
-    if __SoundLines.Count > 0:
-        if __Check_Sound_Duplicates() == False:
-            return fn_return_value
+    _fn_return_value = False
+    if SoundLines.Count > 0:
+        if Check_Sound_Duplicates() == False:
+            return _fn_return_value
         VBFiles.writeText(fp, '// ----- Serial Onboard Sound Makros -----', '\n')
         VBFiles.writeText(fp, '  #include "SoundChannelMacros.h"', '\n')
         VBFiles.writeText(fp, '', '\n')
         Index = 0
-        for key in __SoundLines.Keys:
-            VBFiles.writeText(fp, '  #define SOUND_CHANNEL_' + key + ' ' + Index, '\n')
+        for _idx1 in SoundLines.Keys:
+            proggen.clsNode.Key = _idx1
+            VBFiles.writeText(fp, '  #define SOUND_CHANNEL_' + proggen.clsNode.Key + ' ' + Index, '\n')
             Index = Index + 1
         VBFiles.writeText(fp, '', '\n')
-    fn_return_value = True
-    return fn_return_value
+    _fn_return_value = True
+    return _fn_return_value
 
 def Write_Header_File_Sound_After_Config(fp):
-    global __SoundLines
+    global SoundLines
     
-    fn_return_value = False
+    _fn_return_value = False
     #------------------------------------------------------------------
-    if __SoundLines.Count > 0:
-        if __Check_Sound_Duplicates() == False:
-            return fn_return_value
+    if SoundLines.Count > 0:
+        if Check_Sound_Duplicates() == False:
+            return _fn_return_value
         VBFiles.writeText(fp, '// ----- Serial Onboard Sound -----', '\n')
         VBFiles.writeText(fp, '#ifndef _USE_EXT_PROC', '\n')
         VBFiles.writeText(fp, '  #error _USE_EXT_PROC must be enabled in MobaLebLib, see file \'Lib_Config.h\'', '\n')
         VBFiles.writeText(fp, '#else', '\n')
         VBFiles.writeText(fp, '  // includes for Onboard sound processing', '\n')
-        #If UseFullPacketMode Then                                             ' 19.10.21: Always use the full packed mode because this mode could be used with both types of JQ6500 modules
+        #If UseFullPacketMode Then
+        # 19.10.21: Always use the full packed mode because this mode could be used with both types of JQ6500 modules
         VBFiles.writeText(fp, '#define _SOUNDPROCCESSOR_SEND_FULL_PACKET', '\n')
         #End If
         VBFiles.writeText(fp, '  #include "SoundProcessor.h"', '\n')
@@ -189,7 +193,7 @@ def Write_Header_File_Sound_After_Config(fp):
         VBFiles.writeText(fp, '  #define _ENABLE_EXT_PROC', '\n')
         VBFiles.writeText(fp, '  #endif', '\n')
         VBFiles.writeText(fp, '  #ifndef _SOUND_SERBUFFER_SIZE', '\n')
-        VBFiles.writeText(fp, '  #define _SOUND_SERBUFFER_SIZE ', 15 + __SoundLines.Count * 5, '\n')
+        VBFiles.writeText(fp, '  #define _SOUND_SERBUFFER_SIZE ', 15 + SoundLines.Count * 5, '\n')
         VBFiles.writeText(fp, '  #endif', '\n')
         VBFiles.writeText(fp, '', '\n')
         #     Dim modulesArray As String, playersArray As String
@@ -215,11 +219,12 @@ def Write_Header_File_Sound_After_Config(fp):
         # START_CHANGE
         #ChannelToModuleIndex = Scripting.Dictionary()
         Index = 0
-        for key in __SoundLines.Keys:
-            module = 'SoundProcessor::CreateSoftwareSerial(' + __SoundLines(key)(0) + ', 9600)'
+        for _idx2 in SoundLines.Keys:
+            proggen.clsNode.Key = _idx2
+            module = 'SoundProcessor::CreateSoftwareSerial(' + SoundLines(proggen.clsNode.Key)(0) + ', 9600)'
             if playersArray != '':
                 playersArray = playersArray + ', '
-            playersArray = playersArray + 'new ' + __SoundLines(key)(1) + '(' + Str(Index) + ', ' + module + ')'
+            playersArray = playersArray + 'new ' + SoundLines(proggen.clsNode.Key)(1) + '(' + Str(Index) + ', ' + module + ')'
             Index = Index + 1
         VBFiles.writeText(fp, '  uint8_t serBuffer[_SOUND_SERBUFFER_SIZE];', '\n')
         VBFiles.writeText(fp, '  SoundPlayer* soundPlayers[] {' + playersArray + '};', '\n')
@@ -227,46 +232,48 @@ def Write_Header_File_Sound_After_Config(fp):
         # END_CHANGE
         VBFiles.writeText(fp, '#endif', '\n')
         VBFiles.writeText(fp, '', '\n')
-    fn_return_value = True
-    return fn_return_value
+    _fn_return_value = True
+    return _fn_return_value
 
-def __Check_Sound_Duplicates():
-    fn_return_value = False
+def Check_Sound_Duplicates():
+    global SwitchA_InpCnt,SwitchB_InpCnt,SwitchC_InpCnt,SwitchD_InpCnt
+        
+    _fn_return_value = False
     if M06SW.No_Duplicates_in_two_Lists('LED', M06SW.Serial_PinLst, M06SW.LED_PINNr_List, M02.SF_SERIAL_SOUND_PIN) == False:
-        return fn_return_value
+        return _fn_return_value
     if M06SW.SwitchA_InpCnt:
         if M06SW.No_Duplicates_in_two_Lists('Switch A', M06SW.Serial_PinLst, M06SW.SwitchA_InpLst, M02.SF_SERIAL_SOUND_PIN) == False:
-            return fn_return_value
+            return _fn_return_value
     if M06SW.SwitchB_InpCnt:
         if M06SW.No_Duplicates_in_two_Lists('Switch B', M06SW.Serial_PinLst, M06SW.SwitchB_InpLst, M02.SF_SERIAL_SOUND_PIN) == False:
-            return fn_return_value
+            return _fn_return_value
     if M06SW.SwitchC_InpCnt:
         if M06SW.No_Duplicates_in_two_Lists('Switch C', M06SW.Serial_PinLst, M06SW.SwitchC_InpLst, M02.SF_SERIAL_SOUND_PIN) == False:
-            return fn_return_value
+            return _fn_return_value
     if M06SW.SwitchD_InpCnt:
         if M06SW.No_Duplicates_in_two_Lists('Switch D', M06SW.Serial_PinLst, M06SW.SwitchD_InpLst, M02.SF_SERIAL_SOUND_PIN) == False:
-            return fn_return_value
+            return _fn_return_value
     if M06SW.SwitchB_InpCnt > 0 or M06SW.SwitchC_InpCnt > 0:
         if M06SW.No_Duplicates_in_two_Lists('Switch B/C Clock', M06SW.Serial_PinLst, M06SW.CLK_Pin_Number, M02.SF_SERIAL_SOUND_PIN) == False:
-            return fn_return_value
+            return _fn_return_value
         if M06SW.No_Duplicates_in_two_Lists('Switch B/C Reset', M06SW.Serial_PinLst, M06SW.RST_Pin_Number, M02.SF_SERIAL_SOUND_PIN) == False:
-            return fn_return_value
+            return _fn_return_value
     if M06SW.Read_LDR:
         if M06SW.No_Duplicates_in_two_Lists('LDR_Pin_Number', M06SW.Serial_PinLst, M06SW.LDR_Pin_Number, M02.SF_SERIAL_SOUND_PIN) == False:
-            return fn_return_value
+            return _fn_return_value
     if M06SW.No_Duplicates_in_two_Lists('LED', M06SW.Serial_PinLst, M06SW.LED_PINNr_List, M02.SF_SERIAL_SOUND_PIN) == False:
-        return fn_return_value
-    fn_return_value = True
-    return fn_return_value
+        return _fn_return_value
+    _fn_return_value = True
+    return _fn_return_value
 
 def CheckSoundChannelDefined(Channel):
-    global __SoundLines
+    global SoundLines
     
-    fn_return_value = False
-    if not __SoundLines.Exists(Channel):
+    _fn_return_value = False
+    if not SoundLines.Exists(Channel):
         P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Sound Kanal \'#1#\' ist nicht definiert.' + vbCr + 'Zur Definition muss das Makro ' + str(M02.SF_SERIAL_SOUND_PIN) + ' vor dieser Zeile verwendet werden'), "#1#", Channel), vbCritical, 'Fehler: Soundmodul')
-        return fn_return_value
-    fn_return_value = True
-    return fn_return_value
+        return _fn_return_value
+    _fn_return_value = True
+    return _fn_return_value
 
 # VB2PY (UntranslatedCode) Option Explicit

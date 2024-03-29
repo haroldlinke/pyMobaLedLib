@@ -1,4 +1,4 @@
-Platform dependend parameters;;One Colum per platform, the column header name is the platform key for lookup;;;;;;;;;;T;;C:\Dat\Märklin\Arduino\LEDs_Eisenbahn\Doc\von anderen\Michael Todtenbier\Images\;;;;;;09.08.2019;;;;;;;;;;;;;;;;
+﻿Platform dependend parameters;;One Colum per platform, the column header name is the platform key for lookup;;;;;;;;;;T;;C:\Dat\Märklin\Arduino\LEDs_Eisenbahn\Doc\von anderen\Michael Todtenbier\Images\;;;;;;09.08.2019;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Settings Name;Comment;AM328;ESP32;PICO;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 SPI_Pins;"SPI Pins
@@ -14,7 +14,7 @@ OV_Pins;"Digital output pins + virtual pin
 list must have leading & trailing blanks"; 2 3 4 5 6 7 8 9 13 A0 A1 A2 A3 A4 A5 V ; 0 1 2 3 4 5 12 13 14 15 16 17 18 19 21 22 23 25 26 27 32 33 34 35 36 39 V ; 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 26 27 28 V ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Pu_Pins;"Digital input pins with pull up
 list must have leading & trailing blanks"; 2 3 4 5 6 7 8 9 13 A0 A1 A2 A3 A4 A5 ; 0 1 2 3 4 5 12 13 14 15 16 17 18 19 21 22 23 25 26 27 32 33 ; 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 26 27 28 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LED_Pins;List of Pins for Led Channel 09;6 A4;27 32 16 14 18 19 23 0 17;0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+LED_Pins;List of Pins for Led Channel 0…9;6 A4;27 32 16 14 18 19 23 0 17;0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LDR_Pin;The pin where a light sensor may be attached;A7;35;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 SwitchA_Pins;List of Pins for analog switches;A6;36;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 SwitchB_Pins;List of Button Pins for PushButton modules;A2;34;16;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

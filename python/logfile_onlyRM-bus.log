@@ -1,0 +1,236 @@
+
+12:18:12 - LAN_SET_BROADCASTFLAGS
+12:18:13 - X_SET_TRACK_POWER_ON
+12:18:13 - X_GET_TURNOUT_INFO 
+12:18:13 - X_GET_TURNOUT_INFO 
+12:18:13 - X_GET_TURNOUT_INFO 
+12:18:13 - X_GET_TURNOUT_INFO 
+12:18:13 - X_GET_TURNOUT_INFO 
+12:18:13 - X_GET_TURNOUT_INFO 
+12:18:13 - X_GET_TURNOUT_INFO 
+12:18:13 - X_GET_TURNOUT_INFO 
+12:18:13 - X_GET_TURNOUT_INFO 
+12:18:14 - RMBUS_GETDATA
+12:18:14 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:18:14 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:18:14 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:18:14 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:18:14 - notifyZ21_RMBUS_DATA data_str: 0000
+12:18:14 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:18:21 - X_SET_TURNOUT Adr.100 : 137 Contact 1-activate
+12:18:21 - send_command_to_ARDUINO entry: 100 - 1
+12:18:21 - send_com_to_ARDUINO(COM4): 100 - 1 - @ 100 01 01
+12:18:22 - readline from ARDUINO:b'\xd0'
+12:18:22 - readline from ARDUINO:b'@'
+12:18:22 - readline from ARDUINO:b'\x00'
+12:18:22 - readline from ARDUINO:b'l'
+12:18:22 - SerialThread () got message: JSON:{"RMBUS": "4000"}
+12:18:22 - X_SET_TURNOUT Adr.100 : 129 Contact 1-deactivate
+12:18:22 - send_command_to_ARDUINO entry: 100 - 1
+12:18:22 - send_com_to_ARDUINO(COM4): 100 - 1 - @ 100 01 00
+
+12:18:23 - notifyZ21_RMBUS_DATA: {"RMBUS": "4000"}
+12:18:23 - notifyZ21_RMBUS_DATA 7bit: 4000
+12:18:23 - notifyZ21_RMBUS_DATA data_str: 4000
+12:18:23 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0040000000000000000000
+12:18:28 - X_SET_TURNOUT Adr.100 : 136 Contact 2-activate
+12:18:28 - send_command_to_ARDUINO entry: 100 - 0
+12:18:28 - send_com_to_ARDUINO(COM4): 100 - 0 - @ 100 00 01
+12:18:29 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:18:29 - X_SET_TURNOUT Adr.100 : 128 Contact 2-deactivate
+12:18:29 - send_command_to_ARDUINO entry: 100 - 0
+12:18:29 - send_com_to_ARDUINO(COM4): 100 - 0 - @ 100 00 00
+12:18:30 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:18:30 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:18:30 - notifyZ21_RMBUS_DATA data_str: 0000
+12:18:30 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:18:32 - X_SET_TURNOUT Adr.101 : 137 Contact 1-activate
+12:18:32 - send_command_to_ARDUINO entry: 101 - 1
+12:18:32 - send_com_to_ARDUINO(COM4): 101 - 1 - @ 101 01 01
+12:18:33 - SerialThread () got message: JSON:{"RMBUS": "2000"}
+12:18:33 - X_SET_TURNOUT Adr.101 : 129 Contact 1-deactivate
+12:18:33 - send_command_to_ARDUINO entry: 101 - 1
+12:18:33 - send_com_to_ARDUINO(COM4): 101 - 1 - @ 101 01 00
+12:18:34 - notifyZ21_RMBUS_DATA: {"RMBUS": "2000"}
+12:18:34 - notifyZ21_RMBUS_DATA 7bit: 2000
+12:18:34 - notifyZ21_RMBUS_DATA data_str: 2000
+12:18:34 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0020000000000000000000
+12:18:36 - X_SET_TURNOUT Adr.101 : 136 Contact 2-activate
+12:18:36 - send_command_to_ARDUINO entry: 101 - 0
+12:18:36 - send_com_to_ARDUINO(COM4): 101 - 0 - @ 101 00 01
+12:18:37 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:18:37 - X_SET_TURNOUT Adr.101 : 128 Contact 2-deactivate
+12:18:37 - send_command_to_ARDUINO entry: 101 - 0
+12:18:37 - send_com_to_ARDUINO(COM4): 101 - 0 - @ 101 00 00
+12:18:37 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:18:37 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:18:37 - notifyZ21_RMBUS_DATA data_str: 0000
+12:18:37 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:18:39 - X_SET_TURNOUT Adr.102 : 137 Contact 1-activate
+12:18:39 - send_command_to_ARDUINO entry: 102 - 1
+12:18:39 - send_com_to_ARDUINO(COM4): 102 - 1 - @ 102 01 01
+12:18:40 - SerialThread () got message: JSON:{"RMBUS": "1000"}
+12:18:40 - X_SET_TURNOUT Adr.102 : 129 Contact 1-deactivate
+12:18:40 - send_command_to_ARDUINO entry: 102 - 1
+12:18:40 - send_com_to_ARDUINO(COM4): 102 - 1 - @ 102 01 00
+12:18:40 - notifyZ21_RMBUS_DATA: {"RMBUS": "1000"}
+12:18:40 - notifyZ21_RMBUS_DATA 7bit: 1000
+12:18:40 - notifyZ21_RMBUS_DATA data_str: 1000
+12:18:40 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0010000000000000000000
+12:18:42 - X_SET_TURNOUT Adr.102 : 136 Contact 2-activate
+12:18:42 - send_command_to_ARDUINO entry: 102 - 0
+12:18:42 - send_com_to_ARDUINO(COM4): 102 - 0 - @ 102 00 01
+12:18:43 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:18:43 - X_SET_TURNOUT Adr.102 : 128 Contact 2-deactivate
+12:18:43 - send_command_to_ARDUINO entry: 102 - 0
+12:18:43 - send_com_to_ARDUINO(COM4): 102 - 0 - @ 102 00 00
+12:18:44 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:18:44 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:18:44 - notifyZ21_RMBUS_DATA data_str: 0000
+12:18:44 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:18:46 - X_SET_TURNOUT Adr.103 : 137 Contact 1-activate
+12:18:46 - send_command_to_ARDUINO entry: 103 - 1
+12:18:46 - send_com_to_ARDUINO(COM4): 103 - 1 - @ 103 01 01
+12:18:46 - SerialThread () got message: JSON:{"RMBUS": "0800"}
+12:18:46 - X_SET_TURNOUT Adr.103 : 129 Contact 1-deactivate
+12:18:46 - send_command_to_ARDUINO entry: 103 - 1
+12:18:46 - send_com_to_ARDUINO(COM4): 103 - 1 - @ 103 01 00
+12:18:47 - notifyZ21_RMBUS_DATA: {"RMBUS": "0800"}
+12:18:47 - notifyZ21_RMBUS_DATA 7bit: 0800
+12:18:47 - notifyZ21_RMBUS_DATA data_str: 0800
+12:18:47 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0008000000000000000000
+12:18:48 - X_SET_TURNOUT Adr.103 : 136 Contact 2-activate
+12:18:48 - send_command_to_ARDUINO entry: 103 - 0
+12:18:48 - send_com_to_ARDUINO(COM4): 103 - 0 - @ 103 00 01
+12:18:49 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:18:49 - X_SET_TURNOUT Adr.103 : 128 Contact 2-deactivate
+12:18:49 - send_command_to_ARDUINO entry: 103 - 0
+12:18:49 - send_com_to_ARDUINO(COM4): 103 - 0 - @ 103 00 00
+12:18:50 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:18:50 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:18:50 - notifyZ21_RMBUS_DATA data_str: 0000
+12:18:50 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:18:52 - X_SET_TURNOUT Adr.104 : 137 Contact 1-activate
+12:18:52 - send_command_to_ARDUINO entry: 104 - 1
+12:18:52 - send_com_to_ARDUINO(COM4): 104 - 1 - @ 104 01 01
+12:18:52 - SerialThread () got message: JSON:{"RMBUS": "0400"}
+12:18:52 - X_SET_TURNOUT Adr.104 : 129 Contact 1-deactivate
+12:18:52 - send_command_to_ARDUINO entry: 104 - 1
+12:18:52 - send_com_to_ARDUINO(COM4): 104 - 1 - @ 104 01 00
+12:18:53 - notifyZ21_RMBUS_DATA: {"RMBUS": "0400"}
+12:18:53 - notifyZ21_RMBUS_DATA 7bit: 0400
+12:18:53 - notifyZ21_RMBUS_DATA data_str: 0400
+12:18:53 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0004000000000000000000
+12:18:54 - X_SET_TURNOUT Adr.104 : 136 Contact 2-activate
+12:18:54 - send_command_to_ARDUINO entry: 104 - 0
+12:18:54 - send_com_to_ARDUINO(COM4): 104 - 0 - @ 104 00 01
+12:18:55 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:18:55 - X_SET_TURNOUT Adr.104 : 128 Contact 2-deactivate
+12:18:55 - send_command_to_ARDUINO entry: 104 - 0
+12:18:55 - send_com_to_ARDUINO(COM4): 104 - 0 - @ 104 00 00
+
+12:18:55 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:18:55 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:18:55 - notifyZ21_RMBUS_DATA data_str: 0000
+12:18:55 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:18:56 - X_SET_TURNOUT Adr.105 : 137 Contact 1-activate
+12:18:56 - send_command_to_ARDUINO entry: 105 - 1
+12:18:56 - send_com_to_ARDUINO(COM4): 105 - 1 - @ 105 01 01
+12:18:57 - SerialThread () got message: JSON:{"RMBUS": "0200"}
+12:18:57 - X_SET_TURNOUT Adr.105 : 129 Contact 1-deactivate
+12:18:57 - send_command_to_ARDUINO entry: 105 - 1
+12:18:57 - send_com_to_ARDUINO(COM4): 105 - 1 - @ 105 01 00
+12:18:58 - notifyZ21_RMBUS_DATA: {"RMBUS": "0200"}
+12:18:58 - notifyZ21_RMBUS_DATA 7bit: 0200
+12:18:58 - notifyZ21_RMBUS_DATA data_str: 0200
+12:18:58 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0002000000000000000000
+12:18:59 - X_SET_TURNOUT Adr.105 : 136 Contact 2-activate
+12:18:59 - send_command_to_ARDUINO entry: 105 - 0
+12:18:59 - send_com_to_ARDUINO(COM4): 105 - 0 - @ 105 00 01
+12:18:59 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:18:59 - X_SET_TURNOUT Adr.105 : 128 Contact 2-deactivate
+12:18:59 - send_command_to_ARDUINO entry: 105 - 0
+12:18:59 - send_com_to_ARDUINO(COM4): 105 - 0 - @ 105 00 00
+12:19:00 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:19:00 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:19:00 - notifyZ21_RMBUS_DATA data_str: 0000
+12:19:00 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:19:01 - readline from ARDUINO:b''
+12:19:02 - X_SET_TURNOUT Adr.106 : 137 Contact 1-activate
+12:19:02 - send_command_to_ARDUINO entry: 106 - 1
+12:19:02 - send_com_to_ARDUINO(COM4): 106 - 1 - @ 106 01 01
+12:19:03 - SerialThread () got message: JSON:{"RMBUS": "0100"}
+12:19:03 - X_SET_TURNOUT Adr.106 : 129 Contact 1-deactivate
+12:19:03 - send_command_to_ARDUINO entry: 106 - 1
+12:19:03 - send_com_to_ARDUINO(COM4): 106 - 1 - @ 106 01 00
+12:19:04 - notifyZ21_RMBUS_DATA: {"RMBUS": "0100"}
+12:19:04 - notifyZ21_RMBUS_DATA 7bit: 0100
+12:19:04 - notifyZ21_RMBUS_DATA data_str: 0100
+12:19:04 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0001000000000000000000
+12:19:05 - X_SET_TURNOUT Adr.106 : 136 Contact 2-activate
+12:19:05 - send_command_to_ARDUINO entry: 106 - 0
+12:19:05 - send_com_to_ARDUINO(COM4): 106 - 0 - @ 106 00 01
+12:19:05 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:19:06 - X_SET_TURNOUT Adr.106 : 128 Contact 2-deactivate
+12:19:06 - send_command_to_ARDUINO entry: 106 - 0
+12:19:06 - send_com_to_ARDUINO(COM4): 106 - 0 - @ 106 00 00
+12:19:06 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:19:06 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:19:06 - notifyZ21_RMBUS_DATA data_str: 0000
+12:19:06 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:19:08 - X_SET_TURNOUT Adr.107 : 136 Contact 2-activate
+12:19:08 - send_command_to_ARDUINO entry: 107 - 0
+12:19:08 - send_com_to_ARDUINO(COM4): 107 - 0 - @ 107 00 01
+12:19:09 - X_SET_TURNOUT Adr.107 : 128 Contact 2-deactivate
+12:19:09 - send_command_to_ARDUINO entry: 107 - 0
+12:19:09 - send_com_to_ARDUINO(COM4): 107 - 0 - @ 107 00 00
+12:19:12 - X_SET_TURNOUT Adr.107 : 137 Contact 1-activate
+12:19:12 - send_command_to_ARDUINO entry: 107 - 1
+12:19:12 - send_com_to_ARDUINO(COM4): 107 - 1 - @ 107 01 01
+12:19:12 - SerialThread () got message: JSON:{"RMBUS": "0002"}
+12:19:12 - X_SET_TURNOUT Adr.107 : 129 Contact 1-deactivate
+12:19:12 - send_command_to_ARDUINO entry: 107 - 1
+12:19:12 - send_com_to_ARDUINO(COM4): 107 - 1 - @ 107 01 00
+12:19:13 - notifyZ21_RMBUS_DATA: {"RMBUS": "0002"}
+12:19:13 - notifyZ21_RMBUS_DATA 7bit: 0002
+12:19:13 - notifyZ21_RMBUS_DATA data_str: 0001
+12:19:13 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000010000000000000000
+12:19:16 - X_SET_TURNOUT Adr.107 : 136 Contact 2-activate
+12:19:16 - send_command_to_ARDUINO entry: 107 - 0
+12:19:16 - send_com_to_ARDUINO(COM4): 107 - 0 - @ 107 00 01
+12:19:17 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:19:17 - X_SET_TURNOUT Adr.107 : 128 Contact 2-deactivate
+12:19:17 - send_command_to_ARDUINO entry: 107 - 0
+12:19:17 - send_com_to_ARDUINO(COM4): 107 - 0 - @ 107 00 00
+12:19:18 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:19:18 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:19:18 - notifyZ21_RMBUS_DATA data_str: 0000
+12:19:18 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+12:19:20 - X_SET_TURNOUT Adr.108 : 136 Contact 2-activate
+12:19:20 - send_command_to_ARDUINO entry: 108 - 0
+12:19:20 - send_com_to_ARDUINO(COM4): 108 - 0 - @ 108 00 01
+12:19:21 - X_SET_TURNOUT Adr.108 : 128 Contact 2-deactivate
+12:19:21 - send_command_to_ARDUINO entry: 108 - 0
+12:19:21 - send_com_to_ARDUINO(COM4): 108 - 0 - @ 108 00 00
+12:19:23 - X_SET_TURNOUT Adr.108 : 137 Contact 1-activate
+12:19:23 - send_command_to_ARDUINO entry: 108 - 1
+12:19:23 - send_com_to_ARDUINO(COM4): 108 - 1 - @ 108 01 01
+12:19:24 - SerialThread () got message: JSON:{"RMBUS": "0001"}
+12:19:24 - X_SET_TURNOUT Adr.108 : 129 Contact 1-deactivate
+12:19:24 - send_command_to_ARDUINO entry: 108 - 1
+12:19:24 - send_com_to_ARDUINO(COM4): 108 - 1 - @ 108 01 00
+12:19:25 - notifyZ21_RMBUS_DATA: {"RMBUS": "0001"}
+12:19:25 - notifyZ21_RMBUS_DATA 7bit: 0001
+12:19:25 - notifyZ21_RMBUS_DATA data_str: 8000
+12:19:25 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0080000000000000000000
+12:19:26 - X_SET_TURNOUT Adr.108 : 136 Contact 2-activate
+12:19:26 - send_command_to_ARDUINO entry: 108 - 0
+12:19:26 - send_com_to_ARDUINO(COM4): 108 - 0 - @ 108 00 01
+12:19:26 - SerialThread () got message: JSON:{"RMBUS": "0000"}
+12:19:27 - X_SET_TURNOUT Adr.108 : 128 Contact 2-deactivate
+12:19:27 - send_command_to_ARDUINO entry: 108 - 0
+12:19:27 - send_com_to_ARDUINO(COM4): 108 - 0 - @ 108 00 00
+12:19:27 - notifyZ21_RMBUS_DATA: {"RMBUS": "0000"}
+12:19:27 - notifyZ21_RMBUS_DATA 7bit: 0000
+12:19:27 - notifyZ21_RMBUS_DATA data_str: 0000
+12:19:27 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
