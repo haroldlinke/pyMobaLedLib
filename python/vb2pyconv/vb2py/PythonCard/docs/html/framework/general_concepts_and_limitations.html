@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../PythonCard.css" type="text/css" />
+  <title>Framework Overview - General Concepts and Limitations</title>
+</head>
+  <body>
+<div id="banner">
+<h1>Framework Overview - General Concepts and Limitations</h1>
+</div>
+<?php include "../sidebar.php" ?>
+<div id="content">
+<p>Updated: March 31, 2006 for release 0.8.2</p>
+
+<p>I'll cover the main points of the PythonCard framework from a user point of view.</p>
+
+<h2>Environment</h2>
+<p>PythonCard does not have an Integrated Development Environment (IDE) yet. 
+The stated intent all along was to build a framework and then later build an
+environment on top of the framework that represents the best aspects of
+other environments like HyperCard, Visual Basic, Delphi, etc.</p>
+
+<p>PythonCard does 
+have a layout editor (<a href="../resource_editor_overview.html">resourceEditor</a>) and 
+source code editor (<a href="http://pythoncard.sourceforge.net/tools/codeEditor.html">codeEditor</a>) 
+to help users build applications.</p>
+
+<p>I would also like to support building apps with the framework without using
+the environment since that will appeal to a large number of Python users that want to use 
+their favorite editors and tools instead of what ships with PythonCard.
+The complication of working outside an environment is that the
+user/programmer is responsible for keeping resources, source code, and
+application data synchronized and there is more room for user/programmer
+mistakes with names and ids.</p>
+
+<h2>I digress...</h2>
+<blockquote>
+<p>I will reiterate what Andy Todd stated in an early mailing list post that KISS 
+(Keep It Simple Stupid) should be of primary
+importance. That goes beyond the current state of the framework topic of
+this message, but the KISS motto got us to where we are now. Dan Winkler has
+told me in the past that one of Bill Atkinson's (QuickDraw, MacPaint,
+HyperCard, etc.) strengths was knowing when to NOT add a feature. If you
+think keeping things simple is easy, look at the vast majority of complaints
+normal users have about using Windows or Unix or even the Mac these days.
+Look at the bloat that has ruined almost every application I can think of.</p>
+
+<p>My own bias is that shorter programs are simpler to write and maintain. I
+much prefer multiple highly focused apps with short learning curves to one
+big multi-purpose app.</p>
+</blockquote>
+
+<h2>Ids</h2>
+<p>All objects in PythonCard have a name that is unique at a given level of the
+component hierarchy. The name is used as the unique id by the framework
+internally and almost all references are done via a dictionary lookup, so
+they are both fast and simple to use. Numerical object ids are not exposed
+to the user code. The framework does not currently enforce unique names, 
+but we will likely add a runtime exception to warn the programmer when they occur.</p>
+
+<h2>Components</h2>
+<p>The components themselves are kept in a dictionary called 'components' that has
+some dot notation capabilities. See the <a href="components.html">Components</a> overview 
+of the sample apps for examples of using the background components dictionary.</p>
+
+<h2>Component tab traversal and order</h2>
+<p>The component tab traversal order is determined by the order the components are 
+defined in the resource file. The first component defined in the list is the 
+first component tabbed to and it will always be in front of the second, third, etc. 
+components even if the components overlap. Look at any resource
+file and then observe the behavior when you run the app. The resourceEditor
+is a good way to experiment with how overlapping components look and behave.</p>
+
+<h2>Printing</h2>
+<p>PythonCard supports printing via the wxHtmlEasyPrinting class in wxPython. An unwrapped
+example of using wxHtmlEasyPrinting is shown in the textEditor sample. If the
+HtmlWindow component can display the formatted HTML you would like to print,
+then that is a very easy way to get cross-platform printing in PythonCard.</p>
+
+<h2>Windows (Backgrounds)</h2>
+<p>The app window has only one style and does not support scrolling. Internally, 
+the Background class is the main app window. In wxPython terms it is a wxFrame 
+that contains a wxPanel. The wxPanel provides the automatic tab traversal for 
+components inside the window. The resourceEditor sample shows how you can
+use multiple windows in your app.</p>
+
+<p>We may add support for scrolling windows and other window styles before release 1.0 of PythonCard.</p>
+
+<h2>PythonCard is not HyperCard</h2>
+<p>PythonCard apps are rough equivalents of single card, single
+background, HyperCard stacks. There is no transparent persistent storage
+mechanism in the framework yet. Some of the samples do provide their own storage
+mechanisms and the intent of the samples is to explore a way to generalize
+at least a class or set of classes with get/set record and get/set field
+that can be used by any PythonCard app. By making the access fairly generic
+we're hoping that a variety of backend solutions could be plugged in rather
+than requiring one particular solution such as ZODB. See the addresses, companies, 
+flatfileDatabase, and textIndexer samples for examples of some HyperCard-like data apps.</p>
+
+<p>In many ways, PythonCard applications are currently more akin to Visual Basic. Paul Paterson is 
+even working on a project called <a href="http://vb2py.sourceforge.net/">vb2py</a> that 
+converts Visual Basic projects to Python and one of the targets is PythonCard.
+</p>
+
+<h2>wxPython</h2>
+<p>In some cases, limitations in PythonCard are caused by limitations in
+wxWidgets/wxPython. It is also true that PythonCard issues are often really
+wxWidgets issues and it is necessary to stay abreast of wxWidgets and
+wxPython if you want to work on the framework itself or use features of
+wxPython not provided by PythonCard.</p>
+
+<p>The prototype framework attempts to hide wxPython from user code. The only
+time wxPython is exposed is where a feature is not currently available in
+the PythonCard framework. If a sample has "from wxPython import wx" then
+direct access was necessary. This is typically how new features are tested
+prior to being added to the framework. One interesting aspect of how
+PythonCard works now is that it in many cases it is easy to intermingle
+wxPython and PythonCard code, so from that standpoint PythonCard can be seen
+as a way of simplifying the use of wxPython.</p>
+
+<hr>| <a href="general_concepts_and_limitations.html">General Concepts and Limitations</a> | <a href="components.html">Components</a> | <a href="dialogs.html">Dialogs</a> | <a href="events_and_handlers.html">Events and Handlers</a> | <a href="menus.html">Menus</a> | <a href="resource_files.html">Resource Files</a> | <a href="runtime_tools.html">Runtime Tools</a> <hr>    <?php include "../footer.php" ?>
+    <p>$Revision: 1.6 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:26 $</p>
+</div> <!-- end of content -->
+</body>
+</html>

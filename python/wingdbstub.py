@@ -38,9 +38,9 @@ else:
 
 # This should be the full path to your Wing installation.  On macOS, use 
 # the full path of the Wing application bundle, for example 
-# /Applications/WingPro.app.  When set to None, the environment variable 
+# /Applications/Wing Pro.app.  When set to None, the environment variable 
 # WINGHOME is used instead.  
-WINGHOME = r"C:\Program Files (x86)\Wing Pro 8"
+WINGHOME = r"C:\Program Files\Wing Pro 10"
 
 #------------------------------------------------------------------------
 # Optional configuration values:  The named environment variables, if set, 
@@ -132,6 +132,10 @@ kPWFileName = 'wingdebugpw'
 # the IDE.
 # (WINGDB_EXITONFAILURE environment variable)
 kExitOnFailure = 0
+
+# Whether to use legacy tracer core with Python 3.12+
+# (WINGDB_USELEGACYTRACERCORE environment variable)
+kUseLegacyTracerCore = False
 
 #------------------------------------------------------------------------
 # Find Wing debugger installation location
@@ -267,6 +271,11 @@ if (not kWingDebugDisabled and debugger is None and
       pwfile_name = os.environ['WINGDB_PWFILENAME']
     else:
       pwfile_name = kPWFileName
+      
+    # Use legacy tracer core get read from the environment
+    if 'WINGDB_USELEGACYTRACERCORE' not in os.environ:
+      if kUseLegacyTracerCore:
+        os.environ['WINGDB_USELEGACYTRACERCORE'] = '1'
     
     # Set up temporary log for errors from merge importer Setup
     class CTmpLog:

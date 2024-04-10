@@ -82,6 +82,8 @@ def CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, posi
     
     newcontrolvalue = crc4<<4 | (controlValue & 0x0F)
     
+    newcontrolvalue = newcontrolvalue & 0xFF
+    
     return newcontrolvalue
 
 def CalcCrc4(crc, v_byte, bitlen):
@@ -121,4 +123,5 @@ def CalculateControlValuewithChecksum (controlValue, positionValueHigh, position
     
     newcontrolvalue = crc4<<4 | (controlValue & 0x0F)
     
+    newcontrolvalue = newcontrolvalue & 0xFF
     return newcontrolvalue

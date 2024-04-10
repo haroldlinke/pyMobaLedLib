@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>c</string>
+				<string>cgi</string>
+				<string>c++</string>
+				<string>cp</string>
+				<string>cpp</string>
+				<string>cs</string>
+				<string>css</string>
+				<string>csv</string>
+				<string>dtd</string>
+				<string>h</string>
+				<string>htm</string>
+				<string>html</string>
+				<string>log</string>
+				<string>plist</string>
+				<string>py</string>
+				<string>python</string>
+				<string>pyw</string>
+				<string>sgml</string>
+				<string>sh</string>
+				<string>shtm</string>
+				<string>shtml</string>
+				<string>text</string>
+				<string>txt</string>
+				<string>xhtml</string>
+				<string>xml</string>
+				<string>xsl</string>
+				<string>xslt</string>
+				<string>yaml</string>
+				<string>*</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/plain</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Python Module</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>TEXT</string>
+				<string>****</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>CodeEditor</string>
+	<key>CFBundleName</key>
+	<string>CodeEditor</string>
+	<key>CFBundleIdentifier</key>
+	<string>CodeEditor</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleGetInfoString</key>
+	<string>0.8</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.8</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>0.8 (v1.124)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+</dict>
+</plist>

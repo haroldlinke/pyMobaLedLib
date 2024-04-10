@@ -1,0 +1,83 @@
+{'type':'CustomDialog',
+    'name':'dlgDbLogin',
+    'title':'Database Login',
+    'position':(151, 257),
+    'size':(375, 200),
+    'components': [
+ 
+{'type':'StaticText', 
+    'name':'lblDbType', 
+    'position':(5, 5), 
+    'text':'Database', 
+    },
+
+{'type':'Choice', 
+    'name':'choice', 
+    'position':(110, 0), 
+    'items':['MySQL', 'Oracle', 'Gadfly', 'MetaKit', 'PySQLite', 'PySQLite2', 'PostgreSQL', 'CSV'], 
+    'stringSelection':'MySQL', 
+    },
+
+{'type':'StaticText', 
+    'name':'lblUsername', 
+    'position':(5, 50), 
+    'text':'Username', 
+    },
+
+{'type':'TextField', 
+    'name':'txtUsername', 
+    'position':(110, 50), 
+    'size':(100, -1), 
+    },
+
+{'type':'StaticText', 
+    'name':'lblPassword', 
+    'position':(5, 100), 
+    'text':'Password', 
+    },
+
+{'type':'PasswordField', 
+    'name':'txtPassword', 
+    'position':(110, 100), 
+    'size':(100, -1), 
+    },
+
+{'type':'StaticText', 
+    'name':'lblDatabase', 
+    'position':(5, 150), 
+    'text':'Database', 
+    },
+
+{'type':'TextField', 
+    'name':'txtDatabase', 
+    'position':(110, 150), 
+    'size':(100, -1), 
+    'toolTip':'Database name', 
+    },
+
+{'type':'Button', 
+    'id':5100, 
+    'name':'btnConnect', 
+    'position':(275, 4), 
+    'size':(80, -1), 
+    'default': 1,
+    'label':'Connect', 
+    },
+
+{'type':'Button', 
+    'id':5101, 
+    'name':'btnCancel', 
+    'position':(275, 50), 
+    'size':(80, -1), 
+    'label':'Cancel', 
+    },
+
+{'type':'Button', 
+    'name':'btnFile', 
+    'position':(275, 96), 
+    'label':'File...', 
+    'visible':0, 
+    },
+
+] # end components
+} # end CustomDialog

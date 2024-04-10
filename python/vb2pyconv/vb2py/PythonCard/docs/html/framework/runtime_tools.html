@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../PythonCard.css" type="text/css" />
+  <title>Framework Overview - Runtime Tools</title>
+</head>
+  <body>
+<div id="banner">
+<h1>Framework Overview - Runtime Tools</h1>
+</div>
+<?php include "../sidebar.php" ?>
+<div id="content">
+<p>Updated: March 31, 2006 for release 0.8.2</p>
+
+<p>PythonCard supports the following runtime tools (command-line switch in
+parens).</p>
+
+<pre>
+  Debug            (-d) <- Enable a debug menu, but don't show any windows.
+  Log              (-l)
+  Message Watcher  (-m)
+  Namespace Viewer (-n)
+  Property Editor  (-p)
+  <a href="../shell.html">Shell</a>            (-s)
+</pre>
+
+<p>The Log facility is defined in log.py. The other runtime tools or their
+wrappers are in debug.py. All of the runtime tool windows are children of
+the parent app window, so they don't show up on the taskbar under Windows. In addition, if
+one of the windows is created at startup, then all of the tools are
+initialized and available via the Debug menu, otherwise they are not
+initialized or available and apps don't incur any startup or memory overhead
+from the runtime tools.</p>
+
+<p>All of the runtime windows are done in raw wxPython and their events will
+not interfere or show up in the main app event loop. It would be preferable
+for the windows to be defined just like other PythonCard
+backgrounds/windows, to simplify controlling them from a PythonCard app and
+to help with their longer-term maintenance.</p>
+
+<p>The runtime tool window positions, sizes, and whether they are shown by
+default is defined in the pythoncard_config.txt file. You can save your settings to 
+pythoncard_config.txt from the Debug menu.</p>
+
+<p>You can redirect stdout (print statements) to the shell and back to the
+console at any time while an app is running.</p>
+
+<p>The Namespace Viewer and Shell are provided by PyCrust which is a standard part
+of the wxPython distribution and not part of the PythonCard framework. 
+The Namespace Viewer shows the local application namespace.</p>
+
+<p>The Message Watcher shows all of the events generated and handled by components
+in PythonCard. Unused events are shown in parens (). Idle events are not shown.</p>
+
+<p>The Property Editor allows editing of component attributes (properties). Only
+those attributes that are read-only can't be changed and usually that is
+because the attribute can only be set during initialization. The Property
+Editor in the resourceEditor is modeled on the runtime Property Editor, but
+is actually just another PythonCard background and provides more control than
+the runtime Property Editor, which is why it has a slightly different name, 
+"resourceEditor Property Editor".</p>
+
+<p>The <a href="../shell.html">Shell</a> is the most powerful way that you can interact with a PythonCard 
+application at runtime. The shell uses the Python interpreter, so all the things
+you can do at the Python interactive prompt at the command-line or in an IDE
+like IDLE can be done in a PythonCard app at runtime.</p>
+
+<p>The shell automatically loads a series of commands when it starts up:</p>
+
+<pre>
+shell.autoCompleteIncludeMagic = True
+shell.autoCompleteIncludeSingle = False
+shell.autoCompleteIncludeDouble = False
+shell.autoCompleteWxMethods = False
+
+import os
+import sys
+# workaround for absolute pathnames
+# in sys.path (see model.py)
+if sys.path[0] not in ('', '.'):
+    sys.path.insert(0, '')
+
+import wx
+from PythonCard import dialog, util
+bg = pcapp.getCurrentBackground()
+self = bg
+comp = bg.components
+</pre>
+
+<p>These commands are in a pycrustrc.py file in the framework directory. You can 
+also have a pycrustrc.py file in a PythonCard application directory (see the
+turtle sample). There have been numerous messages on the list showing how to
+add and interact with components at runtime. You can also define methods at
+<a href="http://pythoncard.sourceforge.net/text/addmethod.txt">runtime</a>.</p>
+  
+
+<p>The <a href="../shell.html">Shell</a> supports command-completion and tool tips, so it is very nice for
+interactive programming, learning and testing PythonCard. Again, the turtle
+sample is a good example of using the shell. Since the shell is provided via
+PyCrust, most of these features aren't limited to just PythonCard, but
+PythonCard probably makes the most and best use of PyCrust right now.</p>
+
+<hr>| <a href="general_concepts_and_limitations.html">General Concepts and Limitations</a> | <a href="components.html">Components</a> | <a href="dialogs.html">Dialogs</a> | <a href="events_and_handlers.html">Events and Handlers</a> | <a href="menus.html">Menus</a> | <a href="resource_files.html">Resource Files</a> | <a href="runtime_tools.html">Runtime Tools</a> <hr>    <?php include "../footer.php" ?>
+    <p>$Revision: 1.4 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:26 $</p>
+</div> <!-- end of content -->
+</body>
+</html>

@@ -69,6 +69,7 @@ import os
 #import queue
 import time
 import logging
+import urllib
 #import concurrent.futures
 #import random
 #import webbrowser
@@ -83,6 +84,29 @@ VERY_LARGE_FONT = ("Verdana", 14)
 SMALL_FONT= ("Verdana", 8)
 
 BUTTONLABELWIDTH = 10
+
+def check_for_existing_messages(mode=""):
+    try:
+        currURL = "http://www.hlinke.de/files/pyMobaLedLibMessage.html"
+        # Assign the open file to a variable
+        webFile = urllib.request.urlopen(currURL)
+        html_message = str(webFile.read())
+    except:
+        html_message = ""
+    
+    if mode !="":
+        # check if there is a mode specific message available
+        try:
+            currURL = "http://www.hlinke.de/files/pyMobaLedLibMessage"+ mode+".html"
+            # Assign the open file to a variable
+            webFile = urllib.request.urlopen(currURL)
+            # Read the file contents to a variable
+            html_message = str(webFile.read())
+        except:
+            pass
+        
+    html_message = html_message[2:len(html_message)-1]
+    return html_message
             
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -107,9 +131,10 @@ class StartPage(tk.Frame):
         label = ttk.Label(title_frame, text=self.title, font=LARGE_FONT)
         label.pack(padx=5,pady=(5,5))
 
-        config_frame = self.controller.create_macroparam_frame(self.main_frame,self.tabClassName, maxcolumns=4,startrow =1,style="CONFIGPage")        
-
+        config_frame = self.controller.create_macroparam_frame(self.main_frame,self.tabClassName, maxcolumns=4,startrow =1,style="CONFIGPage")
+        
         text_frame = ttk.Frame(self.main_frame,relief="ridge", borderwidth=2)
+
         #text = macrodata.get("Ausführliche Beschreibung","")
         
         photo_filename = macrodata.get("Photo","")
@@ -162,6 +187,11 @@ class StartPage(tk.Frame):
         text_frame.grid(row=2,column=0,padx=10, pady=0,sticky="nesw")
         text_frame.grid_columnconfigure(1,weight=1)
         text_frame.grid_rowconfigure(0,weight=1)
+        
+        html_message=check_for_existing_messages(mode="")
+        if html_message != "":
+            html_label = tk.Label(self.main_frame,text=html_message,height=1,width=200,borderwidth=2,relief="ridge",)                
+            html_label.grid(row=3, column=0, pady=0, padx=10,sticky=("nesw"))
         # place widgets in text_frame => text1,text:widget, text_scroll
         #text1.pack(side=tk.LEFT,expand=0)
         #text_widget.pack(side=tk.LEFT,fill=tk.BOTH,padx=10,pady=(10,0))

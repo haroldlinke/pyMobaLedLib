@@ -272,7 +272,7 @@ class SerialMonitorPage(tk.Frame):
     
     def start_process_serial(self):
         global ThreadEvent
-        print("SerialMonitorPage: start_process_serial")
+        logging.debug("SerialMonitorPage: start_process_serial")
         ThreadEvent = threading.Event()
         ThreadEvent.set()
         time.sleep(2)
@@ -353,8 +353,8 @@ class ReadLine:
                         return r
                 self.buf.extend(data)
         except BaseException as e:
-            logging.debug("Readline exception")
-            logging.debug(e)
+            logging.debug("SerialMonitorPage: Readline exception")
+            logging.debug(e, exc_info=True) 
             traceback.print_exc()
             logging.debug("------------------")
             result = ""

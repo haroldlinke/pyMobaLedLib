@@ -1,0 +1,65 @@
+Change log
+
+2002-03-01
+removed methods such as fd() for forward and simply aliased them in the
+__init__ method of AbstractTurtle like this:
+    self.fd = self.forward
+
+2001-12-26
+added ChaosScript1Fastest.txt to show of drawPointList()
+
+2001-10-14
+turtle sample revision to match new turtle.py module in framework
+removed aTurtle.py, wxTurtle.py, and wxTurtleChaos.py
+added ChaosScript1Direct.txt to show using the BitmapCanvas draw
+  methods directly, removed ChaosScript2.txt
+modified various scripts to use autoRefresh = 0 to improve performance
+  madness.txt slows down dramatically if autoRefresh = 1 but I left
+  madness.txt as is for now
+
+
+2001-08-30
+add line method
+    line(x1, y1, x2, y2)
+    line doesn't impact the turtle position
+added statusBar to test_turtle window
+    and elapsed drawing time is now displayed in the status bar
+
+2001-08-08
+added a TurtleDC class which saves the underlying panel size
+    so that when the window is resized, the center point (home)
+    for the turtle can be updated
+added doc strings to all methods in aTurtle.py and wxTurtle.py
+drawTurtle renamed to _drawTurtle
+degrees and radians renamed to _degrees and _radians
+removed PenUp, PenDown, up and down methods
+    fixed scripts using these deprecated methods
+
+2001-08-03
+Spent a half hour "porting" it over to PythonCard. Bye bye tkinter version.
+
+2001-06-15
+Made additions and fixed some bugs in automata.txt. automata.txt which displays some one-dimensional binary cellular automata can now display R1 and R2 based rules, can be set to wrap, and Wolfram format rule patterns can be used, which simplifies trying rules that have already been discovered.
+
+2001-06-14
+I started changing method names to Python naming conventions so showTurtle instead of showturtle or ShowTurtle or SHOWTURTLE. I'm leaning towards using all lowercase for abbreviations, so the abbreviated form of showTurtle is st.
+
+I made some changes and additions to the documentation. I created a "FAQ.txt" file which is currently empty, a "bugs.txt" file for tracking bugs and a "file descriptions.txt" file that describes the modules, applications, and scripts contained in the current distribution and an "installation.txt" file. Those sections were removed from the "readme.txt" file.
+
+Added showTurtle (st), hideTurtle (ht), and the necessary logic and method (drawTurtle, turtleDelay) to support drawing the turtle and keeping it from erasing or corrupting the underlying image being drawn. This impacted the following methods: left, setHeading, color, width, _goto. plot is not impacted since it doesn't currently impact the turtle position or turtle heading (angle). Drawing with the turtle visible has not been extensively tested. turtleDelay was added so that drawing could be slowed down based on user preference; turtleDelay uses the time.sleep method, so fractions of a second such as .01 are acceptable. The added functionality to support showTurtle and hideTurtle has very little impact on overall drawing speed when the turtle is not visible.
+
+The tkTurtle support for drawing the turtle currently has the same functionality as Guido's turtle.py in the Python Standard Library. Drawing a separate turtle as in wxTurtle appears to eat too many resources, so until I figure out a fix, the old-style arrow while drawing will be used.
+
+Changed how the pen is handled in wxTurtle in order to support attributes other than color for each turtle pen. Added setBackColor (setbc), setPenColor (setpc), and width methods.
+
+2001-06-13
+Added madness.txt and generalPlot.txt scripts
+Fixed the invalid parameter list in the lineTo method in aTurtle.py.
+Added changes.txt, a change log to track changes between releases
+
+2001-06-11
+Posted the first public release to http://www.semi-retired.com/python/turtle/
+
+
+Revision: $Revision: 1.8 $
+Date:     $Date: 2002/03/01 22:12:29 $

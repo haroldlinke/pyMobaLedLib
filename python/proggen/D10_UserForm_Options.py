@@ -422,7 +422,7 @@ class CUserForm_Options:
                 PG.global_controller.restart()
             
         except BaseException as e:
-            Debug.Print("Update_MobLaedLib exception:",e)
+            Debug.Print("Update_MobaLedLib exception:",e)
             P01.MsgBox(M09.Get_Language_Str('Fehler beim Download oder Installieren?'),vbInformation, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib'))
    
         P01.Unload(F00.StatusMsg_UserForm)

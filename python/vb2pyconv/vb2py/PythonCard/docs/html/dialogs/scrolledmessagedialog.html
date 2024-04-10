@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+                                                       
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+                                                       
+  <meta name="author" content="Dan Shafer">
+  <title>Scrolled Message Dialog</title>
+   
+</head>
+  <body>
+                           
+<h1>Scrolled Message Dialog</h1>
+              <img height="300" width="500"
+ alt="Scrolled Message Dialog Sample" src="images/dialogsfig12.png">
+               <br>
+              <br>
+                           
+<h2>Creating the Dialog</h2>
+              Create a Scrolled Message Dialog by calling dialog.scrolledMessageDialog 
+   with   the three arguments shown in the following table.<br>
+              <br>
+                           
+<table cellpadding="2" cellspacing="2" border="1" width="80%">
+                <tbody>
+                  <tr>
+                     <td valign="top"><b>Argument</b><br>
+                    </td>
+                    <td valign="top"><b>Data type/notes</b><br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">self<br>
+                     </td>
+                    <td valign="top">the window (background) that is the
+parent    for   the  dialog<br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">message<br>
+                    </td>
+                    <td valign="top">quoted string containing the text to
+be displayed in the scrolling dialog by default<br>
+                     </td>
+                  </tr>
+    <tr>
+      <td valign="top">title<br>
+      </td>
+      <td valign="top">quoted string containing the text to appear in the
+dialog's title bar<br>
+      </td>
+    </tr>
+                                                                        
+                          
+  </tbody>              
+</table>
+<br>
+Most often, this dialog is used not with an explicit string passed as the
+second argument but rather with the contents of a file. The source code for
+this sample shows you how you can evaluate the third argument to the constructor
+method and, if it contains a valid file name, open that file and read its
+contents into the message variable for display. <br>
+<br>
+              <b>Example:<br>
+              <br>
+              </b>Above dialog was created with this line of code:<br>
+              <br>
+             <code>result = dialog.scrolledMessageDialog(self, message, filename)</code><br>
+     <br>
+In the sample code that launches and handles the above dialog, you will find
+the following lines of code which determine what will be displayed. Here,
+the name of the file "dialogs.py" is hard coded into the program for simplicity's
+sake but it is easy to see how you would handle the parsing of the file name
+in the first line of this fragment if it were supplied as a string in the
+third argument of the constructor, for example.<br>
+<br>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+base, ext = os.path.splitext(os.path.split(sys.argv[0])[-1])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; filename
+= base + ".py"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if os.path.exists(filename):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+f = open(filename, "r")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+msg = f.read()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+msg = "Can't find the file dialogs.py"</code><br>
+<h2>Interacting With the Dialog</h2>
+              You will not likely have much interaction with the scrolledMessageDialog
+component because it merely displays information to the user, supplies only
+an OK button, and returns no value in the result variable. It returns "accepted"
+but since there is no real difference between the user clicking the OK button
+(in which case accepted has a value of True) or the window's close button (in
+which case accepted has a value of False), it is of little value.<br>
+<br>
+             <b>Example:<br>
+             <br>
+          </b>   The sample dialog shown at the top of this page returns
+the   following    results if the user clicks the "OK" button to dismiss
+it.<br>
+<br>
+result:<br>
+accepted: True<br>
+             <br>
+              &nbsp; <br>
+              <br>
+              <br>
+                <br>
+            <br>
+            <br>
+      <br>
+    <br>
+ 
+</body>
+</html>

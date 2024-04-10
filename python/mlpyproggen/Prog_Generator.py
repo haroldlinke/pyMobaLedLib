@@ -135,6 +135,7 @@ class Prog_GeneratorPage(tk.Frame):
         tk.Frame.__init__(self,parent)
         self.controller = controller
         set_global_controller(controller)
+        self.controller.set_statusmessage("Erstelle ProgramGenerator Seite ...",fg="green")
         self.default_font        = self.controller.defaultfontnormal
         self.default_boldfont    = (self.default_font[0],self.default_font[1],"bold")
         self.default_smallfont   = self.controller.defaultfontsmall
@@ -143,13 +144,15 @@ class Prog_GeneratorPage(tk.Frame):
         datasheet_formating = { "HideCells" : ("A1:C1", "E1"), #((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16)),
                                 "ProtectedCells"  : (("1:2","M:Q") ),
                                 "ColumnWidth"     : (5,17,17,34,17,17,60,34,34,17,60,60,17,17,17),
+                                "ColumnAlignment" : {"c": ("B")
+                                                     },                                 
                                 "left_click_callertype": "cell",
-                                "FontColor"       : {"1": {
-                                                            "font"     : ("Wingdings",10),
-                                                            "fg"       : "#000000",
-                                                            "bg"       : "#FFFFFF",
-                                                            "Cells"    : ("B", ),
-                                                            },                                
+                                "FontColor"       : {#"1": {
+                                                     #       "font"     : ("Wingdings",10),
+                                                     #       "fg"       : "#000000",
+                                                     #       "bg"       : "#FFFFFF",
+                                                     #       "Cells"    : ("B", ),
+                                                     #       },                                
                                                      "2": {
                                                             "font"     : self.default_smallfont,
                                                             "fg"       : "#FFFF00",
@@ -549,8 +552,8 @@ class Prog_GeneratorPage(tk.Frame):
                 try:
                     self.arduinoMonitorPage.add_text_to_textwindow(output.decode('utf-8').strip())
                 except BaseException as e:
-                    logging.debug(e)
-                    logging.debug("ERROR: Write_stdout_to_text_window: %s",output)
+                    logging.debug(e, exc_info=True) 
+                    logging.debug("ProgGenerator - ERROR: Write_stdout_to_text_window: %s",output)
                     
                     pass            
             
@@ -696,7 +699,7 @@ class Prog_GeneratorPage(tk.Frame):
             self.continue_loop=True
             self.write_stdout_to_text_window()
         except BaseException as e:
-            #logging.error("Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
+            logging.error("ProgGenerator - Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + self.startfile[0]+ "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")    
@@ -753,7 +756,7 @@ class Prog_GeneratorPage(tk.Frame):
         except BaseException as e:
             #self.Stop_Compile_Time_Display()
             #P01.Unload(F00.StatusMsg_UserForm)
-            logging.debug("execute_shell_cmd:"+e)
+            logging.debug("ProgGenerator - execute_shell_cmd:"+e)
             #logging.error("Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + "\n",highlight="Error")
@@ -768,7 +771,7 @@ class Prog_GeneratorPage(tk.Frame):
             self.continue_loop=True
             self.write_stdout_to_text_window()
         except BaseException as e:
-            #logging.error("Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
+            logging.error("ProgGenerator - Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + self.startfile[0]+ "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")

@@ -1,0 +1,7 @@
+Building a Windows EXE using 'py2exe'.
+
+All you have to do, once everything is installed, is just type:
+
+c:\path\to\tr> python setup.py py2exe -w --icon tr.ico --excludes=Image -O1
+
+in the PythonCard/samples/textRouter directory.

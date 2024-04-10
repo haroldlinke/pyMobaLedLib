@@ -72,7 +72,7 @@ def Select_GotoAct(ExpOutCnt=VBMissingArgument):
                 Description = _with53.Cells(SelRow, SM_ShrtD_COL)
             Res = Proc_General(Macro, Description)
             if Res != '':
-                X02.RangeDict['Goto_Aktivierung'] = Res
+                X02.RangeDict['Goto_Aktivierung'] = str(Res)
                 _fn_return_value = True
     if not M02.Last_SelectedCell is None:
         if M02.Last_SelectedCell.Worksheet.Name != X02.ActiveSheet.Name:

@@ -1,0 +1,140 @@
+Kevin Altis
+altis@semi-retired.com
+2001-06-10
+
+---
+BYTE magazine
+November 1982
+p. 282 - 288
+
+I haven't found a comprehensive list of turtle graphic commands online yet, so any pointers would be appreciated. The problem with turtle graphic commands is that at least back in 1982, there wasn't a standard, so some names differed and in some cases the functionality differed as well between implementations. In addition, other turtle graphics libraries done for other languages expanded or created their own command variations.
+
+BACKGROUND - returns the color number of the current background. (SETBG) Also sets the background to a given color.
+
+BACKWARD (BACK, BK) - moves the turtle backward
+
+CLEAN - clears the screen, but doesn't move the turtle
+
+CLEARSCREEN (CLS, DRAW) - clears screen and initializes turtle
+
+COLOR - returns the color number of the sprite currently being talked to
+
+DOT - puts a dot at the indicated point on the turtle graphics screen
+
+FENCE (NOWRAP) - tells the turtle to draw without wraparound - gives error message if turtle tries to plot offscreen
+
+FORWARD (FD) - moves the turtle forward
+
+HEADING - returns the heading number of the active sprite or turtle
+
+HIDETURTLE (HT) - makes the triangular turtle shape disappear
+
+HOME - tells active turtle or sprite to go to the center of screen
+
+LEFT (LT) - turns the turtle or sprite left a given number of degrees
+
+PEN - returns values for pen type and color
+
+PENCOLOR - returns value of pen color. (SETPC) Also sets the current turtle pen color.
+
+PENDOWN (PD) - makes the turtle pen ready to draw a line
+
+PENERASE - makes the turtle pen ready to erase a line
+
+PENREVERSE - makes the turtle pen ready to reverse a line (draws if line isn't there, erases if it is; Terrapin/Krell Logo used PENCOLOR 6 to get the same effect)
+
+PENUP (PU) - makes the turtle pen inactive
+
+POS (WHERE) - returns the position of the turtle
+
+RIGHT (RT) - turns the turtle or sprite right a given number of degrees
+
+SETHEADING - gives the active sprite or turtle a given heading
+
+SETPEN - sets color and type of turtle pen
+
+SETPOS (SETXY, SXY) - moves the turtle to a new position
+
+SETX (SX), SETY (SY) - moves turtle to given x- or y-coordinate, other coordinate unchanged
+
+SHOWTURTLE (ST) - makes the triangular turtle shape appear
+
+TOWARDs - returns heading value turtle would have if it were pointing toward a given position
+
+TURTLESTATE - returns pen position, turtle status, background color, and pen color
+
+WINDOW - allows the turtle to plot offscreen (although the plotting can never be seen)
+
+WRAP - causes the turtle to appear on the opposite side of the screen if it attempts to go offscreen
+
+XCOR, YCOR - returns the x- or y-coordinate of the active sprite or turtle
+
+XVEL, YVEL - returns the x- or y-velocity of the active sprite
+
+
+Coordinate System
+Most turtle graphics systems put the point 0,0 at the center of the screen rather than the top left corner of the screen. In addition, most graphic displays attribute positive values to x and y as they go down and right across the screen, so the top-left corner would be (0,0) and the bottom-right point on a 640x480 pixel display might be (639, 479). On a typical Logo turtle graphics screen the top-left on a 640x480 display would be something like (-320, 240) and the bottom-right point would be (319, -239). The zero degrees (heading = 0) for a turtle is typically pointing right along the x-axis with positive values heading left and up towards the y-axis.
+
+
+Math
+The biggest issue to be aware of is that most Logo programs I've seen expect arguments to cos, sin, tan, etc. to be in degrees, rather than radians. If you're translating a Logo program and see something like sin(180 / n) then in Python that would become sin(pi / n).
+
+
+Nongraphics commands
+If you're translating a turtle graphics program from Logo, you'll likely run into nongraphics commands that will need to be translated into something equivelant in Python. Here are some of the more common commands you are likely to see, along with some example translations.
+
+CLEARTEXT - clears all text from screen and puts cursor at beginning of first text line
+
+COUNT - returns the number of elements in a list
+
+END - signals the end of a procedure
+
+LOCAL - declares a variable as local to the enclosing procedure without making it the argument of the procedure
+
+MAKE - assigns a name to a value
+
+RANDOM - generates a random number between 0 and n
+
+REPEAT - executes a list a given number of times
+
+STOP - stops a procedure
+
+
+
+Here's a typical recursive procedure, which I translated in the bytedesign.txt script.
+
+TO PENTL :SIDE :ANG
+IF :SIDE < 2 [STOP]
+FD :SIDE
+LT :ANG
+PENTL :SIDE - .38 :ANG
+END
+
+in Python using my turtle graphics library and pentl defined as a class method, this becomes:
+
+def pentl(self, side, ang):
+    if side < 2: return
+    self.fd(side)
+    self.lt(ang)
+    self.pentl(side - .38, ang)
+
+Note that instead of STOP we use return. Python doesn't require the END to signal the end of a function (method). Logo uses lists to get most of its work done, so a typical loop looks like:
+
+REPEAT 5 [FD 64.65 PD WHEEL POS PU BK 64.65 RT 72]
+
+which in Python becomes:
+    for i in range(5):
+        self.fd(64.65)
+        self.pd()
+        self.wheel(self.getXY())
+        self.pu()
+        self.bk(64.65)
+        self.rt(72)
+
+Note the use of getXY() instead of POS in the original Logo program. Local variables might look something like this:
+
+LOCAL "OLDH MAKE "OLDH HEADING
+
+in Python this becomes
+
+oldh = self.getHeading()

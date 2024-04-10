@@ -64,7 +64,7 @@ from pathlib import Path
 
 import proggen.M20_PageEvents_a_Functions as M20
 import subprocess
-import pickle
+#import pickle
 import pattgen.D00_GlobalProcs as D00
 import pattgen.M07_Save_Sheet_Data as M07
 import pattgen.M08_Load_Sheet_Data as M08
@@ -84,10 +84,6 @@ try:
     logging.debug("Keyboard Module imported")
 except:
     logging.debug("Keyboard Module not imported")
-    
-    #import proggen.M25_Columns as M25
-#import proggen.M02_global_variables as M02
-#import proggen.M28_divers as M28
 
 pyProgfile_dir = "\\LEDs_AutoProg\\pyProg_Generator_MobaLedLib"
 
@@ -97,9 +93,13 @@ guifactor  = 1.55
 
 global_worksheet_dict = {}
 
+global_controller = None
+
+Now = 0
+
 def checkplatform(checkstr):
     teststr = platform.system()
-    logging.debug("Checkplatform: "+teststr+"-"+checkstr)
+    logging.debug("Checkplatform: Current platform="+teststr+"- Checked Platform="+checkstr)
     return teststr==checkstr
 
 def get_home_dir():
@@ -108,47 +108,16 @@ def get_home_dir():
     logging.debug("HomeDir:"+homedir)
     return homedir
 
-def Dir(filepath,dummy=None):
-    if os.path.isfile(filepath):
-        return filepath
-    else:
-        if os.path.isdir(filepath):
-            return filepath
-        else:
-            return ""
-
-def Date_str():
-    return Date()
-
-def Time_str():
-    t = datetime.datetime.now()
-    return t.strftime("%X")
-
 def Center_Form(form):
     return
 
-def Shell(cmd):
-    Run(cmd)
-
 def updateWindow():
     global_controller.update()
-
-def TimeValue(Duration):
-    return str(Duration)
 
 def getvalue(row,column):
     value=ActiveSheet.tksheet.get_data(row-1,column-1)
     #print("P01.getvalue:",row,column,value)
     return value
-
-def ActiveCell():
-    global Selection
-    #table = ActiveSheet.table
-    row, col = ActiveSheet.getSelectedCell()
-    #row = table.getSelectedRow()+1
-    #col = table.getSelectedColumn()+1
-    Selection = CSelection(ActiveSheet.Cells(row,col),ws=ActiveSheet) #*HL
-    return ActiveSheet.Cells(row,col) #*HL
 
 def activate_workbook(workbookname):
     #find workbook
@@ -193,10 +162,9 @@ def set_activeworkbook(p_workbook):
         else:
             Selection = p_workbook.Selection
         Worksheets = p_workbook.sheets
-        p_workbook.controller.bind("<<SheetChange>>",p_workbook.Evt_SheetChange)
-        p_workbook.controller.bind("<<SheetSelectionChange>>",p_workbook.Evt_SheetSelectionChange)        
+        #p_workbook.controller.bind("<<SheetChange>>",p_workbook.Evt_SheetChange)
+        #p_workbook.controller.bind("<<SheetSelectionChange>>",p_workbook.Evt_SheetSelectionChange)        
         p_workbook.ActiveSheet.Activate()
-
 
 def create_workbook(frame=None, path=None,pyProgPath=None,workbookName=None,workbookFilename=None,sheetdict=None,start_sheet=None,p_global_controller=None,width=None,height=None):
     global ActiveSheet,ActiveWorkbook,global_controller
@@ -205,78 +173,6 @@ def create_workbook(frame=None, path=None,pyProgPath=None,workbookName=None,work
     workbook = CWorkbook(frame=frame,path=path,pyProgPath=pyProgPath,workbookName=workbookName,workbookFilename=workbookFilename,sheetdict=sheetdict,start_sheet=start_sheet,width=width,height=height)
     set_activeworkbook(workbook)
     return workbook
-    
-def IsError(testval):
-    return False
-
-def Cells(row:int, column:int,ws=None):
-    if ws == None:
-        ws=ActiveSheet
-    xlrange = ws.Cells(row,column)
-    return xlrange
-
-def Range(cell1=None,cell2=None,ws=None):
-    if ws==None:
-        ws=ActiveSheet
-    if cell1==None:
-        return CRange() # dummy for type definition only
-    if type(cell1) == str:
-        if ":" in cell1: # range as string a:b
-            cellsplit = cell1.split(":")
-            return Range(cellsplit[0],cellsplit[1])
-        named_cell1 = ws.find_RangeName(cell1)
-        if cell2 != None:
-            if type(cell2) == str:
-                named_cell2 = ws.find_RangeName(cell2)
-                return CRange(named_cell1,named_cell2,ws=ActiveSheet)
-            else:
-                return CRange(named_cell1,cell2,ws=ActiveSheet)
-        else:
-            return CRange(named_cell1,named_cell1,ws=ActiveSheet)
-    else:
-        if cell2==None:
-            cell2=cell1
-        return CRange(cell1,cell2,ws=ActiveSheet)
-
-def Sheets(sheetname):
-    return ActiveWorkbook.Sheets(sheetname)
-
-def Rows(row=None,ws=None):
-    if ws==None:
-        ws=ActiveSheet
-    if row==None:
-        return CRange((1,1),(ws.getLastUsedRow(),1),ws=ws,parent=None,parenttype="Rows")
-    else:
-        if type(row)==str:
-            rowlist=row.split(":")
-            return CRange((int(rowlist[0]),1),(int(rowlist[1]),1),ws=ws,parent=None,parenttype="Rows")
-        else:
-            return CRange((row,1),(row,1),ws=ws,parent=None,parenttype="Rows")
-    
-    #if ws == None:
-    #    ws=ActiveSheet    
-    #if type(row)==str:
-    #    rows=[]
-    #    rowlist=row.split(":")
-    #    for row1 in range(int(rowlist[0]),int(rowlist[1])+1):
-    #        return CRow(row1)
-    #else:
-    #    return CRow(row)
-        #sheet = ActiveSheet
-        #return sheet.MaxRange.Rows[row]
-   
-def Columns(col:int):
-    ws = ActiveSheet
-    lastusedrow=ws.LastUsedRow
-    startcell=CRange(1,col)
-    endcell  =CRange(lastusedrow,col)
-    return CRange(startcell,endcell)
-
-def IsEmpty(obj):
-    if len(obj)==0:
-        return True
-    else:
-        return False
 
 def val(value):
     valtype=type(value)
@@ -301,117 +197,6 @@ def val(value):
         else:
             return 0
     return int(value)
-
-def VarType(obj):
-    valtype=type(obj)
-    if valtype is str:
-        return vbString
-    else:
-        return None
-def Unload(UserForm):
-    UserForm.destroy()
-
-def ChDrive(srcdir):
-    #print("ChDrive:", srcdir)
-    
-    if checkplatform("Windows"):
-        drive = srcdir[0:2]
-        os.chdir(drive)
-    return
-
-def Format(value,formatstring):
-    if formatstring == "hh:mm:ss":
-        time_val = time.gmtime(value)
-        return time.strftime("%H:%M:%S",time_val)
-    elif formatstring == "hh:mm":
-        if type(value)==str:
-            return value[:5]
-        else:
-            time_val = time.gmtime(value)
-            return time.strftime("%H:%M",time_val)
-    elif formatstring == "0000":
-        return "{0:4d}".format(value)
-    
-    elif formatstring == "00":
-        return "{0:2d}".format(int(value))
-    elif formatstring == "dd.mm.yy":
-        return value[:2]+"."+value[3:5]+"."+value[6:]
-    else:
-        pass
-    
-    return str(value) # no formating implemented yet
-
-
-def MsgBox(ErrorMessage:str, msg_type:int, ErrorTitle:str):
-    if msg_type == vbQuestion + vbYesNoCancel or msg_type == vbYesNoCancel:
-        res=tk.messagebox.askyesnocancel(title=ErrorTitle, message=ErrorMessage)
-        if res == None:
-            return vbCancel
-        if res:
-            return vbYes
-        else:
-            return vbNo
-    elif msg_type == vbQuestion + vbYesNo or msg_type == vbYesNo:
-        res=tk.messagebox.askyesno(title=ErrorTitle, message=ErrorMessage)
-        if res == None:
-            return vbCancel
-        if res:
-            return vbYes
-        else:
-            return vbNo        
-    elif msg_type == vbOKCancel:
-        res=tk.messagebox.askokcancel(title=ErrorTitle, message=ErrorMessage)
-        if res == None:
-            return vbCancel
-        if res:
-            return vbOK
-        else:
-            return vbCancel
-    elif msg_type == vbOKOnly:
-        res=tk.messagebox.showinfo(title=ErrorTitle, message=ErrorMessage)
-        
-    elif msg_type == vbInformation:
-        res=tk.messagebox.showinfo(title=ErrorTitle, message=ErrorMessage)
-        
-    elif msg_type == vbCritical:
-        res=tk.messagebox.showerror(title=ErrorTitle, message=ErrorMessage)
-        
-    elif msg_type == vbCritical + vbYesNo:
-        res=tk.messagebox.askyesno(title=ErrorTitle, message=ErrorMessage)
-        if res == None:
-            return vbCancel
-        if res:
-            return vbYes
-        else:
-            return vbNo
-    else:
-        logging.debug("P01_MSGBox: Unknown Messagetype:"+str(msg_type))
-        res=tk.messagebox.askyesnocancel(title=ErrorTitle, message=ErrorMessage)
-        if res == None:
-            return vbCancel
-        if res:
-            return vbYes
-        
-    return vbNo
-
-def InputBox(Message:str, Title:str, Default=None):
-    #res = tk.simpledialog.askstring(Title,Message,initialvalue=Default,parent=PG.dialog_parent)
-    
-    F00.Userform_SimpleInput.Show(Message,Title,Default)
-    res = F00.Userform_SimpleInput.UserForm_res
-    if res == None:
-        res=""
-    return res
-
-def Time():
-    return time.time()
-
-def Date():
-    x = datetime.datetime.now()
-    return x.strftime("%x")
-
-def Run(cmd):
-    subprocess.run(cmd,shell=True)
     
 def set_statusmessage(message):
     global_controller.set_statusmessage(message)
@@ -428,45 +213,18 @@ __VK_CONTROL = 0x11
 __VK_SHIFT = 0x10
 VK_SHIFT = 0x10
 
-def GetAsyncKeyState(key):
-    
-    global shift_key
-    
-    if keyboard_Module_imported:
-        if key==__VK_UP:
-            return keyboard.is_pressed("up")
-        if key==__VK_DOWN:
-            return keyboard.is_pressed("down")
-        if key==__VK_RETURN:
-            return keyboard.is_pressed("enter")
-        if key==__VK_ESCAPE:   
-            return keyboard.is_pressed("escape")
-        if key==__VK_CONTROL:   
-            return keyboard.is_pressed("crtl")
-        if key==__VK_SHIFT:
-            Debug.Print("Check Shift Key")
-            fn_return_value = shift_key #or keyboard.is_pressed("shift")
-            shift_key=False
-            return fn_return_value
-        return False
-    else:
-        return False
-
-
 def GetCursorPos():
     pass
 
 def SetCursorPos(x,y):
     pass
 
-def DoEvents():
-    #ActiveSheet.table.redraw()
-    global_controller.update()
-
 class Worksheet(object):
     """Placeholder for Worksheettype"""
     def __init__(self):
         self.Name = "Dummy"
+
+# https://learn.microsoft.com/en-us/office/vba/api/excel.workbook
 
 class CWorkbook(object):
     def __init__(self, frame=None,path=None,pyProgPath=None,workbookName=None, workbookFilename=None, sheetdict=None,init_workbook=None,open_workbook=None,start_sheet=None,controller=None,width=None,height=None):
@@ -476,12 +234,11 @@ class CWorkbook(object):
             self.controller = global_controller
         else:
             self.controller = controller
-            
+        self.controller.set_statusmessage("Erstelle Workbook: "+workbookName)
         #self.controller.bind("<KeyPress-Shift_L>", self.shift_press)
         #self.controller.bind("<KeyPress-Shift_R>", self.shift_press)
         #self.controller.bind("<KeyRelease-Shift_L>", self.shift_release)
         #self.controller.bind("<KeyRelease-Shift_R>", self.shift_release)        
- 
 
         if workbookName:
             self.Name = workbookName
@@ -500,7 +257,6 @@ class CWorkbook(object):
             self.workbook_width  = width
             self.workbook_height = height
             self.default_font = self.controller.defaultfontnormal
-
             self.FullName = workbookFilename
             self.ws_filename = None
             self.wb = None
@@ -508,10 +264,8 @@ class CWorkbook(object):
             style.configure('downtab.TNotebook', tabposition='sw')
             self.container = ttk.Notebook(frame, style="downtab.TNotebook")
             self.container.bind("<Alt-B1-Motion>", self.reorder_tabs)
-            
             self.container.grid_rowconfigure(0,weight=1)
             self.container.grid_columnconfigure(0,weight=1)                 
-
             self.container.grid(row=0,column=0,columnspan=2,sticky="nesw")
             self.tabdict = dict()
             self.tabdict_frames = dict()
@@ -519,31 +273,16 @@ class CWorkbook(object):
             self.sheetdict = sheetdict
             self.Selection = None
             self.tabid    = 0
-            self.Eventdict = sheetdict.get("Events",None)
+            self.Events_dict = sheetdict.get("Events",None)
             for sheetname in self.sheetdict.keys():
                 if sheetname != "Events":
                     self.add_sheet(sheetname)
-                """
-                tabframe = ttk.Frame(self.container,relief="ridge", borderwidth=1)
-                act_worksheet = self.new_sheet(sheetname,tabframe)
-                tabframe.sheetname = sheetname
-                tabframe.sheet = act_worksheet
-                self.sheets.append(act_worksheet)
-                self.container.add(tabframe, text=sheetname)
-                self.tabframedict[sheetname]=act_worksheet
-                if not self.showws and not PG.global_controller.show_hiddentables:
-                    act_worksheet.Visible(False)
-                    #self.container.tab(tabframe,state="hidden")
-                self.tabid += 1
-                """
             self.container.bind("<<NotebookTabChanged>>",self.TabChanged)
-               
         else:
             self.Path = path
             self.tksheet= None
             self.sheets = None
         self.start_sheet=start_sheet
-        
         set_activeworkbook(self)
         self.InitWorkbookFunction=None
         Worksheets = self.sheets
@@ -568,29 +307,27 @@ class CWorkbook(object):
         shift_key=False
         
     def init_workbook(self):
-        set_activeworkbook(self)
-        if self.InitWorkbookFunction:
-            self.InitWorkbookFunction(self)
-        
+        self.controller.set_statusmessage("Init Workbook: "+self.Name)
         #add controls to sheet
         for sheet in self.sheets:
+            self.controller.set_statusmessage("Init Workbook: "+self.Name + " Sheet: "+sheet.Name)
             sheetname_prop = self.sheetdict.get(sheet.Name)
             controls_dict = sheetname_prop.get("Controls",None)
             if controls_dict:
                 sheet.add_controls(controls_dict)
             sheet.tksheet.redraw()
             sheet.drawShapes()
-        self.controller.bind("<<SheetChange>>",self.Evt_SheetChange)
-        self.controller.bind("<<SheetSelectionChange>>",self.Evt_SheetSelectionChange)
-        self.controller.bind("<<SheetReturnKey>>",self.Evt_SheetReturnKey)
-                    
+        #self.controller.bind("<<SheetChange>>",self.Evt_SheetChange)
+        #self.controller.bind("<<SheetSelectionChange>>",self.Evt_SheetSelectionChange)
+        #self.controller.bind("<<SheetReturnKey>>",self.Evt_SheetReturnKey)
         self.activate_sheet(self.start_sheet)
-
-        #if self.Name != "PatternWorkbook":
-        #    F00.workbook_init(self)
+        set_activeworkbook(self)
+        if self.InitWorkbookFunction:
+            self.controller.set_statusmessage("Init WorkbookFunction: "+self.Name)
+            self.InitWorkbookFunction(self)        
 
     def open(self):
-        pass
+        self.Evt_Workbook_Open()
         #if self.Name != "PatternWorkbook":
         #    if M28.Get_Num_Config_Var_Range("SimAutostart", 0, 3, 0) == 1: #               ' 04.04.22: Juergen Simulator
         #        M39.OpenSimulator()
@@ -646,22 +383,18 @@ class CWorkbook(object):
 
     def new_sheet(self,sheetname,tabframe: tk.Frame,from_sheet=None) -> Object:
         if from_sheet==None:
-            sheetname_prop = self.sheetdict.get(sheetname)
+            sheet_property_dict = self.sheetdict.get(sheetname)
         else:
-            sheetname_prop = self.sheetdict.get(from_sheet)
-        sheettype = sheetname_prop.get("SheetType","")
-        callback = sheettype in ["Datasheet","Libraries"]
+            sheet_property_dict = self.sheetdict.get(from_sheet)
+        sheettype = sheet_property_dict.get("SheetType","")
         self.showws = sheettype in ["Datasheet","Config"]
-        formating_dict = sheetname_prop.get("Formating",None)
-        fieldnames = sheetname_prop.get("Fieldnames",None)
-        if type(fieldnames) == str:
-            fieldnames = fieldnames.split(";")
-        filename=sheetname_prop.get("Filename",None)
+        filename=sheet_property_dict.get("Filename",None)
+        self.RefreshShapesafterLoad =  sheet_property_dict.get("RefreshShapesafterLoad",False)
         if filename==None:
             filepathname = self.ws_filename # take filename from first worksheet loaded (for excel workbooks)
         else:
             filepathname = Path(self.pyProgPath) / filename
-        act_worksheet = CWorksheet(sheetname,workbook=self, csv_filepathname=filepathname,frame=tabframe,fieldnames=fieldnames,formating_dict=formating_dict,Sheettype=sheettype,callback=callback,tabid=self.tabid,width=self.workbook_width,height=self.workbook_height)
+        act_worksheet = CWorksheet(sheetname,workbook=self, csv_filepathname=filepathname,frame=tabframe,sheet_property_dict=sheet_property_dict, tabid=self.tabid,width=self.workbook_width,height=self.workbook_height)
         return act_worksheet
     
     def activate_sheet(self,sheetname):
@@ -755,6 +488,9 @@ class CWorkbook(object):
             else:
                 _ret=False
         return _ret
+    
+    def refreshicons(self):
+        ActiveSheet.refreshicons()
 
     def LoadExcelWorkbook(self,filename=None):
         """load Excelworkbook from a file"""
@@ -787,14 +523,13 @@ class CWorkbook(object):
                                 if cell.comment:
                                     pass # print(cell.comment.text)
                     named_range=self.wb.defined_names
-                    print(named_range)
+                    #print(named_range)
             # the destinations attribute contains a list of ranges in the definitions
                        
         return    
     
     def LoadSheetfromExcelWorkbook(self,worksheet, filename, fieldnames):
         """load Excelworkbook from a file"""
-        
         if not os.path.exists(filename):
             logging.debug ('file does not exist'+filename)
             return
@@ -802,7 +537,6 @@ class CWorkbook(object):
             if self.ws_filename != filename:
                 self.wb = openpyxl.load_workbook(filename)
                 self.ws_filename = filename
-
             if worksheet.Name != "Named_Ranges":
                 if worksheet.Name in self.wb.sheetnames:
                     xlws = self.wb[worksheet.Name]
@@ -818,6 +552,9 @@ class CWorkbook(object):
                             if cell.data_type != "f": # no formulas
                                 #print(cell,cell.value,cell.comment)
                                 text=str(cell.value)
+                                if text == chr(252) or text == chr(61692):
+                                     # old hook value
+                                    text = chr(xlhookchar)
                                 if len(text)>0 and text[0]=="'": # remove leading '
                                     text=text[1:]
                                     #print(cell,text,cell.comment)
@@ -869,7 +606,7 @@ class CWorkbook(object):
                     dictdata.append(rec_dict)
                     count=count+1
                 #worksheet.table.model = TableModel()
-                print(repr(dictdata))
+                #print(repr(dictdata))
                 worksheet.tksheet.data = dictdata
                 worksheet.tksheet.shapelist=[]                
                 worksheet.tksheet.modelname=filename                      
@@ -901,13 +638,13 @@ class CWorkbook(object):
         for sheet in self.sheets:
             if sheet.Datasheet or sheet.Configsheet or allsheets:
                 sheetdata = sheet.getData()
-                workbookdata[sheet.Name] = sheetdata
+                workbookdata[sheet.Name] = copy.deepcopy(sheetdata)
         #fd = open(filename,'wb')
         try:
             saveData={}
             saveData["Version"]=self.controller.ProgVersion
             saveData["DataVersion"] = self.controller.DataVersion
-            saveData["Workbookdata"]=workbookdata
+            saveData["Workbookdata"]= copy.deepcopy(workbookdata)
             with open(filename, 'w', encoding='utf8') as outfile:
                 json.dump(saveData, outfile, ensure_ascii=False, indent=4)
             logging.debug("Save Workbook:" + filename)            
@@ -915,7 +652,7 @@ class CWorkbook(object):
             #fd.close()
         except BaseException as e:
             logging.debug(e,  exc_info=True)            
-            logging.debug("Save Workbook Error: "+filename)            
+            logging.debug("Workbook: Save Workbook Error: "+filename)            
         return
     
     def LoadWorkbook(self,filename: str,workbookname=""):
@@ -925,8 +662,6 @@ class CWorkbook(object):
         if not self.controller.loaddatafile:
             logging.debug("Load Workbook: arg loaddatafile=False - "+filename+" not loaded")
             return
-            
-        #fd=open(filename,'rb')
         jsondata={}
         file_not_found=True
         try:
@@ -958,23 +693,26 @@ class CWorkbook(object):
             workbookdata=savedData["Workbookdata"]
             for sheetname in workbookdata.keys():
                 sheet = self.Sheets(sheetname)
+                #print("Load WB checking sheets: "+sheetname)
                 if sheet == None:
                     self.add_sheet(sheetname, from_sheet="Main",nocontrols=True,noredraw=True)
             for sheet in self.sheets:
-                data = workbookdata.get(sheet.Name,{})
+                data = copy.deepcopy(workbookdata.get(sheet.Name,{}))
+                print("Load WB Loading:"+sheet.Name)
+                self.controller.set_statusmessage("Workbook: "+workbookname+" Loading:"+sheet.Name)
                 if data !={}:
                     sheet.setData(data)
-                    saved_shapelist=savedData.get("shapelist", [])
-                    #sheet.init_data()
-                    #sheet.tablemodel.resetDataChanged()
-                    sheet.EventWScalculate(Cells(5,5))
+                    #sheet.EventWScalculate(Cells(5,5))
                     Application.Caller="Update"
-                    sheet.EventWSchanged(Cells(5,5))
-                    self.Evt_Redraw_Sheet(sheet)
-                    sheet.redraw_shapes(saved_shapelist)
+                    #sheet.EventWSchanged(Cells(5,5))
+                    #self.Evt_Redraw_Sheet(sheet)
+                    if False: #sheet.RefreshShapesafterLoad:
+                        sheet.refreshicons()
+                    else:
+                        sheet.EventWSchanged(Cells(5,5))
         except BaseException as e:
             logging.debug(e, exc_info=True)            
-            logging.debug("Load Workbook Error"+filename)
+            logging.debug("Workbook: Load Workbook Error"+filename)
         
         return
     
@@ -1013,8 +751,8 @@ class CWorkbook(object):
         pass
     
     def Call_EventProc(self,eventname):
-        if self.Eventdict:
-            eventproc = self.Eventdict.get(eventname,None)
+        if self.Events_dict:
+            eventproc = self.Events_dict.get(eventname,None)
             if eventproc:
                 return eventproc
             else:
@@ -1027,10 +765,10 @@ class CWorkbook(object):
         if Application.EnableEvents:
             self.Call_EventProc("Workbook_Open")()
     
-    def Evt_Workbook_BeforeClose(self, event):
+    def Evt_Workbook_BeforeClose(self):
         if Application.EnableEvents:
-            self.Call_EventProc("Workbook_BeforeClose")(Cancel)
-            return Cancel
+            self.Call_EventProc("Workbook_BeforeClose")
+            return
     
     def Evt_SheetTableUpdate(self,sheet,target):
         # Occurs after the sheet table has been updated.
@@ -1049,69 +787,55 @@ class CWorkbook(object):
         if Application.EnableEvents:
             self.Call_EventProc("SheetBeforeDoubleClick")(sheet, target, cancel)
     
-    def Evt_SheetChange(self, event):
+    def Evt_SheetChange(self, tks_event):
         if Application.EnableEvents:
             # Occurs when cells in any worksheet are changed by the user or by an external link.
-            row=event.widget.event_row+1
-            col=event.widget.event_col+1
-            sheet=event.widget.worksheet
+            row=tks_event.selected.row+1
+            col=tks_event.selected.column+1
+            sheet = global_worksheet_dict[tks_event.sheetname]
             target=CRange(row,col)
-            #pattgen.M02_Main.Global_On_Enter_Proc()
             self.Evt_SheetCalculate(sheet,target)
             self.Call_EventProc("SheetChange")(target)
             sheet.Redraw_table()
         
-    def Evt_SheetSelectionChange(self,event):
+    def Evt_SheetSelectionChange(self,tks_event):
         if Application.EnableEvents:
-            # Occurs when cells in any worksheet are changed by the user or by an external link.
             Application.EnableEvents=False
-            row=event.widget.event_row+1
-            col=event.widget.event_col+1
-            sheet=event.widget.worksheet
-            target=CRange(row,col)
-            #print("Evt_SheetSelectionChange: <<SheetSelectionChange>> "+str(row),","+str(col))
-            self.Call_EventProc("SheetSelectionChange")(target)
+            if tks_event.selected != ():
+                row=tks_event.selected.row+1
+                col=tks_event.selected.column+1
+                #sheet = global_worksheet_dict[tks_event.sheetname]
+                #sheet=widget.worksheet
+                target=CRange(row,col)
+                self.Call_EventProc("SheetSelectionChange")(target)
             Application.EnableEvents=True
         
-    def Evt_SheetActivate(self, event):
-        # Occurs when cells in any worksheet are changed by the user or by an external link.
+    def Evt_SheetActivate(self, tks_event):
         if Application.EnableEvents:
-            self.Call_EventProc("SheetActivate")()
+            sheet = global_worksheet_dict[tks_event.sheetname]
+            self.Call_EventProc("SheetActivate")(sheet)
         
-    def Evt_SheetDeactivate(self, event):
-        # Occurs when cells in any worksheet are changed by the user or by an external link.
+    def Evt_SheetDeactivate(self, tks_event):
+        sheet = global_worksheet_dict[tks_event.sheetname]
         if Application.EnableEvents:
-            self.Call_EventProc("SheetDectivate")()                
+            self.Call_EventProc("SheetDectivate")(sheet)                
     
     def Evt_NewSheet(self, event):
         # Occurs when a new sheet is created in the workbook.
+        sheet = global_worksheet_dict[tks_event.sheetname]
         if Application.EnableEvents:
             self.Call_EventProc("NewSheet")(sheet)
             
-    def Evt_SheetReturnKey(self, event):
+    def Evt_SheetReturnKey(self, tks_event):
         # Occurs when a new sheet is created in the workbook.
         if Application.EnableEvents:
             self.Call_EventProc("SheetReturnKey")()
     
     def Evt_SheetOpen(self, event):
-        # Occurs when a new sheet is created in the workbook.
+        # Occurs when a new sheet is opened
         if Application.EnableEvents:
             self.Call_EventProc("SheetOpen")()
-            
-    def Synch_Evt_SheetSelectionChange(self,widget):
-        if Application.EnableEvents:
-            Application.EnableEvents=False
-            #print("SynchEvt__SheetSelectionChange: <<SheetSelectionChange>>")
-            # Occurs when cells in any worksheet are changed by the user or by an external link.
-            if widget.selected != ():
-                row=widget.selected.row+1
-                col=widget.selected.column+1
-                sheet = global_worksheet_dict[widget.sheetname]
-                #sheet=widget.worksheet
-                target=CRange(row,col)
-                self.Call_EventProc("SheetSelectionChange")(target)
-            Application.EnableEvents=True
-            
+
     def Synch_Evt_SheetChange(self, widget):
         #return #test
         if Application.EnableEvents:
@@ -1122,18 +846,13 @@ class CWorkbook(object):
             target=CRange(row,col,ws=sheet)
             #pattgen.M02_Main.Global_On_Enter_Proc()
             self.Evt_SheetCalculate(sheet,target)
-            Debug.Print("Synch_Evt_SheetChange: <<SheetChange>> "+str(row),","+str(col))
+            #Debug.Print("Synch_Evt_SheetChange: <<SheetChange>> "+str(row),","+str(col))
             self.Call_EventProc("SheetChange")(target)
             sheet.sheet_was_modified(None)
             sheet.Redraw_table()
             
-    def Synch_Evt_SheetReturnKey(self):
-        # Occurs when a new sheet is created in the workbook.
-        if Application.EnableEvents:
-            self.Call_EventProc("SheetReturnKey")()
-            
     def Evt_Redraw_Sheet(self, sheet):
-        # occurs when the workbook is opened
+        # occurs when the workbook is redrawn
         if Application.EnableEvents:
             self.Call_EventProc("Worksheet_Redraw")(sheet)
     
@@ -1142,7 +861,6 @@ class CCellsFind(object):
         self.sheet=ws
     
     def Find(self,What="", After=None, LookIn=xlFormulas, LookAt= xlWhole, SearchOrder= xlByRows, SearchDirection= xlNext, MatchCase= True, SearchFormat= False):
-       
         cells=self.sheet.Cells()
         if After!=None:
             cells.startrow=After.Row
@@ -1189,18 +907,32 @@ class CButtons(object):
        
 class CWorksheet(object):
     
-    def __init__(self,Name,workbook=None,csv_filepathname=None,frame=None,fieldnames=None,formating_dict=None,Sheettype="",callback=False,tabid=0,width=None, height=None):
+    def __init__(self,Name,workbook=None,csv_filepathname=None,frame=None,sheet_property_dict=None,tabid=0,width=None, height=None):
         
         sheetdict_popmenu = {"DCC":
                              { "LED blinken Ein/Aus":self.LED_flash,
                                "LED nacheinander blinken Ein/Aus":self.LED_flash_seq
                              }
                             }
+        self.sheet_property_dict = sheet_property_dict 
+        Sheettype = sheet_property_dict.get("SheetType","")
+        callback = Sheettype in ["Datasheet","Libraries"]
+        self.showws = Sheettype in ["Datasheet","Config"]
+        self.formating_dict = sheet_property_dict.get("Formating",None)
+        fieldnames = sheet_property_dict.get("Fieldnames",None)
+        if type(fieldnames) == str:
+            fieldnames = fieldnames.split(";")
+        self.fieldnames = fieldnames
+        self.saveShapes = sheet_property_dict.get("SaveShapes",True)
+        self.RefreshShapesafterLoad =  sheet_property_dict.get("RefreshShapesafterLoad",False)
+        
         screen_width = 1920
         screen_height = 1080
         self.controller = workbook.controller
-        print(workbook.controller.winfo_width(),workbook.controller.winfo_height())
+        self.controller.set_statusmessage("Erstelle WorkSheet: "+Name)
+        #print(workbook.controller.winfo_width(),workbook.controller.winfo_height())
         self.rightclickactiondict = sheetdict_popmenu.get(Name,{})
+        
         if width == None:
             self.width = screen_width-120
         else:
@@ -1209,6 +941,7 @@ class CWorksheet(object):
             self.height = screen_height-350
         else:
             self.height= height
+            
         self.Workbook = workbook
         self.worksheet = self
         self.default_font = workbook.default_font
@@ -1217,8 +950,6 @@ class CWorksheet(object):
         self.Datasheet = Sheettype == "Datasheet"
         self.Configsheet = Sheettype == "Config"
         self.csv_filepathname = csv_filepathname
-        self.fieldnames = fieldnames
-        self.formating_dict = formating_dict
         self.Name = Name
         self.shape_clicked = False
         self.Tabframe = frame
@@ -1231,6 +962,10 @@ class CWorksheet(object):
         self.imagedict = {}
         self.Flag_move=False
         self.lastselectedRows = []
+        self.Events_dict = {}
+        self.Gridlist = {}
+        self.grid_color = "#000000"
+        self.linewidth = 1
         
         if False: #tablemodel:
             #self.tablemodel = tablemodel
@@ -1287,9 +1022,12 @@ class CWorksheet(object):
             self.handle_formating(self.formating_dict.get("FontColor",[]))
             #test self.tablemodel.gridlist = self.formating_dict.get("GridList",[])
             self.handle_gridlist(self.formating_dict.get("GridList",[]))
+            self.handle_gridformat(self.formating_dict.get("GridFormat",{}))
             #test self.tablemodel.ColumnAlignment = self.formating_dict.get("ColumnAlignment",{})
             self.handle_ColumnAlignment(self.formating_dict.get("ColumnAlignment",[]))
             self.handle_ColumnWidth(self.formating_dict.get("ColumnWidth",[]))
+            
+            self.handle_events_dict(self.formating_dict)
 
             #test colsizelist = self.formating_dict.get("ColumnWidth",[])
             #test for col in range(0, len(colsizelist)):
@@ -1333,15 +1071,144 @@ class CWorksheet(object):
         self.CellDict = CCellDict(ws=self)
         self.End_val = self.LastUsedColumn_val
         
-        self.tksheet.extra_bindings("all_modfied_events", func=self.Workbook.Synch_Evt_SheetChange)
-        self.tksheet.extra_bindings("all_select_events", func=self.Workbook.Synch_Evt_SheetSelectionChange)
+        self.tksheet.extra_bindings("all_modfied_events", func=self.Workbook.Evt_SheetChange)
+        self.tksheet.extra_bindings("all_select_events", func=self.Workbook.Evt_SheetSelectionChange)
         self.tksheet.extra_bindings("cell_select", func=self.EventSH_cellselected)
+        self.tksheet.extra_bindings("row_height_resize", func=self.tkEvent_row_height_resize)
+        self.tksheet.extra_bindings("column_width_resize", func=self.tkEvent_column_width_resize)
+        #self.tksheet.extra_bindings ("edit_cell", func=self.Workbook.Synch_Evt_SheetReturnKey)
+        self.tksheet.extra_bindings ("sheetmodified", func=self.Workbook.Evt_SheetChange)
+                
+                
         self.tksheet.bind("<<SheetModified>>", self.sheet_was_modified)
         self.tksheet.bind("<Double-Button-1>", self.EventWSdoubleclick)
         
+        self.tksheet.popup_menu_add_command(
+                    "Set Color",
+                    self.setCellColor,
+                    index_menu=False,
+                    header_menu=False,
+                    empty_space_menu=False)
+        
+        
+    def setCellColor(self):
+            current_selection = self.getSelectedCell()
+            if current_selection:
+                box = (current_selection[0] - 1, current_selection[1] - 1)
+                try:
+                    bgcolor = self.tksheet[box].bg
+                except:
+                    bgcolor = "#FFFFFF"
+                clr = self.getaColor(bgcolor)
+                if clr != None:
+                    # set cell data, end user Undo enabled
+                    # more information at:
+                    # https://github.com/ragardner/tksheet/wiki/Version-7#setting-sheet-data
+                    self.tksheet[box].bg = clr
+                    
+    def getaColor(self, oldcolor):
+        ctuple, newcolor = tk.colorchooser.askcolor(title='pick a color', initialcolor=oldcolor,
+                                                   parent=self.Tabframe)
+        if ctuple == None:
+            return None
+        return str(newcolor)
+    
+    def Noneproc(*args):
+        pass    
+    
+    def Call_EventProc(self,eventname):
+        if self.Events_dict:
+            eventproc = self.Events_dict.get(eventname,None)
+            if eventproc:
+                return eventproc
+            else:
+                return self.Noneproc
+        else:
+            return self.Noneproc    
+    
+    def Evt_SheetTableUpdate(self,sheet,target):
+        # Occurs after the sheet table has been updated.
+        if Application.EnableEvents:
+            self.Call_EventProc("SheetTableUpdate")(sheet,target)
+    
+    def Evt_SheetCalculate(self, sheet, target):
+        # Occurs after any worksheet is recalculated or after any changed data is plotted on a chart.
+        if Application.EnableEvents:
+            Application.EnableEvents=False
+            self.Call_EventProc("SheetCalculate")(sheet, target)
+            Application.EnableEvents=True
+    
+    def Evt_SheetBeforeDoubleClick(self, sheet,target, cancel):
+        # Occurs when any worksheet is double-clicked, before the default double-click action.
+        if Application.EnableEvents:
+            self.Call_EventProc("SheetBeforeDoubleClick")(sheet, target, cancel)
+    
+    def Evt_SheetChange(self, tks_event):
+        if Application.EnableEvents:
+            # Occurs when cells in any worksheet are changed by the user or by an external link.
+            row=tks_event.selected.row+1
+            col=tks_event.selected.column+1
+            sheet = global_worksheet_dict[tks_event.sheetname]
+            target=CRange(row,col)
+            self.Evt_SheetCalculate(sheet,target)
+            self.Call_EventProc("SheetChange")(target)
+            sheet.Redraw_table()
+        
+    def Evt_SheetSelectionChange(self,tks_event):
+        if Application.EnableEvents:
+            Application.EnableEvents=False
+            if tks_event.selected != ():
+                row=tks_event.selected.row+1
+                col=tks_event.selected.column+1
+                target=CRange(row,col)
+                self.Call_EventProc("SheetSelectionChange")(target)
+            Application.EnableEvents=True
+        
+    def Evt_SheetActivate(self, tks_event):
+        if Application.EnableEvents:
+            self.Call_EventProc("SheetActivate")()
+        
+    def Evt_SheetDeactivate(self, tks_event):
+        if Application.EnableEvents:
+            self.Call_EventProc("SheetDectivate")()
+    
+    def Evt_NewSheet(self, tks_event):
+        # Occurs when a new sheet is created in the workbook.
+        if Application.EnableEvents:
+            self.Call_EventProc("NewSheet")()
+            
+    def Evt_SheetReturnKey(self, tks_event):
+        # Occurs when a new sheet is created in the workbook.
+        if Application.EnableEvents:
+            self.Call_EventProc("SheetReturnKey")()
+    
+    def Evt_SheetOpen(self, tks_event):
+        # Occurs when a new sheet is opened
+        if Application.EnableEvents:
+            self.Call_EventProc("SheetOpen")()
+
+    def Synch_Evt_SheetChange(self, tks_event):
+        #return #test
+        if Application.EnableEvents:
+            # Occurs when cells in any worksheet are changed by the user or by an external link.
+            row=tks_event.event_row+1
+            col=tks_event.event_col+1
+            target=CRange(row,col,ws=self)
+            #pattgen.M02_Main.Global_On_Enter_Proc()
+            self.Evt_SheetCalculate(self,target)
+            #Debug.Print("Synch_Evt_SheetChange: <<SheetChange>> "+str(row),","+str(col))
+            self.Call_EventProc("SheetChange")(target)
+            self.sheet_was_modified(None)
+            self.Redraw_table()
+            
+    def Evt_Redraw_Sheet(self, sheet):
+        # occurs when the workbook is redrawn
+        if Application.EnableEvents:
+            self.Call_EventProc("Worksheet_Redraw")(sheet)    
+    
+        
     def EventSH_cellselected(self, event):
         #print("EventSH_cellselected:", event.selected)
-        
         if self.Flag_move:
             cur_row = self.getSelectedRow()
             rows = self.lastselectedRows
@@ -1351,6 +1218,20 @@ class CWorksheet(object):
             cur_row = self.getSelectedRow()
             cur_col = self.getSelectedColumn()
             self.left_click_callback(cur_row, cur_col-1)
+            
+    def tkEvent_row_height_resize(self, event_data):
+        print(event_data.resized.rows)
+        resized_rows = event_data.resized.rows 
+        for row in resized_rows.keys():
+            row_data = resized_rows[row]
+        self.moveShapesVertical(top_left_cell_row=row, deltaY=row_data["new_size"]-row_data["old_size"])
+    
+    def tkEvent_column_width_resize(self, event_data):
+        print(event_data.resized.columns)
+        resized_columns = event_data.resized.columns 
+        for col in resized_columns.keys():
+            col_data = resized_columns[col]
+        self.moveShapesHorizontal(top_left_cell_column=col, deltaX=col_data["new_size"]-col_data["old_size"])
         
     def Calculate(self):
         self.EventWScalculate()
@@ -1391,10 +1272,16 @@ class CWorksheet(object):
                 for cell in celllist:
                     self.tksheet.highlight(cell, bg=bg_color, fg=fg_color, font=font)
             else:
-                self.tksheet.set_options(font=font, header_font=font, index_font=font, table_bg=bg_color, table_fg=fg_color)
+                self.tksheet.set_options(font=font, header_font=font, index_font=font, table_bg=bg_color, table_fg=fg_color, table_grid_fg=fg_color, show_vertical_grid=False, show_horizontal_grid=False)
 
     def handle_gridlist(self, param):
-        pass
+        self.Gridlist = param
+        
+    def handle_gridformat(self, param):
+        table_grid_fg = param.get("fg", "#808080")
+        show_vertical_grid = param.get("show_vertical_grid", True)
+        show_horizontal_grid = param.get("show_horizontal_grid", True)
+        self.tksheet.set_options(table_grid_fg=table_grid_fg, show_vertical_grid=show_vertical_grid, show_horizontal_grid=show_horizontal_grid)
 
     def handle_ColumnAlignment(self, param):
         if isinstance(param, dict):
@@ -1405,9 +1292,18 @@ class CWorksheet(object):
     def handle_ColumnWidth(self, param):
         colsizelist = param
         for col in range(0, len(colsizelist)):
-            self.tksheet.column_width(column=col, width=colsizelist[col])        
+            self.tksheet.column_width(column=col, width=colsizelist[col])
+            
+    def handle_events_dict(self, formating_dict):
+        Events_dict = formating_dict.get("Events", {})
+        if Events_dict != {}:
+            self.Events_dict = Events_dict
+        else:
+            self.Events_dict = self.Workbook.Events_dict
+
         
     def add_controls(self,controls_dict):
+        logging.debug("add_controls")
         for control_key in controls_dict.keys():
             if control_key !="Default":
                 form_def = controls_dict[control_key]
@@ -1418,7 +1314,8 @@ class CWorksheet(object):
                 Width = form_def["Width"]
                 Height = form_def["Height"]
                 Name = form_def["Name"]
-                controls_def= form_def
+                logging.debug("add_controls:" +repr(form_def))
+                controls_def= copy.deepcopy(form_def)
                 self.Shapes.AddShape(msoOLEControlObject, Left, Top, Width, Height, Row=Row, Col=Col, Fill=0, text="", name=Name,control_dict=controls_def)
                 
     def AddControl(self,control):
@@ -1541,7 +1438,7 @@ class CWorksheet(object):
             if col == 1:  # aktive column
                 cell = self.Cells(row+1,col+1)
                 if cell.Value == "":
-                    cell.Value = chr(252)
+                    cell.Value = chr(xlhookchar)
                 else:
                     cell.Value= ""
                 self.Redraw_table()
@@ -1767,21 +1664,51 @@ class CWorksheet(object):
         self.shapelist.append(newshape)
         #test self.setDataChanged()
             
-    def moveShapesVertical(self,y1,y2=-1,deltaY=0,copy=False,cY1=0):
+    def moveShapesVertical(self,y1=-1,y2=-1,top_left_cell_row=None, deltaY=0,copy=False,cY1=0):
         tmp_Shapelist = self.shapelist.copy()
-        for shape in tmp_Shapelist:
-            if y2==-1:
-                if shape.Top >=y1:
-                    if shape.Top == cY1+1 and copy:
-                        self.copyShape(shape,newY=shape.Top+deltaY)
-                    else:
+        if top_left_cell_row != None:
+            for shape in tmp_Shapelist:
+                if shape.TopLeftCell_Row != None:
+                    if shape.TopLeftCell_Row > top_left_cell_row:
                         shape.Top += deltaY
-            else:
-                if shape.Top in range(y1,y2+1):
-                    if copy:
-                        self.copyShape(shape,newY=shape.Top+deltaY)
-                    else:
-                        shape.Top += deltaY               
+        else:
+            for shape in tmp_Shapelist:
+                if y2==-1:
+                    if shape.Top >=y1:
+                        if shape.Top == cY1+1 and copy:
+                            self.copyShape(shape,newY=shape.Top+deltaY)
+                        else:
+                            shape.Top += deltaY
+                else:
+                    if shape.Top in range(y1,y2+1):
+                        if copy:
+                            self.copyShape(shape,newY=shape.Top+deltaY)
+                        else:
+                            shape.Top += deltaY
+        self.drawShapes()
+        
+    def moveShapesHorizontal(self,x1=-1,x2=-1,top_left_cell_column=None, deltaX=0,copy=False,cX1=0):
+        tmp_Shapelist = self.shapelist.copy()
+        if top_left_cell_column != None:
+            for shape in tmp_Shapelist:
+                if shape.TopLeftCell_Col != None:
+                    if shape.TopLeftCell_Col > top_left_cell_column:
+                        shape.Left += deltaX
+        else:
+            for shape in tmp_Shapelist:
+                if x2==-1:
+                    if shape.Top >=x1:
+                        if shape.Left == cX1+1 and copy:
+                            self.copyShape(shape,newX=shape.Top+deltaX)
+                        else:
+                            shape.Left += deltaX
+                else:
+                    if shape.Left in range(x1,x2+1):
+                        if copy:
+                            self.copyShape(shape,newX=shape.Left+deltaX)
+                        else:
+                            shape.Left += deltaX
+        self.drawShapes()        
     
     def moveshapes(self,delta_width,asofpos):
         # move all shapes by delta_width after asofpos
@@ -1800,31 +1727,31 @@ class CWorksheet(object):
         if newshape:
             return newshape
         filltkcolor=int2tkcolor(Fillcolor)
-        newshape = CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, Text=Text,tablecanvas=self.tksheet, ws=self)
-        #self.model.shapelist.append(newshape)
+        newshape = CShape(name, shapetype, Left, Top, Width, Height, Fillcolor=filltkcolor, Text=Text, ws=self)
+        self.shapelist.append(newshape)
         return newshape
     
     def addLabel(self, textorientation, Left, Top, Width, Height):
         name="IntLabel1"
         shapetype = msoTextBox
         filltkcolor="#000000"
-        newshape = CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, Text=None,tablecanvas=self.tksheet, ws=self)
-        #self.model.shapelist.append(newshape)
+        newshape = CShape(name, shapetype, Left, Top, Width, Height, Fillcolor=filltkcolor, Text=None, ws=self)
+        self.shapelist.append(newshape)
         return newshape
     
     def addConnector(self, contype, BeginX, Beginy, Width, Height):
         name="IntConnector1"
         shapetype = "Connector"
         filltkcolor="#000000"
-        newshape = CTShape(name, shapetype, BeginX, Beginy, Width, Height, FillTKcolor=filltkcolor, Text=None,tablecanvas=self.tksheet, ws=self)
-        #self.model.shapelist.append(newshape)
+        newshape = CShape(name, shapetype, BeginX, Beginy, Width, Height, Fillcolor=filltkcolor, Text=None, ws=self)
+        self.shapelist.append(newshape)
         return newshape    
     
     def addPicture(self, name, Left, Top, Width, Height, Text=None):
         shapetype = msoPicture
         filltkcolor="#000000"
-        newshape = CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, Text=Text,tablecanvas=self.tksheet, ws=self)
-        #self.model.shapelist.append(newshape)
+        newshape = CShape(name, shapetype, Left, Top, Width, Height, Fillcolor=filltkcolor, Text=Text, ws=self)
+        self.shapelist.append(newshape)
         return newshape
     
     def deleteshape(self,shape):
@@ -1838,29 +1765,15 @@ class CWorksheet(object):
                 self.tksheet.MT.delete(shape.formwin)
             self.shapelist.remove(shape) 
             shape.set_activeflag(False)
-            
-    def redraw_shapes(self, saved_shapelist):
-        for shape in saved_shapelist:
-           pass
-       
-    def recreate_shapes(self):
-        self.cb_recreate_shapes()
 
     def drawShapes(self,force=False):
-        #self.delete("Shape")
-        #print("DrawShapes")
         for shape in self.shapelist:
             self.drawShape(shape,force=force)
             
     def drawShape(self,shape,force=False):
-        #print("drawShapes:", self.model.modelname,shape.TopLeftCell_Row,shape.tablename)
         if shape.get_activeflag() and shape.get_visible():
-            #print("Draw-Shape:",shape.Name)
             shapeY = shape.Top
-            #shapeY = self.calc_y_from_row(shape.TopLeftCell_Row)
-            #shaperow = self.getRowPosition(shapeY, ignorehiddenrows=True)
             shaperow = shape.TopLeftCell_Row
-            
             #determine displayed row index
             displayed_rows = self.tksheet.displayed_rows
             if displayed_rows == []:
@@ -1871,29 +1784,20 @@ class CWorksheet(object):
                     shaperow_displayed = True
                 except:
                     shaperow_displayed = False
-            
-            if shaperow_displayed: #not shaperow in []: #self.model.hiderowslist:
-                #numhiddenrows = self.calc_nohidenrows(shaperow)
-                #shapeY = shapeY - numhiddenrows*self.rowheight
-                #if shape.rectidx>0:
-                #    self.delete(shape.rectidx)
-                #    shape.rectidx=0
-                #if shape.textidx>0:
-                #    self.delete(shape.textidx)
-                #    shape.textidx=0
+                    #print("shape not in displayed row:", shaperow)
+            if shaperow_displayed:
                 if shape.rectidx==0 or force:
-                    #print("New-Shape:",shape.Name)
                     if shape.Shapetype == msoShapeRectangle or shape.Shapetype == "rect":
                         #if shape.TextFrame2.TextRange.Text == "":
                         #    shape.TextFrame2.TextRange.Text = "0"
-                        shape.rectidx = self.tksheet.MT.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape"))
+                        shape.rectidx = self.tksheet.MT.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape","Shapelist"))
                         if shape.ZOrder_Val==0:
                             self.tksheet.MT.tag_raise(shape.rectidx)
                         else:
                             self.tksheet.MT.tag_lower(shape.rectidx)
                         self.tksheet.MT.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
                         if shape.Text !="":
-                            shape.textidx = self.tksheet.MT.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,font=self.thefont,tags=(shape.Name,"Shape"))
+                            shape.textidx = self.tksheet.MT.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,font=self.thefont,tags=(shape.Name,"Shape","Shapelist"))
                             if shape.ZOrder_Val==0:
                                 self.tksheet.MT.tag_raise(shape.textidx)
                             else:
@@ -1905,7 +1809,7 @@ class CWorksheet(object):
                         #if shape.TextFrame2.TextRange.Text == "":
                         #    shape.TextFrame2.TextRange.Text = "0"
                         if shape.Text !="":
-                            shape.textidx = self.tksheet.MT.create_text(int(shape.Left),int(shape.Top),anchor="nw",text=shape.Text,tags=(shape.Name,"Shape"),width=shape.Width,font=self.thefont)
+                            shape.textidx = self.tksheet.MT.create_text(int(shape.Left),int(shape.Top),anchor="nw",text=shape.Text,tags=(shape.Name,"Shape","Shapelist"),width=shape.Width,font=self.thefont)
                             if shape.ZOrder_Val==0:
                                 self.tksheet.MT.tag_raise(shape.textidx)
                             else:
@@ -1931,63 +1835,57 @@ class CWorksheet(object):
                             #shape.form.bind('<KeyRelease>', callback)
                             #shape.form.bind("<Button-3>", self.handle_right_click)
                             #self.form.focus_set()
-                            shape.formwin=self.tksheet.MT.create_window(x1,y1, width=shape.Width,height=shape.Height,window=formFrame,anchor='nw',tag='form')
+                            shape.formwin=self.tksheet.MT.create_window(x1,y1, width=shape.Width,height=shape.Height,window=formFrame,anchor='nw',tag=('form',"Shapelist"))
                         else:
                             self.tksheet.MT.coords(shape.formwin,shape.Left, shape.Top)
                             if shape.updatecontrol:
                                 control = self.worksheet.Controls_Dict.get(shape.Name,None)
                                 if control:
                                     control.TKWidget.configure(text=shape.Text,background=shape.Fillcolor)
-                                    
                         self.tksheet.MT.tag_raise(shape.formwin)
                     elif shape.Shapetype == "picture" or shape.Shapetype==msoPicture:
                         pass
-                        #print("drawshape - Picture:", shape.Name)
-
                         image_loaded=False
                         try:
                             image = tk.PhotoImage(file=shape.Name)
                             self.imagedict[shape.Name+str(shape.Top)] = image
-                            shape.rectidx = self.tksheet.MT.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture"),anchor='nw')
+                            shape.rectidx = self.tksheet.MT.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture","Shapelist"),anchor='nw')
                             self.tksheet.MT.tag_raise(shape.rectidx)
                             image_loaded=True
                         except BaseException as e:
-                            logging.debug(e)
-                            logging.debug("Error loading image:" + shape.Name)
+                            logging.debug(e, exc_info=True) 
+                            logging.debug("Worksheet: Error loading image:" + shape.Name)
                             image_loaded=False
                         if not image_loaded:
                             try:
                                 shape.Name=shape.Name.replace(".jpg",".png")
                                 image = tk.PhotoImage(file=shape.Name)
                                 self.imagedict[shape.Name+str(shape.Top)] = image
-                                shape.rectidx = self.tksheet.MT.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture"),anchor='nw')
+                                shape.rectidx = self.tksheet.MT.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture","Shapelist"),anchor='nw')
                                 self.tksheet.MT.tag_raise(shape.rectidx)
                             except BaseException as e:
-                                logging.debug(e)
-                                logging.debug("Error loading image:" + shape.Name)
-                                logging.debug("Error: Image not found: "+shape.Name)
+                                logging.debug(e, exc_info=True) 
+                                logging.debug("Worksheet: Error: Image not found: "+shape.Name)
                         if not image_loaded:
                             try:
                                 shape.Name=shape.Name.replace(".bmp",".png")
                                 image = tk.PhotoImage(file=shape.Name)
                                 self.imagedict[shape.Name+str(shape.Top)] = image
-                                shape.rectidx = self.tksheet.MT.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture"),anchor='nw')
+                                shape.rectidx = self.tksheet.MT.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture","Shapelist"),anchor='nw')
                                 self.tksheet.MT.tag_raise(shape.rectidx)
                             except BaseException as e:
-                                logging.debug(e)
-                                logging.debug("Error loading image:" + shape.Name)
-                                logging.debug("Error: Image not found: "+shape.Name)                        
+                                logging.debug(e, exc_info=True) 
+                                logging.debug("Worksheet: Error: Image not found: "+shape.Name)
                         #self.tag_raise(shape.textidx)
                         #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
                         #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
                     elif shape.Shapetype == msoShapeOval or shape.Shapetype == "oval":
-                        #if shape.TextFrame2 == "":
-                        #    shape.TextFrame2 = "0"
-                        #print("DrawShape:",shape.Name,"-",shape.Fill.ForeColor.tkcolor())    
-                        shape.rectidx = self.tksheet.MT.create_oval(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape"))
+                        if shape.TextFrame2 == "":
+                            shape.TextFrame2 = "0"
+                        shape.rectidx = self.tksheet.MT.create_oval(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape","Shapelist"))
                         self.tksheet.MT.tag_raise(shape.rectidx)
                         if shape.Text !="":
-                            shape.textidx = self.tksheet.MT.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,font=self.thefont,tags=(shape.Name,"Shape"))
+                            shape.textidx = self.tksheet.MT.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,font=self.thefont,tags=(shape.Name,"Shape","Shapelist"))
                             self.tksheet.MT.tag_raise(shape.textidx)
                         #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
                         #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
@@ -1997,7 +1895,7 @@ class CWorksheet(object):
                         else:
                             smooth=False
                         if shape.EditingType == msoEditingAuto:
-                            shape.rectidx = self.tksheet.MT.create_polygon(shape.nodelist,fill=shape.Fillcolor,outline=shape.LineColor,smooth=smooth,tags=(shape.Name,"Shape"))
+                            shape.rectidx = self.tksheet.MT.create_polygon(shape.nodelist,fill=shape.Fillcolor,outline=shape.LineColor,smooth=smooth,tags=(shape.Name,"Shape","Shapelist"))
                         else:
                             arrow=None
                             if hasattr(shape,"EndArrowheadStyle_val"):
@@ -2006,14 +1904,14 @@ class CWorksheet(object):
                             if hasattr(shape,"BeginArrowheadStyle_val"):
                                 if shape.BeginArrowheadStyle_val in (msoArrowheadStealth,msoArrowheadTriangle):
                                     arrow=tk.FIRST                               
-                            shape.rectidx = self.tksheet.MT.create_line(shape.nodelist,fill=shape.Fillcolor,smooth=smooth,arrow=arrow,tags=(shape.Name,"Shape"))
-                        if shape.ZOrder_Val==0:
+                            shape.rectidx = self.tksheet.MT.create_line(shape.nodelist,fill=shape.Fillcolor,smooth=smooth,arrow=arrow,tags=(shape.Name,"Shape","Shapelist"))
+                        if True: #shape.ZOrder_Val==0:
                             self.tksheet.MT.tag_raise(shape.rectidx)
                         else:
                             self.tksheet.MT.tag_lower(shape.rectidx)
-                        #if shape.Text !="":
-                        #    shape.textidx = self.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape"))
-                        #    self.tag_raise(shape.textidx)                    
+                        if shape.Text !="":
+                            shape.textidx = self.tksheet.MT.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,tags=(shape.Name,"Shape","Shapelist"))
+                            self.tksheet.MT.tag_raise(shape.textidx)                    
                     elif shape.Shapetype == "Connector":
                         #if shape.TextFrame2.TextRange.Text == "":
                         #    shape.TextFrame2.TextRange.Text = "0"
@@ -2024,7 +1922,7 @@ class CWorksheet(object):
                         if hasattr(shape,"BeginArrowheadStyle_val"):
                             if shape.BeginArrowheadStyle_val == msoArrowheadStealth:
                                 arrow=tk.FIRST                        
-                        shape.rectidx = self.tksheet.MT.create_line(shape.Left,shape.Top,shape.Left+shape.Width,shape.Top+shape.Height,fill=shape.Fillcolor,arrow=arrow,tags=(shape.Name,"Shape"))
+                        shape.rectidx = self.tksheet.MT.create_line(shape.Left,shape.Top,shape.Left+shape.Width,shape.Top+shape.Height,fill=shape.Fillcolor,arrow=arrow,tags=(shape.Name,"Shape","Shapelist"))
                         if shape.ZOrder_Val==0:
                             self.tksheet.MT.tag_raise(shape.rectidx)
                         else:
@@ -2052,6 +1950,39 @@ class CWorksheet(object):
                             self.tksheet.MT.tag_lower(shape.textidx)
                         self.tksheet.MT.coords(shape.textidx,int(shape.Left+shape.Width/2),int(shape.Top+shape.Height/2))
     
+    def drawGrid(self, startrow=None, endrow=None):
+        """Draw the table grid lines"""
+        self.tksheet.MT.delete('gridline')
+        if self.Gridlist != {}:
+            #print("Grid_ Startrow - Endrow:",startrow,endrow)
+            for grid in self.Gridlist:
+                griditem = self.Gridlist[grid]
+                cell0 = griditem[0]
+                cell1 = griditem[1]
+                row0 = cell0[0] - 1
+                col0 = cell0[1] - 1
+                row1=cell1[0] - 1
+                col1=cell1[1] - 1
+                startrow1=self.data_row_to_displayed(row0)
+                endrow1=self.data_row_to_displayed(row1)
+                if startrow1 != None and endrow1 != None:
+                    y_start = self.calc_y_for_row(startrow1)
+                    y_end = self.calc_y_for_row(endrow1+1)
+                    for col in range(col0,col1+2):
+                        x=self.calc_x_for_column(col)
+                        self.tksheet.MT.create_line(x,y_start,x,y_end, tag='gridline',
+                                             fill=self.grid_color, width=self.linewidth)
+                    
+                    x_start = self.calc_x_for_column(col0)
+                    x_end   = self.calc_x_for_column(col1+1)
+                    y_pos = y_start
+                    for row in range(startrow1, endrow1+2):
+                        #print("Grid Horizontal - y_pos:",row,y_pos)
+                        y_pos =  self.calc_y_for_row(row)
+                        self.tksheet.MT.create_line(x_start,y_pos,x_end,y_pos, tag='gridline',
+                                        fill=self.grid_color, width=self.linewidth)
+                        
+    
     def getShape(self,index):
         if index <= len(self.shapelist):
             shape = self.shapelist[index-1]
@@ -2063,7 +1994,10 @@ class CWorksheet(object):
         pass
     
     def data_row_to_displayed(self, row):
-        displayed_row = self.tksheet.displayed_rows.index(row)
+        try:
+            displayed_row = self.tksheet.displayed_rows.index(row)
+        except:
+            displayed_row = None
         return displayed_row
     
     def displayed_row_to_data(self, row):
@@ -2075,6 +2009,7 @@ class CWorksheet(object):
     
     def displayed_column_to_data(self, col):
         return self.tksheet.displayed_column_to_data(col)
+    
     def importCSV(self, filename=None, sep=',',fieldnames=None):
         """Import from csv file"""
         self.importCSV_int(filename, sep=sep,fieldnames=fieldnames)
@@ -2084,9 +2019,12 @@ class CWorksheet(object):
     
     def importCSV_int(self, filename, sep=',',fieldnames=None):
         """Import table data from a comma separated file."""
+        
+        logging.debug("Import CSV_int: Filename="+str(filename))
 
         if not os.path.isfile(filename) or not os.path.exists(filename):
             print ('no such file', filename)
+            logging.debug("Import CSV_int: File notfound Filename="+filename)
             return None
         #takes first row as field names
         dictreader = csv.DictReader(open(filename, "r",encoding="utf8"), delimiter=sep,fieldnames=fieldnames)
@@ -2103,29 +2041,23 @@ class CWorksheet(object):
     def importDict(self, newdata):
         #test needs to be updated
         #get cols from sub data keys
-                            
+        #logging.debug("importDICT:"+repr(newdata))
         self.tksheet.data = newdata
-        self.tksheet.shapelist=[]
         self.setDataChanged()
         return
+    
+    def refreshicons(self):
+        self.Workbook.Evt_Redraw_Sheet(self)
         
-        colnames = []
-        self.setLastUsedRow(0)
-        for k in newdata:
-            fields = newdata[k].keys()
-            for f in fields:
-                if not f in colnames:
-                    colnames.append(f)
-                if f!=None and newdata[k][f]!="":
-                    self.updateLastUsedRow(k)
-        for c in colnames:
-            self.addColumn(c)
-        #add the data
-        self.data.update(newdata)
-        self.reclist = list(self.data.keys())
-        self.setDataChanged()
-        #self.lastUsedRow = self.getRowCount()
-        return    
+    def clear_shapelist(self):
+        self.tksheet.MT.delete("Shapelist")
+        self.shapelist = []
+    
+    def recreate_controls(self):
+        sheetname_prop = self.Workbook.sheetdict.get(self.Name)
+        controls_dict = sheetname_prop.get("Controls",None)
+        if controls_dict:
+            self.add_controls(controls_dict)
            
     def Cells(self,row=None, col=None):
         if row==None and col==None:
@@ -2153,7 +2085,7 @@ class CWorksheet(object):
         if ws==None:
             ws  = ActiveSheet
         #check for Cell Names eg. "E5", "AB12"
-        pattern=re.compile("([A-Z]+)(\d+)")
+        pattern=re.compile(r"([A-Z]+)(\d+)")
         m = re.match(pattern,rangestr)
         if m!=None:
             #print(rangestr,"->",m.groups())
@@ -2255,25 +2187,15 @@ class CWorksheet(object):
         #test needs update
         self.tksheet.redraw()
         self.drawShapes()
+        self.drawGrid()
         if do_bindings:
             #print("Redraw_Table - do bindings")
             self.do_bindings()
+        #self.Call_EventProc("Worksheet_Redraw")(self) 
         
     def set_value_in_cell(self,row,column,newval):
         cell = self.Cells(row, column)
         cell.Value=newval
-        
-        """
-        colname = self.tksheet.getColumnName(column-1)
-        #coltype = tksheet.columntypes[colname]
-        name = self.tksheet.getRecName(row-1)
-        if colname in self.tksheet.data[name]:
-            if self.tksheet.data[name][colname] != newval:
-                self.tksheet.data[name][colname] = newval
-                if Application.EnableEvents:
-                    print("Workbook contents changed")
-                    ActiveSheet.EventWSchanged(self)
-        """
         
     def create_search_colcache(self,searchcol):
         colcontent = self.tksheet.get_data(self.tksheet.span(None, (searchcol-1)))
@@ -2320,12 +2242,23 @@ class CWorksheet(object):
         return x1,y1,x2,y2
     
     def calc_row_from_y(self, y):
-        row = self.tksheet.MT.identify_row(y=y)
+        displayed_row = self.tksheet.MT.identify_row(y=y)
+        row = self.displayed_row_to_data(displayed_row)
         return row
     
     def calc_col_from_x(self, x):
         col = self.tksheet.MT.identify_col(x=x)
-        return col    
+        return col
+    
+    def calc_y_for_row(self, row):
+        row_pos_list = self.tksheet.get_row_heights(canvas_positions=True)
+        y = row_pos_list[row]
+        return y
+    
+    def calc_x_for_column(self, column):
+        column_pos_list = self.tksheet.get_column_widths(canvas_positions=True)
+        x = column_pos_list[column]
+        return x    
     
     def find_in_col_ret_row(self,searchtext, searchcol, cache=True):
         if cache:
@@ -2373,8 +2306,6 @@ class CWorksheet(object):
 
     def Copy(self,SheetName=None,After=None):
         self.Workbook.add_sheet(SheetName,from_sheet=self.Name,After=After)
-        
-        pass
     
     def do_bindings(self):
         #print("do bindings")
@@ -2402,33 +2333,166 @@ class CWorksheet(object):
         else:
             self.Workbook.container.tab(self.tabid,state="disable")
             self.Workbook.container.hide(self.tabid)
-        
         return
 
     def getData(self):
-        #test needs to be updated
+        #collects all table data and status information to allow the creation of a JSON file
         data = {}
-        data["TKSHEET_data"] = self.tksheet.get_data(self.tksheet.span(""))
-        #data["shapelist"] = self.shapelist
+        tksheet_data = self.tksheet.get_data(self.tksheet.span(""))
+        
+        data["TKSHEET_data"] = copy.deepcopy(tksheet_data)
+        highlighted_cells = self.tksheet.get_highlighted_cells()
+        if highlighted_cells != {}:
+            new_highlighted_cells = {}
+            for cell_tuple,highlight in highlighted_cells.items():
+                new_key = str(cell_tuple[0]) + "," + str(cell_tuple[1])
+                new_highlighted_cells[new_key] = highlight.bg
+            data["TKSHEET_highlighted_cells"] = copy.deepcopy(new_highlighted_cells)
+        data["row_pos"] = copy.deepcopy(self.tksheet.get_row_heights(canvas_positions=True))
+        data["col_pos"] = copy.deepcopy(self.tksheet.get_column_widths(canvas_positions=True))
+        if self.saveShapes:
+            shapelist = self.shapelist
+            new_shapelist = []
+            for shape in shapelist:
+                newshape = dict()
+                newshape["WorksheetName"] = shape.Worksheet.Name
+                newshape["Shapetype"] = shape.Shapetype
+                newshape["Type"] = shape.Type
+                newshape["Name_val"] = shape.Name_val
+                newshape["tablename"] = shape.tablename
+                newshape["Left_val"] = shape.Left_val
+                newshape["Active"] = shape.Active
+                newshape["Top_val"] = shape.Top_val
+                newshape["Width"] = shape.Width
+                newshape["Height"] = shape.Height
+                newshape["Row"] = shape.Row
+                newshape["Col"] = shape.Col
+                newshape["Rotation"] = shape.Rotation
+                newshape["Visible_val"] = shape.Visible_val
+                newshape["TopLeftCell_Row"] = shape.TopLeftCell_Row
+                newshape["TopLeftCell_Col"] = shape.TopLeftCell_Col
+                newshape["Index"] = shape.Index
+                newshape["OnAction_val"] = shape.OnAction_val
+                newshape["ZOrder_Val"] = shape.ZOrder_Val
+                newshape["Locked"] = shape.Locked
+                newshape["Text"] = shape.Text
+                newshape["AlternativeText"] = shape.AlternativeText
+                #newshape["Fill.ForeColor"] = shape.Fill.ForeColor
+                #newshape["Line.BackColor"] = shape.Line.BackColor
+                #newshape["Line.ForeColor"] = shape.Line.ForeColor
+                #newshape["Line.BeginArrowheadStyle_val"] = shape.Line.BeginArrowheadStyle_val
+                #newshape["Line.EndArrowheadStyle_val"] = shape.Line.EndArrowheadStyle_val
+                #newshape["Line.Transparency"] = shape.Line.Transparency
+                #newshape["Line.Visible"] = shape.Line.Visible
+                #newshape["Line.Weight"] = shape.Line.Weight
+                newshape["control_dict"] = shape.control_dict
+                newshape["updatecontrol"] = shape.updatecontrol
+                newshape["AlternativeText"] = shape.AlternativeText
+                newshape["Init_Value"] = shape.Init_Value
+                newshape["Fillcolor"] = shape.Fillcolor
+                newshape["LineColor"] = shape.LineColor
+                newshape["nodelist"] = shape.nodelist
+                newshape["SegmentType"] = shape.SegmentType
+                newshape["EditingType"] = shape.EditingType
+                new_shapelist.append(newshape)
+            data["shapelist"] = copy.deepcopy(new_shapelist)
+            
         self.SavePersistentControls()
-        data["Persistent_Controls"]=self.persistent_controls_dict
+        data["Persistent_Controls"]=copy.deepcopy(self.persistent_controls_dict)
         return data
     
     def setData(self,data):
-        #test needs to be updated
-        sheet_data = data.get("TKSHEET_data", {})
+        sheet_data = copy.deepcopy(data.get("TKSHEET_data", {}))
         #self.table.set_data(data["TKSHEET_data"])
         self.tksheet.set_data("A1", data=sheet_data, emit_event=True, redraw=True)
-        #self.shapelist = data["shapelist"]
+        
+        highlighted_cells = data.get("TKSHEET_highlighted_cells", {}) #self.tksheet.get_highlighted_cells()
+        if highlighted_cells != {}:
+            for cell_str,highlight in highlighted_cells.items():
+                cell_split = cell_str.split(",")
+                new_key = (int(cell_split[0]), int(cell_split[1]))
+                self.tksheet.highlight(new_key, bg=highlight)
+            
+        #cell_options = copy.deepcopy(data.get("TKSHEET_options", {}))
+        #if cell_options != {}:
+        #    new_cell_options = {}
+        #    for key, options in cell_options.items():
+        #        if options != {}:
+        #            key_split = key.split(",")
+        #            new_key = (int(key_split[0]),int(key_split[1]))
+        #            #for option_type, option_value in options.items():
+        #            #    new_options[option_type] = option_value
+        #            new_cell_options[new_key] = options
+        #    self.tksheet.MT.cell_options = new_cell_options
+        shapelist = copy.deepcopy(data.get("shapelist", []))
+        if shapelist != []:
+            new_shapelist = []
+            for newshape in shapelist:
+                shape = CShape(newshape["Name_val"], newshape["Shapetype"], newshape["Left_val"], newshape["Top_val"], Width=0, Height=0, Fillcolor=0, Text="",Row=None, Col=None, rotation=0,orientation=msoTextOrientationHorizontal,AlternativeText="",ws=None,nodelist=None,control_dict=None,Init_Value=None,linecolor=None,zorder=0,segmenttype=msoSegmentLine,editingtype=msoEditingAuto)
+                #shape.Worksheet.Name = newshape["WorksheetName"]
+                shape.Worksheet = self
+                shape.Shapetype = newshape["Shapetype"]
+                shape.Type = newshape["Type"]
+                shape.Name_val = newshape["Name_val"]
+                shape.tablename = newshape["tablename"]
+                shape.Left_val = newshape["Left_val"]
+                shape.Active = newshape["Active"]
+                shape.Top_val = newshape["Top_val"]
+                shape.Width = newshape["Width"]
+                shape.Height = newshape["Height"]
+                shape.Row = newshape["Row"]
+                shape.Col = newshape["Col"]
+                shape.Rotation = newshape["Rotation"]
+                shape.Visible_val = newshape["Visible_val"]
+                shape.TopLeftCell_Row = newshape["TopLeftCell_Row"]
+                shape.TopLeftCell_Col = newshape["TopLeftCell_Col"]
+                shape.Index = newshape["Index"]
+                shape.OnAction_val = newshape["OnAction_val"]
+                shape.ZOrder_Val = newshape["ZOrder_Val"]
+                shape.Locked = newshape["Locked"]
+                shape.Text = newshape["Text"]
+                shape.AlternativeText = newshape["AlternativeText"]
+                shape.Fill = CFill(newshape["Fillcolor"], shape=shape)
+                shape.Line = CLine(linecolor= newshape["LineColor"], shape=self)
+                #shape.Line.BackColor = newshape["Line.BackColor"]
+                #shape.Line.ForeColor = newshape["Line.ForeColor"]
+                #shape.Line.BeginArrowheadStyle_val = newshape["Line.BeginArrowheadStyle_val"]
+                #shape.Line.EndArrowheadStyle_val = newshape["Line.EndArrowheadStyle_val"]
+                #shape.Line.Transparency = newshape["Line.Transparency"]
+                #shape.Line.Visible = newshape["Line.Visible"]
+                #shape.Line.Weight = newshape["Line.Weight"]
+                shape.control_dict = newshape["control_dict"]
+                shape.updatecontrol = newshape["updatecontrol"]
+                shape.AlternativeText = newshape["AlternativeText"]
+                shape.Init_Value = newshape["Init_Value"]
+                shape.Fillcolor = newshape["Fillcolor"]
+                shape.LineColor = newshape["LineColor"]
+                shape.nodelist = newshape["nodelist"]
+                shape.SegmentType = newshape["SegmentType"]
+                shape.EditingType = newshape["EditingType"]
+                new_shapelist.append(shape)
+                      
+            self.shapelist = new_shapelist
+
+        row_pos = data.get("row_pos", [])
+        if row_pos != []:
+            self.tksheet.set_row_heights(row_heights=row_pos, canvas_positions=True)
+            
+        col_pos = data.get("col_pos", [])
+        if col_pos != []:
+            self.tksheet.set_column_widths(column_widths=col_pos, canvas_positions=True)
         
         #self.tksheet.createEmptyModel()
         #self.tablemodel.setupModel(data)
         self.persistent_controls_dict=data.get("Persistent_Controls",{})
         self.SetPersistentControls()
+        
         self.tksheet.redraw() #Table(force=True)
+        self.drawShapes(force=True)
+        self.drawGrid()
 
     def clearData(self):
-        pass
+        self.tksheet.reset()
     
     def clearSheet(self):
         #test needs to be updated
@@ -2450,6 +2514,7 @@ class CWorksheet(object):
             self.handle_formating(self.formating_dict.get("FontColor",[]))
             #test self.tablemodel.gridlist = self.formating_dict.get("GridList",[])
             self.handle_gridlist(self.formating_dict.get("GridList",[]))
+            self.handle_gridformat(self.formating_dict.get("GridFormat",{}))
             #test self.tablemodel.ColumnAlignment = self.formating_dict.get("ColumnAlignment",{})
             self.handle_ColumnAlignment(self.formating_dict.get("ColumnAlignment",[]))
             self.handle_ColumnWidth(self.formating_dict.get("ColumnWidth",[]))            
@@ -2469,15 +2534,23 @@ class CWorksheet(object):
         
     def changeGrid(self, gridno, diditem):
         #test needs update
-        pass
+        self.Gridlist[gridno] = diditem
         
     def get_selection(self):
-        return 
-    
+        return CRange(self.getSelectedCell())
     def set_selection(self, value):
         ActiveSheet.get_selection().Value=value
+    Selection = property(get_selection, set_selection, doc='Selection')
     
-    Selection = property(get_selection, set_selection, doc='Selection')             
+    def get_name(self):
+        return self.name_val
+    def set_name(self, value):
+        self.name_val = value
+    Name = property(get_name, set_name, doc='Name')
+    
+    def getColorAt(self, row, col):
+        return self.tksheet.getColorAt(row, col)
+        
  
 class CFreeForm(object):
     def __init__(self, EditingType, X1, Y1):
@@ -2506,6 +2579,9 @@ class CFreeForm(object):
     def ConvertToShape(self):
         name="Freeform"
         shape=CShape(name, msoFreeform, self.Left, self.Top, None, None,Fillcolor=-1,nodelist=self.nodelist,zorder=0,segmenttype=self.SegmentType,editingtype=self.EditingType)
+        print("ConvertToShape", name, self.Left, self.Top, self.nodelist)
+        shape.Worksheet.shapelist.append(shape)
+        print(shape.Worksheet.shapelist)
         return shape
         
 class CShapeList(object):
@@ -2516,15 +2592,11 @@ class CShapeList(object):
         self.ws.shapelist = list()
         self.currentshape=None
         self.currentidx = 0
-       
-    def convTShape2CShape(self,tshape):
-        cshape=CShape(tshape.Name, tshape.Shapetype, tshape.Left, tshape.Top, tshape.Width, tshape.Height, tshape.Fillcolor, tshape.Text, Row=tshape.Row, Col=tshape.Col, AlternativeText=tshape.AlternativeText,orientation=msoTextOrientationHorizontal, ws=self.ws,tshape=tshape,)
-        return cshape
-    
+
     def getShape(self,index):
         if type(index)==int:
             if index <= len(self.ws.shapelist):
-                shape = self.convTShape2CShape(self.ws.shapelist[index-1])
+                shape = self.ws.shapelist[index-1]
             else:
                 shape=None
         else:
@@ -2544,11 +2616,12 @@ class CShapeList(object):
             shape=CShape(name, shapetype, Left, Top, Width, Height, Fill, Text=text,ws=self.ws)
         elif shapetype == msoOLEControlObject:
             shape=CShape(name, shapetype, Left, Top, Width, Height, Fill,ws=self.ws, Row=Row, Col=Col, control_dict=control_dict,Init_Value=Init_Value)
+        self.ws.shapelist.append(shape)
         return shape # self.convTShape2CShape(shape)
 
     def AddLabel(self, TextOrientation=msoTextOrientationHorizontal, Left=0, Top=0 , Width=0, Height=0):
         shape=self.ws.addLabel( TextOrientation, Left, Top, Width, Height)
-        return self.convTShape2CShape(shape)
+        return shape #self.convTShape2CShape(shape)
     
     def AddTextBox(self, Name="TextBox1", TextOrientation=msoTextOrientationHorizontal, Left=0, Top=0 , Width=0, Height=0,Text=""):
         #shape=self.ws.table.addLabel( TextOrientation, Left, Top, Width, Height)
@@ -2580,22 +2653,19 @@ class CShapeList(object):
         Width=EndX-BeginX
         Height=EndY-BeginY
         shape=self.ws.addConnector( ConType, Left, Top, Width, Height)
-        return self.convTShape2CShape(shape)
+        return shape # self.convTShape2CShape(shape)
         
     
     def AddPicture(self, PicName, linktofile=False, savewithdocument=True, Left=0 , Top=0 , Width=0, Height=0):
         shape=self.ws.addPicture( PicName, Left, Top, Width, Height)
-        return self.convTShape2CShape(shape)
+        return shape # self.convTShape2CShape(shape)
     
     def BuildFreeform(self, EditingType, X1, Y1):
+        print("BuildFreeForm:", X1, Y1)
         return CFreeForm(EditingType,X1,Y1)
         
     def Delete(self,shape):
         self.ws.deleteshape(shape)
-        #if type(shape)==int:
-        #    del self.tablemodel.shapelist[shape-1]
-        #else:
-        #    self.tablemodel.shapelist.remove(shape)
         
     def Count(self):
         return len(self.ws.shapelist)
@@ -2630,24 +2700,21 @@ class CRangeList(list):
         
     def get_count(self):
         return len(self)
-    
     def set_count(self,range):
         pass        
-            
     Count = property(get_count, set_count, doc='number of rows included in range')     
         
 class CRange(str):
     def __new__(cls,t1=None,t2=None,ws=None,value="",parenttype="",parent=None):
         if ws==None:
             ws=ActiveSheet
-            
         if t1==None and t2==None: #only type definition, only dummy needed
                 return
-        #print("Range:",t1,t2)
         finished=False
         if type(t1) == vbclasses.Long:
             t1 = int(t1)
-            
+        if type(t2) == vbclasses.Long:
+            t1 = int(t2)        
         if type(t1)==int and type(t2)==int:
             start=(t1,t2)
             end=(t1,t2)
@@ -2753,25 +2820,12 @@ class CRange(str):
         obj.ParentType=parenttype
         obj.iter_start=None
         obj.currentcell=obj.start
-        #self.rowrange = (self.start[0],self.end[0])
-        #self.colrange = (self.start[1],self.end[1])
-        #self.Address=self.start
-        #self.Rows=[]
-        #self.Columns = []
-        #self.Cells = CCells(self.rowrange,self.colrange,ws=ws)
         obj.CountLarge = (obj.end[0]-obj.start[0]+1)*(obj.end[1]-obj.start[1]+1)
         obj.Font = CFont(obj.Parent.default_font[0],obj.Parent.default_font[1])
         obj.default_font = obj.Parent.default_font
         if obj == None:
-            print("Error")
-
+            logging.debug("CRange -New: Error in Obnject creation")
         return obj
-        #    x1,y1,x2,y2 = self.ws.table.getCellCoords(self.Row-1,self.Column-1)
-        #    self.Height=y2-y1
-        #    self.Width=x2-x1
-        #    self.Top=y1
-        #    self.Left=x1
-        #    self.Interior = CInterior(self.Cells,p_range=self)
 
     # Attributes
     def dummy(self,value):
@@ -2782,11 +2836,9 @@ class CRange(str):
     def set_address(self,range):
         pass
     Address = property(get_address, set_address, doc='adress of first cell in range')
-    
-    
+
     def set_cells(self,rowlist):
         pass
-
     def get_cells(self):
         if self.Parent.ParentType=="Columns":
             startrow=self.Parent.Parent.start[0]
@@ -2795,7 +2847,6 @@ class CRange(str):
             return CRange((startrow,column),(lastrow,column),parent=self,ws=self.ws)
         else:
             logging.debug("get_cells-Error")
-      
     Cells = property(get_cells, set_cells, doc='rows included in range')   
 
     def get_column(self):
@@ -2807,18 +2858,15 @@ class CRange(str):
 
     def set_columns(self,rowlist):
         pass
-    
     def get_columns(self):
         return CRange((self.start[0],self.start[1]),(self.start[0],self.end[1]),ws=self.ws,parent=self,parenttype="Columns")
-   
     Columns = property(get_columns, set_columns, doc='Columns in Range')
-    
+
     def get_columnwidth(self):
         #colname=self.ws.tablemodel.getColumnName(self.start[1]-1)
         #width=self.ws.tablemodel.columnwidths[colname]
         width = self.ws.tksheet.column_width(self.start[1]-1)
         return width
-    
     def set_columnwidth(self, width):
         for col in range(self.start[1],self.end[1]+1):
             #colname=self.ws.tablemodel.getColumnName(col-1)
@@ -2861,13 +2909,10 @@ class CRange(str):
             return False
         else:
             return False
-
     def _set_hiderow(self,row,newval):
         ActiveSheet.set_hiderow(row, newval)
-                
     def _set_hidecolumn(self,col,newval):
         ActiveSheet.set_hidecolumn(col, newval)
-
     def set_Hidden(self,hide):
         if self.ParentType=="EntireRow":
             for row in range(self.start[0],self.end[0]+1):
@@ -2883,24 +2928,37 @@ class CRange(str):
         x1,y1,x2,y2 = self.ws.getCellCoords(self.Row-1,self.Column-1)
         return x1    
     Left = property(_Left, dummy, doc='Left coordinates of cell')
-    
+
     def get_row(self):
         return self.start[0]
     def set_row(self,range):
         pass
     Row = property(get_row, set_row, doc='row of first cell in range')
+    
+    def _set_rowheight(self,row,newval):
+        #ActiveSheet.tksheet.rowheightlist[row-1]=newval
+        newval = int(newval)
+        displayed_row = ActiveSheet.data_row_to_displayed(row-1)
+        ActiveSheet.tksheet.row_height(row=displayed_row, height=newval)
+        ActiveSheet.Redraw_table()
+    def _get_rowheight(self,row):
+        return ActiveSheet.tksheet.row_height(row=row-1, height=None)
+        #return ActiveSheet.tksheet.rowheightlist[row-1]    
+    def set_RowHeight(self, newval):
+        newval = newval * xlvp2py_guifactor
+        for row in range(self.start[0], self.end[0]+1):
+            self._set_rowheight(row,newval)
+    def get_RowHeight(self):
+        rowheight = ActiveSheet.tksheet.rowheightlist.get(self.start[0]-1,ActiveSheet.tksheet.default_rowheight)
+        rowheight = int(rowheight/xlvp2py_guifactor)
+        return rowheight
+    RowHeight = property(get_RowHeight, set_RowHeight, doc='CRange RowHeight')
 
     def get_rows(self):
         return CRange((self.start[0],self.start[1]),(self.end[0],self.start[1]),ws=self.ws,parent=self,parenttype="Rows")
     def set_rows(self,rowlist):
         pass
     Rows = property(get_rows, set_rows, doc='rows included in range')
-    
-    def set_columns(self,rowlist):
-        pass
-    def get_columns(self):
-        return CRange((self.start[0],self.start[1]),(self.start[0],self.end[1]),ws=self.ws,parent=self,parenttype="Columns")
-    Columns = property(get_columns, set_columns, doc='Columns in Range')    
     
     def get_text(self):
         return self.get_value()
@@ -2933,7 +2991,6 @@ class CRange(str):
             else:
                 value = ""
         return value
-
     def set_value(self,value):
         row=self.start[0]
         col=self.start[1]        
@@ -2946,55 +3003,19 @@ class CRange(str):
         if col >self.ws.tksheet.get_total_columns(): #getColumnCount():
             #add columnsrows
             pass
-        
         if row <=self.ws.tksheet.get_total_rows() and col <=self.ws.tksheet.get_total_columns(): #getColumnCount():
             curval = self.ws.tksheet.get_data(row-1, col-1)
             if curval != value:
-                self.ws.tksheet.span(row-1, col-1).data =  value   # (value, row-1, col-1)
+                self.ws.tksheet.span(row-1, col-1).data = value   # (value, row-1, col-1)
                 self.ws.tksheet.event_row=row-1
                 self.ws.tksheet.event_col=col-1
-                self.ws.Workbook.Synch_Evt_SheetChange(self.ws.tksheet)
-                
+                self.ws.Synch_Evt_SheetChange(self.ws.tksheet)
     Value = property(get_value, set_value, doc='value of first Cell in Range')
     
     def _Width(self):
         x1,y1,x2,y2 = self.ws.getCellCoords(self.Row-1,self.Column-1)
         return x2-x1
     Width = property(_Width, dummy, doc='Width of cell')
-    
-    def _set_rowheight(self,row,newval):
-        #ActiveSheet.tksheet.rowheightlist[row-1]=newval
-        newval = int(newval)
-        displayed_row = ActiveSheet.data_row_to_displayed(row-1)
-        ActiveSheet.tksheet.row_height(row=displayed_row, height=newval)
-        ActiveSheet.Redraw_table()
-        
-    def _get_rowheight(self,row):
-        return ActiveSheet.tksheet.row_height(row=row-1, height=None)
-        #return ActiveSheet.tksheet.rowheightlist[row-1]    
-    
-    def set_RowHeight(self, newval):
-        newval = newval * xlvp2py_guifactor
-        for row in range(self.start[0], self.end[0]+1):
-            self._set_rowheight(row,newval)
-
-    def get_RowHeight(self):
-        rowheight = ActiveSheet.tksheet.rowheightlist.get(self.start[0]-1,ActiveSheet.tksheet.default_rowheight)
-        rowheight = int(rowheight/xlvp2py_guifactor)
-        return rowheight
-
-    RowHeight = property(get_RowHeight, set_RowHeight, doc='CRange RowHeight')
-    
-    
-    
-    
-    def Insert(self, Shift=0, CopyOrigin=0):
-        if self.ws.tksheet == None:
-            self.ws.tksheet = ActiveSheet.tksheet
-        if Shift== xlDown and CopyOrigin== xlFormatFromLeftOrAbove:
-            self.ws.tksheet.insert_rows(rows=self.end[0]-self.start[0]+1, idx=self.start[0]-1)
-        else:
-            print("Error")
 
 # Methods
     def Activate(self):
@@ -3006,7 +3027,6 @@ class CRange(str):
         
     def CellsFct(self,row,column):
         return CRange(row,column, ws=self.ws)    
-    
 
     def ClearContents(self):
         self.ws.tksheet.span(self.start,self.end).clear()
@@ -3061,6 +3081,14 @@ class CRange(str):
             if cell_val == What:
                 return cell
         return None
+    
+    def Insert(self, Shift=0, CopyOrigin=0):
+        if self.ws.tksheet == None:
+            self.ws.tksheet = ActiveSheet.tksheet
+        if Shift== xlDown and CopyOrigin== xlFormatFromLeftOrAbove:
+            self.ws.tksheet.insert_rows(rows=self.end[0]-self.start[0]+1, idx=self.start[0]-1)
+        else:
+            logging.debug("Insert: unknown parameters")
             
     def Offset(self, offset_row, offset_col):
         return self.offset(offset_row, offset_col)    
@@ -3289,12 +3317,33 @@ class CRange(str):
         return value.upper()
     
 # internal functions
-    
     def _get_LastRow(self):
         return self.ws.tksheet.get_total_rows() #RowCount()()
     
     def _get_LastColumn(self):
         return self.ws.tksheet.get_total_columns() #getColumnCount()
+    
+    def last_non_zero_index(self, l):
+        result = 0
+        i = len(l) - 1
+        while i >= 0:
+            if l[i] != "" and type(l[i]) != list:
+                result = i
+                break
+            i -= 1
+        return result
+    
+    def get_last_used_column(self, lastrow=None):
+        last_used_column_max = 0
+        if lastrow == None:
+            lastrow = self.end[0]
+        for row in range(self.start[0], lastrow+1):
+            row_content = self.ws.tksheet[row-1:row].data
+            last_used_column = self.last_non_zero_index(row_content)
+            if last_used_column > last_used_column_max:
+                last_used_column_max = last_used_column
+        return last_used_column_max
+            
     
 class CShapeRange(object):
     def __init__(self,ws=None):
@@ -3320,14 +3369,11 @@ class CShapeRange(object):
     def set_Name(self, newval):
         for shape in self.shapes:
             shape.Name=newval
-    
     def get_Name(self):
         return self.shapes[0].Name
-        
     Name = property(get_Name, set_Name, doc='ShapeRange-Name')
     
 class CColumns(object):
-    
     def __init__(self,startcol=None,lastcol=None,parent=None,ws=None):
         self.ws=ws
         if startcol==None:
@@ -3343,10 +3389,8 @@ class CColumns(object):
         
     def get_Count(self):
         return self.lastcol-self.startcol
-    
     def set_Count(self,value):
         pass
-    
     Count = property(get_Count,set_Count,doc="Selection Count")
     
     #python substitute function
@@ -3372,65 +3416,16 @@ class CSelection(object):
         if ws==None:
             ws=ActiveSheet
         self.ws=ws
-        self.selectedrange=selrange
-        #self.EntireRow = CEntireRow(cell.Row)
-        #self.EntireColumn = CEntireColumn(cell.Column)
+        if self.ws == None:
+            self.selectedrange = None
+        else:
+            if selrange != None:
+                self.selectedrange=selrange
+            else:
+                self.selectedrange = CRange(ws.get_selection())
         
-    def _selectedRow(self):
-        return [self.ws.getSelectedRow()]
-        self.selectedRows = []
-        rows = self.ws.tksheet.get_selected_rows(get_cells_as_rows=True, return_tuple=True)
-        for row in rows:
-            self.selectedRows.append(row+1)
-        if self.selectedRows==[]:
-            self.selectedRows=[self.ws.getSelectedRow()+1]
-        return self.selectedRows
-    
-    def get_entirerow(self):
-        selectedrows = self._selectedRow()
-        lastcolumn =  self.ws.tksheet.get_total_columns()
-        entirerow = CRange((selectedrows[0],1),(selectedrows[-1],lastcolumn),parenttype="EntireRow")
-        return entirerow
-    
-    def set_entirerow(self,param):
-        pass
-    
-    EntireRow = property(get_entirerow, set_entirerow, doc='entirerow of selection')
-    
-    def Rows(self):
-        selectedrows = self._selectedRow()
-        selectedcrows = []
-        for row in selectedrows:
-            selectedcrows.append(CRow(row))
-        return selectedcrows
-    
-    def Select(self):
-        pass
-    
-    def set_ShapeRange(self, newval):
-        pass
-    
-    def get_ShapeRange(self):
-        return CShapeRange(ws=self.ws)
-        
-    ShapeRange = property(get_ShapeRange, set_ShapeRange, doc='ShapeRange')
-    
-    def set_RowRange(self, newval):
-        pass
-    
-    def get_RowRange(self):
-        selectedrows=self.EntireRow()
-        if selectedrows != []:
-            rowrange=(selectedrows[0],selectedrows[-1]+1)
-        return rowrange
-   
-    rowrange = property(get_RowRange, set_RowRange, doc='RowRange')
-    
-    ShapeRange = property(get_ShapeRange, set_ShapeRange, doc='ShapeRange')
-    
     def set_ColRange(self, newval):
         pass
-    
     def get_ColRange(self):
         selectedcol=ActiveSheet.getSelectedColumn()
         if selectedcol != None:
@@ -3438,45 +3433,73 @@ class CSelection(object):
         else:
             colrange = (0, 0)
         return colrange
-   
     colrange = property(get_ColRange, set_ColRange, doc='ColRange')
     
     def set_Column(self, newval):
         pass
-    
     def get_Column(self):
         selectedcol=ActiveSheet.getSelectedColumn()+1
         return selectedcol
-   
     Column = property(get_Column, set_Column, doc='Column')
     
     def set_Columns(self, newval):
         pass
-    
     def get_Columns(self):
         selectedcol=ActiveSheet.getSelectedColumn()+1
         return CColumns(selectedcol,selectedcol+1,ws=self.ws,parent=self)
-   
     Columns = property(get_Columns, set_Columns, doc='Columns')
     
     def set_Cells(self, newval):
         pass
-    
     def get_Cells(self):
         selectedcol=ActiveSheet.getSelectedColumn()+1
         selectedrow=ActiveSheet.getSelectedRow()+1
         return CRange(selectedrow,selectedcol)
-   
-    Cells = property(get_Cells, set_Cells, doc='Selection-Cells')
-
+    Cells = property(get_Cells, set_Cells, doc='Selection-Cells')    
+    
+    def _selectedRow(self):
+        return [self.ws.getSelectedRow()]
+    
+    def get_entirerow(self):
+        selectedrows = self._selectedRow()
+        lastcolumn =  self.ws.tksheet.get_total_columns()
+        entirerow = CRange((selectedrows[0],1),(selectedrows[-1],lastcolumn),parenttype="EntireRow")
+        return entirerow
+    def set_entirerow(self,param):
+        pass
+    EntireRow = property(get_entirerow, set_entirerow, doc='entirerow of selection')
+    
     def set_Row(self, newval):
         pass
-    
     def get_Row(self):
         return ActiveSheet.getSelectedRow()+1
-   
-    Row = property(get_Row, set_Row, doc='Selection-Row')
+    Row = property(get_Row, set_Row, doc='Selection-Row')    
     
+    def Rows(self):
+        selectedrows = self._selectedRow()
+        selectedcrows = []
+        for row in selectedrows:
+            selectedcrows.append(CRow(row))
+        return selectedcrows
+
+    def set_RowRange(self, newval):
+        pass
+    def get_RowRange(self):
+        selectedrows=self.EntireRow
+        if selectedrows != []:
+            rowrange=(selectedrows.start[0],selectedrows.end[0]+1)
+        return rowrange
+    rowrange = property(get_RowRange, set_RowRange, doc='RowRange')
+    
+    def Select(self):
+        self.ws.setSelectedCells(self.selectedrange.start[0]-1, self.selectedrange.end[0]-1,self.selectedrange.start[1]-1,self.selectedrange.end[1]-1)
+        pass
+    
+    def set_ShapeRange(self, newval):
+        pass
+    def get_ShapeRange(self):
+        return CShapeRange(ws=self.ws)
+    ShapeRange = property(get_ShapeRange, set_ShapeRange, doc='ShapeRange')
 
 class CRow(object):
     def __init__(self,rownumber,rowrange=None):
@@ -3598,16 +3621,21 @@ class CColumn(object):
     def _set_hidecolumn(self,col,newval):
         ActiveSheet.set_hidecolumn(col, newval)    
         
-        
     ColumnWidth = property(get_columnwidth, set_columnwidth, doc='Column Width')
     
     Cells = property(get_cells, set_cells, doc='Cells in Column')
         
+#*******************************************
+# Internal Object EntireColumn - should not be used anymore
+#*******************************************            
 class CEntireColumn(object):
     def __init__(self,colnumber):
         self.Columnnumber = colnumber
         self.Hidden = False
-        
+
+#*******************************************
+# Excel Object Interior https://learn.microsoft.com/en-us/office/vba/api/excel.interior(object)
+#*******************************************            
 class CInterior(object):
     def __init__(self,parent=None):
         self.parent=parent
@@ -3625,7 +3653,7 @@ class CInterior(object):
                 Debug.Print("CInterior Type ERROR")
                 return tkcolor2int("#FFFFFF")
         except BaseException as e:
-            logging.debug(e)
+            logging.debug(e, exc_info=True) 
             return tkcolor2int("#FFFFFF")
     
     def set_color(self, value):
@@ -3645,11 +3673,17 @@ class CInterior(object):
                 self.parent.ws.tksheet.highlight((cell.start[0]-1,cell.start[1]-1), valuestr)
     Color = property(get_color, set_color, doc='Cell Color')    
 
+#*******************************************
+# Excel Object DisplayFormat https://learn.microsoft.com/en-us/office/vba/api/excel.displayformat
+#*******************************************            
 class CDisplayFormat(object):
     def __init__(self,parent=None):
         self.parent=parent
         self.Interior = CInterior(parent=parent)
-    
+
+#*******************************************
+# Excel Object Color https://learn.microsoft.com/en-us/office/vba/api/excel.colorformat
+#*******************************************            
 class CColor(object):
     def __init__(self,color,shape=None,tksheet=None,line=None,cell=None,fg=False):
         self.line=line
@@ -3657,6 +3691,9 @@ class CColor(object):
         self.tksheet=tksheet
         self.cell=cell
         self.color = color # int 0xrrggbb
+        self.r = 0
+        self.g = 0
+        self.b = 0
         
     def tkcolor(self):
         return f'#{self.r:02x}{self.g:02x}{self.b:02x}'
@@ -3690,15 +3727,11 @@ class CColor(object):
             else:
                 shape=self.shape
             if shape!=None:
-                if shape.Tshape:
-                    if shape.Tshape.rectidx!=0:
-                        shape.Tablecanvas.itemconfig(shape.Tshape.rectidx,fill=valuestr)
-                    shape.Fillcolor=valuestr
-                    shape.Tshape.Fillcolor=valuestr
-                    #print("set_rgb:"+self.shape.Name+"-"+valuestr)
-                else:
-                    logging.debug("set_rgb: Rectidx=0" +str(self.shape)+ "-"+valuestr)
-                    pass
+                if shape.rectidx!=0:
+                    shape.Tablecanvas.itemconfig(shape.rectidx,fill=valuestr)
+                shape.Fillcolor=valuestr
+                #shape.Tshape.Fillcolor=valuestr
+                #print("set_rgb:"+self.shape.Name+"-"+valuestr)
             else:
                 logging.debug("set_rgb: Shape not found" +str(self.shape)+ "-"+valuestr)                         
         else:
@@ -3711,7 +3744,12 @@ class CColor(object):
         self.b = rgb[2]
         
     rgb = property(get_rgb, set_rgb, doc='Color RGB')
+    
+    RGB = property(get_rgb, set_rgb, doc='Color RGB') 
 
+#*******************************************
+# Excel Object Line https://learn.microsoft.com/en-us/office/vba/api/excel.lineformat
+#*******************************************        
 class CLine(object):
     def __init__(self,linecolor=0,shape=None):
         self.Weight = 8
@@ -3720,6 +3758,7 @@ class CLine(object):
         self.Visible = True
         self.Transparency = 0
         self.shape=shape
+        self.BeginArrowheadStyle_val = 0
         self.EndArrowheadStyle_val= 0
         
     def get_EndArrowheadStyle(self):
@@ -3730,12 +3769,8 @@ class CLine(object):
         if type(self.shape)==list:
             for shape in self.shape:
                 shape.EndArrowheadStyle_val=newval
-                if shape.Tshape:
-                    shape.Tshape.EndArrowheadStyle_val = newval                
         else:
             self.shape.EndArrowheadStyle_val=newval      
-            if self.shape.Tshape:
-                self.shape.Tshape.EndArrowheadStyle_val = newval
         
     EndArrowheadStyle = property(get_EndArrowheadStyle,set_EndArrowheadStyle,doc="EndArrowheadStyle")
     
@@ -3747,22 +3782,23 @@ class CLine(object):
         if type(self.shape)==list:
             for shape in self.shape:
                 shape.BeginArrowheadStyle_val=newval
-                if shape.Tshape:
-                    shape.Tshape.BeginArrowheadStyle_val = newval                
         else:
             self.shape.BeginArrowheadStyle_val=newval      
-            if self.shape.Tshape:
-                self.shape.Tshape.BeginArrowheadStyle_val = newval
         
     BeginArrowheadStyle = property(get_BeginArrowheadStyle,set_BeginArrowheadStyle,doc="BeginArrowheadStyle")    
-        
+    
+#*******************************************
+# Excel Object Fill https://learn.microsoft.com/en-us/office/vba/api/excel.fillformat
+#*******************************************        
 class CFill(object):
     def __init__(self,Fill="",shape=None):
         self.Visible = 1
         self.ForeColor = CColor((0, 0, 0),shape=shape,fg=True)
         self.Transparency_val = 0
         self.shape=shape
-                
+        
+#***************************
+# Property Transparency https://learn.microsoft.com/en-us/office/vba/api/excel.fillformat.transparency
     def get_transparency(self):
         return self.Transparency_val
     
@@ -3774,21 +3810,22 @@ class CFill(object):
             zorder=0 # toTop
         if type(self.shape)==list:
             for shape in self.shape:
-                shape.ZOrder_val=zorder
-                if shape.Tshape:
-                    shape.Tshape.ZOrder_Val = zorder                
+                shape.ZOrder_Val=zorder
         else:
-            self.shape.ZOrder_val=zorder      
-            if self.shape.Tshape:
-                self.shape.Tshape.ZOrder_Val = zorder
+            self.shape.ZOrder_Val=zorder      
         
     Transparency = property(get_transparency,set_transparency,doc="Transparency")
         
+    #***************************
+    # Method Solid https://learn.microsoft.com/en-us/office/vba/api/excel.fillformat.transparency
     def Solid(self):
         pass
 
+#*******************************************
+# Excel Object Shape https://learn.microsoft.com/en-us/office/vba/api/excel.shape
+#*******************************************        
 class CShape(object):
-    def __init__(self, name, shapetype, Left, Top, Width=0, Height=0, Fillcolor=0, Text="",Row=None, Col=None, rotation=0,orientation=msoTextOrientationHorizontal,AlternativeText="",ws=None,tshape=None,nodelist=None,control_dict=None,Init_Value=None,linecolor=None,zorder=0,segmenttype=msoSegmentLine,editingtype=msoEditingAuto):
+    def __init__(self, name, shapetype, Left, Top, Width=0, Height=0, Fillcolor=0, Text="",Row=None, Col=None, rotation=0,orientation=msoTextOrientationHorizontal,AlternativeText="",ws=None,nodelist=None,control_dict=None,Init_Value=None,linecolor=None,zorder=0,segmenttype=msoSegmentLine,editingtype=msoEditingAuto):
         filltkcolor=int2tkcolor(Fillcolor)
         if linecolor:
             linetkcolor=int2tkcolor(linecolor)
@@ -3800,9 +3837,9 @@ class CShape(object):
                 Height = Height *1.55
         if ws==None:
             ws=ActiveSheet
-        if tshape==None:
-            tshape=CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, LineTKcolor=linetkcolor,Text=Text,Row=Row, Col=Col,rotation=rotation,orientation=orientation,nodelist=nodelist,ws=ws, tablecanvas=ws.tksheet,control_dict=control_dict,Init_Value=Init_Value,zorder=zorder,segmenttype=segmenttype,editingtype=editingtype)
-        self.Tshape=tshape 
+        #if tshape==None:
+        #    tshape=CTShape(name, shapetype, Left, Top, Width, Height, FillTKcolor=filltkcolor, LineTKcolor=linetkcolor,Text=Text,Row=Row, Col=Col,rotation=rotation,orientation=orientation,nodelist=nodelist,ws=ws, tablecanvas=ws.tksheet,control_dict=control_dict,Init_Value=Init_Value,zorder=zorder,segmenttype=segmenttype,editingtype=editingtype)
+        #self.Tshape=tshape 
         self.Shapetype = shapetype
         if shapetype in (msoShapeRectangle, msoShapeOval):
             self.Type = msoAutoShape
@@ -3813,15 +3850,15 @@ class CShape(object):
         if ws==None:
             ws=ActiveSheet
         self.Worksheet=ws
-        self.Tshape=tshape
+        #self.Tshape=tshape
         self.Name_val=name
         self.rectidx=0
         self.textidx=0
         self.tablename = name #test ws.table.tablename
         self.Left_val = Left
         self.Active = True
-        #self.Top = Top
-        self.Top_val = None
+        self.Top_val = Top
+        self.formwin=None
         self.Width = Width
         self.Height = Height
         self.Row=Row
@@ -3832,35 +3869,56 @@ class CShape(object):
             self.TopLeftCell_Row=Row-1
             self.TopLeftCell_Col=Col-1
         else:
-            self.TopLeftCell_Row=ws.calc_row_from_y(Top)
-            self.TopLeftCell_Col=ws.calc_col_from_x(Left)
+            self.TopLeftCell_Row=ws.calc_row_from_y(Top+1)
+            self.TopLeftCell_Col=ws.calc_col_from_x(Left+1)
         self.Index = 0
         self.OnAction_val = ""
-        self.ZOrder_val=zorder
+        self.ZOrder_Val=zorder
         self.Locked = False
+        self.Text = Text
         self.TextFrame2 = CTextFrame2(text=Text,shape=self)
         self.AlternativeText = AlternativeText
         self.Fill = CFill(Fillcolor,shape=self)
         self.Line = CLine(linecolor,shape=self)
+        self.control_dict = copy.deepcopy(control_dict)
+        self.OnAction = ""
+
+        self.updatecontrol=False
+        #self.tablename = tablecanvas.name
+        self.image=None
+        self.AlternativeText=""
+        self.control_dict = copy.deepcopy(control_dict)
+        self.Init_Value=Init_Value
+        self.Fillcolor = filltkcolor
+        self.LineColor = linetkcolor
+        self.nodelist=nodelist
+        self.SegmentType = segmenttype
+        self.EditingType = editingtype
+        self.format_dict = {}
+        #self.Worksheet.shapelist.append(self)        
 
         #if tshape==None:    # create new tshape
         #    self.Tshape=self.Tablecanvas.addshape(name, shapetype, Left, Top, Width, Height, Fillcolor, Text="",rotation=0,orientation=1,tablecanvas=None)
             
-    def updateShape(self,Fill=None,Text=None):
+    def updateShape(self,Fill=None,Text=None, AltText=None):
         if Fill:
             fillcolor=Fill.Color
         else:
             fillcolor=None
-        alternativeText=self.AlternativeText
-        if self.Tshape:
-            self.Tshape.updateShape(Fillcolor=fillcolor,Text=Text,AltText=alternativeText)
+        if fillcolor:
+            self.Fillcolor=fillcolor
+        if Text:
+            self.Text=Text
+        if AltText:
+            self.AlternativeText=AltText
+        self.Worksheet.drawShape(self)
         
     def Delete(self):
-        self.Worksheet.deleteshape(self.Tshape)
+        self.Worksheet.deleteshape(self)
         pass
     
     def ZOrder(self,zorder):
-        self.ZOrder_val=zorder
+        self.ZOrder_Val=zorder
     
     def set_activeflag(self,value):
         self.Active=value
@@ -3882,7 +3940,7 @@ class CShape(object):
     
     def set_visible(self, value):
         self.Visible_val=value
-        self.Tshape.Visible = value
+        #self.Tshape.Visible = value
         if value==True:
             pass # redrawshape
         else:
@@ -3895,7 +3953,7 @@ class CShape(object):
     
     def set_name(self, value):
         self.Name_val=value
-        self.Tshape.Name=value
+        #self.Tshape.Name=value
 
     Name = property(get_name, set_name, doc='Shape-Name')
 
@@ -3904,19 +3962,15 @@ class CShape(object):
     
     def set_left(self, value):
         self.Left_val=value
-        self.Tshape.Left=value
+        #self.Tshape.Left=value
 
     Left = property(get_left, set_left, doc='Shape-Left')
     
     def get_top(self):
-        if self.Tshape:
-            return self.Tshape.Top_val
-        else:
-            return self.Top_val
+        return self.Top_val
     
     def set_top(self, value):
         self.Top_val=value
-        self.Tshape.Top=value
 
     Top = property(get_top, set_top, doc='Shape-Top')    
     
@@ -3934,9 +3988,8 @@ class CShape(object):
     
     def set_OnAction(self, value):
         self.OnAction_val=value
-        self.Tshape.OnAction=value
-        if self.Tshape.control_dict:
-            control_dict = self.Tshape.control_dict.get("Components",None)
+        if self.control_dict:
+            control_dict = self.control_dict.get("Components",None)
         else:
             control_dict = None
         if control_dict:
@@ -3944,114 +3997,17 @@ class CShape(object):
             button_command = D00.globalprocs.get(value,None)
             button["Command"]=button_command
 
-    OnAction = property(get_OnAction, set_OnAction, doc='Shape-OnAction')        
-
-class CTShape(object):
-    def __init__(self, name, shapetype, Left, Top, Width, Height, FillTKcolor="", LineTKcolor="",Text="",Row=None, Col=None, rotation=0,orientation=1,nodelist=None,ws=None, tablecanvas=None,control_dict=None,Init_Value=None,zorder=0,segmenttype=0,editingtype=msoEditingAuto):
-        self.Shapetype = shapetype
-        self.updatecontrol=False
-        self.rectidx=0
-        self.textidx=0
-        self.formwin=None
-        self.tablename = tablecanvas.name
-        self.ws = ws
-        self.Left = Left
-        self.Active = True
-        self.Top = Top
-        self.Width = Width
-        self.Height = Height
-        self.Row = Row
-        self.Col = Col
-        self.Rotation = rotation
-        self.Name = name
-        self.Text = ""
-        self.image=None
-        self.AlternativeText=""
-        self.ZOrder_Val=zorder
-        self.control_dict = control_dict
-        self.Init_Value=Init_Value
-        self.Visible_val = True
-        self.Fillcolor = FillTKcolor
-        self.LineColor = LineTKcolor
-        self.OnAction = ""
-        if Top !=None:
-            self.TopLeftCell_Row=self.ws.calc_row_from_y(Top)
-            self.TopLeftCell_Col=self.ws.calc_col_from_x(Left)
-        else:
-            self.TopLeftCell_Row=Row
-            self.TopLeftCell_Col=Col
-        self.nodelist=nodelist
-        self.SegmentType = segmenttype
-        self.EditingType = editingtype
-        self.format_dict = {}
-        self.ws.shapelist.append(self)
-        
+    OnAction = property(get_OnAction, set_OnAction, doc='Shape-OnAction')
+    
     def shape_button_1(self,event=None):
         #print("Shape Button_1 event")
         #print(repr(event))
-        worksheet=global_worksheet_dict[self.tablename]
+        worksheet=self.Worksheet
         tags=worksheet.tksheet.MT.gettags(self.rectidx)
         #print(tags)
         if worksheet.left_click_callback:
             res_continue = worksheet.left_click_callback(tags, "",callertype="canvas")
         return
-            
-    def updateShape(self,Fillcolor=None,Text=None,AltText=None):
-        if Fillcolor:
-            self.Fillcolor=Fillcolor
-        if Text:
-            self.Text=Text
-        if AltText:
-            self.AlternativeText=AltText
-        worksheet=global_worksheet_dict[self.tablename]
-        worksheet.drawShape(self)
-        
-    def Delete(self):
-        worksheet=global_worksheet_dict[self.tablename]
-        worksheet.deleteshape(self.Name)
-        pass
-    
-    def ZOrder(self,zorder):
-        self.ZOrder_val=zorder
-    
-    def set_activeflag(self,value):
-        self.Active=value
-        
-    def get_activeflag(self):
-        try:
-            return self.Active
-        except:
-            self.Active=True
-        return self.Active
-    
-    def Select(self):
-        worksheet=global_worksheet_dict[self.tablename]
-        worksheet.setSelectedCells(self.TopLeftCell_Row, self.TopLeftCell_Row+1, self.TopLeftCell_Col, self.TopLeftCell_Col+1)
-        worksheet.setSelectedShapes(self)
-        
-    def get_visible(self):
-        return self.Visible_val
-    
-    def set_visible(self, value):
-        self.Visible_val=value
-        if value==True:
-            worksheet=global_worksheet_dict[self.tablename]
-            #tablecanvas.drawShape(self)
-        else:
-            pass # removeshape
-
-    Visible = property(get_visible, set_visible, doc='Visible Status')
-    
-    def get_top(self):
-        return self.Top_val
-    
-    def set_top(self, value):
-        self.Top_val=value
-        if self.rectidx!=0 or self.formwin!=None:
-            worksheet=global_worksheet_dict[self.tablename]
-            worksheet.drawShape(self)
-        
-    Top = property(get_top, set_top, doc='Shape-Top')
     
     def get_text(self):
         return self.Text_val
@@ -4059,15 +4015,16 @@ class CTShape(object):
     def set_text(self, value):
         self.Text_val=value
         if self.rectidx!=0 or self.formwin!=None:
-            worksheet=global_worksheet_dict[self.tablename]
+            worksheet=self.Worksheet # global_worksheet_dict[self.tablename]
             self.updatecontrol = True
             worksheet.drawShape(self,force=True) 
             self.updatecontrol = False
         
-    Text = property(get_text, set_text, doc='Shape-Text')
+    Text = property(get_text, set_text, doc='Shape-Text')    
 
-
-    
+#*******************************************
+# Excel Object Cells as DICT (old syntax Cells["A1:A5"])
+#*******************************************        
 class CCellDict(object):
     def __init__ (self,ws=None):
         #data = {}
@@ -4080,6 +4037,30 @@ class CCellDict(object):
     def __setitem__(self,k,value):
         cell = Cells(k[0],k[1],ws=self.ws)
         cell.set_value(value)
+        
+
+
+#*******************************************
+# Excel Object Range as DICT (old syntax Range["A1:A5"])
+#*******************************************        
+        
+class CRangeDict(object):
+    def __init__ (self,ws=None):
+        self.ws = ws
+        
+    def __getitem__(self, k):
+        #print("Getitem",k)
+        if self.ws == None:
+            self.ws= ActiveSheet
+        return Range(k)
+        
+    def __setitem__(self,k,value):
+        p_range=Range(k)
+        p_range.Value=value
+        
+#*******************************************
+# Excel Object Row as DICT (old syntax Row["A1:A5"])
+#*******************************************        
         
 class CRowDict(object):
     def __init__ (self,ws=None):
@@ -4101,24 +4082,15 @@ class CRowDict(object):
         #self.ws.wsRowdict[k] = value
         
         #print("CRowDict.Setitem",k, value)
-        
-class CRangeDict(object):
-    def __init__ (self,ws=None):
-        self.ws = ws
-        
-    def __getitem__(self, k):
-        #print("Getitem",k)
-        if self.ws == None:
-            self.ws= ActiveSheet
-        return Range(k)
-        
-    def __setitem__(self,k,value):
-        p_range=Range(k)
-        p_range.Value=value
+
+#*******************************************
+# Excel Object WorksheetFunction https://learn.microsoft.com/en-us/office/vba/api/excel.worksheetfunction
+#*******************************************        
         
 class CWorksheetFunction(object):
     def __init__(self):
         pass
+    
     def RoundUp(v1,v2):
         #print("RoundUp")
         if v2 == 0:
@@ -4154,68 +4126,53 @@ class CWorksheetFunction(object):
     
     def Min(self,*args):
         return min(*args)    
-        
+
+#*******************************************
+# Excel Object Application https://learn.microsoft.com/en-us/office/vba/api/excel.application(object)
+#*******************************************        
         
 class CApplication(object):
     def __init__(self):
-        self.StatusBar = ""
-        self.EnableEvents = True
-        self.ScreenUpdating = True
-        self.EnableCalculation = True
+        #*******************************************
+        # Excel Object Application Properties
+        #*******************************************        
         self.Calculation = xlCalculationAutomatic
-        self.Top = 0
+        self.Caller=""
+        self.Caption = ""
+        self.EnableCalculation = True
+        self.EnableEvents = True
+        self.Height = 500
+        self.hWnd = 0
+        self.LanguageSettings = CLanguageSettings()
         self.Left = 0
-        self.Width = 1000 #*HL
-        self.Height = 500 #*HL
+        self.ScreenUpdating = True        
+        self.StatusBar = ""
+        self.Top = 0
         self.Version = "15"
         self.WindowState = 0
-        self.Caller=""
-        self.canvas_leftclickcmd=None
-        self.LanguageSettings = CLanguageSettings()
-        self.hWnd = 0
+        self.Width = 1000
         self.WorksheetFunction = CWorksheetFunction()
-        
-    def set_canvas_leftclickcmd(self,cmd):
-        self.canvas_leftclickcmd=cmd
-        
-        
-    def OnTime(self,time,cmd):
-        #print("Application OnTime:",time,cmd)
-        global_controller.after(time,cmd)
-        return
-    
-    def Run(self,cmd):
-        methodToCall = D00.globalprocs.get(cmd,None)
-        if methodToCall:
-            methodToCall()
-        
 
-    def RoundUp(self,v1,v2):
-        #print("RoundUp")
-        if v2 == 0:
-            if v1 == int(v1):
-                return v1
-            else:
-                return int(v1 + 1)
-        else:
-            return "Error"
+        self.canvas_leftclickcmd=None
+        
+        #*******************************************
+        # Excel Object Application Methods
+        #*******************************************                
+    def GetOpenFilename(self,InitialFileName="", fileFilter="", Title="" ):
+        filefilter_list = fileFilter.split(",")
+        filepath = tk.filedialog.askopenfilename(filetypes=[filefilter_list],defaultextension=".MLL_pgf",title=Title,initialfile=InitialFileName)
+        return filepath
 
     def GetSaveAsFilename(self,InitialFileName="", fileFilter="", Title="" ):
         filefilter_list = fileFilter.split(",")
         filepath = tk.filedialog.asksaveasfilename(filetypes=[filefilter_list],defaultextension=".MLL_pgf",title=Title,initialfile=InitialFileName)
         return filepath
-    
-    def GetOpenFilename(self,InitialFileName="", fileFilter="", Title="" ):
-        filefilter_list = fileFilter.split(",")
-        filepath = tk.filedialog.askopenfilename(filetypes=[filefilter_list],defaultextension=".MLL_pgf",title=Title,initialfile=InitialFileName)
-        return filepath
-    
+
     def International(self,param):
         if param == xlDecimalSeparator:
             return ","
-        
+    
     def Intersect(self,rng1,rng2):
-        
         if type(rng1)==CRange:
             rowrange1 = (rng1.start[0],rng1.end[0])
             colrange1 = (rng1.start[1],rng1.end[1])
@@ -4228,7 +4185,7 @@ class CApplication(object):
             colrange2 = (rng2.start[1],rng2.end[1])
         else:
             rowrange2 = rng2.rowrange
-            colrange2 = rng2.colrange        
+            colrange2 = rng2.colrange
         
         #get rowrange intersection
         rowintersect=(max(rowrange1[0],rowrange2[0]),
@@ -4248,18 +4205,41 @@ class CApplication(object):
         if newcolrange !=None and newrowrange!=None:
             return CRange((newrowrange[0],newcolrange[0]),(newrowrange[1],newcolrange[1]))
         else:
-            return None
+            return None    
+        
+    def OnTime(self,time,cmd):
+        #print("Application OnTime:",time,cmd)
+        global_controller.after(time,cmd)
+        return
+    
+    def Quit(self):
+        pass    
+    
+    def Run(self,cmd):
+        methodToCall = D00.globalprocs.get(cmd,None)
+        if methodToCall:
+            methodToCall()
 
+    def RoundUp(self,v1,v2):
+        #print("RoundUp")
+        if v2 == 0:
+            if v1 == int(v1):
+                return v1
+            else:
+                return int(v1 + 1)
+        else:
+            return "Error"
     
     def setActiveWorkbook(self,workbookName):
-         
         for wb in Workbooks:
             if wb.Name == workbookName:
                 set_activeworkbook(wb)
                 break
+            
+    def set_canvas_leftclickcmd(self,cmd):
+        self.canvas_leftclickcmd=cmd    
     
-    def Quit(self):
-        pass
+
     
 locale2msoid={"de":msoLanguageIDGerman,
               "en":msoLanguageIDEnglishUK,
@@ -4345,8 +4325,8 @@ class CCharacters(object):
         
         self.Shape.Text=value
         
-        if self.Shape.Tshape:
-            self.Shape.Tshape.Text=value
+        #if self.Shape.Tshape:
+        #    self.Shape.Tshape.Text=value
 
     Text = property(get_text, set_text, doc='Character-Text')
     
@@ -4363,7 +4343,7 @@ class CCharacters(object):
             if ForeColor!=None:
                 charformat.ForeGround=int2tkcolor(int(ForeColor))
             self.charformat_val[(start,length)] = charformat
-            self.Shape.Tshape.format_dict[self.Shape.Name] = self.charformat_val
+            self.Shape.format_dict[self.Shape.Name] = self.charformat_val
             return
 
         
@@ -4381,21 +4361,21 @@ class CTextRange(object):
         self.Font = CFont(shape=shape)
         
     def get_text(self):
-        if self.Shape.Tshape:
-            text=self.Shape.Tshape.Text
+        #if self.Shape.Tshape:
+        #    text=self.Shape.Tshape.Text
+        #else:
+        if hasattr(self.Shape,"Text"):
+            text=self.Shape.Text
         else:
-            if hasattr(self.Shape,"Text"):
-                text=self.Shape.Text
-            else:
-                text=""
+            text=""
         return text
     
     def set_text(self, value):
         
         self.Shape.Text=value
         
-        if self.Shape.Tshape:
-            self.Shape.Tshape.Text=value
+        #if self.Shape.Tshape:
+        #    self.Shape.Tshape.Text=value
 
     Text = property(get_text, set_text, doc='Character-Text')             
 
@@ -4452,39 +4432,266 @@ def get_global_controller():
 
 # global variables
 
-ActiveWorkbook = None # :CWorkbook
- 
-ActiveSheet = None #:CWorksheet
+#*******************************************
+# Excel Statements https://learn.microsoft.com/en-us/office/vba/language/reference/statements
+#*******************************************
 
-#WorksheetFunction = CWorksheetFunction()
+def Unload(UserForm):
+    UserForm.destroy()
 
+def ChDrive(srcdir):
+    if checkplatform("Windows"):
+        drive = srcdir[0:2]
+        os.chdir(drive)
+    return
+
+#*******************************************
+# Excel Application properties https://learn.microsoft.com/en-us/office/vba/api/excel.application(object)
+#*******************************************
 Application = CApplication() #:CApplication
 
-CellDict = CCellDict() # alias for Cells[] 
+def ActiveCell():
+    global Selection
+    row, col = ActiveSheet.getSelectedCell()
+    activecell = ActiveSheet.Cells(row,col)
+    Selection = CSelection(activecell,ws=ActiveSheet) #*HL
+    return activecell #*HL
 
-RowDict = CRowDict() # alias for Rows[]
-
-RangeDict = CRangeDict() # alias for Range[]
-
-Workbooks =[]
-
-Worksheets = []
+ActiveSheet = None
 
 ActiveWindow = CActiveWindow()
 
-global_controller = None
+ActiveWorkbook = None
 
-Now = 0
+Caption = ""
+
+CellDict = CCellDict() # alias for Cells[] 
+
+def Cells(row:int, column:int,ws=None):
+    if ws == None:
+        ws=ActiveSheet
+    xlrange = ws.Cells(row,column)
+    return xlrange
+
+def Columns(col:int):
+    ws = ActiveSheet
+    lastusedrow=ws.LastUsedRow
+    startcell=CRange(1,col)
+    endcell  =CRange(lastusedrow,col)
+    return CRange(startcell,endcell)
+
+def Range(cell1=None,cell2=None,ws=None):
+    if ws==None:
+        ws=ActiveSheet
+    if cell1==None:
+        return CRange() # dummy for type definition only
+    if type(cell1) == str:
+        if ":" in cell1: # range as string a:b
+            cellsplit = cell1.split(":")
+            return Range(cellsplit[0],cellsplit[1])
+        named_cell1 = ws.find_RangeName(cell1)
+        if cell2 != None:
+            if type(cell2) == str:
+                named_cell2 = ws.find_RangeName(cell2)
+                return CRange(named_cell1,named_cell2,ws=ActiveSheet)
+            else:
+                return CRange(named_cell1,cell2,ws=ActiveSheet)
+        else:
+            return CRange(named_cell1,named_cell1,ws=ActiveSheet)
+    else:
+        if cell2==None:
+            cell2=cell1
+        return CRange(cell1,cell2,ws=ActiveSheet)
+
+def Rows(row=None,ws=None):
+    if ws==None:
+        ws=ActiveSheet
+    if row==None:
+        return CRange((1,1),(ws.getLastUsedRow(),1),ws=ws,parent=None,parenttype="Rows")
+    else:
+        if type(row)==str:
+            rowlist=row.split(":")
+            return CRange((int(rowlist[0]),1),(int(rowlist[1]),1),ws=ws,parent=None,parenttype="Rows")
+        else:
+            return CRange((row,1),(row,1),ws=ws,parent=None,parenttype="Rows")
+
+RangeDict = CRangeDict() # alias for Range[]
+
+RowDict = CRowDict() # alias for Rows[]
 
 def get_selection(self):
-    
     return ActiveSheet.get_selection()
 
 def set_selection(self, value):
     ActiveSheet.get_selection().Value=value
     
+Selection = CSelection()
+#Selection = property(get_selection, set_selection, doc='Selection') 
 
-Selection = CSelection() #property(get_selection, set_selection, doc='Selection') 
+
+def Sheets(sheetname):
+    return ActiveWorkbook.Sheets(sheetname)
+
+Workbooks = []
+
+Worksheets = []
+
+#*******************************************
+# Excel Functions https://learn.microsoft.com/en-us/office/vba/language/reference/functions-visual-basic-for-applications
+#*******************************************
+def Date():
+    x = datetime.datetime.now()
+    return x.strftime("%x")
+
+def Date_str():
+    return Date()
+
+def Dir(filepath,dummy=None):
+    if os.path.isfile(filepath):
+        return filepath
+    else:
+        if os.path.isdir(filepath):
+            return filepath
+        else:
+            return ""
+        
+def DoEvents():
+    #ActiveSheet.table.redraw()
+    global_controller.update()
+
+def Format(value,formatstring):
+    if formatstring == "hh:mm:ss":
+        time_val = time.gmtime(value)
+        return time.strftime("%H:%M:%S",time_val)
+    elif formatstring == "hh:mm":
+        if type(value)==str:
+            return value[:5]
+        else:
+            time_val = time.gmtime(value)
+            return time.strftime("%H:%M",time_val)
+    elif formatstring == "0000":
+        return "{0:4d}".format(value)
+    elif formatstring == "00":
+        return "{0:2d}".format(int(value))
+    elif formatstring == "dd.mm.yy":
+        return value[:2]+"."+value[3:5]+"."+value[6:]
+    else:
+        pass
+    return str(value) # no formating implemented yet
+
+def GetAsyncKeyState(key):
+    global shift_key
+    if keyboard_Module_imported:
+        if key==__VK_UP:
+            return keyboard.is_pressed("up")
+        if key==__VK_DOWN:
+            return keyboard.is_pressed("down")
+        if key==__VK_RETURN:
+            return keyboard.is_pressed("enter")
+        if key==__VK_ESCAPE:   
+            return keyboard.is_pressed("escape")
+        if key==__VK_CONTROL:   
+            return keyboard.is_pressed("crtl")
+        if key==__VK_SHIFT:
+            Debug.Print("Check Shift Key")
+            fn_return_value = shift_key #or keyboard.is_pressed("shift")
+            shift_key=False
+            return fn_return_value
+        return False
+    else:
+        return False
+
+def InputBox(Message:str, Title:str, Default=None):
+    #res = tk.simpledialog.askstring(Title,Message,initialvalue=Default,parent=PG.dialog_parent)
+    
+    F00.Userform_SimpleInput.Show(Message,Title,Default)
+    res = F00.Userform_SimpleInput.UserForm_res
+    if res == None:
+        res=""
+    return res
+        
+def IsEmpty(obj):
+    if len(obj)==0:
+        return True
+    else:
+        return False
+    
+def IsError(testval):
+    return False
+
+def MsgBox(ErrorMessage:str, msg_type:int, ErrorTitle:str):
+    if msg_type == vbQuestion + vbYesNoCancel or msg_type == vbYesNoCancel:
+        res=tk.messagebox.askyesnocancel(title=ErrorTitle, message=ErrorMessage)
+        if res == None:
+            return vbCancel
+        if res:
+            return vbYes
+        else:
+            return vbNo
+    elif msg_type == vbQuestion + vbYesNo or msg_type == vbYesNo:
+        res=tk.messagebox.askyesno(title=ErrorTitle, message=ErrorMessage)
+        if res == None:
+            return vbCancel
+        if res:
+            return vbYes
+        else:
+            return vbNo        
+    elif msg_type == vbOKCancel:
+        res=tk.messagebox.askokcancel(title=ErrorTitle, message=ErrorMessage)
+        if res == None:
+            return vbCancel
+        if res:
+            return vbOK
+        else:
+            return vbCancel
+    elif msg_type == vbOKOnly:
+        res=tk.messagebox.showinfo(title=ErrorTitle, message=ErrorMessage)
+        
+    elif msg_type == vbInformation:
+        res=tk.messagebox.showinfo(title=ErrorTitle, message=ErrorMessage)
+        
+    elif msg_type == vbCritical:
+        res=tk.messagebox.showerror(title=ErrorTitle, message=ErrorMessage)
+        
+    elif msg_type == vbCritical + vbYesNo:
+        res=tk.messagebox.askyesno(title=ErrorTitle, message=ErrorMessage)
+        if res == None:
+            return vbCancel
+        if res:
+            return vbYes
+        else:
+            return vbNo
+    else:
+        logging.debug("P01_MSGBox: Unknown Messagetype:"+str(msg_type))
+        res=tk.messagebox.askyesnocancel(title=ErrorTitle, message=ErrorMessage)
+        if res == None:
+            return vbCancel
+        if res:
+            return vbYes
+    return vbNo
+
+def Run(cmd):
+    subprocess.run(cmd,shell=True)    
+
+def Shell(cmd):
+    Run(cmd)
+    
+def Time():
+    return time.time()
+
+def TimeValue(Duration):
+    return str(Duration)
+
+def Time_str():
+    t = datetime.datetime.now()
+    return t.strftime("%X")
+
+def VarType(obj):
+    valtype=type(obj)
+    if valtype is str:
+        return vbString
+    else:
+        return None
 
 #---------------------------------------
 # Event

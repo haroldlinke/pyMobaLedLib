@@ -1,0 +1,1 @@
+pythonw moderator.py delegates.txt

@@ -1,0 +1,28 @@
+ChangeLog:
+
+v0.3.2, release date TBA
+    - fixed exception when clicking modifyu without first selecting
+      a session
+    - spelling mistake in customDialogs rendered the Cancel button
+      non-functional
+
+v0.3.1, November 6 2002
+    - renamed the readme and changelog files to avoid confusion in the
+      PythonCard samples app
+
+v0.3, November 5 2002
+    - changed licensing terms, see help --> about --> license for details
+    - made the dialogs a bit taller so that they look right under Windows
+    - removed erroneous backgroundColor attributes from the resource files
+    - added Windows support, using Putty 0.53 as the SSH client
+    - moved the wrap_string function into customDialogs just to keep the file
+      count down
+    
+v0.2, November 2 2002
+    - can now specify which terminal application to use under Linux
+    - Hostname validation improved, no longer assumes that an Internet
+      connection is always present
+      
+v0.1, November 1 2002
+    - First public release
+

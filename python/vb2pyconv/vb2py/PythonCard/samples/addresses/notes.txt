@@ -1,0 +1,28 @@
+script.txt is the HyperTalk script that I used in the Addresses stack. It is not great code, I haven't done any real HyperCard/HyperTalk programming for over four years, so a HyperTalk expert is more than welcome to clean it up and make it handle all the various button and field types correctly.
+
+data.txt is the output of the aList variable in the exportToPythonCard script. There was one bad character in data.txt that I deleted, but I didn't go back to investigate it in the script. My guess is that all the 8-bit Mac characters need to be sanitized before exporting.
+
+fields.txt is the output of the sInfo variable in the exportToPythonCard script. I made changes to the output when I copied it to addresses.rsrc.py:
+
+I added 
+  'command':'showNotes',
+to Button 'ShowNotes'
+
+I renamed the Button Find which had a special Mac ... character.
+
+I removed the following background buttons:
+bkgndbuttonid108
+PhoneNumber4
+PhoneNumber3
+PhoneNumber2
+PhoneNumber1
+Appointments
+Home
+Unmark
+bkgndbuttonid103
+
+I changed Prev and Next to be ImageButtons. I changed the height of the other buttons to -1, so they would have the default height and then I added a few more pixels to their y positions so they wouldn't touch each other.
+
+I added 'command' to Prev and Next ImageButtons.
+
+I added 'command' to Find, NewCard, and DeleteCard Buttons.

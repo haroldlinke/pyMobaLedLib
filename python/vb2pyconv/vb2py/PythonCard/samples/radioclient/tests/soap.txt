@@ -1,0 +1,84 @@
+# http://www.onlamp.com/pub/a/python/2001/06/14/pysoap.html
+# http://www.soapware.org/
+# need to do more client SOAP tests against various public services
+>>> import SOAP
+>>> server = SOAP.SOAPProxy("http://services.xmethods.net/soap/servlet/rpcrouter", namespace = "urn:xmethods-Temperature")
+>>> server.getTemp("97232")
+42.0
+
+# http://services.xmethods.net/soap/urn:xmethods-delayed-quotes.wsdl
+>>> server = SOAP.SOAPProxy('http://services.xmethods.net/soap', namespace='urn:xmethods-delayed-quotes')
+>>> server.getQuote('MSFT')
+62.659999999999997
+
+# http://www.xmethods.net/sd/2001/BabelFishService.wsdl
+# http://www.xmethods.net/ve2/ViewListing.po?serviceid=14
+>>> server = SOAP.SOAPProxy('http://services.xmethods.net/perl/soaplite.cgi', namespace='urn:xmethodsBabelFish', soapaction='urn:xmethodsBabelFish#BabelFish')
+>>> server.BabelFish('en_fr', 'Quit')
+u'quitt\xe9 '
+>>> server.BabelFish('en_es', 'Quit')
+'salido '
+>>> server.BabelFish('en_es', 'Hello World')
+'hola mundo '
+>>> server.BabelFish('en_fr', 'Hello World')
+'Bonjour Monde '
+>>> 
+
+# http://soaptest.activestate.com/
+# this service is down, so I haven't been able to get the right incantation yet
+>>> server = SOAP.SOAPProxy("http://soaptest.activestate.com:8080/PerlEx/soap.plex", namespace="uri:http://activestate.com/", soapaction="urn:activestate")
+>>> server.StockQuoteInCountry("SUNW", "United States")
+
+
+# http://www-106.ibm.com/developerworks/library/ws-pyth5/
+>>> import SOAP
+>>> remote = SOAP.SOAPProxy(
+... "http://www.tankebolaget.se/scripts/Haddock.exe/soap/IHaddock",
+...   namespace="urn:HaddockIntf-IHaddock",
+...   soapaction="urn:HaddockIntf-IHaddock#Curse"
+... )
+>>> result = remote.Curse(LangCode='us')
+>>> print result
+Iconoclast!
+>>> result = remote.Curse(LangCode='us')
+>>> print result
+Pyrographers!
+
+# if you want debugging on, you need to change line 210 of SOAP.py
+# as mentioned in the article, or just change the Config class on
+# the fly in the shell like so
+>>> SOAP.Config.debug
+0
+>>> SOAP.Config.debug = 1
+>>> remote.Curse(LangCode='us')
+*** Outgoing HTTP headers **********************************************
+POST /scripts/Haddock.exe/soap/IHaddock HTTP/1.0
+Host: www.tankebolaget.se
+User-agent: SOAP.py 0.9.7 (actzero.com)
+Content-type: text/xml; charset="UTF-8"
+Content-length: 523
+SOAPAction: "urn:HaddockIntf-IHaddock#Curse"
+************************************************************************
+*** Outgoing SOAP ******************************************************
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/1999/XMLSchema" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/">
+<SOAP-ENV:Body>
+<ns1:Curse xmlns:ns1="urn:HaddockIntf-IHaddock" SOAP-ENC:root="1">
+<LangCode xsi:type="xsd:string">us</LangCode>
+</ns1:Curse>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+************************************************************************
+*** Incoming HTTP headers **********************************************
+HTTP/1.? 200 OK
+Server: Microsoft-IIS/5.0
+Date: Mon, 04 Feb 2002 21:43:10 GMT
+Content-Type: text/xml
+Content-Length: 525
+Content:
+************************************************************************
+*** Incoming SOAP ******************************************************
+<?xml version="1.0" encoding='UTF-8'?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/1999/XMLSchema" xmlns:xsi="http://www.w3.org/1999/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"><SOAP-ENV:Body><NS1:CurseResponse xmlns:NS1="urn:HaddockIntf-IHaddock" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><NS1:return xsi:type="xsd:string">Vagabonds!</NS1:return></NS1:CurseResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>
+************************************************************************
+'Vagabonds!'
+

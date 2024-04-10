@@ -615,6 +615,14 @@ def Is_Data_Sheet(Sh):
     # VB2PY (UntranslatedCode) On Error GoTo 0
     return _fn_return_value
 
+def worksheet_redraw(sheet):
+    if sheet.Datasheet:
+        sheet.clear_shapelist()
+        sheet.recreate_controls()
+        X02.ActiveSheet=sheet
+        PG.button_aktualisieren_cmd()
+        
+
 def Global_On_Enter_Proc():
     Offs = Long()
     # 01.01.20

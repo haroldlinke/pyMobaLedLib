@@ -1,3 +1,8 @@
+5.2.1.001 - 10.4.2024
+- new: LED anim Macro providing graphical user interface for LED light animation
+- new: Pattern Configurator Page Beta (full functionality available, some graphical issues)
+- improved: compatibility with LINUX and MAC
+
 5.1.0.001 - 24.3.2024
 - complete restructure of table handling, replace tkintertable with tksheet - some features are still under test
 - new support for direct mode servo

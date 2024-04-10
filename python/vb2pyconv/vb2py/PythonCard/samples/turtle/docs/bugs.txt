@@ -1,0 +1,6 @@
+Known Bugs
+
+wxTurtle.py
+When the turtle is visible (showTurtle or st used), there are very noticeable gaps on the ends of the turtle with pen widths greater than 1. I have tried using a variety of CAP and JOIN styles, but I think the real problem comes from the INVERT source mode being used to draw the turtle onto the screen. INVERT mode is used to avoid messing up the underlying drawing. Unless there is a bug in wxPython that has to do with CAP and JOIN styles, this bug may not be fixable.
+
+When different colored turtles cross paths, the colored pixels underneath can be left in an incorrect state. This can be seen on the 4bugs.txt and pentests.txt scripts. I think this bug has to do with the copy mode (INVERT) and the fact that the turtles are not erased in the same order they are drawn, so again this bug may not be fixable.

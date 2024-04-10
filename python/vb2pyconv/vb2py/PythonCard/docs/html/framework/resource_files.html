@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../PythonCard.css" type="text/css" />
+  <title>Framework Overview - Resource Files</title>
+</head>
+  <body>
+<div id="banner">
+<h1>Framework Overview - Resource Files</h1>
+</div>
+<?php include "../sidebar.php" ?>
+<div id="content">
+<p>Updated: March 31, 2006 for release 0.8.2</p>
+
+<p>Resource files are an old idea, but they are not widely used in the Python
+community. My own experience with resources is based largely on how Mac
+applications used the resource fork. PythonCard separates the window, 
+component layout, menu descriptions, and strings from the source code by putting
+them in a separate .rsrc.py file. This allows the layout to be modified
+independently of the source code and logic of the application. It also
+simplifies supporting multiple layouts for different OS platforms or doing
+international versions of an application. Finally, it means that a
+non-programmer can handle the layout since they do not need to write any
+Python code.</p>
+
+<p>The resource file typically shares the same base name as the main
+application, so the <a href="http://pythoncard.sourceforge.net/samples/minimal.html">minimal sample</a> has two files:</p>
+
+<pre>
+  minimal.py
+  minimal.rsrc.py
+</pre>
+
+<p>The resource file has a .py extension because the resource file is actually
+a valid Python dictionary and so it is easy to edit and validate
+the resource file using a Python-aware editor. The files are plain text.
+They are not in XML format since a separate program would be necessary to
+validate the XML and I feel that XML is less human-readable than the
+equivelant nested dictionary/list done using Python syntax.</p>
+
+<p>For the most part, it is no longer necessary to edit resource files in a text 
+editor, instead you can use the resourceEditor sample to change the layout 
+and menus for a PythonCard application.</p>
+
+<p>Note that once the resource file attributes are frozen we will likely switch 
+to XML for the resource format to improve interop with other layout tools. [Since 
+we're approaching a 1.0 release of PythonCard, I think this is unlikely, but I'll 
+leave this comment in for the time being. - Kevin Altis]</p>
+
+<p>Binary data necessary for an application such as images and sound files are 
+stored separately. Images necessary for the application components are 
+referenced via 'image' or 'file' attributes in the resource file.</p>
+
+<p>It is possible to have a fairly short edit/run cycle by keeping the
+layout of your app open in the <a href="../resource_editor_overview.html">resourceEditor</a> (layout editor) and the source code
+open in the <a href="http://pythoncard.sourceforge.net/tools/codeEditor.html">codeEditor</a> or your favorite editor/IDE and then launching the app using the Run
+command under the File menu or from the command-line or a directory browser 
+(Explorer) as you make changes. If you have an error in your source that
+prevents the app from running, you can use the "Run with interpreter" 
+command and the interpreter will be left open showing you where the error
+occurred in your source.</p>
+
+<p>The organization of the resource file is defined by the spec classes in 
+component.py, spec.py, widget.py, and each component module. When a
+resource is read in (see resource.py) it is validated against the specs, default
+arguments are initialized and any undefined component types in the resource
+will cause a runtime error. The resource dictionary is converted to an
+object that supports dot notation automatically and most places in the
+framework where a resource argument is used, it is valid to pass in a
+dictionary instead.</p>
+
+<p>The noresource sample shows an example of a PythonCard application that 
+does not have a resource file. The noresource sample also shows an 
+example of dynamic component creation when the application starts up.</p>
+
+<hr>| <a href="general_concepts_and_limitations.html">General Concepts and Limitations</a> | <a href="components.html">Components</a> | <a href="dialogs.html">Dialogs</a> | <a href="events_and_handlers.html">Events and Handlers</a> | <a href="menus.html">Menus</a> | <a href="resource_files.html">Resource Files</a> | <a href="runtime_tools.html">Runtime Tools</a> <hr>    <?php include "../footer.php" ?>
+    <p>$Revision: 1.5 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:26 $</p>
+</div> <!-- end of content -->
+</body>
+</html>

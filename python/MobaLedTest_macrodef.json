@@ -232,6 +232,21 @@
             "MobaLedLib": "Beleuchtungskonfiguration für Dummies\n\n<ProgGenerator>:\nEinfach zu bedienende Oberfläche zur Konfiguration von Beleuchtungen und anderen Effekten für eine Modelleisenbahn.\nMit diesem Programm können die Beleuchtungs- und andere Effekte für eine Modelleisenbahn ganz einfach erstellt werden. Es können bis zu 256 RGB-LEDs oder 768 einzelne LEDs verwaltet werden.\nÜber eine einfach zu bedienende Benutzeroberfläche kann man die gewünschten Funktionen auswählen und konfigurieren. Es steht eine Vielzahl von Befehlen zur Verfügung. Der Wichtigste ist sicherlich das <Belebte Haus>. Man kann aber auch Andreaskreuze, Signale, Ampeln, Sounds, Servos und vieles mehr mit einem Klick auswählen.\nDie Effekte können automatisch gestartet oder über eine Zentrale aktiviert werden. Dazu werden momentan folgenden Protokolle/Busse unterstützt: DCC, Selectrix und der Märklin CAN-Bus.\nDas alles wird in einer übersichtlichen Tabelle verwaltet. Hier kann man ganz einfach Zeilen einfügen, verschieben, kopieren, ...\nDie Konfiguration kann ganz einfach direkt zum Arduino geschickt und ausprobiert werden. Die Programmerzeugung geschieht komplett im Hintergrund. Der Benutzer muss keinerlei Programmiererfahrung haben.\n\n=> Tabelle ausfüllen - Knopf drücken - Fertig\n\nZum Ausfüllen der Tabelle betätigt man den <Dialog> Knopf links oben. Dann fragt das Programm in mehreren Dialogen alle wichtigen Informationen ab. Zu den einzelnen Schritten werden ausführliche Erklärungen angezeigt. Zum <ProgrammGenerator> gelangt man durch klick auf den <ProgGeneratorPage>-Reiter.\n\n<PatternGenerator>:\nDer Pattern_Configurator ist neben dem Programm Generator das vielleicht mächtigste Werkzeug der MobaLedLib. Mit dem Pattern_Configurator lassen sich beliebige Beleuchtungsmuster erstellen. Dadurch können neben den vorhandenen Lichteffekten des Programm Generators beliebige neue Effekte erstellt werden. Wenn man z.B. ein spezielles Blaulicht, ein spezielles Lichtsignal, eine bestimmte Abfolge von Soundbefehlen oder auch Bewegungsabläufe von Servos benötigt, kann man dazu den Pattern_Configurator verwenden. Auch die meisten im Programm Generator enthalten Makros wurden ursprünglich mit dem Pattern_Configurator erstellt.\n\n<Farbtest>:\nErlaubt das Testen von verschiedenen Farben für die RGB-LEDs und das Erstellen der Farbtabelle für das ColTab-Macro\n\n<Soundtest>:\nermöglicht das einfache Austesten des Soundmoduls\n\n<Servo-Test>: ermöglicht das einfache Testen und Einstellen von Servos\n\n<Z21-Simulator>:\nErmöglicht die Steuerung der Effekte direkt von einer Modellbahnsteuerung, die die Roco Z21 unterstützt.\n\n<Serial Monitor>:\nErlaubt die Überwachung der seriellen Schnittstelle zum ARDUINO\n\n<ARDUINO Monitor>:\nzeigt die Rückmeldungen beim Erstellen und Hochladen des ARDUINO-Programms\n\n<ARDUINO Einstellungen>:\nSpezielle Einstellungen für Nicht-Windows Betriebssysteme für den ARDUINO\n\n<Einstellungen>:\nSpezielle Programmeinstellungen.\n\n"
         }
     },
+    "VB2PYPage": {
+        "Typ": "VB2PYPage",
+        "Name": "VB2PYPage",
+        "MTabName": "VB2PY",
+        "Title": "VB2PY",
+        "Button_1": "Geänderte Einstellungen übernehmen",
+        "Button_2": "Individuellen Pfad zum Excel ProgrammGenerator verwenden",
+        "Button_3": "Pfad zum Excel ProgrammGenerator auswählen",
+        "Button_4": "Pfad zu den Ergebis-Dateien",
+        "Button_5": "VB2PY starten",
+        "Kurzbeschreibung": "Einstellungsparameter",
+        "Ausführliche Beschreibung": "VB2PY Converter",
+        "Params": [
+                  ]
+    },
     "Z21MonitorPage": {
         "Typ": "Z21MonitorPage",
         "Name": "Z21MonitorPage",

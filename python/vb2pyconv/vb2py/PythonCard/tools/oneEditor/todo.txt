@@ -1,0 +1,20 @@
+ - figure out initial sizing issues                         DONE
+ - close button / menu item to close current page           DONE
+ - add menu and command items to drop-downs
+ - key / shortcut to take you to the drop-down (if possible) ?
+ - statusBar and title mechanism. 
+      Problem with syntax check untitled doc which is then saved.
+      syntax message goes into statusBar, but because the text
+      has changed (new file name), on_idle overwrites the error message.
+- fix History, probably add document to history on closeTab as well
+    as when closing application
+- on_menuFileOpen_select is currently broken, history selection works
+Traceback (most recent call last):
+  File "/Users/altis/python/PythonCard/menu.py", line 205, in _dispatch
+    handler(background, aWxEvent)
+  File "/Users/altis/python/PythonCard/tools/oneEditor/tabcodeEditor.py", line 695, in on_menuFileOpen_select
+    self.openFile(path)
+  File "/Users/altis/python/PythonCard/tools/oneEditor/tabcodeEditor.py", line 570, in openFile
+    if (not self.currentPage or 
+AttributeError: 'NoneType' object has no attribute 'GetModify'
+
