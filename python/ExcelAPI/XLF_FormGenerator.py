@@ -245,7 +245,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     filedir2 = os.path.dirname(filedir)                    
                     filepath = filedir2 + filename
                     comp.iconImage = tk.PhotoImage(file=filepath)
-                    button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,image=comp.iconImage,anchor="nw",font=comp.Font)
+                    button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,image=comp.iconImage,font=comp.Font)
                 else:
                     button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength)
                 button.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)

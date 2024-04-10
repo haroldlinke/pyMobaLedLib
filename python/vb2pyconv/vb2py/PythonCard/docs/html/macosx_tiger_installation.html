@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="PythonCard.css"  type="text/css"/>
+    <meta name="author" content="Kevin Altis" />
+    <title>Installing PythonCard on Mac OS X (Panther)</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>How to Install PythonCard on Mac OS X (Panther)</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <p><strong>The instructions below are for installing PythonCard on Mac OS 
+    10.3 (Panther). If you are using Mac OS 10.2 (Jaguar), then please use 
+    <a href="macosx_jaguar_installation.html">these instructions</a> instead.
+    </strong></p>
+    <p>Installing PythonCard on your system requires the following steps:</p>
+    <ol>
+      <li>Download MacPython add-ons from MacPython site.</li>
+      <li>Download wxPython from the wxPython.org site.</li>
+      <li>Download PythonCard from the PythonCard site.</li>
+      <li>Install MacPython add-ons</li>
+      <li>Install wxPython</li>
+      <li>Install PythonCard</li>
+      <li>Confirm the installation works</li>
+    </ol>
+    <h2>Downloading MacPython add-ons</h2>
+    <p>If you're running Panther then you already have Python 2.3 installed on 
+    your system, but we want to get the MacPython add-ons to get the 
+    PackageManager and PythonLauncher.</p>
+    <p>Click on this <a href="http://ftp.cwi.nl/jack/python/mac/MacPython-Panther-2.3-2.dmg">MacPython-Panther-2.3-2.dmg</a> 
+    link to begin the download. Most Mac OS X browsers will save the file to your
+    desktop.</p>
+    <h2>Downloading wxPython</h2>
+    <p>PythonCard relies on the wxPython package. Click on this <a href="http://prdownloads.sourceforge.net/wxpython/wxPythonOSX-2.5.2.8-panther-Py2.3.dmg">wxPythonOSX-2.5.2.8-panther-Py2.3.dmg</a> 
+    link to begin the download. Again, most Mac OS X browsers will save the file 
+    to your desktop.</p>
+    <h2>Downloading PythonCard</h2>
+    <p>The latest version of PythonCard is always available via the <a href="http://sourceforge.net/project/showfiles.php?group_id=19015">PythonCard download page</a>. 
+    Click on this <a href="http://prdownloads.sourceforge.net/pythoncard/PythonCard-0.8.2.tar.gz">PythonCard-0.8.2.tar.gz</a> 
+    link to begin the download. Again, most Mac OS X browsers will save the file 
+    to your desktop.</p>
+    <h2>Installing MacPython add-ons</h2>
+    <p>The MacPython add-ons arrive at your system as an installable disk image. 
+    All you have to do is double-click on the file you downloaded (it's called 
+    MacPython-Panther-2.3-2.dmg), then double-click the MacPython-Panther.pkg 
+    icon and follow the instructions in the installation wizard. The installer 
+    will create a MacPython-2.3 directory in your Applications folder.</p>
+    <h2>Installing wxPython</h2>
+    <p>wxPython also comes as an installable disk image. Just double-click on the
+    file you downloaded (it's called wxPythonOSX-2.5.2.8-panther-Py2.3.dmg), then
+    double-click the wxPythonOSX-panther.pkg icon and follow the instructions. 
+    wxPython will be installed into <span class="code">/Library/Python/2.3/</span>. Note that this is the same directory as <span class="code">/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages/</span> since the two directories are connected by a symbolic link in the file system.</p>
+    <p>I recommend creating a wxPython folder in your Applications folder and 
+    copying the Apps, Docs, Samples, and README 1st.txt files to the wxPython 
+    folder.</p>
+    <h2>Installing PythonCard</h2>
+    <p>The PythonCard-0.8.2.tar.gz file you downloaded should 
+    automatically be decompressed by Stuffit; if the file isn't already 
+    decompressed, then double-click the PythonCard-0.8.2.tar.gz file. 
+    You should now have a PythonCard-0.8 directory on your desktop. 
+    Open the Terminal application and do a cd to that directory and then run the 
+    setup.py script using the 2.3 Python you just installed. The sudo command 
+    will prompt you for your password.</p>
+    <p class="code">
+    [mymachine:~] bob% cd ~/Desktop/PythonCard-0.8<br />
+    [mymachine:~/Desktop/PythonCard-0.8] bob% sudo python setup.py 
+    install</p>
+    <p>By default, the PythonCard framework will be installed into <span class="code">/Library/Python/2.3/PythonCard/</span>. 
+    You'll probably want to make an alias to this directory to keep on your 
+    desktop or home folder to make it easier to get to the PythonCard tools and 
+    samples.</p>
+    <h2>Confirming Installation</h2>
+    <p>To run GUI scripts on Mac OS X (i.e. wxPython and PythonCard scripts) from
+    the Terminal you must start them with pythonw rather than the plain python 
+    interpreter.</p>
+    <h3>Configuring PythonLauncher</h3>
+    <p>The default install leaves .py and .pyw files associated with the Python 
+    IDE rather than PythonLauncher which is the app used to run Python scripts 
+    from the Finder. PythonLauncher is located in your Applications/MacPython-2.3 folder</p>
+    <p>If you select a .py file you can choose Get Info from the File menu and 
+    then change the files to open with PythonLauncher instead of the IDE if you 
+    want to be able to double-click a file and have it run. Repeat the process 
+    for .pyw files. Alternatively, you can hold down the control key and when you
+    click on a .py file then you can select PythonLauncher from the Open With
+    menu item.</p>
+    <p class="imageCaption"><img src="http://pythoncard.sourceforge.net/images/pythonlauncher.png" alt="Mac Preferences Dialog" /><br />
+    Figure 1. PythonLauncher Preferences</p>
+    <h3>Acid Test</h3>
+    <p>OK, now comes the acid test. Open the folder called &quot;minimal&quot; in
+    <span class="code">/Library/Python/2.3/PythonCard/samples</span>. 
+    Find the icon labeled minimal.py and double-click it. In a few moments (after 
+    an operating system console window has appeared), a small window like the 
+    one shown in Figure 2 will appear. This indicates that your installation was 
+    successful and everything is working. Close the minimal application in the 
+    usual way and proceed with the Walk-Through.</p>
+    <p class="imageCaption"><img src="http://pythoncard.sourceforge.net/images/minimal_panther.png" alt="Minimal Sample" /><br />
+    Figure 2. PythonCard minimal application window open to confirm installation
+    is correct</p>
+    <p>If for some reason this test fails, go back over these instructions 
+    carefully. In particular, make sure that wxPython and PythonCard 
+    both appear in the site-packages folder in Python's Lib folder.</p>
+    <p>If everything seems OK and you still can't get minimal.py to launch, post 
+    a message to the PythonCard Users Mailing List. (If you aren't yet a member, 
+    visit the <a href="http://lists.sourceforge.net/lists/listinfo/pythoncard-users">list management page</a>
+    and join.)</p>
+    <p><a href="walkthrough1.html">Back to Walk-Through</a></p>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.2 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:25 $</p>
+    </div> <!-- end of content -->
+  </body>
+</html>

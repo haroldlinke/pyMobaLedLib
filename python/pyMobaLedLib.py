@@ -69,6 +69,7 @@ from mlpyproggen.Pattern_Generator import Pattern_GeneratorPage
 import pattgen.MainMenu_Form as MainMenu
 from mlpyproggen.ServoTestPage import ServoTestPage1
 from mlpyproggen.ServoTestPage2 import ServoTestPage2
+from mlpyproggen.VB2PyPage import VB2PYPage
 from mlpyproggen.Z21MonitorPage import Z21MonitorPage
 from mlpyproggen.ARDUINOMonitorPage import ARDUINOMonitorPage
 from mlpyproggen.StartPage import StartPage
@@ -99,6 +100,7 @@ import logging
 import logging.handlers
 import webbrowser
 import argparse
+import subprocess
 import shutil
 from datetime import datetime
 import proggen.M07_COM_Port_New as M07New
@@ -188,6 +190,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.colortest_only = COMMAND_LINE_ARG_DICT.get("colortest_only","")== "True"
         self.executetests = COMMAND_LINE_ARG_DICT.get("test","")== "True"
         self.loaddatafile = COMMAND_LINE_ARG_DICT["loaddatafile"]!="False"
+        self.logfilename =  COMMAND_LINE_ARG_DICT["logfilename"]
         self.coltab = None
         self.checkcolor_callback = None
         self.ledhighlight = False
@@ -302,6 +305,8 @@ class pyMobaLedLibapp(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
         tk.Tk.report_callback_exception = self.show_tkinter_exception
         self.update()
+        #default_font = tk.font.nametofont("TkDefaultFont")
+        #default_font.configure(family="Arial", size=11)        
         
         #print(self.getConfigData("pos_x"), self.getConfigData("pos_y"))
         #print(self.getConfigData("win_height"), self.getConfigData("win_width"))
@@ -382,6 +387,10 @@ class pyMobaLedLibapp(tk.Tk):
         colormenu.add_command(label="speichern als ...", command=self.SaveFileas)
         colormenu.add_separator()
         colormenu.add_command(label="auf Standard zurücksetzen", command=self.ResetColorPalette)
+        
+        colormenu = tk.Menu(menu)
+        menu.add_cascade(label="Tabelle", menu=colormenu)
+        colormenu.add_command(label="Refresh Icons", command=self.MenuRefreshIcons)
 
         arduinomenu = tk.Menu(menu)
         menu.add_cascade(label="ARDUINO", menu=arduinomenu)
@@ -405,12 +414,31 @@ class pyMobaLedLibapp(tk.Tk):
         helpmenu = tk.Menu(menu)
         menu.add_cascade(label="Hilfe", menu=helpmenu)
         helpmenu.add_command(label="Hilfe öffnen", command=self.OpenHelp)
+        helpmenu.add_command(label="Logfile öffnen", command=self.OpenLogFile)
         helpmenu.add_command(label="Über...", command=self.About)
         
         testmenu = tk.Menu(menu)
         #menu.add_cascade(label="Test", menu=testmenu)
         testmenu.add_command(label="Excel-Datei importieren", command=self.OpenExcelWorkbook)
         testmenu.add_command(label="Lines of Code", command=self.find_loc)
+        
+        self.messageframe = ttk.Frame(self)
+        
+        self.connectstatusmessage = tk.Label(self.messageframe, text='Status:', fg="black",bd=1, relief="sunken", anchor="w")
+        self.connectstatusmessage.grid(row=0,column=0,sticky="ew")
+        #self.statusmessage.pack(side="bottom", fill="x")
+        self.ToolTip(self.connectstatusmessage, text="Zeigt den Status der Verbindung zum ARDUINO an: \nVerbunden - eine Verbindung zum ARDUINO steht\nNicht verbunden - keine Verbindung zum ARDUINO")
+        
+        self.statusmessage = tk.Label(self.messageframe, text=' ', fg="black",bd=1, relief="sunken", anchor="w")
+        self.statusmessage.grid(row=0,column=1,sticky="ew")
+        #self.statusmessage.pack(side="bottom", fill="x")
+        self.ToolTip(self.statusmessage, text="Zeigt Meldungen und Fehler an")
+        
+        self.messageframe.grid_columnconfigure(0, weight=1, uniform="group1")
+        self.messageframe.grid_columnconfigure(1, weight=1, uniform="group1")
+        self.messageframe.grid_rowconfigure(0, weight=1)
+        
+        self.messageframe.grid(row=1,column=0,sticky="nesw")        
                 
         #filemenu.add_command(label="MacroWorkbook speichern als", command=self.SaveFileWorkbook)        
 
@@ -467,6 +495,9 @@ class pyMobaLedLibapp(tk.Tk):
                 tabClassList = tabClassList_mll_only
         #tabClassList = tabClassList_tksheet_test #test
         
+        if COMMAND_LINE_ARG_DICT.get("vb2py","")=="True":
+            tabClassList += (VB2PYPage, )
+        
         for tabClass in tabClassList:
             frame = tabClass(self.container,self)
             tabClassName = frame.tabClassName
@@ -487,7 +518,7 @@ class pyMobaLedLibapp(tk.Tk):
         for wb in P01.Workbooks:
             wb.init_workbook()
             if self.getConfigData("AutoLoadWorkbooks"):
-                    temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name)
+                    temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name+".json")
                     wb.Load(filename=temp_workbook_filename)
         
         self.messageframe = ttk.Frame(self)
@@ -559,7 +590,11 @@ class pyMobaLedLibapp(tk.Tk):
            
         
     def check_data_changed(self):
-        return self.paramDataChanged or self.activeworkbook.check_Data_Changed()
+        if self.activeworkbook != None:
+            data_changed = self.activeworkbook.check_Data_Changed()
+        else:
+            data_changed = False
+        return self.paramDataChanged or data_changed
 
     def get_font(self,fontname):
         font_size = self.getConfigData(fontname)
@@ -662,6 +697,12 @@ class pyMobaLedLibapp(tk.Tk):
     def OpenHelp(self):
         self.call_helppage()
         
+    def OpenLogFile(self):
+        logging.debug("Open logfile: %s",self.logfilename)
+        dst = self.logfilename + ".tmp.log"     # logfile is locked by logger, open a copy with the os specific viewer
+        shutil.copyfile(self.logfilename, dst)
+        subprocess.run(dst, shell=True)
+        
     def OpenExcelWorkbook(self):
         self.activeworkbook.LoadExcelWorkbook()    
 
@@ -677,6 +718,9 @@ class pyMobaLedLibapp(tk.Tk):
     def MenuRedo(self,_event=None):
         for key in self.tabdict:
             self.tabdict[key].MenuRedo()
+            
+    def MenuRefreshIcons(self):
+        self.activeworkbook.refreshicons()
 
     def ConnectArduino(self):
         self.connect()
@@ -761,12 +805,15 @@ class pyMobaLedLibapp(tk.Tk):
         #temp_ledeffecttable_filename = os.path.join(filedir,self.tempLedeffecttableFilname)
         #self.saveLEDTabtoFile(temp_ledeffecttable_filename)
         for wb in P01.Workbooks:
-            temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name)
+            wb.Evt_Workbook_BeforeClose()
+            temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name+".json")
             wb.Save(filename=temp_workbook_filename)        
         self.close_notification()
         
     def cancel_step2_without_save(self):
         logging.debug("Cancel_without_save2")
+        for wb in P01.Workbooks:
+            wb.Evt_Workbook_BeforeClose()
         self.close_notification()           
 
     # ----------------------------------------------------------------
@@ -956,7 +1003,7 @@ class pyMobaLedLibapp(tk.Tk):
                 self.arduino = serial.Serial(port,baudrate=baudrate,timeout=2,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
                 logging.debug("connected to: %s Baudrate: %s", self.arduino.portstr,baudrate)
             except BaseException as e:
-                logging.debug(e)
+                logging.debug(e, exc_info=True) 
                 #messagebox.showerror("Error connecting to the serial port " + self.getConfigData("serportname"),
                 #                     "Serial Interface to ARDUINO could not be opened!\n"
                 #                     "\n"
@@ -1117,7 +1164,7 @@ class pyMobaLedLibapp(tk.Tk):
                 logging.debug("connected to: %s Baudrate: %s", self.arduino.portstr,baudrate)                
 
             except BaseException as e:
-                logging.debug(e)
+                logging.debug(e, exc_info=True) 
                 messagebox.showerror("Error connecting to the serial port " + port,
                                      "Serial Interface to ARDUINO could not be opened!\n"
                                      "\n"
@@ -1282,7 +1329,7 @@ class pyMobaLedLibapp(tk.Tk):
                             self.ARDUINO_status = "Connected"
                             break
                     except BaseException as e:
-                        logging.debug(e)
+                        logging.debug(e, exc_info=True) 
                         pass
         return textmessage
     
@@ -1330,7 +1377,7 @@ class pyMobaLedLibapp(tk.Tk):
                 self.queue.put( ">> " + str(message))
             except BaseException as e:
                 logging.debug("Error write message to ARDUINO %s",message)
-                logging.debug(e)
+                logging.debug(e, exc_info=True) 
     
     def set_maxLEDcnt(self,maxLEDcnt):
         self.maxLEDcnt = maxLEDcnt
@@ -1497,7 +1544,8 @@ class pyMobaLedLibapp(tk.Tk):
                 #logging.debug("Copy %s to %s",srcfile,destfile)
                 
             except BaseException as e:
-                logging.debug("PyInstaller handling Error %s",e)
+                logging.debug("PyInstaller handling Error")
+                logging.debug(e, exc_info=True) 
         
         else:
             logging.debug('running in a normal Python process')        
@@ -1509,7 +1557,8 @@ class pyMobaLedLibapp(tk.Tk):
             logging.debug("ReadConfig: %s",repr(self.ConfigData.data))
             #logging.info(self.MacroParamDef.data)
         except BaseException as e:
-            logging.debug("PyInstaller handling Error %s",e)            
+            logging.debug("PyInstaller handling Error")
+            logging.debug(e, exc_info=True) 
         
     def setConfigData(self,key, value):
         if key=="serportname":
@@ -1556,7 +1605,7 @@ class pyMobaLedLibapp(tk.Tk):
                 os.remove(DISCONNECT_FILENAME)
             except BaseException as e:
                 logging.debug("ERROR: onCheckDisconnectFile")
-                logging.debug(e) 
+                logging.debug(e, exc_info=True) 
 
         if os.path.isfile(CLOSE_FILENAME):
             self.led_off()
@@ -1568,7 +1617,7 @@ class pyMobaLedLibapp(tk.Tk):
                 os.remove(CLOSE_FILENAME)
             except BaseException as e:
                 logging.debug("ERROR: onCheckDisconnectFile2")
-                logging.debug(e) 
+                logging.debug(e, exc_info=True) 
         
         if self.continueCheckDisconnectFile:
             self.after(1000, self.onCheckDisconnectFile)
@@ -2815,7 +2864,7 @@ def main_entry():
     
     global COMMAND_LINE_ARG_DICT
     
-    #import wingdbstub
+    import wingdbstub
     
     if sys.hexversion < 0x030700F0:
         tk.messagebox.showerror("Wrong Python Version"+sys.version,"You need Python Version > 3.7 to run this Program")
@@ -2832,6 +2881,7 @@ def main_entry():
     parser.add_argument('--z21simulator',choices=["True","False"],help="if <True> the Z21simulator will be started automatically")
     parser.add_argument('--caller',choices=["SetColTab",""],help="Only for MLL-ProgrammGenerator: If <SetColTab> only the Colorcheckpage is available and the chnage coltab is returned after closing the program")
     parser.add_argument('--test',choices=["True","False"],help="if <True> test routines are started at start of program")
+    parser.add_argument('--vb2py',choices=["True","False"],help="if <True> VB2PYpage is shown - for developers only")
     
     try:
         args = parser.parse_args()
@@ -2891,6 +2941,7 @@ def main_entry():
     logger.debug("Installationfolder %s",filedir)
     logger.debug("Logging Level: %s Logfilename: %s",logging_level, logfilename)
     
+    COMMAND_LINE_ARG_DICT["logfilename"]=logfilename
     if args.startpage:
         COMMAND_LINE_ARG_DICT["startpagename"]=args.startpage
     else:
@@ -2917,6 +2968,9 @@ def main_entry():
     if args.test:
         COMMAND_LINE_ARG_DICT["test"]=args.test
         
+    if args.vb2py:
+        COMMAND_LINE_ARG_DICT["vb2py"]=args.vb2py
+        
     # check if colortest only is needed
     try: #check if a COLORTESTONLY_FILE is in the main Dir 
         filedir = os.path.dirname(os.path.realpath(__file__))
@@ -2924,7 +2978,7 @@ def main_entry():
         open(filepath1, 'r').close()
         colortest_only = True
     except BaseException as e:
-        logger.debug(e)
+        logging.debug(e, exc_info=True) 
         colortest_only = False
         pass
     
@@ -2942,6 +2996,7 @@ def main_entry():
     app.protocol("WM_DELETE_WINDOW", app.cancel)
     
     app.startup_system()
+
     
     app.mainloop()
     

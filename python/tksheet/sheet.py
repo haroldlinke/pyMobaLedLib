@@ -2275,6 +2275,15 @@ class Sheet(tk.Frame):
         return self.MT.equalize_data_row_lengths(include_header=include_header)
 
     # Highlighting Cells
+    
+    def getColorAt(self, row, col):
+        cell_options = self.MT.cell_options.get((row, col), None)
+        if cell_options != None:
+            color = cell_options["highlight"].bg
+        else:
+            color =  "#FFFFFF"
+        return color
+            
 
     def highlight(
         self,

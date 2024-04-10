@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../PythonCard.css" type="text/css" />
+  <title>Framework Overview- Dialogs</title>
+</head>
+  <body>
+<div id="banner">
+<h1>Framework Overview- Dialogs</h1>
+</div>
+<?php include "../sidebar.php" ?>
+<div id="content">
+<p>Updated: March 31, 2006 for release 0.8.2</p>
+
+<p>Dialogs are defined in dialog.py. They are all modal and map directly to a
+wxPython class, which map to an underlying OS dialog where available. The
+one exception is the findDialog which I coded from scratch. In PythonCard,
+dialog use has been simplified by wrapping the underlying classes with a
+function, so that a modal dialog call only requires a single line of code.
+The result of a dialog call is always a dictionary.</p>
+
+<pre>
+alertDialog           (variation of wx.MessageDialog)
+colorDialog           (wx.ColourDialog)
+directoryDialog       (wx.DirDialog)
+fileDialog            (wx.FileDialog)
+    openFileDialog
+    saveFileDialog
+findDialog
+fontDialog            (wx.FontDialog)
+messageDialog         (wx.MessageDialog)
+multipleChoiceDialog  (wx.lib.dialogs.MultipleChoiceDialog)
+scrolledMessageDialog (wx.lib.dialogs.ScrolledMessageDialog)
+singleChoiceDialog    (wx.SingleChoiceDialog)
+textEntryDialog       (wx.TextEntryDialog)
+    multilineTextEntryDialog
+    passwordTextEntryDialog
+</pre>
+
+<p><a href="../dialogs/index.html">Creating and Interacting with Common Dialogs in PythonCard</a> describes the use of each of the dialogs above.</p>
+<p>Some options are specified via constants, see dialog.py for a full list as
+well as the dialogs sample which shows the various dialogs in use.</p>
+
+<p>The CustomDialog class allows you to define custom modal dialogs using the 
+same components and layout mechanisms and event handlers as used for backgrounds.
+See the dbBrowser, dialogs, resourceEditor, textEditor, and textRouter samples 
+for examples of custom modal dialogs. The CustomDialog class is defined in 
+model.py.</p>
+
+<p>There are no modeless dialogs and discussions I've had with Rowland about
+this topic concluded that there is not much point to the term 'modeless
+dialog' since in PythonCard there wouldn't be much difference from a regular
+background.</p>
+
+<hr>
+| <a href="general_concepts_and_limitations.html">General Concepts and Limitations</a> | <a href="components.html">Components</a> 
+| <a href="dialogs.html">Dialogs</a> | <a href="events_and_handlers.html">Events and Handlers</a> | <a href="menus.html">Menus</a> | <a href="resource_files.html">Resource Files</a> 
+| <a href="runtime_tools.html">Runtime Tools</a> 
+<hr>
+    <?php include "../footer.php" ?>
+    <p>$Revision: 1.4 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:26 $</p>
+</div> <!-- end of content -->
+</body>
+</html>

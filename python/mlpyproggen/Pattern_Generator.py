@@ -53,8 +53,6 @@ import pattgen.M16_Add_Del_Columns as M16
 from ExcelAPI.P01_Worksheetcalc import Calc_Worksheet
 import pattgen.DieseArbeitsmappe
 import pattgen.Tabelle9
-
-import pattgen.Tabelle9 as PAT09
 import pattgen.D00_Forms as D00
 import ExcelAPI.XLW_Workbook as XLW
 
@@ -163,6 +161,7 @@ class Pattern_GeneratorPage(tk.Frame):
         tk.Frame.__init__(self,parent)
         self.controller = controller
         set_global_controller(controller)
+        self.controller.set_statusmessage("Erstelle PatternConfigurator Seite ...",fg="green")
         macrodata = self.controller.MacroDef.data.get(self.tabClassName,{})
         
         self.default_font        = self.controller.defaultfontnormal
@@ -176,10 +175,15 @@ class Pattern_GeneratorPage(tk.Frame):
                                     "HideRows"        : [12,15,16,17,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46],
                                     #"HideRows"        : [],
                                     "ProtectedCells"  : (("A:D"), ),
-                                    "GridList"        : {"1": ((27,4),(27,63)),
-                                                         "2": ((46,4),(46,63)),
-                                                         "3": ((48,3),(50,63))
+                                    "GridList"        : {"1": ((28,4),(28,63)),
+                                                         "2": ((49,4),(51,63)),
+                                                         "3": ((2, 5), (15, 5)), 
+                                                         "4": ((47, 4), (47, 63)),
                                                          },
+                                    "GridFormat"      : {"fg": "#808080",
+                                                         "show_horizontal_grid": False,
+                                                         "show_vertical_grid": False,
+                                                         },                                    
                                     "ColumnWidth"     : (40,136,8,64,176,56,56,56,56,56,56,56,56,56),  #(5,17,1,8,22,7),
                                     "ColumnAlignment" : {"ex": ("D"), 
                                                          "wx": ("E", "F")
@@ -189,7 +193,7 @@ class Pattern_GeneratorPage(tk.Frame):
                                                                 "font"     : self.default_font,
                                                                 "fg"       : "#000000",
                                                                 "bg"       : "#FFFF00",
-                                                                "Cells"    : ("E2:E15", "E22")
+                                                                "Cells"    : ("E2:E15", "E22",) #"F28:BQ28", "D50:BQ60")
                                                                 },
                                                         "default": {
                                                                "font"     : self.default_font,
@@ -199,6 +203,8 @@ class Pattern_GeneratorPage(tk.Frame):
                                                         }
                                     },
                      "SheetType" : "Datasheet",
+                     "SaveShapes": False,
+                     "RefreshShapesafterLoad": True,
                      "Controls" :  { "Default":{ "Components" : [{"Name":"Default",
                                                                   "Accelerator":"",
                                                                   "BackColor":"#00000F",
@@ -224,14 +230,14 @@ class Pattern_GeneratorPage(tk.Frame):
                                                 "BackColor"     : "#FFFFFF",
                                                 "BorderColor"   : "#000012",
                                                 "Caption"       : "",
-                                                "Height"        : 12,
+                                                "Height"        : 14,
                                                 "Left"          : None,
                                                 "Col"           : 5,
                                                 "Top"           : None,
                                                 "Row"           : 48,
                                                 "Type"          : "FormWindow",
                                                 "Visible"       : True,
-                                                "Width"         : 100,
+                                                "Width"         : 140,
                                                 "Components"    : [{"Name":"Add_Col","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                                     "Caption":"+",
                                                                     "Command": "Add_Col_Button_Click" ,"ControlTipText":"","ForeColor":"#000012","Height":12,"Left":0,"Top":1,"Type":"CommandButton","Visible":True,"Width":12,"AlternativeText":"Add_Del_Button"},
@@ -240,23 +246,23 @@ class Pattern_GeneratorPage(tk.Frame):
                                                                     "Command": "Del_Col_Button_Click","ControlTipText":"","ForeColor":"#000012","Height":12,"Left":14,"Top":1,"Type":"CommandButton","Visible":True,"Width":12,"AlternativeText":"Add_Del_Button"},
                                                                    {"Name":"RGB_LED_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","Persistent":True,
                                                                     "Caption":"RGB LED",
-                                                                    "ControlTipText":"","ForeColor":"#000012","Height":12,"Left":28,"Top":1,"Type":"CheckBox","Visible":True,"Width":60,"AlternativeText":"Add_Del_Button"},
+                                                                    "ControlTipText":"","ForeColor":"#000012","Height":12,"Left":28,"Top":1,"Type":"CheckBox","Visible":True,"Width":100,"AlternativeText":"Add_Del_Button"},
                                                                  ]},
                                     "Form2": {  "Name"          : "Options_Button",
                                                 "BackColor"     : "#FFFFFF",
                                                 "BorderColor"   : "#000012",
                                                 "Caption"       : "",
-                                                "Height"        : "1.35c",
+                                                "Height"        : "50",
                                                 "Left"          : None,
                                                 "Col"           : 1,
                                                 "Top"           : None,
                                                 "Row"           : 1,
                                                 "Type"          : "FormWindow",
                                                 "Visible"       : True,
-                                                "Width"         : "1.35c",
+                                                "Width"         : "50",
                                                 "Components"    : [{"Name":"Options","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"Btn_PA_Options.png",
                                                                     "Caption":"Options",
-                                                                    "Command": "M02.Main_Menu" ,"ControlTipText":"Optionen","ForeColor":"#000012","Height":"1.35c","Left":0,"Top":0,"Type":"CommandButton","Visible":True,"Width":"1.35c"},
+                                                                    "Command": "M02.Main_Menu" ,"ControlTipText":"Optionen","ForeColor":"#000012","Height":"50","Left":0,"Top":0,"Type":"CommandButton","Visible":True,"Width":"50"},
                                                                   ]},
                                     "Form3": {  "Name"          : "Import",
                                                 "BackColor"     : "#FFFFFF",
@@ -371,7 +377,7 @@ class Pattern_GeneratorPage(tk.Frame):
                                                                                "Die Zeiten können in Minuten ('Min') oder Sekunden ('Sec'= angegeben werden. Wird keine Einheit angegeben dann ist die Zeitangabe in Millisekunden ('ms').\n"+
                                                                                "Achtung zwischen Zahl und Einheit muss ein Leerzeichen stehen und die Groß- und Kleinschreibung muss exakt stimmen. Wenn Spalten die gleiche Anzeigedauer haben, dann sollte die Zeit nur in den ersten Spalten angegeben werden zur Minimierung des Speicherverbrauchs. Die Folgenden Zeilen können als Formel Angegeben werden damit man sieht wie lange der Abschnitt dauert. Im Beispiel unten ist das bei den Spalten 4 bis 8 gemacht.\n"+
                                                                                "In der zweiten Tabelle wird mit einem x markiert welche LED in dem Abschnitt leuchten soll. Wenn mehrere Helligkeiststufen benutzt werden, dann wird die Helligkeit als Zahl eingetragen. Die Anzahl der Abschnitte wird automatisch anhand der eingetragenen Markierungen bestimmt. Wenn am Ende leere Abschnitte verwendet werden sollen, dann muss in die letzte Spalte ein Punkt eingefügt werden.",
-                                                                    "ForeColor":"#000012","Height":148,"Left":0,"Top":0,"Type":"TextBox","Visible":True,"Width":600,"CharFormat":{("1.0","1.end"): self.default_boldfont}},
+                                                                    "ForeColor":"#000012","Height":148,"Left":0,"Top":0,"Type":"TextBox","Visible":True,"Width":600}, # ,"CharFormat":{("1.0","1.end"): self.default_boldfont}},
                                                                   ]},                                           
                                 }
                      },
@@ -383,10 +389,14 @@ class Pattern_GeneratorPage(tk.Frame):
                                                             "HideRows"        : [12,15,16,17,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46],
                                                             #"HideRows"        : [],
                                                             "ProtectedCells"  : (("A:D"), ),
-                                                            "GridList"        : {"1": ((27,4),(27,63)),
-                                                                                 "2": ((46,4),(46,63)),
-                                                                                 "3": ((48,3),(50,63))
+                                                            "GridList"        : {"1": ((28,4),(28,63)),
+                                                                                 "2": ((49,4),(51,63)),
+                                                                                 "3": ((2, 5), (15, 5)),
                                                                                  },
+                                                            "GridFormat"      : {"fg": "#808080",
+                                                                                 "show_horizontal_grid": False,
+                                                                                 "show_vertical_grid": False,
+                                                                                 },                                                             
                                                             "ColumnWidth"     : (40,136,8,64,176,56,56,56,56,56,56,56,56,56),  #(5,17,1,8,22,7),
                                                             "ColumnAlignment" : {"ex": ("D"), 
                                                                                  "wx": ("E", "F")
@@ -406,6 +416,8 @@ class Pattern_GeneratorPage(tk.Frame):
                                                                                 }
                                                             },
                                              "SheetType" : "Datasheet",
+                                             "SaveShapes": False,
+                                             "RefreshShapesafterLoad": True,
                                              "Controls" :  { "Default":{ "Components" : [{"Name":"Default",
                                                                                           "Accelerator":"",
                                                                                           "BackColor":"#00000F",
@@ -515,7 +527,7 @@ class Pattern_GeneratorPage(tk.Frame):
                                                                                                        "Achtung zwischen Zahl und Einheit muss ein Leerzeichen stehen und die Groß- und Kleinschreibung muss exakt stimmen. Wenn Spalten die gleiche Anzeigedauer haben, dann sollte die Zeit nur in den ersten Spalten angegeben werden zur Minimierung des Speicherverbrauchs. Die Folgenden Zeilen können als Formel Angegeben werden damit man sieht wie lange der Abschnitt dauert. Im Beispiel unten ist das bei den Spalten 4 bis 8 gemacht.\n"+
                                                                                                        "In der zweiten Tabelle wird mit einem x markiert welche LED in dem Abschnitt leuchten soll. Wenn mehrere Helligkeiststufen benutzt werden, dann wird die Helligkeit als Zahl eingetragen. Die Anzahl der Abschnitte wird automatisch anhand der eingetragenen Markierungen bestimmt. Wenn am Ende leere Abschnitte verwendet werden sollen, dann muss in die letzte Spalte ein Punkt eingefügt werden.\n" +
                                                                                                        "Zurück zum ProgrammGenerator gelangt man mit dem -ProgrammGenerator-Button. Die Änderungen werden dann automatisch übernomen.",
-                                                                                            "ForeColor":"#000012","Height":148,"Left":0,"Top":0,"Type":"TextBox","Visible":True,"Width":600,"CharFormat":{("1.0","1.end"): self.default_boldfont}},
+                                                                                            "ForeColor":"#000012","Height":148,"Left":0,"Top":0,"Type":"TextBox","Visible":True,"Width":600}, #"CharFormat":{("1.0","1.end"): self.default_boldfont}},
                                                                                           ]},
                                                             }
                         },                    
@@ -549,15 +561,16 @@ class Pattern_GeneratorPage(tk.Frame):
                     },
                    "Events": {"Workbook_Open"          : pattgen.DieseArbeitsmappe.Workbook_Open,
                               "Workbook_BeforeClose"   : pattgen.DieseArbeitsmappe.Workbook_BeforeClose,
+                              "SheetBeforeDoubleClick" : pattgen.DieseArbeitsmappe.Workbook_SheetBeforeDoubleClick,
+                              "SheetCalculate"         : Calc_Worksheet,
                               "SheetActivate"          : pattgen.Tabelle9.Worksheet_Activate,
                               "SheetDeactivate"        : pattgen.Tabelle9.Worksheet_Deactivate,
-                              "SheetTableUpdate"       : None,
-                              "SheetCalculate"         : Calc_Worksheet,
-                              "SheetBeforeDoubleClick" : pattgen.DieseArbeitsmappe.Workbook_SheetBeforeDoubleClick,
                               "SheetChange"            : pattgen.Tabelle9.Worksheet_Change,
                               "SheetSelectionChange"   : pattgen.Tabelle9.Worksheet_SelectionChange,
                               "SheetReturnKey"         : M02.Global_On_Enter_Proc,
-                              "NewSheet"               : None
+                              "NewSheet"               : None, 
+                              "Worksheet_Redraw"       : M02.worksheet_redraw, 
+                              "SheetTableUpdate"       : None
                    }
                 } 
                 
@@ -768,8 +781,8 @@ class Pattern_GeneratorPage(tk.Frame):
                 try:
                     self.arduinoMonitorPage.add_text_to_textwindow(output.decode('utf-8').strip())
                 except BaseException as e:
-                    logging.debug(e)
-                    logging.debug("ERROR: Write_stdout_to_text_window: %s",output)
+                    logging.debug(e, exc_info=True) 
+                    logging.debug("ERROR: PatternGeneratorPage - Write_stdout_to_text_window: %s",output)
                     pass            
             
             if self.process.poll() is not None:
@@ -790,7 +803,7 @@ class Pattern_GeneratorPage(tk.Frame):
             self.continue_loop=True
             self.write_stdout_to_text_window()
         except BaseException as e:
-            #logging.error("Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
+            logging.error("PatternGeneratorPage - Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + self.startfile[0]+ "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")

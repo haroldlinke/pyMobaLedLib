@@ -598,7 +598,7 @@ class ARDUINOConfigPage(tk.Frame):
             self.controller.arduino = serial.Serial(no_port,baudrate=baudrate,timeout=0.2,write_timeout=1,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
             #logging.info("connected to: " + self.controller.arduino.port)
         except BaseException as e:
-            logging.debug(e)
+            logging.debug(e, exc_info=True) 
             logging.debug("ARDUINO_CONFIG:detect_arduino: Error assigning port")
             return -2, None
         self.controller.arduino.port = port
@@ -606,7 +606,7 @@ class ARDUINOConfigPage(tk.Frame):
         try:
             self.controller.arduino.open()
         except BaseException as e:
-            logging.debug(e)            
+            logging.debug(e, exc_info=True)            
             logging.debug("ARDUINO_CONFIG:detect_arduino: Error opening  port")
             return -1, None           
         try:
@@ -614,8 +614,8 @@ class ARDUINOConfigPage(tk.Frame):
             time.sleep(0.250)
             self.controller.arduino.dtr = False
         except BaseException as e:
-            logging.debug(e)                 
-            logging.debug("Error, reset ARDUINO")
+            logging.debug(e, exc_info=True)                 
+            logging.debug("ARDUINO_CONFIG: Error, reset ARDUINO")
             return -3, None
     
         # now get in sync

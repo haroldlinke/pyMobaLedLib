@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="PythonCard.css" type="text/css" />
+    <title>Pythoncard Statement of Requirements</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>PythonCard Prototype Samples</h1>
+    </div>
+<?php include "sidebar.php" ?>
+    <div id="content">
+    <h2>Statement of Requirements</h2>
+    <p>Items in <em>italics</em> are still to be decided. The first version of 
+    Pythoncard will support;</p>
+    <h3>Static Text</h3>
+    <p>Sometimes known as labels or boilerplate.</p>
+    <h3>Fields</h3>
+    <ul>
+      <li>Single and multi-line fields for text entry. They will support 
+      tab-order between fields (TabOrder, TabIndex properties).</li>
+      <li><em>Can styled text be supported without complicating the interface and 
+      code?</em></li>
+      <li><em>Can we get scrolling text fields with scrollbars &quot;for free
+      &quot;?</em></li>
+    </ul>
+    <h3>Buttons</h3>
+    <ul>
+      <li>Standard</li>
+      <li>Radio</li>
+      <li>Radio button groups <em>- Optional for first release</em></li>
+      <li>Bitmap Buttons <em>- Optional for first release</em></li>
+    </ul>
+    <h3>Data Entry widgets</h3>
+    <ul>
+      <li><strong>Checkbox</strong>. Support for tab-order integrated with 
+      field tab order if possible</li>
+      <li><strong>Listbox</strong>.  Scrolling text list. <em>Optional for first 
+      release</em></li>
+      <li><strong>Combobox</strong>. Drop-down menu list. <em>Optional for first 
+      release</em></li>
+    </ul>
+    <h3>Static bitmap</h3>
+    <p><em>Which formats should be supported(GIF, JPG, BMP, PNG)?</em></p>
+    <h3>Menus</h3>
+    <ul>
+      <li><strong>File</strong>. Exit, Open, Save.</li>
+      <li><strong>Edit</strong>. Cut, Copy, Paste for fields.</li>
+      <li><strong>About</strong>. User-defined menus/menu items that are bound 
+      to commands. Could be a sub-menu from help.</li>
+      <li><strong>Help</strong>. Links to help (in HTML format) and version 
+      information.</li>
+    </ul>
+    <h3>Common dialogs</h3>
+    <ul>
+      <li>File Open/Save</li>
+      <li>Message (About)</li>
+      <li>Choice (Yes/No, Ok/Cancel)</li>
+      <li>Text entry choice (single field plus Ok/Cancel)</li>
+    </ul>
+    <h3>Miscellaneous</h3>
+    <p>The following items are notes and placeholders for future consideration 
+    that don't fit easily into any of the earlier categories.</p>
+    <ul>
+      <li>Clipboard support for textual data (Cut/Copy/Paste).</li>
+      <li>Overlapping buttons, fields, bitmaps will probably look messy at best 
+      until layering is available, so avoid rect of objects overlapping.</li>
+      <li>All the widgets should receive and be able to respond to events like: 
+      click(mouseDown), double-click, mouseOver, keyPress, closeField [need to 
+      complete this list for each widget type)</li>
+      <li>All widget descriptions to be stored in an external resource file.</li>
+      <li>Initially, the layout might be handled by a variety of programs such as 
+      Boa, wxDesigner, Glade, and then scripts in Python can translate the 
+      resulting output files to our own description format. The format should be 
+      text to allow easy editing of widget properties.</li>
+      <li>Fixed pixel-based widget positions.</li>
+      <li>Single layer, unless multi-layer doesn't complicate framework too much</li>
+      <li>Single card/stack, so no multi-stack issues, messaging between stacks, 
+      etc.</li>
+      <li>Some kind of idle event so object scripts don't have to block. The 
+      simple example would be that the card object catches the idle event once a 
+      second and calls a method to update a label/field/button with the current 
+      time.</li>
+      <li>Don't monopolize the CPU.</li>
+      <li>No printing.</li>
+      <li>Minimum of one resizable window with initial size defined in the 
+      resource file.</li>
+      <li>Offscreen buffering of window contents if necessary to preserve 
+      contents when window is obscured, minimized, etc.</li>
+      <li>Support scrolling of window contents if possible</li>
+      <li>openCard, closeCard, nextCard, previousCard events can be generated, 
+      but no persistent data store, so the card class will need to be overridden 
+      to support record-level read/write. Those routines will also need to call 
+      methods to clear all fields, reset buttons, and load fields with data.</li>
+      <li>Objects should be able to call existing Python modules.</li>
+    </ul>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.4 $ : $Author: kasplat $ : Last updated $Date: 2004/07/26 15:35:31 $</p>
+    </div> <!-- end of content -->
+  </body>
+</html>

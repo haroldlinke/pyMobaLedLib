@@ -1,0 +1,491 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+    <link rel="stylesheet" type="text/css" href="PythonCard.css" />
+    <title>Building 'standalone' PythonCard Applications</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>Building 'standalone' PythonCard Applications</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <h2>Introduction</h2>
+    <p>This document is targeted at developers who have successfully completed a 
+    project based on PythonCard and now wish to distribute their work to a wider 
+    audience. The information given here was gathered with reference to 
+    <a href="http://pythoncard.sourceforge.net">PythonCard Version 0.7.2</a>. It 
+    is inevitable that some (or all!) of this document will go out of date. If
+    so, please either post a message to the PythonCard users mailing list or 
+    send email to <em>phil at linux2000 dot com</em>, and I'll update it.</p>
+    <p>My motivation in writing this document is fairly straightforward. Having 
+    got my <a href="http://www.linux2000.com/pimp.html">PIMP</a> application 
+    working pretty much the way I wanted it, I needed to look into how to turn it
+    into a single executable, with an easy-to-use install and un-install routine.
+    My ultimate goal was to produce something so straightforward that my mum 
+    could install it on her Windows XP computer without any problems. :-)</p>
+    <h2>Tools Required - Hardware</h2>
+    <p>As a PythonCard developer, you will already have a computer with Python, 
+    wxPython and PythonCard itself already installed. This will be the machine 
+    you use for coding and testing your PythonCard applications. <em>This machine
+    will be of no use whatsoever to you in testing your application as a
+    standalone piece of software</em>.</p>
+    <p>The reason for this is precisely because it already has everything 
+    installed that is required to run your application. In order to be able to 
+    properly test a standalone PythonCard application, you will need access to a 
+    machine which explicitly does not have the above installed - you need to be 
+    confident that the behaviour you are seeing from your app is because you have
+    packaged it correctly, rather than just being as a result of it being run on 
+    a machine with all the necessary components already installed.</p>
+    <p>The only 100% reliable way of doing this is to have a separate machine for
+    testing your application and its installer. I achieved this by using VMWare 
+    workstation (<a href="http://www.vmware.com">http://www.vmware.com</a>)
+    on my Linux PC and setting up 2 'guest' machines, both running Windows XP - 
+    one with Python and the other bits installed for doing the development and 
+    debugging work, the other set aside purely for testing the results of my 
+    work.</p>
+    <p>In the remainder of this document, where I talk about the <em>development 
+    machine</em>, I'll be referring to the PC where you do your coding and the 
+    building of your standalone application. If you see me talking about the
+    <em>testing machine</em>, I'm referring to the machine that doesn't have 
+    Python, etc installed.</p>
+    <h2>Tools Required - Software</h2>
+    <p>In addition to the software you already have on your development machine, 
+    you will also need to install these packages:</p>
+    <ul>
+      <li>McMillan Installer (<a href="http://www.mcmillan-inc.com">http://www.mcmillan-inc.com</a>) 
+      - download this and install it under C:\Python23\Installer on your 
+      development machine.</li>
+      <li>Inno Setup (<a href="http://www.jrsoftware.org/isinfo.php">http://www.jrsoftware.org/isinfo.php</a>) 
+      - download and follow the prompts in the installation wizard</li>
+      <li>Python for Windows Extensions (<a href="http://starship.python.net/crew/mhammond/">http://starship.python.net/crew/mhammond/</a>) 
+      - as above</li>
+    </ul>
+    <p>At the time of writing (March 18 2004) the McMillan website has been down 
+    for some time. It may or may not come back up again, in the meantime, you can
+    download a copy of McMillan Installer version 5b5 from <a href="http://www.linux2000.com/downloads/installer_5b5_5.zip">http://www.linux2000.com/downloads/installer_5b5_5.zip</a></p>
+    <h2>Configuring McMillan Installer</h2>
+    <p>Before you can do anything useful with the McMillan Installer, it needs to 
+    be configured. To do this, click Start --> run and type <strong>cmd</strong> 
+    to open a command line session on your development machine. Type the 
+    following commands:</p>
+    <p class="code">cd C:\Python23\Installer<br /><br />
+    Configure.py</p>
+    <p>In the rest of this document, I'll be using my <a href="http://www.linux2000.com/pimp.html">PIMP</a>
+    application as my example of building a standalone. The directory names will 
+    therefore reflect the way I personally like to work, your mileage may vary. 
+    Specifically, I have a directory C:\Python23\projects\pimp where I do all my 
+    coding, and everything else will be relative to this 'root' directory.</p>
+    <h2>Generating A 'Spec' File For Your Application</h2>
+    <p>The specification, or 'spec', file is the information used by McMillan 
+    Installer to compile and build the standalone version of your application. 
+    It's basically a list of the Python source files, Pythoncard resource files 
+    and any other stuff that your Pythoncard app needs in order to run properly. 
+    To generate the initial spec file, type these commands in a 
+    <em>Command Prompt</em> window:</p>
+    <p class="code">cd C:\Python23\Installer<br /><br />
+    Makespec.py --icon ..\projects\pimp\pixmaps\pimp.ico
+    --out ..\projects\pimp ..\projects\pimp\pimp.py</p>
+    <p>You should replace <em>pimp.py</em> with the name of the Python script 
+    that corresponds to the main part of your application. The icon file isn't 
+    compulsory, but taking the time to select an icon makes your app look a 
+    little more polished.</p>
+    <p>You may find at this point that you wind up with an error message saying
+    <em>TypeError: unpack non-sequence</em>. At the time of writing, the jury is 
+    still out on whether this is a bug in the Installer or in wxPython. The 
+    recommended solution is to comment out the call to 
+    <em>RegistryImportDirector()</em> on line 225 of the <em>iu.py</em> file in 
+    c:\python23\installer. Do the same on line 251 of the <em>mf.py</em> file and 
+    then re-run the <em>Makespec.py</em> command from above. This issue has been 
+    reported to Gordon as a bug, you can check the status of this item on the 
+    McMillan web site, the URL is <a href="http://mcmillan-inc.com/cgi-bin/BTSCGI.py/BTS/editbugs?bugid=73">http://mcmillan-inc.com/cgi-bin/BTSCGI.py/BTS/editbugs?bugid=73</a>. 
+    Thanks to Brent Fentem &lt;bfentem (at) sbcglobal.net&gt; for the fix.</p>
+    <p>At this point, you'll have a <em>basic</em> spec file in your app's root 
+    directory, that probably looks something like this:</p>
+    <pre>
+a = Analysis([os.path.join(HOMEPATH,'support\\_mountzlib.py'),
+             os.path.join(HOMEPATH,'support\\useUnicode.py'),
+             '..\\projects\\pimp\\pimp.py'],
+             pathex=['C:\\Python23\\Installer'])
+pyz = PYZ(a.pure)
+exe = EXE(pyz,
+          a.scripts,
+          exclude_binaries=1,
+          name='buildpimp/pimp.exe',
+          debug=0,
+          strip=0,
+          upx=0,
+          console=1 , icon='..\\projects\\pimp\\pixmaps\\pimp.ico')
+coll = COLLECT( exe,
+               a.binaries,
+               strip=0,
+               upx=0,
+               name='distpimp')
+    </pre>
+    <p>The observant reader will have noticed (quite correctly) that this file 
+    seems to consist of Python source code! This helps us immensely in 
+    simplifying the file contents for ease of maintenance. Firstly add a line at 
+    the top of the file to define the root directory for your application, then
+    modify the remainder of the spec file so it looks like this:</p>
+    <pre>
+p = 'c:/python23/projects/pimp/' # defines project 'root' directory
+a = Analysis([os.path.join(HOMEPATH,'support\\_mountzlib.py'),
+             os.path.join(HOMEPATH,'support\\useUnicode.py'),
+             p + 'pimp.py'],
+             pathex=['C:/Python23/Installer'])
+pyz = PYZ(a.pure)
+exe = EXE(pyz,
+          a.scripts,
+          exclude_binaries=1,
+          name='buildpimp/pimp.exe',
+          debug=0,
+          strip=0,
+          upx=0,
+          console=1 , icon = p + 'pixmaps/pimp.ico')
+coll = COLLECT( exe,
+               a.binaries + \
+               [('pimp.rsrc.py', p + 'pimp.rsrc.py', 'DATA')],
+               strip=0,
+               upx=0,
+               name='distpimp')
+    </pre>
+    <p>Go back to your command prompt window, and issue this command:</p>
+    <p class="code">Build.py ..\projects\pimp\pimp.spec</p>
+    <p>The build process should now run to completion with no fatal error 
+    messages. You will find 2 new folders have been created in your application 
+    root directory. <em>buildpimp</em> is used purely as a temporary work area 
+    when (re-)building the app. <em>distpimp</em> is the directory containing the
+    standalone version of your program. It is the contents of this directory which
+    need to be packaged up using Inno Setup and distributed, more on that part of
+    the process later.</p>
+    <p>You should note the line in the spec file containing <em>console=1</em>. 
+    This causes your app to be run from a command-prompt style window, allowing 
+    you to see any unexpected error messages. When you're happy that the app 
+    builds and runs the way you want, you can change this to read 
+    <em>console=0</em>.</p>
+    <h2>Resolving import errors</h2>
+    <p>The Installer does its best to analyse your source code to see what 
+    modules you've used via Python <em>import</em> statements. For the most part, 
+    it does an excellent job, but it needs a little help where the Pythoncard 
+    part is concerned. Open a new <em>Command Prompt</em> window and type the 
+    following:</p>
+    <p class="code">cd c:\python23\projects\pimp\distpimp<br /><br />pimp</p>
+    <p>The program will now abort with an error message, complaining that it was 
+    unable to import some module or other. The precise one will depend on the 
+    Pythoncard components that your app uses, the first one mine complained about
+    was <em>statictext</em>. This is where the first bit of tedious source code 
+    editing comes in. You need to explicitly <em>import</em> all of the Pythoncard
+    components that your application uses. I did this the lazy way, by adding in 
+    each component in turn, rebuilding the standalone and re-running it, until I 
+    had no more import errors. The lines I ended up with at the top of my code 
+    looked like this:</p>
+    <p class="code">
+    # imports required by mcmillan installer<br /><br />
+    from PythonCard.components import statictext, imagebutton, textfield, \
+    textarea, list, staticbox, checkbox, passwordfield, radiogroup, spinner, \
+    combobox, choice, htmlwindow, bitmapcanvas</p>
+    <h2>Finalizing the spec file</h2>
+    <p>Having resolved all the issues with the components, you now need to add all
+    the other parts of your application to the spec file, i.e. the Pythoncard 
+    resource files for any child windows, any images used for buttons, 
+    documentation files, etc. This is an <em>extremely</em> tedious task, and has
+    already got me thinking about writing a Pythoncard project manager app to do 
+    all this stuff automatically...the final version of my spec file looks like 
+    this:</p>
+    <pre>
+p = 'c:/python23/projects/pimp/' # defines project 'root' directory
+a = Analysis([os.path.join(HOMEPATH,'support\\_mountzlib.py'),
+             os.path.join(HOMEPATH,'support\\useUnicode.py'),
+             p + 'pimp.py'],
+             pathex=['C:/Python23/Installer'])
+pyz = PYZ(a.pure)
+exe = EXE(pyz,
+          a.scripts,
+          exclude_binaries=1,
+          name='buildpimp/pimp.exe',
+          debug=0,
+          strip=0,
+          upx=0,
+          console=1 , icon = p + 'pixmaps/pimp.ico')
+coll = COLLECT( exe,
+               a.binaries + \
+               [('pimp.rsrc.py', p + 'pimp.rsrc.py', 'DATA')] + \
+               [('advancedPrefsDialog.rsrc.py', p + 'advancedPrefsDialog.rsrc.py', 'DATA')] + \
+               [('albumDialog.rsrc.py', p + 'albumDialog.rsrc.py', 'DATA')] + \
+               [('albumEdit.rsrc.py', p + 'albumEdit.rsrc.py', 'DATA')] + \
+               [('filterBatch.rsrc.py', p + 'filterBatch.rsrc.py', 'DATA')] + \
+               [('filterInfo.rsrc.py', p + 'filterInfo.rsrc.py', 'DATA')] + \
+               [('editFilter.rsrc.py', p + 'editFilter.rsrc.py', 'DATA')] + \
+               [('helpAbout.rsrc.py', p + 'helpAbout.rsrc.py', 'DATA')] + \
+               [('imageExportDialog.rsrc.py', p + 'imageExportDialog.rsrc.py', 'DATA')] + \
+               [('pandlDialog.rsrc.py', p + 'pandlDialog.rsrc.py', 'DATA')] + \
+               [('passwdDialog.rsrc.py', p + 'passwdDialog.rsrc.py', 'DATA')] + \
+               [('picPreview.rsrc.py', p + 'picPreview.rsrc.py', 'DATA')] + \
+               [('prefsDialog.rsrc.py', p + 'prefsDialog.rsrc.py', 'DATA')] + \
+               [('slideShow.rsrc.py', p + 'slideShow.rsrc.py', 'DATA')] + \
+               [('changelog.txt', p + 'changelog.txt', 'DATA')] + \
+               [('readme.txt', p + 'readme.txt', 'DATA')] + \
+               [('doc/gpl.txt', p + 'doc/gpl.txt', 'DATA')] + \
+               [('doc/about.html', p + 'doc/about.html', 'DATA')] + \
+               [('doc/author.html', p + 'doc/author.html', 'DATA')] + \
+               [('doc/license.html', p + 'doc/license.html', 'DATA')] + \
+               [('doc/recursion.txt', p + 'doc/recursion.txt', 'DATA')] + \
+               [('pixmaps/album.png', p + 'pixmaps/album.png', 'DATA')] + \
+               [('pixmaps/blank.png', p + 'pixmaps/blank.png', 'DATA')] + \
+               [('pixmaps/camera.png', p + 'pixmaps/camera.png', 'DATA')] + \
+               [('pixmaps/delete.png', p + 'pixmaps/delete.png', 'DATA')] + \
+               [('pixmaps/down.png', p + 'pixmaps/down.png', 'DATA')] + \
+               [('pixmaps/exit.png', p + 'pixmaps/exit.png', 'DATA')] + \
+               [('pixmaps/export.png', p + 'pixmaps/export.png', 'DATA')] + \
+               [('pixmaps/filter.png', p + 'pixmaps/filter.png', 'DATA')] + \
+               [('pixmaps/finepix2800.png', p + 'pixmaps/finepix2800.png', 'DATA')] + \
+               [('pixmaps/forward.png', p + 'pixmaps/forward.png', 'DATA')] + \
+               [('pixmaps/fullscreen.png', p + 'pixmaps/fullscreen.png', 'DATA')] + \
+               [('pixmaps/import.png', p + 'pixmaps/import.png', 'DATA')] + \
+               [('pixmaps/info.png', p + 'pixmaps/info.png', 'DATA')] + \
+               [('pixmaps/ledgreen.png', p + 'pixmaps/ledgreen.png', 'DATA')] + \
+               [('pixmaps/ledred.png', p + 'pixmaps/ledred.png', 'DATA')] + \
+               [('pixmaps/left.png', p + 'pixmaps/left.png', 'DATA')] + \
+               [('pixmaps/locations.png', p + 'pixmaps/locations.png', 'DATA')] + \
+               [('pixmaps/mkalbum.png', p + 'pixmaps/mkalbum.png', 'DATA')] + \
+               [('pixmaps/new.png', p + 'pixmaps/new.png', 'DATA')] + \
+               [('pixmaps/nofullscreen.png', p + 'pixmaps/nofullscreen.png', 'DATA')] + \
+               [('pixmaps/open.png', p + 'pixmaps/open.png', 'DATA')] + \
+               [('pixmaps/options.png', p + 'pixmaps/options.png', 'DATA')] + \
+               [('pixmaps/padlock.png', p + 'pixmaps/padlock.png', 'DATA')] + \
+               [('pixmaps/password-big.png', p + 'pixmaps/password-big.png', 'DATA')] + \
+               [('pixmaps/password.png', p + 'pixmaps/password.png', 'DATA')] + \
+               [('pixmaps/pause.png', p + 'pixmaps/pause.png', 'DATA')] + \
+               [('pixmaps/people.png', p + 'pixmaps/people.png', 'DATA')] + \
+               [('pixmaps/play.png', p + 'pixmaps/play.png', 'DATA')] + \
+               [('pixmaps/reverse.png', p + 'pixmaps/reverse.png', 'DATA')] + \
+               [('pixmaps/right.png', p + 'pixmaps/right.png', 'DATA')] + \
+               [('pixmaps/rotatecw.png', p + 'pixmaps/rotatecw.png', 'DATA')] + \
+               [('pixmaps/rotateccw.png', p + 'pixmaps/rotateccw.png', 'DATA')] + \
+               [('pixmaps/save.png', p + 'pixmaps/save.png', 'DATA')] + \
+               [('pixmaps/slideshow.png', p + 'pixmaps/slideshow.png', 'DATA')] + \
+               [('pixmaps/stop.png', p + 'pixmaps/stop.png', 'DATA')] + \
+               [('pixmaps/up.png', p + 'pixmaps/up.png', 'DATA')] + \
+               [('pixmaps/view.png', p + 'pixmaps/view.png', 'DATA')] + \
+               [('themes/default/caption.gif', p + 'themes/default/caption.gif', 'DATA')] + \
+               [('themes/default/hide.gif', p + 'themes/default/hide.gif', 'DATA')] + \
+               [('themes/default/notescript.js', p + 'themes/default/notescript.js', 'DATA')] + \
+               [('themes/default/tech.gif', p + 'themes/default/tech.gif', 'DATA')],
+               strip=0,
+               upx=0,
+               name='distpimp')
+    </pre>
+    <p>You can now rebuild your standalone and check that it runs without any 
+    error messages in the console window. The installer generated the standalone 
+    version of my app in the <em>./projects/distpimp</em> on my machine. The 
+    folder name will be whatever you called your app with 'dist' on the front. I 
+    also found a <em>./projects/buildpimp</em> directory had been created - 
+    according to the installers docs, this is used to store transient files during
+    the build process and can be ignored.</p>
+    <h2>Using Inno Setup</h2>
+    <p>Inno Setup is a lovely piece of software that allows you to package up the
+    contents of a directory into a single <em>.EXE</em> file that can easily be 
+    distributed. When someone downloads this and double-clicks, it launches the 
+    familiar series of dialogs through which a new program can be installed. It 
+    also takes care of adding an item in <em>Control Panel --> Add and remove 
+    programs</em> which allows your application to be removed just as easily.</p>
+    <p>Launch Inno Setup, and select the option to <em>Create a new script file 
+    using the Script Wizard</em>. Click <em>OK</em>, then <em>Next</em> to launch
+    the wizard. I set the options on the <em>application information</em> section
+    as follows:</p>
+    <ul>
+	<li><strong>Application name:</strong> PIMP</li>
+	<li><strong>Application name including version:</strong>PIMP 0.7</li>
+	<li><strong>Appplication publisher:</strong> Phil Edwards</li>
+	<li><strong>Application website:</strong> http://www.linux2000.com</li>
+    </ul>
+    <p>Click <em>Next</em> to get to the <em>Application directory</em> section. 
+    For most people, the defaults that Inno offers should be okay, but feel free 
+    to make amendments if required.</p>
+    <p>Click <em>Next</em>. You'll now see the <em>Application files</em> section.
+    This is probably the most important part of the process, as this is where you
+    tell Inno which specific files to include in the executable. Luckily, if 
+    you've done the part with McMillan Installer correctly, everything you need 
+    should already be there. Make sure you only include the files that your app 
+    really needs - for example, whilst putting this document together, I couldn't
+    work out why PIMP kept having problems after I had installed it on the test 
+    machine. It took me a while to figure out that I'd included a pimp.ini file 
+    from my development machine in the SETUP.EXE produced by Inno. Taking this 
+    out cured the problem!</p>
+    <p>Click <em>Next</em> to get to the <em>Application icons</em> section. You 
+    should select whichever options you want the user to have.</p>
+    <p>Click <em>Next</em>. On the <em>Application documentation</em> section, I 
+    included a copy of the GPL in text format as the license file, and a copy of 
+    the PIMP changelog as the file to display before installation. This leads to 
+    the interesting situation of the end user having to agree to the terms of the
+    GPL before being allowed to install the software! Irony is such a wonderful 
+    thing...</p>
+    <p>Click <em>Next</em> a couple more times and your SETUP.EXE file will be 
+    generated. Inno will put it in a <em>./Output</em> directory off your main 
+    project root folder. You can now copy this file over to your test machine and
+    check that it does actually install and run the way you expect it to.</p>
+    <p>The final task in this section is to ensure you save the Inno Setup script
+    file that you just generated. For the record, my PIMP application generated 
+    the following:</p>
+    <pre>
+; Script generated by the Inno Setup Script Wizard.
+; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
+
+[Setup]
+AppName=PIMP
+AppVerName=PIMP 0.7
+AppPublisher=Phil Edwards
+AppPublisherURL=http://www.linux2000.com/pimp.html
+AppSupportURL=http://www.linux2000.com/pimp.html
+AppUpdatesURL=http://www.linux2000.com/pimp.html
+DefaultDirName={pf}\PIMP
+DefaultGroupName=PIMP
+AllowNoIcons=yes
+LicenseFile=C:\Python23\projects\pimp\distpimp\doc\gpl.txt
+InfoBeforeFile=C:\Python23\projects\pimp\distpimp\changelog.txt
+
+[Tasks]
+; NOTE: The following entry contains English phrases ("Create a desktop icon"
+; and "Additional icons"). You are free to translate them into another language
+; if required.
+Name: "desktopicon"; Description: "Create a &amp;desktop icon"; GroupDescription: "Additional icons:";
+	Flags: unchecked
+
+[Files]
+Source: "C:\Python23\projects\pimp\distpimp\pimp.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\_socket.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\_sre.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\_ssl.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\_winreg.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\advancedPrefsDialog.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\albumDialog.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\albumEdit.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\changelog.txt"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\editFilter.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\filterBatch.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\filterInfo.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\helpAbout.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\imageExportDialog.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\pandlDialog.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\passwdDialog.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\picPreview.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\pimp.exe"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\pimp.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\prefsDialog.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\pyexpat.pyd"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\python23.dll"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\pywintypes23.dll"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\readme.txt"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\slideShow.rsrc.py"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\win32api.pyd"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\wxmsw24h.dll"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\wxPython.helpc.pyd"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\wxPython.htmlc.pyd"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\wxPython.stc_c.pyd"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\wxPython.wxc.pyd"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\zlib.pyd"; DestDir: "{app}";
+	Flags: ignoreversion
+Source: "C:\Python23\projects\pimp\distpimp\doc\*"; DestDir: "{app}\doc";
+	Flags: ignoreversion recursesubdirs
+Source: "C:\Python23\projects\pimp\distpimp\pixmaps\*"; DestDir: "{app}\pixmaps";
+	Flags: ignoreversion recursesubdirs
+Source: "C:\Python23\projects\pimp\distpimp\themes\*"; DestDir: "{app}\themes";
+	Flags: ignoreversion recursesubdirs
+; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[Icons]
+Name: "{group}\PIMP"; Filename: "{app}\pimp.exe"
+Name: "{userdesktop}\PIMP"; Filename: "{app}\pimp.exe"; Tasks: desktopicon
+    </pre>
+    <h2>Preparing to distribute the finished app</h2>
+    <p>We're almost ready to send the finished Windows version of PIMP out into 
+    the big bad world, but there are still a couple of sharp edges that need 
+    rubbing down.</p>
+    <p>Firstly, you will recall that when we built the standalone using McMillan 
+    Installer, we set the following options in the <em>pimp.spec</em> file:</p>
+    <pre>
+exe = EXE(pyz,
+          a.scripts,
+          exclude_binaries=1,
+          name='buildpimp/pimp.exe',
+          debug=0,
+          strip=0,
+          upx=0,
+          console=1 , icon = p + 'pixmaps/pimp.ico')
+          ^^^^^^^^^
+    </pre>
+    <p>This causes the program to run in a <em>command prompt</em> style window, 
+    so we can see any run-time error messages produced. Obviously, the program 
+    will look pretty lame if we allow it to run this way on the end-users systems.
+    You need to remember to change the <em>console=1</em> to read 
+    <em>console=0</em> before doing a final build of your program.</p>
+    <p>Secondly, the output executable will always be called <em>SETUP.EXE</em>, 
+    which i think is too generic. I prefer the file to include the name, version 
+    number and preferably the build number of the program in question. Open up 
+    the <em>pimp.iss</em> file that Inno saved and add the following line to the 
+    end of the <em>[Setup]</em> section:</p>
+    <p class="code">OutputBaseFilename=pimp-0.7-1</p>
+    <p>There doesn't appear to be any way at present to force Inno to take this 
+    information from an external file, so you just have to remember to update it 
+    manually each time you release a new build of the program. Another job for 
+    the vapor-ware Pythoncard project manager, I think!</p>
+    <p>As a final check immediately before releasing a new version of PIMP, I try
+    to remember to go also through the following checklist:</p>
+    <ul>
+      <li>Go through all of the <em>.rsrc.py</em> files and reset the 
+      <em>position</em> parameter to '-1, -1' - the Pythoncard resource editor 
+      will almost always set this to wherever the panel happened to be on our 
+      screen when you saved it, which isn't always what you want.</li>
+      <li>If (like me!) you like to show off with screen shots of your app, 
+      ensure that the ones on your web site reflect the latest version.</li>
+      <li>Check that the version and build numbers are correct in the various 
+      files.</li>
+      <li>If you distribute a <em>changelog</em> and/or <em>README</em>file with 
+      your app, check that you've updated it so that the release date is correct 
+      and it's up to date with the latest changes.</li>
+    </ul>
+    <h2>Vaporware alert! PythonCard project manager</h2>
+    <p>In the process of preparing these notes, it's become painfully obvious to 
+    me that there's a need for a project manager of some sort to assist with the 
+    whole process of managing a PythonCard project from initial coding all the 
+    way through to the finished Inno-based installer binary. I've made a start on
+    coding this, see the screenshot below for what the user interface will 
+    (maybe) look like:</p>
+    <p class="imageCaption"><img src="images/projectmanager.png" alt="Project Manager Screenshot" /></p>
+    <p>I'm grateful for the code that Lawrie Abott originally wrote, which has 
+    proven to be the inspiration for this project. It's probably about time I 
+    left PIMP alone to fester for a bit, anyway. :-)</p>
+    <p> Page last updated: March 3rd 2004 03:00 UTC<br />
+    That's all for today, folks!</p>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.5 $ : $Author: kasplat $ : Last updated $Date: 2004/07/26 15:35:32 $</p>
+    </div> <!-- end of content -->
+  </body>
+</html>

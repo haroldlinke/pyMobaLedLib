@@ -1,0 +1,75 @@
+{'type':'CustomDialog',
+          'name':'dialogInfo',
+          'title':'Dialog Info',
+          'size':(370, 170),
+          'components': [
+
+{'type':'StaticText', 
+    'name':'stcName', 
+    'position':(10, 10), 
+    'size':(45, -1), 
+    'text':'Name:', 
+    },
+
+{'type':'StaticText', 
+    'name':'stcTitle', 
+    'position':(10, 35), 
+    'size':(45, -1), 
+    'text':'Title:', 
+    },
+
+{'type':'StaticText', 
+    'name':'stcPosition', 
+    'position':(10, 60), 
+    'size':(45, -1), 
+    'text':'Position:', 
+    },
+
+{'type':'StaticText', 
+    'name':'stcSize', 
+    'position':(10, 85), 
+    'size':(45, -1), 
+    'text':'Size:', 
+    },
+
+{'type':'TextField', 
+    'name':'fldName', 
+    'position':(110, 5), 
+    'size':(188, -1), 
+    },
+
+{'type':'TextField', 
+    'name':'fldTitle', 
+    'position':(110, 30), 
+    'size':(188, -1), 
+    },
+
+{'type':'TextField', 
+    'name':'fldPosition', 
+    'position':(110, 55), 
+    'size':(68, -1), 
+    },
+
+{'type':'TextField', 
+    'name':'fldSize', 
+    'position':(110, 80), 
+    'size':(68, -1), 
+    },
+
+{'type':'Button', 
+    'name':'btnOK', 
+    'position':(10, 110), 
+    'label':'OK',
+    'default':1,
+    'id':5100,
+    },
+
+{'type':'Button', 
+    'name':'btnCancel', 
+    'position':(115, 110), 
+    'label':'Cancel',
+    'id':5101,
+    },
+
+] # end components
+} # end CustomDialog

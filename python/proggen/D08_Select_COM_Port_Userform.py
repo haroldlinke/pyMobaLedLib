@@ -379,7 +379,7 @@ class CSelect_COM_Port_UserForm:
             self.Com_Port_Label.set(0)
             
             self.Show_Unknown_CheckBox_var = tk.IntVar(master=self.top)
-            if P01.checkplatform("Darwin"):
+            if P01.checkplatform("Windows") != True:
                 self.Show_Unknown_CheckBox_var.set(1)
             else:
                 self.Show_Unknown_CheckBox_var.set(0)
@@ -387,8 +387,8 @@ class CSelect_COM_Port_UserForm:
             self.Show_Unknown_CheckBox = tk.Checkbutton(self.top, text=M09.Get_Language_Str("Unbekante Ports anzeigen"),width=30,wraplength = 200,anchor="w",variable=self.Show_Unknown_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
             self.Show_Unknown_CheckBox.grid(row=4, column=0, columnspan=2,sticky="nesw", padx=2, pady=2)
             
-            if P01.checkplatform("Darwin"):
-                self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("ACHTUNG: Beim MAC funktioniert die automatische ARDUINO Erkennung nicht. Bitte unbedingt den richtigen ARDUINO Typ in den Optionen einstellen!\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=("Tahoma", 11),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+            if P01.checkplatform("Windows") != True:
+                self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("ACHTUNG: Beim LINUX/MAC funktioniert die automatische ARDUINO Erkennung nicht. Bitte unbedingt den richtigen ARDUINO Typ in den Optionen einstellen!\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=("Tahoma", 11),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
             else:           
                 self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=("Tahoma", 11),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
             self.Hint_Label.grid(row=7,column=0,columnspan=2,rowspan=2,sticky="nesw",padx=10,pady=10)

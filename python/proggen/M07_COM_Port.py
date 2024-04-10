@@ -632,7 +632,7 @@ def DetectArduino(port,baudrate, HWVersion=255, SWMajorVersion=255, SWMinorVersi
         PG.global_controller.arduino = serial.Serial(no_port,baudrate=baudrate,timeout=0.2,write_timeout=1,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
         logging.info("Serial-params: " + repr(PG.global_controller.arduino))
     except BaseException as e:
-        logging.debug(e)
+        logging.debug(e, exc_info=True) 
         logging.debug("M07.detect_arduino: Error assigning port")
         return -2, None
     if type(port)==int:
@@ -645,15 +645,15 @@ def DetectArduino(port,baudrate, HWVersion=255, SWMajorVersion=255, SWMinorVersi
         PG.global_controller.arduino.open()
     except BaseException as e:
         logging.debug("M07.detect_arduino: Error opening  port "+port_str)
-        logging.debug(e)       
+        logging.debug(e, exc_info=True) 
         return -1, None           
     try:
         PG.global_controller.arduino.dtr = True
         time.sleep(0.250)
         PG.global_controller.arduino.dtr = False
     except BaseException as e:
-        logging.debug(e)                 
-        logging.debug("Error, reset ARDUINO")
+        logging.debug(e, exc_info=True)                 
+        logging.debug("M07.detect_arduino: Error, reset ARDUINO")
         return -3, None
 
     # now get in sync

@@ -205,7 +205,7 @@ class UserForm_PCAnim:
                                              "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
                                             {"Name":"Servo_TimeStepType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                              "Caption":"Zeitstufen",
-                                             "ControlTipText":"Wie sollen die Zeitstufen ermittelt werden \Automatisch \nFester Wert",
+                                             "ControlTipText":"Wie sollen die Zeitstufen ermittelt werden \nAutomatisch \nFester Wert",
                                              "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 1,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Automatisch", "Fester Wert"] ,"Visible":True,"Width":60},
                                             {"Name":"Servo_Abstand_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Stufenabstand (msec)",
@@ -319,6 +319,7 @@ class UserForm_PCAnim:
                             self.get_params_from_param_list(self.param_list)
                             self.patterntype = self.Servo_RunType_ListBox.Selection
                             self.curvetype = self.Servo_CurveType_ListBox.Selection
+                            self.servotype = self.Servo_Type_ListBox.Selection 
 
         #anzahl_werte_Ein = int(self.Servo_DauerEin_TextBox.Value / self.Servo_Abstand_TextBox.Value)
         #if self.patterntype != 1: # Not PINGPONG Ausschaltsequenz anhängen
@@ -491,7 +492,7 @@ class UserForm_PCAnim:
             self.Userform_Res = self.Userform_Res +"28,"
             anzahl_led = "3"
         else:
-            self.Userform_Res = self.Userform_Res + str(27 +self.servotype)+", "
+            self.Userform_Res = self.Userform_Res + str(27 +self.servotype)+","
             anzahl_led = "1"
         
         if gotoaction:
@@ -699,28 +700,37 @@ class UserForm_PCAnim:
             
             
     def MouseRelease1(self):
-        
         # update line
         # update graphpoints
         # update graph
         if self.start_value != ():
-            new_servo_val = self.current_curve_point[1]
-            if new_servo_val > 255:
-                new_servo_val = 255
-            elif new_servo_val < 0:
-                new_servo_val = 0
-                
-            servo_address = self.Servo_Address_TextBox.Value
-            self._update_servos(servo_address,new_servo_val, 1, 0)
-        
+            self.get_led_value_and_send_to_ARDUINO()
         self.start_value = ()
+        
+    def get_led_value_and_send_to_ARDUINO(self):
+        new_LED_val = self.current_curve_point[1]
+        if new_LED_val > 255:
+            new_LED_val = 255
+        elif new_LED_val < 0:
+            new_LED_val = 0
+            
+        LED_address = self.Servo_Address_TextBox.Value
+        self.servotype = self.Servo_Type_ListBox.Selection
+        if self.servotype == 0:
+            self._update_servos(LED_address,new_LED_val, new_LED_val, new_LED_val)
+        elif self.servotype == 1:
+            self._update_servos(LED_address,new_LED_val, 0, 0)
+        elif self.servotype == 2:
+            self._update_servos(LED_address,0, new_LED_val, 0)
+        else:
+            self._update_servos(LED_address,0, 0, new_LED_val)    
                 
     def on_click(self, event):
         selected = self.canvas.find_overlapping(event.x-10, event.y-10, event.x+10, event.y+10)
         if selected:
             self.canvas.selected = selected[-1]  # select the top-most item
             self.canvas.startxy = (event.x, event.y)
-            print(self.canvas.selected, self.canvas.startxy)
+            #print(self.canvas.selected, self.canvas.startxy)
         else:
             self.canvas.selected = None
     
@@ -737,7 +747,7 @@ class UserForm_PCAnim:
         if self.controller.mobaledlib_version == 1:
             message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
         else:
-            message = "#L " + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
+            message = "#L " + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:04x}'.format(1) + "\n"
         self.controller.send_to_ARDUINO(message)
         time.sleep(0.2)    
 

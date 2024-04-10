@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="PythonCard.css" type="text/css" />
+    <title>Increasing Usefulness with Timers and Threads</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>Timers and Threads</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <h2>Increasing Usefulness:Talking to program back-ends with Timers and 
+    Threads</h2>
+    <h4>by David McNab and Alex Tweedly.</h4>
+    <p>This walkthrough supplements the excellent existing PythonCard 'Getting 
+    Started' <a href="documentation.html">walkthroughs</a> by Dan Shafer and 
+    David Primmer, and follows on from the <a href="walkthrough3.html">How to 
+    Add a child window</a> lesson. It's based on techniques taken from the 
+    various PythonCard <a href="http://pythoncard.sourceforge.net/samples/samples.html">sample programs</a>.</p>
+    <p>This walkthrough was originally written by David McNab 
+    (<strong>david at rebirthing dot co dot nz</strong>), and was revised by, 
+     and is currently maintained by, Alex Tweedly 
+    (<strong>alex at tweedly dot net</strong>)
+    <hr />
+    <h3>Overview, Scope and Purpose</h3>
+    <p><em>This walkthrough is targeted at PythonCard Version 0.8.2. 
+    As PythonCard 
+    grows, some of this walkthrough may go out of date, even fail - if this 
+    happens, please contact me and I'll update it.</em></p>
+    <p>The purpose of this walkthrough is to empower you to make your PythonCard 
+    programs capable of much more meaningful work, by acquainting you with two
+    mechanisms - timers and threads, which can be used for communication
+    between your programs' graphical front-ends and back-ends.</p>
+    <p>Most of the top-level code you add to the front ends - your PythonCard 
+    user interfaces - is <strong>event handlers</strong>. As with programming 
+    with any GUI, event handlers should always complete their job fast, and 
+    return promptly, so they don't 'clog up the works'. PythonCard is no 
+    exception.</p>
+    <p>But there will be many cases where you need some real-time functionality - 
+    back-end code which runs autonomously of user interface events.</p>
+    <p>An example of this is programs which communicate in real-time on the 
+    Internet, or need to interact in real time with other software on your system
+    (eg monitoring system load).</p>
+    <p>Timers and Threads are two good mechanisms that allow you to separate your
+    program into:</p>
+    <ul>
+      <li>Front-End - logic which processes user interaction events</li>
+      <li>Back-End - logic which manages non-user-interface aspects of your
+      program, talks to other programs on your system or across the internet,
+      and possibly communicates relevant updates to the user interface.</li>
+    </ul>
+    <p>By using timers and/or threads, you can guarantee that your PythonCard 
+    event handlers will terminate promptly, and that your user interface can 
+    communicate as needed with your back-end logic.</p>
+    <h3>Timers</h3>
+    <p>You can set up your window class so that an event handler gets triggered 
+    at regular intervals - the 'tick of the clock'.</p>
+    <p>This is useful for things like a time display on your window, or polling 
+    for some external event (for instance, incoming mail), and dozens of other 
+    situations.</p>
+    <p>Let us now add a timer to the example code you've been writing. This timer
+    will automatically add 10 to the number in the counter field, doing this
+    every 5 seconds.</p>
+    <p>Firstly, you will need to add an <span class="code">on_initialize
+    </span> event handler to your main window. You may have already done this, 
+    while experimenting in your learning process during the earlier walkthroughs.
+    But if you haven't yet done so, add the following method code to your 
+    <span class="code">Counter</span> class:</p>
+<pre>
+    def on_initialize(self, event):
+        print "Window opened"
+</pre>
+    <p>Not very significant - but do save your file, and run <span class="code">
+    counter.py</span>. You'll see a message on stdout when the window opens.</p>
+    <p>So far, so good. Nice to know that we can receive an event when the window
+    gets opened.  But not very useful yet.</p>
+    <p>Now, we need to use this <span class="code">initialize</span> event 
+    handler as an opportunity to set up a timer.</p>
+    <p>So change the event handler to the following:</p>
+<pre>
+    def on_initialize(self, event):
+        self.myTimer = timer.Timer(self.components.field1, -1) # create a timer
+        self.myTimer.Start(5000) # launch timer, to fire every 5000ms (5 seconds)
+</pre>
+    <p>You'll also notice from the <span class="code">self.components.field1</span>
+    that the timer is being created in respect of the <span class="code">field1</span> 
+    widget. More on this later.</p>
+    <p>Don't try to run this program yet - it will barf since <span class="code">timer</span>
+    is an unknown symbol - we need to grab it into our namespace. To do this, find
+    the line at the top of your <span class="code">counter.py</span> program
+    which currently says</p>
+<pre>
+from PythonCard import model
+</pre>
+    <p>and change it to say</p>
+<pre>
+from PythonCard import model, timer
+</pre>
+    <p>Now, we have to make sure we can receive an event every time the clock 
+    'ticks'.</p>
+    <p>You'll see in the <span class="code">on_initialize</span> event 
+    handler above that we've linked the timer to <span class="code">field1</span>
+    While conceptually the timer applies to the window as a whole, there's a 
+    weird quirk in <span class="code">timers</span> which requires them to be 
+    associated with specific window widgets.</p>
+    <p>To receive the clock tick events, we only have to add another handler.</p>
+    <p>As per the event handler naming convention, (where widgets' handlers
+    are called <span class="code">on_componentName_event</span>, we'll call this
+    handler <span class="code">on_field1_timer</span>, since timer events get 
+    directed to the widget <span class="code">field1</span>, and the event is 
+    called <span class="code">timer</span>.</p>
+    <p>Now, add the following method code into class <span class="code">
+    Counter</span>:</p>
+<pre>
+    def on_field1_timer(self, event):
+        print "Got a timer event"
+        startValue = int(self.components.field1.text)
+        endValue = startValue + 10
+        print "Got a timer event, value is now %d" % endValue
+        self.components.field1.text = str(endValue)
+        # uncomment the line below if you've already followed the 'child window' walkthrough
+        #self.minimalWindow.components.field1.text = str(endValue)
+</pre>
+    <p><em>Note</em> - this is ugly, because there's a lot of duplicated 
+    functionality.  We'll leave it to you to factorise your code appropriately, 
+    creating a generic increment method which accepts an optional amount argument
+    (default 1). But if you're impatient, don't worry about any factorisation, 
+    just use the above code and all will be ok</p>
+    <p>Now, save your <span class="code">counter.py</span> program and run it. 
+    You should see the number increasing by 10, every 5 seconds. I don't think I 
+    need to say any more here - you've got the basic structure - the rest is now 
+    up to your imagination.</p>
+    <p>You could use timer events to poll for external conditions, but this can 
+    get real ugly real fast. So in the next section, we'll explore a nicer and 
+    more general way to tie your front end code to back end functionality, using 
+    threads.</p>
+    <h3>Threads</h3>
+    <p>Python is beautiful in its support of threads - the ability to split up 
+    code into multiple <strong>threads of control</strong>, just like an 
+    operating system does when it gives lots of separate programs a share of the 
+    CPU.</p>
+    <p>You can ignore the objections of &quot; Python prudes&quot; who insist 
+    that threads are not good programming practice. Sure, threads have their 
+    pitfalls, such as deadlocks, race conditions etc, but if you use a bit of 
+    common sense, and design intelligently, you can avoid these pitfalls. Also, 
+    programming to get around the need for threads can pervert your program 
+    logic, kind of like pushing your head down through your body and out your 
+    back orifice. Not always a pretty sight :p</p>
+    <p><em>Note</em> - one actual risk of threading in Python is a syndrome 
+    called <strong>Global Interpreter Lock</strong> or <strong>GIL</strong> for 
+    short. GIL can strike in strange places, and cause one or more threads in 
+    your program to freeze up for no apparent reason. If you ever have reason to 
+    suspect GIL is occurring, simply sprinkle a few  print statements in each of 
+    your threads until you either calm your suspicions, or nail the culprit. For 
+    example, I suffered a GIL once because a thread was building regular 
+    expression objects with <span class="code"> re.compile()</span>.  I fixed 
+    this by building the <span class="code">re</span> objects in advance, in the 
+    main thread. I suspect this is a Python bug (I'm using 2.2), but that's 
+    another topic.</p>
+    <p>What we'll be doing here is adding a background thread to your counter 
+    program, which (surprise, surprise) writes values (in this case, counting 
+    from 0 in steps of 20) to your counter value.</p>
+    <p>The first thing you could do is disable the timer you set up in the 
+    previous section, by commenting out the <span class="code">self.myTimer.Start(5000)</span>
+    statement in your <span class="code">on_initialize</span> handler (see 
+    above). This will avoid confusion for now, since there won't be a running 
+    timer to complicate things.</p>
+    <p>Now, add to the top of <span class="code">counter.py</span> the following 
+    statement:</p>
+<pre>
+import thread, Queue
+import wx
+</pre>
+    <p>This will give us access to Python's thread creation/dispatch functions, 
+    as well as message queues and wxPython.</p>
+    <h4>A Little Theory</h4>
+    <p>I'll keep this short and sweet. Simply, the safest way for threads to 
+    communicate with each other is via some kind of synchronised objects. We'll 
+    use Python's standard message queues (standard Python module <span class="code">Queue</span>
+    ), since it's easy and safe and well supported within Python. When your 
+    thread wants to send an event to your user interface code, it will send a 
+    message to it, then 'wake up' your user interface so that it receives an 
+    <strong>idle</strong> event. The <strong>idle</strong> event will check the
+    message queue, and react accordingly.</p>
+    <p><em>Note</em> - when your window classes have an <span class="code">
+    idle</span> event handler, this handler can get triggered by all sorts of 
+    things, particularly when your user interface falls idle - mouse stops moving,
+    button click is finished etc. Within the idle event handler, we need to
+    check our message queue so we know <strong>when</strong> we need to react to
+    something in the back end.</p>
+    <p><em>Hint</em> - run any PythonCard program with a '<strong>-m</strong>'
+    argument. You'll see the program come up with a 'Message Watcher' window. 
+    Unclick the <strong>Ignore Unused</strong> checkbox. Interact with your 
+    program with the mouse, and you'll see a flood of events being generated. 
+    This is a great way of &quot;cheating&quot; to find out what name you'll need
+    to give your event handlers. Another cheat is to run the widgets sample 
+    program, which allows you to generate HTML documentation for the various 
+    PythonCard widgets.</p>
+    <h4>Threads Walkthrough - Summary of Steps Involved:</h4>
+    <ol>
+      <li>Add a message queue to our <span class="code">Counter</span> class.</li>
+      <li>Add your thread code to <span class="code">counter.py</span>, but as a 
+      global function, not a class method. This thread will periodically sends 
+      messages to our window</li>
+      <li>In your <span class="code">on_initialize</span> handler, launch 
+      your thread and pass it a handle to the message queue.</li>
+      <li>Add an <strong>idle</strong> event handler, which picks up these 
+      messages</li>
+      <li>Within the idle event handler method, check the message queue and react
+      accordingly</li>
+    </ol>
+    <h4>1. Add the message queue</h4>
+    <p>Refer back to the <span class="code">on_initialize(self, event)</span>
+    handler above, and add the following statement:</p>
+<pre>
+        # Add a message queue
+        self.msgQueue = Queue.Queue()
+</pre>
+    <p>This sticks a message queue into our <span class="code">Counter</span>
+    window class, that will be used for communication from the thread backend to 
+    the foreground window class.</p>
+    <h4>2. Add a Thread Function</h4>
+    <p>Add the following <strong>global</strong> function to your 
+    <span class="code">counter.py</span>:</p>
+<pre>
+    def myThread(*argtuple):
+        """
+        A little thread we've added
+        """
+        print "myThread: entered"
+        q = argtuple[0]
+        print "myThread: starting loop"
+        x = 10
+        while True:
+            time.sleep(10) # time unit is seconds
+            print "myThread x=%d" % x
+            q.put(str(x)) # stick something on message queue
+            wx.WakeUpIdle() # triggers 'idle' handlers
+            x += 10
+</pre>
+    <h4>3. Launch the Thread</h4>
+    <p>Add the following lines at the end of your <span class="code">on_initialize</span>
+    handler:</p>
+<pre>
+        # Now launch the thread
+        thread.start_new_thread(myThread, (self.msgQueue,))
+</pre>
+    <p>Notice that we have to pass the queue object to the thread in a tuple - 
+    refer to the Python Library Reference doco for module </p>
+    <h4>4. Add an idle event handler</h4>
+    <p>In the thread function above, the operative line is <span class="code">wx.WakeUpIdle()</span>
+    . Upon calling that method, wxWindows tells all open windows, Hey, wake up -
+    something's happened you might need to react to! So we need to add a handler
+    to our Counter class to handle idle events, and thus get triggered when we 
+    get 'woken up'. So add the following method into your <span class="code">Counter</span>
+    class</p>
+<pre>
+    def on_idle(self, event):
+        print "on_idle entered"
+</pre>
+    <h4>5. Check the message queue and react accordingly</h4>
+    <p>Presently, our 'idle' handler isn't very useful - but if you run 
+    counter.py, you'll see it gets triggered every time the program falls idle. 
+    So now, we'll make it do what it needs to do - reacting to events from our 
+    background thread. Replace the idle handler above with the following:</p>
+<pre>
+    def on_idle(self, event):
+        print "on_idle entered"
+        while not self.msgQueue.empty():
+            # Handle messages from our thread
+            msg = self.msgQueue.get()
+            print "on_idle: msg='%s'" % msg
+            self.components.field1.text = msg
+            # uncomment the following if you've followed the 'child window' walkthrough
+            #self.minimalWindow.components.field1.text = msg
+</pre>
+    <p>Now, we're all done. Launch your counter.py, and watch as the background 
+    thread launches, and periodically sends its messages to the user interface,
+    which displays these on the window.</p>
+    <h3>Conclusion</h3>
+    <p>During this walkthrough, you have explored timers and threads, two easy 
+    and powerful ways to interface your user interface classes with the back-end 
+    of a program (where the 'real work' happens)</p>
+    <p>Having got a handle on front-end/back-end interactions, via threads and
+    timers, you are now empowered to add some serious functionality to your
+    PythonCard programs.</p>
+    <p>There is now nothing stopping you from writing any kind of application in 
+    PythonCard.</p>
+    <p>A common situation in programming is where you want a program to be always
+    running (as a Unix daemon or a Windows NT/2k/XP 'service'), but you don't 
+    always want its window showing. A typical approach is:</p>
+    <ul>
+      <li>Create the back-end code as a standalone 'daemon' program (or Windows 
+      NT/2k/XP 'service'), which talks via socket connection to the front end.</li>
+      <li>Create the front-end code, which operates the user interface</li>
+      <li>Put a thread into your front end code which does the socket 
+      communication to the daemon, and relays commands/responses/status info
+      between the daemon and the user interface.</li>
+    </ul>
+    <p>With this approach, you can launch and terminate the user interface 
+    program as you like, without disrupting the backend in any way</p>
+    <p>So, it's over to you now. Play around with your walkthrough programs and 
+    the PythonCard sample programs, raid the <a href="http://www.vex.net/parnassus/">Vaults of Parnassus</a> 
+    for useful bits of code, and hack to your heart's content.</p>
+    <p>The only limit is your imagination and (rapidly growing) level of Python 
+    skill.</p>
+    <p>Happy programming!</p>
+    <p>Copyright (c) 2003 by David McNab, david at rebirthing dot co dot nz<br>
+    Copyright (c) 2005 by Alex Tweedly, alex at tweedly dot net<br>
+    Please feel free to mirror, copy, translate, upgrade and restribute this page,
+    as long as you keep up to date with Python and PythonCard, and credit the 
+    original author.</p>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.7 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:25 $</p>
+    </div> <!-- end of content -->
+  </body>
+</html>

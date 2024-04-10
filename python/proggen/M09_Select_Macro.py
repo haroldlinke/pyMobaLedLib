@@ -80,7 +80,7 @@ import proggen.M60_CheckColors as M60
 import proggen.M80_Create_Mulitplexer as M80
 import proggen.D06_Userform_House as D06
 import proggen.D07_Userform_Other as D07
-import proggen.D14_Userform_PCAnim as D14
+import proggen.D14_Userform_LEDAnim as D14
 import proggen.D15_Userform_PCAnim as D15
 import pattgen.M17_Import_a_Dec_Macro as PA17
 
@@ -532,10 +532,14 @@ def __SelectMacros_Sub():
         elif (_select4 == 'PattConf'):
             if MacroName == "Pattern":
                 _call_patternconfigurator(P01.Cells(P01.ActiveCell().Row, M25.Config__Col), P01.ActiveCell().Row)
-            else:
+            elif MacroName == "ServoAnim":
                 UserForm_PCAnim = D15.UserForm_PCAnim(PG.global_controller)
                 UserForm_PCAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
                 Res = UserForm_PCAnim.Userform_Res
+            elif MacroName == "LEDAnim":
+                UserForm_LEDAnim = D14.UserForm_LEDAnim(PG.global_controller)
+                UserForm_LEDAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
+                Res = UserForm_LEDAnim.Userform_Res
         elif (_select4 == ''):
             Res = __Proc_General(LEDs, Macro, Description, LedChannels, Act_Channel, Def_Channel)
         else:

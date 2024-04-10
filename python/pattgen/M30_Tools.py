@@ -39,6 +39,8 @@ def LastFilledColumn(Rng, LastRow):
     #if type(Rng)==X02.CRange:        #*HL
     #    _fn_return_value=Rng.Column #*HL 
     #else:                           #*HL
+    
+    
     for c in Rng:
         if c.Row > LastRow:
             break
@@ -49,6 +51,7 @@ def LastFilledColumn(Rng, LastRow):
 
 def LastFilledColumn2(Rng, LastRow):
     return LastFilledColumn(Rng, LastRow) #*HL
+    #return Rng.get_last_used_column(LastRow)
 
     _fn_return_value = None
     Row = Long()

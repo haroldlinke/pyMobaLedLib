@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="PythonCard.css" type="text/css" />
+    <title>PythonCard FAQ</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>PythonCard</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <h2>PythonCard FAQ (Frequently Asked Questions)</h2>
+    <p>Q. What is PythonCard?<br />
+    A. PythonCard is designed to be an application development framework for
+    use by everybody. Its purpose and goal is ease of use and increasing
+    productivity. From the first time developer to the veteran coder who
+    knows a dozen languages, PythonCard is designed to allow you to quickly
+    and easily design and build fully functioning applications with a
+    graphical user interface.</p>
+    <p>Q. What is the similarity between PythonCard and HyperCard?<br />
+    A. The PythonCard project is using HyperCard for inspiration. The first
+    goal is to produce a framework. We already have runtime tools
+    (Message Watcher, Property Editor, Shell) and a layout editor
+    (resourceEditor sample), but we don't have an environment yet. You can
+    use the resourceEditor sample to build layouts for your applications.</p>
+    <p>Q. Have any programs been written with PythonCard?<br />
+    A. Yes. For a list of the samples that have been built with PythonCard
+    and some screenshots of them in action go to the <a href="samples/samples.html">samples page</a>. A description of each 
+    sample is included in the readme.txt file in each sample directory.</p>
+    <p>Q. Do I need to know Python to use PythonCard?<br />
+    A. Yes. We've added a <a href="learning_python.html">Learning Python</a> page to get you started.</p>
+    <p>Q. What do I need to use PythonCard?<br />
+    A. Python 2.3 or higher and wxPython 2.5.2.8 or higher.</p>
+    <p>Q. What Operating Systems are supported?<br />
+    A. PythonCard runs on every platform that both Python and wxPython are
+    available for. This includes Windows 95/98/ME/NT/2000/XP, Mac OS X, 
+    Linux GTK, and Solaris</p>
+    <p>Q. Does PythonCard run on Macintosh OS X?<br />
+    A. Yes</p>
+    <p>Q. Can I build standalone executables?<br />
+     A. Yes, using <a href="http://starship.python.net/crew/theller/py2exe/">py2exe</a> or Gordon McMillan's installer. On Mac OS X, you can use <a href="http://www.python.org/moin/BundleBuilder">BundleBuilder</a> to make standalones. The minimalStandalone 
+     sample includes example scripts for all of them.</p>
+    <p>Q. How can I make the Return key act like the Tab key in a field, so that pressing Return navigates to the next component?<br />
+    A. The wxPython 2.5.2.x MigrationGuide.html document has an example using wx.NavigationKeyEvent, 
+    which is new in wxPython 2.5.2. Adapting that to cause the Return key to behave the same as the Tab key using PythonCard event 
+    attribute names gives us this example:</p>
+    <pre>
+    def on_keyDown(self, event):
+        # wx.WXK_RETURN is 13
+        if event.keyCode == wx.WXK_RETURN:
+            if event.shiftDown:
+                flags = wx.NavigationKeyEvent.IsBackward
+            else:
+                flags = wx.NavigationKeyEvent.IsForward
+            if event.controlDown:
+                flags |= wx.NavigationKeyEvent.WinChange
+            event.target.Navigate(flags)
+        else:
+            event.skip()
+    </pre>
+    <p>Q. Where is the home page?<br />
+    A. <a href="http://pythoncard.sourceforge.net/">http://pythoncard.sourceforge.net/</a></p>
+    <p>Q. Where can I download PythonCard?<br />
+    A. <a href="http://sourceforge.net/project/showfiles.php?group_id=19015">http://sourceforge.net/project/showfiles.php?group_id=19015</a></p>
+    <p>Q. Where is the mailing list?<br />
+    A. <a href="http://lists.sourceforge.net/lists/listinfo/pythoncard-users">http://lists.sourceforge.net/lists/listinfo/pythoncard-users</a></p>
+    <p>Q. Where is the CVS?<br />
+    A. <a href="http://sourceforge.net/cvs/?group_id=19015">http://sourceforge.net/cvs/?group_id=19015</a></p>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.13 $ : $Author $ : Last updated $Date: 2004/10/01 00:00:45 $</p>
+    </div>
+  </body>
+</html>

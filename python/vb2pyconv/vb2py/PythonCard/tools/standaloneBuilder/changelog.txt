@@ -1,0 +1,118 @@
+standaloneBuilder Version 0.2.0 release date May 10 2006
+--------------------------------------------------------
+    - Added a temporary fix to prevent projects being created outside
+      the main projects directory specified in prefs. I shall fix this
+      limitation in the next release!
+    - Made the MacOS-specific error message slightly narrower so it
+      looks neater
+
+
+standaloneBuilder Version 0.1.4 release date May 08 2006
+--------------------------------------------------------
+    - Version number updated in the Help --> About dialog
+    - GTK resource file for the output window was missing from the
+      project file
+    - Menu items now get enabled/disabled correctly when projects get
+      opened/saved
+    - File --> Exit menu item was not working :oops:
+    - Fix bug in createProject routine which was not converting the
+      project basepath correctly
+    - Menu items now in synch with rest of the program
+    - the licence text file was being created with lines of dashes at the
+      end of the file due to a coding error
+    - changelog files were not being created in the right format in new
+      projects
+    - Program now disables spec file edit button if py2exe is selected in
+      prefs as the build mechanism
+    - Fixed bug where Inno compile would abort if AppPublisher had not
+      been set in preferences
+    - Component import check function now lets the import line be copied
+      to the Windows clipboard for easier pasting into the code
+
+
+standaloneBuilder Version 0.1.3 release date May 02 2006
+--------------------------------------------------------
+    - Added new menu item to allow the component imports to be checked
+    - Added function to check for PythonCard components import line
+    - Program now copes with the scenario where the final executable
+      name is different to the main script name
+    - Entry for versionInfo.py was missing from the project file
+    - Cosmetic changes to the preferences dialog
+    - program now checks to see that Inno Setup is still in
+      the same place it was the last time the program was run
+    - prefs dialog does some better error checking when selecting the build
+      mechanism
+    - program now checks to see that pyInstaller and/or py2exe is still in
+      the same place it was the last time the program was run
+    - All 'edit' buttons now work when using the standard PythonCard
+      codeEditor and resourceEditor tools
+    - Made some cosmetic changes to the resource files to improve the
+      layout slightly
+
+
+standaloneBuilder Version 0.1.2 release date April 11 2006
+----------------------------------------------------------
+    - fixed bug with Inno script file trying to include empty directories
+    - program creates a new copy of setup.py when building with py2exe
+    - fixed bug in pyInstaller build which was corrupting the executable by
+      trying to set the version info twice in some cases
+    - py2exe build routine was leaving some temporary files behind
+    - added dropdown to prefsDialog to allow the preferred build mechanism to
+      be selected
+    - revamp to build mechanism to work with pyInstaller
+    - program detects if win32 extensions are missing and aborts cleanly
+
+standaloneBuilder version Version 0.1.1 release date April 03 2006
+-------------------------------------------------------------------
+    - Fixed bug caused by trying to import win32api under Linux
+    - added code to ensure that the dist and build sub-directories get
+      removed prior to a rebuild
+    - added code to allow the py2exe setup script to build either a console
+      app or a GUI app
+    - path to project base directory is now saved correctly as a relative
+      path
+    - Can now build standalone apps using py2exe
+    - Amended project creation code so that existing files are not silently
+      overwritten
+    - Added a button to allow the main script to be edited
+    - Project base direcotry was not being saved correctly under certain
+      circumstances
+    - Now gives a warning message if you try to release a project with
+      the console and/or debug options switched on
+    - Project build number no longer gets updated if you rebuild a
+      frozen project
+    - Pressing cancel in the run options dialog would run the script
+      anyway... :-(
+    - Updated documentation to clarify why and when extra scripts might
+      need to be added
+    - Adding a script now pops up a dialog asking if you want to add the
+      matching resource file if one exists
+    - Updated copyright message and removed innacurate list of
+      Pythoncard developers
+    - Program now prevents invalid filenames being entered into any of
+      the script, resource, pixmap or other files boxes
+    - Added some error trapping to the rebuild routine to deal with the
+      case where the main script has not been specified
+    - Fixed a bug where the project licence file name was being added
+      incorrectly when running the new project wizard
+    - Moved the check for whether the project needs to be saved into a
+      single function
+    - Added a run button and stole the run options dialog from the
+      resource editor :-)
+    - Added a workaround for a GTK bug which affects the fileSaveDialog
+    - Fixed an UnboundLocalError when rebuilding projects
+    - Fixed bug in spec file generation which was causing an exception
+      in McMillan Installer when no Windows icon file had been selected
+      in the project
+    - Fixed a bug which was causing an exception when creating a new
+      project due to trying to incorrectly make a relative path out of a
+      file name
+    - Cosmetic fixes to button layouts and icons
+    - Fixed a bug in the rebuild process which was causing the wrong
+      text fields to be shown when doing more than one rebuild in a
+      single session
+    - rebuild process now working under Linux, just builds a tarball
+    - Help --> About dialog now works
+    - The rebuild process now works 100% reliably
+    - the project changelog.txt file can now be maintained from within
+      the standaloneBuilder app pitself

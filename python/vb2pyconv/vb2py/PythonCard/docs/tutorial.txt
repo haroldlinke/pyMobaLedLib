@@ -1,0 +1,75 @@
+Dan Shafer has provided a much better set of tutorials. See the documentation.html file in the docs\html directory.
+
+ka
+2002-01-16
+----------
+
+Here's a brief guide to writing a PythonCard app using the current prototype.
+
+What I do when starting a new app is copy the minimal directory (one of the samples), rename the directory, then rename minimal.py and minimal.rsrc.py. Open up the renamed minimal.rsrc.py which I'm including in whole here to simplify the discussion.
+
+Change the 'background' attributes 'name', 'title', 'size'; add 'position' if you want it.
+
+The if __name__ == '__main__': section of minimal.py is the same for all PythonCard samples, so there is no need to change that. You need to add import statements depending on what your app will do and whether you want to always use qualified module names such as model.Background. See the other samples, for examples of additional import statements.
+
+If you don't want a menubar, then that block can be removed from the .rsrc.py file. If you want additional menus and menu items such as an Edit menu like the one used in searchexplorer you can copy from some of the other samples, or just add your own.
+
+It is a good idea to run the app as you make changes to the .rsrc.py file so that you can see how the UI is progressing. If you're editing with a Python-aware editor like IDLE or PythonWin, then you can do a syntax check on the dictionary (the whole .rsrc.py file is one big dictionary) as you make changes, to make sure you didn't miss a comma or quote character and most editors will also match the blocks for you delimited by (), [], and {}.
+
+Once you start adding components and replace the 'TextField' component with your own, make sure to use meaningful names for each component; the component names must be unique. If you add a 'Button' you might give it a name like 'buttonRun' or 'btnRun' then in your code you can have a method handler like (assuming 'field1' still exists):
+
+    def on_buttonRun_mouseClick(self, event):
+        self.components.field1.text = 'My first PythonCard application'
+
+ka
+
+--- fragment of minimal.py
+
+class Minimal(model.Background):
+
+    def on_menuFileExit_select(self, event):
+        self.Close()
+
+--- minimal.rsrc.py
+
+{ 'stack':{ 'type':'Stack',
+            'name':'Minimal',
+
+    'backgrounds':
+ [ 
+  { 'type':'Background',
+    'name':'bgMin',
+    'title':'Minimal PythonCard Application',
+    'size':( 200, 100 ),
+
+    'menubar': 
+    { 
+        'type':'MenuBar',
+        'menus': 
+        [
+            { 'type':'Menu',
+              'name':'menuFile',
+              'label':'File',
+              'items': [ 
+                { 'type':'MenuItem',
+                  'name':'menuFileExit',
+                  'label':'E&xit\tAlt-X' } ] }
+        ]       
+    },
+
+   'components':
+   [ 
+    { 'type':'TextField',
+      'name':'field1',
+      'position':(0, 0),
+      'text':'Hello PythonCard' },
+   ]
+  }
+ ]
+ }
+ }
+
+
+
+Revision: $Revision: 1.11 $
+Date:     $Date: 2002/03/08 06:19:44 $

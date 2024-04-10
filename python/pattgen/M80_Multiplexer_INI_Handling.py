@@ -1126,7 +1126,7 @@ def Add_LED_Shape(LED, LedNr, l, t, h, w):
         # Filled with Black
         _with93.Transparency = 0
         _with93.Solid()
-        if LED_Nrs_OnOff:
+        if True: #LED_Nrs_OnOff:
             _with94 = Sh.TextFrame2
             _with94.VerticalAnchor = X01.msoAnchorMiddle
             _with94.HorizontalAnchor = X01.msoAnchorCenter
@@ -1134,24 +1134,24 @@ def Add_LED_Shape(LED, LedNr, l, t, h, w):
                 _with94.TextRange.Characters.Text = LedNr
             else:
                 _with94.TextRange.Characters.Text = ' '
-            _with94.TextRange.Characters[1, 1].ParagraphFormat.FirstLineIndent = 0
-            _with94.TextRange.Characters[1, 1].ParagraphFormat.Alignment = X01.msoAlignLeft
-            _with94.WordWrap = X01.msoFalse
-            _with95 = Sh.TextFrame2.TextRange.Characters(1, 1).ParagraphFormat
-            _with95.FirstLineIndent = 0
-            _with95.Alignment = X01.msoAlignLeft
-            _with96 = Sh.TextFrame2.TextRange.Characters(1, 1).Font
-            _with96.NameComplexScript = '+mn-cs'
-            _with96.NameFarEast = '+mn-ea'
-            _with96.Fill.Visible = X01.msoTrue
-            _with96.Fill.ForeColor.ObjectThemeColor = X01.msoThemeColorLight1
-            _with96.Fill.ForeColor.TintAndShade = 0
+            #_with94.TextRange.Characters[1, 1].ParagraphFormat.FirstLineIndent = 0
+            #_with94.TextRange.Characters[1, 1].ParagraphFormat.Alignment = X01.msoAlignLeft
+            #_with94.WordWrap = X01.msoFalse
+            #_with95 = Sh.TextFrame2.TextRange.Characters(1, 1).ParagraphFormat
+            #_with95.FirstLineIndent = 0
+            #_with95.Alignment = X01.msoAlignLeft
+            #_with96 = Sh.TextFrame2.TextRange.Characters(1, 1).Font
+            #_with96.NameComplexScript = '+mn-cs'
+            #_with96.NameFarEast = '+mn-ea'
+            #_with96.Fill.Visible = X01.msoTrue
+            #_with96.Fill.ForeColor.ObjectThemeColor = X01.msoThemeColorLight1
+            #_with96.Fill.ForeColor.TintAndShade = 0
             ## VB2PY (CheckDirective) VB directive took path 1 on VBA7
-            _with96.Fill.ForeColor.Brightness = 0
-            _with96.Fill.Transparency = 0
-            _with96.Fill.Solid()
-            _with96.Size = 11
-            _with96.Name = '+mn-lt'
+            #_with96.Fill.ForeColor.Brightness = 0
+            #_with96.Fill.Transparency = 0
+            #_with96.Fill.Solid()
+            #_with96.Size = 11
+            #_with96.Name = '+mn-lt'
         if ThreeD:
             _with97 = Sh.ThreeD
             _with97.BevelTopType = X01.msoBevelArtDeco

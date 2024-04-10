@@ -1,0 +1,30 @@
+RPN Calc Help
+
+Last updated: 2002-12-20
+
+RPN Calc is a bit of a clone of the HP11 RPN calculator, with only a few functions implemented.
+
+The calculator is stack based, as follows: X (Top), Y, Z, T (Bottom)
+
+There are 10 memory registers: R0 - R9
+
+Keys:
+    
+    +,-,/,X  - operates on X and Y, result placed in X
+    
+    Enter - Pushes the contents of the display onto the top of stack
+
+    BS (Backspace) - deletes the last number entered
+
+    1/X - returns the inverse of X
+
+    x<>y - swaps the X and Y values
+
+    ROT - Rotates the stack, X to T, Y to X, Z to Y, and T to Z
+
+    RCL - returns the contents of the memory register pointed at by the value 
+    of the X register (must be an integer) 
+
+    STO - the value in the Y register is stored in the memory register pointed 
+    at by the X register
+

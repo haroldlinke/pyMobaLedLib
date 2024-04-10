@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+    <meta name="author" content="David Primmer" />
+    <link rel="stylesheet" href="PythonCard.css" type="text/css" />
+    <title>How to Add a Child Window to a PythonCard Application</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>PythonCard Documentation</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <h1>How to add a child window (or non-modal dialog)</h1>
+    <h4>by David Primmer</h4>
+    <p>This is the third walkthrough in a series of tutorial-style walkthroughs
+    to help newcomers get started using PythonCard.</p>
+    <h2>Overview, Scope and Purpose</h2>
+    <p>This walkthrough covers PythonCard Version 0.8.</p>
+    <p>The first two PythonCard walkthrough tutorials (which can be found, like
+    this one, in the docs/html directory of your PythonCard installation)
+    have created single-window applications. It is, of course, often necessary
+    to create applications with multiple windows. Adding another background as
+    a child window will allow you to modularize your application. You can allow
+    users to hide and show windows (by using the visible attribute), and you can clean up your
+    user interface and split widgets off into logical groups.</p>
+    <p>In this walkthrough, we will extend our simple Counter application (the
+    subject of walkthrough2) to add a child window which launches when the 
+    application opens, interacts with it, and exhibits some demonstrative 
+    behavior when the child window is closed. This walkthrough will make more 
+    sense if you've worked through walkthrough2.</p>
+    <h2>Modal vs. Non-modal</h2>
+    <p>There are two types of child windows: those that require the user to stop
+    any other activity and pay attention only to the current window (modal) and
+    windows that allow simultaneous interaction with the main window (non-modal
+    or modeless). The first thing to decide when creating a child window is 
+    whether you require the window to be dismissed before the user can continue 
+    to work with the main application window. With a modal window, users can 
+    choose to cancel, they can respond to a message, or they can set parameters 
+    and assign values to content in the active application. An example of a 
+    simple modal window is a message box or alert.</p>
+    <p>You may want your window to stick around while the user is working in 
+    another window. The radioclient sample, for example, has a child window that 
+    displays a view of the current document as it would be rendered in a Web 
+    browser. It's important to decide between modal and non-modal before you 
+    begin creating your child window because the standard window type in 
+    PythonCard, the background, cannot be modal.</p>
+    <h2>model.Background</h2>
+    <p>This is the standard class definition for a PythonCard app:</p>
+<pre>
+class Minimal(model.Background):
+</pre>
+    <p>One of the most important concepts when dealing with child windows in
+    PythonCard is the background. The background is unique to PythonCard and it 
+    basically encapsulates a wxFrame and a wxPanel. Each PythonCard application
+    is a class that derives from model.Background. You can't make a class derived
+    from model.Background modal. That is a wxWidgets limitation, not PythonCard. 
+    If you want a modal dialog then your class has to be derived from 
+    model.CustomDialog. They are similar, but different and the resource format 
+    is slightly different as well. dbBrowser, resourceEditor, textEditor, and 
+    textRouter all use custom modal dialogs.</p>
+    <h2>Overview of Designing a Child Window</h2>
+    <p>Making a non-modal child window using resourceEditor is simple, following
+    these steps:</p>
+    <ol>
+      <li>Create a window with resourceEditor. In this walkthrough, we'll do so 
+      by starting with the minimal sample and adding features.</li>
+      <li>In your main application, import the module you created at step 1 and
+      add code to the main application's startup routine to create an instance of
+      your imported child window class.</li>
+      <li>Modify the attributes of the new object, calling its methods and using
+      its components. It is now part of the main application.</li>
+    </ol>
+    <h3>Create a stand-alone PythonCard application</h3>
+    <p>Each PythonCard .py file contains a class definition derived from 
+    PythonCard's model.Background as well as a stub to instantiate that class. A 
+    child window is simply an instantiation of a class from within another 
+    application. Tutorials in walkthrough1 and walkthrough2 cover how to create a
+    stand-alone PythonCard application so we won't cover that here.</p>
+    <p>It is possible that your child window will be interacting with the data
+    in your main application, so there may be limits to how much design can be
+    done independently of your main application. But it is still a good idea to
+    try to separate their functions as much as possible to allow code re-use and
+    to simplify debugging. In the current example, we will use the minimal sample
+    as the basis of our child window while using the counter sample as our main 
+    application.</p>
+    <p>Minimal.py has one control, a text field called 'field1'. We will add a 
+    button to minimal.py to reset the value of the field in the main counter 
+    application to 0 when it is pressed. We will also connect the buttons in the 
+    main counter application to update field1's contents in the child window 
+    (minimal.py) to match those of the field in counter's window.</p>
+    <p>Even though these are relatively trivial interactions, they serve to 
+    demonstrate the techniques involved in getting two (or more) windows 
+    communicating with one another in a PythonCard application.</p>
+    <p>Start by creating a new folder to hold your two resource files and your two
+    PythonCard script files. Copy minimal.py, minimal.rsrc.py, counter.py, and 
+    counter.rsrc.py from their respective folders in the samples directory into 
+    this new folder. You can leave their names the same, though in practice you 
+    will generally change the names of files to match the application you are 
+    constructing.</p>
+    <p>Open minimal.rsrc.py in the PythonCard resourceEditor and add a button to 
+    it as shown in Figure 1.</p>
+    <p class="imageCaption"><img src="images/wt3fig1.png" alt="button added to minimal application" width="200" height="100" /><br />
+    Figure 1. Button Added to minimal Sample Window</p>
+    <p>Label the button &quot;Clear Counter&quot; and name it btnReset. Save the 
+    resource file.</p>
+    <p>We'll get back to scripting this button shortly.</p>
+    <h2>Launching the Child Window From the Parent Application</h2>
+    <p>Opening the child window in our main application's code is simply a matter
+    of importing the class and creating an object of that class, attached to the 
+    current background.</p>
+    <p>In addition to the standard imports for Counter, we'll import minimal:</p>
+<pre>
+from PythonCard import model
+import minimal
+</pre>
+    <p>Next we'll add an event handler to be executed when the Counter application
+    is started. This handler acts something like autoexec.bat on a PC or .login
+    in a Unix shell. Place an on_initialize handler right below the class
+    definition. (Placement isn't important but following this convention will
+    make it easier for you to work through and maintain multi-window 
+    applications.) Here is the class declaration of our Counter application with 
+    on_initialize added:</p>
+<pre>
+class Counter(model.Background):
+    def on_initialize(self, event):
+</pre>
+    <p>and here is the code that we will add to the on_initialize method:</p>
+<pre>
+        self.minimalWindow = model.childWindow(self, minimal.Minimal)
+</pre>
+    <p>We create a minimal window object uisng the <span class="code">childWindow
+    </span> function and give it the name minimalWindow by passing two parameters
+    to the function: the parent window (<span class="code">self</span>), and the 
+    background class (<span class="code">minimal.Minimal</span>) we want to use.</p>
+    <p>That is all is needed to create a minimal window object, but at this point,
+    it is still hidden and not much good to us.</p>
+    <h2>Communicating With Your Child Window</h2>
+    <p>Continuing in the on_initialize handler, we make calls to set the 
+    position and visibility of the new window:</p>
+<pre>
+        # override resource position
+        self.minimalWindow.position = (200, 5)
+        self.minimalWindow.visible = True
+</pre>
+    <p>We now have a window that is an attribute of our main background, just like
+    any of the menus or buttons that are already a part of Counter.</p>
+    <p>As constructed before we began this project, the increment and decrement
+    buttons in Counter modify the value of the text field in Counter. To cause the
+    Counter application's buttons to update the text value in the minimal child 
+    window minimalWindow, we simply add one more call to update the control in 
+    that window as well (the new lines are in bold type):</p>
+<pre> 
+    def on_incrBtn_mouseClick(self, event):
+        startValue = int(self.components.field1.text)
+        endValue = startValue + 1
+        self.components.field1.text = str(endValue)
+        <strong>self.minimalWindow.components.field1.text = str(endValue)</strong>
+
+    def on_decrBtn_mouseClick(self, event):
+        startValue = int(self.components.field1.text)
+        endValue = startValue - 1
+        self.components.field1.text = str(endValue)
+        <strong>self.minimalWindow.components.field1.text = str(endValue)</strong>
+</pre>
+    <p>Notice that we reference components in the child window by a collection of
+    objects starting with the main application (self) and then pointing first to 
+    the child window, then to its components property, then to the specific 
+    component, then to the property of that component we wish to change. If we 
+    wanted to execute a method of that component or the background, we would use
+    a similar construct.</p>
+    <p>This is obviously very simplistic, (not to mention somewhat redundant 
+    coding). Many times, you will be using a child window to modify components or
+    data associated with the parent window. PythonCard is not passing events 
+    between windows in this release, but in many cases you can simply call the 
+    event handler directly. If you are interested in passing an arbitrary event 
+    such as a mouseClick, that will require creating the event and then posting 
+    it using wx.PostEvent. Custom events are beyond the scope of this tutorial. 
+    However, the child window is able to access the parent window directly by 
+    traversing up the stack of windows.</p>
+    <p>For example we can place a control on our child window that updates a 
+    control on our main background. Let's connect the Reset Counter button we 
+    added to the minimal application above. Add the following code to 
+    minimal.py</p>
+<pre>
+    def on_initialize(self, event):
+        self.parent = self.getParent()
+
+    def on_btnReset_mouseClick(self, event):
+        self.parent.components.field1.text = "0"
+</pre>
+    <p>When our child window it initialized, it calls getParent() to get a 
+    reference to its parent window, and then stores that reference. We place the 
+    code that handles this task in the on_initialize handler so that the 
+    reference is available to all handlers in the application.</p>
+    <p>You'll notice that the text field on the Counter background is reset to 
+    zero but the text field on the Minimal background is not. (This might be a 
+    little confusing because both fields are called 'field1'. In a real 
+    application, the fields should be named something more descriptive.) At this 
+    point, our minimal sample is no longer a stand-alone. If you run Minimal by 
+    itself, self.parent is set to None. If you were using the child window in 
+    other roles or wanted to make it multi-purpose, you could place the 
+    self.getParent() call in a try...except block.</p>
+    <h2>Closing the Child Window</h2>
+    <p>Your main application window will clean up the child window when your app 
+    is closed. If the user has the ability to close the child window before the 
+    main window closes (by using the the child's File-&gt;Exit menu or by 
+    clicking the close box on the window) it's a good idea to just hide the 
+    window instead of destroying it. This will allow you to unhide the window 
+    without re-initializing it and also permits you to communicate with the 
+    window while it is hidden. In the process, you avoid runtime errors that 
+    could result from the child window being non-existent as far as the 
+    application is concerned.</p>
+    <p>We do this by overriding the on_close event handler. on_close would 
+    normally destroy the window but we change it so it hides the window by 
+    setting the visible attribute to False, hiding the window. Just to 
+    make things a little more interesting, we've also added a custom doExit 
+    function that sets the counter's field1 to an arbitrary value just to confirm
+    the connection between the two windows visibly:</p>
+<pre>
+    def doExit(self):
+        self.parent.components.field1.text = "99"
+
+    def on_close(self, event):
+        self.doExit()
+        self.visible = False
+
+    def on_exit_command(self, event):
+        self.close()
+</pre>
+    <p>The resource file (minimal.rsrc.py) defines an exit command for the File-&gt;Exit menu
+    so we use a command handler to override the default behavior. 
+    As the above code shows, the File-&gt;Exit menu item just calls the 
+    close() method to close the window. That is the same as clicking the 
+    close box on the window and triggers the close window event, so that on_close 
+    is called. We placed the work to be done when the document is closing in the 
+    doExit method. In this case it just sets the counter field in the parent to 
+    "99".</p>
+    <p>In addition, in doExit() you could modify some properties of the parent
+    window to keep track of the state of your child window. For example, assuming
+    you have a View menu with an item that hides or unhides your child window, you
+    could use doExit() to check or uncheck the 'View Minimal Window' menu item on
+    the parent. The code would look something like this:</p>
+<pre>
+        self.parent.menuBar.setChecked('menuViewMinimalWindow', False)
+</pre>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.11 $ : $Author: kasplat $ : Last update $Date: 2005/12/30 06:29:36 $</p>
+    </div> <!-- end of content -->
+  </body>
+</html>

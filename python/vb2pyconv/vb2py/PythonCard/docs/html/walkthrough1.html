@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+    <meta name="author" content="Dan Shafer" />
+    <link rel="stylesheet" href="PythonCard.css" type="text/css" />
+    <title>PythonCard Walk-through No. 1</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>PythonCard Documentation</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <h1>Getting Started in PythonCard</h1>
+    <p>This document is designed to help people who are interested in learning 
+    and using PythonCard but who are not professional programmers and who do
+    not have deep Python scripting skills to learn their way around the 
+    environment and to understand how PythonCard applications get built.</p>
+    <h2>Before You Read This Document</h2>
+    <p>It will be helpful if, before you attempt to follow along with this 
+    document, you are sure you've done the following:</p>
+    <ol>
+      <li>Downloaded and <a href="installation.html">installed the latest 
+version of PythonCard </a> for your system </li>
+      <li>Confirmed that your installation works by successfully launching and 
+      running the application called minimal in the PythonCard samples directory</li>
+    </ol>
+    <p>While it is not necessary for the purposes of this document that you 
+    understand how to program in Python, you should know that all of the real
+    heavy lifting in PythonCard is done using Python programming. So if you
+    haven't yet learned Python, you can still follow the basics of this 
+    walk-through. But you won't be able to do much in the way of PythonCard 
+    development without at least a basic understanding of and comfort level with 
+    Python programming.</p>
+    <h2>Some Basic Preparation</h2>
+    <p>This document assumes you are running PythonCard on a Windows machine. If 
+    you're on a Macintosh or Linux system, you'll have to adjust some of the instructions to 
+    match the directory structure and other differences on your machine.</p>
+    <p>You will also have to have access to a <a href="http://www.python.org/editors/">Python-aware editor</a>.
+    The good news is that PythonCard comes with a robust editor called <a href="tools/codeEditor.html">codeEditor</a>.
+    When you install PythonCard, codeEditor appears in the tools sub-directory.
+    We recommend that you make it easy to open your Python source files (all of 
+    them, not just the PythonCard source) with this codeEditor. You can set up 
+    your Windows system so that it allows you to choose PythonCard's codeEditor 
+    as one (or the only) editor with which Python source files can be opened and 
+    edited by following these steps:</p>
+    <ol>
+      <li>Open the Explorer and choose &quot;Folder Options...quot; under the 
+      &quot;Tools&quot; menu</li>
+      <li>Click on the &quot;File Types&quot; tab</li>
+      <li>Scroll down in the &quot;Registered file types&quot; list and select 
+      extension &quot;PY Python File&quot;</li>
+      <li>Click on the &quot;Advanced&quot; button. You should be looking at an 
+      &quot;Edit File Type&quot; dialog with a list of actions such as Edit and 
+      Open. Open is probably in bold since it is the default action usually 
+      associated with .py files.</li>
+      <li>Click on the &quot;New...&quot; button. You should be looking at a 
+      &quot;New Action&quot; dialog</li>
+      <li>In the &quot;Action:&quot; field type in a label such as &quot;Edit 
+      with PythonCard&quot;. This is the label that will show up in the context 
+      menu when you right-click on a .py file in the Explorer</li>
+      <li>In the &quot;Application used to perform action:&quot; field you need 
+      to specify the path to the Python executable as well as the location of the 
+      codeEditor.py file. On a Python 2.3.5 installation using the default 
+      installer this will look like:</li>
+    </ol>
+    <p class="code">C:\Python23\python.exe C:\Python23\Lib\site-packages\PythonCard\tools\codeEditor\codeEditor.py &quot;%1&quot;</p>
+    <p>(Note that the text above is entered on one line; it may appear as two 
+    lines in your browser because of wrapping of text.)</p>
+    <p>Substitute your own paths for the ones above and put quotes (&quot;) around
+    the paths with spaces in them, if any. If you don't want a console when 
+    codeEditor.py runs, then use pythonw.exe instead of python.exe</p>
+    <ol start="8">
+      <li>Click &quot;OK.&quot; You should now have an &quot;Edit with 
+      PythonCard&quot; item in your &quot;Edit File Type&quot; dialog</li>
+      <li>Click &quot;OK&quot;</li>
+      <li>Click &quot;Close&quot; in the &quot;Folder Options&quot; dialog</li>
+      <li>Open a directory in the explorer that contains a .py file, then 
+      right-click on the file and choose &quot;Edit with PythonCard&quot; and the
+      file should be opened with codeEditor.py. (If it doesn't work, double-check
+      the steps above.)</li>
+      <li>Repeat the process for .pyw files, using the same name and path.</li>
+    </ol>
+    <p>As you learn Python, you'll want a good tutorial. We've gathered together
+    <a href="learning_python.html">list of some of the best resources</a>
+    on the Net and in your favorite real or digital bookstore.</p>
+    <p>If you're not quite sure what PythonCard is or what kinds of problems it's
+    designed to solve, read <a href="http://pythoncard.sourceforge.net/">
+    this document</a>.</p>
+    <h2>A User's Eye View of PythonCard</h2>
+    <p>Now that you've taken all the necessary preparation steps, let's dig into
+    the PythonCard universe and see what's going on just under the hood.</p>
+    <p>PythonCard is a development environment. It needs an application as a 
+    starting point, so you generally start by finding an application that has a 
+    lot of what you're looking for and cloning it, renaming some files, and then 
+    launching the copied application. We've done that for you for this 
+    walk-through; the details of how to start your own application come in a 
+    subsequent document in this series. (There is another way to begin your 
+    PythonCard project development that involves choosing from a pre-defined 
+    template. We won't cover that approach here but it is discussed in the next 
+    walkthrough in this series.)</p>
+    <h3>Exploring Some Sample Applications</h3>
+    <p>We'll begin our walk-through of PythonCard by looking at the kinds of 
+    things it is designed to do. (Understand, however, that these are pretty 
+    skeletal applications designed as samples and starting points, not as 
+    commercial applications. You can do far more robust things with PythonCard 
+    than might be evident from these simple demonstrations.)</p>
+    <p>In the directory Python23\Lib\site-packages\PythonCard\samples
+    you'll find a file called samples.pyw. Double-click this application icon (or 
+    launch it in whatever way you're accustomed to on your system).</p>
+    <p>In a few moments, you'll see a window open called &quot;PythonCard Samples 
+    Launcher.&quot; (See Figure 1) This PythonCard application lets you browse 
+    through the sample applications included with PythonCard, examine them and 
+    run them. It's a sort of nerve center for the sample applications. (On some 
+    systems, you may also see an operating system console window when the 
+    application launches. You can just minimize this window.)</p>
+    <p class="imageCaption"><img alt="Screen shot of PythonCard Samples Launcher" src="images/wt1fig1.png" /><br />
+    Figure 1. Screen Shot of PythonCard's Samples Launcher</p>
+    <p>In the scrolling list of applications, select &quot;minimal.&quot; Read the
+    description. Click on the buttons labeled &quot;Show Source&quot; and 
+    &quot;Show Resource.&quot; None of this means anything to you yet, but you 
+    need to know that you can always examine the Python source code for the 
+    scripts that run your PythonCard applications as well as the resource file 
+    that contains descriptions of the elements that make up its interface. You 
+    should also know that every PythonCard application has at least two Python 
+    source files. One of them ends in &quot;rsrc.py.&quot; This is where 
+    PythonCard stores information about the layout of your application's window, 
+    while the logic of the program is stored in the other Python file which does 
+    not have the &quot;rsrc&quot; extension before the &quot;py&quot; extension. 
+    Note that you cannot edit in the Samples Launcher.</p>
+    <p>OK, click the &quot;Launch&quot; button. In a few moments, you'll see a 
+    small window like the one in Figure 2. Now you see why this sample is called 
+    &quot;minimal.&quot; It's about as small a PythonCard application as you can 
+    think of! You can change the text in the editing field and you can drag the 
+    window around.  Eventually, you'll get tired of all this dazzling 
+    functionality and want to close the application. You can either click the 
+    close box or choose Exit from the File Menu.</p>
+    <p class="imageCaption"><img alt="Screen shot of minimal PythonCard application open window" src="images/wt1fig2.png" /><br />
+    Figure 2. Screen shot of minimal PythonCard application window</p>
+    <p>Back in the Samples Launcher, select the sample called &quot;dialogs.&quot;
+    Again, you can examine source and the resource file if you're so inclined. 
+    When you're ready, click the &quot;Launch&quot; button. A window like the one
+    in Figure 3 will appear.</p>
+    <p class="imageCaption"><img alt="Screen shot of Dialogs launcher application in PythonCard" src="images/wt1fig3.png" /><br />
+    Figure 3. Screen Shot of Dialogs Launcher Application in PythonCard</p>
+    <p>All of the dialog boxes you can see by clicking on the text lines to the left of 
+    this window are built into PythonCard. Causing them to appear, and determining
+    what the user selected or did with them, is, as you'll learn in a later 
+    walk-through, pretty straight-forward. Click on the &quot;alert&quot; line.
+    A small dialog appears. Click the &quot;OK&quot; button. Notice that in the 
+    Sample Dialogs window, you can see the name of the dialog (alertDialog), and 
+    whether the user accepted or canceled the dialog. You can also see what 
+    information the program returned to PythonCard as a result of the user's 
+    action. In this case, the user accepted the dialog (i.e., clicked &quot;OK
+    &quot; and the dialog returned &quot;Ok.&quot; Unless you have some 
+    programming or scripting background, that may not be meaningful, but trust us,
+    it's useful data.</p>
+    <p>Now try the &quot;Message&quot; dialog. Run it three times, clicking &quot;Yes
+    &quot; once, &quot;No&quot; once and &quot;Cancel&quot; the other time. Notice the differences in 
+    the information displayed in the Samples Launcher as a result.</p>
+    <p>One more and then we'll go have some fun with this stuff. Click on the 
+    &quot;File&quot; dialog button. You'll see a standard file-open dialog for 
+    your system.  You can navigate around, choose from the list at the bottom of 
+    the window the file type(s) you want to see listed, and select a file (or 
+    cancel). Notice what appears in the Sample Dialogs window when you do these 
+    various things.</p>
+    <h3>Changing a PythonCard Application</h3>
+    <p>OK, let's go see what's going on under the hood here. In your 
+    PythonCard\docs directory, locate the folder called &quot;
+    GettingStarted&quot;. In that directory is a file called starter1.py. Launch 
+    it in the usual way. It is a bare-bones PythonCard application. In fact, it's
+    a copy of the minimal application you ran in the last section.</p>
+    <p>Open the file starter1.py in your Python-aware editor of choice. The Python
+    script is, as you'd expect, brief and to the point. Here's the important 
+    part to focus on:</p>
+<pre>
+    def on_menuFileAbout_select(self, event):
+        pass
+</pre>
+    <p>Even without understanding Python you can probably tell what this code 
+    snippet does. (That's one of the beauties of Python. It is eminently 
+    readable.) It's what we call an &quot;event handler.&quot; It gets activated,
+    or triggered, by the user causing some event. In this case, the user selects 
+    the File Menu's &quot;About&quot; option and we do nothing (in Python, 
+    the &quot;pass&quot; statement does nothing; it's simply used as a 
+    placeholder where the syntax requires a
+    statement but no action is needed).</p>
+    <p>We're going to change what this menu choice does. You'd never handle an
+    assignment the way we're going to show you here, but our purpose is just to 
+    show you how easy it is to fiddle with PythonCard's Python scripts to make 
+    things happen the way you want them to happen.</p>
+    <p>First, select the word &quot;pass&quot;. Type in its place the following 
+    line:</p>
+<pre>
+        result = dialog.alertDialog(self, 'It works!', 'Showing Off')
+</pre>
+    <p>Again, this new line of Python code is readable even if you're not a 
+    Python guru yet. Now when the user selects the Exit menu, rather than doing 
+    nothing, we'll display an alert dialog titled &quot;Showing Off&quot; that 
+    says &quot;It works!&quot;</p>
+    <p>One more change. We have to make sure our Python script knows how to work
+    with dialogs. Near the top of the file above the comments that explain what's
+    going on is a line that says:</p>
+<pre>
+from PythonCard import model
+</pre>
+    <p>Change that so it says:</p>
+<pre>
+from PythonCard import dialog, model
+</pre>
+    <p>Save the code.</p>
+    <p><strong>IT IS IMPORTANT</strong>, if you choose to use a Python editor 
+    other than PythonCard's codeEditor, that you not try to run the program from 
+    within those editors. Doing so in programs like the IDLE editor that ships 
+    with the Python distribution or PythonWin, for example, will have nasty 
+    consequences because these editors use a different graphics library from 
+    what PythonCard uses.</p>
+    <p>Double-click the &quot;starter1&quot; application. When the window appears,
+    select the Exit option from the File menu. You'll see a small dialog appear 
+    as described above.</p>
+    <p>Close the application by selecting its window's close box.</p>
+    <h3>Making A Slightly More Interesting Change</h3>
+    <p>Go back to codeEditor. If you didn't close it, starter1.py should still be
+    open for editing. Replace the string 'It works!' in the line we edited 
+    earlier so that the line reads:</p>
+<pre>
+        result = dialog.alertDialog(self, self.components.field1.text, 'Showing Off')
+</pre>
+    <p>This line is almost identical to the one we just had here, but this one
+    takes its text from the text in a component called &quot;field1.&quot; That 
+    happens, of course, to be the only field in our little application.</p>
+    <p>Save the code. Then double-click the &quot;starter1&quot; application to 
+    try out the change.</p>
+    <p>Now when you change the text in the field and select File-&gt;Exit, you'll
+    see a dialog box that contains the text you put into the field.</p>
+    <h2>What We've Learned</h2>
+    <p>Not a bad start, right? We've learned how to launch a PythonCard 
+    application, something about the kinds of dialog support PythonCard has built
+    in, looked at a couple of sample applications, and then edited some source 
+    code not once but twice. In the process we also learned that PythonCard has 
+    components (user interface elements) that have programs (or scripts) 
+    associated with them. We've learned that there are events in PythonCard and 
+    that you can write Python code that tells your application what to do when 
+    those events are triggered.</p>
+    <h2>What's Next?</h2>
+    <p>In the next installment of this PythonCard walk-through, we'll dig a 
+    little more deeply into development. We'll see how we can set up our 
+    development environment to provide helpful supporting windows that tell us
+    what's going on in our application. We'll also see how to start and build our
+    own application, using the built-in PythonCard layout editor, the Resource
+    Editor.</p>
+    <p>We'll be producing more of these walk-through documents on other aspects 
+    of PythonCard's use. If you want to stay current with PythonCard and the 
+    documentation, you should <a href="http://lists.sourceforge.net/lists/listinfo/pythoncard-users">subscribe to the user mailing list</a>.</p>
+    <p><a href="walkthrough2.html">Continue on to Walk-Through 2</a></p>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.23 $ : $Author: kasplat $ : Last updated $Date: 2006/01/03 18:28:32 $</p>
+    </div> <!-- end of content -->
+  </body>
+</html>

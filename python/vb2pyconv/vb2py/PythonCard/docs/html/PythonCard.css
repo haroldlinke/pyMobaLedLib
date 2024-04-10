@@ -1,0 +1,134 @@
+/* Implement both fixed-size and relative sizes: */
+small.xtiny             { font-size : xx-small }
+small.tiny              { font-size : x-small }
+small.scriptsize        { font-size : smaller }
+small.footnotesize      { font-size : small }
+big.xlarge              { font-size : large }
+big.xxlarge             { font-size : x-large }
+big.huge                { font-size : larger }
+big.xhuge               { font-size : xx-large }
+
+/*
+ * Document-specific styles come next;
+ * these are added for the Python documentation.
+ *
+ * Note that the size specifications for the H* elements are because
+ * Netscape on Solaris otherwise doesn't get it right; they all end up
+ * the normal text size.
+ */
+
+body                    { color: #000000;
+                          background-color: #ffffff; }
+
+a:active                { color: #ff0000; }
+a:visited               { color: #551a8b; }
+a:link                  { color: #0000bb; }
+
+h1, h2, h3, h4, h5, h6  { font-family: avantgarde, sans-serif;
+                          font-weight: bold; }
+h1                      { font-size: 180%; }
+h2                      { font-size: 150%; }
+h3                      { font-size: 120%; }
+h4                      { font-size: 100%; }
+img                     { border: 0; }
+code, tt                { font-family: Courier, monospace }
+var                     { font-family: times, serif;
+                          font-style: italic;
+                          font-weight: normal }
+
+dt                      { font-weight: bold; }
+
+.navigation td          { background-color: #99ccff;
+                          font-weight: bold;
+                          font-family: avantgarde, sans-serif;
+                          font-size: 110% }
+
+.release-info           { font-style: italic; }
+
+.titlegraphic           { vertical-align: top; }
+
+.verbatim               { color: #00008b }
+
+.email                  { font-family: avantgarde, sans-serif }
+.mimetype               { font-family: avantgarde, sans-serif }
+.newsgroup              { font-family: avantgarde, sans-serif }
+.url                    { font-family: avantgarde, sans-serif }
+.file                   { font-family: avantgarde, sans-serif }
+
+.tableheader            { background-color: #99ccff;
+                          font-family: avantgarde, sans-serif; }
+
+.refcount-info          { font-style: italic }
+.refcount-info .value   { font-weight: bold;
+                          color: #006600 }
+
+/*
+ * Some decoration for the "See also:" blocks, in part inspired by some of
+ * the styling on Lars Marius Garshol's XSA pages.
+ * (The blue in the navigation bars is #99CCFF.)
+ */
+.seealso                { background-color: #fffaf0;
+                          border: thin solid black;
+                          padding: 4pt }
+
+.seealso .heading       { font-size: 110% }
+
+/*
+ * Class 'availability' is used for module availability statements at
+ * the top of modules.
+ */
+.availability .platform { font-weight: bold }
+
+/*
+ * Styles for the front page
+ */
+#banner {
+    background-color: #003366;
+}
+
+#banner h1 {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    font-size: 150%;
+    text-align: center;
+    color: #FFFFFF;
+    margin: 0px;
+    padding: 5px;
+}
+
+#sidebar {
+    background-color: #eeeeee;
+    float: left;
+    width: 20%;
+}
+
+#sidebar h4 {
+    background-color: #003366;
+    text-align: center;
+    color: #ffffff;
+    font-weight: normal;
+    margin: 0px;
+    padding: 0px;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    margin-left: 0px;
+    padding-left: 5px;
+}
+
+#content {
+    float: right;
+    width: 78%;
+}
+
+.imageCaption {
+    text-align: center;
+    font-weight: bold;
+    line-height: 150%;
+}
+
+.code {
+    font-family: Courier, monospace;
+    font-size: 90%;
+}

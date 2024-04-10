@@ -1,0 +1,102 @@
+{'type':'CustomDialog',
+    'name':'Template',
+    'title':'PySSHed: Session parameters',
+    'position':(-1, -1),
+    'size':(450, 220),
+    'components': [
+
+{'type':'TextField', 
+    'name':'sessionName', 
+    'position':(75, 15), 
+    'size':(330, -1), 
+    },
+
+{'type':'TextField', 
+    'name':'hostName', 
+    'position':(75, 45), 
+    'size':(330, -1), 
+    },
+
+{'type':'TextField', 
+    'name':'portNumber', 
+    'position':(75, 75), 
+    'size':(55, -1), 
+    },
+
+{'type':'TextField', 
+    'name':'userName', 
+    'position':(195, 75), 
+    'size':(210, -1), 
+    },
+
+{'type':'TextField', 
+    'name':'identityFile', 
+    'position':(75, 105), 
+    'size':(330, -1), 
+    },
+
+{'type':'TextField', 
+    'name':'connectCmd', 
+    'position':(75, 135), 
+    'size':(330, -1), 
+    },
+
+{'type':'Button', 
+    'name':'idFileBtn', 
+    'position':(410, 105), 
+    'size':(25, -1), 
+    'label':'...', 
+    },
+
+{'type':'Button', 
+    'id':5100, 
+    'name':'btnOK', 
+    'position':(75, 165), 
+    'label':'OK', 
+    },
+
+{'type':'Button', 
+    'id':5101, 
+    'name':'btnCancel', 
+    'position':(170, 165), 
+    'label':'Cancel', 
+    },
+
+{'type':'StaticText', 
+    'name':'StaticText5', 
+    'position':(20, 20), 
+    'text':'Session', 
+    },
+
+{'type':'StaticText', 
+    'name':'StaticText4', 
+    'position':(25, 50), 
+    'text':'Host/IP', 
+    },
+
+{'type':'StaticText', 
+    'name':'StaticText1', 
+    'position':(40, 80), 
+    'text':'Port', 
+    },
+
+{'type':'StaticText', 
+    'name':'StaticText2', 
+    'position':(160, 80), 
+    'text':'User', 
+    },
+
+{'type':'StaticText', 
+    'name':'StaticText3', 
+    'position':(5, 110), 
+    'text':'Identity file', 
+    },
+
+{'type':'StaticText', 
+    'name':'StaticText6', 
+    'position':(10, 140), 
+    'text':'Command', 
+    },
+
+] # end components
+} # end CustomDialog

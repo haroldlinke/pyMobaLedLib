@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../PythonCard.css" type="text/css" />
+    <title>Framework Overview - Components</title>
+  </head>
+  <body>
+<div id="banner">
+<h1>Framework Overview - Components</h1>
+</div>
+<?php include "../sidebar.php" ?>
+<div id="content">
+<p>Updated: March 31, 2006 for release 0.8.2</p>
+
+<p>
+I'll try and outline the current state of the framework in order to foster
+discussion. I'm going to break up the description into several sections. I'm
+not going to describe every method and attribute since I would just end up
+repeating what is in the source code. These descriptions can also serve as
+documentation.</p>
+
+<p>The following component types are currently supported. The are defined in
+the PythonCard components directory. The wxPython control they are
+based on is in parenthesis ():</p>
+
+<pre>
+  <a href="components/BitmapCanvas.html">BitmapCanvas</a>
+    Provides a buffered bitmap. There is no direct equivelant in wxPython.
+  <a href="components/Button.html">Button</a>          (wx.Button)
+  <a href="components/Calendar.html">Calendar</a>        (wx.Calendar)
+  <a href="components/CheckBox.html">CheckBox</a>        (wx.CheckBox)
+  <a href="components/Choice.html">Choice</a>          (wx.Choice)
+  CodeEditor      (wx.stc.StyledTextCtrl)  <a href="components/ComboBox.html">ComboBox</a>        (wx.ComboBox)
+  <a href="components/Gauge.html">Gauge</a>           (wx.Gauge)
+  Grid            (wx.Grid)  <a href="components/HtmlWindow.html">HtmlWindow</a>      (wx.HtmlWindow)
+  IEHtmlWindow    (wx.lib.iewin.IEHtmlWindow - Windows-only)  <a href="components/Image.html">Image</a>           (wx.StaticBitmap)
+  <a href="components/ImageButton.html">ImageButton</a>     (wx.BitmapButton)
+  <a href="components/List.html">List</a>            (wx.ListBox)
+  MultiColumnList (wx.ListCtrl)
+  Notebook (wx.Notebook)  <a href="components/PasswordField.html">PasswordField</a>   (wx.TextCtrl)
+  <a href="components/RadioGroup.html">RadioGroup</a>      (wx.RadioBox)
+  <a href="components/Slider.html">Slider</a>          (wx.Slider)
+  <a href="components/Spinner.html">Spinner</a>         (wx.Spinner)
+  <a href="components/StaticBox.html">StaticBox</a>       (wx.StaticBox)
+  <a href="components/StaticLine.html">StaticLine</a>      (wx.StaticLine)
+  <a href="components/StaticText.html">StaticText</a>      (wx.StaticText)
+  <a href="components/TextArea.html">TextArea</a>        (wx.TextCtrl)
+  <a href="components/TextField.html">TextField</a>       (wx.TextCtrl)
+  ToggleButton    (wx.ToggleButton)
+  Tree            (wx.TreeCtrl)</pre>
+
+<p>The following events are automatically bound and available for each component:</p>
+
+<pre>
+  gainFocus
+  loseFocus
+  mouseContextDoubleClick
+  mouseContextDown
+  mouseContextUp
+  mouseDoubleClick
+  mouseDown
+  mouseDrag
+  mouseEnter
+  mouseLeave
+  mouseMiddleDoubleClick
+  mouseMiddleDown
+  mouseMiddleUp
+  mouseMove
+  mouseUp
+  timer
+</pre>
+
+<p>There are additional events such as <code>mouseClick</code>, <code>closeField</code>, <code>keyPress</code>, etc. 
+that are specific to particular components, which you'll find defined in the
+individual component modules. The following attributes are available for each component.</p>
+
+<pre>
+    backgroundColor
+        color: tuple (r, g, b), "named color", or hex color string "#FF00FF"
+        color is always returned as an rgb tuple
+    command
+        string
+    enabled
+        boolean
+    font
+        Font
+    foregroundColor
+        color: tuple (r, g, b), "named color", or hex color string "#FF00FF"
+        color is always returned as an rgb tuple
+    name    (mandatory, read-only)
+        string
+    position
+        tuple (x, y)
+           specifying -1 for either x or y will use the default x or y position
+    size
+        tuple (width, height)
+           specifying -1 for either width or height will use the default
+           width or height
+    toolTip
+        string
+    visible
+        boolean
+</pre>
+
+<p>Additional attributes such as <code>label</code> are defined for some components. The
+attributes can be defined in the resource file as well as in user code.
+PythonCard uses dot notation for components, rather than get/set methods. Here
+is an example:</p>
+
+<pre>
+  self.components.field1.text = 'bob'
+  txt = self.components.field1.text
+</pre>
+
+<p>Helper classes for components:</p>
+
+<pre>
+  Bitmap         (wx.Bitmap) - defined in graphic.py
+    supported formats:
+    BMP, GIF, JPEG, PCX, PICT, PNG, PNM, TIFF, XBM, and XPM
+    also supports translation to/from Python Imaging Library (PIL) format, 
+    and NumPy arrays to bitmap.
+  Font           (wx.Font)   - defined in font.py
+</pre>
+
+<p>In some case, the helper classes and components provide extra functionality
+over their wxPython counterparts. Automatic binding of events and simplifed
+initialization are the most obvious.</p>
+
+<hr>| <a href="general_concepts_and_limitations.html">General Concepts and Limitations</a> | <a href="components.html">Components</a> | <a href="dialogs.html">Dialogs</a> | <a href="events_and_handlers.html">Events and Handlers</a> | <a href="menus.html">Menus</a> | <a href="resource_files.html">Resource Files</a> | <a href="runtime_tools.html">Runtime Tools</a> <hr>    <?php include "../footer.php" ?>
+    <p>$Revision: 1.4 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:26 $</p>
+</div> <!-- end of content -->
+</body>
+</html>

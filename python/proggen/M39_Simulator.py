@@ -163,7 +163,7 @@ def loaddll():
         Debug.Print("Unable to load MLL_DLL "+dllfilename)
         sys.exit()
     
-    print(f'Succesfully loaded the MLL_DLL'+dllfilename) 
+    Debug.Print('Succesfully loaded the MLL_DLL'+dllfilename) 
     
     #Private Declare PtrSafe Function CreateSampleConfig Lib "MobaLedLibWrapper.dll" () As LongPtr
     CreateSampleConfig = MobaLedLibWrapper.CreateSampleConfig

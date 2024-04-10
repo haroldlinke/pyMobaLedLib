@@ -165,7 +165,7 @@ Prog_for_Right_Ardu = ' DCC Selectrix Loconet '
 MAX_ROWS = 1048576
 MAX_COLUMNS = 16384
 
-Hook_CHAR = 252 #61692
+Hook_CHAR = xlhookchar # 252 #61692 # replace hook with "*"
 
 SPARE_ROWS = 3                                  # Number of spare rows which are generated if data are entered in a new line
 

@@ -94,7 +94,7 @@ class VBConverter(object):
             if callback:
                 callback("Reading module '%s'" % module_name, 100.0 * done / total)
             #
-            logText("Reading module '%s'" % module_name)
+            logText("Reading module '%s'" % module_name + "(" + module_filename.strip()+")")
             mod = ModuleParser(os.path.join(project_root, module_filename.strip()), module_name)
             mod.doParse(self.project_structure)
             self.modules.append(mod)

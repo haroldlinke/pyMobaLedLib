@@ -273,8 +273,12 @@ def Get_State_of_Board_Row(row):
         Sh.CellDict[row, DetectVer_Col] = Get_Std_Arduino_Lib_Ver()
         return
     TestFile = Sh.Cells(row, Test_File_Col)
+    TestFile = TestFile.replace("\\", "/")
     BoardDir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/' + Board + '/hardware/'
-    Res = Dir(BoardDir + ProcessorTyp + '/*.*', vbDirectory)
+    if P01.checkplatform("Windows"):
+        Res = Dir(BoardDir + ProcessorTyp + '/*.*', vbDirectory)
+    else:
+        Res = Dir(BoardDir + ProcessorTyp + '/*', vbDirectory)
     while Res != '':
         if Left(Res, 1) != '.':
             VerList = VerList + Res + vbTab
@@ -316,7 +320,10 @@ def __Get_State_of_BoardExtras_Row(row):
     ExtraType = Split(Board_and_Proc, ':')(1)
     TestFile = Sh.Cells(row, Test_File_Col)
     BoardDir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/' + Board
-    Res = Dir(BoardDir + '/' + ExtraType + '/*.*', vbDirectory)
+    if P01.checkplatform("Windows"):
+        Res = Dir(BoardDir + '/' + ExtraType + '/*.*', vbDirectory)
+    else:
+        Res = Dir(BoardDir + '/' + ExtraType + '/*', vbDirectory)
     # The Dir() result seames to be sorted
     while Res != '':
         if Left(Res, 1) != '.':
@@ -355,6 +362,7 @@ def Get_All_Library_States():
     row = First_Dat_Row
     while Sh.Cells(row, Libr_Name_Col) != '':
         TestFile = Sh.Cells(row, Test_File_Col)
+        TestFile = TestFile.replace("\\", "/")
         Sh.CellDict[row, DetectVer_Col] = ''
         Sh.CellDict[row, Installed_Col] = ''
         if InStr(str(Sh.Cells(row, Lib_Board_Col)), 'L') > 0:
@@ -367,8 +375,8 @@ def Get_All_Library_States():
                 if os.path.exists(LibDir + TestFile) or os.path.exists(LibDir + 'src/' + TestFile): #Dir(LibDir + TestFile) != '' or Dir(LibDir + 'src\\' + TestFile) != '':
                     with_2.Value = '1'
                 else:
-                    Debug.Print("Fehler beim lesen des Verzeichnisses:"+LibDir)
-                    P01.MsgBox(M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:') + vbCr + '  \'' + LibDir + '\'' + vbCr , vbCritical, M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:'))
+                    Debug.Print("Fehler beim lesen des Verzeichnisses:"+LibDir + " Testfile:"+TestFile + " oder src/"+TestFile)
+                    P01.MsgBox(M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:') + vbCr + '  \'' + LibDir + '\'' + TestFile + vbCr , vbCritical, M09.Get_Language_Str('Fehler beim lesen des Verzeichnisses:'))
             # VB2PY (UntranslatedCode) On Error GoTo 0
             installed = Sh.Cells(row, Installed_Col)
             if installed == "":
@@ -528,7 +536,7 @@ def Add_Update_from_Other_Source_Linux(Row):
         
         except BaseException as e:
             Debug.Print("__Add_Update_from_Other_Source_Linux Error: ")
-            logging.debug(e)
+            logging.debug(e, exc_info=True) 
     else:
         if Check_if_curl_is_Available_and_gen_Message_if_not(LibName, InstLink) == False:
             return
@@ -561,28 +569,33 @@ def Proc_UnzipList():
             LibName_with_path = M02a.Get_Ardu_LibDir() + LibName
             if not M30.UnzipAFile(LibName_with_path + '.zip', M02a.Get_Ardu_LibDir()):
                 return
-            if os.path.isdir(LibName_with_path + '-master'): # Dir(LibName_with_path + '-master', vbDirectory) != '':
+            Libname_master =  LibName_with_path + '-master'
+            Libname_master_lower = M02a.Get_Ardu_LibDir() + LibName.lower() + '-master'
+            if os.path.isdir(Libname_master): # Dir(LibName_with_path + '-master', vbDirectory) != '':
                 # VB2PY (UntranslatedCode) On Error GoTo RenameErr
-                os.rename(LibName_with_path + '-master', LibName_with_path)
+                os.rename(Libname_master, LibName_with_path)
+            elif os.path.isdir(Libname_master_lower): # workaround for EspSoftwareSerial
+                # VB2PY (UntranslatedCode) On Error GoTo RenameErr
+                os.rename(Libname_master_lower, LibName_with_path) 
             elif os.path.isdir(LibName_with_path + '-beta'): # Dir(LibName_with_path + '-beta', vbDirectory) != '':
                 # 19.11.21 Juergen support of BETA update directly from github
                 # VB2PY (UntranslatedCode) On Error GoTo RenameErr
                 os.rename(LibName_with_path + '-beta', LibName_with_path)
             else:
-                P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Das Verzeichnis \'#1#\' wurde nicht erzeugt beim entzippen von:'), "#1#", LibName + '-master') + vbCr + '  \'' + LibName_with_path + '.zip', vbCritical, M09.Get_Language_Str('Fehler beim entzippen'))
+                P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Das Verzeichnis \'#1#\' wurde nicht erzeugt beim entzippen von:'), "#1#", Libname_master + "-" + Libname_master_lower) + vbCr + '  \'' + LibName_with_path + '.zip', vbCritical, M09.Get_Language_Str('Fehler beim entzippen'))
             # VB2PY (UntranslatedCode) On Error Resume Next
             try:
                 Kill(LibName_with_path + '.zip')
             
             except BaseException as e:
-                logging.debug("__Proc_Unzip: Exception Kill "+LibName_with_path+".zip")
-                logging.debug(e)                
+                logging.debug("M37.Proc_Unzip: Exception Kill "+LibName_with_path+".zip")
+                logging.debug(e, exc_info=True) 
                 pass
             # VB2PY (UntranslatedCode) On Error GoTo 0
         return
     except BaseException as e:
-        logging.debug("__Proc_Unzip: Exception rename"+LibName_with_path+".zip")
-        logging.debug(e)       
+        logging.debug("M37.Proc_Unzip: Exception rename"+LibName_with_path+".zip")
+        logging.debug(e, exc_info=True)        
         P01.MsgBox(M09.Get_Language_Str('Fehler beim Umbenennen des Verzeichnisses:') + vbCr + '  \'' + LibName_with_path + '-master\'' + vbCr + 'nach \'...' + LibName + '\'', vbCritical, M09.Get_Language_Str('Verzeichnis kann nicht umbenannt werden'))
         return
     # VB2PY (UntranslatedCode) Resume Next

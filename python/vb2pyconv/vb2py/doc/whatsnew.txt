@@ -1,0 +1,88 @@
+**0.4.1.3**
+
+- Improved detection of .NET to look for #Regions and ignore them when parsing
+- Improved **reporting of the line number** that a parsing error occurred on
+- Initial version of **Imports** statement for .NET
+- Fixed issue with floating point numbers **1.0#** not parsing properly
+- Allow (but ignore) typecasting in For statements **For A As Integer**
+- Allow (but ignore) types defined by "Of" in array declarations, eg **Dim A As List(Of String)**.
+- Fixed issue with expressions with brackets around a simple object **(this).Value + 10**
+- Implemented conversion of **Try ... Catch** blocks in .NET
+- Implemented conversion of **AndAlso** and **OrElse** comparisons in .NET
+- Implemented initialization of new array variables within an expression in .NET
+- Implemented Using when has an "=" rather than an "As"
+- Implemented **Exit While** statement
+- Implemented automatic continuations when within bracketted lists **(a, b, \n c)**
+- Fixed parsing of enums with types **Enum X As Integer**
+- Implemented closure functions for .NET **Dim X = Function(x) x*2**
+- Fixed parsing of passing semantics decorators for .NET **Sub A(<[In]()> x)**
+- Implemented **Inherits** for .NET
+- Fixed parsing of identifiers starting with **_<digit>**
+- Parse .NET **Namespace** out but don't do anything with it yet
+
+**0.4.1.2**
+
+- Fixed lower case "then" in an if
+- Fixed "reset" not being a reserved keyword
+- Fixed parsing of Declare PtrSafe
+- Improved language detection to warn if invalid file is being converted
+- Fixed parsing issue with trailing colon in else statement (**"Else:"**)
+- Improved **RecordSet** parsing and conversion
+- Fixed parsing issue with brackets only around an If condition **If(A=1) Then ...**
+- Fixed parsing issue with explicit call with parameters **Call Something 10**
+- Added **progress bar** to online conversion to estimate how long it should take
+- Added a better check for some file types **(VBP, C# etc)** and warn about these
+
+**0.4.1.1**
+
+- Implemented new "Smart" option for select variables. Tries to guess best approach.
+- Support for the weird **Then Else** construct (If A Then Else B)
+- Fixed parsing bug for **Sub/Function definition** all on one line
+- Fixed parsing bug for **Do/While** all on one line
+- Fixed parsing of **date and time literals**
+- Fixed parsing issue of **space between formal parameter list and object** reference
+- Fixed parsing issue with comment on **#End If** line of directive
+
+**0.4.1**
+
+- Made available through **pip**
+- Reworked the **line continuation** logic so should be much less susceptible to failing
+- Fixed issue with **highlighting the incorrect error** line when the error was on a continuation line
+- Fixed issue with **<> not being converted to !=** in comparison
+
+**0.4.0.5**
+
+- Added **Paste** button to quickly insert VB into the window
+- Fixed parsing error if a **label named "Loop<someting>"** was present in a Do .. Loop
+- Added detection for **Decimal** floats
+- Fixed parsing error when Dim statement had spaces before "," (eg **Dim A , B**)
+- Fixed parsing issue with **line continuation with a With** and the With variable was the first item on a line
+- Fixed parsing of **Enum's with multiple items** per line
+- Preserve **comments in Enums**
+- Fixed **Enum auto-numbering** for Enums with some set and some unset values
+- Fixed parsing issue with **continuation when the next line is blank**
+
+**0.4.0.4**
+
+- If **both property Let and Set** are present then choose the Set (new option to alter this to Let)
+- Fixed parsing bug with space before brackets on a call: *A = Something ()*
+- Fixed parsing bug with empty brackets on LHS of assignment: *A () = SomeFnReturningArray()*
+- Fixed issue with **"submit file"** button not being displayed when parsing failed
+- Fixed issue with **label just before the Next** from a For loop
+- Fixed issue with **labels on Else, ElseIf, and Case** statements
+- Fixed issue with **.variable** outside of a With block (this is a syntax error but would crash the converter)
+- Implemented solution for VB6 directives (**#If #Else etc**), by default assumes the If is true.
+
+**0.4.0.3**
+
+- Added button to copy Python **code to clipboard**
+- Fixed issue which could crash the server when checking the latest update time
+
+**0.4.0.2**
+
+- Added server **status display** for online conversion
+- Added ability to download both the **code and the runtime** files as a zip
+
+**0.4**
+
+- Converter now runs on **Python 3** and creates Python 3 compatible code

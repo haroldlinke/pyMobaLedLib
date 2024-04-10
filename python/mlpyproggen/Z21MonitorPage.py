@@ -501,7 +501,7 @@ class Z21MonitorPage(tk.Frame):
                     dcc_adress_range = (1,9999)
                 self.controller.connect_Z21(port,dcc_adress_range)
         else:
-            print("Z21MonitorPage: Connect ARDUINO")
+            logging.debug("Z21MonitorPage: Connect ARDUINO")
             self.controller.connect()
         self.controller.start_process_serial_all()
             
@@ -610,13 +610,13 @@ class Z21MonitorPage(tk.Frame):
                         countbits-=1
         if countbits != 0:
             result.append(byte)
-        print("convert_7bit_to_8bit: Input:")
+        #print("convert_7bit_to_8bit: Input:")
         for my_byte in bytestring:
             print(f'{my_byte:0>8b}', end=' ')
-        print(" Output:")    
+        #print(" Output:")    
         for my_byte in result:
             print(f'{my_byte:0>8b}', end=' ')
-        print("\n")
+        #print("\n")
         return bytes(result)
 
     

@@ -70,6 +70,7 @@ import proggen.D10_UserForm_Options as D10
 import proggen.D11_Userform_SimpleInput as D11
 import proggen.D12_Select_ProgGen_Src_Form as D12
 import proggen.D13_Select_ProgGen_Dest_Form as D13
+import proggen.D14_Userform_LEDAnim as D14
 import proggen.D15_Userform_PCAnim as D15
 import pgcommon.G00_common as G00
 
@@ -310,22 +311,22 @@ def worksheet_init(act_worksheet):
 
     if act_worksheet.Datasheet:
         P01.ActiveSheet=act_worksheet
-        M25.Make_sure_that_Col_Variables_match(Sh=P01.ActiveSheet)
         for row in range(3,M30.LastUsedRow()):
             M20.Update_TestButtons(row,First_Call=first_call)
             M20.Update_StartValue(row)
             first_call=False
             
 def worksheet_redraw(sheet):
-    if sheet.Datasheet and sheet.Name != "Examples":
+    if sheet.Datasheet:
+        sheet.clear_shapelist()
         P01.ActiveSheet=sheet
         M25.Make_sure_that_Col_Variables_match(Sh=sheet)
         for row in range(3,M30.LastUsedRow()):
             MacroStr = P01.Cells(row, M25.Config__Col, ws=sheet)
             if MacroStr != "":
                 M27.FindMacro_and_Add_Icon_and_Name(MacroStr, row, sheet)
-            M20.Update_TestButtons(row, redraw=True)
-            M20.Update_StartValue(row)
+                M20.Update_TestButtons(row, redraw=True)
+            #M20.Update_StartValue(row)
             
     
     
@@ -345,6 +346,7 @@ def init_UserForms():
     Select_ProgGen_Src_Form = D12.CSelect_ProgGen_Src_Form(PG.global_controller)
     Select_ProgGen_Dest_Form = D13.CSelect_ProgGen_Dest_Form(PG.global_controller)
     UserForm_PCAnim = D15.UserForm_PCAnim(PG.global_controller)
+    UserForm_LEDAnim = D14.UserForm_LEDAnim(PG.global_controller)
 
     
 def notimplemented(command):

@@ -1387,7 +1387,7 @@ def Create_Config_Header_File(Name):
         return fn_return_value
     except BaseException as e:
         logging.debug("Create_Config_Header_File - exception")
-        logging.debug(e)
+        logging.debug(e, exc_info=True) 
         P01.MsgBox(M09.Get_Language_Str('Fehler beim schreiben der Datei \'') + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler beim erzeugen der Arduino Header Datei'))
         fn_return_value = False
         return fn_return_value

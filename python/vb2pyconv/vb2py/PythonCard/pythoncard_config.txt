@@ -1,0 +1,20 @@
+# __version__ = "$Revision: 1.2 $"
+# __date__ = "$Date: 2004/05/14 19:23:11 $"
+
+{
+   'enableLogging':False,
+   'logfile':'pythoncard.log',
+   'logToStdout':True,
+   'showMessageWatcher':False,
+   'messageWatcherPosition':(0, 0),
+   'messageWatcherSize':(200, 300),
+   'showPropertyEditor':False,
+   'propertyEditorPosition':(0, 0),
+   'propertyEditorSize':(360, 240),
+   'showShell':False,
+   'shellPosition':(0, 0),
+   'shellSize':(500, 200),
+   'showNamespace':False,
+   'namespacePosition':(0, 0),
+   'namespaceSize':(600, 300),
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../PythonCard.css" type="text/css" />
+  <title>Framework Overview - Menus</title>
+</head>
+  <body>
+<div id="banner">
+<h1>Framework Overview - Menus</h1>
+</div>
+<?php include "../sidebar.php" ?>
+<div id="content">
+<p>Updated: March 31, 2006 for release 0.8.2</p>
+
+<p>The Menu classes are defined in menu.py. Menus for an app are defined in the
+resource file, but they are optional. The worldclock sample shows an app
+without a menubar.</p>
+
+<p>There is no support for hierarchical menus, graphics or multiple fonts in a
+menu. You can enable/disable and check/uncheck menu items. In addition, menu
+items can have an associated command which can then be bound to any number
+of other menu items or components. See the textIndexer and addresses samples.
+The simplest way to understand the use of the menus is to look at all the
+samples resource files and code. When a menu item is selected it generates a
+'select' event.</p>
+
+<hr>| <a href="general_concepts_and_limitations.html">General Concepts and Limitations</a> | <a href="components.html">Components</a> | <a href="dialogs.html">Dialogs</a> | <a href="events_and_handlers.html">Events and Handlers</a> | <a href="menus.html">Menus</a> | <a href="resource_files.html">Resource Files</a> | <a href="runtime_tools.html">Runtime Tools</a> <hr>    <?php include "../footer.php" ?>
+    <p>$Revision: 1.4 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:26 $</p>
+</div> <!-- end of content -->
+</body>
+</html>

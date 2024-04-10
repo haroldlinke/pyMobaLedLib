@@ -319,7 +319,7 @@ def Calc_Worksheet(ws,cell=None):
     createcellvariable(ws, "E44")
     E46=E44+TimerBytes+DataBytes
     FlashUsage=E46
-    setcellfromvariable(ws, "E46",E46)
+    setcellfromvariable(ws, "E46","Flashbedarf "+str(E46)+" bytes")
     
     #* "F48" <f>IF(COUNTA(F50:AM57)=0,"Bitte Tabelle ausfüllen. Positionen an denen die LEDs leuchten sollen werden mit einem Zeichen (z.B. x) markiert. Bei einer leeren Zellen ist die LED aus.","")</f>
     F48=IF(COUNTA("F50:AM57")==0,"Bitte Tabelle ausfüllen. Positionen an denen die LEDs leuchten sollen werden mit einem Zeichen (z.B. x) markiert. Bei einer leeren Zellen ist die LED aus.","")
@@ -387,7 +387,7 @@ def WS_Conditional_Formating(ws,changedCell):
     if convertCell2Excel(changedCell)=="E5":
         #extend grid
         value=int(changedCell)
-        ws.changeGrid(2,((48,3),(48+value+1,63)))
+        ws.changeGrid(2,((49,4),(49+value,63)))
         
 
     

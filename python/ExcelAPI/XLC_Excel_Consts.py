@@ -41,7 +41,9 @@
 #xlFormulas = 1
 #xlWhole    = 2
 #xlByRows   = 3
-#xlNext     = 4 
+#xlNext     = 4
+
+xlhookchar = ord("*")
 
 xlvp2py_guifactor  = 1.55
 

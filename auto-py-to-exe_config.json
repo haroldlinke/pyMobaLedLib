@@ -1,0 +1,153 @@
+{
+ "version": "auto-py-to-exe-configuration_v1",
+ "pyinstallerOptions": [
+  {
+   "optionDest": "noconfirm",
+   "value": true
+  },
+  {
+   "optionDest": "filenames",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/pyMobaLedLib.py"
+  },
+  {
+   "optionDest": "onefile",
+   "value": false
+  },
+  {
+   "optionDest": "console",
+   "value": false
+  },
+  {
+   "optionDest": "clean_build",
+   "value": false
+  },
+  {
+   "optionDest": "strip",
+   "value": false
+  },
+  {
+   "optionDest": "noupx",
+   "value": false
+  },
+  {
+   "optionDest": "disable_windowed_traceback",
+   "value": false
+  },
+  {
+   "optionDest": "uac_admin",
+   "value": false
+  },
+  {
+   "optionDest": "uac_uiaccess",
+   "value": false
+  },
+  {
+   "optionDest": "argv_emulation",
+   "value": false
+  },
+  {
+   "optionDest": "bootloader_ignore_signals",
+   "value": false
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/images;python/images/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/lib;python/lib/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/mlpyproggen;python/mlpyproggen/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/scrolledFrame;python/scrolledFrame/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/serial;python/serial/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/tkcolorpicker;python/tkcolorpicker/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/tools;python/tools/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/MobaLedTest_macrodef.json;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib\\python/MobaLedTest_macroparamdef.json;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/vb2py;python/vb2py/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/vb2pyconv;python/vb2pyconv/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/tksheet;python/tksheet/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/proggen;python/proggen/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/openpyxl;python/openpyxl/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/Boards;python/Boards/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/Configuration;python/Configuration/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/csv;python/csv/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/et_xmlfile;python/et_xmlfile/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/ExcelAPI;python/ExcelAPI/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/icons;python/icons/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/LEDs_AutoProg;python/LEDs_AutoProg/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/pattgen;python/pattgen/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/pgcommon;python/pgcommon/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/data/doc/GitHub/pyMobaLedLib/python/PIL;python/PIL/"
+  }
+ ],
+ "nonPyinstallerOptions": {
+  "increaseRecursionLimit": true,
+  "manualArguments": ""
+ }
+}

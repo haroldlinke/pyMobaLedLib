@@ -1,0 +1,1221 @@
+Changelog for PythonCard
+
+SPECIAL NOTE: at least as of wxPython 2.5.2.8 you must still
+use a GTK1 build of wxWidgets/wxPython on Linux in order for
+component dragging to work in the resourceEditor. You can track
+the following bug report to be notified when this issue is fixed.
+http://sourceforge.net/tracker/?func=detail&aid=1024777&group_id=9863&atid=109863
+
+
+Release 0.8.2 2006-05-18
+added minimized and maximized attributes to Background class
+created documentation.py module to hold code previously in widgets.py
+  for automatically generating component and background docs
+added getTextExtent and getFullTextExtent methods to BitmapCanvas
+revised internationalResourceName to support platform-specific resources
+added UK <-> US to conversions.py and simplified SOAP.py module check
+updated turtle.py and bitmapcanvas.py component to force update on Mac
+renamed samples.py to samples.pyw
+added work-in-progress version of multiresourceEditor 
+  (tools/resourceEditor/multiresourceEditor)
+  renamed to layoutEditor
+support customizable window styles in backgroundInfo of resourceEditor
+added convenience wrappers for pop-up menus, multiple check-box dialogs,
+  multiple button dialogs (helpful.py and samples/helpfulWrappers)
+added sample for sudoku solver/helper (samples/sudoku)
+replaced StringType with StringTypes to handle Unicode better
+Major update standaloneBuilder, including support for py2exe
+allow for Python2.4 or Python 2.5 on Mac 
+
+
+Release 0.8.1 2004-10-19
+added fileMode, fillColor, logicalCopyMode attributes to BitmapCanvas
+  removed setFillMode, setFillColor, setCopyMode methods
+the resourceEditor property editor now updates attributes automatically
+  but you can still click the Update button (this is mostly useful
+  on the Mac when editing text)
+resourceEditor (resourceOutput module) no longer saves background
+  position in resource files
+added work-in-progress version of tabbed code editor (tools/oneEditor)
+renamed ver to VERSION_STRING in __version__.py and added VERSION tuple
+added horizontalScrollbar flag to TextArea component
+added appendText ScrollLines workaround to TextArea component on Windows
+added lexicon and pattern files downloading to life sample
+added time alias to util.py to use time.time() on Windows, time.clock() on *nix
+added gravity sample
+minimum requirement changed to wxPython 2.5.2.8
+added passwordTextEntryDialog and multilineTextEntryDialog to dialog.py
+many minor bug fixes
+reworked dialogs sample interface
+added Show Grid Lines option to resourceEditor
+added cursor key support in resourceEditor for moving components
+added FloatCanvas component and sample
+added Notebook component, PageBackground, and testNotebook sample
+added relativePath to util.py
+added colorFromString to util.py 
+added main_is_frozen workaround for bundlebuilder standalones on Mac
+added csv support to dbBrowser sample
+
+
+Release 0.8 2004-08-18
+getCommandLineArgs moved to util.py
+runOptionsDialog moved to templates.dialogs.runOptionsDialog.py
+dialog.py is now a thin wrapper around wx.lib.dialogs.py
+  all dialog results now use DialogResults class instead of dictionary
+  e.g. result.accepted instead of result['accepted']
+  see dialogs sample and other samples and tools for examples of change
+menuDialog changed to insert in place, added default naming based on label
+changed Calendar component to CAL_SEQUENTIAL_MONTH_SELECTION style
+added mp3player sample
+switched to using wx.lib.statbmp.GenStaticBitmap on GTK for Image component
+Created unit-test facility.
+  defined ignore files for files that should not be imported to check for tests.
+  runAllTests.py runs all tests from the current working directory down, minus ignored.
+  added sample unit test class, in UnitTestSample.py
+Added two unit tests for LSystem.  Pulled out drawAbstractFractal() to allow this.
+Changed console_server.py and minimalTest.py so that importing the file didn't run code.
+updated childWindow resource loading to better support standalones
+refactored resourceEditor to query component spec for default 
+  set of attributes in on_componentAdd_command
+refactored resourceEditor to dynamically build list of 
+  available Components instead of using static list
+converted turtle sample to use Python modules for the script
+  examples
+fixed resourceEditor so it saves on Run and validates
+  component names
+changed all occurances of stack in resources to application
+removed Stack class
+  the application is now the "parent" of the main Background
+  changed __init__ for Background and CustomDialog so they
+    don't take a stack parameter
+  changed childWindow function
+  self.stack.app references are now self.application
+added lsystem sample
+added ToggleButton component
+fixed enableCommand and disableCommand for components & menus
+added ataxx sample
+codeEditor now persists all View menu settings
+added reversi (Othello) sample
+made spirographInteractive its own sample
+added restore (inverse of minimize) background window event
+added twistedEchoClient sample
+added twistedModel.py module to hold TwistedApplication
+added redraw method to Widget to simplify immediate redraws
+added event.target workaround for timer events
+moved getStyleConfigPath to configuration module
+renamed stc-styles.rc.cfg to stc-styles.cfg
+removed unneeded WXMAC code blocks
+removed get/set methods for position, size, foregroundColor,
+  backgroundColor in Background and CustomDialog and 
+  replaced with properties
+added removeListener method to EventQueue to enable the
+  clean removal of the Message Watcher window when closing app
+changed codeEditor file dialog default from *.py to *.*
+fixed Windows border offset in resourceEditor by 
+  querying SystemSettings.GetMetric
+added Bruce Eckel's moderator sample
+updated Choice, ComboBox, List, RadioGroup to use
+  'selection' and 'stringSelection' attributes instead of
+  mixed-capability 'selected' and 'selection' attribute
+  see migration guide for more info
+added templates sub-package to hold common backgrounds
+  and dialogs
+updated all samples and tools to use lowercase skip()
+removed CamelCase methods from BitmapCanvas (Draw -> draw)
+changed Component __init__ 
+  init underlying control before Widget class
+  added makeNewId function
+  removed postInit
+  event binding is now part of component init
+removed getId() from Widget, using GetId() calls in framework
+*ROWLAND describe binding and spec changes here*
+added SetValue workaround for TextArea component on Windows
+removed dispatch.py and moved classes to event.py
+SetFocus -> setFocus
+Hide/Show -> visible attribute
+added visible, position, and size properties to tool windows
+added Tom Jacobs' montyhall sample
+added about.py module
+  added About PythonCard dialog to codeEditor and resourceEditor
+added singleton.py module
+  used by configuration.py, log.py, registry.py, and resource.py
+removed Ptr classes from isinstance checks
+removed old addresses052.py sample
+renamed res.py to resource.py
+replaced the use of __getattr__ and __setattr__ in Font,
+  StatusBar, and Widget classes with property(), so those
+  classes and components no longer have restrictive
+  attribute access
+  this change also eliminated the need for the 
+  _createAttributes and _getAttributeNames methods
+changed to wx.Frame for runtime tools on Windows to make
+  them the same across platforms
+removed conditional code check PyCrust since PyCrust
+  is a standard part of wxPython now
+added createStatusBar method to Background and 
+  CustomDialog classes so applications can override that 
+  method if they want to use a more complex StatusBar
+made statusbar.StatusBar a direct subclass of wx.StatusBar
+renamed PythonCardApp to Application
+refactored config.py to configuration.py
+removed PythonCardObject and all references to it
+removed ObjectMap and all references to it
+removed ObjectLookup and all references to it
+changed on_openBackground to on_initialize
+renamed pom.py to component.py
+added test.py
+added timer.py module and simple Timer wrapper
+added deactivate event to Background
+updated sound.py to use wx.Sound
+changed model.py to require Python >= 2.3 and wxPython >= 2.5
+converted DC methods to use tuples instead of separate
+  x, y and width, height args
+changed wx.NULL to None
+switched to wx package
+  from wxPython import changed to import wx
+  changed wx.wx style prefixes to wx. except 
+    for wx.wxEVT constants
+  changed wx.wxHtmlEasyPrinting to wx.html.HtmlEasyPrinting
+changed default on Message Watcher to show unused events
+PythonCardPrototype package renamed to PythonCard
+  all references to Prototype updated in source and docs
+
+
+Release 0.7.3.1 2004-04-09
+added _getId back to widget.py
+menu.py workaround for FindMenuItem and GTK exception
+updated MANIFEST.in and setup.py for PyPI/distutils
+added testevents sample for debugging cross-platform
+  event order
+
+
+Release 0.7.3 2004-04-03
+changed py2exe scripts for version 0.5 syntax
+dropped support of PyCrust in wxPython 2.4.0.7 and earlier
+added check to avoid unneeded widget initialization 
+added TextArea workaround for GetValue on the Mac
+McPC and RanchBiz added to moreapplications.html
+added lowercase skip alias for Skip to dispatch.py
+switched to mixedCase style names for BitmapCanvas
+added new-style class properties to Background and
+  CustomDialog classes: position, size, etc.
+added leading underscore to addEventListener and
+  notifyEventListeners methods
+changed _getAttributeNames to use inspect module
+updated Windows installation docs for Python 2.3
+  and wxPython 2.4.2.4
+added explicit Stop() for timers when app is closed
+added donations.html
+fixed default Mac menubar handling
+converted legacy class name comparisons to __class__.__name__
+removed RightTextField component, use TextField with
+      'alignment':'right' attribute instead
+many modifications to support wxPython 2.5 and higher
+  in general, just look for code starting with
+    if wx.wxVERSION > (2, 5):
+  to see the version specific changes
+  also modified spacers for sizers to use tuples instead of
+    separate w, h args
+  some items are marked with a "wxPython 2.5 change" comment
+all changes are being done so that release 0.7.3 will work
+  with wxPython 2.4.x or wxPython 2.5.x or higher
+  future releases may drop support for wxPython 2.4.x
+EXIF.py updated to remove Python 2.3 warnings
+added support for Python 2.3 .chm file on Windows
+
+
+Release 0.7.2 2003-09-08
+ranamed MultiColumnList 'border' attribute to 'rules'
+enabled MultiColumnList and Tree in the resourceEditor
+added minimalList and minimalTree samples as tests of the 
+  MultiColumList and Tree components
+added multicolumnexample by William Volkman
+replaced older MultiColumnList component with version
+  by William Volkman
+added workaround for wxMSW GetFont() bug in MultiColumnList
+switched to Raise() in fixComponentOrder to deal with
+  wxPython 2.4.x change with Hide/Show
+added shell.autoCompleteWxMethods = False to pycrustrc.py
+  to hide CamelCase wxPython methods of components and
+  other wxPython classes by default
+added source.encode('iso-8859-1') to textToHtml to avoid
+  print/print preview exceptions in codeEditor; this will
+  probably require a more sophisticated solution
+added workaround for wxWindows AppendText bug in jabberChat
+  sample. This might need to be added to TextArea appendText
+  if wxWindows isn't fixed soon
+fixed popItems handling of RadioGroup and other components
+  with an 'items' attribute in resourcEditor propertyEditor.py
+updated classes in menu.py to be direct wxPython subclasses
+added source file support to templates in resourceEditor
+  updated File->New... process to save new files
+added moreapplications.html page to highlight other apps
+  built with PythonCard
+added wx.wxDEFAULT_DIALOG_STYLE to singleChoiceDialog
+  to workaround wxPython 2.4.1.2 bug
+fixed samples launcher selection and added double-click support
+added int(round()) conversions to fix Python 2.3 deprecation
+  warnings
+added '' back to sys.path in pycrustrc.py for shell work
+changed default font size for findfiles tool on Mac and GTK
+added autoSetEOL to codeEditor to automatically use the line
+  endings already in a document
+replaced \xa0 characters in source files with spaces
+added macbuild.py to the minimalStandalone sample to show
+  how to build standalones on Mac OS X
+fixed double loading of pycrustrc.py files in loadShell
+fixed config directory creation
+fixed image rotation in slideshow sample for files in zips
+updated fixed getStyleConfigPath in colorizer
+fixed PILtoBitmap typo in graphic.py
+PythonCard now requires a minimum Python 2.2.1 or higher
+  and wxPython 2.4.x or higher
+
+
+Release 0.7.1 2003-07-16
+dbBrowser now supports PostgreSQL using the psycopg interface
+An alternative dbBrowser using a wxGrid to display query results 
+  has been added. Its called dbBrowser2 and it re-uses much of
+  the code from the original
+changed wx.wxc.__version__ check to wx.__version__
+added Save Configuration menu item to Scriptlet menu in
+  the codeEditor
+fixed config.py for standalone usage
+added Thomas Heller's main_is_frozen function to util.py
+added GetPixel method to BitmapCanvas
+added userdata attribute to Widget so all components
+  added support for userdata in the resourceEditor
+changed resourceEditor to use a drag rect so dragging
+  works the same on all platforms and no longer
+  requires the use of CaptureMouse on Linux
+added WMAvailable check for Mac OS X so the top frame
+  appears in front when app starts
+fixed pycrustrc.py loading on Linux/GTK
+added Grid component and simpleGrid sample
+fixed script launching in samples.py, findfiles,
+  codeEditor, and resourceEditor
+added spinUp and spinDown events to Spinner component
+added dirname() function to util module to use instead
+  of os.path.dirname()
+  updated model.py to use the new function
+changed true/false to True/False in STCStyleEditor.py
+  to avoid wxPython 2.4.0.4 deprecation warning
+changed 'items' attribute in resourceEditor to use
+  TextArea instead of TextField for editing
+fixed 'icon' handling in resourceOutput.py
+Phil Edwards' started making Linux RPMs for PythonCard
+added Phil Edwards Linux installation instructions
+added Mac OS X (Jaguar) installation instructions
+fixed font attribute in BitmapCanvas
+added David McNab's walkthrough
+  Increasing Usefulness with Timers and Threads
+fixed order of wx imports so wx always comes first
+added jabberChat options for conferencing and Show/Raise
+slideshow sample changes
+  added Goto Slide dialog
+  changed F8 key to act as a Pause/Continue toggle
+  added zip file support
+fixed relative directory reference in webserver sample
+
+
+Release 0.7 2003-01-15
+added "Create Component Docs..." menu item to widgets
+  sample for creating "component_documentation" directory
+added home directory config support, so user configs
+  are no longer stored in PythonCardPrototype
+added numericArrayToImage function to graphic module
+  BitmapCanvas can now draw numpy arrays
+renamed all variables named list and dict to
+  listX and dictX to avoid built-in type name confusion
+numerous conversions to conform to PEP 290
+  replaced use of types module for type checks with
+    built-in type factory - isinstance(i, int)
+  replaced string module functions with string methods
+  replaced '== None' with 'is None'
+    and '!= None' with 'is not None'
+added many features to jabberChat sample
+added additional *. wildcards for Linux like *.TXT
+  *.JPG, *.JPEG since Unix filenames are case-sensitive
+fixed stack in rpn calculator (Randy Lea)
+added CodeEditor component to resourceEditor
+added caseinsensitive_listKeySort function to util.py module
+  used by flatfileDatabase for sorting list of dictionaries
+added caseinsensitive_sort function to util.py module
+added wordwrap function to util.py module
+fixed command event in slider component
+added new samples pages to main web site
+added code folding to CodeEditor component
+added openFileDialog and saveFileDialog wrappers to dialog.py
+added clipboard module
+added life sample
+added spirograph sample
+added wxNO_FULL_REPAINT_ON_RESIZE style to 
+  TextArea and CodeEditor components
+added dirwalk generator function to utils.py
+  changed findfiles to use dirwalk
+fixed closeField event in RightTextField component
+fixed script launching to handle spaces in directory names
+added Phil Edwards' PySSHed sample
+added simpleIEBrowser sample to test IEHtmlWindow component
+added IEHtmlWindow component
+fixed default backgroundColor handling in resourceOutput.py
+
+
+Release 0.6.9 2002-10-23
+added Thomas Heller's install-pythoncard.py script
+  to create links under Windows
+added columnClick event to MultiColumnList
+added line and column display to statusbar in codeEditor
+added methods to graphic.Bitmap and BitmapCanvas classes
+  to better support wxBimtap, wxImage and PIL
+updated webserver sample to run CGIs on Linux
+  and Mac OS X; CGIs are no longer run as user 'nobody'
+added font utility functions to font.py module
+made resource argument optional for CustomDialog class
+added strings to dialog resources
+switched RadioGroup vertical and horizontal orientation
+added childWindow function to simplify loading windows
+added file_upload to webserver sample
+fixed label attribute in StaticBox
+Thomas Heller refactored the resourceEditor widget resizing
+runtime Property Editor fixes
+added jabberChat sample
+added code to disconnect wxEVT_KILL_FOCUS in WidgetDict
+  to avoid hard crashes with wxPython 2.3.3
+updated webserver.py with IE POST fixes and other Python
+  lib changes
+added Robin Dunn's stattext.py and replacement StaticText
+  component to the resourceEditor appcomponents
+fixed Scriptlets run code in textEditor to match codeEditor
+added dialog docs
+updated shell docs
+appled Tim Peters suggestions for sorting in flatfileDatabase
+  for a roughly 5x sort time improvement
+added auto-rotation of images in pictureViewer and slideshow
+  using EXIF.py and rotate90 method of the Bitmap class
+added EXIF.py by Gene Cash
+fixed typos in insertDialog.py scriptlet and scriptlet
+  execution in textEditor
+fixed wxTAB_TRAVERSAL in panel
+switched back to a plain list in flatfileDatabase.py
+fixed missing webbrowser import in companies sample
+
+
+Release 0.6.8 2002-07-17
+added keyDown event to Tree
+added itemFocused, mouseContextClick and keyDown events
+  to MultiColumnList
+moved flatfileDatabase.py module into framework so that
+  it can be used by both the companies and flatfileDatabase
+  samples
+added clipboard flush when background is destroyed to
+  preserve the clipboard
+revised flatfileDatabase sample, added pickle support
+added findString to util.py
+added hack in the resourceEditor for Unicode string attributes
+  when using a wxPython unicode build
+added Fred Pacquier's fpop sample (in cvs, not release)
+added companies sample
+added file history to findfiles, resourceEditor, and textEditor
+fixed close event bug in binding.py
+added text and html/xml style support to codeEditor
+added links to PythonCard documentation in the Help menus
+  of the codeEditor, findfiles, and resourceEditor tools
+updated Run options dialog in codeEditor to support
+  optional args
+added insertDialog.py scriptlet to codeEditor tool
+removed the auto-shell loading to speed startup of apps
+  the shell can be loaded manually with self.loadShell()
+  codeEditor and textEditor tools updated to use loadShell
+added appcomponents sub-package support when loading components
+fixed ComboBox init so text attribute is set after 'items'
+  and 'selected' attributes are set; text will override 'selected'
+added Sort menu item to flatfileDatabase
+updated runScript in codeEditor so it changes to the directory
+  of the script being run and then back to the current dir
+added "Allow any machine to connect" menu item option to
+  the webserver sample
+added -d command-line option to show the debug menu
+  without showing any of the runtime windows
+added HTML file support to slideshow sample
+changed CodeEditor component to auto-load 'python'
+  style configuration if available
+changed samples launcher to use CodeEditor component
+  for source and resource files
+added Tree component
+
+
+Release 0.6.7 2002-06-14
+added chat sample
+changed findfiles and simpleBrowser to use ComboBox
+changed ComboBox to use wxCB_DROPDOWN style
+changed findfiles sample to use re instead of regex
+added idle, move, size, close, activate, minimize, 
+  and maximize events to the background
+  renamed OnCloseWindow to on_close
+moved webservices directory to avoid security hole
+added slideshow sample
+added pictureViewer sample
+added webgrabber sample
+added webserver sample
+moved (promoted) the codeEditor, findfiles, resourceEditor, and 
+  textEditor samples to the PythonCardPrototype/tools directory
+fixed string handling of label, text, and toolTip attributes
+  for runtime and resourceEditor Property Editors
+added asterisks in the titlebar text to indicate
+  when a document has changed
+fixed STCStyleEditor.py config loading on the Mac
+changed framework to support wxSTC on wxMac
+updated find and find next in flatfileDatabase
+added David Primmer's walkthrough:
+  How to Add a Child Window to a PythonCard Application 
+added Background 'style' attribute to resourceEditor for
+  resizeable or static window size
+added Dan Shafer's resourceEditor overview
+added timer events to components
+  timers are still created manually
+changed logging default to go to stdout in pythoncard_config.py
+changed runOptionDialog to use sizers
+added 'strings' attribute to Background resources to simplify
+  localization
+updated resource output to escape strings correctly when
+  string contains apostrophe and quotes
+workaround for stc-styles.rc.cfg loading in standalones
+
+
+Release 0.6.6 2002-05-09
+added template.html
+added MultiColumnList component
+fixed position and size config saves in codeEditor, findfiles,
+  textEditor, and resourceEditor
+  the Background class now binds EVT_ICONIZE and saves the
+  restoredPosition and restoredSize
+added Riaan Booysen's STCStyleEditor to provide
+  style editing for codeEditor and the shell
+fixed missing 'label' attribute for CheckBox and RadioGroup
+  (thanks Dan)
+added rpn (reverse polish notation) calculator sample
+  by Randy Lea
+added CodeEditor component and codeEditor sample
+changed the default SourceForgeTracker resource to
+  SourceForgeTracker.original.rsrc.py, renamed the one
+  that has been in use SourceForgeTracker.colorized.rsrc.py
+  the sample should now look better on Linux and OS X
+added File menu with a Quit (Exit) menu item for apps
+  that wouldn't normally have a menubar on the Mac
+disabled the shell in the turtle sample on Mac OS X
+fixed findfiles to search sub-directories on Mac OS X
+fixed findfiles launching on Mac OS X
+modified findfiles to use a List rather than a TextArea on the Mac
+disabled Go To in textEditor on Mac to avoid Mac OS X segfault
+removed hard-coded window positioning such as (5, 5) so that
+  windows wouldn't appear under Mac OS X menubar
+changed HtmlWindow to be a direct subclass
+fixed size handling in resourceEditor for BitmapCanvas and
+  HtmlWindow
+added HtmlWindow and BitmapCanvas to widgets sample
+added workaround for missing wxComboBox SetStringSelection
+  on Linux/GTK (thanks Andy)
+added Dan Shafer's Shell documentation
+switched to os.spawnv for script launching on all platforms
+added 'style' attribute to background so a background window
+  can be 'resizeable' or not (the default)
+added 'visible' flag to background so a background window
+  can be hidden until the user code calls self.Show(1)
+added flatfileDatabase sample
+updated sound.py and sounds sample with Richard Wolff's changes
+  sound.py now uses the sndhdr standard library (thanks Richard)
+
+
+Release 0.6.5 2002-04-18
+switched to os.spawnv for Windows script launching
+bound EVT_WINDOW_DESTROY in widget.py, image.py, imagebutton.py,
+  and bitmapcanvas.py, and resourceEditor.py to do some memory
+  leak cleanup for hybrid wxPython
+removed TODO.txt, replaced with wiki page
+  http://wiki.wxpython.org/index.cgi/PythonCardToDoList
+added PythonCard wiki pages
+  http://wiki.wxpython.org/index.cgi/PythonCard
+added import os, import sys to pycrustrc.py
+added closeField event for TextField, PasswordField, TextArea, and
+  RightTextField components
+fixed distutils to include components sub-package
+  .pyc and .pyo files are no longer created in win32 .exe 
+  and Linux tar.gz distributions (thanks Andy)
+updated BitmapCanvas to follow the wxDC API
+added noresource sample
+added dictionary/resource option to PythonCardApp class so it
+  is possible to create an app that has no resource file
+switched to function calls for system dialogs
+renamed GenericDialog to CustomDialog and moved the class to
+  model.py and removed dialognew.py from the package
+added minimalDialog to dialogs sample
+added custdb sample by Juergen Rauch
+fixed 'default' attribute handling in Button component including
+  workaround for missing GetDefaultItem/SetDefaultItem in wxDialog
+fixed controlDown, altDown, and shiftDown for mouse events
+added Gauge component
+added dialog editing support to the resourceEditor sample
+added StaticBox component
+added ComboBox component
+added Spinner component
+added RightTextField component
+added Calendar component
+updated FindDialog in dialog.py and textEditor.pyw
+updated the license reference in index.html to Python 2.2
+
+
+Release 0.6.4 2002-03-11
+*** event handler argument change ***
+  changed (self, target, event) to (self, event) arg list
+  code written for PythonCard prior to release 0.6.4 will need to
+    be updated
+added htmlpreview window to radioclient
+changed attribute binding where possible to use class methods
+  if not hasattr(self.__class__, '_getPosition'):
+      self.__class__._getPosition = self.__class__.GetPositionTuple
+  Thanks to Patrick for that one!
+renamed toc.html to documentation.html
+commented out unused 'visible' lines in pythoncard_config.py
+changed Save Configuration so that it doesn't save the visible
+  state of the windows
+added 'PythonCard Home Page' and 'Online Documentation' menu
+  items to the Debug menu
+added Page Setup, Print, Print Preview to textEditor sample using
+  wxHtmlEasyPrinting class to start the exploration of printing
+  in PythonCard
+added simple Copy and Paste of the entire bitmap image in doodle
+added Open and Save As so an image can be imported into the
+  current bitmap and saved to disk in a variety of supported
+  formats: BMP, GIF, JPG/JPEG, PCX, PNG, PNM, TIF/TIFF, XBM, and XPM
+  Not all formats are supported on every platform and saving as
+  GIF results in a zero length image.
+added getBitmap to BitmapCanvas to support Copy and Save As in
+  doodle sample
+changed findfiles to use sizers and remember the last position and
+  size of the window
+added event to run pycrustrc.py files after the openBackground event
+added Run with interpreter option to resourceEditor
+  Thanks Neil
+removed FAQ.txt and added FAQ.html
+added Cut, Copy, and Paste to resourceEditor for copying components
+  between layouts
+changed from the runtime Property Editor window to a Property Editor
+  window done as a PythonCard background so that the resourceEditor
+  would be more intuitive
+changed Property Editor to get attributes from the class _spec
+added installation.html, walkthrough1.html, walkthrough2.html
+  and learning_python.html
+  Thanks to Dan Shafer for the docs work!
+changed resourceEditor sample to use sub-directories to explore
+  how we might use standard sub-directories for organizing
+  PythonCard apps
+changed dialog.py and samples to use single-line invocations of
+  standard dialogs
+fixed resourceEditor backgroundColor handling by changing
+  wx.wxSYS_COLOUR_3DLIGHT to wx.wxSYS_COLOUR_3DFACE
+  also fixed counter sample
+switched components from using wxPython controls as delegates
+  to direct subclasses of wxPython controls and the Widget class
+  removed _createDelegate method and added _postInit method and
+    restructured initialization
+  removed some cached attributes such as _enabled, _position, 
+  _size, _visible
+  updated all samples to get rid of _delegate references
+added stockprice SOAP sample
+added radioclient sample
+fixed typo in resourceEditor, so menu commands are
+  saved correctly as 'command' rather than 'ommand'
+fixed some old turtle sample documentation
+added SourceForge logo to all HTML pages
+
+
+Release 0.6.3.2 2002-01-28
+restored loseFocus event
+
+Release 0.6.3.1 2002-01-26
+made sillywalk.gif and lrggumby.gif opaque to fix GTK drawing
+fixed exception when locale.getdefaultlocale() is None
+
+Release 0.6.3 2002-01-25
+commented out stack info dialog in resourceEditor
+added FAQ.txt, updated toc.html and other documentation
+changed addEventListener so the MessageWatcher is always
+  the first listener to be notified
+added localization support for resource files
+  added minimal.fr.rsrc.py for French users as an example
+Linux fixes
+  resourceEditor and samples file launching
+  CaptureMouse() in resourceEditor
+  fixed asserts in BitmapCanvas where OnSize event was
+    called prior to __init__ finishing
+added registry.py, updated framework to use registry
+added quotes to path/filename in resourceEditor for launching
+
+
+Release 0.6.2 2002-01-16
+added counter sample by Dan Shafer
+  Dan wrote a great tutorial.txt file that explains how
+  to recreate the sample step-by-step
+added wxMiniFrame support for Windows in debug.py
+  GTK still uses wxFrame
+added findnth string function to util.py
+  helps textEditor to fix Go to line under Windows
+added minimal.spec example for building standalones
+  using Gordon McMillan's installer
+changed 'isdefault' attribute to 'default'
+added shell key bindings and usage link to toc.html
+added support in resourceEditor.py for resizing widgets
+  under Linux/GTK
+updated setup.py and MANIFEST.in for distutils
+changed positionToXY to handle tuple of len 2 or 3
+changed textEditor.pyw to show the filename in the title bar
+moved 'menubar' attribute from 'stack' to the background
+  updated all sample .rsrc.py files
+  updated Backround __init__ (model.py), menu.py, spec.py, and
+    resourceEditor.py
+changed launching code in samples.py, resourceEditor.py, and
+  findfiles.py to
+  os.system(python + ' ' + filename + args + ' &')
+updated imagebutton.py component _setBitmap method to workaround
+  setting the bitmap after initialization on GTK
+added positionSize.rsrc.py and PositionSize class to resourceEditor
+  this is an example use of multiple windows
+added tentative multi-window support
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/965583
+updated SourceForgeTracker XML parsing
+changed Message Watcher window to wxPython.stc.wxStyledTextCtrl
+  Thanks Neil!
+updated the _setIcon method in the Background class to support
+  .xpm as well as .ico files for titlebar icons
+fixed numerous bugs on Linux
+  findfiles should now work on Windows and Linux
+  file launching in samples.py, resourceEditor.py and findfiles.py
+  now uses sys.executable to launch python programs
+    thanks to Cliff Wells for these fixes
+added htmlWindow component
+  added simpleBrowser sample to experiment with htmlWindow
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/962840
+  the list of supported tags is at:
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/964327
+added check for whether a component is already loaded to avoid
+  unnecessary imports in res.py
+fixed addresses sample initialization when Outlook isn't installed
+
+
+Release 0.6.1 2001-12-28
+changed all menu shortcuts from using - to + (Ctrl+F instead of Ctrl-F)
+changed GetSize to GetSizeTuple and GetPosition to GetPositionTuple
+  hopefully this has fixed the selection bugs in resourceEditor
+  using size or position attributes as a list will now result in
+    a runtime error
+added New, Save, Revert to resourceEditor and documentChanged
+fixed default resource file loading
+
+
+Release 0.6 2001-12-27
+*** wxPython 2.3.2 or later is now required to use PythonCard ***
+added assert wxc.__version__ >= "2.3.2" to model.py
+  the move to wxPython 2.3.2 fixes the menu accelerator bugs
+*** resourceEditor sample is now a fully functional layout editor ***
+updated resourceEditor
+  added Run command, Run Options, and dialogs for editing the stack,
+  background, and menu for an application
+  added commands to change the component order
+    component order is shown in the Property Editor
+  added a grid option, so components can be aligned to the grid
+  this isn't a commercial-quality layout editor since it still uses
+    the runtime Property Editor to edit component (widget) properties,
+    lacks extensive error checking and field validation and has
+    many missing features and some oddball bugs, but overall it works
+    well enough to do a fixed position layout quickly and easily
+    and there is no Undo!
+changed wxPython imports from
+  from wxPython.wx import *
+  to the more explicit
+  from wxPython import wx
+  added missing imports such as 'import types' where needed
+replaced occurences of wx.true and wx.false with 1 and 0
+added a components directory
+merged wxPython_binding.py into binding.py and moved widget-specific
+  bindings to individual module files
+moved spec.py descriptions for each widget to its respective widget
+  module
+split widget.py so each widget is in its own file in the components
+  directory
+  all widgets (components) are now self-contained modules in the
+  components directory. each module includes the spec, event bindings,
+  and attribute descriptions (formerly in spec.py) in addition to the
+  widget class. when the module is imported it "registers" itself, so
+  that the class is available for applications.
+added drawPointList and drawLineList (2.3.2 feature) to the
+  BitmapCanvas widget, switched to drawPointList in hopalong sample
+  for a roughly 4x speed improvement
+  also added Chaos1ScriptFastest.txt turtle script example
+updated the setup.py script for minimal.py and provided some basic
+  instructions in the readme.txt. It is necessary to uncomment the
+  import in minimal.py prior to using py2exe due to how the dynamic
+  imports are done for components
+fixed _setFile bug in Image class
+updated findfiles open/save code to automatically load and save
+  the last grep parameters used to a 'findfiles.grep' file
+updated log.py and config.py to use module-level functions in place
+  of directly accessing the singleton classes from other modules
+  log.info() instead of log.Log.getInstance().info() ...
+  added logToStdout option to redirect log output to stdout
+changed defaultStackPosition to defaultBackgroundPosition in
+  pythoncard_config.py and pythoncard_user_config.py
+moved title, position, size, statusBar, and icon attributes from
+  the 'stack' to the 'background'
+fixed alternative resource file loading
+  added example of usage to SourceForgeTracker sample
+
+
+Release 0.5.3 2001-11-30
+*** wxPython 2.3.1 or later is now required to use PythonCard ***
+added assert wxc.__version__ >= "2.3.1" to model.py
+changed TextArea to use wxTE_RICH style
+  modified getStringSelection, replaceSelection code
+  updated samples that were counting newlines for find operations
+fixed assertion error with FontDialog
+added getString method to TextField and its subclasses
+changed FindDialog so that it automatically selects the search text
+  and sets the focus to the search field when the dialog comes up
+numerous textEditor sample changes
+  New and Save menu items
+  reworked all the file operations so the user has a chance to save changes
+  filename and line number arguments are accepted on the command-line
+  Find Next and Go To
+commented out 'file' reference in Pyker.hta
+added setBackColor('white') to reset method in BitmapTurtle
+modified turtle sample
+  added a check to sync the auto refresh state after drawing with
+  the turtle sample and removed the Refresh menu item
+added more sample screen shots to web site
+added a new documentation page
+  http://pythoncard.sourceforge.net/toc.html
+findfiles updated
+  commented out the directory list, moved other widgets to the right
+  added open and save as menu items
+  fixed file launching using textEditor.pyw to do the launching
+updated samples.py to properly launch textEditor.pyw
+removed KillFocus from widget.py
+added getStringSelection/setStringSelection to Choice widget
+  and added check for type of selection in setSelection
+changed all _getDelegate() references to _delegate
+changed all _getParent() references to _parent
+changed the default selection for Choice, List, and RadioButton to None
+updated setSelection in Choice, List, and RadioButton to accept either
+  an integer or a string or None
+fixed some assertion bugs with the Property Editor
+
+
+Release 0.5.2 2001-11-22 (the "turkey" release)
+moved configOptions into the framework, so it is no longer needed
+  in user code
+removed 'file' and 'classname' attributes from all samples
+updated all samples to use simpler import and startup
+  model.PythonCardApp(Classname, [resource file])
+  the Classname is the actual class you want to use, not a string
+  the resource file is optional and will default to the base
+  name of the main module file with an extension of '.rsrc.py'
+  *** IMPORTANT NOTE ***
+  if you have an app of your own, you must update it to follow
+  the same style as used by the samples such as minimal.py
+numerous textRouter sample updates
+updated textEditor and searchexplorer samples Del key handling
+added check for PyCrust in wxPython
+  debug checks for PyCrust on the PYTHONPATH first
+added (thanks Andy) icon support under Windows to framework
+added applicationDirectory variable to PythonCardApp
+
+
+Release 0.5.1 2001-11-18
+framework changes to simplify building Windows executables using
+  py2exe. source and resource files and any other files needed
+  to be loaded at runtime must be included with the distribution
+  files.
+added setup.py example py2exe script to minimal sample
+  complete documentation for using py2exe is still needed, see
+  the mailing list
+changed res.py to import spec.py
+changed config loading to use import rather than readAndEvalFile
+  renamed pythoncard.config.py to pythoncard_config.py
+  user config is saved as pythoncard_user_config.py
+added SingleChoiceDialog and MultipleChoiceDialog to dialog.py
+added Simon Kittle's textRouter sample
+updated replaceSelection for text fields and added getStringSelection
+  TextField, PasswordField, TextArea
+changed statusbar.py to use CreateStatusBar()
+fixed TextArea event binding to check for unused events
+dbBrowser sample supports Oracle 
+
+
+Release 0.5 2001-11-09
+added a method to preserve the status bar text when a menu
+  is highlighted
+changed all import statements in the framework to be explicit
+  rather than using the import * style
+removed loader.py
+  moved configuration code to config.py
+changed all samples to use
+  from PythonCardPrototype.config import configOptions
+  instead of
+  from PythonCardPrototype.loader import configOptions
+removed uniqueid.py
+  uniqueid.UniqueIdFactory().createUniqueId() changed to wxNewId()
+removed monitor.py and navigation.py
+  changed getCurrentBackground() to refer to always refer to the
+  first background in the list; removed all references to _iterator
+default font size changed to self._size = wxNORMAL_FONT.GetPointSize()
+changed wxMiniFrame to wxFrame on all debug windows
+dbBrowser sample uses a modal dialog for login
+  dbBrowser 0.3 also has an icon
+
+
+Release 0.4.6 2001-10-30
+added FindDialog to textEditor sample to show use of GenericDialog
+  class for user-defined modal dialogs. the user-defined FindDialog
+  mimics the look and behavior of the FindDialog in dialog.py
+added GenericDialog class (dialognew.py)
+fixed _translateFont bug that was returning the wrong font family
+  when using the Font dialog
+removed textEnter event
+  pressing return in TextField or PasswordField should now be the
+  same as pressing tab
+  updated proof and searchexplorer samples
+added modal FindDialog to dialog.py
+  updated dialogs sample to show FindDialog
+  updated addresses sample to use FindDialog, but didn't implement
+  find logic to do the actual searching
+added _used flag to Event class and associated methods to support
+  proper use of skip with keyPress
+added keyDown, keyUp, and keyPress events
+added turtle.py module (AbstractTurtle and BitmapTurtle classes)
+  updated turtle sample to use the new module
+minor fixes to BitmapCanvas
+added textEditor sample
+converted samples launcher to use sizers
+fixed CompactStack in textIndexer (thanks Patrick)
+
+
+Release 0.4.5 2001-09-17
+PyCrust is no longer included in the PythonCardPrototype
+  distribution, please download PyCrust at:
+  http://sourceforge.net/project/showfiles.php?group_id=31263
+moved Bitmap class to graphic.py module
+  added getPILBits and setPILBits to Bitmap class
+    to simplify using PIL with PythonCard
+added BitmapCanvas widget to widget.py
+  added doodle and hopalong samples which use BitmapCanvas
+  The BitmapCanvas is very experimental and will be
+    enhanced and improved
+Debug windows are now children of the app window
+  Namespace Viewer, Property Editor, Shell
+added 'Save Configuration' option to Debug menu
+  this will create a pythoncard.user.config.py file
+  with the current debug window position and sizes
+changed Message Watcher to use sizers
+renamed readDictionaryFile to readAndEvalFile
+  updated addresses.py and searchexplorer.py to use the new function
+
+
+Release 0.4.4.5 2001-09-08
+posted Help Wanted on SourceForge
+  http://sourceforge.net/people/?group_id=19015
+posted Python Conference request for papers/tutorials
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/767719
+added addMethod to Scriptable class for dynamically adding
+  handlers at runtime, see:
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/770015
+added 'openBackground' message to replace using __init__
+changed background handlers to on_mouseClick form
+modified SourceForgeTracker so that double-clicking on a topic
+  launches the web page for that topic in a browser
+Neil added Pyker.hta and PykerLaunch.hta
+  see the following URL for more info
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/766307
+Andy added a TODO.txt to document short-term plans for PythonCard
+  development
+Property Editor and resourceEditor sample were changed to use
+  default size (-1, -1) values
+added enable and check menu items to menu.py
+  see the url below and thread replies
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/766371
+started some documentation for the Button class
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/764832
+added display of .rsrc.py files in samples.py
+Patrick added dot notation support to the Font class
+Jeff and Neil provided some Unix screenshots
+  These show we need to get sizers working to deal with variable
+    size widgets and fonts on different platforms
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/763602
+  http://aspn.activestate.com/ASPN/Mail/Message/PythonCard/763659
+res.py eval() changed to support using Windows-style line endings
+  under Unix
+added "Redirect stdout to Shell" option to Debug menu
+
+
+Release 0.4.4.1 2001-08-31
+added samples.py to launch the the various sample programs
+  see samples\samples.py
+  added readme.txt files to all samples that didn't already
+    have one. the readme.txt is displayed as the
+    'description' for a sample
+
+
+Release 0.4.4 2001-08-30
+added getting_started.html to docs\html
+added basic status bar support
+  statusbar.py module
+  see test_turtle.py for an example
+turtle sample updated
+  test_turtle.py now uses a status bar and displays the
+  time required to draw a design
+  added line(x1, y1, x2, y2) method to turtle
+added extra parametes to FileDialog to support saving files
+  see resourceEditor for an example
+  see dialog.py for complete list of options
+added Namespace Viewer using PyFilling (part of PyCrust 0.6)
+fixed numerous Property Editor edit/display bugs
+  widgets are now displayed in the proper order
+added Font support to all widgets
+  Font class moved to font.py module
+  the actual text descriptions of the fonts is going to
+    change, so if you use them, just be aware that the format
+    of the font descriptions will change by the next release
+  a font can be passed to the Font dialog to set the initial
+    font displayed
+commented out 'import warnings' for Python 2.0 support
+  but PyCrust usage still means that you need Python 2.1.x
+  if any Debug windows like the shell will be used
+fixed unitialized empty bitmaps on win98
+added append method to Choice class
+added setFocus method to Widget
+dbBrowser sample updated to version 0.2
+resourceEditor changes
+  resourceEditor can now save .rsrc.py files
+    make sure to only work on copies in case of bugs
+    also some hand editing of .rsrc.py is still necessary
+    depending on what you're trying to do
+  Duplicate Widget menu item now causes the duplicate to
+    be offset 10 pixels to make it easier to select
+  added template.rsrc.py for defaults
+worldclock sample demonstrates simple use of logging
+
+
+Release 0.4.3 2001-08-23
+Andy Todd converted worldclock so that it no longer requires
+  an external JavaScript program to run
+added samples.txt file to the docs directory to document the
+  purpose of each sample application
+fixed numerous display bugs in the Property Editor
+  including the selection bug which was causing a KeyError
+  when using the resourceEditor
+resourceEditor changes
+  added a Help menu, About resourceEditor... menu item
+  View attributes display is now more complete
+  Property Editor is shown by default
+the Shell is now shown by default for the turtle sample
+added addresses sample, which shows the conversion of an
+  existing HyperCard stack background layout and data to
+  PythonCard. addresses does transparent saves of data and can
+  import contacts from Outlook as well.
+disabled helpText attribute
+
+Release 0.4.2.1 2001-08-21
+Property Editor is now a listener of the WidgetDict class
+  so the component list is automatically updated
+  as widgets are added and deleted
+resourceEditor sample changes
+  added Duplicate Widget menu item
+  fixed the selection code
+  Property Editor now updates correctly
+script added to dbBrowser sample to populate a mySQL test
+  database
+
+Release 0.4.2 2001-08-20
+the PythonCard mailing list has moved to
+  http://lists.sourceforge.net/lists/listinfo/pythoncard-users
+
+the home page has been redesigned and the other HTML pages
+  have been validated to make sure they conform to the HTML
+  spec. the HTML pages in the docs\html directory can now
+  be used locally, they will fetch the large JPEG images from
+  the web.
+the Property Editor can now edit widget attributes
+added getPosition/setPosition and getSize/setSize to Background
+added basic mouse events to StaticText, StaticLine, and Image
+  widgets
+converted Dan Winkler's original PythonCard demo app to
+  the PythonCardPrototype framework, renamed it textIndexer
+  and made it a sample. It currently requires ZODB to run
+  You can use standalone ZODB or ZODB from Zope, see the
+  readme.txt in the textIndexer directory for more info
+Andy Todd added his dbBrowser sample which is able to browse
+  mySQL databases. readme.txt in the dbBrowser directory for
+  more info
+added a resourceEditor sample, which is the beginnings of a GUI
+  resource (.rsrc.py files) editor. see the readme.txt in the
+  resourceEditor directory for more info
+
+
+Release 0.4.1 2001-08-16
+updated debug.py and pycrustrc.py to support PyCrust 0.5.2
+  due to changes between PyCrust 0.5.2 and earlier versions you
+  must use the latest version of Pycrust with PythonCard, which
+  is included in the release .zip for convenience
+added 'border' attribute to TextField and its subclasses to support
+  a 'none' wxNO_BORDER option. updated worldclock and 
+  test_widgets.py to show TextField with a border of 'none' used
+  in place of StaticText
+added empty bitmap support. Image and ImageButton now use
+  the Bitmap class rather than an explicit wxBitmap. the convention
+  is that if the file is '' then an empty bitmap is created.
+  see SourceForgeTracker for an example of the use of empty bitmaps
+  if the layout doesn't look right on Linux or Solaris, you can use
+  the SourceForgeTracker.original.rsrc.py file by renaming it to
+  SourceForgeTracker.rsrc.py
+fixed worldclock and tictactoe samples to use Bitmap
+
+
+Release 0.4 2001-08-14
+added components dictionary
+  find/findByName, createWidget, and deleteWidget were
+  replaced by a dictionary, so that widgets on a background
+  can be accessed as:
+    self.components.button1
+  see the samples for numerous examples of the new usage.
+widgets now use dot notation to access their attributes
+  print button1.label     # get
+  button1.label = 'hello' # set
+  This was a major revision to widget.py that also impacted
+  many other parts of the framework, so if you have any samples
+  of your own done with release 0.3.1 or earlier, you'll need
+  to update your code.
+updated all samples to use the new dot notation
+all widget attributes that can only be set at initialization
+  will now throw an AttributeError if you try and change
+  them. for example button1.name = 'bob' is not legal
+  so you get:
+  'AttributeError: name attribute is read-only'
+*** note that while updating all the widget attributes to dot
+  notation I realized that we had never cleaned up the 'selected'
+  attribute for List, RadioGroup, and Choice, so be aware that
+  the name and behavior of 'selected' will probably change in
+  the next release
+PyCrust is now included as a separate package
+  numerous changes were made to the PyCrust shell, see the
+  PyCrust docs for more information.
+fixed backgroundColor and foregroundColor in class Background
+  the widgets sample has a button to change the backgroundColor
+  to show off this fix.
+added pycrustrc.py files
+  whatever python code is in these files will be executed when the
+  shell is first launched. there is a default pycrustrc.py in the
+  package directory. there is another example in the turtle sample
+  directory.
+changed pythoncard.config.py
+  added options to set the position and size of all the "debug"
+  windows: Message Watcher, Property Editor, Shell
+added pythoncard.user.config.py
+  this file will override pythoncard.config.py if it exists
+  you should copy pythoncard.user.config.py and
+  update the position of each window for your own screen
+  dimensions; you can update the shell size too
+added defaultStackPosition option
+  you can add a key:value line to pythoncard.user.config.py
+  to override the stack position that a PythonCard app may or
+  may not specify. The most common would be something like
+  'defaultStackPosition':(5, 5),
+  to force the window to the top-left of the screen (I prefer
+  this over (0, 0) myself.
+added 'Debug' menu
+  if any of the 'debug' windows are requested when an application
+  is started, then all of the windows will be created, but only
+  the requested ones will be shown initially. you can choose
+  the window name from the Debug menu to show/hide the window.
+added an About PythonCard... menu item to the Debug menu
+  displays version numbers and PythonCard project info
+added SourceForgeTracker sample
+  downloads XML from SourceForge tracker database to display
+  Bug Reports and Feature Requests for the following projects:
+  PyChecker, PyCrust, Python, PythonCard, wxPython. Additional
+  projects can be added.
+added conversions sample
+  does Fahrenheit <-> Celsius and English <-> Morse Code
+  conversions with a generic framework, so other conversions
+  can be added
+added tutorial.txt to docs
+applications can now use the .pyw extension
+  if you don't want an application to have a console window,
+  then rename the application to .pyw, but don't change the
+  file reference in the .rsrc.py file, leave that as .py
+  as an example, you can change worldclock.py to worldclock.pyw
+
+
+Release 0.3.1 2001-08-07
+Fixed line ending problems with PyCrust files that causes 0.3 release to not work correctly on *nix systems. Also, removed the background.gif file from the proof sample which is not needed.
+
+Release 0.3 2001-08-06
+added changelog.txt and readme.txt files
+menubar is now optional
+    if a 'menubar' key is not found in a Stack's resource file then a menubar
+    won't be created.
+log.py documented
+    proof.py updated to work with log.py changes
+MessageEvent was removed from proof.py since message sending
+    bewteen widgets is currently disabled
+The working directory is changed to the directory of the main resource file
+    such as minimal.rsrc.py when PythonCard starts up to avoid problems
+    with filenames in the .rsrc.py files and any data files used by the
+    application.
+Property Editor and Shell windows can be overlapped by the main app window
+    Due to a bug, the Message Watcher must still remain on top
+added getCurrentBackground to PythonCardApp class
+PythonCard now includes PyCrust (-s on command-line)
+    interactivePrompt renamed to shell, all references changed
+    PyCrustFrame class moved to debug.py along with test for PyCrust import
+    PyCrust shell is version 0.3
+PythonCard turned into PythonCardPrototype package
+    All samples changed to use the new package naming
+    All samples can now be run "standalone" so any _standalone.py
+    files in the samples have been removed.
+    __version__.py contains the current release number
+    New cvs tree on SourceForge, the old proto tree is no longer used
+PythonCard.py renamed to loader.py and loader.py overhauled
+added deleteWidget method
+added find, deprecated findByName
+added turtle graphics sample
+added a Property Editor (-p on command-line)
+    due to time constraints, the Property Editor is only a property viewer
+    in this release. You can use the set methods for widgets to change
+    values inside the shell if you need to.
+added gainFocus and loseFocus messages to all widgets
+added StaticLine widget
+ComponentSpec and AttributeSpec classes added to enhance parsing of spec.py
+
+
+
+Release 0.2.1 2001-07-31
+Added Edit menu with Cut, Copy, Paste, etc. to searchexplorer sample
+Added replaceSelection method to TextField
+Fixed setSize, setPosition
+Added findFocus to Background
+Fixed numerous functions that weren't returning values
+Added classes ComponentSpec and AttributeSpec, enhanced parsing of spec.py
+Added most of the remaining methods for TextField and List
+Added minimal sample to use as a template
+class_diagram_1.pdf removed from release to save space
+
+
+
+Release 0.2 2001-07-29
+
+
+
+Release 0.1 2001-07-26
+Initial release
+
+Revision: $Revision: 1.327 $
+Date:     $Date: 2006/05/18 21:15:00 $
