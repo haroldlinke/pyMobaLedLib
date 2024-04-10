@@ -32,6 +32,11 @@ http://vb2py.sourceforge.net/online_conversion.html. Therefore some hidden error
 The VBA Code of the PatternGenerator was translated by an enhanced version of the VB2PY command line tool.
 
 History of Change
+5.2.1.001 - 10.4.2024
+- new: LED anim Macro providing graphical user interface for LED light animation
+- new: Pattern Configurator Page Beta (full functionality available, some graphical issues)
+- improved: compatibility with LINUX and MAC
+- 
 V5.1.0.001 - 25.3.2024 - HL
 - restructuring Excel-VBA simulation- replacing Tkintertable with TKSheet
 - Beta test of PatternGenerator - Main Functionality is available
