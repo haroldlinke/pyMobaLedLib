@@ -709,20 +709,22 @@ def Read_File_to_String(FileName):
     try:
         #open text file in read mode
         text_file = open(FileName, "r")
-         
-        #read whole file to a string
         fn_return_value = text_file.read()
-         
-        #close file
-        text_file.close()        
-
-        # VBFiles.openFile(fp, FileName(), 'r') 
-        # fn_return_value = Input(LOF(fp), fp)
-        # VBFiles.closeFile(fp)
+        text_file.close()
         return fn_return_value
     except BaseException as e:
-        Debug.Print("Read_File_to_String: Fehler beim Lesen der Datei "+FileName)
-        logging.debug(e, exc_info=True) 
+        Debug.Print("Read_File_to_String: Fehler beim Lesen der Datei as UTF-8"+FileName)
+        logging.debug(e, exc_info=True)
+    try:
+        #try loadfile as ASCII
+        text_file = open(FileName, "r", encoding="latin-1") #, errors="surrogateescape")
+        #read whole file to a string
+        fn_return_value = text_file.read()
+        text_file.close()
+        return fn_return_value        
+    except BaseException as e:
+        Debug.Print("Read_File_to_String: Fehler beim Lesen der Datei as ASCII"+FileName)
+        logging.debug(e, exc_info=True)        
         P01.MsgBox(M09.Get_Language_Str(r'Fehler beim lesen der Datei:') + vbCr + r'  ' + FileName + r'', vbCritical, M09.Get_Language_Str(r'Fehler beim Datei lesen'))
         fn_return_value = r'#ERROR#'
         return fn_return_value

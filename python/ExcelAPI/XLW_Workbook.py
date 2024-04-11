@@ -700,6 +700,7 @@ class CWorkbook(object):
                 data = copy.deepcopy(workbookdata.get(sheet.Name,{}))
                 print("Load WB Loading:"+sheet.Name)
                 self.controller.set_statusmessage("Workbook: "+workbookname+" Loading:"+sheet.Name)
+                self.controller.update()
                 if data !={}:
                     sheet.setData(data)
                     #sheet.EventWScalculate(Cells(5,5))
@@ -1010,35 +1011,18 @@ class CWorksheet(object):
                 #self.tablemodel = self.tksheet
                 self.update_table_properties()
                 return
-        #self.table.show()
         if self.formating_dict:
-            #test self.tablemodel.nodisplay = self.formating_dict.get("HideCells",[])
             self.handle_hidden_cells(self.formating_dict.get("HideCells",[]))
-            #test self.tablemodel.hiderowslist = self.formating_dict.get("HideRows",[])
             self.handle_hidden_rows(self.formating_dict.get("HideRows",[]))
-            #test self.tablemodel.protected_cells = self.formating_dict.get("ProtectedCells",[])
             self.handle_protected_cells(self.formating_dict.get("ProtectedCells",[]))
-            #test self.tablemodel.format_cells = self.formating_dict.get("FontColor",{})
             self.handle_formating(self.formating_dict.get("FontColor",[]))
-            #test self.tablemodel.gridlist = self.formating_dict.get("GridList",[])
             self.handle_gridlist(self.formating_dict.get("GridList",[]))
             self.handle_gridformat(self.formating_dict.get("GridFormat",{}))
-            #test self.tablemodel.ColumnAlignment = self.formating_dict.get("ColumnAlignment",{})
             self.handle_ColumnAlignment(self.formating_dict.get("ColumnAlignment",[]))
             self.handle_ColumnWidth(self.formating_dict.get("ColumnWidth",[]))
-            
             self.handle_events_dict(self.formating_dict)
-
-            #test colsizelist = self.formating_dict.get("ColumnWidth",[])
-            #test for col in range(0, len(colsizelist)):
-            #test    self.table.column_width(column=col, width=colsizelist[col])
-            #self.table.resizecolumns(colsizelist,redraw=True)
-            
             rowheight=self.formating_dict.get("RowHeight",30)
-            #self.table.setRowHeight(rowheight)
             self.tksheet.set_all_row_heights(height=rowheight)
-            #test self.table.left_click_callertype=self.formating_dict.get("left_click_callertype",None)
-        #test self.table.show()
 
         self.update_table_properties()
         self.DataChanged=False
@@ -1853,8 +1837,8 @@ class CWorksheet(object):
                             self.tksheet.MT.tag_raise(shape.rectidx)
                             image_loaded=True
                         except BaseException as e:
-                            logging.debug(e, exc_info=True) 
-                            logging.debug("Worksheet: Error loading image:" + shape.Name)
+                            #logging.debug(e, exc_info=True) 
+                            #logging.debug("Worksheet: Error loading image:" + shape.Name)
                             image_loaded=False
                         if not image_loaded:
                             try:
@@ -1863,9 +1847,11 @@ class CWorksheet(object):
                                 self.imagedict[shape.Name+str(shape.Top)] = image
                                 shape.rectidx = self.tksheet.MT.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture","Shapelist"),anchor='nw')
                                 self.tksheet.MT.tag_raise(shape.rectidx)
+                                image_loaded=True
                             except BaseException as e:
-                                logging.debug(e, exc_info=True) 
-                                logging.debug("Worksheet: Error: Image not found: "+shape.Name)
+                                #logging.debug(e, exc_info=True) 
+                                #logging.debug("Worksheet: Error: Image not found: "+shape.Name)
+                                image_loaded = False
                         if not image_loaded:
                             try:
                                 shape.Name=shape.Name.replace(".bmp",".png")
@@ -1873,9 +1859,11 @@ class CWorksheet(object):
                                 self.imagedict[shape.Name+str(shape.Top)] = image
                                 shape.rectidx = self.tksheet.MT.create_image(shape.Left,shape.Top,image=image,tags=(shape.Name,"Shape","Picture","Shapelist"),anchor='nw')
                                 self.tksheet.MT.tag_raise(shape.rectidx)
+                                image_loaded=True
                             except BaseException as e:
                                 logging.debug(e, exc_info=True) 
                                 logging.debug("Worksheet: Error: Image not found: "+shape.Name)
+                                image_loaded = False
                         #self.tag_raise(shape.textidx)
                         #self.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
                         #self.tag_bind(shape.textidx,"<Button-1>", shape.shape_button_1)
@@ -2496,7 +2484,7 @@ class CWorksheet(object):
     
     def clearSheet(self):
         #test needs to be updated
-        self.clearData(question=False)
+        self.clearData()
         self.importCSV(filename=self.csv_filepathname, sep=';',fieldnames=self.fieldnames)
         #test self.tablemodel = self.table.getModel()
         if self.formating_dict:
