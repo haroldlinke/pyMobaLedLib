@@ -42,6 +42,19 @@ The VBA Code of the PatternGenerator was translated by an enhanced version of th
   
 
 History of Change
+5.2.4.001 - 21.4.2024
+- restructuring of event handling
+- corrected: Config page was inoperable, because named-ranges pointed to the wrong table entries
+- corrected: ServoAnim created a wrong pattern-macro when goto mode was not active
+- new: LED Helligkeit Animation (Beta)
+- new: LED Farbverlaufanimation (Beta)
+
+5.2.3.001 - 17.4.2024
+- restructuring of Excel VBA Objects, following Microsoft VBA structure to improve compatibility of VBA code translated to Python
+
+5.2.2.001 - 11.4.2024
+- Corrected: Error when Reading PGF-files in Latin-1 format in LINUX/Mac
+
 5.2.1.001 - 10.4.2024
 - new: LED anim Macro providing graphical user interface for LED light animation
 - new: Pattern Configurator Page Beta (full functionality available, some graphical issues)
