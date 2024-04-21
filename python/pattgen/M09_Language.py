@@ -1,6 +1,6 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M30_Tools as M30
 import ExcelAPI.XLC_Excel_Consts as X01
@@ -280,6 +280,7 @@ def Activate_Language_in_Active_Sheet():
     Activate_Language_in_Example_Sheet(X02.ActiveSheet)
 
 def Update_Language_in_All_Sheets():
+    return #*HL
     OldEvents = Boolean()
 
     OldUpdate = Boolean()
@@ -308,11 +309,11 @@ def Update_Language_in_All_Sheets():
         ## VB2PY (CheckDirective) VB directive took path 1 on PATTERN_CONFIG_PROG
         if Sh.Name == M01.MAIN_SH or pattgen.M08_Load_Sheet_Data.Is_Normal_Data_Sheet(Sh.Name, Get_Language_Str('übersetzt')):
             if not Initialized:
-                StatusMsg_UserForm.Set_Label(Get_Language_Str('Umstellung der Sprache'))
+                D00.StatusMsg_UserForm.Set_Label(Get_Language_Str('Umstellung der Sprache'))
                 #12.02.20:
-            StatusMsg_UserForm.Set_ActSheet_Label(Sh.Name)
+            D00.StatusMsg_UserForm.Set_ActSheet_Label(Sh.Name)
             if not Initialized:
-                StatusMsg_UserForm.Show()
+                D00.StatusMsg_UserForm.Show()
             Initialized = True
             # 07.03.20: sh.Activate
             # Necessary for the button names ;-(

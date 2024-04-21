@@ -35,10 +35,11 @@
 from vb2py.vbfunctions import *
 # fromx vb2py.vbdebug import *
 import sys
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 #import mlpyproggen.Pattern_Generator as PG
 import pattgen.M09_Language as M09
 import pattgen.M30_Tools as M30
+import proggen.M20_PageEvents_a_Functions as M20
 
 #**************************
 #'  Port handling functions

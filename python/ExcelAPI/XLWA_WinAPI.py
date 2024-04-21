@@ -53,6 +53,7 @@ def EscapeCommFunction(hFile, dwFunc):
 
 def PurgeComm(hFile, dwFlags):
     pass
+
 def GetDefaultCommConfig(lpszName, lpCC, lpdwSize ):
     pass
 

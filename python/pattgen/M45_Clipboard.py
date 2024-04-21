@@ -1,7 +1,7 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import ExcelAPI.XLWA_WinAPI as X03
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 
 """ https://www.spreadsheet1.com/how-to-copy-strings-to-clipboard-using-excel-vba.html
 # VB2PY (CheckDirective) VB directive took path 1 on VBA7

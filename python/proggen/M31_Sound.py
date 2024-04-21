@@ -43,7 +43,7 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 import proggen.M02_Public as M02
 #import proggen.M02_global_variables as M02GV

@@ -67,7 +67,7 @@ import proggen.D06_Userform_House as D06
 import proggen.D07_Userform_Other as D07
 import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 from ExcelAPI.XLC_Excel_Consts import *
 

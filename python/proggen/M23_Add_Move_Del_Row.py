@@ -66,7 +66,7 @@ import proggen.M80_Create_Mulitplexer as M80
 
 import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 from ExcelAPI.XLC_Excel_Consts import *
 
@@ -204,6 +204,8 @@ def Proc_Copy_Row():
         #Used_Rows_All_Borderlines()
         #Format_Cells_to_Row(DestRow + Selection.Rows.Count)
         M20.Update_Sum_Func()
+        # Copy the icons
+        # 04.11.21:
         for Row in vbForRange(DestRow, DestRow + RowCnt):
             s = P01.Cells(Row, M25.Config__Col)
             if s != '':

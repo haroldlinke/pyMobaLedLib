@@ -61,8 +61,6 @@ from mlpyproggen.ConfigurationPage import ConfigurationPage
 from mlpyproggen.ARDUINOConfigPage import ARDUINOConfigPage
 from mlpyproggen.SerialMonitorPage import SerialMonitorPage, SerialThread
 from mlpyproggen.ColorCheckPage import ColorCheckPage
-#from mlpyproggen.EffectTestPage import EffectTestPage
-#from mlpyproggen.EffectMacroPage import EffectMacroPage
 from mlpyproggen.DCC_KeyboardPage import DCCKeyboardPage
 from mlpyproggen.Prog_Generator import Prog_GeneratorPage
 from mlpyproggen.Pattern_Generator import Pattern_GeneratorPage
@@ -73,12 +71,10 @@ from mlpyproggen.VB2PyPage import VB2PYPage
 from mlpyproggen.Z21MonitorPage import Z21MonitorPage
 from mlpyproggen.ARDUINOMonitorPage import ARDUINOMonitorPage
 from mlpyproggen.StartPage import StartPage
-#from mlpyproggen.LEDListPage import LEDListPage
 from mlpyproggen.SoundCheckPage import SoundCheckPage
 from mlpyproggen.tooltip import Tooltip
-from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PALETTE, DEFAULT_PARAM, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, DATA_VERSION, ProgGen_Min_Data_Version, Pattgen_Min_Data_Version, SIZEFACTOR,\
-PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1, SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ,DEBUG
-#from mlpyproggen.LedEffectTable import ledeffecttable_class
+from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PALETTE, DEFAULT_PARAM,LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, DATA_VERSION, ProgGen_Min_Data_Version, Pattgen_Min_Data_Version, SIZEFACTOR,\
+PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1,SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ,DEBUG
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,ScrolledFrame,HorizontalScrolledFrame
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
@@ -86,7 +82,7 @@ from tkcolorpicker.functions import hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, col2hu
 import platform
 import traceback
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 from mlpyproggen.tooltip import Tooltip_Canvas
 
 from locale import getdefaultlocale
@@ -105,6 +101,8 @@ import shutil
 from datetime import datetime
 import proggen.M07_COM_Port_New as M07New
 import proggen.M25_Columns as M25
+import proggen.M18_Save_Load as M18
+import proggen.M37_Inst_Libraries as M37
 
 # --- Translation - not used
 EN = {}
@@ -150,11 +148,9 @@ def _(text):
 
 
 tabClassList_all = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_all_patterngen = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_all_proggen = ( StartPage, Prog_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_mll_only = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_SetColTab = (ColorCheckPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_pyProg_only = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_tksheet_test = ( StartPage, Prog_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
 #tabClassList_all = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
@@ -456,6 +452,11 @@ class pyMobaLedLibapp(tk.Tk):
         self.shutdown_frame.grid_columnconfigure(0,weight=1)
         self.shutdown_frame.grid_rowconfigure(0,weight=1)
         
+        #************************************
+        #* Create Excel Application - parentframe=None, because the workbooks ProgGen and PattConf will have different frames in the notebook
+        #************************************
+        self.ExcelApplication = P01.CApplication(caption="pyMobaLedLib", Path=self.mainfile_dir, p_global_controller=self)
+        
         use_horizontalscroll=True
         use_fullscroll=True
         use_verticalscroll = True
@@ -488,11 +489,11 @@ class pyMobaLedLibapp(tk.Tk):
             tabClassList = tabClassList_SetColTab
         else:
             if self.show_pyPrgrammGenerator:
-                tabClassList = tabClassList_all
+                tabClassList = tabClassList_all_proggen #all Pages except PatternGenerator
                 if self.show_pyPatternGenerator:
-                    tabClassList = tabClassList_all_patterngen
+                    tabClassList = tabClassList_all # all Pages
             else:
-                tabClassList = tabClassList_mll_only
+                tabClassList = tabClassList_mll_only #no ProgGen and no PattGen
         #tabClassList = tabClassList_tksheet_test #test
         
         if COMMAND_LINE_ARG_DICT.get("vb2py","")=="True":
@@ -516,10 +517,10 @@ class pyMobaLedLibapp(tk.Tk):
         filedir = self.mainfile_dir # os.path.dirname(os.path.realpath(__file__))
         self.update()
         for wb in P01.Workbooks:
-            wb.init_workbook()
+            # test 15.4.2024wb.init_workbook()
             if self.getConfigData("AutoLoadWorkbooks"):
                     temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name+".json")
-                    wb.Load(filename=temp_workbook_filename)
+                    #wb.Load(filename=temp_workbook_filename)
         
         self.messageframe = ttk.Frame(self)
         
@@ -558,7 +559,6 @@ class pyMobaLedLibapp(tk.Tk):
         
     def show_tkinter_exception(self, exc,val,tb):
         err = traceback.format_exception(exc,val,tb)
-        
         messagestring = ""
         for line in err:
             messagestring+=line
@@ -567,27 +567,6 @@ class pyMobaLedLibapp(tk.Tk):
         logging.debug("Tkinter Exception:\n"+messagestring)
         if DEBUG and not "Error in Dialog" in line:
             raise
-   
-    #def ToolTip_canvas_hideall(self):
-    #    for objid in self.tooltip_var_dict.keys():
-    #        tooltip_var = self.tooltip_var_dict.get(objid,None)
-    #        if tooltip_var!= None:
-    #            tooltip_var.unschedule()
-    #            tooltip_var.hide()            
-    #    return      
-
-    #def ToolTip_canvas(self, canvas, objid,text="",button_1=False):
-    #    tooltiptext = text
-    #    tooltip_var = self.tooltip_var_dict.get(objid,None)
-    #    if tooltip_var==None:
-    #        tooltip_var=Tooltip_Canvas(canvas, objid, text=tooltiptext,button_1=button_1,controller=self)
-    #        self.tooltip_var_dict[objid] = tooltip_var
-    #    else:
-    #        tooltip_var.unschedule()
-    #        tooltip_var.hide()
-    #        tooltip_var.update_text(text)
-    #    return       
-           
         
     def check_data_changed(self):
         if self.activeworkbook != None:
@@ -627,26 +606,16 @@ class pyMobaLedLibapp(tk.Tk):
             frame.readPalettefromFile(filepath)         
 
     def SaveFileWorkbook(self):
-        #filepath = filedialog.asksaveasfilename(filetypes=[("JSON files","*.led.json")],defaultextension=".led.json")
-        #if filepath:
-        #    self.saveLEDTabtoFile(filepath)
         self.activeworkbook.Save()
 
     def OpenFileWorkbook(self):
-        #filepath = filedialog.askopenfilename(filetypes=[("LED List files","*.led.json"),("All JSON files","*.json")],defaultextension=".led.json")
-        # filepath:
         self.activeworkbook.Load()
         
     def SaveFilePGF(self):
-        #filepath = filedialog.asksaveasfilename(filetypes=[("JSON files","*.led.json")],defaultextension=".led.json")
-        #if filepath:
-        #    self.saveLEDTabtoFile(filepath)
-        self.activeworkbook.SavePGF()
+        M18.Save_Data_to_File()
 
     def OpenFilePGF(self):
-        #filepath = filedialog.askopenfilename(filetypes=[("LED List files","*.led.json"),("All JSON files","*.json")],defaultextension=".led.json")
-        # filepath:
-        self.activeworkbook.LoadPGF()
+        M18.Load_Data_from_File()
         
     def SaveAllFilePCF(self):
         MainMenu.SaveAllExamplesButton_Click()
@@ -738,7 +707,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.send_to_ARDUINO(message)
 
     def update_library(self):
-        self.activeworkbook.update_library()
+        M37.Update_MobaLedLib_from_Arduino_and_Restart_Excel()
     
     def install_Betatest(self):
         self.activeworkbook.install_Betatest()
@@ -806,7 +775,9 @@ class pyMobaLedLibapp(tk.Tk):
         #self.saveLEDTabtoFile(temp_ledeffecttable_filename)
         for wb in P01.Workbooks:
             wb.Evt_Workbook_BeforeClose()
-            temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name+".json")
+            temp_workbook_filename = wb.workbookfilename
+            if temp_workbook_filename == None:
+                temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name+".json")
             wb.Save(filename=temp_workbook_filename)        
         self.close_notification()
         
@@ -871,7 +842,6 @@ class pyMobaLedLibapp(tk.Tk):
     # ----------------------------------------------------------------
     def restart(self):
         logging.debug("Restart requested")
-        
         answer = tk.messagebox.askyesnocancel ('Das Programm wird beendet und neu gestartet','Daten wurden verändert. Sollen die Daten gesichert werden?',default='no')
         if answer == None:
             return # no cancelation
@@ -919,7 +889,6 @@ class pyMobaLedLibapp(tk.Tk):
     # Event TabChanged
     # ----------------------------------------------------------------        
     def TabChanged(self,_event=None):
-        
         self.oldTabName = self.currentTabClass
         if self.oldTabName != "":
             self.oldtab = self.nametowidget(self.oldTabName)
@@ -942,7 +911,6 @@ class pyMobaLedLibapp(tk.Tk):
     # startup_system
     # ----------------------------------------------------------------             
     def startup_system(self):
-        
         if True: #self.getConfigData("autoconnect"):
             port_name = self.getConfigData("serportname")
             logging.debug("Portname: "+ str(port_name))
@@ -2938,6 +2906,8 @@ def main_entry():
     logger.info("Python Version: %s",sys.version)
     logger.info("MLL Proggenerator started %s", PROG_VERSION)
     logger.info(" Platform: %s",platform.platform())
+    logger.info("Parameters; %s", repr(args))
+    
     logger.debug("Installationfolder %s",filedir)
     logger.debug("Logging Level: %s Logfilename: %s",logging_level, logfilename)
     

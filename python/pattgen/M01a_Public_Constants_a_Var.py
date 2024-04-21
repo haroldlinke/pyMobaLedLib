@@ -4,7 +4,7 @@ import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M30_Tools as M30
 import pattgen.M09_Language as M09
 #import pattgen.M09_Language
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 
 
 """ Debug Events

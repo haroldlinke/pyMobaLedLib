@@ -47,13 +47,13 @@ from mlpyproggen.DefaultConstants import ARDUINO_WAITTIME,LARGE_FONT, SMALL_FONT
 from locale import getdefaultlocale
 # fromx tkintertable import TableCanvas, TableModel
 # fromx collections import OrderedDict
-from ExcelAPI.XLW_Workbook import create_workbook
+#from ExcelAPI.XLA_Application import create_workbook
 import proggen.M02_Public as M02
 import proggen.M08_ARDUINO as M08
 import proggen.M40_ShellandWait as M40
 import proggen.DieseArbeitsmappe as AM
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 import os
 #import serial
@@ -77,6 +77,7 @@ import proggen.M07_COM_Port as M07
 import proggen.M20_PageEvents_a_Functions as M20
 #import proggen.D08_Select_COM_Port_Userform as D08
 import pgcommon.G00_common as G00
+import proggen.Tabelle2 as T02
 
 
 # --- Translation - not used
@@ -134,6 +135,7 @@ class Prog_GeneratorPage(tk.Frame):
         self.tabClassName = "ProgGeneratorPage"
         tk.Frame.__init__(self,parent)
         self.controller = controller
+        self.Application = controller.ExcelApplication
         set_global_controller(controller)
         self.controller.set_statusmessage("Erstelle ProgramGenerator Seite ...",fg="green")
         self.default_font        = self.controller.defaultfontnormal
@@ -143,7 +145,7 @@ class Prog_GeneratorPage(tk.Frame):
         datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
         datasheet_formating = { "HideCells" : ("A1:C1", "E1"), #((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16)),
                                 "ProtectedCells"  : (("1:2","M:Q") ),
-                                "ColumnWidth"     : (5,17,17,34,17,17,60,34,34,17,60,60,17,17,17),
+                                "ColumnWidth"     : (10,68,68,132,132,68,240,136,136,68,240,240,68,68,68), #(5,17,17,34,17,17,60,34,34,17,60,60,17,17,17),
                                 "ColumnAlignment" : {"c": ("B")
                                                      },                                 
                                 "left_click_callertype": "cell",
@@ -173,34 +175,53 @@ class Prog_GeneratorPage(tk.Frame):
                                                            }
                                         }
                             }
+        
+        sheetdict_sheetevents = {"Activate": T02.Worksheet_Activate,
+                                 "Calculate": T02.Worksheet_Calculate,
+                                 "Change": T02.Worksheet_Change,
+                                 "BeforeDoubleClick": None,
+                                 "SelectionChange": T02.Worksheet_SelectionChange,
+                                 "Redraw" : F00.worksheet_redraw, 
+                                }
+        
+        workbook_events = {"Open": AM.Workbook_Open,
+                           "NewSheet": None,
+                           "BeforeSave": None,
+                           "BeforeClose": AM.Workbook_BeforeClose,
+                           "SheetBeforeDoubleClick": AM.Workbook_SheetBeforeDoubleClick,
+                        }
 
         sheetdict_PROGGEN={"DCC":
                     {"Name":"DCC",
                      "Filename"  : "csv/Prog_Generator_MobaLedLib.xlsm",
                      "Fieldnames": datasheet_fieldnames,
                      "Formating" : datasheet_formating,
-                     "SheetType" : "Datasheet"
+                     "SheetType" : "Datasheet", 
+                     "Events" : sheetdict_sheetevents,
                      },
                    "Selectrix":
                     {"Name":"Selectrix",
                      "Filenamex"  : "csv/Selectrix.csv",
                      "Fieldnames": "A;Aktiv;Filter;Channel oder\nName[0..99];Bitposition\n[1..8];Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment",
                      "Formating" : datasheet_formating,
-                     "SheetType" : "Datasheet"
+                     "SheetType" : "Datasheet",
+                     "Events" : sheetdict_sheetevents,
                      },
                    "CAN":
                     {"Name":"CAN",
                      "Filenamex"  : "csv/CAN.csv",
                      "Fieldnames": datasheet_fieldnames,
                      "Formating" : datasheet_formating,
-                     "SheetType" : "Datasheet"
+                     "SheetType" : "Datasheet",
+                     "Events" : sheetdict_sheetevents,
                      },
                    "Examples":
                     {"Name":"Examples",
                      "Filenamex"  : "csv/Examples.csv",
                      "Fieldnames": datasheet_fieldnames,
                      "Formating" : datasheet_formating,
-                     "SheetType" : "Datasheet"
+                     "SheetType" : "Datasheet",
+                     "Events" : sheetdict_sheetevents,
                      },
                    "Config":
                     {"Name":"Config",
@@ -269,21 +290,13 @@ class Prog_GeneratorPage(tk.Frame):
                     {"Name":"Named_Ranges",
                      "Filenamex":"csv/Named_Ranges.csv",
                      "Fieldnames": "A;B;C;D"
-                    },
-                   "Events": {"Workbook_Open"          : None,
-                              "Workbook_BeforeClose"   : None,
-                              "SheetActivate"          : None,
-                              "SheetDeactivate"        : None,
-                              "SheetTableUpdate"       : None,
-                              "SheetCalculate"         : None,
-                              "SheetBeforeDoubleClick" : AM.Workbook_SheetBeforeDoubleClick,
-                              "SheetChange"            : M20.Global_Worksheet_Change,
-                              "SheetSelectionChange"   : None,
-                              "SheetReturnKey"         : None,
-                              "NewSheet"               : None,
-                              "Worksheet_Redraw"       : F00.worksheet_redraw
-                   }           
-                }        
+                    }
+                }
+        
+        workbook_dict = {"Name": "ProgGenerator",
+                         "Events": workbook_events,
+                         "SheetDict" : sheetdict_PROGGEN
+                         }
         
         macrodata = self.controller.MacroDef.data.get(self.tabClassName,{})
         self.tabname = macrodata.get("MTabName",self.tabClassName)
@@ -340,8 +353,29 @@ class Prog_GeneratorPage(tk.Frame):
         
         self.workbook_width = self.controller.window_width-120
         self.workbook_height = self.controller.window_height-420
-        self.workbook = create_workbook(frame=self.workbook_frame,path=filedir2, pyProgPath=filedir2, workbookName="ProgGenerator", sheetdict=sheetdict_PROGGEN,start_sheet=start_sheet,p_global_controller=global_controller,width=self.workbook_width,height=self.workbook_height)
-        ThisWorkbook=self.workbook
+        
+        #self.workbook = create_workbook(frame=self.workbook_frame,path=filedir2, pyProgPath=filedir2, workbookName="ProgGenerator", sheetdict=sheetdict_PROGGEN,start_sheet=start_sheet,p_global_controller=global_controller,width=self.workbook_width,height=self.workbook_height)
+        #self.workbook = create_workbook(frame=self.workbook_frame,path=filedir2, pyProgPath=filedir2, workbookName="ProgGenerator", sheetdict={},start_sheet=start_sheet,p_global_controller=global_controller,width=self.workbook_width,height=self.workbook_height)
+        self.workbookname = "ProgGenerator"
+        self.tempworkbookFilname = self.controller.tempworkbookFilname
+        temp_workbook_filename = os.path.join(filedir2,self.tempworkbookFilname+"_"+self.workbookname+".json")
+        
+        #************************************************
+        #* Open Workbook ProgGen
+        #************************************************
+        self.workbook = self.Application.Workbooks.Open(
+            ParentFrame=self.workbook_frame,
+            FileName=temp_workbook_filename,
+            path=filedir2,
+            pyProgPath=filedir2,
+            workbookName=self.workbookname,
+            macro_caller=self,
+            InitWorkBookFunction=F00.workbook_init,
+            workbookdict=workbook_dict,
+            start_sheet=start_sheet,
+            controller=global_controller,
+            width=self.workbook_width,
+            height=self.workbook_height)
         
         for sheet in self.workbook.sheets:
             sheet.SetChangedCallback(wschangedcallback)
@@ -390,7 +424,7 @@ class Prog_GeneratorPage(tk.Frame):
         P01.Application.setActiveWorkbook(self.workbook.Name)
         for sheet in self.workbook.sheets:
             if self.controller.getConfigData("ShowHiddentables"):
-                sheet.Visible(True)
+                sheet.Visible = True
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)        
         pass
@@ -487,11 +521,11 @@ class Prog_GeneratorPage(tk.Frame):
                          "text"     : "Lösche\nTabelle",
                          "padx"     : 10,
                          "tooltip"  : "Tabelle löschen"},
-                        {"Icon_name": "Btn_New_Table.png",
-                         "command"  : F00.NewSheet_Button_Click,
-                         "text"     : "Neue\nTabelle",
-                         "padx"     : 10,
-                         "tooltip"  : "Neue Tabelle einfügen"},                        
+                        #{"Icon_name": "Btn_New_Table.png",
+                        # "command"  : F00.NewSheet_Button_Click,
+                        # "text"     : "Neue\nTabelle",
+                        # "padx"     : 10,
+                        # "tooltip"  : "Neue Tabelle einfügen"},                        
                         {"Icon_name": "Btn_Options.png",
                          "command"  : F00.Options_Button_Click,
                          "text"     : "Optionen",
@@ -735,8 +769,10 @@ class Prog_GeneratorPage(tk.Frame):
                     #print("shell ended")
                     break
                 if output:
-                    self.arduinoMonitorPage.add_text_to_textwindow(str(output)+"\n")
+                    self.arduinoMonitorPage.add_text_to_textwindow(output.decode('utf-8')+"\n")
+                    
                     self.arduinoMonitorPage.update()
+    
     
             rc = self.process.returncode
             
@@ -946,6 +982,21 @@ class Prog_GeneratorPage(tk.Frame):
         self.controller.coltab = ColorTable
         self.controller.checkcolor_callback = callback
         self.controller.showFramebyName("ColorCheckPage")
+    
+    def checkcolor(self,ColorTable,callback=None):
+        self.controller.coltab = ColorTable
+        self.controller.checkcolor_callback = callback
+        self.controller.showFramebyName("ColorCheckPage")
+        
+    def get_ThisWorkbook(self):
+        global ThisWorkbook
+        return ThisWorkbook
+    def set_ThisWorkbook(self, value):
+        global ThisWorkbook
+        ThisWorkbook = value
+    ThisWorkbook = property(fget=get_ThisWorkbook, fset=set_ThisWorkbook, doc="ThisWorkbook")
+    
+    
         
 def wschangedcallback(changedcell):
     #print ("wschangedcallback ",changedcell.Row,":",changedcell.Column)

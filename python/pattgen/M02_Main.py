@@ -1,13 +1,13 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import ExcelAPI.XLWF_Worksheetfunction as P01
 import pattgen.M35_Mouse_Scroll
 import pattgen.M30_Tools as M30
 import pattgen.M08_Load_Sheet_Data
 import pattgen.M12_Copy_Prog
 import pattgen.M01_Public_Constants_a_Var as M01
-import pattgen.M09_Language
+import pattgen.M09_Language as M09
 import pattgen.M04_Column_With
 import pattgen.M03_Analog_Trend
 import pattgen.M06_Goto_Graph
@@ -68,15 +68,15 @@ def Init():
     if initDone:
         return
     initDone = True
-    if X02.Sheets('Multiplexer').Visible == True:
-        X02.Sheets('Main').Select()
+    #if X02.Sheets('Multiplexer').Visible == True:
+    X02.Sheets('Main').Select()
     # Prevent problem in the following line
-    Debug.Print('Init() called (Sheets.count=' + PG.ThisWorkbook.Sheets.Count + ')')
-    X02.Sheets['Languages'].Visible = False
-    X02.Sheets['Goto_Activation_Entries'].Visible = False
-    X02.Sheets['Special_Mode_Dlg'].Visible = False
-    X02.Sheets['Par_Description'].Visible = False
-    X02.Sheets['Multiplexer'].Visible = False
+    #Debug.Print('Init() called (Sheets().count=' + PG.ThisWorkbook.Sheets.Count + ')')
+    X02.ThisWorkbook.SheetsDict['Languages'].Visible = False
+    X02.ThisWorkbook.SheetsDict['Goto_Activation_Entries'].Visible = False
+    X02.ThisWorkbook.SheetsDict['Special_Mode_Dlg'].Visible = False
+    X02.ThisWorkbook.SheetsDict['Par_Description'].Visible = False
+    #X02.SheetsDict['Multiplexer'].Visible = False
     # 02.06.20: Misha
     pattgen.M35_Mouse_Scroll.Cleare_Mouse_Hook()
     # 28.04.20:
@@ -84,12 +84,12 @@ def Init():
     # 21.11.21: Juergen
     M09.Update_Language_in_All_Sheets()
     # 04.06.20: Old: Update_Language_in_All_Pattern_Config_Sheets
-    if PG.ThisWorkbook.Sheets.Count == 6:
+    if len(PG.ThisWorkbook.Sheets()) == 7: #6:
         # Main, Language, Goto_Activation_Entries, Special_Mode_Dlg, Par_Description
         Clear_Com_Port()
-        ShowSaveMsg = pattgen.M08_Load_Sheet_Data.Load_AllExamples_Sheets()
+        #*HL ShowSaveMsg = pattgen.M08_Load_Sheet_Data.Load_AllExamples_Sheets()
         PG.ThisWorkbook.Activate()
-        X02.Sheets('Main').Select()
+        X02.ThisWorkbook.Sheets('Main').Select()
         M30.Protect_Active_Sheet()
         X02.ActiveWindow.DisplayHeadings = False
         #Update_Grafik

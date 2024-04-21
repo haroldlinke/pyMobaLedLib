@@ -38,7 +38,7 @@ import tkinter as tk
 from tkinter import ttk
 import os
 import sys
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import pattgen.M09_Language as M09
 import pattgen.D00_GlobalProcs as D00
 import tkcolorpicker.spinbox as SB

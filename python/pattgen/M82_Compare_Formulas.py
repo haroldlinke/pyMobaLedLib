@@ -1,6 +1,6 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 
 """---------------------------------------"""
 

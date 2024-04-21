@@ -40,7 +40,7 @@ from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
 from ExcelAPI.XLC_Excel_Consts import *
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 import proggen.M02_Public as M02
 import proggen.M02a_Public as M02a

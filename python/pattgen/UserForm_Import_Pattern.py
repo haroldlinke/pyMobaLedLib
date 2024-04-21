@@ -2,7 +2,7 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import pattgen.M80_Multiplexer_INI_Handling
 import pattgen.M09_Language
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import pattgen.M17_Import_a_Dec_Macro
 import pattgen.M80_Multiplexer_INI_Misc
 import mlpyproggen.Pattern_Generator as PG

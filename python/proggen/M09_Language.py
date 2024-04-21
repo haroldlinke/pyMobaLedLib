@@ -49,7 +49,7 @@ from vb2py.vbconstants import *
 
 from ExcelAPI.XLC_Excel_Consts import *
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 #import proggen.M09_Translate_Examples as M09TL
 

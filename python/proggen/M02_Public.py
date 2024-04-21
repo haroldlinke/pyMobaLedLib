@@ -36,11 +36,11 @@
 
 
 from vb2py.vbfunctions import *
-from vb2py.vbdebug import *
-from vb2py.vbconstants import *
+#from vb2py.vbdebug import *
+#from vb2py.vbconstants import *
 
 from ExcelAPI.XLC_Excel_Consts import *
-import ExcelAPI.XLW_Workbook as P01
+#import ExcelAPI.XLA_Application as P01
 
 
 """# VB2PY (CheckDirective) VB directive took path 1 on USE_SKETCHBOOK_DIR

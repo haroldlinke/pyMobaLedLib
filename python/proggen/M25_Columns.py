@@ -68,7 +68,7 @@ import proggen.M30_Tools as M30
 #import proggen.M80_Create_Mulitplexer as M80
 import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 
 Col_from_Sheet = ""  #*HL

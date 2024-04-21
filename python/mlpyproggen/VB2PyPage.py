@@ -74,7 +74,7 @@ import os
 import proggen.M40_ShellandWait as M40
 from vb2py.vbconstants import *
 import mlpyproggen.Prog_Generator as PG
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, DEFAULT_PALETTE, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION
 

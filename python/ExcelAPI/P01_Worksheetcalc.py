@@ -36,7 +36,7 @@
 
 import pattgen.M30_Tools as M30
 import pattgen.M02_Main as M02
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 
 funcvars=globals()
 
@@ -128,7 +128,7 @@ def COUNTA(rangelist):
             count+=1
     return count
 
-def Calc_Worksheet(ws,cell=None):
+def Calc_Worksheet(ws=None,cell=None):
     global funcvars
     
     def createcellvariable(ws,name):
@@ -148,6 +148,8 @@ def Calc_Worksheet(ws,cell=None):
             variable=funcvars.get(name,None)
         
         setCellValuebyName(ws, name, variable)
+        return
+    if ws == None or ws.Workbook.Name != "PatternWorkbook":
         return
     
     if cell!=None:
@@ -388,6 +390,9 @@ def WS_Conditional_Formating(ws,changedCell):
         #extend grid
         value=int(changedCell)
         ws.changeGrid(2,((49,4),(49+value,63)))
-        
+        ws.Cells((49,4), (49+value,4)).Interior.Color = "#F0F0F0"
+        ws.Cells((49+value+1,4), (127,5)).Interior.Color = "#FFFFFF"
+        ws.Cells((50, 4),(49 + value, 5)).Font.Color = "#000000"
+        ws.Cells((49+value+1, 4),(127, 5)).Font.Color = "#FFFFFF"
 
     

@@ -52,7 +52,7 @@ import pathlib
 from ExcelAPI.XLC_Excel_Consts import *
 # fromx proggen.M02_Public import Get_BoardTyp
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 import proggen.M02_Public as M02
 import proggen.M02a_Public as M02a
@@ -728,6 +728,7 @@ def Read_File_to_String(FileName):
         P01.MsgBox(M09.Get_Language_Str(r'Fehler beim lesen der Datei:') + vbCr + r'  ' + FileName + r'', vbCritical, M09.Get_Language_Str(r'Fehler beim Datei lesen'))
         fn_return_value = r'#ERROR#'
         return fn_return_value
+
 
 def Get_Ini_Entry(FileStr, EntryName):
     p = int()

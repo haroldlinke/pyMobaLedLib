@@ -66,7 +66,7 @@ from vb2py.vbconstants import *
 
 
 from ExcelAPI.XLC_Excel_Consts import *
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 ParName_COL = 1
 Par_Cnt_COL = 2

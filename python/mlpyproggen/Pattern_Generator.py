@@ -51,10 +51,10 @@ import pattgen.M03_Analog_Trend as M03
 import pattgen.M65_Special_Modules as M65
 import pattgen.M16_Add_Del_Columns as M16
 from ExcelAPI.P01_Worksheetcalc import Calc_Worksheet
-import pattgen.DieseArbeitsmappe
-import pattgen.Tabelle9
+import pattgen.DieseArbeitsmappe as AM
+import pattgen.Tabelle9 as T09
 import pattgen.D00_Forms as D00
-import ExcelAPI.XLW_Workbook as XLW
+#import ExcelAPI.XLA_Application as XLW
 
 import os
 #import serial
@@ -73,7 +73,7 @@ import platform
 # fromx mlpyproggen.T01_exceltable import get_globaltabelmodel
 #import  proggen.F00_mainbuttons as F00
 #import proggen.M20_PageEvents_a_Functions as M20
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 #import proggen.D08_Select_COM_Port_Userform as D08
 
 
@@ -118,11 +118,11 @@ def get_dialog_parent():
 
 def Del_Col_Button_Click():
     M16.Del_Columns_from_Pattern()
-    XLW.ActiveSheet.Redraw_table()
+    X02.ActiveSheet.Redraw_table()
 
 def Add_Col_Button_Click():
     M16.Add_Columns_to_Pattern()
-    XLW.ActiveSheet.Redraw_table()
+    X02.ActiveSheet.Redraw_table()
     
 def button_testen_cmd():
     X02.Application.Caller="Test_Leds_M99O01"
@@ -144,29 +144,42 @@ ThreadEvent = None
 
 BUTTONLABELWIDTH = 10
 
-
-
-
 start_sheet = "Main"
 
-
 class Pattern_GeneratorPage(tk.Frame):
-    
-    
     def __init__(self, parent, controller):
         global global_tablemodel, ThisWorkbook
         global dialog_parent
         dialog_parent = self
-        self.tabClassName = "PatternGeneratorPage"
+        self.tabClassName = "PatternConfiguratorPage"
         tk.Frame.__init__(self,parent)
         self.controller = controller
         set_global_controller(controller)
         self.controller.set_statusmessage("Erstelle PatternConfigurator Seite ...",fg="green")
+        self.Application = controller.ExcelApplication
         macrodata = self.controller.MacroDef.data.get(self.tabClassName,{})
         
         self.default_font        = self.controller.defaultfontnormal
         self.default_boldfont    = (self.default_font[0],self.default_font[1],"bold")
         self.default_smallfont   = self.controller.defaultfontsmall
+        
+        sheetdict_sheetevents = {"Activate": T09.Worksheet_Activate,
+                                 "Calculate": None,
+                                 "Change": T09.Worksheet_Change,
+                                 "Deactivate": T09.Worksheet_Deactivate,
+                                 "DoubleClick": AM.Workbook_SheetBeforeDoubleClick,
+                                 "SelectionChange": T09.Worksheet_SelectionChange,
+                                 "Redraw" : M02.worksheet_redraw,
+                                 "ReturnKey" : M02.Global_On_Enter_Proc,
+                                }
+        
+        workbook_events = {"Open": self.Workbook_Open,
+                           "NewSheet": None,
+                           "BeforeSave": None,
+                           "BeforeClose": AM.Workbook_BeforeClose,
+                           "SheetBeforeDoubleClick": AM.Workbook_SheetBeforeDoubleClick,
+                        }
+                   
         sheetdict_PatternGEN={"Main":
                     {"Name":"Main",
                      "Filename"  : "csv/PA_Main.csv",
@@ -203,8 +216,9 @@ class Pattern_GeneratorPage(tk.Frame):
                                                         }
                                     },
                      "SheetType" : "Datasheet",
-                     "SaveShapes": False,
+                     "SaveShapes": True,
                      "RefreshShapesafterLoad": True,
+                     "Events" : sheetdict_sheetevents,
                      "Controls" :  { "Default":{ "Components" : [{"Name":"Default",
                                                                   "Accelerator":"",
                                                                   "BackColor":"#00000F",
@@ -385,6 +399,7 @@ class Pattern_GeneratorPage(tk.Frame):
                         "Name":"PG-Temp",
                                              "Filename"  : "csv/PA_Main.csv",
                                              "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS;AT;AU;AV;AW;AX,AY;AZ;BA;BB;BC;BD;BE;BF;BG;BH;BI;BJ;BK;BL;BM;BN;BO;BP;BQ;BR;BS;BT;BU;BV;BW;BX,BY;BZ",
+                                             "Events" : sheetdict_sheetevents,
                                              "Formating" : {"HideCells"       : (("A1"), ),
                                                             "HideRows"        : [12,15,16,17,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46],
                                                             #"HideRows"        : [],
@@ -559,20 +574,12 @@ class Pattern_GeneratorPage(tk.Frame):
                      "Filename":"csv/PA_Named_Ranges.csv",
                      "Fieldnames": "A;B;C;D"
                     },
-                   "Events": {"Workbook_Open"          : pattgen.DieseArbeitsmappe.Workbook_Open,
-                              "Workbook_BeforeClose"   : pattgen.DieseArbeitsmappe.Workbook_BeforeClose,
-                              "SheetBeforeDoubleClick" : pattgen.DieseArbeitsmappe.Workbook_SheetBeforeDoubleClick,
-                              "SheetCalculate"         : Calc_Worksheet,
-                              "SheetActivate"          : pattgen.Tabelle9.Worksheet_Activate,
-                              "SheetDeactivate"        : pattgen.Tabelle9.Worksheet_Deactivate,
-                              "SheetChange"            : pattgen.Tabelle9.Worksheet_Change,
-                              "SheetSelectionChange"   : pattgen.Tabelle9.Worksheet_SelectionChange,
-                              "SheetReturnKey"         : M02.Global_On_Enter_Proc,
-                              "NewSheet"               : None, 
-                              "Worksheet_Redraw"       : M02.worksheet_redraw, 
-                              "SheetTableUpdate"       : None
-                   }
-                } 
+                }
+        
+        workbook_dict = {"Name": "PatternWorkbook",
+                         "Events": workbook_events,
+                         "SheetDict" : sheetdict_PatternGEN
+                         }        
                 
         
         
@@ -618,11 +625,30 @@ class Pattern_GeneratorPage(tk.Frame):
         self.filedir2 = os.path.dirname(filedir)
         self.workbook_frame.rowconfigure(0,weight=1)
         self.workbook_frame.columnconfigure(0,weight=1)
-        X02.Application.EnableEvents=False
+        X02.Application.EnableEvents=True
         self.workbook_width = self.controller.window_width-120
         self.workbook_height = self.controller.window_height-240
-        self.workbook = X02.create_workbook(frame=self.workbook_frame,path=self.filedir2,pyProgPath=self.filedir2,sheetdict=sheetdict_PatternGEN,workbookName="PatternWorkbook",start_sheet=start_sheet,p_global_controller=self.controller,width=self.workbook_width,height=self.workbook_height)
-        ThisWorkbook=self.workbook
+        #self.workbook = X02.create_workbook(frame=self.workbook_frame,path=self.filedir2,pyProgPath=self.filedir2,sheetdict=sheetdict_PatternGEN,workbookName="PatternWorkbook",start_sheet=start_sheet,p_global_controller=self.controller,width=self.workbook_width,height=self.workbook_height)
+        self.workbookname = "PatternWorkbook"
+        self.tempworkbookFilname = self.controller.tempworkbookFilname
+        temp_workbook_filename = os.path.join(self.filedir2,self.tempworkbookFilname+"_"+self.workbookname+".json")        
+        
+        #************************************************
+        #* Open Workbook PatternWorkbook
+        #************************************************        
+        self.workbook = self.Application.Workbooks.Open(
+            ParentFrame=self.workbook_frame,
+            FileName=temp_workbook_filename,
+            path=self.filedir2,
+            pyProgPath=self.filedir2,
+            workbookName=self.workbookname,
+            InitWorkBookFunction=None,
+            macro_caller=self, 
+            workbookdict=workbook_dict,
+            start_sheet=start_sheet,
+            controller=global_controller,
+            width=self.workbook_width,
+            height=self.workbook_height)
         
         for sheet in self.workbook.sheets:
             sheet.SetChangedCallback(wschangedcallback)
@@ -651,7 +677,7 @@ class Pattern_GeneratorPage(tk.Frame):
         for sheet in self.workbook.sheets:
             pass #test sheet.tablemodel.resetDataChanged()
             
-        D00.init_UserForms()
+        #D00.init_UserForms()
 
         self.workbook.activate_sheet(start_sheet)
         
@@ -782,7 +808,7 @@ class Pattern_GeneratorPage(tk.Frame):
                     self.arduinoMonitorPage.add_text_to_textwindow(output.decode('utf-8').strip())
                 except BaseException as e:
                     logging.debug(e, exc_info=True) 
-                    logging.debug("ERROR: PatternGeneratorPage - Write_stdout_to_text_window: %s",output)
+                    logging.debug("ERROR: PatternConfiguratorPage - Write_stdout_to_text_window: %s",output)
                     pass            
             
             if self.process.poll() is not None:
@@ -803,7 +829,7 @@ class Pattern_GeneratorPage(tk.Frame):
             self.continue_loop=True
             self.write_stdout_to_text_window()
         except BaseException as e:
-            logging.error("PatternGeneratorPage - Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
+            logging.error("PatternConfiguratorPage - Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + self.startfile[0]+ "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
@@ -976,7 +1002,19 @@ class Pattern_GeneratorPage(tk.Frame):
     def checkcolor(self,ColorTable,callback=None):
         self.controller.coltab = ColorTable
         self.controller.checkcolor_callback = callback
-        self.controller.showFramebyName("ColorCheckPage")    
+        self.controller.showFramebyName("ColorCheckPage")
+        
+    def get_ThisWorkbook(self):
+        global ThisWorkbook
+        return ThisWorkbook
+    def set_ThisWorkbook(self, value):
+        global ThisWorkbook
+        ThisWorkbook = value
+    ThisWorkbook = property(fget=get_ThisWorkbook, fset=set_ThisWorkbook, doc="ThisWorkbook")
+
+    def Workbook_Open(self):
+        D00.init_UserForms()
+        AM.Workbook_Open()
 
 # ----------------------------------------------------------------
 # Callback procedures
@@ -995,7 +1033,7 @@ def wscalculationcallback(worksheet,cell=None):
     Calc_Worksheet(worksheet,cell=cell)
     
 def SheetInitDataProc(sheet):
-    Target=XLW.CRange(5,5,ws=sheet)
+    Target=X02.CRange(5,5,ws=sheet)
     M02.Global_Worksheet_Change(Target)
     sheet.Redraw_table()
     

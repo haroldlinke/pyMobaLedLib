@@ -1,6 +1,6 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import ExcelAPI.XLC_Excel_Consts as X01
 import pattgen.M02_Main as M02a
 import pattgen.M01_Public_Constants_a_Var as M01
@@ -411,7 +411,8 @@ def Draw_Analog_Trend_of_Sheet():
                         Line_Analog_Trend(X02.Range(X02.Cells(Row, FirstLEDsCol), X02.Cells(Row, LastLEDsCol)))
     X02.Application.ScreenUpdating = Oldupdating
     # VB2PY (UntranslatedCode) On Error Resume Next
-    LastSel.Select()
+    if LastSel != None:
+        LastSel.Select()
     # Could cause an error if the last selection is a drawing object and nor a cell
     # VB2PY (UntranslatedCode) On Error GoTo 0
     if WasProtected:

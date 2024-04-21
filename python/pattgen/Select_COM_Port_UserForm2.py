@@ -4,7 +4,7 @@ import pattgen.M07_COM_Port_New
 import pattgen.M07_COM_Port
 import pattgen.M09_Language
 import pattgen.M30_Tools as M30
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 
 import ExcelAPI.XLF_FormGenerator as XLF
 import pattgen.D00_Forms as D00

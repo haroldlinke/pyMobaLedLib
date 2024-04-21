@@ -1,7 +1,7 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import pattgen.M55_PWM_Data_Send
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 
 """------------------------------------------
 ----------------------------------------------

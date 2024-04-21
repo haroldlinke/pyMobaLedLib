@@ -68,7 +68,7 @@ import mlpyproggen.Prog_Generator as PG
 
 #import proggen.D09_StatusMsg_Userform as D09
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 from ExcelAPI.XLC_Excel_Consts import *
 

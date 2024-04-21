@@ -67,7 +67,7 @@ import proggen.M80_Create_Mulitplexer as M80
 import mlpyproggen.Prog_Generator as PG
 import proggen.F00_mainbuttons as F00
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 from ExcelAPI.XLC_Excel_Consts import *
 

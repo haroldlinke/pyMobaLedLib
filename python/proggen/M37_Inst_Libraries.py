@@ -83,7 +83,7 @@ import proggen.D02_Userform_Select_Typ_DCC as D02
 import proggen.D09_StatusMsg_Userform as D09
 import  proggen.F00_mainbuttons as F00
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 """ Install all required Libraries
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

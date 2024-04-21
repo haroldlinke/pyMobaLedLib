@@ -1,7 +1,7 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import pattgen.M02_Main as M02a
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import pattgen.M01_Public_Constants_a_Var as M01
 import mlpyproggen.Pattern_Generator as PG
 

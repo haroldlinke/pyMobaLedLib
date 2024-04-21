@@ -1,4 +1,0 @@
-5.1.0.001 - 24.3.2024
-- complete restructure of table handling, replace tkintertable with tksheet - some features are still under test
-- new support for direct mode servo
-- new servoanim-macro providing graphical user interface for servo animation

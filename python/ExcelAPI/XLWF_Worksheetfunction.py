@@ -34,7 +34,7 @@
 # 2021-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
 # 2022-01-07 v4.02 HL: - Else:, ByRef check done, first PoC release
 
-import ExcelAPI.XLW_Workbook as XLW
+import ExcelAPI.XLA_Application as XLW
 
 def RoundUp(v1,v2):
     #print("RoundUp")

@@ -4,7 +4,7 @@ import pattgen.M02_Main as M02a
 import pattgen.M17_Import_a_Dec_Macro
 import pattgen.M80_Multiplexer_INI_Handling
 import pattgen.M11_To_Prog_Gen
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import pattgen.M03_Analog_Trend
 import pattgen.M30_Tools as M30
 import pattgen.M55_PWM_Data_Send
