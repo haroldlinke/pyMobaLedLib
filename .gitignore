@@ -5,3 +5,6 @@ python/logfile.log
 python.zip
 
 
+python/logfile.log.log
+python/logfile.log.log
+python/logfile.log.tmp.log
