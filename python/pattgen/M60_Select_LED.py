@@ -2,7 +2,7 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import pattgen.M30_Tools as M30
 import pattgen.M55_PWM_Data_Send
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M09_Language

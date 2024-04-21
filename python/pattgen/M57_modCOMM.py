@@ -1,7 +1,7 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import ExcelAPI.XLWA_WinAPI as X03
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 
 """-------------------------------------------------------------------------------
  modCOMM - Written by: David M. Hitchner

@@ -79,7 +79,7 @@ import proggen.M09_Language as M09
 #import proggen.M80_Create_Mulitplexer as M80
 #*HL import proggen.clsNode
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 
 """ Header file generation for the Sound functions

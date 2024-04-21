@@ -38,7 +38,7 @@ import ExcelAPI.XLF_FormGenerator as XLF
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import proggen.M09_Language as M09
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27

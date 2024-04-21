@@ -1,7 +1,7 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import ExcelAPI.XLC_Excel_Consts as X01
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import pattgen.M09_Language
 import pattgen.M01_Public_Constants_a_Var as M01
 

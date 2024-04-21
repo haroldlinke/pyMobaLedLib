@@ -45,7 +45,7 @@ import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
 import proggen.M12_Copy_Prog as M12
 import proggen.M17_Import_old_Data as M17
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 import mlpyproggen.Prog_Generator as PG
 import proggen.M22_Hide_UnHide as M22
 import proggen.M23_Add_Move_Del_Row as M23
@@ -71,7 +71,8 @@ import proggen.D11_Userform_SimpleInput as D11
 import proggen.D12_Select_ProgGen_Src_Form as D12
 import proggen.D13_Select_ProgGen_Dest_Form as D13
 import proggen.D14_Userform_LEDAnim as D14
-import proggen.D15_Userform_PCAnim as D15
+import proggen.D15_Userform_ServoAnim as D15
+import proggen.D16_Userform_LEDColorAnim as D16
 import pgcommon.G00_common as G00
 
 def Arduino_Button_Click(event=None):
@@ -281,7 +282,7 @@ def Workbook_Open():
 
         
 def workbook_init(workbook):
-    M01.__Release_or_Debug_Version(True)
+    #M01.__Release_or_Debug_Version(True)
     
     if P01.checkplatform("Windows"):
         M02.AppLoc_Ardu = '\\AppData\\Local\\Arduino15\\'
@@ -301,7 +302,7 @@ def workbook_init(workbook):
     init_UserForms()
     for sheet in workbook.sheets:
         worksheet_init(sheet)
-    Workbook_Open()    
+    #Workbook_Open()    
     P01.Application.set_canvas_leftclickcmd(M32.DCCSend)    
     
 def worksheet_init(act_worksheet):
@@ -332,7 +333,7 @@ def worksheet_redraw(sheet):
     
 def init_UserForms():
     global StatusMsg_UserForm, UserForm_Select_Typ_DCC, UserForm_Select_Typ_SX, Select_COM_Port_UserForm,UserForm_Options,UserForm_DialogGuide1,UserForm_Description,UserForm_Connector
-    global Userform_SimpleInput,Select_ProgGen_Src_Form, Select_ProgGen_Dest_Form, UserForm_PCAnim
+    global Userform_SimpleInput,Select_ProgGen_Src_Form, Select_ProgGen_Dest_Form, UserForm_PCAnim,  UserForm_LEDColorAnim,  UserForm_LEDAnim
     
     UserForm_DialogGuide1 = D01.UserForm_DialogGuide1()
     UserForm_Select_Typ_DCC = D02.UserForm_Select_Typ_DCC()
@@ -345,8 +346,9 @@ def init_UserForms():
     Userform_SimpleInput = D11.UserForm_SimpleInput()
     Select_ProgGen_Src_Form = D12.CSelect_ProgGen_Src_Form(PG.global_controller)
     Select_ProgGen_Dest_Form = D13.CSelect_ProgGen_Dest_Form(PG.global_controller)
-    UserForm_PCAnim = D15.UserForm_PCAnim(PG.global_controller)
+    UserForm_PCAnim = D15.UserForm_ServoAnim(PG.global_controller)
     UserForm_LEDAnim = D14.UserForm_LEDAnim(PG.global_controller)
+    UserForm_LEDColorAnim = D16.UserForm_LEDColorAnim(PG.global_controller)
 
     
 def notimplemented(command):

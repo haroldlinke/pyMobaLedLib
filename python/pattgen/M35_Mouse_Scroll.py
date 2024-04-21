@@ -1,7 +1,7 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import ExcelAPI.XLWA_WinAPI as X03
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import pattgen.M01_Public_Constants_a_Var as M01
 import mlpyproggen.Pattern_Generator as PG
 
@@ -130,12 +130,14 @@ def LowLevelMouseProc(nCode, wParam, lParam):
 def Save_Mouse_Hook():
     # 28.04.20:
     #----------------------------
-    PG.ThisWorkbook.Sheets[M01.MouseHook_Store_Page].Range['MouseHook'] = "" #mLngMouseHook
+    #PG.ThisWorkbook.Sheets[M01.MouseHook_Store_Page].Range['MouseHook'] = "" #mLngMouseHook
+    pass
 
 def Cleare_Mouse_Hook():
     # 28.04.20:
     #-----------------------------
-    PG.ThisWorkbook.Sheets[M01.MouseHook_Store_Page].Range['MouseHook'] = ''
+    #PG.ThisWorkbook.SheetsDict[M01.MouseHook_Store_Page].Range['MouseHook'] = ''
+    pass
 
 def Read_Mouse_Hook():
     _fn_return_value = None
@@ -146,6 +148,7 @@ def Read_Mouse_Hook():
 
 def Is_Mouse_Hook_Stored():
     _fn_return_value = None
+    return True
     # 28.04.20:
     #-------------------------------------------------
     _fn_return_value = PG.ThisWorkbook.Sheets(M01.MouseHook_Store_Page).Range('MouseHook') != '' and IsNumeric(PG.ThisWorkbook.Sheets(M01.MouseHook_Store_Page).Range('MouseHook'))

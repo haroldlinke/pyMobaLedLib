@@ -1,6 +1,6 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import ExcelAPI.XLC_Excel_Consts as X01
 import pattgen.M01_Public_Constants_a_Var as M01
 import pattgen.M09_Language as M09
@@ -64,7 +64,7 @@ class UserForm_LEDAnim:
                         "Visible"       : True,
                         "Width"         : 842,
                         "Components":[{"Name":"Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                       "Caption":"LED Animation\n\n ermöglicht die Animation einer LED-Beleuchtung. Für Einzel-LEDs kann die Helligkeit gesteuert werden. Für RGB LEDS zur Zeit auch nur die Helligkeit. In einer späteren Version wird man auch die Farbe ändern können.",
+                                       "Caption":"LED Animation\n\n ermöglicht die Animation einer LED-Beleuchtung. Für Einzel-LEDs und RGB-LEDS kann die Helligkeit gesteuert werden.",
                                         "ControlTipText":"Tooltip1","ForeColor":"#000012","Height":66,"Left":12,"SpecialEffect": "fmSpecialEffectSunken","TextAlign":"fmTextAlignLeft","Top":18,"Type":"Label","Visible":True,"Width":790},
                                       {"Name":"Label2","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"by Harold Linke",
@@ -471,19 +471,16 @@ class UserForm_LEDAnim:
         else:
             LEDtype_str = str(self.LEDtype)
             LED = "C"+LEDtype_str+"-"+LEDtype_str
-            
-        self.Userform_Res = LED + "$// Activation: Binary #LEDAnim("
-        #self.Userform_Res = self.Userform_Res + str(runtype) + "," + str(self.curvetype) + ","\
-        #    + str(self.LED_Abstand_TextBox.Value) + ","\
-        #    + str(self.LED_Anfangswert_TextBox.Value) + "," + str(self.LED_Endwert_TextBox.Value) + ","\
-        #    + str(self.LED_DauerEin_TextBox.Value) + "," + str(self.LED_DauerAus_TextBox.Value) + ","\
-        #    + str(self.LED_PauseS_Ein_TextBox.Value) + "," + str(self.LED_PauseE_Ein_TextBox.Value) + ","\
-        #    + str(self.LED_PauseS_Aus_TextBox.Value) + "," + str(self.LED_PauseE_Aus_TextBox.Value)
-        self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
+         
+        if gotoaction:
+            self.Userform_Res = LED + "$// Activation: Binary #LEDAnim("
+            self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
+            self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n"
+        else:
+            self.Userform_Res = LED + "$// #LEDAnim("
+            self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
+            self.Userform_Res = self.Userform_Res + ")\n"
         
-        self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n"
-        
-        #APatternT1(#LED,28,SI_LocalVar,3,0,128,0,PM_NORMAL,250,10,1,0,40,1,0,70,1,0,100,1,0,130,1,0,180,1,0,210,1,0,240,1,0,250,1,0,250,1,0,220,1,0,190,1,0,160,1,0,130,1,0,100,1,0,70,1,0,40,1,0,10,1,0  ,0,0,0,0,0,0,0,0,63,128,0,0,0,0,0,0,0,63)
         if self.Ueberblendung.Value !=1:
             self.Userform_Res = self.Userform_Res + "A"
         self.Userform_Res = self.Userform_Res + "PatternT1(#LED,"
@@ -516,7 +513,7 @@ class UserForm_LEDAnim:
             anzahl_werte_Ein = int((self.LED_DauerEin_TextBox.Value + self.LED_PauseS_Ein_TextBox.Value + self.LED_PauseE_Ein_TextBox.Value) / self.LED_Abstand_TextBox.Value)
             anzahl_werte_Aus = int((self.LED_DauerAus_TextBox.Value + self.LED_PauseS_Aus_TextBox.Value + self.LED_PauseE_Aus_TextBox.Value)/ self.LED_Abstand_TextBox.Value) -2
             if anzahl_werte_Aus + anzahl_werte_Ein + 3 != total_points:
-                print("Error")
+                logging.debug("UserForm_LEDAnim: Ok-ButtonClick-total_points wrong")
             self.Userform_Res = self.Userform_Res + "  "
             for i in range(anzahl_werte_Ein):
                 self.Userform_Res = self.Userform_Res + ",0"

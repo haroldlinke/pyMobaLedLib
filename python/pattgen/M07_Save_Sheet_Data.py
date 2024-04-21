@@ -4,7 +4,7 @@ import pattgen.M30_Tools as M30
 import pattgen.M01_Public_Constants_a_Var as M01
 import proggen.M02_Public as M02
 import ExcelAPI.XLC_Excel_Consts as X01
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M09_Language as M09
 import pattgen.M08_Load_Sheet_Data

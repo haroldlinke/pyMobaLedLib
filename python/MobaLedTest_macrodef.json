@@ -131,20 +131,31 @@
         "Ausführliche Beschreibung": "Hilfe-Seite",
         "HelpPageURL": "https://wiki.mobaledlib.de/anleitungen/spezial/testseite"
     },
-
-    "ProgGeneratorPage": {
-        "Typ": "ProgGeneratorPage",
-        "Name": "ProgGeneratorPage",
-        "MTabName": "ProgGeneratorPage",
-        "Title": "ProgGeneratorPage",
+    "PatternConfiguratorPage": {
+        "Typ": "PatternConfiguratorPage",
+        "Name": "PatternConfiguratorPage",
+        "MTabName": "Pattern Configurator",
+        "Title": "Pattern Configurator",
         "Button_1": "",
         "Button_2": "",
         "Button_3": "",
-        "Kurzbeschreibung": "DCC-Keyboard-Simulator",
-        "Ausführliche Beschreibung": "Der DCC-Keyboard-Simulator schickt an den ARDUINO direkt Kommandos, die den Kommandos entsprechen, die der DCC-ARDUINO an den LED-ARDUINO schicken würde. Damit kann man die Funktion der DCC-Schalter austesten.\nACHTUNG: Beim ersten Tastendruck kann es etwas dauern, da der ARDUINO den Modus umschalten muss und eventuell neu verbunden wird. Manchmal reagiert der ARDUINO auch erst auf den zweiten Tastendruck",
+        "Kurzbeschreibung": "Pattern Configurator",
+        "Ausführliche Beschreibung": "Zum Konfigurieren von individuellen MLL Pattern",
         "Params": [
-            "DCC BaseAddress"
         ]
+    },
+    "ProgGeneratorPage": {
+        "Typ": "ProgGeneratorPage",
+        "Name": "ProgGeneratorPage",
+        "MTabName": "Programm Generator",
+        "Title": "Programm Generator",
+        "Button_1": "",
+        "Button_2": "",
+        "Button_3": "",
+        "Kurzbeschreibung": "Programm Generator",
+        "Ausführliche Beschreibung": "Erzeugen von MLL Programme",
+        "Params": [
+         ]
     },
     "SerialMonitorPage": {
         "Typ": "SerialMonitorPage",

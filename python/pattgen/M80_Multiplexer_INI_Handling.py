@@ -1,6 +1,6 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M09_Language
 import pattgen.M81_Create_Multiplexer_Ini
@@ -1461,6 +1461,7 @@ def Set_Button_Text_and_Color(MacroCodeNr, Txt, rgbNr):
         _with108.Fill.ForeColor.rgb = rgbNr
         _with108.TextFrame2.TextRange.Characters.Text = Txt
         _with108.Locked = True
+        _with108.updateShape()
 
 def Get_NumberOfLEDs():
     _fn_return_value = None

@@ -46,7 +46,7 @@ import proggen.M25_Columns as M25
 import proggen.M30_Tools as M30
 import proggen.F00_mainbuttons as F00
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 from ExcelAPI.XLC_Excel_Consts import *
 

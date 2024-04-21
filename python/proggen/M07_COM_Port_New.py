@@ -68,7 +68,7 @@ import proggen.M30_Tools as M30
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Mulitplexer as M80
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 import proggen.D08_Select_COM_Port_Userform as D08
 import proggen.M07_COM_Port as M07

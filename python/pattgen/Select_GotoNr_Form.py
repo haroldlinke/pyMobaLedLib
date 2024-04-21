@@ -36,12 +36,12 @@
 import tkinter as tk
 import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLF_FormGenerator as XLF
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 import pattgen.M30_Tools as M30
 import pattgen.M01_Public_Constants_a_Var as M01
 import mlpyproggen.Pattern_Generator as PG

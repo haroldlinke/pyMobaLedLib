@@ -54,7 +54,7 @@ import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLWF_Worksheetfunction as WorksheetFunction
 import proggen.clsExtensionParameter
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 DstVar_List = String()
 MultiSet_DstVar_List = String()

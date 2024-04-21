@@ -43,7 +43,7 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 import proggen.M25_Columns as M25
 import proggen.M02_Public as M02
 import proggen.M09_Language as M09
@@ -107,7 +107,7 @@ def __Clear_COM_Port_Check(r, ReleaseMode):
     # Set to a negativ number.
     _with0 = r
     if not ReleaseMode and IsNumeric(_with0.Value):
-        _with0.Value = - Abs(_with0.Value)
+        _with0.Value = - Abs(P01.val(_with0.Value))
     else:
         _with0.Value = 'COM?'
 

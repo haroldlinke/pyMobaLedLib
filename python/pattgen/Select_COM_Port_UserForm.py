@@ -4,7 +4,7 @@ import proggen.M07_COM_Port_New as M07
 import proggen.M07_COM_Port as M07a
 import pattgen.M09_Language as M09
 import pattgen.M30_Tools as M30
-import ExcelAPI.XLW_Workbook as X02
+import ExcelAPI.XLA_Application as X02
 
 import tkinter as tk
 from tkinter import ttk

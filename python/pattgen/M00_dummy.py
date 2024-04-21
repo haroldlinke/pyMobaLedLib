@@ -42,7 +42,7 @@ from vb2py.vbconstants import *
 
 import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 from ExcelAPI.XLC_Excel_Consts import *
 

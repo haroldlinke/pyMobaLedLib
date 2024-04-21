@@ -44,7 +44,7 @@ import proggen.M09_Language as M09
 import proggen.M30_Tools as M30
 import proggen.M37_Inst_Libraries as M37
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 from ExcelAPI.XLC_Excel_Consts import *
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Path - ByVal 

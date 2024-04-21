@@ -81,13 +81,14 @@ import proggen.M80_Create_Mulitplexer as M80
 import proggen.D06_Userform_House as D06
 import proggen.D07_Userform_Other as D07
 import proggen.D14_Userform_LEDAnim as D14
-import proggen.D15_Userform_PCAnim as D15
+import proggen.D15_Userform_ServoAnim as D15
+import proggen.D16_Userform_LEDColorAnim as D16
 import pattgen.M17_Import_a_Dec_Macro as PA17
 
 import mlpyproggen.Prog_Generator as PG
 import mlpyproggen.Pattern_Generator as PA
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 from ExcelAPI.XLC_Excel_Consts import *
 
@@ -458,13 +459,13 @@ def cleanConfigLine(configstr):
 
 def _call_patternconfigurator(ConfigLine, Row):
     
-    #PG.global_controller.showFramebyName("PatternGeneratorPage")
+    #PG.global_controller.showFramebyName("PatternConfiguratorPage")
     ConfigLine = cleanConfigLine(ConfigLine)
         
     PA.ThisWorkbook.Activate()
     P01.Sheets("PG-Temp").Select()
     PA17.Import_From_Prog_Gen_Callback(True, "", ConfigLine, Row, overwrite_sheet=True)
-    PG.global_controller.showFramebyName("PatternGeneratorPage")
+    PG.global_controller.showFramebyName("PatternConfiguratorPage")
 
 def __SelectMacros_Sub():
     _ret = False
@@ -533,13 +534,17 @@ def __SelectMacros_Sub():
             if MacroName == "Pattern":
                 _call_patternconfigurator(P01.Cells(P01.ActiveCell().Row, M25.Config__Col), P01.ActiveCell().Row)
             elif MacroName == "ServoAnim":
-                UserForm_PCAnim = D15.UserForm_PCAnim(PG.global_controller)
+                UserForm_PCAnim = D15.UserForm_ServoAnim(PG.global_controller)
                 UserForm_PCAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
                 Res = UserForm_PCAnim.Userform_Res
             elif MacroName == "LEDAnim":
                 UserForm_LEDAnim = D14.UserForm_LEDAnim(PG.global_controller)
                 UserForm_LEDAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
                 Res = UserForm_LEDAnim.Userform_Res
+            elif MacroName == "LEDColorAnim":
+                UserForm_LEDColorAnim = D16.UserForm_LEDColorAnim(PG.global_controller)
+                UserForm_LEDColorAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
+                Res = UserForm_LEDColorAnim.Userform_Res
         elif (_select4 == ''):
             Res = __Proc_General(LEDs, Macro, Description, LedChannels, Act_Channel, Def_Channel)
         else:

@@ -89,7 +89,7 @@ import proggen.M98_Ondrive as M98
 
 import  proggen.F00_mainbuttons as F00
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 
 import mlpyproggen.Prog_Generator as PG
 

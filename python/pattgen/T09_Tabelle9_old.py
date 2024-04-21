@@ -43,7 +43,7 @@ from vb2py.vbconstants import *
 
 import mlpyproggen.Prog_Generator as PG
 
-import ExcelAPI.XLW_Workbook as P01
+import ExcelAPI.XLA_Application as P01
 import pattgen.M02_Main as PAM02
 import pattgen.M17_Import_a_decode_Macro as PAM17
 import pattgen.M11_To_Prog_Gen as PAM11
