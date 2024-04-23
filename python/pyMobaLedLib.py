@@ -147,9 +147,9 @@ def _(text):
 # ------------------------------
 
 
-tabClassList_all = ( StartPage, Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_all_proggen = ( StartPage, Prog_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_mll_only = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_all = ( StartPage, ARDUINOMonitorPage,Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_all_proggen = ( StartPage, ARDUINOMonitorPage,Prog_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_mll_only = ( StartPage, ARDUINOMonitorPage,ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_SetColTab = (ColorCheckPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
 #tabClassList_all = ( StartPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage, Z21MonitorPage, SerialMonitorPage, ARDUINOMonitorPage, ARDUINOConfigPage, ConfigurationPage)
@@ -2957,19 +2957,19 @@ def main_entry():
         
     logger.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
     
-    app = pyMobaLedLibapp()
-    tk_version = app.tk.call("info", "patchlevel")
-    logging.debug("TK-Version:"+tk_version)
+    try:
+        app = pyMobaLedLibapp()
+        tk_version = app.tk.call("info", "patchlevel")
+        logging.debug("TK-Version:"+tk_version)
+        
+        app.setroot(app)
+        app.protocol("WM_DELETE_WINDOW", app.cancel)
+        app.startup_system()
+        app.mainloop()
     
-    app.setroot(app)
-    
-    app.protocol("WM_DELETE_WINDOW", app.cancel)
-    
-    app.startup_system()
-
-    
-    app.mainloop()
-    
+    except BaseException as e:
+        logging.error(e, exc_info=True)
+        pass    
     
     logging.info("Program End")
 

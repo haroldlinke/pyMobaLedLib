@@ -134,7 +134,7 @@ def Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets(ReleaseMode):
                 # VB2PY (UntranslatedCode) On Error Resume Next
                 Sh.Select()
                 Sh.Cells(M02.FirstDat_Row, M25.Descrip_Col).Select()
-                LRow = M30.LastFilledRowIn_ChkAll(Sh) + 1
+                LRow = M30.LastFilledRowIn_ChkAll(Sh)
                 _with1.Cells(LRow + 1, M25.Descrip_Col).Select()
                 #While .Rows(LRow).EntireRow.Hidden                            ' 29.10.19: Disabled
                 #   LRow = LRow + 1

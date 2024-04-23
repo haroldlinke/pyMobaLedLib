@@ -248,7 +248,7 @@ def First_Change_in_Line(Target):
 def LastFilledRowIn_ChkAll(Sh):
     Row = int()
     #-------------------------------------------------------------
-    Row = LastUsedRowIn(Sh)+1
+    Row = LastUsedRowIn(Sh)
     with_variable2 = Sh
     while First_Change_in_Line(with_variable2.Cells(Row, 1)):
         Row = Row - 1
@@ -807,7 +807,14 @@ def Test_InsertElementAt():
 
 def GetPathOnly(sPath):
     #------------------------------------------------------
-    fn_return_value = Left(sPath, InStrRev(sPath, '/', Len(sPath)) - 1)
+    pos1 = InStrRev(sPath, '/', Len(sPath))
+    pos2 = InStrRev(sPath, '\\', Len(sPath))
+    if pos1 > pos2:
+        pos = pos1
+    else:
+        pos = pos2
+    #fn_return_value = Left(sPath, InStrRev(sPath, '/', Len(sPath)) - 1)    
+    fn_return_value = Left(sPath, pos - 1)
     return fn_return_value
 
 def CreateFolder(sFolder):
