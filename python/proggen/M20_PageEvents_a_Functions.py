@@ -569,7 +569,7 @@ def Proc_Typ_Col(Target):
     elif (M25.Page_ID == 'Selectrix'):
         RefCol = M25.SX_Bitposi_Col
     else:
-        P01.MsgBox('Internal error: Unknown M25.Page_ID in \'Proc_Typ_Col\'', vbCritical)
+        P01.MsgBox('Internal error:',' Unknown M25.Page_ID in \'Proc_Typ_Col\'', vbCritical)
         M30.EndProg()
     if P01.Cells(Target.Row, RefCol) != '' and Target == '':
         Select_Typ_by_Dialog(Target)
