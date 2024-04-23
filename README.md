@@ -21,7 +21,7 @@ Requirements:
 1. Download the release package for windows. 
 2. Locate the ARDUINO folder - normally it should be Dokumente\ARDUINO. This folder contains the MobaLedLib folder.
 3. Create a new folder pyMobaLedLib. Copy the downloaded package into this folder and unzip the package.
-4. pyMobaLedLib.exe is the program file. With right click "Send to Desktop" create an icon on the desktop.
+4. pyMobaLedLib.bat starts the program pyMoabLedLib. With right click "Send to Desktop" create an icon on the desktop.
 
 # Attention LINUX and Mac Users: 
 It is not possible to detect the location of the ARDUINO IDE executable automatically, as it can be installed in any directory
