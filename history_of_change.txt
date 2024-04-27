@@ -1,3 +1,8 @@
+5.2.6.001 - 27.04.2024
+- corrected ESP32 compatibility for Win
+- program generator and patter configurator pages are active as default
+- better error handling when images are missing or wrong spelled
+
 5.2.5.001 - 23.4.2024
 - crash when installed in a complete new environment when updating libraries
 - improved error reporting
