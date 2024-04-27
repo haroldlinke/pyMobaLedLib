@@ -64,7 +64,9 @@ class UserForm_ServoAnim:
                         "Visible"       : True,
                         "Width"         : 842,
                         "Components":[{"Name":"Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                       "Caption":"Servo Animation für den Direct Mode Servo",
+                                       "Caption":"Unterstützt den Direkt Mode Servo von Eckhard (Servo DM) und die Normalen MLL-Servos (Servo1, Servo2 und Servo3)\nDurch Eingabe der Ein- und Ausschaltparameter wird der Zeitablauf bestimmt. Es stehen 3 Kurven-Modi zur Verfügung: Linear, Beschleunigung und Individuell. " +
+                                       "Die berechneten Kurven werden in der Grafik rechts angezeigt. Bei der Einstellung Individuell können die Kurvenwerte (Grüne Punkte) einzeln eingestellt werden. Wurde unter Servo-Adresse die Adresse des Servos angegeben, kann die Servostellung direkt überprüft werden.\n" +
+                                       "Beim Ausführen kann man wählen zwischen: Wiederholen-die Ein-und Ausschaltsequenz wird automatisch wiederholt, PingPong-die Sequenz wird vor- und zurück abgespielt, Ein/Aus: Bei Schalter auf EIN wird die Einschaltsequenz, bei Schalter auf AUS, wird die Auschaltsequenz abgespielt.",
                                         "ControlTipText":"Tooltip1","ForeColor":"#000012","Height":66,"Left":12,"SpecialEffect": "fmSpecialEffectSunken","TextAlign":"fmTextAlignLeft","Top":18,"Type":"Label","Visible":True,"Width":790},
                                       {"Name":"Label2","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"by Harold Linke",

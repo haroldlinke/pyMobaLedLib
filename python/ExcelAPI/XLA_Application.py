@@ -373,7 +373,7 @@ class CWorkbook(object):
                 act_worksheet.tksheet.redraw()
 
         if not self.showws and not self.controller.show_hiddentables:
-            act_worksheet.Visible(False)
+            act_worksheet.Visible = False
             #self.container.tab(tabframe,state="hidden")
         self.tabid += 1
 
@@ -1109,6 +1109,7 @@ class CWorksheet(object):
         self.grid_color = "#000000"
         self.linewidth = 1
         self.wschanged_callback = None
+        self._visible_val = True
         
         if False: #tablemodel:
             #self.tablemodel = tablemodel
@@ -2496,14 +2497,27 @@ class CWorksheet(object):
         self.Workbook.container.select(self.tabid)
         return
     
-    def Visible(self,value):
+    #def Visible(self,value):
+    #    if value==True:
+    #        self.Workbook.container.tab(self.tabid,state="normal")
+    #        #self.Workbook.container.add(self)
+    #    else:
+    #        self.Workbook.container.tab(self.tabid,state="disable")
+    #        self.Workbook.container.hide(self.tabid)
+    #    return
+    
+    def get_visible(self):
+        return self._visible_val
+
+    def set_visible(self, value):
+        self._visible_val=value
         if value==True:
             self.Workbook.container.tab(self.tabid,state="normal")
-            #self.Workbook.container.add(self)
         else:
             self.Workbook.container.tab(self.tabid,state="disable")
-            self.Workbook.container.hide(self.tabid)
-        return
+            self.Workbook.container.hide(self.tabid)            
+
+    Visible = property(get_visible, set_visible, doc='Visible Status')    
 
     def getData(self):
         #collects all table data and status information to allow the creation of a JSON file
@@ -3963,7 +3977,7 @@ class CLine(object):
 #*******************************************        
 class CFill(object):
     def __init__(self,Fill="",shape=None):
-        self.Visible = 1
+        self.Visible = True
         self.ForeColor = CColor((0, 0, 0),shape=shape,fg=True)
         self.Transparency_val = 0
         self.shape=shape
