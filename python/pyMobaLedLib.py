@@ -494,7 +494,8 @@ class pyMobaLedLibapp(tk.Tk):
                     tabClassList = tabClassList_all # all Pages
             else:
                 tabClassList = tabClassList_mll_only #no ProgGen and no PattGen
-        #tabClassList = tabClassList_tksheet_test #test
+        
+        tabClassList = tabClassList_all #test, always show all pages 
         
         if COMMAND_LINE_ARG_DICT.get("vb2py","")=="True":
             tabClassList += (VB2PYPage, )
@@ -504,6 +505,8 @@ class pyMobaLedLibapp(tk.Tk):
             tabClassName = frame.tabClassName
             self.tabdict[tabClassName] = frame
             self.container.add(frame, text=frame.tabname)
+        
+        self.container.insert(10, self.tabdict["ARDUINOMonitorPage"])
         
         self.continueCheckDisconnectFile = True
         self.onCheckDisconnectFile() 
@@ -516,11 +519,11 @@ class pyMobaLedLibapp(tk.Tk):
         
         filedir = self.mainfile_dir # os.path.dirname(os.path.realpath(__file__))
         self.update()
-        for wb in P01.Workbooks:
-            # test 15.4.2024wb.init_workbook()
-            if self.getConfigData("AutoLoadWorkbooks"):
-                    temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name+".json")
-                    #wb.Load(filename=temp_workbook_filename)
+        #for wb in P01.Workbooks:
+        #    # test 15.4.2024wb.init_workbook()
+        #    if self.getConfigData("AutoLoadWorkbooks"):
+        #            temp_workbook_filename = os.path.join(filedir,self.tempworkbookFilname+"_"+wb.Name+".json")
+        #            #wb.Load(filename=temp_workbook_filename)
         
         self.messageframe = ttk.Frame(self)
         
@@ -2831,11 +2834,9 @@ def main_entry():
     global DEBUG
     
     global COMMAND_LINE_ARG_DICT
-    
-    import wingdbstub
-    
-    if sys.hexversion < 0x030700F0:
-        tk.messagebox.showerror("Wrong Python Version"+sys.version,"You need Python Version > 3.7 to run this Program")
+        
+    if sys.hexversion < 0x030900F0:
+        tk.messagebox.showerror("Wrong Python Version"+sys.version,"You need Python Version > 3.9 to run this Program")
         exit()
     
     COMMAND_LINE_ARG_DICT = {}
@@ -2969,6 +2970,7 @@ def main_entry():
     
     except BaseException as e:
         logging.error(e, exc_info=True)
+        print(e, exc_info=True)
         pass    
     
     logging.info("Program End")

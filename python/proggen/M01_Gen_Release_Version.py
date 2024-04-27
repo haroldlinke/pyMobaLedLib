@@ -114,11 +114,11 @@ def __Release_or_Debug_Version(Release):
     # AddImagesToTreeForm ".\Icons", True                                     ' 28.11.21: For some reasons this call generates an error. The same function could be called by the "Read Pictures" button in the "Lib_Macros" sheet without problems ?!?
     #           => It has to be called manually
     if Release:
-        PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH).Visible(False) #*HL
-        PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible(False) #*HL
-        PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible(False) #*HL
-        PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Visible(False) #*HL
-        PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible(False) #*HL
+        PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH).Visible = False
+        PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible = False
+        PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible = False
+        PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Visible = False
+        PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible = False
     
     for Sh in PG.ThisWorkbook.sheets:
         if M28.Is_Data_Sheet(Sh):
@@ -149,9 +149,9 @@ def __Release_or_Debug_Version(Release):
             # Activate the Filter                                              ' 02.03.20: ' 14.06.20: Filters ar no longer used in the release version
             #Range(Cells(Header_Row, Enable_Col), Cells(LastUsedRow(), LastUsedColumn())).AutoFilter Field:=2, Criteria1:="=B01", Operator:=xlOr, Criteria2:="="
     # Show / Hide the internal sheets
-    PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible(not Release)
-    PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible(not Release)
-    PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible(not Release)
+    PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH).Visible = not Release
+    PG.ThisWorkbook.Sheets(M02.PAR_DESCR_SH).Visible = not Release
+    PG.ThisWorkbook.Sheets(M02.PLATFORMS_SH).Visible = not Release
     #Sheets("Farbentest").Visible = Not Release
     # Start sheet
     #PG.ThisWorkbook.Sheets(M02.START_SH).Select()

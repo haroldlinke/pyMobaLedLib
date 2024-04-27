@@ -438,7 +438,7 @@ class CUserForm_Options:
         #-------------------------------------------------
         self.Hide()
         with_1 = PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH)
-        with_1.Visible(True)
+        with_1.Visible = True
         with_1.Select()
         
     def Button_Setup(self,button_frame,Text,Command,Accelerator,Row=0,label_text="",state=tk.NORMAL):
