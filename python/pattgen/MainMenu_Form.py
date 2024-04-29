@@ -237,7 +237,7 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                "Caption":"Speichern",
                                                "ControlTipText":"","ForeColor":"#000012","Height":84,"Left":6,"SpecialEffect":"fmSpecialEffectEtched","Top":132,"Type":"Frame","Visible":True,"Width":348,
                                                "Components":[{"Name":"Label4","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                              "Caption":"Speichert alle Patternseiten in der Datei\n'MyExamples.MLL_pcf' im Verzeichnis\n'EigeneDokumente\MyPattern_Config_Examples'.",
+                                                              "Caption":"Speichert alle Patternseiten in der Datei\n'MyExamples.MLL_pcf' im Verzeichnis\n'EigeneDokumente\\MyPattern_Config_Examples'.",
                                                               "ControlTipText":"","ForeColor":"#000012","Height":36,"Left":132,"TextAlign":"fmTextAlignLeft","Top":0,"Type":"Label","Visible":True,"Width":204},
                                                              {"Name":"Label6","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                               "Caption":"Speichert die aktuelle, oder alle ausgewählten Seiten in einer Datei.(Mit Strg+Klick auf den Seiten namen können mehrere Seiten ausgewählt werden.)",

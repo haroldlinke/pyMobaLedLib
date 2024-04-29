@@ -70,9 +70,9 @@ import mlpyproggen.Prog_Generator as PG
 from ExcelAPI.XLC_Excel_Consts import *
 
 
-""" Support for the Phython modul MobaLedCheckColors.py from Harold
+""" Support for the Python modul MobaLedCheckColors.py from Harold
  ToDo:
- - Verwendet die Datei: LEDs_AutoProg\MobaLedTest_config.json
+ - Verwendet die Datei: LEDs_AutoProg\\MobaLedTest_config.json
  - Keine py Dateien unterstützen
  - Download testen
  - Wenn bereits eine ColTab Zeile vorhanden ist, dann sollen die Farben verwendet werden
