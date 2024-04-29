@@ -6,7 +6,7 @@ import pattgen.M09_Language
 import pattgen.M01_Public_Constants_a_Var as M01
 import mlpyproggen.Pattern_Generator as PG
 
-""" Copy the program to %USERPROFILE%\Documents\Arduino\MobaLedLib_<Version>\
+""" Copy the program to %USERPROFILE%\\Documents\\Arduino\\MobaLedLib_<Version>\
 ---------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------
 --------------------------------------------------

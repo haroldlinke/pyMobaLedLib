@@ -51,7 +51,7 @@ For 64 Bit Systems
    MSLLHOOKSTRUCT
    0    pt.X Long
    4    pt.Y Long
-   8    mouseData Long  Holds Forward\Backward flag
+   8    mouseData Long  Holds Forward/Backward flag
    12   flags Long
    16   time Long
    20   dwExtraInfo Long

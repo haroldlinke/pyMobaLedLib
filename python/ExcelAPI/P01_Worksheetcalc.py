@@ -367,7 +367,7 @@ def convertCell2Excel(cell):
     
 def compareCells(cell,xcellstr):
     #compares Cell objects wit Excelcellstring e.g. "E1"
-    pattern=re.compile("([A-Z]+)(\d+)")
+    pattern=re.compile(r"([A-Z]+)(\d+)")
     m = re.match(pattern,xcellstr)
     #print(rangestr,"->",m.groups())
     m_list = m.groups(0)

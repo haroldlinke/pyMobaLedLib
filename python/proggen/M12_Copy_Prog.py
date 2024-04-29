@@ -53,7 +53,7 @@ import mlpyproggen.Prog_Generator as PG
 
 
 
-""" Copy the program to %USERPROFILE%\Documents\Arduino\MobaLedLib_<Version>\
+""" Copy the program to %USERPROFILE%\\Documents\\Arduino\\MobaLedLib_<Version>\
  To update the icon Cache in windows enter
    ie4uinit -show
  in the command line

@@ -10,8 +10,8 @@ import ExcelAPI.XLA_Application as X02
 """ Debug Events
  30.05.20:
 # VB2PY (CheckDirective) VB directive took path 1 on USE_SKETCHBOOK_DIR
- 06.12.19: Old: "\libraries\MobaLedLib\examples\23_B.LEDs_AutoProg"
- 20.07.20: All Versions are located in "\MobaLedLib\Ver_..." to be able to set one exclusion in the virus scan program for all versions
+ 06.12.19: Old: "\\libraries\\MobaLedLib\\examples\\23_B.LEDs_AutoProg"
+ 20.07.20: All Versions are located in "\\MobaLedLib\\Ver_..." to be able to set one exclusion in the virus scan program for all versions
  14.06.20:
  Version of the MLL_pcf file    17.11.19:
  ??
