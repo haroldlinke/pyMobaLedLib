@@ -65,13 +65,13 @@ import proggen.M09_Language as M09
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
-#import proggen.M28_divers as M28
+#import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 #import proggen.M37_Inst_Libraries as M37
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
 
 #import proggen.D08_Select_COM_Port_Userform as D08
 
@@ -200,7 +200,9 @@ def __Get_USB_Ports():
     # COM-10 is allways added because otherwise the array may be empty if no other com port is detected
     # The "find" function dosen't work on Norberts computer => Therefore it's replaced by an own find algo
     Res = M30.F_shellExec('cmd /c mode')
+    # Achtung: Der Mode Befehl schickt einen Reset zu allen Ports
     if Res == '':
+        # No COM port available ?
         P01.MsgBox(M09.Get_Language_Str('Fehler: Das Abfragen der COM Ports ist fehlgeschlagen ;-('), vbCritical, M09.Get_Language_Str('Fehler beim abfragen der COM Ports'))
         M30.EndProg()
     Res = Replace(Res, ':', '')
@@ -241,6 +243,7 @@ def Detect_Com_Port_and_Save_Result(Right):
         P01.CellDict[M02.SH_VARS_ROW, ComPortColumn] = Port
         PG.global_controller.setConfigData("serportname",Port)
         F00.StatusMsg_UserForm.Set_Label(M09.Get_Language_Str('Überprüfe den Arduino Typ'))
+        # 30.10.20:
         F00.StatusMsg_UserForm.Show()
         
         BuildOptions = ""
@@ -254,6 +257,7 @@ def __TestDetect_Com_Port():
 
 def ComPortPage():
     fn_return_value = None
+    # 30.12.19:
     #-----------------------------------------
     if M02.ComPortfromOnePage != '':
         fn_return_value = PG.ThisWorkbook.Sheets(M02.ComPortfromOnePage)
@@ -267,20 +271,26 @@ def Check_USB_Port_with_Dialog(ComPortColumn):
     #if P01.val(ComPortPage().Cells(M02.SH_VARS_ROW, ComPortColumn)) <= 0:
     if not F00.port_is_available(ComPortPage().Cells(M02.SH_VARS_ROW, ComPortColumn)):
         fn_return_value = M07New.USB_Port_Dialog(ComPortColumn)
+        # 04.05.20: Prior Check_USB_Port_with_Dialog ends the program in case of an error
     else:
         fn_return_value = True
     return fn_return_value
 
 def __Test_Check_USB_Port_with_Dialog():
+    # 30.12.19:
     #UT------------------------------------------
     M25.Make_sure_that_Col_Variables_match()
     Debug.Print(Check_USB_Port_with_Dialog(M25.COMPort_COL))
+    # Left Arduino
     #Debug.Print Check_USB_Port_with_Dialog(COMPrtR_COL)   ' Right Arduino
+    # Right Arduino
     #Debug.Print Check_USB_Port_with_Dialog(COMPrtT_COL)   ' Tiny_Uniprog
+    # Tiny_Uniprog
 
-def Get_USB_Port_with_Dialog(Right=False):
-    fn_return_value = None
-    ComPortColumn = int()
+def Get_USB_Port_with_Dialog(right=VBMissingArgument):
+    _fn_return_value = False
+    ComPortColumn = Long()
+    # 30.12.19:
     #-----------------------------------------------------------------------------
     if Right:
         ComPortColumn = M25.COMPrtR_COL
@@ -361,7 +371,8 @@ def EnumComPorts_old(Show_Unknown, ResNames, PrintDebug=True):
     PICO_Inst = ( M02a.Get_BoardTyp() == 'PICO' )
     for objItem in GetObject('winmgmts:\\\\.\\root\\CIMV2').ExecQuery('SELECT * FROM Win32_PnPEntity WHERE ClassGuid="{4d36e978-e325-11ce-bfc1-08002be10318}"', VBGetMissingArgument(GetObject.ExecQuery, 1), 48):
         if Show_Unknown or ( ESP_Inst == False and PICO_Inst == False and  (InStr(objItem.Caption, 'CH340') > 0 or InStr(objItem.Caption, 'Arduino') > 0 or InStr(objItem.Caption, 'USB Serial Port') > 0 ) ) or ( ESP_Inst == True and InStr(objItem.Caption, 'Silicon Labs CP210x') > 0 )  or  ( PICO_Inst == True and InStr(objItem.Path_.Path, 'USB\\\\VID_2E8A&PID_000A\\') > 0 ):
-    # 21.04.21: Added: "Silicon Labs CP210x" for the PICO
+            # 10.11.20: Added: "Silicon Labs CP210x" for the ESP32  02.05.20: Added: "USB Serial Port" for original Nano (Frank)
+            # 21.04.21: Added: "Silicon Labs CP210x" for the PICO
             if PrintDebug:
                 Debug.Print(objItem.Caption)
             idx1 = InStr(objItem.Caption, '(COM')
@@ -376,12 +387,14 @@ def EnumComPorts_old(Show_Unknown, ResNames, PrintDebug=True):
                         break
         else:
             Debug.Print('Other device (Not added to result): ' + objItem.Caption)
+            # Example: "Silicon Labs CP210x USB to UART Bridge (COM10)"
     if NumberOfPorts > 0:
         Result = vbObjectInitialize((NumberOfPorts - 1,), Variant)
         ResNames = vbObjectInitialize((NumberOfPorts - 1,), Variant)
         for idx1 in vbForRange(0, NumberOfPorts - 1):
             Result[idx1] = Ports(idx1)
         M30.Array_BubbleSort(Result)
+        # Sort the Ports
         # find the matching names
         for idx1 in vbForRange(0, NumberOfPorts - 1):
             for idx2 in vbForRange(0, NumberOfPorts - 1):
@@ -526,6 +539,7 @@ def Get_Arduino_Baudrate(ComPort, Start_Baudrate, DeviceSignatur, FirmwareVer, D
     Res = int()
 
     SleepTime = int()
+    # 28.10.20: Jürgen: Added: DeviceSignatur  30.10.20: Added: FirmwareVer
     #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Return  >0: Baudrate 57600/115200
     #          0: if no arduino is detected
@@ -542,13 +556,17 @@ def Get_Arduino_Baudrate(ComPort, Start_Baudrate, DeviceSignatur, FirmwareVer, D
         BaudRate = 115200
     SleepTime = 20
     for i in vbForRange(1, 8):
+        # In case of an error we check each baudrate 4 times because sometimes the Baudrate is not detected if started with the wrong Baudrate   13.10.20: old:  For i = 1 To 6
         if DebugPrint:
             Debug.Print('Trying COM' + str(ComPort) + ' with Baudrate ' + str(BaudRate))
         if 0:
+            # Faster
+            # 30.10.20: Old: 1 (Seemes to be not much slower)
             Res, DeviceSignatur = DetectArduino(ComPort, BaudRate, DeviceSignatur= DeviceSignatur, SleepTime= SleepTime)
         else:
             Res, DeviceSignatur = DetectArduino(ComPort, BaudRate, HWVersion, SWMajorVersion, SWMinorVersion, DeviceSignatur= DeviceSignatur, SleepTime= SleepTime)
         if (Res == 1):
+            # Detected an arduino
             if DebugPrint:
                 Debug.Print('  Serial Port     : COM' + str(ComPort))
                 Debug.Print('  Serial Baudrate : ' + str(BaudRate))

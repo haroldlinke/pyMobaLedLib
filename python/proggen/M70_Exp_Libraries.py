@@ -75,9 +75,10 @@ def __Make_Sure_that_GitHub_Library_Exists(Expected_DirName, ExpectedFilesLst):
     ExtractedDirName = Expected_DirName + '-master'
     Path = M02a.Get_Ardu_LibDir()
     M30.CreateFolder(Path)
+    # Create the Arduino library directory
     if Dir(Path + Expected_DirName, vbDirectory) != '':
         Debug.Print('Directory already exists: ' + Path + Expected_DirName)
-        if __Check_Expected_Files(Path + Expected_DirName + '', ExpectedFilesLst):
+        if __Check_Expected_Files(Path + Expected_DirName + '/', ExpectedFilesLst):
             fn_return_value = True
             return fn_return_value
         else:
@@ -110,6 +111,7 @@ def __Make_Sure_that_GitHub_Library_Exists(Expected_DirName, ExpectedFilesLst):
     fn_return_value = True
     # VB2PY (UntranslatedCode) On Error Resume Next
     Kill(DestName)
+    # Delete the ZIP file
     # VB2PY (UntranslatedCode) On Error GoTo 0
     return fn_return_value
     P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler beim umbenennen des Verzeichnisses' + vbCr + '  \'#1#\'' + vbCr + 'nach' + vbCr + '  \'#2#\''), "#1#", ExtractedDirName), '#2#', Expected_DirName))

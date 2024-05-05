@@ -62,16 +62,7 @@ from .XLC_Excel_Consts import *
 from .P01_Worksheetcalc import Calc_Worksheet
 from pathlib import Path
 import subprocess
-import pattgen.D00_GlobalProcs as D00
-#import pattgen.M07_Save_Sheet_Data as M07
-#import pattgen.M08_Load_Sheet_Data as M08
-import proggen.F00_mainbuttons as F00
-import proggen.M02_Public as M02
-import proggen.M25_Columns as M25
-#import proggen.M37_Inst_Libraries as M37
-#import proggen.M39_Simulator as M39
-#import pattgen.DieseArbeitsmappe
-#import pattgen.M02_Main
+
 
 try:
     keyboard_Module_imported = False
@@ -265,6 +256,7 @@ class CWorkbook(object):
             self.sheets = list()
             self.workbookdict = workbookdict
             self.sheetdict = workbookdict.get("SheetDict", {})
+            self.jumptable = workbookdict.get("JumpTable", {}) 
             self.SheetsDict = CSheetsDict()
             self.Selection = None
             self.tabid    = 0
@@ -373,7 +365,7 @@ class CWorkbook(object):
                 act_worksheet.tksheet.redraw()
 
         if not self.showws and not self.controller.show_hiddentables:
-            act_worksheet.Visible(False)
+            act_worksheet.Visible = False
             #self.container.tab(tabframe,state="hidden")
         self.tabid += 1
 
@@ -467,6 +459,9 @@ class CWorkbook(object):
             self.LoadWorkbook(filename,workbookname=self.Name)
         return
     
+    def refreshicons(self):
+        ActiveSheet.refreshicons()    
+    """
     def is_datasheet(self,ws):
         _ret = False
         if self.Name=="PatternWorkbook":
@@ -484,11 +479,10 @@ class CWorkbook(object):
                 _ret=False
         return _ret
     
-    def refreshicons(self):
-        ActiveSheet.refreshicons()
+
 
     def LoadExcelWorkbook(self,filename=None):
-        """load Excelworkbook from a file"""
+        #load Excelworkbook from a file
         if filename == None:
             filename = tk.filedialog.askopenfilename(parent=self.master,
                                                       defaultextension='.xlsm',
@@ -522,7 +516,7 @@ class CWorkbook(object):
             # the destinations attribute contains a list of ranges in the definitions
                        
         return    
-    
+    """
     def LoadSheetfromExcelWorkbook(self,worksheet, filename, fieldnames):
         """load Excelworkbook from a file"""
         if not os.path.exists(filename):
@@ -1109,6 +1103,7 @@ class CWorksheet(object):
         self.grid_color = "#000000"
         self.linewidth = 1
         self.wschanged_callback = None
+        self._visible_val = True
         
         if False: #tablemodel:
             #self.tablemodel = tablemodel
@@ -1948,6 +1943,9 @@ class CWorksheet(object):
             if shaperow_displayed:
                 if shape.rectidx==0 or force:
                     if shape.Shapetype == msoShapeRectangle or shape.Shapetype == "rect":
+                        if shape.rectidx != 0:
+                            self.tksheet.MT.delete(shape.rectidx)
+                            pass # delete shape
                         #if shape.TextFrame2.TextRange.Text == "":
                         #    shape.TextFrame2.TextRange.Text = "0"
                         shape.rectidx = self.tksheet.MT.create_rectangle(shape.Left,shapeY,shape.Left+shape.Width,shapeY+shape.Height,fill=shape.Fillcolor,tags=(shape.Name,"Shape","Shapelist"))
@@ -1957,6 +1955,8 @@ class CWorksheet(object):
                             self.tksheet.MT.tag_lower(shape.rectidx)
                         self.tksheet.MT.tag_bind(shape.rectidx,"<Button-1>", shape.shape_button_1)
                         if shape.Text !="":
+                            if shape.textidx != 0:
+                                self.tksheet.MT.delete(shape.textidx)
                             shape.textidx = self.tksheet.MT.create_text(int(shape.Left+shape.Width/2),int(shapeY+shape.Height/2),width=shape.Left+shape.Width,text=shape.Text,font=self.thefont,tags=(shape.Name,"Shape","Shapelist"))
                             if shape.ZOrder_Val==0:
                                 self.tksheet.MT.tag_raise(shape.textidx)
@@ -1983,7 +1983,7 @@ class CWorksheet(object):
                             control_dict = shape.control_dict.get("Components",None)
                             format_dict  = shape.format_dict
                             shape.AlternativeText = shape.control_dict.get("AlternativeText",None)
-                            generate_controls(control_dict,formFrame,self.worksheet,persistent_controls=self.persistent_controls_dict,format_dict=format_dict,defaultfont=self.thefont)
+                            generate_controls(control_dict,formFrame,self.worksheet,persistent_controls=self.persistent_controls_dict,format_dict=format_dict,defaultfont=self.thefont, jump_table=self.Workbook.jumptable)
                             if shape.Top==None:
                                 x1,y1,x2,y2 = self.getCellCoords(shape.Row-1,shape.Col-1)
                                 shape.Top=y1
@@ -2468,8 +2468,8 @@ class CWorksheet(object):
         self.Workbook.ActiveSheet=self
         #self.Workbook.ActiveSheet =self
         #self.do_bindings()
-        if self.Workbook.Name=="ProgGenerator":
-            Port=Cells(M02.SH_VARS_ROW, M25.COMPort_COL)
+        #if self.Workbook.Name=="ProgGenerator":
+        #    Port=Cells(M02.SH_VARS_ROW, M25.COMPort_COL)
             #if F00.port_is_available(Port):    
             #    self.controller.setConfigData("serportname",Port)
         return
@@ -2496,14 +2496,28 @@ class CWorksheet(object):
         self.Workbook.container.select(self.tabid)
         return
     
-    def Visible(self,value):
+    #def Visible(self,value):
+    #    if value==True:
+    #        self.Workbook.container.tab(self.tabid,state="normal")
+    #        #self.Workbook.container.add(self)
+    #    else:
+    #        self.Workbook.container.tab(self.tabid,state="disable")
+    #        self.Workbook.container.hide(self.tabid)
+    #    return
+    
+    def get_visible(self):
+        return self._visible_val
+
+    def set_visible(self, value):
+        self._visible_val=value
         if value==True:
             self.Workbook.container.tab(self.tabid,state="normal")
             #self.Workbook.container.add(self)
         else:
             self.Workbook.container.tab(self.tabid,state="disable")
-            self.Workbook.container.hide(self.tabid)
-        return
+            self.Workbook.container.hide(self.tabid)            
+
+    Visible = property(get_visible, set_visible, doc='Visible Status')    
 
     def getData(self):
         #collects all table data and status information to allow the creation of a JSON file
@@ -3963,7 +3977,7 @@ class CLine(object):
 #*******************************************        
 class CFill(object):
     def __init__(self,Fill="",shape=None):
-        self.Visible = 1
+        self.Visible = True
         self.ForeColor = CColor((0, 0, 0),shape=shape,fg=True)
         self.Transparency_val = 0
         self.shape=shape
@@ -4167,7 +4181,7 @@ class CShape(object):
             control_dict = None
         if control_dict:
             button = control_dict[0]
-            button_command = D00.globalprocs.get(value,None)
+            button_command = self.Worksheet.Workbook.jumptable.get(value, None) #D00.globalprocs.get(value,None)
             button["Command"]=button_command
 
     OnAction = property(get_OnAction, set_OnAction, doc='Shape-OnAction')
@@ -4458,7 +4472,7 @@ class CApplication(object):
         pass
     
     def Run(self,cmd):
-        methodToCall = D00.globalprocs.get(cmd,None)
+        methodToCall = ActiveWorkbook.jumptable(cmd, None) #D00.globalprocs.get(cmd,None)
         if methodToCall:
             methodToCall()
 
@@ -4861,16 +4875,16 @@ def GetAsyncKeyState(key):
         return False
     else:
         return False
-
+"""
 def InputBox(Message:str, Title:str, Default=None):
     #res = tk.simpledialog.askstring(Title,Message,initialvalue=Default,parent=PG.dialog_parent)
-    
     F00.Userform_SimpleInput.Show(Message,Title,Default)
     res = F00.Userform_SimpleInput.UserForm_res
     if res == None:
         res=""
     return res
-        
+"""
+
 def IsEmpty(obj):
     if len(obj)==0:
         return True

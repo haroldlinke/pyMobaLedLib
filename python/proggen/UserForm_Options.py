@@ -66,13 +66,13 @@ import proggen.M18_Save_Load as M18
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
 
 import proggen.F00_mainbuttons as F00
 
@@ -479,12 +479,17 @@ class CUserForm_Options:
         for rb in self.radiobuttons.keys():
             rb_text = self.radiobuttons[rb]["text"]
             if rb.endswith(side):
-                if rb.startswith("ESP32"):
-                    if not M37.ESP32_Lib_Installed():
-                        continue
-                if rb_text.startswith("Pico"):
-                    if not M37.PICO_Lib_Installed():
-                        continue                    
+                try:
+                    
+                    if rb.startswith("ESP32"):
+                        if not M37.ESP32_Lib_Installed():
+                            continue
+                    if rb_text.startswith("Pico"):
+                        if not M37.PICO_Lib_Installed():
+                            continue
+                except BaseException as e:
+                    logging.error(e, exc_info=True)
+         
                 rbutton=tk.Radiobutton(self.right_frame, text=rb_text, variable=self.rb_res.get(side), value=self.radiobuttons[rb]["value"])
                 row = self.radiobuttons[rb]["value"]
                 if row > 3:
@@ -499,7 +504,7 @@ class CUserForm_Options:
         self.subtitle_Label = ttk.Label(self.right_frame, text=subtitle_txt,font=("Tahoma", 8),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
         self.subtitle_Label.grid(row=4,column=0,sticky="w",padx=10,pady=0)
    
-    def __UserForm_Initialize(self):
+    def __UserForm_Initialize(self, first_page_only=False):
         #--------------------------------
         # Is called once to initialice the form
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
@@ -541,45 +546,46 @@ class CUserForm_Options:
         
         self.create_arduinopage(LED_Arduino_frame, True)
         
-        if  M25.Page_ID != 'CAN':
-            DCC_Arduino_frame = tk.Frame(self.container)
-            DCC_Arduino_frame_Name = M25.Page_ID + ' Arduino'
-            self.tabdict[DCC_Arduino_frame_Name] = DCC_Arduino_frame
-            self.container.add(DCC_Arduino_frame, text=DCC_Arduino_frame_Name)
-            self.create_arduinopage(DCC_Arduino_frame, False)
+        if not first_page_only:
+            if  M25.Page_ID != 'CAN':
+                DCC_Arduino_frame = tk.Frame(self.container)
+                DCC_Arduino_frame_Name = M25.Page_ID + ' Arduino'
+                self.tabdict[DCC_Arduino_frame_Name] = DCC_Arduino_frame
+                self.container.add(DCC_Arduino_frame, text=DCC_Arduino_frame_Name)
+                self.create_arduinopage(DCC_Arduino_frame, False)
+            
+            File_frame = tk.Frame(self.container)
+            File_frame_Name = M09.Get_Language_Str("Dateien")
+            self.tabdict[File_frame_Name] = File_frame
+            self.container.add(File_frame, text=File_frame_Name)
         
-        File_frame = tk.Frame(self.container)
-        File_frame_Name = M09.Get_Language_Str("Dateien")
-        self.tabdict[File_frame_Name] = File_frame
-        self.container.add(File_frame, text=File_frame_Name)
-        
-        self.Button_Setup(File_frame,M09.Get_Language_Str("Importieren v. altem Prog."),self.__Import_Button_Click,"I",Row=0,state=tk.DISABLED)
-        self.Button_Setup(File_frame,M09.Get_Language_Str("Speichern in Datei"),self.__Save_Button_Click,"S",Row=1)
-        self.Button_Setup(File_frame,M09.Get_Language_Str("Laden aus Datei"),self.__Load_Button_Click,"L",Row=2)
-        self.Button_Setup(File_frame,M09.Get_Language_Str("Kopiere von Seite zu Seite"),self.__Copy_Page_Button_Click,"K",Row=3,state=tk.DISABLED)
-        
-        self.label5 = ttk.Label(File_frame, text=M09.Get_Language_Str("Speichern und Laden einzelner oder mehrerer Seiten"),wraplength=window_width/2-20,font=("Tahoma", 11))
-        self.label6 = ttk.Label(File_frame, text=M09.Get_Language_Str("Mit den Knöpfen links können die Daten der aktuellen Seite gespeichert und wieder geladen werden."),wraplength=window_width/2-20,font=("Tahoma", 8))
-        self.label5.grid(row=0,column=1)
-        self.label6.grid(row=1,column=1,rowspan=3)
-        
-        Update_frame = tk.Frame(self.container)
-        Update_frame_Name = M09.Get_Language_Str("Update")
-        self.tabdict[Update_frame_Name] = Update_frame
-        self.container.add(Update_frame, text=Update_frame_Name)
-        
-        self.Button_Setup(Update_frame,M09.Get_Language_Str("Aktualisiere Bibliotheke"),self.__Update_to_Arduino_Button_Click,"",Row=0,label_text="Aktualisiert die MobaLedLib auf den offiziellen freigegebenen Stand welcher in der Arduino IDE verfügbar ist.")
-        self.Button_Setup(Update_frame,M09.Get_Language_Str("Installiere Beta Test"),self.__Update_Beta_Button_Click,"",Row=1,label_text="Installiert die Beta Test Version der MobaLedLib Bibliothek.\n(Nur für Experten)")
-        self.Button_Setup(Update_frame,M09.Get_Language_Str("Status der Bibliotheken"),self.__Show_Lib_and_Board_Page_Button_Click,"",Row=2,label_text="Zeigt den Status aller installierten Bibliotheken und Boards an.")
-        self.Button_Setup(Update_frame,M09.Get_Language_Str("Aktualisiere pyMobLedLib"),self.__Update_pyMobaLedLib_Button_Click,"",Row=3,label_text="Aktualisiert pyMobaLedLib auf die neueste Version.")
-                       
-        Bootloader_frame = tk.Frame(self.container)
-        Bootloader_frame_Name = M09.Get_Language_Str("Bootloader")
-        self.tabdict[Bootloader_frame_Name] = Bootloader_frame
-        self.container.add(Bootloader_frame, text=Bootloader_frame_Name)
-        
-        self.Button_Setup(Bootloader_frame,M09.Get_Language_Str("Schnellen Bootloader"),self.__FastBootloader_Button_Click,"",Row=0,label_text="Installiert den schnellen Bootloader auf dem linken Arduino.")
-        
+            self.Button_Setup(File_frame,M09.Get_Language_Str("Importieren v. altem Prog."),self.__Import_Button_Click,"I",Row=0,state=tk.DISABLED)
+            self.Button_Setup(File_frame,M09.Get_Language_Str("Speichern in Datei"),self.__Save_Button_Click,"S",Row=1)
+            self.Button_Setup(File_frame,M09.Get_Language_Str("Laden aus Datei"),self.__Load_Button_Click,"L",Row=2)
+            self.Button_Setup(File_frame,M09.Get_Language_Str("Kopiere von Seite zu Seite"),self.__Copy_Page_Button_Click,"K",Row=3,state=tk.DISABLED)
+            
+            self.label5 = ttk.Label(File_frame, text=M09.Get_Language_Str("Speichern und Laden einzelner oder mehrerer Seiten"),wraplength=window_width/2-20,font=("Tahoma", 11))
+            self.label6 = ttk.Label(File_frame, text=M09.Get_Language_Str("Mit den Knöpfen links können die Daten der aktuellen Seite gespeichert und wieder geladen werden."),wraplength=window_width/2-20,font=("Tahoma", 8))
+            self.label5.grid(row=0,column=1)
+            self.label6.grid(row=1,column=1,rowspan=3)
+            
+            Update_frame = tk.Frame(self.container)
+            Update_frame_Name = M09.Get_Language_Str("Update")
+            self.tabdict[Update_frame_Name] = Update_frame
+            self.container.add(Update_frame, text=Update_frame_Name)
+            
+            self.Button_Setup(Update_frame,M09.Get_Language_Str("Aktualisiere Bibliotheke"),self.__Update_to_Arduino_Button_Click,"",Row=0,label_text="Aktualisiert die MobaLedLib auf den offiziellen freigegebenen Stand welcher in der Arduino IDE verfügbar ist.")
+            self.Button_Setup(Update_frame,M09.Get_Language_Str("Installiere Beta Test"),self.__Update_Beta_Button_Click,"",Row=1,label_text="Installiert die Beta Test Version der MobaLedLib Bibliothek.\n(Nur für Experten)")
+            self.Button_Setup(Update_frame,M09.Get_Language_Str("Status der Bibliotheken"),self.__Show_Lib_and_Board_Page_Button_Click,"",Row=2,label_text="Zeigt den Status aller installierten Bibliotheken und Boards an.")
+            self.Button_Setup(Update_frame,M09.Get_Language_Str("Aktualisiere pyMobLedLib"),self.__Update_pyMobaLedLib_Button_Click,"",Row=3,label_text="Aktualisiert pyMobaLedLib auf die neueste Version.")
+                           
+            Bootloader_frame = tk.Frame(self.container)
+            Bootloader_frame_Name = M09.Get_Language_Str("Bootloader")
+            self.tabdict[Bootloader_frame_Name] = Bootloader_frame
+            self.container.add(Bootloader_frame, text=Bootloader_frame_Name)
+            
+            self.Button_Setup(Bootloader_frame,M09.Get_Language_Str("Schnellen Bootloader"),self.__FastBootloader_Button_Click,"",Row=0,label_text="Installiert den schnellen Bootloader auf dem linken Arduino.")
+            
         
         self.lower_Button_frame = tk.Frame(self.top)
         self.lower_Button_frame.grid(row=2,column=0)
@@ -590,7 +596,7 @@ class CUserForm_Options:
                        
         
                 
-    def UserForm_Activate(self):
+    def UserForm_Activate(self, first_page_only=False):
         #------------------------------
         # Is called every time when the form is shown
         M25.Make_sure_that_Col_Variables_match()
@@ -600,9 +606,11 @@ class CUserForm_Options:
         #self.Uno_L = True
         #self.Board_IDE_L = True
         
+        
         self.__Disable_Set_Arduino_Typ = True
         self.__Get_Arduino_Typ(True)
-        self.__Get_Arduino_Typ(False)
+        if not first_page_only:
+            self.__Get_Arduino_Typ(False)
         self.__Disable_Set_Arduino_Typ = False
         
     def Hide(self):
@@ -622,10 +630,11 @@ class CUserForm_Options:
             buttonvalue = self.rb_res["_R"].get()
         return self.boardlist[buttonvalue]
         
-    def Show(self):
+    def Show(self, first_page_only=False):
         self.IsActive = True
-        self.__UserForm_Initialize()
-        self.UserForm_Activate()
+        M25.Make_sure_that_Col_Variables_match()
+        self.__UserForm_Initialize(first_page_only=first_page_only)
+        self.UserForm_Activate(first_page_only=first_page_only)
         self.control_to_radiobutton()
      
         self.controller.wait_window(self.top)

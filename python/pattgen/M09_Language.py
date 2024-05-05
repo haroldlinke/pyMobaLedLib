@@ -7,6 +7,8 @@ import ExcelAPI.XLC_Excel_Consts as X01
 import pattgen.M08_Load_Sheet_Data
 import mlpyproggen.Pattern_Generator as PG
 
+import pgcommon.G00_common as G00
+
 """ Attention: One of the following preprcessor constants have to be defined in
  "Extras / Eigenschafteb VBA Projekt"'
    PATTERN_CONFIG_PROG
@@ -636,7 +638,7 @@ def Test_Translations():
     # Check it the translation works correct
     Check_Languages = True
     Debug.Print(vbCr + '-------------------------------------------')
-    Res = X02.InputBox('Input the Language number' + vbCr + ' 0 = German' + vbCr + ' 1 = English' + vbCr + ' 2 = Dutch' + vbCr + ' 3 = French' + vbCr + ' 4 = Italian' + vbCr + ' 5 = Spain')
+    Res = G00.InputBox('Input the Language number' + vbCr + ' 0 = German' + vbCr + ' 1 = English' + vbCr + ' 2 = Dutch' + vbCr + ' 3 = French' + vbCr + ' 4 = Italian' + vbCr + ' 5 = Spain')
     if not IsNumeric(Res):
         return
     Test_Language = Val(Res)

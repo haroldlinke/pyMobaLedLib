@@ -11,6 +11,8 @@ import pattgen.M08_Load_Sheet_Data
 import mlpyproggen.Pattern_Generator as PG
 import pattgen.D00_Forms as D00
 
+import pgcommon.G00_common as G00
+
 """ Concept for saving pictures:                                           12.07.20:
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Prior the pictures have been saved with "Save_Pic_from_clipboard()".
@@ -253,7 +255,7 @@ def Show_only_this_Picture_and_Enter_Name(ThisPic):
     OldUpd = X02.Application.ScreenUpdating
     X02.Application.ScreenUpdating = True
     X03.Sleep(500)
-    NewName = X02.InputBox(pattgen.M09_Language.Get_Language_Str('Name des Bildes Eingeben (Gleichen Namen verwenden bei identischen Bildern)'))
+    NewName = G00.InputBox(pattgen.M09_Language.Get_Language_Str('Name des Bildes Eingeben (Gleichen Namen verwenden bei identischen Bildern)'))
     if NewName != '':
         _fn_return_value = NewName
     X02.Application.ScreenUpdating = OldUpd

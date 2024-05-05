@@ -55,13 +55,13 @@ import proggen.M10_Par_Description as M10
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
+import proggen.M80_Create_Multiplexer as M80
 
 import mlpyproggen.Prog_Generator as PG
 
@@ -156,6 +156,7 @@ def __Save_Sheet_to_pgf(fp, Sh):
                     Enabled = '-'
                 VBFiles.writeText(fp, __Line_ID + vbTab + Enabled)
                 for Col in vbForRange(M02.Enable_Col + 1, M30.LastColumnDatSheet()):
+                # 27.11.21: Old: LastUsedColumn
                     if Col == M25.MacIcon_Col:
                         #Col = Col + 1
                         continue
@@ -292,6 +293,7 @@ def __Open_or_Create_Sheet(SheetName, Inp_Page_ID, Name, ToActiveSheet):
     if CreatedNewSheet == False:
         P01.CellDict[Row, M25.Descrip_Col] = M09.Get_Language_Str('Importiert von:') + Name
         P01.Cells(Row, M02.Enable_Col).ClearContents()
+        # Is set by event => Clear it again
     fn_return_value = True
     return fn_return_value
 
@@ -332,7 +334,7 @@ def __Read_Line(line):
     global __LastA_Row,__First_Line,__Import_Page_ID, __Start_Row, __HiddenRows, __LastA_Row, __AddedToFilterColumn
     
     fn_return_value = False
-    Parts = vbObjectInitialize(objtype=String)
+    parts = vbObjectInitialize(objtype=String)
 
     SkipLine = Boolean()
 
@@ -343,15 +345,17 @@ def __Read_Line(line):
     i = Long()
     #print("__Read_line:",line)
     #----------------------------------------------------
-    Parts = Split(line, vbTab)
+    parts = Split(line, vbTab)
     if Page_ID != __Import_Page_ID:
         # Problem "Selectrix" has an additional column "Bitposition"
         if __Import_Page_ID == 'Selectrix':
-            Parts = __Adapt_Adress_and_Typ_from_Selectrix(Parts)
-            M30.DeleteElementAt(M25.Inp_Typ_Col - 1, Parts)
+            parts = __Adapt_Adress_and_Typ_from_Selectrix(parts)
+            M30.DeleteElementAt(M25.Inp_Typ_Col - 1, parts)
+            # delete the "Bitposition" column
         if Page_ID == 'Selectrix':
-            M30.InsertElementAt(M25.Inp_Typ_Col - 2, Parts, '')
-            Parts = __Adapt_Adress_and_Typ_to_Selectrix(Parts)
+            M30.InsertElementAt(M25.Inp_Typ_Col - 2, parts, '')
+            # insert the "Bitposition" column
+            parts = __Adapt_Adress_and_Typ_to_Selectrix(parts)
     Row = M30.LastFilledRowIn_ChkAll(P01.ActiveSheet)
     if __First_Line:
         __First_Line = False
@@ -360,31 +364,41 @@ def __Read_Line(line):
             First_Row = First_Row + 1
         # Check if the first line in the sheet an in the file is "RGB_Heartbeat(#LED)"
         # The line is skipped
-        if P01.Cells(First_Row, M25.Config__Col) == 'RGB_Heartbeat(#LED)' and P01.Cells(First_Row, M25.Config__Col) == Parts(M25.Config__Col - 1):
-            fn_return_value = True
-            return fn_return_value
+        # 20.01.24 Juergen
+        # string compare of config col is not so string anymore, also accepting RGBHeartbeat variants RGBHeartbeat2 and RGBHeartbeat_Color
+        # fix problem, that config col changed because of two new cols MacIcon_Col and LanName_Col, now use Config__Col - 3 instead of Config__Col - 1
+        if UBound(parts) >= M25.Config__Col - 3:
+            if left(P01.Cells(First_Row, M25.Config__Col), 13) == 'RGB_Heartbeat' and P01.Cells(First_Row, M25.Config__Col) == parts(M25.Config__Col - 3):
+                _fn_return_value = True
+                return _fn_return_value
     if not SkipLine:
+        # 01.05.20: Prevent poping up dialogs
         OldEvents = P01.Application.EnableEvents
         P01.Application.EnableEvents = False
         Row = Row + 1
         Col = M02.Enable_Col
         P01.CellDict[Row, M25.Descrip_Col].Formula = '=""'
-        for i in vbForRange(2, UBound(Parts)):
+        # Otherwise empty rows are overwritten by the following call
+        # 01.05.20: Useing formula instead of " "
+        for i in vbForRange(2, UBound(parts)):
             Col = Col + 1
             if Col == M25.MacIcon_Col:
                 Col = Col + 1
                 # Skip the Icon column (MacIcon_Col is -1 if the column doesn't exist)      ' 20.10.21
+            # 20.10.21
             if Col == M25.LanName_Col:
                 Col = Col + 1
                 # Use two lines to be able to enable both new columns separately                             '
-            s = Replace(Parts(i), '{NewLine}', vbLf)
+            s = Replace(parts(i), '{NewLine}', vbLf)
             if Left(s, 2) == '==':
                 s = '\'' + s
-            if Parts(i) != '':
+            if parts(i) != '':
                 P01.CellDict[Row, Col] = s
             if Col == M25.Config__Col and s != '':
+                # 22.10.21:
                 M27.FindMacro_and_Add_Icon_and_Name(s, Row, P01.ActiveSheet)
             if Col == M25.LED_Nr__Col:
+                # 25.10.21: (Hopefully) Prevent formating as date
                 P01.CellDict[Row, Col].NumberFormat = 'General'
         if P01.Cells(Row, Col).EntireRow.Hidden:
             __HiddenRows = __HiddenRows + 1
@@ -393,9 +407,10 @@ def __Read_Line(line):
         if __Start_Row == 0:
             __Start_Row = Row
         __LastA_Row = Row
-        if Parts(1) == 'Act':
+        if parts(1) == 'Act':
             P01.CellDict[Row, M02.Enable_Col] = ChrW(M02.Hook_CHAR)
-            # Enable the Line   ' 01.05.20:
+        # Enable the Line
+        # 01.05.20:
         M20.Update_TestButtons(Row)
         M20.Update_StartValue(Row)
         P01.Application.EnableEvents = OldEvents
@@ -490,7 +505,7 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
                                 if SheetCnt > 0:
                                     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
                                     # Add some reserve lines    ' 07.08.20:
-                                M20.Update_Start_LedNr()
+                                M20.Update_All_Start_LedNr()
                                 return fn_return_value
                 else:
                     SkipSheet = False
@@ -502,23 +517,23 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
                     LineNrInSheet = 1
                     F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Lade Seite \'') + SheetName + '\'', '...')
                     if not __Open_or_Create_Sheet(SheetName, Inp_Page_ID, Name, ToActiveSheet):
-                        M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
+                        M20.Update_All_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                         return fn_return_value
             elif (select_0 == __Line_ID):
                 if not SkipSheet:
                     if not __Read_Line(lines(LNr)):
-                        M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
+                        M20.Update_All_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                         return fn_return_value
                     F00.StatusMsg_UserForm.Set_ActSheet_Label('Line: ' + str(LineNrInSheet))
                     LineNrInSheet = LineNrInSheet + 1
             else:
                 P01.MsgBox(M09.Get_Language_Str('Fehler: Unbekannter Zeilentyp in Zeile:') + ' ' + LNr + vbCr + M09.Get_Language_Str('in der PGF Datei:') + vbCr + '  \'' + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler in PGF Datei'))
-                M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
+                M20.Update_All_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                 return fn_return_value
     __Check_Hidden_Lines()
     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
     #M20.Update_Start_LedNr()
-    M20.Update_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
+    M20.Update_All_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
     fn_return_value = True
     P01.Unload(F00.StatusMsg_UserForm)
     P01.ActiveSheet.Redraw_table()
@@ -531,9 +546,9 @@ def Read_PGF(Name, ToActiveSheet=False):
     fn_return_value = False
     #FileStr = String()
 
-    lines = vbObjectInitialize(objtype=String)
+    Lines = vbObjectInitialize(objtype=String)
 
-    Parts = vbObjectInitialize(objtype=String)
+    parts = vbObjectInitialize(objtype=String)
 
     Err = Boolean()
     #-------------------------------------------------------------------------------------------
@@ -541,24 +556,24 @@ def Read_PGF(Name, ToActiveSheet=False):
     FileStr = M30.Read_File_to_String(Name)
     if FileStr == '#ERROR#':
         return fn_return_value
-    lines = Split(FileStr, vbCr)
-    if UBound(lines) <= 1:
-        lines = Split(FileStr,"\n")
-        if UBound(lines) <= 1:
+    Lines = Split(FileStr, vbCr)
+    if UBound(Lines) <= 1:
+        Lines = Split(FileStr,"\n")
+        if UBound(Lines) <= 1:
             P01.MsgBox(M09.Get_Language_Str('Fehler: Die PGF Datei enthält keine Daten:') + vbCr + '  \'' + Name + '\'', vbCritical, M09.Get_Language_Str('Ungültige PGF Datei'))
             return fn_return_value
-    Parts = Split(lines(0), vbTab)
-    Err = ( UBound(Parts) < 2 )
+    parts = Split(Lines(0), vbTab)
+    Err = ( UBound(parts) < 2 )
     if not Err:
-        Err = ( str(Parts(0)) != __Head_ID )
+        Err = ( str(parts(0)) != __Head_ID )
     if not Err:
-        Err = ( str(Parts(1)) != PGF_Identification )
+        Err = ( str(parts(1)) != PGF_Identification )
     if not Err:
         ScrUpd = P01.Application.ScreenUpdating
         P01.Application.ScreenUpdating = False
-        VerStr = Parts(2)
+        VerStr = parts(2)
         if (VerStr == PGF_Version_String):
-            fn_return_value = __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet)
+            fn_return_value = __Read_PGF_from_String_V1_0(Lines, Name, ToActiveSheet)
             #*HL StatusMsg_UserForm.Hide()
         else:
             Err = True

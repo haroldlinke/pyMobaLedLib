@@ -1,14 +1,14 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-import ExcelAPI.XLA_Application as X02
-import ExcelAPI.XLC_Excel_Consts as X01
-import pattgen.M01_Public_Constants_a_Var as M01
-import pattgen.M09_Language as M09
-import pattgen.M08_Load_Sheet_Data
-import pattgen.M07_Save_Sheet_Data
-import pattgen.M30_Tools as M30
-import pattgen.M65_Special_Modules
-import pattgen.M80_Multiplexer_INI_Handling
+#import ExcelAPI.XLA_Application as X02
+#import ExcelAPI.XLC_Excel_Consts as X01
+#import pattgen.M01_Public_Constants_a_Var as M01
+#import pattgen.M09_Language as M09
+#import pattgen.M08_Load_Sheet_Data
+#import pattgen.M07_Save_Sheet_Data
+#import pattgen.M30_Tools as M30
+#import pattgen.M65_Special_Modules
+#import pattgen.M80_Multiplexer_INI_Handling
 import mlpyproggen.Prog_Generator as PG
 
 import ExcelAPI.XLF_FormGenerator as XLF
@@ -283,7 +283,7 @@ class UserForm_ServoAnim:
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
         self.Userform_Res = ""
-        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self)
+        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable)
         self.patterntype = 0
         self.curvetype = 0
         self.curve_points = []
@@ -447,7 +447,15 @@ class UserForm_ServoAnim:
                 curve_points_Aus = self.calculate_curve(self.Servo_DauerAus_TextBox.Value, self.Servo_Endwert_TextBox.Value, self.Servo_Anfangswert_TextBox.Value, t, self.Servo_Abstand_TextBox.Value, pauseS=self.Servo_PauseS_Aus_TextBox.Value, pauseE=self.Servo_PauseE_Aus_TextBox.Value, skip_first=True) 
                 curve_points.extend(curve_points_Aus)
         else:
-            curve_points = self.curve_points
+            # check if curve points are in range 0 .. 255:
+            for index, curve_point in enumerate(self.curve_points):
+                if curve_point[1] > 255:
+                    curve_point[1] = 255
+                    self.curve_points[index] = curve_point
+                if curve_point[1] < 0:
+                    curve_point[1] = 0
+                    self.curve_points[index] = curve_point
+            curve_points = self.curve_points            
         return curve_points
         
     

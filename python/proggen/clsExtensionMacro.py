@@ -3,6 +3,7 @@ from vb2py.vbdebug import *
 
 """ 17.04.23: Hardi"""
 
+
 Name = String()
 Texts = clsTexts()
 Arguments = Collection()

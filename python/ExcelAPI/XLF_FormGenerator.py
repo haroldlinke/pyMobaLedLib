@@ -154,7 +154,7 @@ def ToolTip(widget,text="", key="",button_1=False):
         tooltip_var.update_text(text)            
     return    
 
-def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={},defaultfont=("Calibri",10)):
+def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={},defaultfont=("Calibri",10), jump_table={}):
     gui_factor_label_width = guifactor
     gui_factor_label_height = guifactor
     gui_factor_pos = guifactor
@@ -197,6 +197,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             comp.ControlTipText = component_dict.get("ControlTipText","")
             comp.format_dict = format_dict.get(comp.Name,None)
             dlg.AddControl(comp)
+            
+            #****************************************************
+            #* MultiPage
+            #****************************************************
             if comp.Type == "MultiPage":
                 mp_comp_list = component_dict.get("Components",[])
                 container = ttk.Notebook(parent)
@@ -214,7 +218,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                         page.TKWidget=page_frame
                         page_comp = page_dict.get("Components",[])
                         dlg.AddControl(page)
-                        generate_controls(page_comp,page_frame,dlg=dlg)
+                        generate_controls(page_comp,page_frame,dlg=dlg, jump_table=jump_table)
+            #****************************************************
+            #* Label
+            #****************************************************                        
             elif comp.Type == "Label":
                 comp.Textalign = component_dict.get("TextAlign","")
                 if comp.Textalign == "fmTextAlignLeft":
@@ -231,6 +238,35 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 comp.TKWidget=label
                 if comp.ControlTipText!="":
                     ToolTip(label, text=comp.ControlTipText)
+            #****************************************************
+            #* Image
+            #****************************************************                        
+            elif comp.Type == "Image":
+                comp.Textalign = component_dict.get("TextAlign","")
+                if comp.Textalign == "fmTextAlignLeft":
+                    anchor="nw"
+                    justify=tk.LEFT
+                elif comp.Textalign == "fmTextAlignRight":
+                    anchor="ne"
+                    justify=tk.RIGHT
+                else:
+                    anchor="n"
+                    justify=tk.CENTER
+                comp.icon = component_dict.get("IconName","")
+                if comp.icon != "":
+                    filename = r"/images/"+comp.icon
+                    filedir = os.path.dirname(os.path.realpath(__file__))
+                    filedir2 = os.path.dirname(filedir)
+                    filepath = filedir2 + filename
+                    comp.iconImage = tk.PhotoImage(file=filepath)
+                label=tk.Label(parent, text=comp.Caption,anchor=anchor, image=comp.iconImage, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,font=comp.Font, relief=comp.relief) #,font=comp_font)
+                label.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                comp.TKWidget=label
+                if comp.ControlTipText!="":
+                    ToolTip(label, text=comp.ControlTipText)                    
+            #****************************************************
+            #* CommandButton
+            #****************************************************                   
             elif comp.Type == "CommandButton":
                 comp.Command = component_dict.get("Command",None)
                 if type(comp.Command) == str:
@@ -247,12 +283,15 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     comp.iconImage = tk.PhotoImage(file=filepath)
                     button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,image=comp.iconImage,font=comp.Font)
                 else:
-                    button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength)
+                    button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength, font=comp.Font)
                 button.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=button
                 if comp.ControlTipText!="":
                     ToolTip(button, text=comp.ControlTipText)
                 pass
+            #****************************************************
+            #*CheckBox
+            #****************************************************                   
             elif comp.Type == "CheckBox":
                 if comp.Init_Value:
                     init_value=comp.Init_Value
@@ -269,6 +308,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 comp.TKWidget=checkbutton
                 if comp.ControlTipText!="":
                     ToolTip(checkbutton, text=comp.ControlTipText)
+        
+            #****************************************************
+            #* TextBox
+            #****************************************************                   
             elif comp.Type == "TextBox":
                 textbox=tk.Text(parent, width=comp.Width,height=comp.Height,wrap= tk.WORD,font=comp.Font,relief=comp.relief) #,font=comp_font)
                 if comp.Caption != None:
@@ -300,7 +343,11 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 setattr(dlg,comp.Name,comp)
                 comp.TKWidget=textbox
                 if comp.ControlTipText!="":
-                    ToolTip(textbox, text=comp.ControlTipText)                
+                    ToolTip(textbox, text=comp.ControlTipText)
+
+            #****************************************************
+            #* NumBox
+            #****************************************************                   
             elif comp.Type == "NumBox":
                 if comp.Init_Value:
                     init_value=comp.Init_Value
@@ -314,7 +361,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=textbox
                 if comp.ControlTipText!="":
-                    ToolTip(textbox, text=comp.ControlTipText)                            
+                    ToolTip(textbox, text=comp.ControlTipText)
+            #****************************************************
+            #* ListBox
+            #****************************************************                   
             elif comp.Type == "ListBox":
                 if comp.Init_Value:
                     init_value=comp.Init_Value # list of values
@@ -331,23 +381,29 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 comp.TKWidget=listbox
                 comp.Selection = component_dict.get("Selection",None)
                 if comp.ControlTipText!="":
-                    ToolTip(listbox, text=comp.ControlTipText)                        
+                    ToolTip(listbox, text=comp.ControlTipText)
+            #****************************************************
+            #* Frame
+            #****************************************************                   
             elif comp.Type == "Frame":
                 frame = ttk.LabelFrame(parent,text=comp.Caption,borderwidth=1,relief=tk.RIDGE)
                 frame.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=frame
                 setattr(dlg,comp.Name,comp)
                 frame_comp = component_dict.get("Components",[])
-                generate_controls(frame_comp,frame,dlg=dlg)
+                generate_controls(frame_comp,frame,dlg=dlg, jump_table=jump_table)
                 if comp.ControlTipText!="":
                     ToolTip(frame, text=comp.ControlTipText)
+            #****************************************************
+            #* CommandButton
+            #****************************************************                   
             elif comp.Type == "Page":
                 mp_comp_list = component_dict["Components"]
-                generate_controls(mp_comp_list, parent, dlg=dlg)
+                generate_controls(mp_comp_list, parent, dlg=dlg, jump_table=jump_table)
             else:
                 pass
                    
-def generate_form(form_dict,parent,dlg=None,modal=True):
+def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}):
     #create main window
     dlg.Controls=[]
     
@@ -380,7 +436,7 @@ def generate_form(form_dict,parent,dlg=None,modal=True):
         
         components = userform_dict.get("Components",None)
         
-        generate_controls(components,top,dlg=dlg)
+        generate_controls(components,top,dlg=dlg, jump_table=jump_table)
         
         return top
     else:

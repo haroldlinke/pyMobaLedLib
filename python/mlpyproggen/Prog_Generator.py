@@ -215,6 +215,14 @@ class Prog_GeneratorPage(tk.Frame):
                      "SheetType" : "Datasheet",
                      "Events" : sheetdict_sheetevents,
                      },
+                   "LNet":
+                    {"Name":"LNet",
+                     "Filenamex"  : "csv/LNet.csv",
+                     "Fieldnames": datasheet_fieldnames,
+                     "Formating" : datasheet_formating,
+                     "SheetType" : "Datasheet",
+                     "Events" : sheetdict_sheetevents,
+                     },                   
                    "Examples":
                     {"Name":"Examples",
                      "Filenamex"  : "csv/Examples.csv",
@@ -407,8 +415,8 @@ class Prog_GeneratorPage(tk.Frame):
         #config_frame.grid(row=1, columnspan=2, pady=(20, 30), padx=10)        
         #in_button_frame.grid(row=2, column=0, sticky="n", padx=4, pady=4)
         
-        for sheet in self.workbook.sheets:
-            pass #test sheet.tablemodel.resetDataChanged()
+        #for sheet in self.workbook.sheets:
+        #    pass #test sheet.tablemodel.resetDataChanged()
         
         self.workbook.activate_sheet(start_sheet)
             

@@ -69,14 +69,14 @@ import proggen.M09_Select_Macro as M09SM
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 import proggen.M32_DCC as M32
 #import proggen.M37_Inst_Libraries as M37
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
 #import ExcelAPI.P01_Worksheetfunction as WorksheetFunction
 
 import  proggen.F00_mainbuttons as F00
@@ -87,6 +87,7 @@ import ExcelAPI.XLA_Application as P01
 import mlpyproggen.Prog_Generator as PG
 
 from ExcelAPI.XLC_Excel_Consts import *
+
 
 
 #Start_LED_Channel = vbObjectInitialize((M02.LED_CHANNELS - 1,), Long)
@@ -199,6 +200,7 @@ def Row_Contains_Address_or_VarName(r):
             return fn_return_value
             # Empty Address
         if IsNumeric(Trim(P01.Cells(r, Addr_Col))):
+            # For Variable names this check is not needed
             if  M25.Page_ID == 'Selextrix':
                 if Trim(P01.Cells(r, M25.SX_Bitposi_Col)) == '':
                     return fn_return_value
@@ -212,17 +214,33 @@ def Update_All_Start_LedNr():
 
     Sh = Variant()
     #---------------------------
+    # 29.12.2023: Juergen - keep active sheet on function exit
     OldScreenupdating = P01.Application.ScreenUpdating
     P01.Application.ScreenUpdating = False
     for Sh in PG.ThisWorkbook.Sheets:
         if M28.Is_Data_Sheet(Sh):
             Sh.Select()
             Update_Start_LedNr()()
+    # 29.12.2023: Juergen - keep active sheet on function exit
     P01.Application.ScreenUpdating = OldScreenupdating
 
-def Update_Start_LedNr(firstRun=True):
-    _fn_return_value = None
-    #OldEvents = Boolean()
+def Is_Set_LEDNrMacro(Cmd):
+    _fn_return_value = False
+    # 15.09.23: Hardi
+    #-----------------------------------------------------------
+    _fn_return_value = Left(Cmd, Len('// Set_LEDNr(')) == '// Set_LEDNr('
+    return _fn_return_value
+
+def Get_LEDNr_from_Set_LEDNrMacro(Cmd):
+    _fn_return_value = False
+    # 15.09.23: Hardi
+    #--------------------------------------------------------------------
+    _fn_return_value = P01.val(Mid(Cmd, 1 + Len('// Set_LEDNr(')))
+    return _fn_return_value
+
+def Update_Start_LedNr(FirstRun=True):
+    _fn_return_value = False
+    OldEvents = Boolean()
 
     #display_Type = int()
 
@@ -245,7 +263,7 @@ def Update_Start_LedNr(firstRun=True):
     # Update the Start LedNr in all used rows
     OldEvents =  P01.Application.EnableEvents
     display_Type = M08.LEDNr_Display_Type
-    if firstRun:
+    if FirstRun:
         P01.Application.EnableEvents = False
         # Prevent recursive calls ic cells are changed
         # 26.04.20:  # 03.04.21 Juergen - try to find out if only the main LED Channel is in use
@@ -282,10 +300,12 @@ def Update_Start_LedNr(firstRun=True):
                             LEDNr[LEDs_Channel] = LEDNr(LEDs_Channel) + UsedModules(LastusedChannel(LEDs_Channel))
                             LastusedChannel[LEDs_Channel] = 0
                     else:
+                        # Last lines have been single channel lines, but the actual line adresses full RGB LEDs
                         LEDNr[LEDs_Channel] = LEDNr(LEDs_Channel) + UsedModules(LastusedChannel(LEDs_Channel))
                         LastusedChannel[LEDs_Channel] = 0
                 Clear_LED_Nr_Columns(r, M25.LED_Nr__Col)
                 if LEDs == M02.SerialChannelPrefix:
+                    # 07.10.21: Jürgen Serial Channel
                     NewValue = '\'' + M02.SerialChannelPrefix + str(LEDs_Channel)
                 else:
                     if Max_LEDs_Channel > 0 and display_Type == 1:
@@ -306,8 +326,23 @@ def Update_Start_LedNr(firstRun=True):
                         LastusedChannel[LEDs_Channel] = LastusedChannel(LEDs_Channel) % 3
                         LEDNr[LEDs_Channel] = LEDNr(LEDs_Channel) + IncLEDNr
                 else:
+                    # 20.04.23: Hardi: Additional Max calc
+                    CellLinesS = M30.CellLinesSum("") #proggen.clsExtensionMacro.LEDs)
+                    if CellLinesS < 0:
+                        if LEDNr(LEDs_Channel) > M06.MaxLEDNr(LEDs_Channel):
+                            M06.MaxLEDNr[LEDs_Channel] = LEDNr(LEDs_Channel)
+                        # Calc the correct maximum in case the line substracts leds: Next_LED(-1) 20.04.23: Hardi:
                     LEDNr[LEDs_Channel] = LEDNr(LEDs_Channel) + M30.CellLinesSum(LEDs)
-            else: 
+                    # If the cell consists of several lines the sum is calculated
+                Cmd = Trim(P01.Cells(r, M25.Config__Col))
+                # 15.09.23: Hardi: New command Set_LEDNr
+                if Is_Set_LEDNrMacro(Cmd):
+                    New_LEDNr = Get_LEDNr_from_Set_LEDNrMacro(Cmd)
+                    LEDs_Channel = P01.val(P01.Cells(r, M25.LED_Cha_Col))
+                    P01.CellDict[r, M25.LEDs____Col] = New_LEDNr - LEDNr(LEDs_Channel)
+                    LEDNr[LEDs_Channel] = New_LEDNr
+            else:
+                #Dim cmd As String
                 Cmd = Trim(P01.Cells(r, M25.Config__Col))
                 if P01.Rows(r).EntireRow.Hidden == False and P01.Cells(r, M02.Enable_Col) != '' and M06.IsIncludeMacro(Cmd):
                     SheetName=""
@@ -602,10 +637,10 @@ def myUnhideRows_Event():
     # Must be enabled in Workbook_Open() which is located in "DieseArbeismappe"
     Hide_Unhide_Selected_Rows(False)
 
-def Option_Dialog():
+def Option_Dialog(first_page_only=False):
     #-------------------------
     M30.Check_Version()
-    F00.UserForm_Options.Show()
+    F00.UserForm_Options.Show(first_page_only=first_page_only)
 
 def ClearSheet():
     #----------------------
@@ -858,7 +893,7 @@ def Update_StartValue(Row):
     Inp_TypR = None
     #-----------------------------------------------
     M25.Make_sure_that_Col_Variables_match()
-    if ( M25.Page_ID == 'DCC' )  or  ( M25.Page_ID == 'CAN' ) :
+    if ( M25.Page_ID == 'DCC' )  or  ( M25.Page_ID == 'CAN' )  or  ( M25.Page_ID == 'LNet' ) :
         AddrColumn = M25.DCC_or_CAN_Add_Col
     elif  ( M25.Page_ID == 'Selectrix' ) :
         AddrColumn = M25.SX_Channel_Col
@@ -866,14 +901,18 @@ def Update_StartValue(Row):
         return
     AddrStr = P01.Cells(Row, AddrColumn)
     if IsNumeric(AddrStr):
+        # 03.04.20:
         Addr = P01.val(AddrStr)
     else:
         Addr = - 2
+        # it's a variable
         Channel_or_define = AddrStr
     if Addr >= 0:
         Inp_TypR = P01.Cells(Row, M25.Inp_Typ_Col)
-        if M25.Page_ID == 'DCC':
+        if M25.Page_ID == 'DCC' or M25.Page_ID == 'LNet':
+            # 11.10.20: Otherwise the input type is requested before the bit position on the SX page
             Complete_Typ(Inp_TypR, True)
+            # Check Inp_Typ. If not valid call the dialog
     else:
         Channel_or_define = AddrStr
     storeStatusType = M06.Get_Store_Status(Row, Addr, Inp_TypR, Channel_or_define)
@@ -946,19 +985,21 @@ def Update_TestButtons(Row, onValue=0, First_Call=True, redraw=False):
     Used_OldRect = int()
     #-----------------------------------------------
     Debug.Print ("Update_TestButtons(" + str(Row) + ")")
+    isSx = M25.Page_ID == 'Selectrix'
     toggle = False
-    # only for the DCC and Selectrix sheet
-    isSX = M25.Page_ID == 'Selectrix'
-    isDCC = M25.Page_ID == 'DCC'
-    if isDCC:
+    # 01.08.21: Jürgen bugfix
+    # only for the DCC, LNet and Selectrix sheet
+    if M25.Page_ID == 'DCC' or M25.Page_ID == 'LNet':
+        # 24.04.23: Juergen
         AddrColumn = M25.DCC_or_CAN_Add_Col
-    elif isSX:
+    elif isSx:
         AddrColumn = M25.SX_Channel_Col
     else:
         return
-    PixelOffset = 50 #*HL 35
+    PixelOffset = 35
+    PixelOffset = 50 # for tksheet
+    # 25.03.21:
     LastRow = M30.LastUsedRow()
-    ButtonPrefix = 'B'
     i = 1
     if First_Call and not redraw:
         Global_Rect_List = vbObjectInitialize(((1, LastRow),), str)
@@ -997,29 +1038,38 @@ def Update_TestButtons(Row, onValue=0, First_Call=True, redraw=False):
         return
     ButtonCount = 1 * InCnt
     Direction = 1
+    # start with "R"=0 or "G"=1
     ColorOffset = 0
+    # red
     ColorInc = 1
+    # take next color for next address
     TextInc = 1
     M25.Make_sure_that_Col_Variables_match()
     M09.Set_Tast_Txt_Var()
+    # Set the global variables Red_T, Green_T, ...
+    # 03.04.20:
     Addr = M25.Get_First_Number_of_Range(Row, AddrColumn)
     #print("UpdateTestButton Row:",Row," Col:",AddrColumn," Addr:",Addr)
     if Addr == '' or P01.val(Addr) < 0:
         return
-        # 04.05.20: Added: Or Val(Addr) < 0 to fix problems with the error returned by Get_First_Number_of_P01.Range() (Mail from Jürgen)
-    if isSX:
+    # 04.05.20: Added: Or Val(Addr) < 0 to fix problems with the error returned by Get_First_Number_of_Range() (Mail from Jürgen)
+    if isSx:
         if P01.Cells(Row, M25.SX_Bitposi_Col) != '':
             BitPos = int(P01.Cells(Row, M25.SX_Bitposi_Col))
         if ( BitPos < 1 or BitPos > 8 ) :
             return
         Addr = Addr * 8 +  ( BitPos - 1 )
         TargetColumn = M25.Inp_Typ_Col
+        # 11.10.20: Old:  SX_Bitposi_Col  Warum diese Spalte ?
         TextOffset = BitPos
+        # starts with bitoffset
         AltTextOffset = BitPos
+        # starts with bitoffset
         select_variable_ = P01.Cells(Row, M25.Inp_Typ_Col) #*HL.Text
         if (select_variable_ == M09.Tast_T):
             incAddress = True
             if InCnt == 1:
+                # sx buttons are always yellow
                 ColorOffset = ColorOffset + 2
         elif (select_variable_ == M09.OnOff_T):
             toggle = True
@@ -1028,9 +1078,11 @@ def Update_TestButtons(Row, onValue=0, First_Call=True, redraw=False):
             ColorOffset = ColorOffset + 1
         else:
             return
+            # 11.10.20:
     else:
         TargetColumn = M25.Inp_Typ_Col
         TextOffset = 1
+        # starts with this number for button text
         AltTextOffset = 2
         select_variable_ = P01.Cells(Row, M25.Inp_Typ_Col)  #*HL
         if (select_variable_ == M09.Red_T):
@@ -1056,6 +1108,11 @@ def Update_TestButtons(Row, onValue=0, First_Call=True, redraw=False):
     #*HLif P01.Cells(Row, TargetColumn).Width < i:
     #*HL    factor = P01.Cells(Row, TargetColumn).Width / P01.Columns(TargetColumn).ColumnWidth
     #*HL    P01.Range[P01.Cells(1, TargetColumn), P01.Cells(1, TargetColumn)].ColumnWidth = WorksheetFunction.RoundUp(i / factor, 1)
+    if toggle:
+        ButtonPrefix = 'B'
+    else:
+        ButtonPrefix = 'S'
+    # 25.04.23: Juergen button or switch
     for i in vbForRange(1, ButtonCount):
         if Used_OldRect < OldRect_Cnt:
             objButton = P01.ActiveSheet.Shapes.getlist()[OldRect_List(Used_OldRect)-1]
@@ -1063,7 +1120,9 @@ def Update_TestButtons(Row, onValue=0, First_Call=True, redraw=False):
         else:
             #*HLobjButton = P01.ActiveSheet.Shapes.AddShape(msoShapeRectangle, Row, TargetColumn, 0, 0, 0, 0)
             NewCreated = True
+        # 19.01.21: Jürgen
         isSetToOn = False
+        # 26.03.21: Jürgen, otherwise lines with more than one toggle button are displayed wrong
         if toggle:
             if ( onValue &  ( 2 **  ( i - 1 ) ) )  != 0:
                 isSetToOn = True

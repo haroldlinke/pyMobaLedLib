@@ -68,6 +68,7 @@ UT-----------------------------
 UT-----------------------------------------------------------------
 -------------------------------------------------------------
 ------------------------------------------
+------------------------------------------   04.03.22 Juergen
 UT----------------------------------
 -------------------------------------------------------------
 --------------------------------------------------------------
@@ -79,20 +80,23 @@ UT----------------------------------
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
 def Is_Data_Sheet(Sh):
-    _ret = False
+    _fn_return_value = False
     PageId = String()
     #--------------------------------------------------------------
     PageId = Sh.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)
     if PageId == '':
-        return _ret
-        # 07.10.21:
-    _ret = ( InStr(M02.AllData_PgIDs, ' ' + PageId + ' ') > 0 ) 
-    #Debug.Print "Is_Data_Sheet(" & sh.Name & ")=" & Is_Data_Sheet ' Debug
-    return _ret
+        return _fn_return_value
+    # 07.10.21:
+    _fn_return_value = ( InStr(M02.AllData_PgIDs, ' ' + PageId + ' ') > 0 )
+    # 17.10.20: removed: And Sh.Name <> "Examples"
+    # 07.08.20: Added: And Sh.Name <> "Examples"
+    #Debug.Print "Is_Data_Sheet(" & sh.Name & ")=" & Is_Data_Sheet
+    # Debug
+    return _fn_return_value
 
-def __Test_Is_Data_Sheet():
+def Test_Is_Data_Sheet():
     #UT-----------------------------
-    Debug.Print(Is_Data_Sheet(P01.Sheets('Start')))
+    Debug.Print(Is_Data_Sheet(P01.ThisWorkbook.Sheets('Start')))
 
 def EnableAllButtons():
     Sh = Variant()
@@ -114,9 +118,11 @@ def __Clear_COM_Port_Check(r, ReleaseMode):
 def Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets(ReleaseMode):
     
     Skip_Scroll_Down = Boolean()
+    # 25.12.19: Old: Clear_COM_Port_Check_ans_Set_Cursor_in_all_Sheets
     #-----------------------------------------------------------------------------------
     OldSh = P01.ActiveSheet
     if P01.ActiveSheet is None:
+        # 29.10.19:
         Debug.Print('ActiveSheet Is Nothing in Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets')
         Debug.Print('Tritt beim ersten Start nach dem Download vom Internet auf (\'Geschützte Ansicht\')')
         Skip_Scroll_Down = True
@@ -129,47 +135,58 @@ def Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets(ReleaseMode):
                 __Clear_COM_Port_Check(_with1.Cells(M02.SH_VARS_ROW, M25.COMPrtR_COL), ReleaseMode)
                 if ReleaseMode:
                     _with1.CellDict[M02.SH_VARS_ROW, M25.R_UPLOD_COL] = 'R not Chk'
-                    # Right arduino software is not checked
+                # Right arduino software is not checked
             if not Skip_Scroll_Down:
+                # 29.10.19:
                 # VB2PY (UntranslatedCode) On Error Resume Next
+                # 24.12.19: Problems with Office 365 ?
                 Sh.Select()
+                # 29.10.19:
                 Sh.Cells(M02.FirstDat_Row, M25.Descrip_Col).Select()
+                # Scroll to the top
                 LRow = M30.LastFilledRowIn_ChkAll(Sh)
                 _with1.Cells(LRow + 1, M25.Descrip_Col).Select()
+                # Select the first empty row
                 #While .Rows(LRow).EntireRow.Hidden                            ' 29.10.19: Disabled
+                # 29.10.19: Disabled
                 #   LRow = LRow + 1
                 #Wend
                 # VB2PY (UntranslatedCode) On Error GoTo 0
+                # 24.12.19:
+            # 12.10.21: Jürgen Clear errors
             #*HL for rngCell in Sh.UsedRange:
             #*HL     for i in vbForRange(1, 7):
             #*HL        pass #*HL rngCell.Errors.Item[i].Ignore = True
     if not OldSh is None:
         OldSh.Select()
 
-def __Test_Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets():
+def Test_Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets():
     #UT-----------------------------------------------------------------
     Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets(True)
 
 def Get_Bool_Config_Var(Name):
-    _ret = False
+    _fn_return_value = False
     #-------------------------------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo NotFound
     
     _with2 = PG.ThisWorkbook.Sheets(M02.ConfigSheet).Range(Name)
     conf_value = UCase(Left(Trim(_with2.Value), 1))
-    
+    # Languages (DE,  EN, NL,  FR,   IT, ES)
     #confsheet = PG.ThisWorkbook.Sheets(M02.ConfigSheet)
     #conf_value = confsheet.find_in_col_ret_col_val(Name,4,3,cache=True)
     if conf_value !=None:
         if (conf_value == '') or (conf_value == 'N') or (conf_value == 'G') or (conf_value == 'A') or (conf_value == '0'):
-            _ret = False
+            _fn_return_value = False
+            #            Nein No  geen aucun no  no
+            # 14.05.20: Added "0"
+            return _fn_return_value
         else:
-            _ret = True
-        return _ret
-    else:
-        P01.MsgBox('Interner Fehler: Die Konfigurationsvariable \'' + Name + '\' wurde nicht im Sheet \'' + M02.ConfigSheet + '\' gefunden', vbCritical, 'Interner Fehler in Get_Bool_Config_Var')
-        M30.EndProg()
-    return _ret
+            _fn_return_value = True
+        #            Ja   Yes ja   oui   sì sì
+    return _fn_return_value
+    P01.MsgBox('Interner Fehler: Die Konfigurationsvariable \'' + Name + '\' wurde nicht im Sheet \'' + M02.ConfigSheet + '\' gefunden', vbCritical, 'Interner Fehler in Get_Bool_Config_Var')
+    M30.EndProg()
+    return _fn_return_value
 
 def Get_Num_Config_Var(Name):
     _ret = -1
@@ -280,6 +297,7 @@ def Get_Old_Board(LeftArduino):
     Col = Integer()
 
     BuildOpt = String()
+    # 04.05.20: Extracted from Get_Arduino_Typ()
     #--------------------------------------------------------------
     if LeftArduino:
         Col = M25.BUILDOP_COL
@@ -292,8 +310,10 @@ def Get_Old_Board(LeftArduino):
         _ret = M02.BOARD_UNO_NORM
     elif InStr(BuildOpt, M02.BOARD_NANO_EVERY) > 0:
         _ret = M02.BOARD_NANO_EVERY
+        # 28.10.20: Jürgen
     elif InStr(BuildOpt, M02.BOARD_NANO_FULL) > 0:
         _ret = M02.BOARD_NANO_FULL
+        # 28.10.20: Jürgen
     elif InStr(BuildOpt, M02.BOARD_NANO_NEW) > 0:
         _ret = M02.BOARD_NANO_NEW
     return _ret
@@ -318,6 +338,7 @@ def Change_Board_Typ(LeftArduino, NewBrd):
     BuildOpt = P01.Cells(M02.SH_VARS_ROW, Col)
     if Old_Board == '':
         BuildOpt = NewBrd
+        # & " " & BuildOpt               28.10.20: Jürgen: Disabled "& " " & BuildOpt"
     else:
         BuildOpt = Replace(BuildOpt, Old_Board, NewBrd)
     P01.CellDict[M02.SH_VARS_ROW, Col] = Trim(BuildOpt)

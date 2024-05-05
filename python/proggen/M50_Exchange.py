@@ -45,6 +45,7 @@ import proggen.M09_Language as M09
 import proggen.M25_Columns as M25
 import proggen.M30_Tools as M30
 import proggen.F00_mainbuttons as F00
+import pgcommon.G00_common as G00
 
 import ExcelAPI.XLA_Application as P01
 
@@ -88,7 +89,7 @@ def Write_Macro_to_Act_Row(MacroTxt, LEDs, InCnt, LocInCh, Comment="", WrapText=
     Row = P01.ActiveCell().Row
     if P01.Cells(Row, M25.LED_Cha_Col) == '':
         while not ResOk:
-            Res = P01.InputBox(M09.Get_Language_Str('Welcher LED Kanal soll verwendet werden?' + vbCr + '  0 = Standard LEDs' + vbCr + '  1 = Taster LEDs' + vbCr + '  2 = Optionale LED Gruppe 2' + vbCr + '  3 = Optionale LED Gruppe 2' + vbCr + vbCr + 'LED Kanal (0..3):'), M09.Get_Language_Str('Eingabe des LED Kanals'), 0)
+            Res = G00.InputBox(M09.Get_Language_Str('Welcher LED Kanal soll verwendet werden?' + vbCr + '  0 = Standard LEDs' + vbCr + '  1 = Taster LEDs' + vbCr + '  2 = Optionale LED Gruppe 2' + vbCr + '  3 = Optionale LED Gruppe 2' + vbCr + vbCr + 'LED Kanal (0..3):'), M09.Get_Language_Str('Eingabe des LED Kanals'), 0)
             Res = Trim(Res)
             if Res == '':
                 return

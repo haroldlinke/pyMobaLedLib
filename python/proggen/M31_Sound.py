@@ -61,13 +61,13 @@ import proggen.M09_Language as M09
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
-#import proggen.M28_divers as M28
+#import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 #import proggen.M37_Inst_Libraries as M37
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
+import proggen.M80_Create_Multiplexer as M80
 
 import mlpyproggen.Prog_Generator as PG
 
@@ -102,6 +102,7 @@ def BeepThis2(ThisSound='Beep', ThisValue=VBMissingArgument, ThisCount=1, Wait=F
     sPath = StrConv(ThisSound, vbProperCase)
     if (sPath == 'Beep'):
         Beep()
+        # ignore ThisCount and Wait
         return fn_return_value
     elif (sPath == 'Asterisk') or (sPath == 'Exclamation') or (sPath == 'Hand') or (sPath == 'Notification') or (sPath == 'Question'):
         sPath = 'System' + sPath
@@ -132,13 +133,16 @@ def BeepThis2(ThisSound='Beep', ThisValue=VBMissingArgument, ThisCount=1, Wait=F
             ThisSound = ThisSound + '.wav'
         sPath = ThisSound
         if Dir(sPath) == '':
+            # file is not in working directory
             sPath = P01.ActiveWorkbook.Path + '/' + ThisSound
             if Dir(sPath) == '':
                 sPath = Environ('SystemRoot') + sMedia + ThisSound
         flags = __SND_FILENAME
     flags = flags + IIf(Wait, __SND_SYNC, __SND_ASYNC)
     while ThisCount > 0:
+        # skip if ThisCount < 1
         PlaySound(sPath, 0, flags)
+        # if error, .Default sound will play
         ThisCount = ThisCount - 1
     return fn_return_value
 

@@ -7,6 +7,7 @@ import pattgen.M01_Public_Constants_a_Var as M01
 import ExcelAPI.XLWA_WinAPI as X03
 import pattgen.M09_Language as M09
 import mlpyproggen.Pattern_Generator as PG
+import pgcommon.G00_common as G00
 import os
 
 """ Used with GetAsyncKeyState
@@ -756,7 +757,7 @@ def InputBoxMov(prompt, Title=VBMissingArgument, Default=VBMissingArgument, Left
     # InputBox which could be moved with correct screen update even if screenupdating is disabled
     OldUpdate = X02.Application.ScreenUpdating
     X02.Application.ScreenUpdating = True
-    _fn_return_value = X02.InputBox(prompt, Title, Default, Left, Top, helpfile, HelpContextID)
+    _fn_return_value = G00.InputBox(prompt, Title, Default, Left, Top, helpfile, HelpContextID)
     X03.Sleep(50)
     # Time to update the display
     X02.Application.ScreenUpdating = OldUpdate

@@ -10,7 +10,6 @@ import pattgen.M30_Tools as M30
 import pattgen.M65_Special_Modules
 import pattgen.M80_Multiplexer_INI_Handling
 import mlpyproggen.Pattern_Generator as PG
-from tkcolorpicker.functions import hsv_to_rgb
 
 import ExcelAPI.XLF_FormGenerator as XLF
 import pattgen.D00_Forms as D00
@@ -41,7 +40,7 @@ def Abort_Button_Click():
     pass
 
 
-class UserForm_LEDColorAnim:
+class UserForm_LEDAnim:
     
     def __init__(self,controller):
         self.controller    = controller
@@ -57,7 +56,7 @@ class UserForm_LEDColorAnim:
                         "Name"          : "MainMenuForm",
                         "BackColor"     : "#000008",
                         "BorderColor"   : "#000012",
-                        "Caption"       : "LED Farb-Animation",
+                        "Caption"       : "LED Animation",
                         "Height"        : 629,
                         "Left"          : 0,
                         "Top"           : 0,
@@ -65,7 +64,7 @@ class UserForm_LEDColorAnim:
                         "Visible"       : True,
                         "Width"         : 842,
                         "Components":[{"Name":"Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                       "Caption":"LED Farb-Animation\n\n ermöglicht die Animation der Farbe einer RGB-LED-Beleuchtung.",
+                                       "Caption":"LED Animation\n\n ermöglicht die Animation einer LED-Beleuchtung. Für Einzel-LEDs und RGB-LEDS kann die Helligkeit gesteuert werden.",
                                         "ControlTipText":"Tooltip1","ForeColor":"#000012","Height":66,"Left":12,"SpecialEffect": "fmSpecialEffectSunken","TextAlign":"fmTextAlignLeft","Top":18,"Type":"Label","Visible":True,"Width":790},
                                       {"Name":"Label2","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"by Harold Linke",
@@ -76,7 +75,21 @@ class UserForm_LEDColorAnim:
                                       {"Name":"LED_Address_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"",
                                        "ControlTipText":"LED Adresse für Test","ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":90,"Type":"NumBox","Value": 1 ,"Visible":True,"Width":50},
-                                      {"Name": "Frame4","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
+                                      {"Name": "Frame1","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
+                                       "Caption"       : "LEDtyp",
+                                       "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 112,"Type": "Frame","Visible": True,"Width": 154,
+                                       "Components"    :
+                                            [
+                                            {"Name":"LEDType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             "Caption":"LEDTyp:",
+                                             "ControlTipText":"LEDtyp",
+                                             "ForeColor":"#FF0000","Height":18,"Left":72,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
+                                            {"Name":"LED_Type_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             "Caption":"LEDtyp",
+                                             "ControlTipText":" LEDtyp:\nRGB LED (nur weiß)\nLED1 (Rot): mit WS2811 am roten Anschluß\nLED2 (Grün): mit WS2811 am grünen Anschluß\nLED3(Blau): mit WS2811 am blauen Anschluß",
+                                             "ForeColor":"#FF0000","Height":44,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0, "SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["RGB LED", "LED1 (Rot)", "LED2 (Grün)", "LED3 (Blau)"] ,"Visible":True,"Width":60},
+                                        ]}, 
+                                        {"Name": "Frame4","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                          "Caption"       : "EIN-schalt Parameter",
                                          "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 178,"Type": "Frame","Visible": True,"Width": 154,
                                          "Components"    :
@@ -148,20 +161,20 @@ class UserForm_LEDColorAnim:
                                               "ControlTipText":"Wie soll die Bewegung ausgeführt werden: \nLinear\nBeschleunigung\nIndividuell",
                                               "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Linear", "Beschleunigung", "Individuell"] ,"Visible":True,"Width":60},
                                              {"Name":"LED_Anfangswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                              "Caption":"Startfarbe (Hue 0..255)",
-                                              "ControlTipText":"Startfarbe (Hue 0..255)",
+                                              "Caption":"Anfangshelligkeit (0..255)",
+                                              "ControlTipText":"Anfangswert (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":45,"Type":"Label","Visible":True,"Width":148},
                                              {"Name":"LED_Anfangswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"",
-                                              "ControlTipText":"Startfarbe (Hue 0..255)",
+                                              "ControlTipText":"Anfangshelligkeit (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":45,"Type":"NumBox","Value": 20 ,"Visible":True,"Width":50},
                                              {"Name":"LED_Endwert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                              "Caption":"Endfarbe (Hue 0..255)",
-                                              "ControlTipText":"Endfarbe (Hue 0..255)",
+                                              "Caption":"Endhelligkeit (0..255)",
+                                              "ControlTipText":"Endhelligkeit (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":69,"Type":"Label","Visible":True,"Width":148},
                                              {"Name":"LED_Endwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"",
-                                              "ControlTipText":"Endfarbe (Hue 0..255)",
+                                              "ControlTipText":"Endhelligkeit (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":69,"Type":"NumBox","Value": 220 ,"Visible":True,"Width":50},
                                              {"Name":"Ueberblendung","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"ARDUINO Überblendung AUS",
@@ -270,7 +283,7 @@ class UserForm_LEDColorAnim:
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
         self.Userform_Res = ""
-        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self)
+        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable)
         self.patterntype = 0
         self.curvetype = 0
         self.curve_points = []
@@ -287,11 +300,12 @@ class UserForm_LEDColorAnim:
             self.LED_PauseE_Ein_TextBox, 
             self.LED_PauseS_Aus_TextBox, 
             self.LED_PauseE_Aus_TextBox,
-            self.LED_TimeStepType_ListBox
+            self.LED_TimeStepType_ListBox,
+            self.LED_Type_ListBox
         ]
         if self.Macro_str != "":
             # read parameters from Macrostring
-            if self.Macro_str.find("#LEDColorAnim") != -1:
+            if self.Macro_str.find("#LEDAnim") != -1:
                 macro_parts = self.Macro_str.split("(")
                 if len(macro_parts) >= 2:
                     param1_string = macro_parts[1]
@@ -305,7 +319,7 @@ class UserForm_LEDColorAnim:
                             self.get_params_from_param_list(self.param_list)
                             self.patterntype = self.LED_RunType_ListBox.Selection
                             self.curvetype = self.LED_CurveType_ListBox.Selection
-                            self.LEDtype = 0
+                            self.LEDtype = self.LED_Type_ListBox.Selection 
 
         #anzahl_werte_Ein = int(self.LED_DauerEin_TextBox.Value / self.LED_Abstand_TextBox.Value)
         #if self.patterntype != 1: # Not PINGPONG Ausschaltsequenz anhängen
@@ -433,9 +447,15 @@ class UserForm_LEDColorAnim:
                 curve_points_Aus = self.calculate_curve(self.LED_DauerAus_TextBox.Value, self.LED_Endwert_TextBox.Value, self.LED_Anfangswert_TextBox.Value, t, self.LED_Abstand_TextBox.Value, pauseS=self.LED_PauseS_Aus_TextBox.Value, pauseE=self.LED_PauseE_Aus_TextBox.Value, skip_first=True) 
                 curve_points.extend(curve_points_Aus)
         else:
+            # check if curve points are in range 0 .. 255:
+            for index, curve_point in enumerate(self.curve_points):
+                if curve_point[1] > 255:
+                    curve_point[1] = 255
+                    self.curve_points[index] = curve_point
+                if curve_point[1] < 0:
+                    curve_point[1] = 0
+                    self.curve_points[index] = curve_point
             curve_points = self.curve_points
-        return curve_points
-        
     
     def OK_Button_Click(self):
         #------------------------------
@@ -443,31 +463,30 @@ class UserForm_LEDColorAnim:
         self.curvetype =  self.LED_CurveType_ListBox.Selection 
         if runtype == 2: #"Ein/Aus":
             gotoaction = True
-            self.patterntype_str = "PM_HSV"
+            self.patterntype_str = "PM_NORMAL"
         elif runtype == 1: #"PingPong":
             gotoaction = False
-            self.patterntype_str = "PM_HSV"
-        else: # Wiederholen
+            self.patterntype_str = "PM_PINGPONG"
+        else:
             gotoaction = False
-            self.patterntype_str = "PM_HSV"
+            self.patterntype_str = "PM_NORMAL"
         self.curve_points = self.calculate_complete_curve()
-        self.LEDtype = 0 #self.LED_Type_ListBox.Selection
+        self.LEDtype = self.LED_Type_ListBox.Selection
         if self.LEDtype == 0:
             LED = "1"
         else:
             LEDtype_str = str(self.LEDtype)
             LED = "C"+LEDtype_str+"-"+LEDtype_str
-        
+         
         if gotoaction:
-            self.Userform_Res = LED + "$// Activation: Binary #LEDColorAnim("
+            self.Userform_Res = LED + "$// Activation: Binary #LEDAnim("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
             self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n"
         else:
-            self.Userform_Res = LED + "$// #LEDColorAnim("
+            self.Userform_Res = LED + "$// #LEDAnim("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
-            self.Userform_Res = self.Userform_Res + ")\n"                    
+            self.Userform_Res = self.Userform_Res + ")\n"
         
-        #APatternT1(#LED,28,SI_LocalVar,3,0,128,0,PM_NORMAL,250,10,1,0,40,1,0,70,1,0,100,1,0,130,1,0,180,1,0,210,1,0,240,1,0,250,1,0,250,1,0,220,1,0,190,1,0,160,1,0,130,1,0,100,1,0,70,1,0,40,1,0,10,1,0  ,0,0,0,0,0,0,0,0,63,128,0,0,0,0,0,0,0,63)
         if self.Ueberblendung.Value !=1:
             self.Userform_Res = self.Userform_Res + "A"
         self.Userform_Res = self.Userform_Res + "PatternT1(#LED,"
@@ -489,8 +508,7 @@ class UserForm_LEDColorAnim:
 
         for point in self.curve_points:
             if anzahl_led == "3":
-                #self.Userform_Res = self.Userform_Res + "," + str(point[1]) + "," + str(point[1]) + "," + str(point[1])
-                self.Userform_Res = self.Userform_Res + "," + str(point[1]) + ",255,255" # + str(point[1]) + "," + str(point[1])
+                self.Userform_Res = self.Userform_Res + "," + str(point[1]) + "," + str(point[1]) + "," + str(point[1])
             else:
                 self.Userform_Res = self.Userform_Res + "," + str(point[1])
                 
@@ -701,16 +719,9 @@ class UserForm_LEDColorAnim:
             new_LED_val = 0
             
         LED_address = self.LED_Address_TextBox.Value
-        self.LEDtype = 0 # self.LED_Type_ListBox.Selection
+        self.LEDtype = self.LED_Type_ListBox.Selection
         if self.LEDtype == 0:
-            h = new_LED_val / 255. * 360
-            s = 100
-            v = 100
-            sel_color = hsv_to_rgb(h, s, v)
-            r = sel_color[0]
-            g = sel_color[1]
-            b = sel_color[2]
-            self._update_LEDs(LED_address,r, g, b) #new_LED_val, new_LED_val)
+            self._update_LEDs(LED_address,new_LED_val, new_LED_val, new_LED_val)
         elif self.LEDtype == 1:
             self._update_LEDs(LED_address,new_LED_val, 0, 0)
         elif self.LEDtype == 2:

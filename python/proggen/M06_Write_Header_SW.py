@@ -52,7 +52,7 @@ import proggen.M30_Tools as M30
 import proggen.M70_Exp_Libraries as M70
 import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLWF_Worksheetfunction as WorksheetFunction
-import proggen.clsExtensionParameter
+
 
 import ExcelAPI.XLA_Application as P01
 
@@ -577,6 +577,9 @@ def Add_Matching_Arg_to_DstVars(Org_Macro, line, DestVarName):
         if Arg == '#LocInCh':
             # 20.06.20: Prevent problems with the random goto activation: Random(#LocInCh, #InCh, RM_NORMAL, 5 Sek,  10 Sek, 1 ms, 1 ms)
             _fn_return_value = True
+        elif Arg == 'SI_LocalVar':
+            # 28.01.24: Juergen Allow re-use of SI_LocalVar
+            _fn_return_value = True
         else:
             _fn_return_value = Add_Variable_to_DstVar_List(Arg)
     return _fn_return_value
@@ -731,7 +734,11 @@ def Add_Inp_and_DstVars(line, r):
         SearchMacro = Parts(0)
     Org_Macro_Row = M09SM.Find_Macro_in_Lib_Macros_Sheet(SearchMacro + '(')
     if Org_Macro_Row == 0:
-        Debug.Print('Attention: Macro \'' + line + ' not found in \'' + M02.LIBMACROS_SH + '\'')
+        Pos = InStr(line, 'Pattern')
+        # 19.04.23: Hardi: Don't generate warning if "Pattern" macro is found
+        if ( Pos == 0 or Pos > 2 )  and Left(line, Len('// Activation:')) != '// Activation:':
+            Debug.Print('Attention: Macro \'' + line + ' not found in \'' + M02.LIBMACROS_SH + '\'')
+            # In case the user has defined own macros some where
         # ToDo: Wie können Zielvariablen in diesen Makros erkannt werden?
     else:
         _with0 = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
@@ -747,7 +754,7 @@ def Add_Inp_and_DstVars(line, r):
         elif (_select4 == '1'):
             Res = Add_Matching_Arg_to_DstVars(Org_Macro, line, 'DstVar')
             # Ex.: MonoFlop(DstVar, InCh, Duration)
-        elif (_select42 == '2'):
+        elif (_select4 == '2'):
             Res = Add_Matching_Arg_to_DstVars(Org_Macro, line, 'DstVar1')
             # Ex.: RS_FlipFlop2(DstVar1, DstVar2, InCh, R_InCh)
             if Res:
@@ -852,7 +859,7 @@ def Valid_Var_Name(Name, row):
     global MaxUsed_Loc_InCh, MaxUsed_Loc_InCh_Row, Undefined_Input_Var, Undef_Input_Var_Row, DstVar_List
     
     _fn_return_value = False
-    Std_Names = 'SI_1 SI_0 SI_Enable_Sound #LocInCh'
+    Std_Names = 'SI_1 SI_0 SI_Enable_Sound SI_LocalVar #LocInCh'
 
     Nr = Long()
 
@@ -928,9 +935,9 @@ def Create_Loc_InCh_Defines(Dest, Channel, LocInChNr):
     
     #-------------------------------------------------------------------------------------------------
     if LocInChNr > 0:
-        Dest = Dest + vbCr + '// Local InCh variables' + vbCr
+        Dest = Dest + vbCrLf + '// Local InCh variables' + vbCrLf
         for i in vbForRange(0, LocInChNr - 1):
-            Dest = Dest + M30.AddSpaceToLen('#define LOC_INCH' + str(i), 32) + str(Channel) + vbCr
+            Dest = Dest + M30.AddSpaceToLen('#define LOC_INCH' + str(i), 32) + str(Channel) + vbCrLf
             Channel = Channel + 1
     if MaxUsed_Loc_InCh >= LocInChNr:
         Error_Msg_Varaible_Not_Defined('LOC_INCH' + MaxUsed_Loc_InCh, MaxUsed_Loc_InCh_Row)
@@ -1142,9 +1149,10 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
         VBFiles.writeText(fp, '#define START_SWITCHES_2  ' + M30.AddSpaceToLen(StartSwitches2, 41) + '// Define the start number for the second keyboard.', '\n')
         #VBFiles.writeText(fp, '#define START_SWITCHES_B  ' + M30.AddSpaceToLen(StartSwitches1, 41) + '// Define the start number for the first keyboard.', '\n') # 21.03.23 Juergen
         VBFiles.writeText(fp, '#define START_SWITCHES_' + Right(CTR_Cha_Name_1, 1) + '  ' + M30.AddSpaceToLen(StartSwitches1, 41) + '// Define the start number for the first keyboard.', '\n')
+        # 21.03.23 Juergen
     if Channel2InpCnt > 0:
         VBFiles.writeText(fp, '#define START_SWITCHES_' + Right(CTR_Cha_Name_2, 1) + '  ' + M30.AddSpaceToLen(StartSwitches2, 41) + '// Define the start number for the second keyboard.', '\n')
-             
+        # 21.03.23 Juergen
         #VBFiles.writeText(fp, '#define START_SWITCHES_C  ' + M30.AddSpaceToLen(StartSwitches2, 41) + '// Define the start number for the second keyboard.', '\n') # 21.03.23 Juergen
     VBFiles.writeText(fp, '', '\n')
     # 21.03.23 Juergen write also TOTAL_...

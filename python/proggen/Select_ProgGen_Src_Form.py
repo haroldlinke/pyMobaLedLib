@@ -39,7 +39,7 @@ from vb2py.vbdebug import *
 import ExcelAPI.XLA_Application as X02
 import proggen.M09_Language as M09
 import proggen.M25_Columns as M25
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M50_Exchange as M50
 """-------------------------------
 ----------------------------
@@ -97,7 +97,7 @@ class CSelect_ProgGen_Src_Form:
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
-        self.Form=XLF.generate_form(self.Select_ProgGen_Src_Form_RSC,self.controller,dlg=self,modal=False)
+        self.Form=XLF.generate_form(self.Select_ProgGen_Src_Form_RSC,self.controller,dlg=self,modal=False,jump_table=X02.ActiveWorkbook.jumptable)
                 
     def UserForm_Activate(self):
         #------------------------------

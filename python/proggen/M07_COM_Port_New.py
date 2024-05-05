@@ -60,17 +60,16 @@ import proggen.M09_Language as M09
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
-#import proggen.M28_divers as M28
+#import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 #import proggen.M37_Inst_Libraries as M37
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
 
 import ExcelAPI.XLA_Application as P01
 
-import proggen.D08_Select_COM_Port_Userform as D08
 import proggen.M07_COM_Port as M07
 import proggen.F00_mainbuttons as F00
 
@@ -194,7 +193,7 @@ def __Blink_Arduino_LED():
     if F00.port_is_available(M07.CheckCOMPort):    
         Debug.Print("Blink_LED start")
         F00.Select_COM_Port_UserForm.Update_SpinButton(0)
-        #if M07.CheckCOMPort != 999:
+        # Rescan COM Ports
         if M07.CheckCOMPort != "999":
             __CheckCOMPort_Res, DeviceSignatur = M07.DetectArduino(M07.CheckCOMPort, BaudRate, HWVersion, SWMajorVersion, SWMinorVersion, DeviceSignatur, 1, PrintDebug= __PRINT_DEBUG)
         else:

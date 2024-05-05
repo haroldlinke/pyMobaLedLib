@@ -168,7 +168,7 @@ goto :fastbuild
 echo Running fastbuild
 call Fastbuild.cmd %8
 if errorlevel 1 (
-    rem use argument norebuild to avoid rebuild in this case
+    rem use argument norebuild to avoid rebuild in this case of build error
     set rebuild=1    if ""%8""==""norebuild"" set rebuild=0    if ""%8""==""additional"" set rebuild=0    if "%rebuild%"=="1" (
         rem in case that FastBuild.cmd returned errolevel 9 also a rebuild won't help
         if not errorlevel 9 (

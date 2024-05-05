@@ -55,13 +55,13 @@ import proggen.M10_Par_Description as M10
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
+import proggen.M80_Create_Multiplexer as M80
 
 import mlpyproggen.Prog_Generator as PG
 
@@ -174,6 +174,31 @@ def __Load_Extensions():
             MacroSheet.CellDict[MacroRow, M02.SM_DetailCOL] = Macro.Texts.GetText(DE, 'DetailedDescription')
             MacroRow = MacroRow + 1
     P01.Application.EnableEvents = OldEvents
+    
+def ConvertFastbuild():
+    # 04.11.23: Juergen:
+    return #*HL
+    ConvertToCrLf(M08.GetWorkbookPath() + '\\' + M02.Ino_Dir_LED + 'fastbuild.cmd')
+
+def ConvertToCrLf(fileName):
+    fso = Variant()
+
+    objTextFile = Variant()
+
+    content = String()
+
+    newContent = String()
+    # 04.11.23: Juergen:
+    fso = CreateObject('Scripting.FileSystemObject')
+    objTextFile = fso.OpenTextFile(fileName, 1)
+    content = objTextFile.ReadAll
+    objTextFile.Close()
+    newContent = Replace(content, vbLf, vbCrLf)
+    newContent = Replace(newContent, vbCr + vbCr, vbCr)
+    if newContent != content:
+        objTextFile = fso.OpenTextFile(fileName, 2)
+        objTextFile.Write(newContent)
+        objTextFile.Close()
 
 def __CollectExtensions():
     

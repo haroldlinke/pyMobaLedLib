@@ -59,13 +59,13 @@ import proggen.M09_Language as M09
 #import proggen.M20_PageEvents_a_Functions as M20
 #import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 #import proggen.M37_Inst_Libraries as M37
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
 import mlpyproggen.Prog_Generator as PG
 
 import ExcelAPI.XLA_Application as P01
@@ -155,6 +155,7 @@ def Make_sure_that_Col_Variables_match(Sh=None, Switch_back_Target=None):
         # Already read in => exit
     #Debug.Print "Updating the Col_Variables"
     if not Switch_back_Target is None: #*HL
+        # Check if the page has been changed while a cell was changed
         if Switch_back_Target.Parent.Name != Sh.Name:
             Debug.Print(r'Switching back to ' + Switch_back_Target.Parent.Name + r' in Make_sure_that_Col_Variables_match()')
             # VB2PY (UntranslatedCode) On Error GoTo ErrSwitchBack
@@ -172,11 +173,18 @@ def Make_sure_that_Col_Variables_match(Sh=None, Switch_back_Target=None):
     select_variable_0 = Page_ID
     if (select_variable_0 == r'Selectrix'):
         SX_Channel_Col = 4
+        # 24:02.20: Old: FindHeadCol(sh, Header_Row, "SX Channel [0..99]")
         SX_Bitposi_Col = 5
+        # 24:02.20: Old: FindHeadCol(sh, Header_Row, "Bitposition [1..8]")
+    elif (select_variable_0 == 'LNet'):
+        DCC_or_CAN_Add_Col = 4
+        # 24:04.23: add LNet
     elif (select_variable_0 == r'DCC'):
         DCC_or_CAN_Add_Col = 4
+        # 24:02.20: Old: FindHeadCol(sh, Header_Row, "DCC Adresse")
     elif (select_variable_0 == r'CAN'):
         DCC_or_CAN_Add_Col = 4
+        # 24:02.20: Old: FindHeadCol(sh, Header_Row, "CAN Adresse")
     else:
         Debug.Print(r'Seitenname: ' + Sh.Name + r' Page_ID: ' + Page_ID + r'')
         P01.MsgBox(M09.Get_Language_Str(r'Fehler: Die Excel Seite wurde gewechselt während einer Änderung in einer Zelle. ' + vbCr + r'Die Änderungen können nicht überprüft werden ;-(' + vbCr + vbCr + r'Die Eingaben in einer Zelle müssen mit Enter abgeschlossen werden bevor die Seite gewechselt wird.'), vbCritical, M09.Get_Language_Str(r'Fehler: Seite gewechselt während der Eingabe in einer Zelle'))
@@ -184,29 +192,46 @@ def Make_sure_that_Col_Variables_match(Sh=None, Switch_back_Target=None):
         # Wenn Col_from_Sheet = "" ist, dann kann es immer noch passiern
         M30.EndProg()
     Filter__Col = 3
+    # "Filter"
     if Page_ID == r'Selectrix':
         Inp_Typ_Col = 6
+        # F: "Typ"
     else:
         Inp_Typ_Col = 5
+        # E: "Typ"
     Ref_Col = Inp_Typ_Col
     Start_V_Col = Ref_Col + 1
+    # "Start- wert"
     Descrip_Col = Ref_Col + 2
+    # "Beschreibung"
     Dist_Nr_Col = Ref_Col + 3
+    # "Verteiler- Nummer"
     Conn_Nr_Col = Ref_Col + 4
+    # "Stecker- Nummer"
     if Has_Macro_and_LanguageName_Column(Sh, Conn_Nr_Col + 1):
+        # 26.10.21:
         MacIcon_Col = Ref_Col + 5
+        # Macro icon column
         LanName_Col = Ref_Col + 6
+        # Language specific macro name
         Ref_Col = Ref_Col + 2
     else:
         MacIcon_Col = 0
         LanName_Col = 0
     Config__Col = Ref_Col + 5
+    # "Beleuchtung, Sound, oder andere Effekte"
     LED_Nr__Col = Ref_Col + 6
+    # "Start LedNr"
     LEDs____Col = Ref_Col + 7
+    # "LEDs"
     InCnt___Col = Ref_Col + 8
+    # "InCnt"
     LocInCh_Col = Ref_Col + 9
+    # "Loc InCh"
     LED_Cha_Col = Ref_Col + 10
+    # "LED Channel"
     LED_TastCol = Ref_Col + 11
+    # "LED Taster"
     COMPort_COL = Inp_Typ_Col
     BUILDOP_COL = Descrip_Col
     R_UPLOD_COL = Dist_Nr_Col
@@ -218,54 +243,60 @@ def Make_sure_that_Col_Variables_match(Sh=None, Switch_back_Target=None):
     M30.EndProg()
 
 def Get_First_Number_of_Range(Row, Col):
+    _fn_return_value = False
     Addr = Variant()
     #-----------------------------------------------------------------------------
     # Accepts also a address which contains two adressed separated by '-'
     # Example: '1 - 3'
-    Addr = Replace(Replace(str(P01.Cells(Row, Col)), vbLf, r''), r' ', r'')
-    if Addr == r'':
-        fn_return_value = r''
-        return fn_return_value
-    if InStr(Addr, r'-') > 0:
-        Parts = Split(Addr, r'-')
-        if UBound(Parts) > 1 or IsNumeric(Parts(0)) == False or IsNumeric(Parts(1)) == False:
-            fn_return_value = - 9
+    Addr = Replace(Replace(str(P01.Cells(Row, Col)), vbLf, ''), ' ', '')
+    if Addr == '':
+        _fn_return_value = ''
+        return _fn_return_value
+    if InStr(Addr, '-') > 0:
+        parts = Split(Addr, '-')
+        if UBound(parts) > 1 or IsNumeric(parts(0)) == False or IsNumeric(parts(1)) == False:
+            _fn_return_value = - 9
+            # Generate an error message in the following routines
         else:
-            fn_return_value = Int(P01.val(Parts(0)))
+            _fn_return_value = Int(P01.val(parts(0)))
     else:
         if IsNumeric(Addr):
-            fn_return_value = Int(P01.val(Addr))
+            _fn_return_value = Int(P01.val(Addr))
         else:
-            fn_return_value = r''
-    return fn_return_value
+            _fn_return_value = ''
+    return _fn_return_value
 
 def Get_Address_Col():
+    _fn_return_value = False
     #----------------------------------------
-    if Page_ID == r'Selectrix':
-        fn_return_value = SX_Channel_Col
+    if Page_ID == 'Selectrix':
+        _fn_return_value = SX_Channel_Col
     else:
-        fn_return_value = DCC_or_CAN_Add_Col
-    return fn_return_value
+        _fn_return_value = DCC_or_CAN_Add_Col
+    return _fn_return_value
 
 def Get_Address_String(Row):
+    _fn_return_value = False
     s = String()
 
     AddrCol = int()
+    # 03.04.20:
     #--------------------------------------------------------
     # Return true if the string in the address/selectrix channel column
     AddrCol = Get_Address_Col()
-    fn_return_value = M06.ExpandName(Trim(P01.Cells(Row, AddrCol)))
-    return fn_return_value
+    _fn_return_value = M06.ExpandName(Trim(P01.Cells(Row, AddrCol)))
+    return _fn_return_value
 
 def Address_starts_with_a_Number(Row):
+    _fn_return_value = False
     s = String()
+    # 03.04.20:
     #-------------------------------------------------------------------
     # Return true if the first character of the address/channel column is a number
     s = Get_Address_String(Row)
-    fn_return_value = False
-    if s != r'':
-        fn_return_value = IsNumeric(Left(s, 1))
-    return fn_return_value
+    if s != '':
+        _fn_return_value = IsNumeric(Left(s, 1))
+    return _fn_return_value
 
 # Contains Variables which contain the column numbers for
 # the date sheets (DCC/Selectrix)

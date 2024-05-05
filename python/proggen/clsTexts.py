@@ -5,10 +5,10 @@ from vb2py.vbdebug import *
 # Enumeration 'Language'
 DE = 0
 EN = 1
-Texts = Scripting.Dictionary()
+Texts = {} #Scripting.Dictionary()
 
 def class_initialize():
-    Texts = Scripting.Dictionary()
+    Texts = {} # Scripting.Dictionary()
 
 def SetText(Lang, Key, Value):
     global Texts

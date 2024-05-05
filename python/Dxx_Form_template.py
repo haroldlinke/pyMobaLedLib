@@ -42,7 +42,7 @@ import ExcelAPI.XLA_Application as X02
 import proggen.M09_Language as M09
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M50_Exchange as M50
 import proggen.F00_mainbuttons as F00
 
@@ -102,7 +102,7 @@ class CSelect_ProgGen_Dest_Form:
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
-        self.Form=XLF.generate_form(self.Select_ProgGen_Dest_Form_RSC,self.controller,dlg=self,modal=False)
+        self.Form=XLF.generate_form(self.Select_ProgGen_Dest_Form_RSC,self.controller,dlg=self,modal=False, jump_table=PG.ThisWorkbook.jumptable)
                 
     def UserForm_Activate(self):
         #------------------------------
