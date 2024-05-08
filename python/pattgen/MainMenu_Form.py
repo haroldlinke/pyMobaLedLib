@@ -395,7 +395,7 @@ class CMainMenu_Form:
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
-        self.Form=XLF.generate_form(Main_Menu_Form_RSC,self.controller,dlg=self)
+        self.Form=XLF.generate_form(Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable)
                 
     def __UserForm_Activate(self):
         #------------------------------

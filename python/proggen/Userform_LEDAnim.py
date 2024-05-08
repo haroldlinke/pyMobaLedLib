@@ -9,10 +9,10 @@ import pattgen.M07_Save_Sheet_Data
 import pattgen.M30_Tools as M30
 import pattgen.M65_Special_Modules
 import pattgen.M80_Multiplexer_INI_Handling
-import mlpyproggen.Prog_Generator as PG
+import mlpyproggen.Pattern_Generator as PG
 
 import ExcelAPI.XLF_FormGenerator as XLF
-#import pattgen.D00_Forms as D00
+import pattgen.D00_Forms as D00
 
 import tkinter as tk
 from tkinter import ttk
@@ -40,7 +40,7 @@ def Abort_Button_Click():
     pass
 
 
-class UserForm_ServoAnim:
+class UserForm_LEDAnim:
     
     def __init__(self,controller):
         self.controller    = controller
@@ -56,7 +56,7 @@ class UserForm_ServoAnim:
                         "Name"          : "MainMenuForm",
                         "BackColor"     : "#000008",
                         "BorderColor"   : "#000012",
-                        "Caption"       : "Servo Animation",
+                        "Caption"       : "LED Animation",
                         "Height"        : 629,
                         "Left"          : 0,
                         "Top"           : 0,
@@ -64,58 +64,56 @@ class UserForm_ServoAnim:
                         "Visible"       : True,
                         "Width"         : 842,
                         "Components":[{"Name":"Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                       "Caption":"Unterstützt den Direkt Mode Servo von Eckhard (Servo DM) und die Normalen MLL-Servos (Servo1, Servo2 und Servo3)\nDurch Eingabe der Ein- und Ausschaltparameter wird der Zeitablauf bestimmt. Es stehen 3 Kurven-Modi zur Verfügung: Linear, Beschleunigung und Individuell. " +
-                                       "Die berechneten Kurven werden in der Grafik rechts angezeigt. Bei der Einstellung Individuell können die Kurvenwerte (Grüne Punkte) einzeln eingestellt werden. Wurde unter Servo-Adresse die Adresse des Servos angegeben, kann die Servostellung direkt überprüft werden.\n" +
-                                       "Beim Ausführen kann man wählen zwischen: Wiederholen-die Ein-und Ausschaltsequenz wird automatisch wiederholt, PingPong-die Sequenz wird vor- und zurück abgespielt, Ein/Aus: Bei Schalter auf EIN wird die Einschaltsequenz, bei Schalter auf AUS, wird die Auschaltsequenz abgespielt.",
+                                       "Caption":"LED Animation\n\n ermöglicht die Animation einer LED-Beleuchtung. Für Einzel-LEDs und RGB-LEDS kann die Helligkeit gesteuert werden.",
                                         "ControlTipText":"Tooltip1","ForeColor":"#000012","Height":66,"Left":12,"SpecialEffect": "fmSpecialEffectSunken","TextAlign":"fmTextAlignLeft","Top":18,"Type":"Label","Visible":True,"Width":790},
                                       {"Name":"Label2","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"by Harold Linke",
                                        "ControlTipText":"","ForeColor":"#FF0000","Height":12,"Left":318,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":100},
-                                      {"Name":"Servo_Address_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                       "Caption":"Servo Adressse",
-                                       "ControlTipText":"Servo Adresse für Test","ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":90,"Type":"Label","Visible":True,"Width":348},
-                                      {"Name":"Servo_Address_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                      {"Name":"LED_Address_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"LED Adressse",
+                                       "ControlTipText":"LED Adresse für Test","ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":90,"Type":"Label","Visible":True,"Width":348},
+                                      {"Name":"LED_Address_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"",
-                                       "ControlTipText":"Servo Adresse für Test","ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":90,"Type":"NumBox","Value": 1 ,"Visible":True,"Width":50},
+                                       "ControlTipText":"LED Adresse für Test","ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":90,"Type":"NumBox","Value": 1 ,"Visible":True,"Width":50},
                                       {"Name": "Frame1","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
-                                       "Caption"       : "Servotyp",
+                                       "Caption"       : "LEDtyp",
                                        "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 112,"Type": "Frame","Visible": True,"Width": 154,
                                        "Components"    :
                                             [
-                                            {"Name":"ServoType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                             "Caption":"ServoTyp:",
-                                             "ControlTipText":"Servotyp",
+                                            {"Name":"LEDType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             "Caption":"LEDTyp:",
+                                             "ControlTipText":"LEDtyp",
                                              "ForeColor":"#FF0000","Height":18,"Left":72,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                            {"Name":"Servo_Type_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                             "Caption":"Servotyp",
-                                             "ControlTipText":" Servotyp:\nServo DM: Servo mit Direct Mode\nServo1 (Rot): mit WS2811 am roten Anschluß\nServo2 (Grün): mit WS2811 am grünen Anschluß\nServo3(Blau): mit WS2811 am blauen Anschluß",
-                                             "ForeColor":"#FF0000","Height":44,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0, "SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Servo DM", "Servo1 (Rot)", "Servo2 (Grün)", "Servo3 (Blau)"] ,"Visible":True,"Width":60},
+                                            {"Name":"LED_Type_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             "Caption":"LEDtyp",
+                                             "ControlTipText":" LEDtyp:\nRGB LED (nur weiß)\nLED1 (Rot): mit WS2811 am roten Anschluß\nLED2 (Grün): mit WS2811 am grünen Anschluß\nLED3(Blau): mit WS2811 am blauen Anschluß",
+                                             "ForeColor":"#FF0000","Height":44,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0, "SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["RGB LED", "LED1 (Rot)", "LED2 (Grün)", "LED3 (Blau)"] ,"Visible":True,"Width":60},
                                         ]}, 
                                         {"Name": "Frame4","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                          "Caption"       : "EIN-schalt Parameter",
                                          "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 178,"Type": "Frame","Visible": True,"Width": 154,
                                          "Components"    :
-                                            [{"Name":"Servo_PauseS_Ein_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                            [{"Name":"LED_PauseS_Ein_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Startpause (msec)",
                                               "ControlTipText":"Pause bevor die Einschaltanimation startet in msec",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"Servo_PauseS_Ein_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_PauseS_Ein_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"",
                                               "ControlTipText":"Pause bevor die Einschaltanimation startet in msec",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
-                                             {"Name":"Servo_DauerEin_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_DauerEin_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"Dauer EIN (msec)",
                                                "ControlTipText":"Dauer der Einschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":30,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"Servo_DauerEin_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_DauerEin_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"",
                                                "ControlTipText":"Dauer der Einschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":30,"Type":"NumBox","Value": 2500 ,"Visible":True,"Width":50},
-                                             {"Name":"Servo_PauseE_Ein_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_PauseE_Ein_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"Endepause (msec)",
                                                "ControlTipText":"Pause am Ende der Einschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":54,"Type":"Label","Visible":True,"Width":148},
-                                              {"Name":"Servo_PauseE_Ein_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                              {"Name":"LED_PauseE_Ein_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"",
                                                "ControlTipText":"Pause am Ende der Einschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":54,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
@@ -124,27 +122,27 @@ class UserForm_ServoAnim:
                                          "Caption"       : "AUS-schalt Parameter",
                                          "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 266,"Type": "Frame","Visible": True,"Width": 154,
                                          "Components"    :
-                                            [{"Name":"Servo_PauseS_Aus_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                            [{"Name":"LED_PauseS_Aus_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Startpause (msec)",
                                               "ControlTipText":"Pause bevor die Ausschaltanimation startet in msec",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"Servo_PauseS_Aus_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_PauseS_Aus_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"",
                                               "ControlTipText":"Pause bevor die Ausschaltanimation startet in msec",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
-                                             {"Name":"Servo_DauerAus_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_DauerAus_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"Dauer AUS (msec)",
                                                "ControlTipText":"Dauer der Ausschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":30,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"Servo_DauerAus_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_DauerAus_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"",
                                                "ControlTipText":"Dauer der Ausschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":30,"Type":"NumBox","Value": 2500 ,"Visible":True,"Width":50},
-                                             {"Name":"Servo_PauseE_Aus_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_PauseE_Aus_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"Endepause (msec)",
                                                "ControlTipText":"Pause am Ende der Ausschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":54,"Type":"Label","Visible":True,"Width":148},
-                                              {"Name":"Servo_PauseE_Aus_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                              {"Name":"LED_PauseE_Aus_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"",
                                                "ControlTipText":"Pause am Ende der Ausschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":54,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
@@ -154,29 +152,29 @@ class UserForm_ServoAnim:
                                          "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 354,"Type": "Frame","Visible": True,"Width": 154,
                                          "Components"    :
                                               [                                                            
-                                             {"Name":"ServoCurveType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LEDCurveType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Kurventyp:",
                                               "ControlTipText":"Kurventyp der Sequenz",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"Servo_CurveType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_CurveType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Kurventyp",
                                               "ControlTipText":"Wie soll die Bewegung ausgeführt werden: \nLinear\nBeschleunigung\nIndividuell",
                                               "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Linear", "Beschleunigung", "Individuell"] ,"Visible":True,"Width":60},
-                                             {"Name":"Servo_Anfangswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                              "Caption":"Anfangswert (0..255)",
+                                             {"Name":"LED_Anfangswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                              "Caption":"Anfangshelligkeit (0..255)",
                                               "ControlTipText":"Anfangswert (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":45,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"Servo_Anfangswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_Anfangswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"",
-                                              "ControlTipText":"Anfangswert (0..255)",
+                                              "ControlTipText":"Anfangshelligkeit (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":45,"Type":"NumBox","Value": 20 ,"Visible":True,"Width":50},
-                                             {"Name":"Servo_Endwert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                              "Caption":"Endwert (0..255)",
-                                              "ControlTipText":"Endwert (0..255)",
+                                             {"Name":"LED_Endwert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                              "Caption":"Endhelligkeit (0..255)",
+                                              "ControlTipText":"Endhelligkeit (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":69,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"Servo_Endwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_Endwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"",
-                                              "ControlTipText":"Endwert (0..255)",
+                                              "ControlTipText":"Endhelligkeit (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":69,"Type":"NumBox","Value": 220 ,"Visible":True,"Width":50},
                                              {"Name":"Ueberblendung","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"ARDUINO Überblendung AUS",
@@ -187,11 +185,11 @@ class UserForm_ServoAnim:
                                          "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 464,"Type": "Frame","Visible": True,"Width": 154,
                                          "Components"    :
                                               [                                                                
-                                             {"Name":"ServoRunType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LEDRunType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Ausführung:",
                                               "ControlTipText":"Art der Ausführung der Sequenz",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"Servo_RunType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_RunType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Ausführung",
                                               "ControlTipText":"Wie soll die Bewegung ausgeführt werden: \nWiederholen: EIN und AUS-Sequenz werden automatisch wiederholt.\nPingPong: Die EIN-Sequenz wird vorwärts und rückwärts abgespielt\nEin/Aus: Beim Einschalten wird die EIN-Sequenz, beim Ausschalten die AUS-Sequenz EINMAL abgespielt",
                                               "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Wiederholen", "PingPong", "Ein/Aus"] ,"Visible":True,"Width":60},
@@ -201,21 +199,21 @@ class UserForm_ServoAnim:
                                          "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 522,"Type": "Frame","Visible": True,"Width": 154,
                                          "Components"    :
                                             [
-                                            {"Name":"ServoTimeStepType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                            {"Name":"LEDTimeStepType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                              "Caption":"Zeitstufen",
                                              "ControlTipText":"Art der Zeitstufen für die Sequenz",
                                              "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                            {"Name":"Servo_TimeStepType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                            {"Name":"LED_TimeStepType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                              "Caption":"Zeitstufen",
                                              "ControlTipText":"Wie sollen die Zeitstufen ermittelt werden \nAutomatisch \nFester Wert",
                                              "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 1,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Automatisch", "Fester Wert"] ,"Visible":True,"Width":60},
-                                            {"Name":"Servo_Abstand_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                            {"Name":"LED_Abstand_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Stufenabstand (msec)",
-                                              "ControlTipText":"Abstand in msec zwischen zwei Stufen, die an den Servo gesendet werden.",
+                                              "ControlTipText":"Abstand in msec zwischen zwei Stufen, die an den LED gesendet werden.",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":45,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"Servo_Abstand_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"LED_Abstand_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"",
-                                              "ControlTipText":"Abstand in msec zwischen zwei Stufen, die an den Servo gesendet werden.",
+                                              "ControlTipText":"Abstand in msec zwischen zwei Stufen, die an den LED gesendet werden.",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":45,"Type":"NumBox","Value": 500 ,"Visible":True,"Width":50},
                                              ]},                                                            
                                       {"Name": "Frame2","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
@@ -258,7 +256,7 @@ class UserForm_ServoAnim:
         return result_string
     
     def calculate_on_off_line(self):
-        time_val =  self.Servo_DauerEin_TextBox.Value + self.Servo_PauseS_Ein_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value
+        time_val =  self.LED_DauerEin_TextBox.Value + self.LED_PauseS_Ein_TextBox.Value + self.LED_PauseE_Ein_TextBox.Value
         return time_val
     
     def determine_curve_points_from_Macro(self, Macro_str):
@@ -280,34 +278,34 @@ class UserForm_ServoAnim:
     
     def __UserForm_Initialize(self):
         #--------------------------------
-        # Is called once to initialice the form
+        # Is called once to initialise the form
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
         self.Userform_Res = ""
-        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self)
+        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable)
         self.patterntype = 0
         self.curvetype = 0
         self.curve_points = []
         self.start_value = ()
         self.UI_paramlist = [
-            self.Servo_RunType_ListBox, 
-            self.Servo_CurveType_ListBox,
-            self.Servo_Abstand_TextBox, 
-            self.Servo_Anfangswert_TextBox, 
-            self.Servo_Endwert_TextBox, 
-            self.Servo_DauerEin_TextBox,
-            self.Servo_DauerAus_TextBox, 
-            self.Servo_PauseS_Ein_TextBox, 
-            self.Servo_PauseE_Ein_TextBox, 
-            self.Servo_PauseS_Aus_TextBox, 
-            self.Servo_PauseE_Aus_TextBox,
-            self.Servo_TimeStepType_ListBox,
-            self.Servo_Type_ListBox
+            self.LED_RunType_ListBox, 
+            self.LED_CurveType_ListBox,
+            self.LED_Abstand_TextBox, 
+            self.LED_Anfangswert_TextBox, 
+            self.LED_Endwert_TextBox, 
+            self.LED_DauerEin_TextBox,
+            self.LED_DauerAus_TextBox, 
+            self.LED_PauseS_Ein_TextBox, 
+            self.LED_PauseE_Ein_TextBox, 
+            self.LED_PauseS_Aus_TextBox, 
+            self.LED_PauseE_Aus_TextBox,
+            self.LED_TimeStepType_ListBox,
+            self.LED_Type_ListBox
         ]
         if self.Macro_str != "":
             # read parameters from Macrostring
-            if self.Macro_str.find("#ServoAnim") != -1:
+            if self.Macro_str.find("#LEDAnim") != -1:
                 macro_parts = self.Macro_str.split("(")
                 if len(macro_parts) >= 2:
                     param1_string = macro_parts[1]
@@ -319,18 +317,18 @@ class UserForm_ServoAnim:
                             #self.patterntype = param_list[0]
                             #self.curvetype = param_list[1]
                             self.get_params_from_param_list(self.param_list)
-                            self.patterntype = self.Servo_RunType_ListBox.Selection
-                            self.curvetype = self.Servo_CurveType_ListBox.Selection
-                            self.servotype = self.Servo_Type_ListBox.Selection 
+                            self.patterntype = self.LED_RunType_ListBox.Selection
+                            self.curvetype = self.LED_CurveType_ListBox.Selection
+                            self.LEDtype = self.LED_Type_ListBox.Selection 
 
-        #anzahl_werte_Ein = int(self.Servo_DauerEin_TextBox.Value / self.Servo_Abstand_TextBox.Value)
+        #anzahl_werte_Ein = int(self.LED_DauerEin_TextBox.Value / self.LED_Abstand_TextBox.Value)
         #if self.patterntype != 1: # Not PINGPONG Ausschaltsequenz anhängen
-        #    anzahl_werte_Aus = int(self.Servo_DauerAus_TextBox.Value / self.Servo_Abstand_TextBox.Value)
+        #    anzahl_werte_Aus = int(self.LED_DauerAus_TextBox.Value / self.LED_Abstand_TextBox.Value)
         #else:
         #    anzahl_werte_Aus = 0
         #anzahl_werte = anzahl_werte_Ein + anzahl_werte_Aus +1
-        if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
-            self.Servo_Abstand_TextBox.Value = int(self.Servo_DauerEin_TextBox.Value / 4)
+        if self.LED_TimeStepType_ListBox.Selection == 0: # automatic
+            self.LED_Abstand_TextBox.Value = int(self.LED_DauerEin_TextBox.Value / 4)
         if self.curvetype == 2: # individuel
             self.curve_points = self.determine_curve_points_from_Macro(self.Macro_str)
             
@@ -440,23 +438,29 @@ class UserForm_ServoAnim:
         return point_list1
     
     def calculate_complete_curve(self):
-        self.curvetype = self.Servo_CurveType_ListBox.Selection
-        self.patterntype = self.Servo_RunType_ListBox.Selection
+        self.curvetype = self.LED_CurveType_ListBox.Selection
+        self.patterntype = self.LED_RunType_ListBox.Selection
         if self.curvetype != 2: # individuel
-            curve_points = self.calculate_curve(self.Servo_DauerEin_TextBox.Value, self.Servo_Anfangswert_TextBox.Value, self.Servo_Endwert_TextBox.Value, 0 , self.Servo_Abstand_TextBox.Value, pauseS=self.Servo_PauseS_Ein_TextBox.Value, pauseE=self.Servo_PauseE_Ein_TextBox.Value)
+            curve_points = self.calculate_curve(self.LED_DauerEin_TextBox.Value, self.LED_Anfangswert_TextBox.Value, self.LED_Endwert_TextBox.Value, 0 , self.LED_Abstand_TextBox.Value, pauseS=self.LED_PauseS_Ein_TextBox.Value, pauseE=self.LED_PauseE_Ein_TextBox.Value)
             if self.patterntype != 1:
-                t = self.Servo_PauseS_Ein_TextBox.Value + self.Servo_DauerEin_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value
-                curve_points_Aus = self.calculate_curve(self.Servo_DauerAus_TextBox.Value, self.Servo_Endwert_TextBox.Value, self.Servo_Anfangswert_TextBox.Value, t, self.Servo_Abstand_TextBox.Value, pauseS=self.Servo_PauseS_Aus_TextBox.Value, pauseE=self.Servo_PauseE_Aus_TextBox.Value, skip_first=True) 
+                t = self.LED_PauseS_Ein_TextBox.Value + self.LED_DauerEin_TextBox.Value + self.LED_PauseE_Ein_TextBox.Value
+                curve_points_Aus = self.calculate_curve(self.LED_DauerAus_TextBox.Value, self.LED_Endwert_TextBox.Value, self.LED_Anfangswert_TextBox.Value, t, self.LED_Abstand_TextBox.Value, pauseS=self.LED_PauseS_Aus_TextBox.Value, pauseE=self.LED_PauseE_Aus_TextBox.Value, skip_first=True) 
                 curve_points.extend(curve_points_Aus)
         else:
+            # check if curve points are in range 0 .. 255:
+            for index, curve_point in enumerate(self.curve_points):
+                if curve_point[1] > 255:
+                    curve_point[1] = 255
+                    self.curve_points[index] = curve_point
+                if curve_point[1] < 0:
+                    curve_point[1] = 0
+                    self.curve_points[index] = curve_point
             curve_points = self.curve_points
-        return curve_points
-        
     
     def OK_Button_Click(self):
         #------------------------------
-        runtype = self.Servo_RunType_ListBox.Selection
-        self.curvetype =  self.Servo_CurveType_ListBox.Selection 
+        runtype = self.LED_RunType_ListBox.Selection
+        self.curvetype =  self.LED_CurveType_ListBox.Selection 
         if runtype == 2: #"Ein/Aus":
             gotoaction = True
             self.patterntype_str = "PM_NORMAL"
@@ -467,31 +471,31 @@ class UserForm_ServoAnim:
             gotoaction = False
             self.patterntype_str = "PM_NORMAL"
         self.curve_points = self.calculate_complete_curve()
-        self.servotype = self.Servo_Type_ListBox.Selection
-        if self.servotype == 0:
+        self.LEDtype = self.LED_Type_ListBox.Selection
+        if self.LEDtype == 0:
             LED = "1"
         else:
-            servotype_str = str(self.servotype)
-            LED = "C"+servotype_str+"-"+servotype_str
+            LEDtype_str = str(self.LEDtype)
+            LED = "C"+LEDtype_str+"-"+LEDtype_str
+         
         if gotoaction:
-            self.Userform_Res = LED + "$// Activation: Binary #ServoAnim("
+            self.Userform_Res = LED + "$// Activation: Binary #LEDAnim("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
             self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n"
         else:
-            self.Userform_Res = LED + "$// #ServoAnim("
+            self.Userform_Res = LED + "$// #LEDAnim("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
-            self.Userform_Res = self.Userform_Res + ")\n"            
+            self.Userform_Res = self.Userform_Res + ")\n"
         
-        #APatternT1(#LED,28,SI_LocalVar,3,0,128,0,PM_NORMAL,250,10,1,0,40,1,0,70,1,0,100,1,0,130,1,0,180,1,0,210,1,0,240,1,0,250,1,0,250,1,0,220,1,0,190,1,0,160,1,0,130,1,0,100,1,0,70,1,0,40,1,0,10,1,0  ,0,0,0,0,0,0,0,0,63,128,0,0,0,0,0,0,0,63)
         if self.Ueberblendung.Value !=1:
             self.Userform_Res = self.Userform_Res + "A"
         self.Userform_Res = self.Userform_Res + "PatternT1(#LED,"
         
-        if self.servotype==0 :
+        if self.LEDtype==0 :
             self.Userform_Res = self.Userform_Res +"28,"
             anzahl_led = "3"
         else:
-            self.Userform_Res = self.Userform_Res + str(27 +self.servotype)+","
+            self.Userform_Res = self.Userform_Res + str(27 +self.LEDtype)+","
             anzahl_led = "1"
         
         if gotoaction:
@@ -500,11 +504,11 @@ class UserForm_ServoAnim:
             self.Userform_Res = self.Userform_Res + "#InCh," + anzahl_led + ",0,128,0,"
 
         self.Userform_Res = self.Userform_Res + self.patterntype_str
-        self.Userform_Res = self.Userform_Res + "," + str(self.Servo_Abstand_TextBox.Value)
+        self.Userform_Res = self.Userform_Res + "," + str(self.LED_Abstand_TextBox.Value)
 
         for point in self.curve_points:
             if anzahl_led == "3":
-                self.Userform_Res = self.Userform_Res + "," + str(point[1]) + ",1,0"
+                self.Userform_Res = self.Userform_Res + "," + str(point[1]) + "," + str(point[1]) + "," + str(point[1])
             else:
                 self.Userform_Res = self.Userform_Res + "," + str(point[1])
                 
@@ -512,8 +516,8 @@ class UserForm_ServoAnim:
 
         # goto action
         if gotoaction:
-            anzahl_werte_Ein = int((self.Servo_DauerEin_TextBox.Value + self.Servo_PauseS_Ein_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value) / self.Servo_Abstand_TextBox.Value)
-            anzahl_werte_Aus = int((self.Servo_DauerAus_TextBox.Value + self.Servo_PauseS_Aus_TextBox.Value + self.Servo_PauseE_Aus_TextBox.Value)/ self.Servo_Abstand_TextBox.Value) -2
+            anzahl_werte_Ein = int((self.LED_DauerEin_TextBox.Value + self.LED_PauseS_Ein_TextBox.Value + self.LED_PauseE_Ein_TextBox.Value) / self.LED_Abstand_TextBox.Value)
+            anzahl_werte_Aus = int((self.LED_DauerAus_TextBox.Value + self.LED_PauseS_Aus_TextBox.Value + self.LED_PauseE_Aus_TextBox.Value)/ self.LED_Abstand_TextBox.Value) -2
             if anzahl_werte_Aus + anzahl_werte_Ein + 3 != total_points:
                 logging.debug("UserForm_LEDAnim: Ok-ButtonClick-total_points wrong")
             self.Userform_Res = self.Userform_Res + "  "
@@ -543,20 +547,20 @@ class UserForm_ServoAnim:
         self.Userform_Res = ""
         
     def Update_Button_Click(self):
-        anzahl_werte_Ein = int((self.Servo_PauseS_Ein_TextBox.Value + self.Servo_DauerEin_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value) / self.Servo_Abstand_TextBox.Value)
-        runtype = self.Servo_RunType_ListBox.TKWidget.curselection()
+        anzahl_werte_Ein = int((self.LED_PauseS_Ein_TextBox.Value + self.LED_DauerEin_TextBox.Value + self.LED_PauseE_Ein_TextBox.Value) / self.LED_Abstand_TextBox.Value)
+        runtype = self.LED_RunType_ListBox.TKWidget.curselection()
         if runtype == ():
             self.pattertype = 0
         else:
             self.pattertype = runtype[0]
         if self.patterntype != 1: # PINGPONG Ausschaltsequenz anhängen
-            anzahl_werte_Aus = int((self.Servo_PauseS_Aus_TextBox.Value + self.Servo_DauerAus_TextBox.Value + self.Servo_PauseE_Aus_TextBox.Value)/ self.Servo_Abstand_TextBox.Value)
+            anzahl_werte_Aus = int((self.LED_PauseS_Aus_TextBox.Value + self.LED_DauerAus_TextBox.Value + self.LED_PauseE_Aus_TextBox.Value)/ self.LED_Abstand_TextBox.Value)
         else:
             anzahl_werte_Aus = 0
         anzahl_werte = anzahl_werte_Ein + anzahl_werte_Aus +1
         
-        if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
-            self.Servo_Abstand_TextBox.Value = int(self.Servo_DauerEin_TextBox.Value / 5)
+        if self.LED_TimeStepType_ListBox.Selection == 0: # automatic
+            self.LED_Abstand_TextBox.Value = int(self.LED_DauerEin_TextBox.Value / 5)
         self.curve_points = self.calculate_complete_curve()
         anzahl_werte = len(self.curve_points) - 1
         on_off_line = self.calculate_on_off_line()
@@ -670,7 +674,7 @@ class UserForm_ServoAnim:
         self.canvas.tag_raise("point")
         
     def MouseButton1(self,event,cvobject):
-        if self.Servo_CurveType_ListBox.Selection == 2: # individuel
+        if self.LED_CurveType_ListBox.Selection == 2: # individuel
             tags = self.canvas.gettags(cvobject)
             objecttype = tags[0]
             if objecttype == "point":
@@ -693,6 +697,7 @@ class UserForm_ServoAnim:
                     self.graph_points[index+1] += dy
                     self.current_curve_point = [self.curve_points[int(index/2)][0], int(self.cy2val(event.y))]
                     self.curve_points[int(index/2)] = self.current_curve_point
+                    #self.get_led_value_and_send_to_ARDUINO()
                     #print(self.current_curve_point)
                     break
             self.canvas.coords(self.line_objid,self.graph_points)
@@ -713,16 +718,16 @@ class UserForm_ServoAnim:
         elif new_LED_val < 0:
             new_LED_val = 0
             
-        LED_address = self.Servo_Address_TextBox.Value
-        self.servotype = self.Servo_Type_ListBox.Selection
-        if self.servotype == 0:
-            self._update_servos(LED_address,new_LED_val, new_LED_val, new_LED_val)
-        elif self.servotype == 1:
-            self._update_servos(LED_address,new_LED_val, 0, 0)
-        elif self.servotype == 2:
-            self._update_servos(LED_address,0, new_LED_val, 0)
+        LED_address = self.LED_Address_TextBox.Value
+        self.LEDtype = self.LED_Type_ListBox.Selection
+        if self.LEDtype == 0:
+            self._update_LEDs(LED_address,new_LED_val, new_LED_val, new_LED_val)
+        elif self.LEDtype == 1:
+            self._update_LEDs(LED_address,new_LED_val, 0, 0)
+        elif self.LEDtype == 2:
+            self._update_LEDs(LED_address,0, new_LED_val, 0)
         else:
-            self._update_servos(LED_address,0, 0, new_LED_val)    
+            self._update_LEDs(LED_address,0, 0, new_LED_val)        
                 
     def on_click(self, event):
         selected = self.canvas.find_overlapping(event.x-10, event.y-10, event.x+10, event.y+10)
@@ -742,11 +747,11 @@ class UserForm_ServoAnim:
             # update last position
             self.canvas.startxy = (event.x, event.y)
             
-    def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):
+    def _update_LEDs(self, lednum, red_value, green_value, blue_value):
         if self.controller.mobaledlib_version == 1:
-            message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
+            message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(red_value) + " " + '{:02x}'.format(green_value) + " " + '{:02x}'.format(blue_value) + " " + '{:02x}'.format(1) + "\n"
         else:
-            message = "#L " + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:04x}'.format(1) + "\n"
+            message = "#L " + '{:02x}'.format(lednum) + " " + '{:02x}'.format(red_value) + " " + '{:02x}'.format(green_value) + " " + '{:02x}'.format(blue_value) + " " + '{:04x}'.format(1) + "\n"
         self.controller.send_to_ARDUINO(message)
         time.sleep(0.2)    
 

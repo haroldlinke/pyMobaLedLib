@@ -62,13 +62,14 @@ import proggen.M07_COM_Port as M07
 #import proggen.M20_PageEvents_a_Functions as M20
 #import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
-#import proggen.M28_divers as M28
+#import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 #import proggen.M37_Inst_Libraries as M37
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
+import proggen.M20_PageEvents_a_Functions as M20
 
 from ExcelAPI.XLC_Excel_Consts import *
 import ExcelAPI.XLA_Application as P01
@@ -156,6 +157,11 @@ class CSelect_COM_Port_UserForm:
         self.IsActive=False        
         self.top.destroy()
         M07.CheckCOMPort = " "
+        
+    def Options_Button_Click(self,event=None):
+        #---------------------------------
+        # Options Button
+        M20.Option_Dialog(first_page_only=True)
         
     
     def __SpinButton_Change(self):
@@ -409,9 +415,10 @@ class CSelect_COM_Port_UserForm:
         self.button_frame = ttk.Frame(self.top)
         
         self.Check_Button_Text = tk.StringVar(master=self.top)
-        self.Button_Setup(self.buttonlist[0], self.Check_Button_Click,Column=0)
-        self.Button_Setup(self.buttonlist[1], self.Abort_Button_Click,Column=1)
-        self.Button_Setup(self.buttonlist[2], self.Default_Button_Click,Column=2)
+        self.Button_Setup(self.buttonlist[0], self.Check_Button_Click,Column=1)
+        self.Button_Setup(self.buttonlist[1], self.Abort_Button_Click,Column=2)
+        self.Button_Setup(self.buttonlist[2], self.Default_Button_Click,Column=3)
+        self.Button_Setup("O Options", self.Options_Button_Click,Column=0)
         
         self.button_frame.grid(row=8,column=2,sticky="e",padx=10,pady=10)
         

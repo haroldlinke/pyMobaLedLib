@@ -52,27 +52,28 @@ import proggen.M23_Add_Move_Del_Row as M23
 import proggen.M25_Columns as M25
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 import proggen.M32_DCC as M32
 import proggen.M37_Inst_Libraries as M37
 import proggen.M38_Extensions as M38
 import proggen.M39_Simulator as M39
 
-import proggen.D01_Userform_DialogGuide1 as D01
-import proggen.D02_Userform_Select_Typ_DCC as D02
-import proggen.D02_Userform_Select_Typ_SX as D02SX
-import proggen.D03_Userform_Description as D03
-import proggen.D04_Userform_Connector as D04
-import proggen.D09_StatusMsg_Userform as D09
-import proggen.D08_Select_COM_Port_Userform as D08
-import proggen.D10_UserForm_Options as D10
-import proggen.D11_Userform_SimpleInput as D11
-import proggen.D12_Select_ProgGen_Src_Form as D12
-import proggen.D13_Select_ProgGen_Dest_Form as D13
-import proggen.D14_Userform_LEDAnim as D14
-import proggen.D15_Userform_ServoAnim as D15
-import proggen.D16_Userform_LEDColorAnim as D16
+import proggen.Userform_DialogGuide1 as D01
+import proggen.Userform_Select_Typ_DCC as D02
+import proggen.Userform_Select_Typ_SX as D02SX
+import proggen.Userform_Description as D03
+import proggen.Userform_Connector as D04
+import proggen.StatusMsg_Userform as D09
+import proggen.Select_COM_Port_Userform as D08
+import proggen.UserForm_Options as D10
+import proggen.Userform_SimpleInput as D11
+import proggen.Select_ProgGen_Src_Form as D12
+import proggen.Select_ProgGen_Dest_Form as D13
+import proggen.Userform_LEDAnim as D14
+import proggen.Userform_ServoAnim as D15
+import proggen.Userform_LEDColorAnim as D16
+import proggen.UserForm_ConfirmLicense as UF_Conf
 import pgcommon.G00_common as G00
 
 def Arduino_Button_Click(event=None):
@@ -333,7 +334,7 @@ def worksheet_redraw(sheet):
     
 def init_UserForms():
     global StatusMsg_UserForm, UserForm_Select_Typ_DCC, UserForm_Select_Typ_SX, Select_COM_Port_UserForm,UserForm_Options,UserForm_DialogGuide1,UserForm_Description,UserForm_Connector
-    global Userform_SimpleInput,Select_ProgGen_Src_Form, Select_ProgGen_Dest_Form, UserForm_PCAnim,  UserForm_LEDColorAnim,  UserForm_LEDAnim
+    global Userform_SimpleInput,Select_ProgGen_Src_Form, Select_ProgGen_Dest_Form, UserForm_PCAnim,  UserForm_LEDColorAnim,  UserForm_LEDAnim,  UserForm_ConfirmLicense
     
     UserForm_DialogGuide1 = D01.UserForm_DialogGuide1()
     UserForm_Select_Typ_DCC = D02.UserForm_Select_Typ_DCC()
@@ -349,6 +350,7 @@ def init_UserForms():
     UserForm_PCAnim = D15.UserForm_ServoAnim(PG.global_controller)
     UserForm_LEDAnim = D14.UserForm_LEDAnim(PG.global_controller)
     UserForm_LEDColorAnim = D16.UserForm_LEDColorAnim(PG.global_controller)
+    UserForm_ConfirmLicense = UF_Conf.CUserForm_ConfirmLicense(PG.global_controller)
 
     
 def notimplemented(command):

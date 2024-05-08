@@ -7,7 +7,8 @@ import pattgen.M30_Tools as M30
 import ExcelAPI.XLA_Application as X02
 
 import ExcelAPI.XLF_FormGenerator as XLF
-import pattgen.D00_Forms as D00
+#import pattgen.D00_Forms as D00
+import mlpyproggen.Pattern_Generator as PG
 
 LocalComPorts = vbObjectInitialize(objtype=Byte)
 OldL_ComPorts = vbObjectInitialize(objtype=Byte)
@@ -294,7 +295,7 @@ class CSelect_COM_Port_UserForm:
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
-        self.Form=XLF.generate_form(Main_Menu_Form_RSC,self.controller,dlg=self)
+        self.Form=XLF.generate_form(Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable)
                 
     def __UserForm_Activate(self):
         #------------------------------

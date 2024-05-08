@@ -14,6 +14,8 @@ import pattgen.M06_Goto_Graph
 import pattgen.D00_Forms as D00
 import mlpyproggen.Pattern_Generator as PG
 
+import pgcommon.G00_common as G00
+
 """--------------------------------------------------
 -------------------------------------------------------------------------------------------
 UT------------------------
@@ -193,7 +195,7 @@ def New_Sheet():
         return
     elif (_select8 == vbYes):
         CopyFormSheet = X02.ActiveSheet.Name
-    Name = X02.InputBox(pattgen.M09_Language.Get_Language_Str('Name des neuen Blattes?'), pattgen.M09_Language.Get_Language_Str('Neues Blatt anlegen'), M30.Unic_SheetName(CopyFormSheet, '_'))
+    Name = G00.InputBox(pattgen.M09_Language.Get_Language_Str('Name des neuen Blattes?'), pattgen.M09_Language.Get_Language_Str('Neues Blatt anlegen'), M30.Unic_SheetName(CopyFormSheet, '_'))
     if Name != '':
         if CopyFormSheet != '':
             TempName = PG.ThisWorkbook.Path + '\\' + M01.ExampleDir + '\\TempExample.MLL_pcf'

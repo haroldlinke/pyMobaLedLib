@@ -8,6 +8,7 @@ import pattgen.M08_Load_Sheet_Data
 import pattgen.M11_To_Prog_Gen
 import pattgen.M30_Tools as M30
 import mlpyproggen.Pattern_Generator as PG
+import pgcommon.G00_common as G00
 
 """ Decode Macro string into a Sheet
 ----------------------------------
@@ -391,7 +392,7 @@ def Import_From_Prog_Gen_Callback(OK_Pressed, Description, Macro, Row, overwrite
     elif (_select38 == vbNo):
         # Create new sheet
         Add_To_This_Sheet_Default_Answer = 2
-        Name = X02.InputBox(pattgen.M09_Language.Get_Language_Str('Name des neuen Blattes?'), pattgen.M09_Language.Get_Language_Str('Neues Blatt anlegen'), M30.Unic_SheetName(MacroName, '_'))
+        Name = G00.InputBox(pattgen.M09_Language.Get_Language_Str('Name des neuen Blattes?'), pattgen.M09_Language.Get_Language_Str('Neues Blatt anlegen'), M30.Unic_SheetName(MacroName, '_'))
         if Name == '':
             return
         pattgen.M08_Load_Sheet_Data.Create_New_Sheet(Name, Add_to_Duplicate_Name='_', AfterSheetName=M01.MAIN_SH)

@@ -270,7 +270,7 @@ class UserForm_LEDColorAnim:
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
         self.Userform_Res = ""
-        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self)
+        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable)
         self.patterntype = 0
         self.curvetype = 0
         self.curve_points = []
@@ -361,6 +361,33 @@ class UserForm_LEDColorAnim:
         self.Macro_str = ConfigLine
         self.Show()
         
+        
+    def check_for_jump(self, index):
+        if index + 1 < len(self.curve_points):
+            if self.curve_points[index+1][0] == self.curve_points[index][0]:
+                return True
+            else:
+                return False
+        else:
+            return None
+        
+    def add_jump(self, index, value):
+        jump = self.check_for_jump(index)
+        if jump == None:
+            return
+        if not jump: # no jump here
+            # add jump
+            self.curve_points.insert(index+1, (self.curve_points[index][0], value))
+            
+    def delete_jump(self, index):
+        jump = self.check_for_jump(index)
+        if jump == None:
+            return
+        if jump: # jump found
+            # remove jump
+            del self.curve_points[index+1]
+        
+        
     def calculate_accell_curve(self, duration, start_val, end_val, start_time, time_distance, skip_first=False):
         curve_points = []
         a = 2 * (end_val - start_val) / (duration * duration)
@@ -433,6 +460,20 @@ class UserForm_LEDColorAnim:
                 curve_points_Aus = self.calculate_curve(self.LED_DauerAus_TextBox.Value, self.LED_Endwert_TextBox.Value, self.LED_Anfangswert_TextBox.Value, t, self.LED_Abstand_TextBox.Value, pauseS=self.LED_PauseS_Aus_TextBox.Value, pauseE=self.LED_PauseE_Aus_TextBox.Value, skip_first=True) 
                 curve_points.extend(curve_points_Aus)
         else:
+            # check if curve points are in range 0 .. 255:
+            for index, curve_point in enumerate(self.curve_points):
+                if curve_point[1] > 255:
+                    self.add_jump(index, 0)
+                    curve_point[1] = 255
+                    self.curve_points[index] = curve_point
+                elif curve_point[1] < 0:
+                    self.add_jump(index, 255)
+                    curve_point[1] = 0
+                    self.curve_points[index] = curve_point
+                else:
+                    if self.check_for_jump(index) == True:
+                        if curve_point[1] > 0 and curve_point[1] < 255:
+                            self.delete_jump(index)
             curve_points = self.curve_points
         return curve_points
         
@@ -632,6 +673,7 @@ class UserForm_LEDColorAnim:
         if graph != []:
             self.graph_points = []
             last_text_x = -40
+            skip_next_point = False
             for i in range(len(graph)):
                 value = graph[i][1]
                 timestr = str(graph[i][0])
@@ -644,7 +686,13 @@ class UserForm_LEDColorAnim:
                 if cur_x - last_text_x >= 40:
                     text_objid = self.canvas.create_text(self.tx2cx(cur_x), self.ty2cy(horizontal_text_pos), text = timestr, width=30, fill=s_color,tag="Grid")
                     last_text_x = cur_x
-                self.draw_point(self.tx2cx(cur_x), self.ty2cy(cur_y), timepoint, value)
+                if skip_next_point:
+                    skip_next_point = False
+                else:
+                    self.draw_point(self.tx2cx(cur_x), self.ty2cy(cur_y), timepoint, value)
+                jump = self.check_for_jump(i)
+                if jump == True:
+                    skip_next_point = True
                 
             self.line_objid = self.canvas.create_line(self.graph_points, width=gr_width, fill=gr_color,dash=gr_linedashed,tag="Line")
             # create EIN/AUS Line
@@ -692,6 +740,12 @@ class UserForm_LEDColorAnim:
         if self.start_value != ():
             self.get_led_value_and_send_to_ARDUINO()
         self.start_value = ()
+        #* redraw graph
+        self.curve_points = self.calculate_complete_curve()
+        anzahl_werte = len(self.curve_points) - 1
+        on_off_line = self.calculate_on_off_line()
+        horizontal_range = (self.curve_points[0][0],self.curve_points[-1][0])
+        self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, on_off_line=on_off_line, horizontal_range=horizontal_range)        
         
     def get_led_value_and_send_to_ARDUINO(self):
         new_LED_val = self.current_curve_point[1]

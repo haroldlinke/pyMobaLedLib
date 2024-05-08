@@ -48,9 +48,9 @@ from vb2py.vbconstants import *
 # fromx proggen.M09_Select_Macro import *
 # fromx proggen.M20_PageEvents_a_Functions import Update_Start_LedNr
 # fromx proggen.M25_Columns import *
-# fromx proggen.M28_divers import *
+# fromx proggen.M28_Diverse import *
 # fromx proggen.M30_Tools import *
-# fromx proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M80_Create_Multiplexer import *
 
 # fromx ExcelAPI.X02_Workbook import *
 # fromx mlpyproggen.F_UserForm_Header_Created import *
@@ -70,7 +70,7 @@ import proggen.M09_Select_Macro as M09SM
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
@@ -78,7 +78,7 @@ import proggen.M38_Extensions as M38
 import proggen.M39_Simulator as M39
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
+import proggen.M80_Create_Multiplexer as M80
 import mlpyproggen.Prog_Generator as PG
 
 import ExcelAPI.XLA_Application as P01
@@ -497,6 +497,16 @@ def Generate_Config_Line(LEDNr, Channel_or_define, r, Config_Col, Addr):
         else:
             Cmd = Left(line, CommentStart)
             Comment = Mid(line, CommentStart + 1, 1000)
+        # search for macros having $ Args
+        if InStr(Cmd, '(') != 0 and InStr(Cmd, '$') != 0:
+            # 28.01.24 Juergen
+            Arg_List = M06SW.Get_Arguments(Cmd)
+            for ArgNr in vbForRange(0, UBound(Arg_List)):
+                Arg = Arg_List(ArgNr)
+                ExpandArg = ExpandName(Arg)
+                if ExpandArg != Arg:
+                    Cmd = Replace(Cmd, Arg + ')', ExpandArg + ')')
+                    Cmd = Replace(Cmd, Arg + ',', ExpandArg + ',')
         if LEDNr < 0:
             P01.Cells(r, M25.Config__Col).Select()
             P01.MsgBox(M09.Get_Language_Str('Fehler: Die LED Nummer darf nicht negativ werden. Das kann durch eine falsche Angabe bei einem vorangegangenen "Next_LED" Befehl passieren.'), vbCritical, M09.Get_Language_Str('Fehler: Negative LED Nummer'))
@@ -642,7 +652,7 @@ def Create_Start_Value_Entry(r):
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: AddrStr - ByRef 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: LEDsInUse - ByRef 
 #--------------------------------------------------------------------------------------------
-def Create_Header_Entry(r, AddrStr, IsRM, LEDOffset, LEDsInUse):
+def Create_Header_Entry(r, AddrStr, IsRM, LEDOffset, LEDsInUse, MaxLEDNrInSheet):
 #--------------------------------------------------------------------------------------------
     global LEDNr, ConfigTxt, CurrentCounterId, Store_ValuesTxt, Store_Val_Written, InChTxt, Ext_AddrTxt, Channel,Start_Values,AddrComment, Channel
     
@@ -837,15 +847,20 @@ def Create_Header_Entry(r, AddrStr, IsRM, LEDOffset, LEDsInUse):
                 Channel = Channel + int(_with109.Value)
                 # ToDo: Unterstützung für mehrere Zeilen in einer Zelle ?
     _fn_return_value = True
-    # 03.03.23 Juergen: include feature
-    if M20.Check_IsSingleChannelCmd(LEDs):
-        if M20.Get_Parameter_from_Leds_Line(LEDs, 1) > 3:
-            LEDCnt = 2
+    # 20.10.23 Juergen: Fix 'Fehler bei der Funktion "include"  #10763'
+    if P01.Cells(r, M25.LED_Nr__Col) != '':
+        # has the line a LEdNr?
+        # 03.03.23 Juergen: include feature
+        if M20.Check_IsSingleChannelCmd(LEDs):
+            if M20.Get_Parameter_from_Leds_Line(LEDs, 1) > 3:
+                LEDCnt = 2
+            else:
+                LEDCnt = 1
         else:
-            LEDCnt = 1
-    else:
-        LEDCnt = M30.CellLinesSum(LEDs)
-    LEDsInUse[LEDs_Channel] = LEDsInUse(LEDs_Channel) + LEDCnt    
+            LEDCnt = M30.CellLinesSum(LEDs)
+        if LEDNr > MaxLEDNrInSheet(LEDs_Channel):
+            LEDsInUse[LEDs_Channel] = LEDsInUse(LEDs_Channel) +  ( LEDNr - Start_LED_Channel(LEDs_Channel) - MaxLEDNrInSheet(LEDs_Channel) )  + LEDCnt - 1
+            MaxLEDNrInSheet[LEDs_Channel] = LEDNr - Start_LED_Channel(LEDs_Channel) + LEDCnt - 1
     return _fn_return_value
 
 #--------------------------------------------------------------------------------------------
@@ -1167,6 +1182,10 @@ def CheckIncludeSheet(SheetName, row):
             P01.MsgBox(M09.Get_Language_Str('Beim Einbinden eines Blattes wurde ein Zirkelbezug festgestellt. Der Blattname lautet: \'') + P01.ActiveSheet.Name + ' -> ' + SheetName + '\'' + M09.Get_Language_Str('\' in Zeile ') + row, vbCritical, M09.Get_Language_Str('Fehler beim Einbinden eines Blattes'))
             _fn_return_value = False
             return _fn_return_value
+    if M25.Page_ID != P01.ThisWorkbook.Worksheets(SheetName).Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL).Value:
+        P01.MsgBox(M09.Get_Language_Str('Das Einbinden eines Blattes mit einem unterschiedlichen Steuerungstyps ist nicht möglich: Der Blattname lautet: \'') + P01.ActiveSheet.Name + ' -> ' + SheetName + '\'' + M09.Get_Language_Str('\' in Zeile ') + Row + ' ' + P01.ThisWorkbook.Worksheets(SheetName).Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL).Value, vbCritical, M09.Get_Language_Str('Fehler beim Einbinden eines Blattes'))
+        _fn_return_value = False
+        return _fn_return_value
     return _fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: LEDsInUse - ByRef 
@@ -1174,7 +1193,11 @@ def ProcessSheet(SheetName, firstSheet, addressOffset, LEDsOffset, LEDsInUse):
     _fn_return_value = None
     r = Long()
     sx = Boolean()
+    MaxLEDNrInSheet = vbObjectInitialize((M02.LED_CHANNELS - 1,), Integer)
     _fn_return_value = False
+    # 20.10.23: Juergen fix #10763
+    for idx in vbForRange(0, M02.LED_CHANNELS - 1):
+        MaxLEDNrInSheet[idx] = - 1
     if not M30.WorksheetExists(SheetName):
         return _fn_return_value
     PG.ThisWorkbook.Worksheets(SheetName).Activate()
@@ -1192,7 +1215,7 @@ def ProcessSheet(SheetName, firstSheet, addressOffset, LEDsOffset, LEDsInUse):
     # 31.01.22: Juergen    
     sx = M25.Page_ID == 'Selectrix'
     for r in vbForRange(M02.FirstDat_Row, M30.LastUsedRow()): #*HL
-        if not ProcessLine(r, sx, addressOffset, LEDsOffset, LEDsInUse):
+        if not ProcessLine(r, sx, addressOffset, LEDsOffset, LEDsInUse, MaxLEDNrInSheet):
             return _fn_return_value
     _fn_return_value = True
     return _fn_return_value
@@ -1225,7 +1248,7 @@ def GetIncludeArgs(Cmd, SheetName, addressOffset):
     return _fn_return_value, SheetName, addressOffset
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: LEDsInUse - ByRef 
-def ProcessLine(r, sx, addressOffset, LEDsOffset, LEDsInUse):
+def ProcessLine(r, sx, addressOffset, LEDsOffset, LEDsInUse, MaxLEDNrInSheet):
     global includeCount, AddrComment, IsRM
     
     oldOffset = {}
@@ -1273,16 +1296,20 @@ def ProcessLine(r, sx, addressOffset, LEDsOffset, LEDsInUse):
                     else:
                         Add_to_Err(P01.Cells(r, M25.SX_Channel_Col), 'Wrong SX channel in row ' + str(r))
             else:
+                # *** DCC, LNet or CAN ***
                 if M25.Page_ID == 'DCC':
                     MaxAddr = 10240
                     # Attention some stations only support adresses up to 9999 => Don't generate a warning. The central station will generate an error
+                elif M25.Page_ID == 'LNet':
+                    # 24.04.23: Juergen
+                    MaxAddr = 2048
                 else:
                     MaxAddr = 65535
                     # 2048? MS2 only 320 ?
                 Addr = M25.Get_First_Number_of_Range(r, M25.DCC_or_CAN_Add_Col)
                 if Addr == '' or P01.val(P01.Cells(r, M25.InCnt___Col)) <= 0:
                     if Addr != '':
-                        Add_to_Err(P01.Cells(r, M25.DCC_or_CAN_Add_Col), M09.Get_Language_Str('Die Ausgewählte Funktion in Zeile ') + str(r) + M09.Get_Language_Str(' ist immer aktiv und kann nicht über DCC oder CAN geschaltet werden.'))
+                        Add_to_Err(P01.Cells(r, M25.DCC_or_CAN_Add_Col), M09.Get_Language_Str('Die Ausgewählte Funktion in Zeile ') + str(r) + M09.Get_Language_Str(' ist immer aktiv und kann nicht über DCC, LNet oder CAN geschaltet werden.'))
                     Addr = - 1
                     # No address given of InCnt <= 0 or empty
                 elif Addr >= 1 and Addr + addressOffset <= MaxAddr:
@@ -1304,7 +1331,7 @@ def ProcessLine(r, sx, addressOffset, LEDsOffset, LEDsInUse):
                     if not M06SW.Valid_Var_Name(VarName, r):
                         return _fn_return_value
                     Addr = VarName
-        if not Create_Header_Entry(r, Addr, IsRM, LEDsOffset, LEDsInUse):
+        if not Create_Header_Entry(r, Addr, IsRM, LEDsOffset, LEDsInUse, MaxLEDNrInSheet):
             _fn_return_value = False
             return _fn_return_value
     _fn_return_value = True
@@ -1428,7 +1455,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
         VBFiles.writeText(fp, '#define USE_SX_INTERFACE               // enable Selectrix protocol on single CPU mainboards', '\n')
         # 06.12.2021 Juergen add SX for ESP
     else:
-        VBFiles.writeText(fp, '#define TWO_BUTTONS_PER_ADDRESS 1      // Two buttons (Red/Green) are used (DCC/CAN)', '\n')
+        VBFiles.writeText(fp, '#define TWO_BUTTONS_PER_ADDRESS 1      // Two buttons (Red/Green) are used (DCC/LNet/CAN)', '\n')
     VBFiles.writeText(fp, '#ifdef NUM_LEDS', '\n')
     VBFiles.writeText(fp, '  #warning "\'NUM_LEDS\' definition in the main program is replaced by the included \'' + M30.FileNameExt(Name) + '\' with ' + str(NumLeds) + '"', '\n')
     VBFiles.writeText(fp, '  #undef NUM_LEDS', '\n')
@@ -1438,6 +1465,9 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '#define LEDS_PER_CHANNEL ",' + str(LEDs_per_ChannelList) + '"', '\n')
     # 13.03.21 Juergen - for new Farbtest initialisation
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '#define USE_PROTOCOL_' + UCase(M25.Page_ID), '\n')
+    # 25.04.23 Juergen - defined for currently active protocol
     Write_ATTINY_GBM_H_if_used(fp)
     # 13.02.23: Hardi
     if M06SW.Alias_Names_List != '':
@@ -1577,6 +1607,15 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     VBFiles.writeText(fp, '  };', '\n')
     VBFiles.writeText(fp, '//*******************************************************************', '\n')
     VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '#ifndef COPYLED_OFF', '\n')
+    # 23.05.23:
+    VBFiles.writeText(fp, '#define COPYLED_OFF 0', '\n')
+    VBFiles.writeText(fp, '#endif', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '#ifndef COPYLED_OFF_ONCE', '\n')
+    VBFiles.writeText(fp, '#define COPYLED_OFF_ONCE 1', '\n')
+    VBFiles.writeText(fp, '#endif', '\n')
+    VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '//---------------------------------------------', '\n')
     VBFiles.writeText(fp, 'void Set_Start_Values(MobaLedLib_C &MobaLedLib)', '\n')
     VBFiles.writeText(fp, '//---------------------------------------------', '\n')
@@ -1610,6 +1649,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
         # 05.11.20: Added: __attribute__ ((packed)) to be able to use it on oa 32 Bit platform
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, '// Definition of channels and counters that need to store state in EEProm' + vbCrLf + 'const PROGMEM Store_Channel_T Store_Values[] =' + vbCrLf + '         { // Mode + InCnt , Channel', '\n')
+        # 21.12.22 replace vbcr with vbcrlf
         VBFiles.writeText(fp, Store_ValuesTxt)
         VBFiles.writeText(fp, '         };', '\n')
         VBFiles.writeText(fp, '', '\n')
@@ -1644,7 +1684,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     VBFiles.closeFile(fp)
     # VB2PY (UntranslatedCode) On Error GoTo 0
     if Channel - 1 > 250:
-        P01.MsgBox(M09.Get_Language_Str('Fehler: Die Anzahl der verwendeten Eingangskanäle ist zu groß!' + vbCr + 'Es sind maximal 250 verfügbar. Die Konfiguration enthält aber ') + str(Channel - 1) + '.' + vbCr + vbCr + M09.Get_Language_Str('Die Eingangskanäle werden zum einlesen von DCC, Selectrix und CAN Daten benutzt. ' + vbCr + 'Außerdem werden sie als interne Zwischenspeicher benötigt.'), vbCritical, M09.Get_Language_Str('Anzahl der InCh Variablen überschritten'))
+        P01.MsgBox(M09.Get_Language_Str('Fehler: Die Anzahl der verwendeten Eingangskanäle ist zu groß!' + vbCr + 'Es sind maximal 250 verfügbar. Die Konfiguration enthält aber ') + str(Channel - 1) + '.' + vbCr + vbCr + M09.Get_Language_Str('Die Eingangskanäle werden zum einlesen von DCC, LNet, Selectrix und CAN Daten benutzt. ' + vbCr + 'Außerdem werden sie als interne Zwischenspeicher benötigt.'), vbCritical, M09.Get_Language_Str('Anzahl der InCh Variablen überschritten'))
         M30.EndProg()
         
     if ConfigTxt == "": #*HL and M38.ExtensionsActiveCount == 0:                       # 17.04.22: Juergen improve empty configuration warning

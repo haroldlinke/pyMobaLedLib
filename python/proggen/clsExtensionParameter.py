@@ -8,9 +8,11 @@ Max = String()
 TypeName = String()
 Default = String()
 Options = String()
-#Texts = clsTexts()
+Texts = clsTexts()
 
 def class_initialize():
+    global Texts
     Texts = clsTexts()
+    pass
 
 # VB2PY (UntranslatedCode) Option Explicit

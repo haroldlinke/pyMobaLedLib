@@ -51,7 +51,11 @@
 # 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
 # 2021-01-07 v4.02 HL: - Else:, ByRef check done - first PoC release
 # 2021-01-08 V4.03 HL: - added Workbook Save and Load
-
+import sys
+import os
+module_path = os.path.abspath(__file__)  # Full path to the module file
+module_directory = os.path.dirname(module_path)  # Directory containing the module
+sys.path.append(module_directory)
 
 import tkinter as tk
 from tkinter import ttk,messagebox,filedialog, colorchooser, scrolledtext
@@ -513,8 +517,12 @@ class pyMobaLedLibapp(tk.Tk):
         
         self.container.bind("<<NotebookTabChanged>>",self.TabChanged)
         
-        startpagename = self.getStartPageClassName()
         
+        # set ProgranGeneraor as aktive workbook.
+        P01.Application.setActiveWorkbook("ProgGenerator")
+        
+        # set final startpagew
+        startpagename = self.getStartPageClassName()
         self.showFramebyName(startpagename)
         
         filedir = self.mainfile_dir # os.path.dirname(os.path.realpath(__file__))
@@ -2834,6 +2842,8 @@ def main_entry():
     global DEBUG
     
     global COMMAND_LINE_ARG_DICT
+    
+    import wingdbstub
         
     if sys.hexversion < 0x030900F0:
         tk.messagebox.showerror("Wrong Python Version"+sys.version,"You need Python Version > 3.9 to run this Program")

@@ -39,10 +39,12 @@ from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 from vb2py.vbconstants import *
 
+import pgcommon.G00_common as G00
 
-import proggen.D01_Userform_DialogGuide1 as D01
-import proggen.D03_Userform_Description as D03
-import proggen.D04_Userform_Connector as D04
+
+import proggen.Userform_DialogGuide1 as D01
+import proggen.Userform_Description as D03
+import proggen.Userform_Connector as D04
 
 import mlpyproggen.Prog_Generator as PG
 
@@ -62,13 +64,13 @@ import proggen.M10_Par_Description as M10
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
+import proggen.M80_Create_Multiplexer as M80
 import proggen.F00_mainbuttons as F00
 
 from ExcelAPI.XLC_Excel_Consts import *
@@ -136,10 +138,13 @@ def Dialog_Guided_Input():
         elif (ActiveCell.Column == M25.Descrip_Col):
             Input_Description()
         elif (ActiveCell.Column == M25.Dist_Nr_Col) or (ActiveCell.Column == M25.Conn_Nr_Col):
+            # Distributor or connector number
             Input_Connector()
         elif (ActiveCell.Column == M25.Config__Col) or (ActiveCell.Column == M25.MacIcon_Col) or (ActiveCell.Column == M25.LanName_Col):
+            # Macro selection
             M09SM.SelectMacros()
         else:
+            # Unsupported column
             if ActiveCell.Column > M25.Config__Col:
                 P01.MsgBox(M09.Get_Language_Str('Die ausgewählte Spalte sollte nur von erfahrenen Benutzern verändert werden.' + vbCr + 'Es existiert keine Dialog gestützte Eingabe.'), vbInformation, M09.Get_Language_Str('Spalte sollte nur von Experten verändert werden'))
             else:
@@ -184,6 +189,7 @@ def Input_Address():
         MinVal = 0
         MaxVal = 99
         Adresses_Channels = M09.Get_Language_Str('Kanäle')
+        # 24.02.20: Added some more "Get_Language_Str"
     else:
         Txt = M09.Get_Language_Str(' Adresse eingeben')
         This_Addr_Channel = M09.Get_Language_Str('Die Adresse')
@@ -191,13 +197,14 @@ def Input_Address():
         MinVal = 1
         MaxVal = 10240
         Adresses_Channels = M09.Get_Language_Str('Adressen')
+        #   "
     if M25.Page_ID == 'CAN':
         MaxVal = 65535
         MinVal = 1 #*HL10
         # ??
     Inp = M25.Get_First_Number_of_Range(P01.ActiveCell().Row, M25.DCC_or_CAN_Add_Col + M25.SX_Channel_Col)
     while 1:
-        Inp = P01.InputBox(M09.Get_Language_Str('Bitte ') + M25.Page_ID + Txt + ' [' + str(MinVal) + '..' + str(MaxVal) + ']' + vbCr + vbCr + This_Addr_Channel + M09.Get_Language_Str(' muss bei der Zentrale zur Steuerung der Funktion angegeben werden.' + vbCr + vbCr + 'Achtung: Bei manchen Funktionen werden mehrere ') + Adresses_Channels + M09.Get_Language_Str(' belegt. ' + 'Das Programm ergänzt den Bereich automatisch (Beispiel: 23 - 24)' + vbCr + 'Es muss nur der Startwert ohne \'- 24\' eingegeben werden.') + vbCr + vbCr + M25.Page_ID + ' ' + Addr_Channel + ': ', M25.Page_ID + Txt, Default= Inp)
+        Inp = G00.InputBox(M09.Get_Language_Str('Bitte ') + M25.Page_ID + Txt + ' [' + str(MinVal) + '..' + str(MaxVal) + ']' + vbCr + vbCr + This_Addr_Channel + M09.Get_Language_Str(' muss bei der Zentrale zur Steuerung der Funktion angegeben werden.' + vbCr + vbCr + 'Achtung: Bei manchen Funktionen werden mehrere ') + Adresses_Channels + M09.Get_Language_Str(' belegt. ' + 'Das Programm ergänzt den Bereich automatisch (Beispiel: 23 - 24)' + vbCr + 'Es muss nur der Startwert ohne \'- 24\' eingegeben werden.') + vbCr + vbCr + M25.Page_ID + ' ' + Addr_Channel + ': ', M25.Page_ID + Txt, Default= Inp)
         Debug.Print ("Res='" + Inp + "'") # Debug
         if InStr(Inp, '-') > 1:
             Inp = Left(Inp, InStr(Inp, '-'))
@@ -221,6 +228,7 @@ def Input_Address():
             Input_Typ()
         elif (M25.Page_ID == 'DCC'):
             P01.Cells(P01.ActiveCell().Row, M25.Inp_Typ_Col).Offset(0, 1).Select()
+            # 15.10.20: Added
             Input_Start_Val()
         else:
             P01.MsgBox('Internal error in \'Input_Address()\': Unknown Page_ID \'' + M25.Page_ID + '\'', vbCritical, 'Internal Error')
@@ -232,7 +240,7 @@ def Input_BitPos():
     #------------------------
     Inp = P01.Cells(P01.ActiveCell().Row, M25.SX_Bitposi_Col)
     while 1:
-        Inp = P01.InputBox(M09.Get_Language_Str('Bitte die Bitposition eingeben [1..8]' + vbCr + vbCr + 'Die Bitposition muss bei der Zentrale zur Steuerung der Funktion angegeben werden.' + vbCr + 'Achtung: Bei manchen Funktionen werden mehrere Bits belegt. Die Eingabe definiert das erste benutzte Bit.' + vbCr + vbCr + 'Bitposition: '), M25.Page_ID + M09.Get_Language_Str('Bitposition eingeben'), Inp)
+        Inp = G00.InputBox(M09.Get_Language_Str('Bitte die Bitposition eingeben [1..8]' + vbCr + vbCr + 'Die Bitposition muss bei der Zentrale zur Steuerung der Funktion angegeben werden.' + vbCr + 'Achtung: Bei manchen Funktionen werden mehrere Bits belegt. Die Eingabe definiert das erste benutzte Bit.' + vbCr + vbCr + 'Bitposition: '), M25.Page_ID + M09.Get_Language_Str('Bitposition eingeben'), Inp)
         #Debug.Print "Res='" & Inp & "'" ' Debug
         if IsNumeric(Inp):
             Valid = P01.val(Inp) >= 1 and P01.val(Inp) <= 8 #*HL and Int(Inp) == Inp
@@ -268,7 +276,7 @@ def Input_Start_Val():
     #Debug.Print "Inp_Typ_Col=" & Inp_Typ_Col
     Inp = P01.ActiveCell()
     while 1:
-        Inp = P01.InputBox(M09.Get_Language_Str('Startwert des Eingangs eingeben' + vbCr + vbCr + 'Der Startwert bestimmt das Verhalten nach dem Einschalten in Verbindung mit DCC, ' + 'CAN oder Selectrix. ' + vbCr + 'Normalerweise sind die Funktionen beim Start deaktiviert. ' + 'Erst wenn der erste ') + M25.Page_ID + M09.Get_Language_Str(' Einschaltbefehl von der Zentrale kommt wird ' + 'die Zeile aktiviert. ' + vbCr + 'Wenn eine bestimmte Funktion bereits beim Einschalten der ' + 'Anlage einen definierten Wert haben soll kann das über den ' + 'Startwert vorgegeben werden. Die meisten Funktionen haben einen Eingang mit dem sie ' + 'Ein- oder Ausgeschaltet werden. Hier wird eine 1 zum Einschalten angegeben.' + vbCr + 'Bei Funktionen mit mehreren Eingängen (z.B. Signale) ist der Wert ist Bitkodiert. ' + 'Hier wird der erste Eingang mit einer 1, zweite Eingang mit einer 2 und der dritte Eingang ' + 'mit einer 4 aktiviert.' + vbCr + vbCr + 'Startwert:  (Keine Eingabe wenn nicht benötigt)'), M09.Get_Language_Str('Definition des Startwerts'), Inp)
+        Inp = G00.InputBox(M09.Get_Language_Str('Startwert des Eingangs eingeben' + vbCr + vbCr + 'Der Startwert bestimmt das Verhalten nach dem Einschalten in Verbindung mit DCC, ' + 'CAN oder Selectrix. ' + vbCr + 'Normalerweise sind die Funktionen beim Start deaktiviert. ' + 'Erst wenn der erste ') + M25.Page_ID + M09.Get_Language_Str(' Einschaltbefehl von der Zentrale kommt wird ' + 'die Zeile aktiviert. ' + vbCr + 'Wenn eine bestimmte Funktion bereits beim Einschalten der ' + 'Anlage einen definierten Wert haben soll kann das über den ' + 'Startwert vorgegeben werden. Die meisten Funktionen haben einen Eingang mit dem sie ' + 'Ein- oder Ausgeschaltet werden. Hier wird eine 1 zum Einschalten angegeben.' + vbCr + 'Bei Funktionen mit mehreren Eingängen (z.B. Signale) ist der Wert ist Bitkodiert. ' + 'Hier wird der erste Eingang mit einer 1, zweite Eingang mit einer 2 und der dritte Eingang ' + 'mit einer 4 aktiviert.' + vbCr + vbCr + 'Startwert:  (Keine Eingabe wenn nicht benötigt)'), M09.Get_Language_Str('Definition des Startwerts'), Inp)
         if IsNumeric(Inp):
             Valid = P01.val(Inp) >= MinVal and P01.val(Inp) <= MaxVal #*HL and Int(Inp) == val(Inp)
         if Inp != '' and not Valid:

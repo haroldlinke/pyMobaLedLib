@@ -31,18 +31,15 @@
 # *
 # *
 # ***************************************************************************
-import tkinter as tk
 import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLF_FormGenerator as XLF
-
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
 import ExcelAPI.XLA_Application as X02
 import proggen.M09_Language as M09
 import proggen.M25_Columns as M25
-import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M50_Exchange as M50
 import proggen.F00_mainbuttons as F00
 """-------------------------------
@@ -55,11 +52,9 @@ import proggen.F00_mainbuttons as F00
 
             
 #################################################################################################
-    
-
 
     
-class CSelect_ProgGen_Dest_Form:
+class CSelect_ProgGen_Src_Form:
     
     def __init__(self,controller):
         self.controller    = controller
@@ -71,38 +66,33 @@ class CSelect_ProgGen_Dest_Form:
         self.Callback_Proc = None
         #*HL Center_Form(Me)
         
-        self.Select_ProgGen_Dest_Form_RSC = {"UserForm":{
-                                "Name"          : "Select_ProgGen_Dest_Form",
-                                "BackColor"     : "#000008",
-                                "BorderColor"   : "#000012",
-                                "Caption"       : "Zielzeile im Prog_Generator auswählen",
-                                "Height"        : 269.25,
-                                "Left"          : 0,
-                                "Top"           : 0,
-                                "Type"          : "MainWindow",
-                                "Visible"       : True,
-                                "Width"         : 266.25,
+        self.Select_ProgGen_Src_Form_RSC = {"UserForm":{
+                                            "Name"          : "Select_ProgGen_Src_Form",
+                                            "BackColor"     : "#000008",
+                                            "BorderColor"   : "#000012",
+                                            "Caption"       : "Quellzeile im Prog_Generator auswählen",
+                                            "Height"        : 218.25,
+                                            "Left"          : 0,
+                                            "Top"           : 0,
+                                            "Type"          : "MainWindow",
+                                            "Visible"       : True,
+                                            "Width"         : 266.25,
+                    
+                                            "Components"    : [{"Name":"Text_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                                "Caption":"Klicken Sie in die Zeile aus der das Muster gelesen werden soll und betätigen dann den 'OK' Knopf.\nWenn bereits die richtige Zeile aktiviert ist, dann kann dieser Dialog direkt mit 'Enter' geschlossen werden.\n\nAchtung: Es können nur Zeilen importiert werden welche den 'Pattern' Befehl enthalten.",
+                                                                "ControlTipText":"","ForeColor":"#000012","Height":90,"Left":18,"TextAlign":"fmTextAlignLeft","Top":60,"Type":"Label","Visible":True,"Width":234},
+                                                               {"Name":"Head_Label","BackColor":"#FF0000","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                                "Caption":"Quellzeile im Prog_Generator auswählen aus der das LED Muster gelesen werden soll.",
+                                                                "ControlTipText":"","ForeColor":"#FF0000","Height":48,"Left":18,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":234},
+                                                               {"Name":"Abort_Button","Accelerator":"A","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                                "Caption":"Abbrechen",
+                                                                "Command": self.Abort_Button_Click ,"ControlTipText":"","ForeColor":"#000012","Height":24,"Left":96,"Top":156,"Type":"CommandButton","Visible":True,"Width":72},
+                                                               {"Name":"OK_Button","Accelerator":"O","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                                "Caption":"OK",
+                                                                "Command":self.OK_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":24,"Left":174,"Top":156,"Type":"CommandButton","Visible":True,"Width":72},
+                                                             ]}
+                                       }
         
-                                "Components"    : [{"Name":"Label1","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"Klicken Sie in die Zeile in der das Muster eingetragen werden soll und betätigen dann den 'OK' Knopf.\nWenn bereits die richtige Zeile aktiviert ist, dann kann dieser Dialog direkt mit 'Enter' geschlossen werden.\n\nAchtung: Bereits existierende Einträge in der Spalte 'Beleuchtung, Sound, oder andere Effekte' werden überschrieben.",
-                                                    "ControlTipText":"","ForeColor":"#000012","Height":102,"Left":18,"TextAlign":"fmTextAlignLeft","Top":42,"Type":"Label","Visible":True,"Width":234},
-                                                   {"Name":"Label2","BackColor":"#FF0000","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"Zielzeile für das neu erzeugte LED Muster im Prog_Generator auswählen.",
-                                                    "ControlTipText":"","ForeColor":"#FF0000","Height":36,"Left":18,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":234},
-                                                   {"Name":"Abort_Button","Accelerator":"A","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"Abbrechen",
-                                                    "Command": self.Abort_Button_Click ,"ControlTipText":"","ForeColor":"#000012","Height":24,"Left":96,"Top":204,"Type":"CommandButton","Visible":True,"Width":72},
-                                                   {"Name":"OK_Button","Accelerator":"O","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"OK",
-                                                    "Command": self.OK_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":24,"Left":174,"Top":204,"Type":"CommandButton","Visible":True,"Width":72},
-                                                   {"Name":"GoBack_CheckBox","Accelerator":"P","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"Anschließend zurück zum Pattern_Configurator",
-                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":174,"Type":"CheckBox","Visible":True,"Width":228},
-                                                   {"Name":"SendToArduino_CheckBox","Accelerator":"A","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"gleich zum Arduino schicken",
-                                                    "ControlTipText":"","ForeColor":"#000012","Height":18,"Left":24,"Top":150,"Type":"CheckBox","Visible":True,"Width":228},                                                   
-                                                 ]}
-                           }        
     
     def UserForm_Initialize(self):
         #--------------------------------
@@ -110,7 +100,7 @@ class CSelect_ProgGen_Dest_Form:
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
-        self.Form=XLF.generate_form(self.Select_ProgGen_Dest_Form_RSC,self.controller,dlg=self,modal=False)
+        self.Form=XLF.generate_form(self.Select_ProgGen_Src_Form_RSC,self.controller,dlg=self,modal=False, jump_table=PG.ThisWorkbook.jumptable)
                 
     def UserForm_Activate(self):
         #------------------------------
@@ -134,13 +124,14 @@ class CSelect_ProgGen_Dest_Form:
         self.UserForm_Initialize()
         self.UserForm_Activate()
         self.Form.update()
-        self.Form.deiconify()
+        self.Form.deiconify()        
         #self.controller.wait_window(self.Form)
         
     
     def Check_and_Start(self,Callback):
+        global Callback_Proc
         #---------------------------------------------
-        self.Callback_Proc = Callback
+        Callback_Proc = Callback
         self.Show()
     
     def __UserForm_Initialize():
@@ -156,7 +147,7 @@ class CSelect_ProgGen_Dest_Form:
         #-------------------------------
         self.Hide()
         if self.Callback_Proc:
-            self.Callback_Proc(False, False, False)
+            self.Callback_Proc(False, '', '', 0)
     
     def OK_Button_Click(self):
         Message = String()
@@ -169,6 +160,10 @@ class CSelect_ProgGen_Dest_Form:
         if Message == '':
             if not M50.Selected_Row_Valid():
                 Message = M09.Get_Language_Str('Fehler: Die Ausgewählte Zeile ist nicht innerhalb des gültigen Bereichs')
+            else:
+                M25.Make_sure_that_Col_Variables_match()
+                if InStr(X02.Cells(X02.ActiveCell().Row, M25.Config__Col), 'PatternT') == 0:
+                    Message = M09.Get_Language_Str('Achtung: Die ausgewählte Zeile enthält kein Makro welches vom Pattern_Generator importiert werden kann.')
         if Message != '':
             select_0 = X02.MsgBox(Message, vbCritical + vbRetryCancel, M09.Get_Language_Str('Fehler bei der Auswahl der Zielzeile'))
             if (select_0 == vbCancel):
@@ -180,16 +175,7 @@ class CSelect_ProgGen_Dest_Form:
         else:
             self.Hide()
             if self.Callback_Proc:
-                self.Callback_Proc( True, self.SendToArduino_CheckBox.Value, self.GoBack_CheckBox.Value)
-                PG.ThisWorkbook.Activate()
-                with_0 = X02.ActiveSheet.Cells(X02.ActiveCell().Row, M25.Config__Col)
-                if with_0.Value != '':
-                    M27.FindMacro_and_Add_Icon_and_Name(with_0.Value, X02.ActiveCell().Row, PG.ThisWorkbook.ActiveSheet, False)
-                if self.GoBack_CheckBox.Value:
-                    self.Callback_Proc(False, False, self.GoBack_CheckBox.Value)
-
-
-    
+                self.Callback_Proc( True, X02.Cells(X02.ActiveCell().Row, M25.Descrip_Col), X02.Cells(X02.ActiveCell().Row, M25.Config__Col), X02.ActiveCell().Row)
 
 # VB2PY (UntranslatedCode) Option Explicit
 

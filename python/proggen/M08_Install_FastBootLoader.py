@@ -50,10 +50,10 @@ import time
 # fromx proggen.M09_Select_Macro import *
 # fromx proggen.M20_PageEvents_a_Functions import *
 # fromx proggen.M25_Columns import *
-# fromx proggen.M28_divers import *
+# fromx proggen.M28_Diverse import *
 # fromx proggen.M30_Tools import *
 
-# fromx proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M80_Create_Multiplexer import *
 
 
 import proggen.M02_Public as M02
@@ -74,14 +74,14 @@ import proggen.M12_Copy_Prog as M12
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
 import proggen.M40_ShellandWait as M40
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
 
 import proggen.F00_mainbuttons as F00
 
@@ -172,20 +172,71 @@ def Create_WriteFastBootloader_cmd(SrcDir):
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '"%ArduinoExePath%\\hardware\\tools\\avr/bin/avrdude" ^', '\n')
     VBFiles.writeText(fp, '   "-C%ArduinoExePath%hardware\\tools\\avr\\etc\\avrdude.conf" ^', '\n')
-    VBFiles.writeText(fp, '   -v -patmega328p -cstk500v1 %Port%  -b19200 ^', '\n')
-    #Print #fp, "   ""-Uflash:w:%ArduinoExePath%hardware\arduino\avr/bootloaders/optiboot/optiboot_atmega328.hex:i"" ^" ' Standard Optiboot bootloader
-    #Print #fp, "   ""-Uflash:w:" & GetShortPath(SrcDir & "optiboot_atmega328_Ver108.1.hex") & ":i"" ^"                       ' 02.11.20:
-    VBFiles.writeText(fp, '   "-Uflash:w:' + M08.GetShortPath(M02a.Get_SrcDirInLib() + 'ArduinoISP\\optiboot_atmega328_Ver108.1.hex') + ':i" ^', '\n')
+    VBFiles.writeText(fp, '   -patmega328p -F -cstk500v1 %Port%  -b19200 ^', '\n')
+    VBFiles.writeText(fp, '   -U signature:r:signature.hex:h', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'if %errorlevel%==1 goto :error', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'set /p signature=<signature.hex', '\n')
+    VBFiles.writeText(fp, 'if %errorlevel%==1 goto :error', '\n')
+    VBFiles.writeText(fp, 'set cpuType=', '\n')
+    VBFiles.writeText(fp, 'set message=', '\n')
+    VBFiles.writeText(fp, 'if "%signature%"=="0x1e,0x95,0x16" (', '\n')
+    VBFiles.writeText(fp, '  set cpuType=atmega328pb', '\n')
+    if FlashAs328P:
+        VBFiles.writeText(fp, '  set filename=optiboot_atmega328_Ver108.1.hex', '\n')
+    else:
+        VBFiles.writeText(fp, '  set filename=optiboot_atmega328pb_16mhz.hex', '\n')
+    VBFiles.writeText(fp, ')', '\n')
+    VBFiles.writeText(fp, 'if "%signature%"=="0x1e,0x95,0xf" (', '\n')
+    VBFiles.writeText(fp, '  set cpuType=atmega328p', '\n')
+    VBFiles.writeText(fp, '  set filename=optiboot_atmega328_Ver108.1.hex', '\n')
+    VBFiles.writeText(fp, ')', '\n')
+    VBFiles.writeText(fp, 'if "%cpuType%"=="" set message=CPU with signature %signature% is not supported', '\n')
+    VBFiles.writeText(fp, 'if "%signature%"=="0x0,0x0,0x0" set message=           can\'t read device signature', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'if not "%message%"=="" (', '\n')
+    VBFiles.writeText(fp, '   COLOR 4F', '\n')
+    VBFiles.writeText(fp, '   ECHO ******************************************************', '\n')
+    VBFiles.writeText(fp, '   ECHO *                                                    *', '\n')
+    VBFiles.writeText(fp, '   ECHO * %message% *', '\n')
+    VBFiles.writeText(fp, '   ECHO *                                                    *', '\n')
+    VBFiles.writeText(fp, '   ECHO ******************************************************', '\n')
+    VBFiles.writeText(fp, '   PAUSE', '\n')
+    VBFiles.writeText(fp, '   goto :eof', '\n')
+    VBFiles.writeText(fp, ')', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, '"%ArduinoExePath%\\hardware\\tools\\avr/bin/avrdude" ^', '\n')
+    VBFiles.writeText(fp, '   "-C%ArduinoExePath%hardware\\tools\\avr\\etc\\avrdude.conf" ^', '\n')
+    VBFiles.writeText(fp, '   -v -p%cpuType% -cstk500v1 %Port%  -b19200 ^', '\n')
+    #Print #fp, "   ""-Uflash:w:%ArduinoExePath%hardware\arduino\avr/bootloaders/optiboot/optiboot_atmega328.hex:i"" ^"
+    # Standard Optiboot bootloader
+    #Print #fp, "   ""-Uflash:w:" & GetShortPath(SrcDir & "optiboot_atmega328_Ver108.1.hex") & ":i"" ^"
+    # 08.12.23:
+    VBFiles.writeText(fp, '   "-Uflash:w:' + M08.GetShortPath(M02.Get_SrcDirInLib() + 'ArduinoISP\\') + '\\%filename%' + ':i" ^', '\n')
+    # 08.12.23:
     VBFiles.writeText(fp, '   -Ulock:w:0x0F:m ^', '\n')
     VBFiles.writeText(fp, '   -Uhfuse:w:0xDE:m', '\n')
+    # 29.10.20: Reserve only 512 Byte for the bootloader
     VBFiles.writeText(fp, '', '\n')
-    VBFiles.writeText(fp, 'if %errorlevel%==1 (', '\n')
+    VBFiles.writeText(fp, 'if %errorlevel%==1 goto error', '\n')
+    VBFiles.writeText(fp, 'goto :eof', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, ':error', '\n')
     VBFiles.writeText(fp, '   COLOR 4F', '\n')
-    VBFiles.writeText(fp, '   ECHO *********************************', '\n')
-    VBFiles.writeText(fp, '   ECHO Error writing the boot loader ;-(', '\n')
-    VBFiles.writeText(fp, '   ECHO *********************************', '\n')
+    VBFiles.writeText(fp, '   ECHO *************************************', '\n')
+    VBFiles.writeText(fp, '   ECHO *                                   *', '\n')
+    VBFiles.writeText(fp, '   ECHO * Error writing the boot loader ;-( *', '\n')
+    VBFiles.writeText(fp, '   ECHO *                                   *', '\n')
+    VBFiles.writeText(fp, '   ECHO *************************************', '\n')
     VBFiles.writeText(fp, '   PAUSE', '\n')
-    VBFiles.writeText(fp, ')', '\n')
+    VBFiles.writeText(fp, ')', '\n') # may be not needed anymore
     VBFiles.writeText(fp, '', '\n')
     VBFiles.closeFile(fp)
     # VB2PY (UntranslatedCode) On Error GoTo 0
@@ -198,7 +249,7 @@ def __Test_Create_WriteFastBootloader_cmd():
     #UT---------------------------------------------------------
     Debug.Print(Create_WriteFastBootloader_cmd(M08.GetWorkbookPath() + '\\ArduinoISP\\'))
 
-def __Write_Bootloader():
+def Write_Bootloader(FlashAs328P):
     fn_return_value = None
     #hwnd = LongPtr()
 
@@ -210,7 +261,8 @@ def __Write_Bootloader():
     #---------------------------------------------
     ## VB2PY (CheckDirective) VB directive took path 1 on VBA7
     #*HL hwnd = Application.hwnd
-    CmdName = Create_WriteFastBootloader_cmd(M08.GetWorkbookPath() + '\\ArduinoISP\\')
+    CmdName = Create_WriteFastBootloader_cmd(M08.GetWorkbookPath() + '\\ArduinoISP\\', FlashAs328P)
+    # 09.12.23 Juergen Support of ATMega328PB
     if CmdName == '':
         return fn_return_value
     CommandStr = '"' + CmdName + '" "' + M30.FilePath(M08.Find_ArduinoExe()) + '"' + ' -PCOM' + P01.Cells(M02.SH_VARS_ROW, M25.COMPrtR_COL)
@@ -232,21 +284,24 @@ def Install_FastBootloader():
     #----------------------------------
     M25.Make_sure_that_Col_Variables_match()
     if M25.Page_ID != 'DCC' and M25.Page_ID != 'Selectrix':
-        P01.MsgBox(M09.Get_Language_Str('Die schnelle Bootloader kann nur von einer DCC oder Selectrix Seite aus installiert werden.'), vbInformation, M09.Get_Language_Str('Falsche Seite zum aktualisieren des Bootloaders ausgewählt'))
+        P01.MsgBox(M09.Get_Language_Str('Die schnelle Bootloader kann nur von einer DCC, LNet oder Selectrix Seite aus installiert werden.'), vbInformation, M09.Get_Language_Str('Falsche Seite zum aktualisieren des Bootloaders ausgewählt'))
         return
-    P01.MsgBox(M09.Get_Language_Str('FastBootloader not implemented yet.'), vbInformation, M09.Get_Language_Str('Not implemented'))
-    return
-
+    if M02.Get_BoardTyp() != 'AM328':
+        # 08.12.23: Juergen
+        P01.MsgBox(M09.Get_Language_Str('Der schnelle Bootloader kann nur für Arduino installiert werden.'), vbInformation, M09.Get_Language_Str('Falsche Plattform zum Aktualisieren des Bootloaders ausgewählt'))
+        return
     Res = BootJumper_Form.ShowDialog
     time.sleep(1000)
     if Res:
         if not __Install_ArduinoISP_to_Right_Arduino():
             return
         while 1:
-            __Write_Bootloader()
-            if not (P01.MsgBox(M09.Get_Language_Str('Installation des Bootloaders abgeschlossen' + vbCr + vbCr + 'Soll der Bootloader auf einen weiteren Arduino geladen werden?' + vbCr + vbCr + 'Wenn ja, dann muss dieser jetzt in den linken Steckplatz gesteckt werden.' + vbCr + 'Mit \'Nein\' wird wieder das DCC/Selectrix Programm auf den rechten Nano installiert.' + vbCr + vbCr + 'Achtung der rechte Arduino darf nicht entfernt werden!'), vbYesNo + vbDefaultButton2, M09.Get_Language_Str('Noch einen Arduino aktualisieren?')) == vbYes):
+            Write_Bootloader( BootJumper_Form.FlashAs328P )
+            # 09.12.23: Juergen
+            if not (P01.MsgBox(M09.Get_Language_Str('Installation des Bootloaders abgeschlossen' + vbCr + vbCr + 'Soll der Bootloader auf einen weiteren Arduino geladen werden?' + vbCr + vbCr + 'Wenn ja, dann muss dieser jetzt in den linken Steckplatz gesteckt werden.' + vbCr + 'Mit \'Nein\' wird wieder das DCC/LNet/Selectrix Programm auf den rechten Nano installiert.' + vbCr + vbCr + 'Achtung der rechte Arduino darf nicht entfernt werden!'), vbYesNo + vbDefaultButton2, M09.Get_Language_Str('Noch einen Arduino aktualisieren?')) == vbYes):
                 break
-        M08.Compile_and_Upload_Prog_to_Right_Arduino()
+        M08.Compile_and_Upload_Prog_to_Right_Arduino(( True ))
+        # 09.12.23: Juergen improved bootloader update
         P01.MsgBox(M09.Get_Language_Str('Achtung: Die Jumper müssen unbedingt wieder entfernt werden sonst geht nichts mehr ;-(' + vbCr + 'Damit sie nicht verloren gehen können sie so eingesteckt werden, dass sie nur auf einem Pin stecken.' + vbCr + vbCr + 'Das USB Kabel sollte wieder auf den linken Arduino gesteckt werden.'), vbInformation, M09.Get_Language_Str('Bootloader Programmierung abgeschlossen'))
 
 # VB2PY (UntranslatedCode) Option Explicit

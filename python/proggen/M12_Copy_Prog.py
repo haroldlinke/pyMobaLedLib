@@ -146,6 +146,29 @@ def Copy_Prog_If_in_LibDir():
     fn_return_value = Copy_Prog_If_in_LibDir_WithResult(Result)
     return fn_return_value
 
+def Activate_Options_Button(Gerald):
+    Sh = P01.Worksheet()
+    # 29.11.23:
+    #-----------------------------------------------------
+    for Sh in P01.ActiveWorkbook.Sheets:
+        if M28.Is_Data_Sheet(Sh):
+            _with97 = P01.Sheets(Sh.Name)
+            _with97.Options_Button.Visible = Gerald
+            _with97.Options_Button2.Visible = not Gerald
+
+def Test_Activate_Options_Button():
+    # 29.11.23:
+    #UT---------------------------------------
+    Activate_Options_Button(False)
+
+def Test_Select_Icons():
+    Result = String()
+    # 29.11.23:
+    #UT----------------------------
+    Result = Select_Icons.ShowForm()
+    Activate_Options_Button(Result == 'Gerald')
+    Debug.Print('Test_Select_Icons:' + Result)
+
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: DidCopy - ByRef 
 def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
     fn_return_value = False
@@ -207,7 +230,9 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
     Remove_File_If_Exists(FullDestDir + 'LEDs_AutoProg\\SXInterface.h')
     Remove_File_If_Exists(FullDestDir + 'LEDs_AutoProg\\SX20.cpp')
     Remove_File_If_Exists(FullDestDir + 'LEDs_AutoProg\\SX20.h')
-    
+    # 29.12.23: remove some more files caused by LNet changes
+    Remove_File_If_Exists(FullDestDir + 'LEDs_AutoProg\\LocoNetInterface.cpp')
+    Remove_File_If_Exists(FullDestDir + 'LEDs_AutoProg\\LocoNetInterface.h')
     if not FileCopy_with_Check(FullDestDir, 'Prog_Generator_Examples'):
         return fn_return_value
         # 05.10.20:
@@ -223,8 +248,25 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
         return fn_return_value
         # 14.06.20: Copy also the second program
     if not FileCopy_with_Check(FullDestDir, M02.SECOND_PROG + '.xlsm'):
-        return fn_return_value
-    CreateDesktopShortcut(M02.SECOND_LINK, FullDestDir + M02.SECOND_PROG + '.xlsm', M02.SECOND_ICON)
+        return _fn_return_value
+    # 29.11.23:
+    Result = Select_Icons.ShowForm()
+    Activate_Options_Button(Result == 'Gerald')
+    if Result == 'Gerald':
+        DefaultIcon = M02.DEFAULTICON1
+        Second_Icon = M02.SECOND_ICON1
+        WikiPg_Icon = M02.WIKIPG_ICON1
+        Remove_File_If_Exists()(FullDestDir + 'UseNewIcons')
+    else:
+        DefaultIcon = M02.DEFAULTICON2
+        Second_Icon = M02.SECOND_ICON2
+        WikiPg_Icon = M02.WIKIPG_ICON2
+        fp = FreeFile()
+        VBFiles.openFile(fp, FullDestDir + 'UseNewIcons', 'w') 
+        VBFiles.writeText(fp, 'Use the new icons from Michael in the Patternconfigurator', '\n')
+        VBFiles.closeFile(fp)
+    CreateDesktopShortcut()(M02.SECOND_LINK, FullDestDir + M02.SECOND_PROG + '.xlsm', Second_Icon)
+    # 14.06.20: Create Link to the second programm
     ProgName = FullDestDir + PG.ThisWorkbook.Name
     if not __Copy_File_With_new_Name_If_Exists(ProgName, DidCopy):
         return fn_return_value

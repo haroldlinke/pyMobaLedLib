@@ -40,6 +40,7 @@ import ExcelAPI.XLA_Application as X02
 import pattgen.M09_Language as M09
 import pattgen.M30_Tools as M30
 import proggen.M20_PageEvents_a_Functions as M20
+import proggen.F00_mainbuttons as F00
 
 #**************************
 #'  Port handling functions
@@ -110,7 +111,7 @@ def New_Sheet():
     #    return
     #elif (_select8 == vbYes):
     CopyFromSheet = X02.ActiveSheet.Name
-    Name = X02.InputBox(M09.Get_Language_Str('Name des neuen Blattes?'), M09.Get_Language_Str('Neues Blatt anlegen'), M30.Unic_SheetName(CopyFromSheet, '_'))
+    Name = InputBox(M09.Get_Language_Str('Name des neuen Blattes?'), M09.Get_Language_Str('Neues Blatt anlegen'), M30.Unic_SheetName(CopyFromSheet, '_'))
     if Name != '':
         #if CopyFromSheet != '':
             #TempName = PG.ThisWorkbook.Path + '\\' + M01.ExampleDir + '\\TempExample.MLL_pcf'
@@ -123,6 +124,11 @@ def New_Sheet():
         #X02.Range(M01.FirstLEDTabRANGE).Select()
         #M30.Protect_Active_Sheet()
 
-
-
+def InputBox(Message:str, Title:str, Default=None):
+    #res = tk.simpledialog.askstring(Title,Message,initialvalue=Default,parent=PG.dialog_parent)
+    F00.Userform_SimpleInput.Show(Message,Title,Default)
+    res = F00.Userform_SimpleInput.UserForm_res
+    if res == None:
+        res=""
+    return res
 

@@ -48,9 +48,9 @@ from vb2py.vbconstants import *
 # fromx proggen.M09_Select_Macro import *
 # fromx proggen.M20_PageEvents_a_Functions import *
 # fromx proggen.M25_Columns import *
-# fromx proggen.M28_divers import *
+# fromx proggen.M28_Diverse import *
 # fromx proggen.M30_Tools import *
-# fromx proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M80_Create_Multiplexer import *
 
 # fromx ExcelAPI.X02_Workbook import *
 
@@ -70,13 +70,13 @@ import proggen.M09_Language as M09
 #import proggen.M20_PageEvents_a_Functions as M20
 #import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
-#import proggen.M28_divers as M28
+#import proggen.M28_Diverse as M28
 #import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 #import proggen.M37_Inst_Libraries as M37
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
 #*HL import proggen.clsNode
 
 import ExcelAPI.XLA_Application as P01

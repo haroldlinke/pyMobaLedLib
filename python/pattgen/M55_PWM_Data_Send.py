@@ -13,6 +13,7 @@ import pattgen.M60_Select_LED
 import pattgen.M11_To_Prog_Gen
 import pattgen.M06_Goto_Graph
 import mlpyproggen.Pattern_Generator as PG
+import pgcommon.G00_common as G00
 
 """ Send data over the WS281x LED protokol
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -643,7 +644,7 @@ def Test_Send_with_Dialog():
     X03.Sleep(100)
     WB_HighBit = False
     while not EndLoop:
-        Inp = X02.InputBox('Eingabe der Befehle' + vbCr + '   S: Start' + vbCr + '   C: Charlieplexing Head' + vbCr + '   H: KS_Hauptsignal_Zs3_Zs1' + vbCr + '   VV: Vissmann 4751' + vbCr + '   P: Ampel' + vbCr + '   L: Lauflicht' + vbCr + '   W: Wechselblinker' + vbCr + '   BB: Bright Lauflicht' + vbCr + '   T: Test LED Numbers' + vbCr + 'Optional LED Asssigment tables could be added to the pattern functions:' + vbCr + '   ?R= Reverse, ?V=Viessmann, ?B= Bright ?U=UniProg' + vbCr + '   E: Send CRC and End' + vbCr + '   G<Nr>: Goto' + vbCr + '   A: Analog inputs (Opt with 10 limmits)' + vbCr + 'Spezialbefehle:' + vbCr + '   0..15 Daten' + vbCr + '   N: Toggle NextDatFlag' + vbCr + '   R<Nr>: Raw PWM number' + vbCr + 'NextDatFlag: ' + NextDatFlag, 'LED PWM Send Test')
+        Inp = G00.InputBox('Eingabe der Befehle' + vbCr + '   S: Start' + vbCr + '   C: Charlieplexing Head' + vbCr + '   H: KS_Hauptsignal_Zs3_Zs1' + vbCr + '   VV: Vissmann 4751' + vbCr + '   P: Ampel' + vbCr + '   L: Lauflicht' + vbCr + '   W: Wechselblinker' + vbCr + '   BB: Bright Lauflicht' + vbCr + '   T: Test LED Numbers' + vbCr + 'Optional LED Asssigment tables could be added to the pattern functions:' + vbCr + '   ?R= Reverse, ?V=Viessmann, ?B= Bright ?U=UniProg' + vbCr + '   E: Send CRC and End' + vbCr + '   G<Nr>: Goto' + vbCr + '   A: Analog inputs (Opt with 10 limmits)' + vbCr + 'Spezialbefehle:' + vbCr + '   0..15 Daten' + vbCr + '   N: Toggle NextDatFlag' + vbCr + '   R<Nr>: Raw PWM number' + vbCr + 'NextDatFlag: ' + NextDatFlag, 'LED PWM Send Test')
         Res = True
         _select46 = Left(UCase(Inp), 1)
         if (_select46 == 'S'):

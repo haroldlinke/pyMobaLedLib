@@ -41,11 +41,11 @@ from vb2py.vbconstants import *
 
 # fromx proggen.M02_Public import *
 
-# fromx proggen.M28_divers import *
+# fromx proggen.M28_Diverse import *
 # fromx proggen.M30_Tools import *
 # fromx proggen.M09_Translate_Examples import *
 
-# fromx proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M80_Create_Multiplexer import *
 
 from ExcelAPI.XLC_Excel_Consts import *
 
@@ -70,15 +70,16 @@ import proggen.M02_Public as M02
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 #import proggen.M37_Inst_Libraries as M37
 #import proggen.M40_ShellandWait as M40
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
 import mlpyproggen.Prog_Generator as PG
+import pgcommon.G00_common as G00
 
 
 """ Attention: One of the following preprcessor constants have to be defined in
@@ -238,6 +239,10 @@ def __Update_Language_in_Sheet(Sh, DestLang):
                 if M25.Page_ID == r'DCC':
                     _with0.Range[Param].FormulaR1C1 = Tmp
                     # Cell values and formulas
+            elif (_select0 == 'Cell_LNET'):
+                if M25.Page_ID == 'LNet':
+                    _with25.Range[Param].FormulaR1C1 = Tmp
+                # Cell values and formulas
             elif (_select0 == r'Cell_SX'):
                 if M25.Page_ID == r'Selectrix':
                     _with0.Range[Param].FormulaR1C1 = Tmp
@@ -253,23 +258,39 @@ def __Update_Language_in_Sheet(Sh, DestLang):
                 _with0.Shapes.Range(Array(Param)).Select()
                 P01.Selection.Characters.Text = Tmp
             elif (_select0 == r'Comment'):
+                # Comments
                 _with1 = _with0.Range(Param).Comment
                 _with1.Text(Text=Replace(Tmp, vbLf, Chr(10)))
                 _with1.Shape.TextFrame.Characters[1, Len(Tmp)].Font.Bold = False
+                # ToDo: Bold aus Sheet lesen
                 ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
             elif (_select0 == r'Comment_DCC'):
+                # Comments DCC
                 if M25.Page_ID == r'DCC':
                     if not _with0.Range(Param).Comment is None:
                         _with2 = _with0.Range(Param).Comment
                         _with2.Text(Text=Replace(Tmp, vbLf, Chr(10)))
                         _with2.Shape.TextFrame.Characters[1, Len(Tmp)].Font.Bold = False
+                        # ToDo: Bold aus Sheet lesen
+            elif (_select0 == 'Comment_LNet'):
+                # Comments LNet
+                # 24.04.23: Juergen
+                if M25.Page_ID == 'LNet':
+                    if not _with0.Range(Param).Comment is None:
+                        # 26.10.21:
+                        _with28 = _with0.Range(Param).Comment
+                        _with28.Text(Text=Replace(Tmp, vbLf, Chr(10)))
+                        _with28.Shape.TextFrame.Characters[1, Len(Tmp)].Font.Bold = False
+                        # ToDo: Bold aus Sheet lesen
             elif (_select0 == r'Comment_SX'):
+                # Comments Selectrix
                 if M25.Page_ID == r'Selectrix':
                     if not _with0.Range(Param).Comment is None:
                         _with3 = _with0.Range(Param).Comment
                         _with3.Text(Text=Replace(Tmp, vbLf, Chr(10)))
                         _with3.Shape.TextFrame.Characters[1, Len(Tmp)].Font.Bold = False
             elif (_select0 == r'Comment_CAN'):
+                # Comments CAN
                 if M25.Page_ID == r'CAN':
                     if not _with0.Range(Param).Comment is None:
                         _with4 = _with0.Range(Param).Comment
@@ -746,7 +767,7 @@ def __Test_Translations():
     # Check it the translation works correct
     __Check_Languages = True
     Debug.Print(vbCr + r'-------------------------------------------')
-    Res = P01.InputBox(r'Input the Language number' + vbCr + r' 0 = German' + vbCr + r' 1 = English' + vbCr + r' 2 = Dutch' + vbCr + r' 3 = French' + vbCr + r' 4 = Italian' + vbCr + r' 5 = Spain' + vbCr + r' 6 = Danish')
+    Res = G00.InputBox(r'Input the Language number' + vbCr + r' 0 = German' + vbCr + r' 1 = English' + vbCr + r' 2 = Dutch' + vbCr + r' 3 = French' + vbCr + r' 4 = Italian' + vbCr + r' 5 = Spain' + vbCr + r' 6 = Danish')
     if not IsNumeric(Res):
         return
     __Test_Language = P01.val(Res)

@@ -40,7 +40,7 @@ import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
 import proggen.M09_Select_Macro as M09SM
 import proggen.M25_Columns as M25
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 import mlpyproggen.Prog_Generator as PG
 
@@ -210,6 +210,7 @@ def FindMacro_and_Add_Icon_and_Name(MacroStr, Row, Sh, NameOnly=False):
     if LibMacRow > 0:
         M09SM.Add_Icon_and_Name(LibMacRow, Row, Sh, NameOnly=NameOnly)
     else:
+        # Special treatement if the line was not found in the "Lib_Macros" sheet
         if InStr(MacroStr, 'Pattern') > 0:
             OldEvents = P01.Application.EnableEvents
             P01.Application.EnableEvents = False
@@ -217,6 +218,7 @@ def FindMacro_and_Add_Icon_and_Name(MacroStr, Row, Sh, NameOnly=False):
             P01.Application.EnableEvents = OldEvents
             if NameOnly == False:
                 Del_one_Icon_in_IconCol(Row, Sh)
+                # 31.10.21: Moved into If statemant. Otherwise the Pattern icon is deleted at program start ;-(
                 Add_Icon('Pattern', Row, Sh)
 
 def __Show_Icons_Column_in_Sheet(Sh):
@@ -321,6 +323,7 @@ def Show_Hide_Column_in_all_Sheets(Show, ColName):
     if ColName == 'MacIcon_Col':
         M30.ShowHourGlassCursor(True)
         __Show_Hide_Icons_Column(Show)
+        # Macro Icons are deleted/created to speed up the program
         M30.ShowHourGlassCursor(False)
     else:
         for Sh in PG.ThisWorkbook.sheets:

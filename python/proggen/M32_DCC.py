@@ -62,14 +62,14 @@ import proggen.M09_Language as M09
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 #import proggen.M37_Inst_Libraries as M37
 import proggen.M39_Simulator as M39
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
+import proggen.M80_Create_Multiplexer as M80
 import proggen.F00_mainbuttons as F00
 
 import mlpyproggen.Prog_Generator as PG
@@ -113,10 +113,12 @@ def DCCSend():
     if M02.DEBUG_DCCSEND:
         Debug.Print(P01.Format(Time, 'hh.mm.ss') + ' click on button ' + callerName)
     #Debug.Print callerName ' Debug
+    # Debug
     Addr = P01.val(Mid(callerName, 2, 4))
     Addr = Addr - P01.val(M28.Get_String_Config_Var('DCC_Offset'))
+    # 21.03.20: Juergen
     Direction = P01.val(Mid(callerName, 7, 2))
-    if SendDCCAccessoryCommand(Addr, Direction):
+    if SendDCCAccessoryCommand(Addr, Direction, Left(callerName, 1) == "B"):
         
         for Button in P01.ActiveSheet.Shapes:
             #Debug.Print Button.Name
@@ -135,39 +137,43 @@ def DCCSend():
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Addr - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Direction - ByVal 
 #-------------------------------------------------------------------------------------------------
-def SendDCCAccessoryCommand(Addr, Direction):
+def SendDCCAccessoryCommand(Addr, Direction, IsSwitch):
 #-------------------------------------------------------------------------------------------------
-    fn_return_value = False
+    _fn_return_value = False
     ComPort = Integer()
 
     Output_Buffer = String()
 
     UseHardwareHandshake = Boolean()
     
+    # 17.04.20 new feature (J�rgen)
     # to be able to use the hardware handshake the Arduino Nano module must be modified
     # connect A1 pin to pin 9 (CTS) of the CH340 chip
     # now you may use hardware handshake using CTR flow control
     UseHardwareHandshake = False
     M25.Make_sure_that_Col_Variables_match()
-    
+    # 04.03.22 Juergen: if using simulator only don't connect to Com Port
     #if M39.IsSimulatorActive and P01.val(M07.ComPortPage().Cells(M02.SH_VARS_ROW, M25.COMPort_COL)) <= 0:
     if M39.IsSimulatorActive and F00.port_is_busy(M07.ComPortPage().Cells(M02.SH_VARS_ROW, M25.COMPort_COL)):
-        fn_return_value = True
-        return fn_return_value
+        _fn_return_value = True
+        return _fn_return_value
     if M07.Check_USB_Port_with_Dialog(M25.COMPort_COL) == False:
-        return fn_return_value
+        return _fn_return_value
         # 04.05.20: Added exit (Prior Check_USB_Port_with_Dialog ends the program in case of an error)
     if ( Addr < 1 or Addr > 9999 ) :
         P01.MsgBox(M09.Get_Language_Str('Die Adresse muss im Bereich 1 bis 9999 liegen'), vbCritical, M09.Get_Language_Str('Fehler: Decoder senden fehlgeschlagen'))
-        return fn_return_value
+        return _fn_return_value
     ComPort = P01.Cells(M02.SH_VARS_ROW, M25.COMPort_COL)
     Output_Buffer = '@' + Left(str(Addr) + '   ', 4) + ' ' + Left(str(Direction) + ' ', 2) + ' 01' + Chr(10)
+    #fn_return_value = M07.SendMLLCommand(ComPort, Output_Buffer, UseHardwareHandshake, M02.DEBUG_DCCSEND)
     send_command_to_ARDUINO(Output_Buffer,comport=ComPort)
+    fn_return_value=True
+    # 29.04.20: Incremented length to be able to use 4 digits 1000-9999
     fn_return_value=True    
     if not fn_return_value:
         _fn_return_value = False
         return _fn_return_value
-    if M28.Get_Num_Config_Var('GEN_BUTTON_RELEASE_COM') > 0:
+    if not IsSwitch and M28.Get_Num_Config_Var('GEN_BUTTON_RELEASE_COM') > 0:
         # 09.04.23: Juergen, don't simulate release if legacy mode is selected
         while 1:
             if P01.GetAsyncKeyState(0x1) == 0:
@@ -176,14 +182,12 @@ def SendDCCAccessoryCommand(Addr, Direction):
             XLWA.Sleep(10)
             if not (True):
                 break
-        Output_Buffer = '@' + Left(Addr + '   ', 4) + ' ' + Left(Direction + ' ', 2) + ' 00' + Chr(10)
-        # 13.12.22: Also send the release    
-        send_command_to_ARDUINO(Output_Buffer,comport=ComPort)
-        fn_return_value=True
-    
-    #fn_return_value = M07.SendMLLCommand(ComPort, Output_Buffer, UseHardwareHandshake, M02.DEBUG_DCCSEND)
-    fn_return_value=True
-
+            Output_Buffer = '@' + Left(Addr + '   ', 4) + ' ' + Left(Direction + ' ', 2) + ' 00' + Chr(10)
+            # 13.12.22: Also send the release    
+            send_command_to_ARDUINO(Output_Buffer,comport=ComPort)
+            fn_return_value=True
+    else:
+        fn_return_value=True        
     #fn_return_value = M07.SendMLLCommand(ComPort, Output_Buffer, UseHardwareHandshake, M02.DEBUG_DCCSEND)
     return fn_return_value
 

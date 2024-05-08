@@ -48,9 +48,9 @@ from vb2py.vbconstants import *
 # fromx proggen.M09_Select_Macro import *
 # fromx proggen.M20_PageEvents_a_Functions import *
 # fromx proggen.M25_Columns import *
-# fromx proggen.M28_divers import *
+# fromx proggen.M28_Diverse import *
 # fromx proggen.M30_Tools import *
-# fromx proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M80_Create_Multiplexer import *
 
 # fromx ExcelAPI.X02_Workbook import *
 
@@ -69,13 +69,13 @@ import proggen.M10_Par_Description as M10
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
+import proggen.M80_Create_Multiplexer as M80
 
 import ExcelAPI.XLA_Application as P01
 
@@ -121,7 +121,7 @@ def Add_LED2Var_Entry(Cmd, LEDNr):
         P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Falscher Typ \'#1#\' in der \'LED_to_Var\' Funktion'), "#1#", Parts(2)), vbCritical, M09.Get_Language_Str('Fehler: Falscher Typ in \'LED_to_Var\' Funktion'))
         return _fn_return_value
     Offset = P01.val(Parts(1))
-    LED2Var_Tab = LED2Var_Tab + '        { ' + M30.AddSpaceToLen(M06.ExpandName(Parts(0)) + ',', 20) + M30.AddSpaceToLen(str(LEDNr + Offset // 3) + ',', 7) + M30.AddSpaceToLen('(' + str(Offset % 3), 5) + '<< 3) | ' + M30.AddSpaceToLen(Typ + ', ', 19) + M30.AddSpaceToLen(Parts(3), 4) + '},' + vbCr    
+    LED2Var_Tab = LED2Var_Tab + '        { ' + M30.AddSpaceToLen(M06.ExpandName(Parts(0)) + ',', 20) + M30.AddSpaceToLen(str(LEDNr + Offset // 3) + ',', 7) + M30.AddSpaceToLen('(' + str(Offset % 3), 5) + '<< 3) | ' + M30.AddSpaceToLen(Typ + ', ', 19) + M30.AddSpaceToLen(Parts(3), 4) + '},' + vbCrLf    
     #__LED2Var_Tab = __LED2Var_Tab + '        { ' + M30.AddSpaceToLen(Parts(0) + ',', 20) + M30.AddSpaceToLen(LEDNr + Offset // 3 + ',', 7) + M30.AddSpaceToLen('(' + Offset % 3, 5) + '<< 3) | ' + M30.AddSpaceToLen(Typ + ', ', 19) + M30.AddSpaceToLen(Parts(3), 4) + '},' + vbCr
     Cmd = '// ' + Cmd
     _fn_return_value = True
@@ -160,7 +160,7 @@ def Write_Header_File_LED2Var(fp):
         VBFiles.writeText(fp, '#endif', '\n')
         VBFiles.writeText(fp, '      {', '\n')
         VBFiles.writeText(fp, '        // Var name           LED_Nr LED Offset   Typ                Compare value', '\n')
-        VBFiles.writeText(fp, M30.DelLast(LED2Var_Tab), '\n')
+        VBFiles.writeText(fp, M30.DelLast(LED2Var_Tab,2), '\n')
         VBFiles.writeText(fp, '      };', '\n')
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, '', '\n')

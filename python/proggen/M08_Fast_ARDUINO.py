@@ -48,10 +48,10 @@ from vb2py.vbconstants import *
 # fromx proggen.M09_Select_Macro import *
 # fromx proggen.M20_PageEvents_a_Functions import *
 # fromx proggen.M25_Columns import *
-# fromx proggen.M28_divers import *
+# fromx proggen.M28_Diverse import *
 # fromx proggen.M30_Tools import *
 
-# fromx proggen.M80_Create_Mulitplexer import *
+# fromx proggen.M80_Create_Multiplexer import *
 
 
 import proggen.M02_Public as M02
@@ -70,14 +70,14 @@ import proggen.M09_Language as M09
 #import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 #import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
 import proggen.M40_ShellandWait as M40
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
-#import proggen.M80_Create_Mulitplexer as M80
+#import proggen.M80_Create_Multiplexer as M80
 
 import ExcelAPI.XLA_Application as P01
 
@@ -105,11 +105,13 @@ def Create_Packages_Dir_if_not_Available():
         M30.CreateFolder(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/')
 
 def Create_Build(BoardName, fp):
+    # 28.10.20: Jürgen (Old name: Create_PrivateBuild_cmd_if_missing)
     #-------------------------------------
     if BoardName == 'AM328':
         Create_Build_Arduino(( fp ))
         return
     if BoardName == 'PICO':
+        # 17.04.21: Jürgen
         Create_Build_Pico(( fp ))
         return
     VBFiles.writeText(fp, 'pause Invalid BoardType' + BoardName, '\n')
@@ -117,6 +119,7 @@ def Create_Build(BoardName, fp):
 
 def Create_Build_Arduino(fp):
     PackageDestDir = String()
+    # 28.10.20: Jürgen (Old name: Create_PrivateBuild_cmd_if_missing)
     #-------------------------------------
     VBFiles.writeText(fp, '@ECHO OFF', '\n')
     VBFiles.writeText(fp, 'REM Fast Build command from Juergen', '\n')
@@ -139,7 +142,9 @@ def Create_Build_Arduino(fp):
     VBFiles.writeText(fp, 'REM  5: Baudrate:            "57600" or "115200"', '\n')
     VBFiles.writeText(fp, 'REM  6: Arduino Library path "%USERPROFILE%\\Documents\\Arduino\\libraries"', '\n')
     VBFiles.writeText(fp, 'REM  7: CPU type:            "atmega328p, atmega4809', '\n')
-    VBFiles.writeText(fp, 'REM  8: options:             ""noflash|norebuild""', '\n') # 19.12.21: Jürgen: Added noflash optio
+    # 28.10.20: Jürgen
+    VBFiles.writeText(fp, 'REM  8: options:             "noflash|norebuild"', '\n')
+    # 19.12.21: Jürgen: Added noflash option
     VBFiles.writeText(fp, 'REM', '\n')
     VBFiles.writeText(fp, 'REM The program uses the captured and adapted command line from the Arduino IDE', '\n')
     VBFiles.writeText(fp, 'REM', '\n')
@@ -150,20 +155,37 @@ def Create_Build_Arduino(fp):
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, 'SET aTemp=%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ATMega', '\n')
+    # 01.12.20: Added: "\ATMega" otherwise the esp32 fastbuild fails if the prog. is conpuled for the Nano
     VBFiles.writeText(fp, 'SET aCache=%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_cache\\ATMega', '\n')
+    #    "            "
     VBFiles.writeText(fp, 'if not exist "%aTemp%"  md "%aTemp%"', '\n')
     VBFiles.writeText(fp, 'if not exist "%aCache%" md "%aCache%"', '\n')
     VBFiles.writeText(fp, '', '\n')
+    # 28.01.24 Juergen delete compiler cache if last build failed
+    VBFiles.writeText(fp, 'if exist "%aTemp%\\buildFailed.txt" (', '\n')
+    VBFiles.writeText(fp, '   echo Last build failed ;-( - rebuild everything', '\n')
+    VBFiles.writeText(fp, '   rd "%aTemp%" /s/q', '\n')
+    VBFiles.writeText(fp, '   rd "%aCache%" /s/q', '\n')
+    VBFiles.writeText(fp, '   md "%aTemp%"', '\n')
+    VBFiles.writeText(fp, '   md "%aCache%"', '\n')
+    VBFiles.writeText(fp, ')', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    # Example: "C:\Users\Hardi\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.3"
+    # 01.11.20:
     PackageDestDir = M08.GetShortPath(Environ(M02.Env_USERPROFILE)) + M02.AppLoc_Ardu + 'packages\\arduino\\hardware\\avr\\' + M37.Get_Std_Arduino_Lib_Ver()
     if M37.Get_User_std_Arduino_Lib_Ver() == '':
+        # No own board package installed => Copy the standard board
         VBFiles.writeText(fp, 'robocopy "%aHome%\\hardware\\arduino\\avr" "' + PackageDestDir + '" /mir /s >nul', '\n')
     VBFiles.writeText(fp, 'xcopy ' + M08.GetShortPath(M08.GetWorkbookPath()) + '\\LEDs_AutoProg\\boards.local.txt "' + PackageDestDir + '\\" /d /y >nul', '\n')
+    # 06.03.21 Juergen: overwrite file if needed, don't promt user, has blocked the build
     Create_Packages_Dir_if_not_Available()
+    # Create the 'packages' folder otherwise we get an error in the following 'GetShortPath()' call   07.10.21:
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, 'REM *** Call the arduino builder ***', '\n')
     VBFiles.writeText(fp, '"%aHome%\\arduino-builder" -compile -logger=human ^', '\n')
     VBFiles.writeText(fp, '     -hardware "%aHome%\\hardware" ^', '\n')
     VBFiles.writeText(fp, '     -hardware "' + M08.GetShortPath(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages') + '" ^', '\n')
+    # 28.10.20: Jürgen
     VBFiles.writeText(fp, '     -tools "%aHome%\\tools-builder" ^', '\n')
     VBFiles.writeText(fp, '     -tools "%aHome%\\hardware\\tools\\avr" ^', '\n')
     VBFiles.writeText(fp, '     -built-in-libraries "%aHome%\\libraries" -libraries "%LIB%" ^', '\n')
@@ -174,7 +196,16 @@ def Create_Build_Arduino(fp):
     VBFiles.writeText(fp, '     -prefs=runtime.tools.avrdude.path="%aHome%\\hardware\\tools\\avr" ^', '\n')
     VBFiles.writeText(fp, '     -prefs=runtime.tools.avr-gcc.path="%aHome%\\hardware\\tools\\avr"  ^', '\n')
     VBFiles.writeText(fp, '     %2', '\n')
+    # 28.01.24 Juergen: mark last build as failed
+    VBFiles.writeText(fp, 'if errorlevel 1 (', '\n')
+    VBFiles.writeText(fp, '    echo %date% > "%aTemp%\\buildFailed.txt"', '\n')
+    VBFiles.writeText(fp, '    exit /b 1', '\n')
+    VBFiles.writeText(fp, ')', '\n')
     VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'set subType=%7', '\n')
+    # 08.12.23: Juergen 328PB support
+    VBFiles.writeText(fp, 'set mainType=%subType:~0,9%', '\n')
+    #           ---- " ---
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, 'if ""%8""==""noflash"" goto :EOF', '\n')  # 19.12.21: Jürgen: add noflash option
     VBFiles.writeText(fp, 'if %errorlevel%==0 (', '\n')
@@ -183,24 +214,27 @@ def Create_Build_Arduino(fp):
     VBFiles.writeText(fp, '   REM -V = Do not verify.                      => Saves 3 sec', '\n')
     VBFiles.writeText(fp, '   REM -D = Disable auto erase for flash memory', '\n')
     VBFiles.writeText(fp, '   set extraArgs=', '\n')
+    # 28.10.20: Jürgen: New Block
     VBFiles.writeText(fp, '   if "%7"=="atmega4809" (', '\n')
     VBFiles.writeText(fp, '      echo Forcing reset using 1200bps open/close on port %3', '\n')
     VBFiles.writeText(fp, '      mode %3 1200,n,8,1', '\n')
     VBFiles.writeText(fp, '      set extraArgs=-cjtag2updi -e -Ufuse2:w:0x01:m -Ufuse5:w:0xC9:m -Ufuse8:w:0x00:m', '\n')
     VBFiles.writeText(fp, '      goto flash', '\n')
     VBFiles.writeText(fp, '   )', '\n')
-    VBFiles.writeText(fp, '   if "%7"=="atmega328p" (', '\n')
-    VBFiles.writeText(fp, '      set extraArgs=-carduino', '\n')
-    VBFiles.writeText(fp, '      goto flash', '\n')
-    VBFiles.writeText(fp, '   )', '\n')
-    VBFiles.writeText(fp, '   :flash', '\n')
-    VBFiles.writeText(fp, '   "%aHome%\\hardware\\tools\\avr/bin/avrdude" -C"%aHome%\\hardware\\tools\\avr/etc/avrdude.conf" ^', '\n')
-    VBFiles.writeText(fp, '      -V -p%7 -P\\\\.\\%3 -b%~5 -D -Uflash:w:"%aTemp%/%~2.hex":i %extraArgs%', '\n')
+    VBFiles.writeText(fp, '', '\n')
+    VBFiles.writeText(fp, 'if "%mainType%"=="atmega328" (', '\n')
+    # 08.12.23: Juergen 328PB support
+    VBFiles.writeText(fp, '   set extraArgs=-carduino', '\n')
+    VBFiles.writeText(fp, '   goto flash', '\n')
     VBFiles.writeText(fp, ')', '\n')
+    VBFiles.writeText(fp, ':flash', '\n')
+    VBFiles.writeText(fp, '"%aHome%\\hardware\\tools\\avr/bin/avrdude" -C"%aHome%\\hardware\\tools\\avr/etc/avrdude.conf" ^', '\n')
+    VBFiles.writeText(fp, '   -V -p%7 -P\\\\.\\%3 -b%~5 -D -Uflash:w:"%aTemp%/%~2.hex":i %extraArgs%', '\n')
     return
 
 def Create_Build_Pico(fp):
     Board_Version = String()
+    # 17.04.21: Jürgen
     #-------------------------------------
     Board_Version = M37.Get_Lib_Version('rp2040:rp2040')
     VBFiles.writeText(fp, '@ECHO OFF', '\n')
@@ -223,6 +257,7 @@ def Create_Build_Pico(fp):
     VBFiles.writeText(fp, 'REM  6: Arduino Library path "%USERPROFILE%\\Documents\\Arduino\\libraries"', '\n')
     VBFiles.writeText(fp, 'REM  7: CPU type:            "rp2040', '\n')
     VBFiles.writeText(fp, 'REM  8: options:             ""noflash""', '\n')   # 19.12.21: Jürgen: Added noflash option
+    # 19.12.21: Jürgen: Added noflash option
     VBFiles.writeText(fp, 'REM', '\n')
     VBFiles.writeText(fp, 'REM The program uses the captured and adapted command line from the Arduino IDE', '\n')
     VBFiles.writeText(fp, 'REM', '\n')
@@ -239,10 +274,12 @@ def Create_Build_Pico(fp):
     VBFiles.writeText(fp, 'if not exist "%aCache%" md "%aCache%"', '\n')
     VBFiles.writeText(fp, '', '\n')
     Create_Packages_Dir_if_not_Available()
+    # Create the 'packages' folder otherwise we get an error in the following 'GetShortPath()' call   20.10.21:
     VBFiles.writeText(fp, 'REM *** Call the arduino builder ***', '\n')
     VBFiles.writeText(fp, '"%aHome%\\arduino-builder" -compile -logger=human ^', '\n')
     VBFiles.writeText(fp, '     -hardware "%aHome%\\hardware" ^', '\n')
     VBFiles.writeText(fp, '     -hardware "' + M08.GetShortPath(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages') + '" ^', '\n')
+    # 28.10.20: Jürgen
     VBFiles.writeText(fp, '     -tools "%aHome%\\tools-builder" ^', '\n')
     VBFiles.writeText(fp, '     -tools "%aHome%\\hardware\\tools\\avr" ^', '\n')
     VBFiles.writeText(fp, '     -built-in-libraries "%aHome%\\libraries" -libraries "%LIB%" ^', '\n')
@@ -254,6 +291,7 @@ def Create_Build_Pico(fp):
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, 'if ""%8""==""noflash"" goto :EOF', '\n')   # 19.12.21: Jürgen: add noflash option   
+    # 19.12.21: Jürgen: add noflash option
     VBFiles.writeText(fp, 'if %errorlevel%==0 (', '\n')
     VBFiles.writeText(fp, '   REM *** Flash program ***', '\n')
     VBFiles.writeText(fp, '   :flash', '\n')

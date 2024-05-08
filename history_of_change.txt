@@ -1,3 +1,8 @@
+5.3.0 - 08.0.52024
+- update to MLL3.3.2B
+- corrected issues in servo and led animation
+- reorganisation of windows version
+
 5.2.6.001 - 27.04.2024
 - corrected ESP32 compatibility for Win
 - program generator and patter configurator pages are active as default

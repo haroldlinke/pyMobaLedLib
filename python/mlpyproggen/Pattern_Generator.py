@@ -54,6 +54,10 @@ from ExcelAPI.P01_Worksheetcalc import Calc_Worksheet
 import pattgen.DieseArbeitsmappe as AM
 import pattgen.Tabelle9 as T09
 import pattgen.D00_Forms as D00
+#import pattgen.D00_GlobalProcs as D00GP
+import pattgen.M20_Morsecode as M20
+import pattgen.M02_Main as M02
+import pattgen.Tabelle9 as PAT09
 #import ExcelAPI.XLA_Application as XLW
 
 import os
@@ -162,6 +166,19 @@ class Pattern_GeneratorPage(tk.Frame):
         self.default_font        = self.controller.defaultfontnormal
         self.default_boldfont    = (self.default_font[0],self.default_font[1],"bold")
         self.default_smallfont   = self.controller.defaultfontsmall
+        
+        globalprocs= {"Make_Morsecode_Init"                    : M20.Make_Morsecode_Init,
+                      "Make_Morsecode"                         : M20.Make_Morsecode,
+                      "Add_Col_Button_Click"                   : Add_Col_Button_Click,
+                      "Del_Col_Button_Click"                   : Del_Col_Button_Click,
+                      "M02.Main_Menu"                          : M02.Main_Menu,
+                      "PAT09.Import_from_ProgGen_Button_Click" : PAT09.Import_from_ProgGen_Button_Click,
+                      "PAT09.Prog_Generator_Button_Click"      : PAT09.Prog_Generator_Button_Click,
+                      "PAT09.InsertPicture_Button_Click"       : PAT09.InsertPicture_Button_Click,
+                      "button_testen_cmd"                      : button_testen_cmd,
+                      "button_aktualisieren_cmd"               : button_aktualisieren_cmd,
+                      "button_newsheet_cmd"                    : button_newsheet_cmd}
+        
         
         sheetdict_sheetevents = {"Activate": T09.Worksheet_Activate,
                                  "Calculate": None,
@@ -578,7 +595,8 @@ class Pattern_GeneratorPage(tk.Frame):
         
         workbook_dict = {"Name": "PatternWorkbook",
                          "Events": workbook_events,
-                         "SheetDict" : sheetdict_PatternGEN
+                         "SheetDict" : sheetdict_PatternGEN, 
+                         "JumpTable" : globalprocs,
                          }        
                 
         

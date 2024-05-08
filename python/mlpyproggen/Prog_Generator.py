@@ -215,6 +215,14 @@ class Prog_GeneratorPage(tk.Frame):
                      "SheetType" : "Datasheet",
                      "Events" : sheetdict_sheetevents,
                      },
+                   "LNet":
+                    {"Name":"LNet",
+                     "Filenamex"  : "csv/LNet.csv",
+                     "Fieldnames": datasheet_fieldnames,
+                     "Formating" : datasheet_formating,
+                     "SheetType" : "Datasheet",
+                     "Events" : sheetdict_sheetevents,
+                     },                   
                    "Examples":
                     {"Name":"Examples",
                      "Filenamex"  : "csv/Examples.csv",

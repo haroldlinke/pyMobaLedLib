@@ -56,13 +56,13 @@ import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M18_Save_Load as M18
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
+import proggen.M80_Create_Multiplexer as M80
 
 import mlpyproggen.Prog_Generator as PG
 
@@ -101,67 +101,79 @@ def __Close_and_Delete_Temp_Prog_Gen(TempName):
         P01.MsgBox(M09.Get_Language_Str('Fehler beim löschen der Datei') + vbCr + '  \'' + TempName + '\' ', vbCritical, M09.Get_Language_Str('Fehler beim löschen des temporären version alten Programm Generators'))
         return fn_return_value
 
-def __Select_and_Open_Old_Version():
-    fn_return_value = None
+def Select_and_Open_Old_Version(OldProgGeneratorFilename):
+    _fn_return_value = False
     Name = Variant()
 
-    Path = String()
+    path = String()
+    # 19.01.24 Juergen new argument OldProgGeneratorFilename
     #---------------------------------------------------------
     # Select the old version of the Prog_Generator and open it
-    Path = M02.Get_MobaUserDir()
-    P01.ChDrive(Path)
-    ChDir(Path)
-    while 1:
-        Name = P01.Application.GetOpenFilename(fileFilter='Program generator  (*.xlsm), *.xlsm', Title= M09.Get_Language_Str('Altes Prog_Generator Programm auswählen von der importiert werden soll'))
-        if Name != False:
-            if InStr(M30.FileName(Name), 'Prog_Generator') == 0:
-                if P01.MsgBox(M09.Get_Language_Str('Fehler: Der Dateiname muss \'Prog_Generator\' enthalten.' + vbCr + vbCr + 'Auswahl wiederholen?'), vbQuestion + vbOKCancel, M09.Get_Language_Str('Fehler: Falsche Datei ausgewählt')) == vbCancel:
-                    Name = ''
-                else:
+    # 19.01.24 Juergen only ask user for previous filename if OldProgGeneratorFilename isn't given
+    if OldProgGeneratorFilename == '':
+        path = M02.Get_MobaUserDir()
+    else:
+        path = GetPathOnly(OldProgGeneratorFilename)
+    M08.SafeChDriveAndDir(path)
+    # 18.01.24: Jürgen
+    # 19.01.24: Juergen is user holds the CTRL key the OldProgGeneratorFilename is automatically imported
+    if OldProgGeneratorFilename == '' or XLWA.GetAsyncKeyState(proggen.M24_Mouse_Insert_Pos.VK_CONTROL) == 0:
+        while 1:
+            Name = P01.Application.GetOpenFilename('Program generator  (*.xlsm), *.xlsm', Title= M09.Get_Language_Str('Altes Prog_Generator Programm auswählen von der importiert werden soll'))
+            if Name != False:
+                if InStr(fileName(Name), 'Prog_Generator') == 0:
+                    if P01.MsgBox(M09.Get_Language_Str('Fehler: Der Dateiname muss \'Prog_Generator\' enthalten.' + vbCr + vbCr + 'Auswahl wiederholen?'), vbQuestion + vbOKCancel, M09.Get_Language_Str('Fehler: Falsche Datei ausgewählt')) == vbCancel:
+                        Name = ''
+                    else:
+                        Name = False
+                if Name == PG.ThisWorkbook.FullName:
                     Name = False
-            if Name == PG.ThisWorkbook.FullName:
-                Name = False
-                if P01.MsgBox(M09.Get_Language_Str('Fehler: Die Daten können nicht aus der aktuellen Datei importiert werden.' + vbCr + vbCr + 'Auswahl wiederholen?'), vbQuestion + vbOKCancel, M09.Get_Language_Str('Fehler: Aktuelle Datei ausgewählt')) == vbCancel:
-                    Name = ''
-        else:
-            Name = ''
-        if Name != False:
-            break
+                    if P01.MsgBox(M09.Get_Language_Str('Fehler: Die Daten können nicht aus der aktuellen Datei importiert werden.' + vbCr + vbCr + 'Auswahl wiederholen?'), vbQuestion + vbOKCancel, M09.Get_Language_Str('Fehler: Aktuelle Datei ausgewählt')) == vbCancel:
+                        Name = ''
+            else:
+                Name = ''
+            if Name != False:
+                break
+    else:
+        Name = OldProgGeneratorFilename
     if Name != '':
-        TempName = M30.FilePath(Name) + '~' + M30.FileName(Name) + '~Temp.xlsm'
-        if __Close_and_Delete_Temp_Prog_Gen(TempName):
+        TempName = FilePath(Name) + '~' + fileName(Name) + '~Temp.xlsm'
+        if Close_and_Delete_Temp_Prog_Gen(TempName):
             # VB2PY (UntranslatedCode) On Error GoTo Error_Copy
             FileCopy(Name, TempName)
             # VB2PY (UntranslatedCode) On Error GoTo 0
-            fn_return_value = P01.Workbooks.Open(TempName, ReadOnly= True)
-    ChDir(PG.ThisWorkbook.Path)
-    P01.ChDrive(PG.ThisWorkbook.Path)
-    return fn_return_value
+            _fn_return_value = P01.Workbooks.Open(TempName, ReadOnly= True)
+    M08.SafeChDriveAndDir(M08.GetWorkbookPath())
+    # 18.01.24: Jürgen
+    return _fn_return_value
     P01.MsgBox(M09.Get_Language_Str('Fehler beim kopieren der Datei') + vbCr + '  \'' + Name + '\' ' + M09.Get_Language_Str('nach') + vbCr + '  \'' + TempName + '\'', vbCritical, M09.Get_Language_Str('Fehler beim kopieren der alten Programm Generators'))
-    ChDir(PG.ThisWorkbook.Path)
-    P01.ChDrive(PG.ThisWorkbook.Path)
-    return fn_return_value
+    M08.SafeChDriveAndDir(M08.GetWorkbookPath())
+    # 18.01.24: Jürgen
+    return _fn_return_value
 
-def __Import_from_Old_Version_CallBack(Do_Import, Import_FromAllSheets):
-    global __ImportWB
+def Import_from_Old_Version_CallBack(Do_Import, Import_FromAllSheets):
+    global ImportWB
     #--------------------------------------------------------------------------------------------------
     Debug.Print('Import_from_Old_Version_CallBack(' + Do_Import + ', ' + Import_FromAllSheets + ')')
     if Do_Import:
-        PGF_Name = P01.ActiveWorkbook.Path + '\\Import_From_old_Prog.MLL_pgf'
-        Res = M18.Save_Sheets_to_pgf(PGF_Name, Import_FromAllSheets)
-        __ImportWB.Close(Savechanges=False)
-        PG.ThisWorkbook.Activate()
+        PGF_Name = M08.GetWorkbookPath() + '\\Import_From_old_Prog.MLL_pgf'
+        Res = proggen.M18_Save_Load.Save_Sheets_to_pgf(PGF_Name, Import_FromAllSheets)
+        ImportWB.Close(Savechanges=False)
+        P01.ThisWorkbook.Activate()
         if Res:
             Res = M18.Read_PGF(PGF_Name)
     else:
-        __ImportWB.Close(Savechanges=False)
-    __ImportWB = None
+        ImportWB.Close(Savechanges=False)
+    ImportWB = None
 
 def Remove_Selection_in_Sheet(Sh):
     #----------------------------------------------------
     if M28.Is_Data_Sheet(Sh) and Sh.Visible == xlSheetVisible:
+        # 25.04.20: Added: And Sh.Visible = xlSheetVisible
         Sh.Select()
         # VB2PY (UntranslatedCode) On Error Resume Next
+        # In case something else (Textbox, ...) has been selected
+        # 07.10.20:
         if P01.Selection.Cells.Count > 1:
             P01.Cells(P01.Selection.Row(), P01.Selection.Column()).Select()
         # VB2PY (UntranslatedCode) On Error GoTo 0
@@ -181,35 +193,52 @@ def Remove_Selections_in_all_Data_Sheets():
     P01.Sheets(OldSheet).Select()
     P01.Application.ScreenUpdating = ScrUpd
 
-def Import_from_Old_Version():
-    global __ImportWB
+def Test_Import_from_Old_Version():
+    Import_from_Old_Version(( 'C:\\Users\\Jürgen\\Documents\\Arduino\\MobaLedLib\\Ver_3.3.2\\Prog_Generator_MobaLedLib_Old_4.xlsm' ))
+
+def Test_Import_from_Old_Version2():
+    Import_from_Old_Version()
+
+def Import_from_Old_Version(OldProgGeneratorFilename=''):
+    global ImportWB
+    askUser = Boolean()
+
+    DoImport = Boolean()
+    # 19.01.24 Juergen add OldProgGeneratorFilename
     #-----------------------------------
-    if P01.MsgBox(M09.Get_Language_Str('Mit dem folgenden Dialog wird die alte Version des Prog_Generatos ausgewählt ' + 'von der die Daten importiert werden sollen.'), vbOKCancel, M09.Get_Language_Str('Import der Daten von alter Programm Version')) == vbOK:
-        __ImportWB = __Select_and_Open_Old_Version()
-        if not __ImportWB is None:
+    # 19.01.24 Juergen don't ask user to select filename if CTRL key is pressed (and OldProgGeneratorFilename given...)
+    askUser = XLWA.GetAsyncKeyState(proggen.M24_Mouse_Insert_Pos.VK_CONTROL) == 0
+    if askUser:
+        DoImport = P01.MsgBox(M09.Get_Language_Str('Mit dem folgenden Dialog wird die alte Version des Prog_Generatos ausgewählt ' + 'von der die Daten importiert werden sollen.'), vbOKCancel, M09.Get_Language_Str('Import der Daten von alter Programm Version')) == vbOK
+    else:
+        DoImport = True
+    if DoImport:
+        ImportWB = Select_and_Open_Old_Version(OldProgGeneratorFilename)
+        # 19.01.24: Juergen add OldProgGeneratorFilename
+        if not ImportWB is None:
             P01.Application.Visible = True
             Remove_Selections_in_all_Data_Sheets()
             Import_Hide_Unhide.Start('Import_from_Old_Version_CallBack')
 
-def __Old_Version_exists():
-    fn_return_value = None
+def Old_Version_exists():
+    _fn_return_value = False
     Name = Variant()
 
-    Path = String()
+    path = String()
 
     ActDir = String()
     #-----------------------------------------------
     ActDir = M30.FileName(PG.ThisWorkbook.Path)
-    Path = M02.Get_MobaUserDir() + 'MobaLedLib_*'
-    Name = Dir(Path, vbDirectory)
+    path = M02.Get_MobaUserDir() + 'MobaLedLib_*'
+    Name = Dir(path, vbDirectory)
     while Name != '':
         if M30.FileName(Name) != ActDir:
             fn_return_value = True
             return fn_return_value
         Name = Dir()
     # Since Version 1.9.6 the data are stored in the directory "MobaLedlib" and use the prefix "Ver_"  ' 26.10.20:
-    Path = M02.Get_MobaUserDir() + 'MobaLedLib\\Ver_*'
-    Name = Dir(Path, vbDirectory)
+    path = M02.Get_MobaUserDir() + 'MobaLedLib\\Ver_*'
+    Name = Dir(path, vbDirectory)
     while Name != '':
         if M30.FileName(Name) != ActDir:
             fn_return_value = True
@@ -218,11 +247,13 @@ def __Old_Version_exists():
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: CheckExisting - ByVal 
-def Import_from_Old_Version_If_exists(CheckExisting):
+def Import_from_Old_Version_If_exists(CheckExisting, OldProgGeneratorFilename):
+    # 12.11.21: Juergen make OldVersion check optional
+    # 19.01.24: Juergen add OldProgGeneratorFilename
     #---------------------------------------------
-    if CheckExisting == False or __Old_Version_exists():
-        if P01.MsgBox(M09.Get_Language_Str('Sollen die Daten aus der alten Programm Version importiert werden?' + vbCr + 'Dieser Schritt kann auch Später über die \'Optionen/Dateien\' durchgeführt werden.' + vbCr + vbCr + 'Daten jetzt importieren?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Importiren von Daten aus alter Version')) == vbYes:
-            Import_from_Old_Version()
+    if CheckExisting == False or Old_Version_exists():
+        if P01.MsgBox(M09.Get_Language_Str('Sollen die Daten aus der alten Programm Version importiert werden?' + vbCr + 'Dieser Schritt kann auch Später über die \'Optionen/Dateien\' durchgeführt werden.' + vbCr + vbCr + 'Daten jetzt importieren?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Importieren von Daten aus alter Version')) == vbYes:
+            Import_from_Old_Version(OldProgGeneratorFilename)
 
 # VB2PY (UntranslatedCode) Option Explicit
 

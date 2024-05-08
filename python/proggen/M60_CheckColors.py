@@ -56,13 +56,13 @@ import proggen.M10_Par_Description as M10
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M27_Sheet_Icons as M27
-import proggen.M28_divers as M28
+import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
 import proggen.M31_Sound as M31
 import proggen.M37_Inst_Libraries as M37
 import proggen.M60_CheckColors as M60
 import proggen.M70_Exp_Libraries as M70
-import proggen.M80_Create_Mulitplexer as M80
+import proggen.M80_Create_Multiplexer as M80
 
 import ExcelAPI.XLA_Application as P01
 import mlpyproggen.Prog_Generator as PG
@@ -283,56 +283,72 @@ def __Set_Default_ColTab():
     ColTab[0].r = 15
     ColTab[0].g = 13
     ColTab[0].b = 3
+    # 0  ROOM_COL0 (very dark warm White)
     ColTab[1].r = 22
     ColTab[1].g = 44
     ColTab[1].b = 27
+    # 1  ROOM_COL1 (cold dark White)
     ColTab[2].r = 155
     ColTab[2].g = 73
     ColTab[2].b = 5
+    # 2  ROOM_COL2 (warm Yellow)
     ColTab[3].r = 39
     ColTab[3].g = 18
     ColTab[3].b = 1
+    # 3  ROOM_COL345 (Dark Yellow)  randomly color 3: 4 or 5 is used
     ColTab[4].r = 30
     ColTab[4].g = 0
     ColTab[4].b = 0
+    # 4  ROOM_COL345 (Dark Red)
     ColTab[5].r = 79
     ColTab[5].g = 39
     ColTab[5].b = 7
+    # 5  ROOM_COL345 (Dark warm White)
     ColTab[6].r = 50
     ColTab[6].g = 50
     ColTab[6].b = 50
+    # 6  Gas light  dark    Bei einzeln adressierten Gas LEDs wird der individuelle Helligkeitswert verwendet (GAS_LIGHT1: GAS_LIGHT2: GAS_LIGHT3)
     ColTab[7].r = 255
     ColTab[7].g = 255
     ColTab[7].b = 255
+    # 7  Gas light  bright  Wenn 3 Kanaele zusammen verwendet werden dan bestimmt der erste Wert die Helligkeit das ist wichtig damit alle Ausgaenge gleich belastet werden (GAS_LIGHT und GAS_LIGHT)
     ColTab[8].r = 20
     ColTab[8].g = 20
     ColTab[8].b = 27
+    # 8  Neon light dark  (Achtung: Muss groesser als 2*MAX_FLICKER_CNT sein)
     ColTab[9].r = 70
     ColTab[9].g = 70
     ColTab[9].b = 80
+    # 9  Neon light medium
     ColTab[10].r = 245
     ColTab[10].g = 245
     ColTab[10].b = 255
+    # 10 Neon light bright
     ColTab[11].r = 50
     ColTab[11].g = 50
     ColTab[11].b = 20
+    # 11 TV0 and chimney color A randomly color A or B is used
     ColTab[12].r = 70
     ColTab[12].g = 70
     ColTab[12].b = 30
+    # 12 TV0 and chimney color B
     ColTab[13].r = 50
     ColTab[13].g = 50
     ColTab[13].b = 8
+    # 13 TV1 and chimney color A
     ColTab[14].r = 50
     ColTab[14].g = 50
     ColTab[14].b = 8
+    # 14 TV2 and chimney color B
     ColTab[15].r = 255
     ColTab[15].g = 255
     ColTab[15].b = 255
+    # 15 Single LED Room:      Fuer einzeln adressierte LEDs wird der individuelle Helligkeitswert verwendet (SINGLE_LED1:  SINGLE_LED2:  SINGLE_LED3)
+    # 06.09.19:
     ColTab[16].r = 50
     ColTab[16].g = 50
     ColTab[16].b = 50
-    
-    return ColTab
+    # 16 Single dark LED Room: Fuer einzeln adressierte LEDs wird der individuelle Helligkeitswert verwendet (SINGLE_LED1D: SINGLE_LED2D: SINGLE_LED3D)
 
 def __Dec_2_Hex2(d):
     fn_return_value = None
@@ -618,12 +634,14 @@ def __ColTab_to_C_String(ColTab):
     DefColTab = __Set_Default_ColTab()
     Names = Split(__NamesList, ',')
     Res = '// Set_ColTab(Red Green Blue)      ' + vbLf + 'Set_ColTab('
+    # ^ Space are added to show a gap between the two lines if line break is isabled.
     for Nr in vbForRange(0, __COLTAB_SIZE - 1):
         Res = Res + Right('   ' + str(ColTab(Nr).r), 3) + ', '
         Res = Res + Right('   ' + str(ColTab(Nr).g), 3) + ', '
         Res = Res + Right('   ' + str(ColTab(Nr).b), 3)
         if DefColTab(Nr).r != ColTab(Nr).r or DefColTab(Nr).g != ColTab(Nr).g or DefColTab(Nr).b != ColTab(Nr).b:
             Comment = ' // *'
+            # Color is changed compared to the standard ColTab
         else:
             Comment = ' //  '
         Comment = Comment + Names(Nr)
@@ -765,9 +783,12 @@ def Open_MobaLedCheckColors(Callback, Dest_Sheet="", Dest_Row=-1):
         CreateFolder(ProgDir)
         #Exit Sub                                                              '     "      Disabled
     Close_CheckColors()
+    # Write the "Close" file in case an other version of the CheckColors programm is still running
+    # 05.06.20: Moved down
     Exe_Exists = ( Dir(ProgDir + __CHECK_COLORS_EXE) != '' )
     if Exe_Exists:
         if GetAsyncKeyState(VK_CONTROL) != 0:
+            # Following function must be declared: Public Declare Function GetAsyncKeyState Lib "user32" (ByVal vKey As Long) As Integer
             if MsgBox(Get_Language_Str('Soll das Farbtest Programm neu heruntergeladen werden?'), vbYesNo + vbQuestion, Get_Language_Str('Neue Version des Farbtests herunterladen?')) == vbYes:
                 Exe_Exists = False
     if not Exe_Exists:
@@ -837,6 +858,7 @@ def Open_MobaLedCheckColors(Callback, Dest_Sheet="", Dest_Row=-1):
         pass
         #Write_ColTest_Only_File()
         #StatusMsg_UserForm.Set_ActSheet_Label('Please wait')
+        # Wait to give the color test program time to read the CLOSE_CHECKCOL_N file
         #StatusMsg_UserForm.Show()
         #Sleep(( 500 ))
         #U01.Unload(StatusMsg_UserForm)

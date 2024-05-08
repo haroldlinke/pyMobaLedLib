@@ -91,6 +91,7 @@ def Get_Multiplexer_Group(Res, Description, Row):
     Groups = val(Parts(4))
     Options = val(Parts(5))
     LedsInGroup = val(__ReadIniFileString('Multiplexer_' + Cells(Row, Descrip_Col).Value, 'Number_Of_LEDs'))
+    # Added: "val" to prevent crash
     __FirstOneInGroup = True
     for i in vbForRange(1, Groups):
         p_str = p_str + __Create_Multiplexer(Trim(LStr), LEDCnt +  ( i - 1 )  * LedsInGroup, Description, Row)
@@ -174,16 +175,23 @@ def __Create_Multiplexer(Res, LEDCnt, Description, Row):
     # Multiplexer_<Value>(#LED, #InCh, #LocInCh, Brightness, Groups, Options, RndMinTime, RndMaxTime, CtrMode, ControlNr, NumOfLEDs)
     #                Param: 0      1      2         3           4       5          6           7         8         9        10
     InCh = Parts(1)
+    # Input Channel
     if InCh == ' [Multiplexer]':
         InCh = ' SI_1'
         # 10.02.21: Misha
     LocInCh = Parts(2)
+    # local Input Channel
     Brightness = val(Trim(Parts(3)))
     MltplxrOptions = val(Trim(Parts(5)))
+    # Which patterns should be seen on the LED display of the Multiplexer command. Decimal number represents a binary value.
     ParOpt = __Count_Ones(val(Parts(5)))
+    # Number off 1's (binary number off patterns to display) needed to add the correct number of INCH parameters to counter.
     RndMinTime = val(Trim(Parts(6)))
+    # Minimum Time for the Random Function to switch to next pattern
     RndMaxTime = val(Trim(Parts(7)))
+    # Maximum Time for the Random Function to switch to next pattern
     if MltplxrOptions <= 0:
+        # If there are zero Options then no patterns can be displayed.
         _ret = '  // No Patterns for command : ' + Res + vbCrLf
         return _ret
     # Syntax for reading INI file
@@ -195,20 +203,24 @@ def __Create_Multiplexer(Res, LEDCnt, Description, Row):
     #---------------------------------------------------------------------------------------------------------------
     Description = __ReadIniFileString('Multiplexer_' + Cells(Row, Descrip_Col).Value, 'Description')
     ReadStr = ReadStr + vbCrLf + __Add_Description('  // ' + Res, '- Excel row ' + Row + ' - ' + Description, True)
+    # Comment about Multiplexer
     if __FirstOneInGroup:
         # Random( DstVar, InCh, RandMode, MinTime, MaxTime, MinOn, MaxOn)
         # Parts(x)  0       1      2         3        4       5      6
         #        DstVar = "MltPlxr" & Int((999 - 300 + 1) * Rnd + 300)                                        ' Random Number for DstVar between 300-999
+        # Random Number for DstVar between 300-999
         DstVar = 'MltPlxr' + MltPlxr
         MltPlxr = MltPlxr + 1
         Tmp = Add_Variable_to_DstVar_List(DstVar)
         RandomDescription = 'Trigger for Counter in ' + Cmd + ' with Destination Variable : ' + DstVar
         #        ReadStr = ReadStr & Add_Description("  Random(" & DstVar & ", SI_1, RF_SEQ," & Parts(6) & "," & Parts(7) & ", 5 Sec, 5 Sec)", RandomDescription, True)
         ReadStr = ReadStr + __Add_Description('  Random(' + DstVar + ',' + InCh + ', RF_SEQ,' + Parts(6) + ',' + Parts(7) + ', 5 Sec, 5 Sec)', RandomDescription, True)
+        # 10.02.21: Misha
         # Counter(CtrMode, InCh, Enable, TimeOut, ...)
         # Parts(x)  0        1      2       3      4
         # Counter(CF_ROTATE|CF_SKIP0, #INCH_RND, SI_1, 0 Sek, #LOC_INCH)     Opties: CF_ROTATE|CF_SKIP0 and CF_RANDOM|CF_SKIP0
         ReadStr = ReadStr + __Add_Description('  Counter(' + Trim(Parts(8)) + ',' + DstVar + ',' + InCh + ', 0 Sek' + __Options_INCH(LocInCh, ParOpt) + ')', RandomDescription, False)
+        # 10.02.21: Misha: Using InCh instead og SI_1
         # How to implement the DCC InCh ?????       !!!!! 31-3-2020 Hardi HELP !!!!!
         #        ReadStr = ReadStr & Add_Description("  Counter(" & Trim(Parts(8)) & "," & "INCH_DCC_22_GREEN" & ", SI_1, 0 Sek" & Options_INCH(LocInCh, ParOpt) & ")", RandomDescription, False)
     #---------------------------------------------------------------------------------------------------------------
@@ -243,6 +255,7 @@ def __Create_Multiplexer(Res, LEDCnt, Description, Row):
                 RestPartsFrom6 = RestPartsFrom6 + ','
         binOptions = __DecToBin(MltplxrOptions)
         if Right(binOptions, 1) == 1:
+            # LSB = 1
             ReadStr = ReadStr + __Add_Description('  /* Option ' + Nr + ' - ' + OptionName + ' */ ', Description, False)
             ReadStr = ReadStr + __Add_Description(( '  ' + RdCmd + LEDCnt + ',' + Parts(1) + ',' + LocInCh + '+' + OptionNr + ',' + Parts(3) + ',' + Parts(4) + ',' + Brightness + ',' + RestPartsFrom6 ), Description, False)
             OptionNr = OptionNr + 1
@@ -250,6 +263,7 @@ def __Create_Multiplexer(Res, LEDCnt, Description, Row):
             ReadStr = ReadStr + __Add_Description('  /* Option ' + Nr + ' - ' + OptionName + ' */ ', Description, False)
             ReadStr = ReadStr + __Add_Description('  /* Option ' + Nr + ' - NOT selected! */ ', Description, False)
         MltplxrOptions = Application.WorksheetFunction.Bitrshift(MltplxrOptions, 1)
+        # Shift to right for next bit (next Multiplexer option)
     _ret = ReadStr
     return _ret
 
@@ -257,6 +271,7 @@ def __Add_Description(Cmd, Description, AddDescription):
     _ret = ""
     #--------------------------------------------------------------------------------------------
     if AddDescription:
+        # The description is only added to the first line
         Cmd = AddSpaceToLen(Cmd, 109) + ' /* ' + Description
     elif Description != '':
         Cmd = AddSpaceToLen(Cmd, 109) + ' /*     "'
@@ -319,6 +334,7 @@ def __Options_INCH(InCh, Options):
     #--------------------------------------------------------------------------------------------
     #    For i = 0 To Options - 1
     for i in vbForRange(0, Options):
+        # 10.02.21: 20201028 Misha. Change for adding extra Pattern (Zero position) to hold the Multiplexer.
         p_str = p_str + ',' +  ( InCh + '+' + CStr(i) )
     _ret = p_str
     #    Debug.Print "Options_INCH = ", p_str
@@ -349,20 +365,24 @@ def Special_Multiplexer_Ext(Res, LEDs):
     Parts = Split(Replace(Res, ')', ''), '(')
     Param = Split(Parts(1), ',')
     #    Param = Split(Parts(1), " ")                                           ' 10.02.21: Misha
+    # 10.02.21: Misha
     Cmd = Left(Res, InStr(Res, '('))
     Ret = Cmd + Trim(Param(0)) + ', ' + Trim(Param(1)) + ', ' + Trim(Param(2)) + ', ' + Trim(Param(3)) + ', ' + Trim(Param(4)) + ', ' + Trim(Param(5)) + ', ' + Trim(Param(6)) + ', ' + Trim(Param(7)) + ', ' + Trim(Param(8)) + ', ' + Trim(Param(9)) + ', ' + Trim(Param(10)) + ')'
     _ret = Ret
     if Cells(ActiveCell.Row, DCC_or_CAN_Add_Col).Value == '':
         P01.CellDict[ActiveCell.Row, DCC_or_CAN_Add_Col].Value = '[Multiplexer]'
     LedsInGroup = val(__ReadIniFileString('Multiplexer_' + Cells(ActiveCell.Row, Descrip_Col).Value, 'Number_Of_LEDs'))
+    # 14.06.20: Added "val" to prevent crash
     # 10.02.21: 20201025 Misha. Assingning the right number of LEDs for Single and RGB LEDs.
     LedType = __ReadIniFileString('Multiplexer_' + Cells(ActiveCell.Row, Descrip_Col).Value, 'LED_Type')
     if LedType == 'Single LEDs':
         # LedType = "Single LEDs"
         LEDs = 'C1-' + Trim(Param(4)) * LedsInGroup
+        #   Calculate number of used Single LEDs for this command
     else:
         # LedType = "RGB LEDs"
         LEDs = Trim(Param(4)) * LedsInGroup
+        #   Calculate number of used RGB LEDs for this command
     return _ret, LEDs #*HL ByRef
 
 def LedCount(Cmd):
