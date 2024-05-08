@@ -888,6 +888,8 @@ def Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLList
     if BrdList != '':
         if URLList != '':
             URLList_split=URLList.split(",")
+        else:
+            URLList_split = []
         BrdList = M30.DelLast(BrdList)
         URLList = M30.DelLast(URLList)
         Debug.Print('ECHO *********************************', '\n')

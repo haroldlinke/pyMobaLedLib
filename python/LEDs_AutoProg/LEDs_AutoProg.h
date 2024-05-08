@@ -51,7 +51,7 @@
 /*********************/
 #define SETUP_FASTLED()                                                      \
 /*********************/                                                      \
-  CLEDController& controller0 = FastLED.addLeds<NEOPIXEL,  6>(leds+  0, 20); \
+  CLEDController& controller0 = FastLED.addLeds<NEOPIXEL, 27>(leds+  0, 20); \
                                                                              \
   controller0.clearLeds(256);                                                \
   FastLED.setDither(DISABLE_DITHER);       // avoid sending slightly modified brightness values

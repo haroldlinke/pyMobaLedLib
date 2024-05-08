@@ -21,7 +21,7 @@ Requirements:
 1. Download the release package for windows. 
 2. Locate the ARDUINO folder - normally it should be Dokumente\ARDUINO. This folder contains the MobaLedLib folder.
 3. Create a new folder pyMobaLedLib. Copy the downloaded package into this folder and unzip the package.
-4. pyMobaLedLib.exe is the program file. With right click "Send to Desktop" create an icon on the desktop.
+4. pyMobaLedLib.bat starts the program pyMoabLedLib. With right click "Send to Desktop" create an icon on the desktop.
 
 # Attention LINUX and Mac Users: 
 It is not possible to detect the location of the ARDUINO IDE executable automatically, as it can be installed in any directory
@@ -42,6 +42,19 @@ The VBA Code of the PatternGenerator was translated by an enhanced version of th
   
 
 History of Change
+5.2.4.001 - 21.4.2024
+- restructuring of event handling
+- corrected: Config page was inoperable, because named-ranges pointed to the wrong table entries
+- corrected: ServoAnim created a wrong pattern-macro when goto mode was not active
+- new: LED Helligkeit Animation (Beta)
+- new: LED Farbverlaufanimation (Beta)
+
+5.2.3.001 - 17.4.2024
+- restructuring of Excel VBA Objects, following Microsoft VBA structure to improve compatibility of VBA code translated to Python
+
+5.2.2.001 - 11.4.2024
+- Corrected: Error when Reading PGF-files in Latin-1 format in LINUX/Mac
+
 5.2.1.001 - 10.4.2024
 - new: LED anim Macro providing graphical user interface for LED light animation
 - new: Pattern Configurator Page Beta (full functionality available, some graphical issues)

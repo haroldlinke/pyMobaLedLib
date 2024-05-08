@@ -2512,7 +2512,6 @@ class CWorksheet(object):
         self._visible_val=value
         if value==True:
             self.Workbook.container.tab(self.tabid,state="normal")
-            #self.Workbook.container.add(self)
         else:
             self.Workbook.container.tab(self.tabid,state="disable")
             self.Workbook.container.hide(self.tabid)            

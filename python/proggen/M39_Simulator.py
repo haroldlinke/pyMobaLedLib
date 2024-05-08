@@ -90,7 +90,7 @@ extern "C" {
     __declspec(dllexport) unsigned char __stdcall GetInput(unsigned char channel);
     __declspec(dllexport) void __stdcall ShowLEDWindow(unsigned char ledsX, unsigned char ledsY, unsigned char ledSize, unsigned char ledOffset, int windowPosX, int windowPosY, bool autoUpdate);
     __declspec(dllexport) void __stdcall CloseLEDWindow();
-    __declspec(dllexport) bool __stdcall IsLEDWindowVisible();
+    __declspec(dllexport) bool __stdcall IsLEDWindowVisible;
     __declspec(dllexport) bool __stdcall GetLEDWindowRect(LPRECT rect);
 }
 """

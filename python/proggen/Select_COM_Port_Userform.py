@@ -369,10 +369,17 @@ class CSelect_COM_Port_UserForm:
         filepath = self.filedir2 + filename
         
         Debug.Print("ComPort_ShowDialog - Image:"+filepath)
-        img = tk.PhotoImage(file=filepath)
-        Debug.Print("ComPort_ShowDialog - Image:"+filepath+" -OK-")
+        try:
+            img = tk.PhotoImage(file=filepath)
+            image_loaded = True
+            Debug.Print("ComPort_ShowDialog - Image:"+filepath+" -OK-")
+            self.Image_Label = ttk.Label(self.top, image=img,relief=tk.FLAT, borderwidth=1)
+        except:
+            image_loaded = False
+            Debug.Print("ComPort_ShowDialog - Image:"+filepath+" -Not found-")
+            self.Image_Label = ttk.Label(self.top, text="Image not found",relief=tk.FLAT, borderwidth=1)
         
-        self.Image_Label = ttk.Label(self.top, image=img,relief=tk.FLAT, borderwidth=1)
+        #self.Image_Label = ttk.Label(self.top, image=img,relief=tk.FLAT, borderwidth=1)
         self.Image_Label.grid(row=0,column=2,rowspan=7,sticky="nesw",padx=10,pady=10)
         
         self.Red_Hint_Label = ttk.Label(self.top, text=Red_Hint,font=("Tahoma", 11),foreground="#FF0000",width=20,wraplength=125,relief=tk.FLAT, borderwidth=1)

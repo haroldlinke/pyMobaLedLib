@@ -2980,6 +2980,7 @@ def main_entry():
     
     except BaseException as e:
         logging.error(e, exc_info=True)
+        print(e, exc_info=True)
         pass    
     
     logging.info("Program End")
