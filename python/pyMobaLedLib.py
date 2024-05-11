@@ -58,7 +58,7 @@ module_directory = os.path.dirname(module_path)  # Directory containing the modu
 sys.path.append(module_directory)
 
 import tkinter as tk
-from tkinter import ttk,messagebox,filedialog, colorchooser, scrolledtext
+from tkinter import ttk,messagebox,filedialog, colorchooser
 from mlpyproggen.configfile import ConfigFile
 from mlpyproggen.dictFile import readDictFromFile, saveDicttoFile
 from mlpyproggen.ConfigurationPage import ConfigurationPage
@@ -77,12 +77,12 @@ from mlpyproggen.ARDUINOMonitorPage import ARDUINOMonitorPage
 from mlpyproggen.StartPage import StartPage
 from mlpyproggen.SoundCheckPage import SoundCheckPage
 from mlpyproggen.tooltip import Tooltip
-from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PALETTE, DEFAULT_PARAM,LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, DATA_VERSION, ProgGen_Min_Data_Version, Pattgen_Min_Data_Version, SIZEFACTOR,\
+from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PARAM,LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, DATA_VERSION, ProgGen_Min_Data_Version, Pattgen_Min_Data_Version, SIZEFACTOR,\
 PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1,SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ,DEBUG
-from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,ScrolledFrame,HorizontalScrolledFrame
+from scrolledFrame.ScrolledFrame import ScrolledFrame
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
-from tkcolorpicker.functions import hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, col2hue, rgb_to_hsv, convert_K_to_RGB
+from tkcolorpicker.functions import hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, rgb_to_hsv
 import platform
 import traceback
 
@@ -144,9 +144,9 @@ try:
 except ValueError:
     TR = DE
 
-def _(text):
+def _T(text):
     """Translate text."""
-    return TR.get(text, text)
+    return text
 
 # ------------------------------
 
@@ -263,9 +263,12 @@ class pyMobaLedLibapp(tk.Tk):
         self.fontentry = self.get_font("FontLabel")
         self.fonttext = self.get_font("FontText")
         
-        self.fontpattgen_sizenormal = self.getConfigData("FontNormal")
-        self.fontpattgen_sizelarge = self.getConfigData("FontLarge")
-        self.fontpattgen_sizesmall = self.getConfigData("FontSmall")
+        self.fontpattgen_sizenormal = int(self.getConfigData("FontNormal")/ScaleFactor)
+        self.fontpattgen_sizelarge = int(self.getConfigData("FontLarge")/ScaleFactor)
+        self.fontpattgen_sizesmall = int (self.getConfigData("FontSmall")/ScaleFactor)
+        
+        logging.debug("Font sizenormal: %s sizelarge: %s sizesmall: %s",self.fontpattgen_sizenormal,self.fontpattgen_sizelarge, self.fontpattgen_sizesmall)
+        
         self.fontpattgen_name = self.getConfigData("FontName")
         self.defaultfontnormal = (self.fontpattgen_name, self.fontpattgen_sizenormal)
         self.defaultfontsmall = (self.fontpattgen_name, self.fontpattgen_sizesmall)
@@ -325,16 +328,16 @@ class pyMobaLedLibapp(tk.Tk):
 
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        logging.debug("Screenwidht: %s Screenheight: %s",screen_width,screen_height)
+        logging.debug("Screenwidht: %s Screenheight: %s ScaleFactor: %s",screen_width,screen_height, ScaleFactor)
 
-        if screen_width<1280:
+        if screen_width< 1920:
             SIZEFACTOR_width = screen_width/1280
             self.window_width=screen_width
         
-        if screen_height < 900:
+        if screen_height < 1080:
             self.window_height=screen_height
             
-        logging.debug("Windowwidht: %s Windowheight: %s",self.window_width,self.window_height)
+        logging.debug("Windowwidth: %s Windowheight: %s",self.window_width,self.window_height)
         logging.debug("pos_x: %s pos_y: %s",self.pos_x,self.pos_y)
         
         if self.getConfigData("pos_x") < screen_width and self.getConfigData("pos_y") < screen_height:
@@ -464,10 +467,10 @@ class pyMobaLedLibapp(tk.Tk):
         use_horizontalscroll=True
         use_fullscroll=True
         use_verticalscroll = True
-        if use_verticalscroll:
-            self.scrolledcontainer = VerticalScrolledFrame(self)
-        if use_horizontalscroll:
-            self.scrolledcontainer = HorizontalScrolledFrame(self)
+        #if use_verticalscroll:
+        #    self.scrolledcontainer = VerticalScrolledFrame(self)
+        #if use_horizontalscroll:
+        #    self.scrolledcontainer = HorizontalScrolledFrame(self)
         if use_fullscroll:
             self.scrolledcontainer = ScrolledFrame(self)
             
@@ -475,7 +478,11 @@ class pyMobaLedLibapp(tk.Tk):
             self.scrolledcontainer.grid(row=0,column=0,rowspan=1,columnspan=2,sticky="nesw")
             self.scrolledcontainer.grid_rowconfigure(0, weight=1)
             self.scrolledcontainer.grid_columnconfigure(0, weight=1)
-            self.container = ttk.Notebook(self.scrolledcontainer.interior)
+            maincontainer = tk.Frame(self.scrolledcontainer.interior, width=self.window_width-30, height=self.window_height-30)
+            maincontainer.grid(row=0,column=0,columnspan=2,sticky="nesw")
+            maincontainer.grid_rowconfigure(0, weight=1)
+            maincontainer.grid_columnconfigure(0, weight=1)
+            self.container = ttk.Notebook(maincontainer)
         else:
             self.container = ttk.Notebook(self)
             
@@ -1606,7 +1613,7 @@ class pyMobaLedLibapp(tk.Tk):
         if text:
             tooltiptext = text
         else:
-            tooltiptext = _(TOOLTIPLIST.get(key,key))
+            tooltiptext = _T(TOOLTIPLIST.get(key,key))
         tooltip_var = None
         try:
             tooltip_var = widget.tooltip
@@ -2838,12 +2845,22 @@ COMMAND_LINE_ARG_DICT = {}
 
 logger=logging.getLogger(__name__)
 
+ScaleFactor = 1
+
 def main_entry():
     global DEBUG
+    global ScaleFactor
     
     global COMMAND_LINE_ARG_DICT
     
     import wingdbstub
+    try:
+        import ctypes
+        ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
+        print("Scalefactor:", ScaleFactor)
+        ctypes.windll.user32.SetProcessDPIAware()
+    except:
+        pass
         
     if sys.hexversion < 0x030900F0:
         tk.messagebox.showerror("Wrong Python Version"+sys.version,"You need Python Version > 3.9 to run this Program")

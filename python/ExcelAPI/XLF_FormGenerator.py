@@ -41,7 +41,8 @@ import sys
 import ExcelAPI.XLA_Application as X02
 import pattgen.M09_Language as M09
 import pattgen.D00_GlobalProcs as D00
-import tkcolorpicker.spinbox as SB
+#import tkcolorpicker.spinbox as SB
+from scrolledFrame.ScrolledFrame import ScrolledFrame
 
 
 # ##########################################################
@@ -49,6 +50,7 @@ import tkcolorpicker.spinbox as SB
 # ##########################################################
 
 guifactor  = 1.55
+scrolledcontainer = None
 
 class CControl_Template(object):
     
@@ -96,12 +98,20 @@ class CControl_Template(object):
     Selection = property(get_selection, set_selection, doc='Selected Entry of Listbox')
 
     def get_value(self):
-        if self.TKVar:
+        if self.TKVar != None:
             return self.TKVar.get()
+        else:
+            # textbox
+            return self.TKWidget.get('1.0', 'end')
         return None
     
     def set_value(self,value):
-        self.TKVar.set(value)
+        if self.TKVar != None:
+            self.TKVar.set(value)
+        else:
+            # textbox
+            self.TKWidget.delete('1.0', 'end')
+            self.TKWidget.insert('end', value)
     
     Value = property(get_value, set_value, doc='value of Form')
     
@@ -133,6 +143,10 @@ class CControl_Template(object):
     def select(self, value):
         # select page of MultiPage
         self.TKWidget.select(value)
+        
+    def focus_next_widget(self, event):
+        event.widget.tk_focusNext().focus()
+        return("break")
 
 def ToolTip(widget,text="", key="",button_1=False):
     if text:
@@ -154,7 +168,7 @@ def ToolTip(widget,text="", key="",button_1=False):
         tooltip_var.update_text(text)            
     return    
 
-def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={},defaultfont=("Calibri",10), jump_table={}):
+def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={},defaultfont=("Calibri",10), jump_table={}, window=None):
     gui_factor_label_width = guifactor
     gui_factor_label_height = guifactor
     gui_factor_pos = guifactor
@@ -218,7 +232,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                         page.TKWidget=page_frame
                         page_comp = page_dict.get("Components",[])
                         dlg.AddControl(page)
-                        generate_controls(page_comp,page_frame,dlg=dlg, jump_table=jump_table)
+                        generate_controls(page_comp,page_frame,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont)
             #****************************************************
             #* Label
             #****************************************************                        
@@ -270,11 +284,20 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             elif comp.Type == "CommandButton":
                 comp.Command = component_dict.get("Command",None)
                 if type(comp.Command) == str:
-                    comp.Command = D00.globalprocs.get(comp.Command,None)
+                    if comp.Command != "":
+                        comp.Command = D00.globalprocs.get(comp.Command,None)
+                    else:
+                        # test standard command "Name_clicked"
+                        command_str = comp.Name + "_Click"
+                        if hasattr(dlg, command_str):
+                            comp.Command = getattr(dlg, command_str)
+                        else:
+                            comp.Command = None
                 comp.Accelerator = component_dict.get("Accelerator","")
                 comp.icon = component_dict.get("IconName","")
-                if comp.Accelerator!="":            
-                    parent.bind(comp.Accelerator, Command)
+                if comp.Accelerator!="":
+                    if window:
+                        window.bind(comp.Accelerator, comp.Command)
                 if comp.icon != "":
                     filename = r"/images/"+comp.icon
                     filedir = os.path.dirname(os.path.realpath(__file__))
@@ -313,7 +336,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             #* TextBox
             #****************************************************                   
             elif comp.Type == "TextBox":
-                textbox=tk.Text(parent, width=comp.Width,height=comp.Height,wrap= tk.WORD,font=comp.Font,relief=comp.relief) #,font=comp_font)
+                textbox=tk.Text(parent, width=comp.Width,height=comp.Height,wrap= tk.WORD,font=comp.Font,relief=comp.relief)
                 if comp.Caption != None:
                     textbox.insert("1.0",comp.Caption)
                 charformat_dict = component_dict.get("CharFormat",None)
@@ -355,7 +378,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     init_value=0
                 comp.TKVar = tk.IntVar(value=init_value)
                 setattr(dlg,comp.Name,comp)
-                textbox=SB.Spinbox(parent, from_=0,to=65535,textvariable=comp.TKVar, width=comp.Width) #,font=comp_font)
+                textbox=ttk.Spinbox(parent, from_=0,to=65535,textvariable=comp.TKVar, width=comp.Width ,font=comp.Font)
                 if comp.Caption != None:
                     textbox.insert("1.0",comp.Caption)
                 textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
@@ -391,20 +414,23 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 comp.TKWidget=frame
                 setattr(dlg,comp.Name,comp)
                 frame_comp = component_dict.get("Components",[])
-                generate_controls(frame_comp,frame,dlg=dlg, jump_table=jump_table)
+                generate_controls(frame_comp,frame,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont)
                 if comp.ControlTipText!="":
                     ToolTip(frame, text=comp.ControlTipText)
             #****************************************************
-            #* CommandButton
+            #* Page
             #****************************************************                   
             elif comp.Type == "Page":
                 mp_comp_list = component_dict["Components"]
                 generate_controls(mp_comp_list, parent, dlg=dlg, jump_table=jump_table)
             else:
                 pass
-                   
-def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}):
+            comp.TKWidget.bind("<Tab>", comp.focus_next_widget)
+            
+            
+def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}, defaultfont=("Calibri",10)):
     #create main window
+    global scrolledcontainer
     dlg.Controls=[]
     
     userform_dict = form_dict.get("UserForm",None)
@@ -415,8 +441,8 @@ def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}):
             top.grab_set()
         top.resizable(True, True)  # This code helps to disable windows from resizing
         
-        window_height = int(userform_dict.get("Height",500)*guifactor)
-        window_width = int(userform_dict.get("Width",600)*guifactor)
+        orig_window_height = int(userform_dict.get("Height",500)*guifactor)
+        orig_window_width = int(userform_dict.get("Width",600)*guifactor)
         
         winfo_x = X02.global_controller.winfo_x()
         winfo_y = X02.global_controller.winfo_y()
@@ -424,19 +450,40 @@ def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}):
         screen_width = X02.global_controller.winfo_width()
         screen_height = X02.global_controller.winfo_height()
         
+        if screen_height < orig_window_height:
+            window_height = screen_height
+        else:
+            window_height = orig_window_height
+        if screen_width < orig_window_width:
+            window_width = screen_width
+        else:
+            window_width = orig_window_width
+        
         x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
         y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
     
-        top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))                 
+        top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
         #self.top.geometry("+{}+{}".format(x_cordinate, y_cordinate))
         
         window_title = userform_dict.get("Caption","Title")
         
         top.title(M09.Get_Language_Str(window_title))
         
+        scrolledcontainer = ScrolledFrame(top)
+        scrolledcontainer.grid(row=0,column=0, rowspan=1,columnspan=2, sticky="nesw")
+        scrolledcontainer.grid_rowconfigure(0, weight=1)
+        scrolledcontainer.grid_columnconfigure(0, weight=1)        
+        top.grid_rowconfigure(0,weight=1)
+        top.grid_columnconfigure(0, weight=1)
+        
         components = userform_dict.get("Components",None)
         
-        generate_controls(components,top,dlg=dlg, jump_table=jump_table)
+        container = tk.Frame(scrolledcontainer.interior, width=orig_window_width-30, height=orig_window_height-30)
+        container.grid(row=0,column=0,columnspan=2,sticky="nesw")
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+        
+        generate_controls(components,container,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont, window=top)
         
         return top
     else:

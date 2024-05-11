@@ -188,7 +188,7 @@ class CSelect_GotoNr_Form:
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
-        self.Form=XLF.generate_form(self.Select_GotoNr_Form_RSC,self.controller,dlg=self,modal=False, jump_table=PG.ThisWorkbook.jumptable)
+        self.Form=XLF.generate_form(self.Select_GotoNr_Form_RSC,self.controller,dlg=self,modal=False, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont)
 
     def UserForm_Activate(self):
         #------------------------------

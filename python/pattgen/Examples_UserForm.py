@@ -168,7 +168,7 @@ class CExamples_UserForm:
     def UserForm_Initialize(self):
         #--------------------------------
         #Debug.Print vbCr & me.Name & ": UserForm_Initialize"
-        self.Form=XLF.generate_form(self.Examples_UserForm_RSC,self.controller,dlg=self,modal=False, jump_table=PG.ThisWorkbook.jumptable)
+        self.Form=XLF.generate_form(self.Examples_UserForm_RSC,self.controller,dlg=self,modal=False, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont)
         
         #X02.Center_Form(Me)
         #Change_Language_in_Dialog(Me)
