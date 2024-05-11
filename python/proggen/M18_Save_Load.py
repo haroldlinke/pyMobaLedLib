@@ -142,7 +142,7 @@ def __Save_Sheet_to_pgf(fp, Sh):
         Sh.Select()
         Page_ID = P01.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)
         VBFiles.writeText(fp, __SheetID + vbTab, Page_ID + vbTab + Sh.Name, '\n')
-        if P01.Selection.Cells.Count > 1:
+        if False:# P01.Selection.Cells().Count > 1:
             rng = P01.Selection
         else:
             rng = P01.Range(P01.Cells(M02.FirstDat_Row, 1), P01.Cells(M30.LastFilledRowIn_ChkAll(Sh), 1))
@@ -368,7 +368,7 @@ def __Read_Line(line):
         # string compare of config col is not so string anymore, also accepting RGBHeartbeat variants RGBHeartbeat2 and RGBHeartbeat_Color
         # fix problem, that config col changed because of two new cols MacIcon_Col and LanName_Col, now use Config__Col - 3 instead of Config__Col - 1
         if UBound(parts) >= M25.Config__Col - 3:
-            if left(P01.Cells(First_Row, M25.Config__Col), 13) == 'RGB_Heartbeat' and P01.Cells(First_Row, M25.Config__Col) == parts(M25.Config__Col - 3):
+            if Left(P01.Cells(First_Row, M25.Config__Col), 13) == 'RGB_Heartbeat' and P01.Cells(First_Row, M25.Config__Col) == parts(M25.Config__Col - 3):
                 _fn_return_value = True
                 return _fn_return_value
     if not SkipLine:

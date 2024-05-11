@@ -217,10 +217,10 @@ def Update_All_Start_LedNr():
     # 29.12.2023: Juergen - keep active sheet on function exit
     OldScreenupdating = P01.Application.ScreenUpdating
     P01.Application.ScreenUpdating = False
-    for Sh in PG.ThisWorkbook.Sheets:
+    for Sh in PG.ThisWorkbook.Sheets():
         if M28.Is_Data_Sheet(Sh):
             Sh.Select()
-            Update_Start_LedNr()()
+            Update_Start_LedNr()
     # 29.12.2023: Juergen - keep active sheet on function exit
     P01.Application.ScreenUpdating = OldScreenupdating
 
