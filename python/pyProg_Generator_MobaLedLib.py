@@ -1,4 +1,4 @@
-import pyMobaLedLib
+from pyMobaLedLib import main_entry
 
 if __name__ == "__main__":
-    pyMobaLedLib.main_entry()
+    main_entry()

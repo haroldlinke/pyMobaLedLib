@@ -855,7 +855,6 @@ class pyMobaLedLibapp(tk.Tk):
         else:
             self.cancel_without_save()
             
-            
     # ----------------------------------------------------------------
     #  restart program
     # ----------------------------------------------------------------
@@ -870,7 +869,8 @@ class pyMobaLedLibapp(tk.Tk):
             self.cancel_without_save()
         #restart program
         logging.debug("Restart")
-        os.execv(sys.executable, ["python"]+sys.argv)
+        logging.debug("sys.executable: %s, sys.argv: %s", sys.executable, repr(sys.argv))
+        os.execv(sys.executable, ["python"] + sys.argv)
         
         #############################################
 
@@ -2854,7 +2854,7 @@ def main_entry():
     
     global COMMAND_LINE_ARG_DICT
     
-    import wingdbstub
+    #import wingdbstub
     try:
         import ctypes
         ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100

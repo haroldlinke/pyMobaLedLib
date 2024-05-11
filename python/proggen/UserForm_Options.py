@@ -405,13 +405,13 @@ class CUserForm_Options:
             workbookpath2 = os.path.dirname(workbookpath)
             workbookpath3 = os.path.dirname(workbookpath2)
             zipfilenamepath = workbookpath3+"/pyMobaLedLib.zip"
-            F00.StatusMsg_UserForm.Set_Label("Download Python MobaLedLib Programm")
+            F00.StatusMsg_UserForm.Set_Label("Download Python MobaLedLib Program")
             urllib.request.urlretrieve(URL, zipfilenamepath,self.show_download_status)
             
-            F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programm")
+            F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programms")
             M30.UnzipAFile(zipfilenamepath,workbookpath3)
             srcpath = workbookpath3+"/pyMobaLedLib-master/python"
-            dstpath = workbookpath3+"/pyMobaLedLib/python"
+            dstpath = workbookpath #workbookpath3+"/pyMobaLedLib/python"
             if not dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy when destination is development folder
                 F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
                 self.copytree(srcpath,dstpath)
