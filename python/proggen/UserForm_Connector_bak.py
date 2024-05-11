@@ -12,6 +12,7 @@ class UserForm_Connector:
         self.Userform_Res  = ""
         self.Controls      = []
         self.Controls_Dict = {}
+        self.OK_Pressed = False        
         #*HL Center_Form(Me)
         
         self.Connector_Form_RSC = {"UserForm":{
@@ -54,7 +55,6 @@ class UserForm_Connector:
                                     ]},
                         }
 
-        self.OK_Pressed = False
         
     def __UserForm_Activate(self):
         #------------------------------
