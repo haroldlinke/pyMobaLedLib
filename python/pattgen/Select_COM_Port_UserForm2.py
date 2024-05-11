@@ -295,7 +295,7 @@ class CSelect_COM_Port_UserForm:
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
-        self.Form=XLF.generate_form(Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable)
+        self.Form=XLF.generate_form(Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont)
                 
     def __UserForm_Activate(self):
         #------------------------------

@@ -38,6 +38,8 @@ from vb2py.vbconstants import *
 import tkinter as tk
 from tkinter import ttk
 
+from scrolledFrame.ScrolledFrame import ScrolledFrame
+
 import mlpyproggen.Prog_Generator as PG
 
 import proggen.M02_Public as M02
@@ -102,16 +104,25 @@ class UserForm_House:
         
         self.top.grab_set()
         
-        self.top.resizable(False, False)  # This code helps to disable windows from resizing
+        self.top.resizable(True, True)  # This code helps to disable windows from resizing
         
-        window_height = 900
-        window_width = 1400
+        orig_window_height = 900
+        orig_window_width = 1400
         
         winfo_x = PG.global_controller.winfo_x()
         winfo_y = PG.global_controller.winfo_y()
         
         screen_width = PG.global_controller.winfo_width()
         screen_height = PG.global_controller.winfo_height()
+        
+        if screen_height < orig_window_height:
+            window_height = screen_height
+        else:
+            window_height = orig_window_height
+        if screen_width < orig_window_width:
+            window_width = screen_width
+        else:
+            window_width = orig_window_width
         
         x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
         y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
@@ -120,54 +131,66 @@ class UserForm_House:
         
         if len(self.title) > 0: 
             self.top.title(self.title)
+            
+        scrolledcontainer = ScrolledFrame(self.top)
+        scrolledcontainer.grid(row=0,column=0, rowspan=1,columnspan=2, sticky="nesw")
+        scrolledcontainer.grid_rowconfigure(0, weight=1)
+        scrolledcontainer.grid_columnconfigure(0, weight=1)        
+        self.top.grid_rowconfigure(0,weight=1)
+        self.top.grid_columnconfigure(0, weight=1)
         
-        self.Description_Label = ttk.Label(self.top, text=self.Description_Label_txt,font=("Tahoma", 11),wraplength=window_width,relief=tk.SUNKEN, borderwidth=1)
-        self.Label_Beleuchtungstypen = ttk.Label(self.top, text=self.Label_Beleuchtungstypen_txt,font=("Tahoma", 11))
-        self.Label_NotchangableCol = ttk.Label(self.top, text=self.Label_NotchangableCol_txt,wraplength=window_width,font=("Tahoma", 8))
-        self.Label4_selected_lights = ttk.Label(self.top, text=self.label4_txt,font=("Tahoma", 11))
-        self.Label5_hint_txt = ttk.Label(self.top, text=self.label5_txt,font=("Tahoma", 8),justify="center")
+        self.container = tk.Frame(scrolledcontainer.interior, width=orig_window_width-30, height=orig_window_height-30)
+        self.container.grid(row=0,column=0,columnspan=2,sticky="nesw")
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)        
+        
+        self.Description_Label = ttk.Label(self.container, text=self.Description_Label_txt,font=("Tahoma", 11),wraplength=window_width,relief=tk.SUNKEN, borderwidth=1)
+        self.Label_Beleuchtungstypen = ttk.Label(self.container, text=self.Label_Beleuchtungstypen_txt,font=("Tahoma", 11))
+        self.Label_NotchangableCol = ttk.Label(self.container, text=self.Label_NotchangableCol_txt,wraplength=window_width,font=("Tahoma", 8))
+        self.Label4_selected_lights = ttk.Label(self.container, text=self.label4_txt,font=("Tahoma", 11))
+        self.Label5_hint_txt = ttk.Label(self.container, text=self.label5_txt,font=("Tahoma", 8),justify="center")
         #self.Label1_MinCnt = ttk.Label(self.top, text=self.Label1_MinCnt_txt,font=("Tahoma", 11))
         #self.Label2_MaxCnt = ttk.Label(self.top, text=self.Label2_MaxCnt_txt,font=("Tahoma", 11))
         
         self.MinCnt_TextBox_svar = tk.StringVar(self.controller)
         self.MinCnt_TextBox_svar.set("1")
-        self.MinCnt_TextBox = tk.Entry(self.top,width=4,textvariable=self.MinCnt_TextBox_svar)
-        self.MinCnt_Label = ttk.Label(self.top, text=self.Label1_MinCnt_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.MinCnt_TextBox = tk.Entry(self.container,width=4,textvariable=self.MinCnt_TextBox_svar)
+        self.MinCnt_Label = ttk.Label(self.container, text=self.Label1_MinCnt_txt,wraplength=window_width,font=("Tahoma", 11))
         
         self.MaxCnt_TextBox_svar = tk.StringVar(self.controller)
         self.MaxCnt_TextBox_svar.set("255")
-        self.MaxCnt_TextBox = tk.Entry(self.top,width=4,textvariable=self.MaxCnt_TextBox_svar)
-        self.MaxCnt_Label = ttk.Label(self.top, text=self.Label2_MaxCnt_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.MaxCnt_TextBox = tk.Entry(self.container,width=4,textvariable=self.MaxCnt_TextBox_svar)
+        self.MaxCnt_Label = ttk.Label(self.container, text=self.Label2_MaxCnt_txt,wraplength=window_width,font=("Tahoma", 11))
         
         self.LED_Channel_TextBox_svar = tk.StringVar(self.controller)
         self.LED_Channel_TextBox_svar.set("1")
-        self.LED_Channel_TextBox = tk.Entry(self.top,width=4,textvariable=self.LED_Channel_TextBox_svar)
-        self.Label9_LED_Channel = ttk.Label(self.top, text=self.Label9_LED_Channel_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.LED_Channel_TextBox = tk.Entry(self.container,width=4,textvariable=self.LED_Channel_TextBox_svar)
+        self.Label9_LED_Channel = ttk.Label(self.container, text=self.Label9_LED_Channel_txt,wraplength=window_width,font=("Tahoma", 11))
         
         self.IndividualTimes_CheckBox_svar = tk.StringVar(self.controller)
         self.IndividualTimes_CheckBox_svar.set(0)
-        self.IndividualTimes_CheckBox = tk.Checkbutton(self.top, offvalue=0, onvalue=1, text=self.IndividualTimes_CheckBox_txt,variable=self.IndividualTimes_CheckBox_svar)
+        self.IndividualTimes_CheckBox = tk.Checkbutton(self.container, offvalue=0, onvalue=1, text=self.IndividualTimes_CheckBox_txt,variable=self.IndividualTimes_CheckBox_svar)
         
         self.InpInversBox_svar = tk.StringVar(self.controller)
         self.InpInversBox_svar.set(0)
-        self.InpInversBox = tk.Checkbutton(self.top, offvalue=0, onvalue=1, text= self.InpInversBox_txt,variable=self.InpInversBox_svar)
+        self.InpInversBox = tk.Checkbutton(self.container, offvalue=0, onvalue=1, text= self.InpInversBox_txt,variable=self.InpInversBox_svar)
         
         self.MinTime_TextBox_svar = tk.StringVar(self.controller)
         self.MinTime_TextBox_svar.set("1")
-        self.MinTime_TextBox = tk.Entry(self.top,width=4,textvariable=self.MinTime_TextBox_svar)
-        self.MinTime_Label = ttk.Label(self.top, text=self.MinTime_Label_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.MinTime_TextBox = tk.Entry(self.container,width=4,textvariable=self.MinTime_TextBox_svar)
+        self.MinTime_Label = ttk.Label(self.container, text=self.MinTime_Label_txt,wraplength=window_width,font=("Tahoma", 11))
         
         self.MaxTime_TextBox_svar = tk.StringVar(self.controller)
         self.MaxTime_TextBox_svar.set("255")
-        self.MaxTime_TextBox = tk.Entry(self.top,width=4,textvariable=self.MaxTime_TextBox_svar)
-        self.MaxTime_Label = ttk.Label(self.top, text=self.MaxTime_Label_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.MaxTime_TextBox = tk.Entry(self.container,width=4,textvariable=self.MaxTime_TextBox_svar)
+        self.MaxTime_Label = ttk.Label(self.container, text=self.MaxTime_Label_txt,wraplength=window_width,font=("Tahoma", 11))
         
-        self.RoomCnt_Label = ttk.Label(self.top, text=self.RoomCnt_Label_txt,font=("Tahoma", 11))
-        self.Used_RGB_LEDs_Label = ttk.Label(self.top, text=self.Used_RGB_LEDs_Label_txt,font=("Tahoma", 8))
-        self.Label7 = ttk.Label(self.top, text="*",font=("Tahoma", 11))
-        self.Label8 = ttk.Label(self.top, text="*",font=("Tahoma", 11))
+        self.RoomCnt_Label = ttk.Label(self.container, text=self.RoomCnt_Label_txt,font=("Tahoma", 11))
+        self.Used_RGB_LEDs_Label = ttk.Label(self.container, text=self.Used_RGB_LEDs_Label_txt,font=("Tahoma", 8))
+        self.Label7 = ttk.Label(self.container, text="*",font=("Tahoma", 11))
+        self.Label8 = ttk.Label(self.container, text="*",font=("Tahoma", 11))
        
-        self.house_button_frame = ttk.Frame(self.top)
+        self.house_button_frame = ttk.Frame(self.container)
         if MacroName =="House":
             
             button_list = Split(house_button_list_str,",")
@@ -186,12 +209,12 @@ class UserForm_House:
                 row = row+1
                 col = 0
         Txt = ""
-        self.SelectedRooms_TextBox = tk.Text(self.top,height=3,width=40,wrap="word")  
+        self.SelectedRooms_TextBox = tk.Text(self.container,height=3,width=40,wrap="word")  
         self.SelectedRooms_TextBox.insert("end",Txt)
         
         self.SelectedRooms_TextBox.bind("<Key>", self.dummy_proc)
         
-        self.button_delete_room = tk.Button(self.top, text=self.button_delete_room_txt, command=self.delete_room,width=10,font=("Tahoma", 11))
+        self.button_delete_room = tk.Button(self.container, text=self.button_delete_room_txt, command=self.delete_room,width=10,font=("Tahoma", 11))
 
         self.Description_Label.grid(row=0,column=0,columnspan=5,sticky="nesw",padx=10,pady=10)
         
@@ -229,7 +252,7 @@ class UserForm_House:
         self.LED_Channel_TextBox.grid(row=8,column=0,columnspan=1,sticky="e",padx=10,pady=10)
         self.Label9_LED_Channel.grid(row=8,column=1,columnspan=1,sticky="w",padx=10,pady=10)
 
-        self.button_frame = ttk.Frame(self.top)
+        self.button_frame = ttk.Frame(self.container)
         
         self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))
         self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=("Tahoma", 11))

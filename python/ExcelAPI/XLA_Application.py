@@ -206,7 +206,7 @@ class Worksheet(object):
 
 class CWorkbook(object):
     def __init__(self, frame=None,path=None,pyProgPath=None,workbookName=None, workbookFilename=None, workbookdict=None,init_workbook=None,open_workbook=None,start_sheet=None,controller=None,width=None,height=None, application=None):
-        global Workbooks,pyProgfile_dir,Worksheets
+        global Workbooks,pyProgfile_dir,Worksheets, DefaultFont
         # Row and Columns are 0 based and not 1 based as in Excel
         if controller==None:
             self.controller = global_controller
@@ -241,6 +241,7 @@ class CWorkbook(object):
             self.workbook_width  = width
             self.workbook_height = height
             self.default_font = self.controller.defaultfontnormal
+            DefaultFont = self.default_font
             self.FullName = workbookFilename
             self.ws_filename = None
             self.wb = None
@@ -4809,6 +4810,8 @@ def Sheets(sheetname):
 Workbooks: CWorkbooks = []
 
 Worksheets: CWorksheets = []
+
+DefaultFont =  ("Calibri",10)
 
 #*******************************************
 # Excel Functions https://learn.microsoft.com/en-us/office/vba/language/reference/functions-visual-basic-for-applications

@@ -224,7 +224,7 @@ class UserForm_LEDAnim:
                                                 ]},
                                       {"Name":"OK_Button","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"OK",
-                                       "Command":self.OK_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":25,"Left":750,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
+                                       "Command":"","ControlTipText":"","ForeColor":"#000012","Height":25,"Left":750,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
                                       {"Name":"Abort_Button","Accelerator":"h","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"Abbrechen",
                                        "Command":self.Abort_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":25,"Left":666,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
@@ -283,7 +283,7 @@ class UserForm_LEDAnim:
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
         self.Userform_Res = ""
-        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable)
+        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont)
         self.patterntype = 0
         self.curvetype = 0
         self.curve_points = []

@@ -97,7 +97,7 @@ class CSelect_ProgGen_Src_Form:
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
-        self.Form=XLF.generate_form(self.Select_ProgGen_Src_Form_RSC,self.controller,dlg=self,modal=False,jump_table=X02.ActiveWorkbook.jumptable)
+        self.Form=XLF.generate_form(self.Select_ProgGen_Src_Form_RSC,self.controller,dlg=self,modal=False,jump_table=X02.ActiveWorkbook.jumptable, defaultfont=X02.DefaultFont)
                 
     def UserForm_Activate(self):
         #------------------------------

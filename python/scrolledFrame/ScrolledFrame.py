@@ -130,6 +130,10 @@ class HorizontalScrolledFrame(Frame):
         def _on_enter(event): 
             self.focused = True
         self.interior.bind("<Enter>", _on_enter)
+        def _on_mousewheel(event):
+            if(self.focused):
+                self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        self.interior.bind_all("<MouseWheel>", _on_mousewheel)        
 
     def move_canvas(self,value):
         self.canvas.xview_moveto(value)    
@@ -177,10 +181,20 @@ class ScrolledFrame(Frame):
         
         self.interior.bind('<Leave>', self._on_leave)
         self.interior.bind("<Enter>", self._on_enter)
-        
-        #def _on_mousewheel(event):
-        #    canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-        #self.interior.bind_all("<MouseWheel>", _on_mousewheel)
+        self.interior.bind_all("<MouseWheel>", self._on_mousewheel)
+        self.interior.bind_all("<Shift-MouseWheel>", self._on_shift_mousewheel)
+        self.interior.bind_all("<Control-MouseWheel>", self._on_ctrl_mousewheel)
+        self.interior.bind_all("<<Control-plus>>", self._on_zoom_in)
+        self.interior.bind_all("<<Control-equal>>", self._on_zoom_out)
+        self.interior.bind_all("<<Control-minus>>", self._on_zoom_out)
+
+         # all_canvas_linux_bindings
+        self.interior.bind_all("<Button-4>", self._on_mousewheel)
+        self.interior.bind_all("<Button-5>", self._on_mousewheel),
+        self.interior.bind_all("<Shift-Button-4>", self._on_shift_mousewheel),
+        self.interior.bind_all("<Shift-Button-5>", self._on_shift_mousewheel),
+        self.interior.bind_all("<Control-Button-4>", self._on_ctrl_mousewheel),
+        self.interior.bind_all("<Control-Button-5>", self._on_ctrl_mousewheel),        
 
         # track changes to the canvas and frame width and sync them,
         # also updating the scrollbar
@@ -215,15 +229,30 @@ class ScrolledFrame(Frame):
             # update the inner frame's height to fill the canvas
             self.canvas.itemconfigure(self.interior_id, height=self.canvas.winfo_height())
         pass
-    
 
     def _on_leave(self,event):
         self.focused = False
     
     def _on_enter(self,event): 
         self.focused = True
+        
+    def _on_mousewheel(self, event):
+        if(self.focused):
+            self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+            
+    def _on_shift_mousewheel(self, event):
+        if(self.focused):
+            self.canvas.xview_scroll(int(-1 * (event.delta / 120)), "units")
+            
+    def _on_ctrl_mousewheel(self, event):
+        pass
     
-
+    def _on_zoom_in(self, event):
+        pass
+    
+    def _on_zoom_out(self, event):
+        pass    
+    
 if __name__ == "__main__":
 
     class SampleApp(Tk):

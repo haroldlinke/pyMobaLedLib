@@ -1,135 +1,117 @@
-# -*- coding: utf-8 -*-
-#
-#         Write header
-#
-# * Version: 1.21
-# * Author: Harold Linke
-# * Date: January 1st, 2020
-# * Copyright: Harold Linke 2020
-# *
-# *
-# * MobaLedCheckColors on Github: https://github.com/haroldlinke/MobaLedCheckColors
-# *
-# *
-# * History of Change
-# * V1.00 10.03.2020 - Harold Linke - first release
-# *  
-# * https://github.com/Hardi-St/MobaLedLib
-# *
-# * MobaLedCheckColors is free software: you can redistribute it and/or modify
-# * it under the terms of the GNU General Public License as published by
-# * the Free Software Foundation, either version 3 of the License, or
-# * (at your option) any later version.
-# *
-# * MobaLedCheckColors is distributed in the hope that it will be useful,
-# * but WITHOUT ANY WARRANTY; without even the implied warranty of
-# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# * GNU General Public License for more details.
-# *
-# * You should have received a copy of the GNU General Public License
-# * along with this program.  if not, see <http://www.gnu.org/licenses/>.
-# *
-# *
-# ***************************************************************************
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-
-import tkinter as tk
-from tkinter import ttk
-import mlpyproggen.Prog_Generator as PG
-import proggen.M09_Language as M09
+import ExcelAPI.XLA_Application as XLA
+import ExcelAPI.XLF_FormGenerator as XLF
 
 class UserForm_Connector:
-    def __init__(self):
-        self.title = M09.Get_Language_Str("Verteiler und Stecker Nummer")
-        self.label1_txt = M09.Get_Language_Str("Zur Dokumentation des benutzten Anschlusses können eine Beschreibung der Verteilerplatine (Ort/Nummer/...) und die Nummer des benutzten Steckplatzes in die Tabelle eingetragen werden. \n\nDamit kann man später leichter nachvollziehen an welcher Stelle innerhalb der LED Kette ein Objekt angeschlossen ist. \n\nDie LEDs werden über ihre Position in der Kette adressiert. Die erste LED in der Kette bekommt die Nummer 0. Die Zweite die Nummer 1... \n\nDadurch dass die Verteilerplatinen kaskadiert werden können kann es schnell passieren, dass man den Überblick verliert. Darum ist eine ausführliche Dokumentation besonders wichtig. \n\nDetails dazu findet man auch in der Dokumentation.\n")
-        self.label2_txt = M09.Get_Language_Str("Verteilernummer oder Beschreibung:")
-        self.label3_txt = M09.Get_Language_Str("Steckernummer:")
-        self.controller = PG.get_global_controller()
-        self.IsActive = False
-        self.button1_txt = M09.Get_Language_Str("Abbrechen")
-        self.button2_txt = M09.Get_Language_Str("Ok")
-        self.Dist_Nr_R = ""
-        self.Conn_Nr_R = ""
-        self.res = False    
- 
-    def ok(self, event=None):
-        self.IsActive = False
-        self.Dist_Nr_R = self.entry1_input.get()
-        self.Conn_Nr_R  = self.entry2_input.get()
-        self.cell1.Value = self.Dist_Nr_R
-        self.cell2.Value = self.Conn_Nr_R
+    
+    def __init__(self,controller):
+        self.controller    = controller
+        self.IsActive      = False
+        self.Form          = None
+        self.Userform_Res  = ""
+        self.Controls      = []
+        self.Controls_Dict = {}
+        #*HL Center_Form(Me)
         
-        #self.Userform_res = value
-        self.top.destroy()
-        self.res = True
- 
-    def cancel(self, event=None):
-        self.UserForm_res = '<Abort>'
-        self.IsActive = False
-        self.top.destroy()
-        self.res = False
+        self.Connector_Form_RSC = {"UserForm":{
+                        "Name"          : "Userform_Connector",
+                        "BackColor"     : "#00000F",
+                        "BorderColor"   : "#000012",
+                        "Caption"       : "Verteiler und Stecker Nummer",
+                        "Height"        : 332,
+                        "Left"          : 0,
+                        "Top"           : 0,
+                        "Type"          : "MainWindow",
+                        "Visible"       : True,
+                        "Width"         : 405,
+                        "Components":[{"Name":"Label1","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"Zur Dokumentation des benutzten Anschlusses können eine Beschreibung der Verteilerplatine (Ort/Nummer/...) und die Nummer des benutzten Steckplatzes in die Tabelle eingetragen werden.\n\n" +
+                                       "Damit kann man später leichter nachvollziehen an welcher Stelle innerhalb der LED Kette ein Objekt angeschlossen ist.\n\n" +
+                                       "Die LEDs werden über ihre Position in der Kette adressiert. Die erste LED in der Kette bekommt die Nummer 0. Die Zweite die Nummer 1...\n\n" +
+                                       "Dadurch dass die Verteilerplatinen kaskadiert werden können kann es schnell passieren, dass man den Überblick verliert. Darum ist eine ausführliche Dokumentation besonders wichtig.\n\n" +
+                                       "Details dazu findet man auch in der Dokumentation.",
+                                        "ControlTipText":"","ForeColor":"#000012","Height":198,"Left":6,"SpecialEffect": "fmSpecialEffectSunken","TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":378},
+                                      {"Name":"Label2","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"Verteilernummer oder Beschreibung:",
+                                       "ControlTipText":"","ForeColor":"#FF0000","Height":18,"Left":24,"TextAlign":"fmTextAlignLeft","Top":204,"Type":"Label","Visible":True,"Width":270},
+                                      {"Name":"Dist_Nr","BackColor":"#000005","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"",
+                                       "ControlTipText":"","ForeColor":"#000008","Height":18,"Left":24,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":222,"Type":"TextBox","Value": "" ,"Visible":True,"Width":174},
+                                      {"Name":"Label3","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"Steckernummer:",
+                                       "ControlTipText":"","ForeColor":"#FF0000","Height":18,"Left":24,"TextAlign":"fmTextAlignLeft","Top":252,"Type":"Label","Visible":True,"Width":270},
+                                      {"Name":"Conn_Nr","BackColor":"#000005","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"",
+                                       "ControlTipText":"","ForeColor":"#000008","Height":18,"Left":24,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":270,"Type":"TextBox","Value": "" ,"Visible":True,"Width":174},
+                                      {"Name":"Abort_Button","Accelerator":"<Escape>","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"Abbruch",
+                                       "Command":"","ControlTipText":"","ForeColor":"#000012","Height":25,"Left":222,"Top":270,"Type":"CommandButton","Visible":True,"Width":72},
+                                       
+                                      {"Name":"OK_Button","Accelerator":"<Return>","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"OK",
+                                       "Command":"","ControlTipText":"","ForeColor":"#000012","Height":24,"Left":300,"Top":270,"Type":"CommandButton","Visible":True,"Width":72}
+                                    ]},
+                        }
 
-    def Start(self,cell1,cell2):
-        self.entry1_input = tk.StringVar(self.controller)
-        self.entry2_input = tk.StringVar(self.controller)
-        self.top = tk.Toplevel(self.controller)
-        self.top.transient(self.controller)
-        self.cell1 = cell1
-        self.Dist_Nr_R = cell1
-        self.entry1_input.set(self.Dist_Nr_R)
-        self.Conn_Nr_R = cell2
-        self.cell2 = cell2
-        self.entry2_input.set(self.Conn_Nr_R)
-       
-        self.entry1 = tk.Entry(self.top,width=40,textvariable=self.entry1_input)
-        self.entry2 = tk.Entry(self.top,width=40,textvariable=self.entry2_input)
+        self.OK_Pressed = False
         
-        self.top.grab_set()
+    def __UserForm_Activate(self):
+        #------------------------------
+        # Is called every time when the form is shown
+        #M25.Make_sure_that_Col_Variables_match()
+        pass
         
-        self.top.resizable(False, False)  # This code helps to disable windows from resizing
+    def Hide(self):
+        self.IsActive=False
+        self.Form.destroy()
         
-        window_height = 600
-        window_width = 450
+    def AddControl(self,control):
+        self.Controls.append(control)
+        self.Controls_Dict[control.Name]=control
         
-        winfo_x = PG.global_controller.winfo_x()
-        winfo_y = PG.global_controller.winfo_y()
+    def Show_Dialog(self):
+        self.Show()
         
-        screen_width = PG.global_controller.winfo_width()
-        screen_height = PG.global_controller.winfo_height()
-        
-        x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
-        y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
-        
-        self.top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))                 
-
-        if len(self.title) > 0: self.top.title(self.title)
-        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=("Tahoma", 11))
-        self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width-20,font=("Tahoma", 11),foreground="#0000FF")
-        self.label3 = ttk.Label(self.top, text=self.label3_txt,wraplength=window_width-20,font=("Tahoma", 11))
-        self.label1.grid(row=0,column=0,columnspan=1,sticky="nesw",padx=10,pady=10)
-        self.label2.grid(row=1,column=0,columnspan=1,rowspan=1,sticky="nesw",padx=10,pady=10)
-        self.entry1.grid(row=2,column=0,padx=10,pady=10)
-        self.entry1.focus_set()
-        self.label3.grid(row=3,column=0,columnspan=1,sticky="nesw",padx=10,pady=10)
-        self.entry2.grid(row=4,column=0,padx=10,pady=10)
-        self.button_frame = ttk.Frame(self.top)
-        
-        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))
-        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=("Tahoma", 11))
-
-        self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
-        self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)
-        
-        self.button_frame.grid(row=5,column=0,sticky="e",padx=10,pady=10)
-        
-        self.top.bind("<Return>", self.ok)
-        self.top.bind("<Escape>", self.cancel)            
-        
+    def Show(self):
         self.IsActive = True
-        self.controller.wait_window(self.top)
-
-        return self.res
-        
-
-        
+        self.__UserForm_Activate()
+        self.controller.wait_window(self.Form)
+    
+    def Abort_Button_Click(self, event=None):
+        #-------------------------------
+        self.Hide()
+        # no "Unload Me" to keep the entered data and dialog position
+    
+    def OK_Button_Click(self, event=None):
+        global OK_Pressed
+        #----------------------------
+        self.OK_Pressed = True
+        self.Dist_Nr_R.Value = self.Dist_Nr.Value
+        self.Conn_Nr_R.Value = self.Conn_Nr.Value        
+        self.Hide()
+    
+    def __UserForm_Initialize(self):
+        #--------------------------------
+        #Debug.Print vbCr & me.Name & ": UserForm_Initialize"
+        self.Userform_Res = ""
+        self.Form=XLF.generate_form(self.Connector_Form_RSC,self.controller,dlg=self, jump_table=None, defaultfont=XLA.DefaultFont)
+        #Change_Language_in_Dialog(Me)
+        # 20.02.20:
+        #P01.Center_Form(Me)
+    
+    def Start(self, Dist_Nr_R, Conn_Nr_R):
+        self.__UserForm_Initialize()
+        _fn_return_value = False
+        self.Dist_Nr_R = Dist_Nr_R
+        self.Conn_Nr_R = Conn_Nr_R
+        #-----------------------------------------------------------------------------------
+        self.Dist_Nr.Value = self.Dist_Nr_R.Value
+        self.Conn_Nr.Value = self.Conn_Nr_R.Value
+        self.OK_Pressed = False
+        self.Dist_Nr.setFocus()
+        self.Show()
+        _fn_return_value = self.OK_Pressed
+        return _fn_return_value
+    
+    # VB2PY (UntranslatedCode) Option Explicit

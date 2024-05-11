@@ -1,6 +1,6 @@
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
-#import ExcelAPI.XLA_Application as X02
+import ExcelAPI.XLA_Application as X02
 #import ExcelAPI.XLC_Excel_Consts as X01
 #import pattgen.M01_Public_Constants_a_Var as M01
 #import pattgen.M09_Language as M09
@@ -224,15 +224,15 @@ class UserForm_ServoAnim:
                                        "Components"    :
                                             [
                                                 ]},
-                                      {"Name":"OK_Button","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                      {"Name":"OK_Button","Accelerator":"<Return>","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"OK",
                                        "Command":self.OK_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":25,"Left":750,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
-                                      {"Name":"Abort_Button","Accelerator":"h","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                      {"Name":"Abort_Button","Accelerator":"<Escape>","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"Abbrechen",
                                        "Command":self.Abort_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":25,"Left":666,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
-                                      {"Name":"Update_Button","Accelerator":"h","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                      {"Name":"Update_Button","Accelerator":"u","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"Update Grafik",
-                                       "Command":self.Update_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":25,"Left":566,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
+                                       "Command":"","ControlTipText":"","ForeColor":"#000012","Height":25,"Left":566,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
                                       ]}
                         }
     def get_params_from_param_list(self, param_list):
@@ -285,10 +285,11 @@ class UserForm_ServoAnim:
         #Change_Language_in_Dialog(Me)
         #Center_Form(Me)
         self.Userform_Res = ""
-        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable)
+        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont)
         self.patterntype = 0
         self.curvetype = 0
         self.curve_points = []
+        self.current_curve_point = None
         self.start_value = ()
         self.UI_paramlist = [
             self.Servo_RunType_ListBox, 
@@ -648,7 +649,7 @@ class UserForm_ServoAnim:
         for i in range (num_vertical+1):
             cur_y = cur_value * self.vertical_value_factor
             objid = self.canvas.create_line(self.tx2cx(0), self.ty2cy(cur_y), self.tx2cx(self.graphWidth), self.ty2cy(cur_y), width=s_width, fill=s_color,dash=s_linedashed,tag="Grid")
-            text_objid = self.canvas.create_text(20, self.ty2cy(cur_y), text = cur_value, width=30, fill=s_color,tag="Grid")
+            text_objid = self.canvas.create_text(20, self.ty2cy(cur_y), text = cur_value, width=30, fill=s_color,tag="Grid", font=X02.DefaultFont)
             cur_value += value_dist
 
         if graph != []:
@@ -664,7 +665,7 @@ class UserForm_ServoAnim:
                 # draw_vertical line
                 objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=s_width, fill=s_color,dash=s_linedashed,tag="Grid")
                 if cur_x - last_text_x >= 40:
-                    text_objid = self.canvas.create_text(self.tx2cx(cur_x), self.ty2cy(horizontal_text_pos), text = timestr, width=30, fill=s_color,tag="Grid")
+                    text_objid = self.canvas.create_text(self.tx2cx(cur_x), self.ty2cy(horizontal_text_pos), text = timestr, width=30, fill=s_color,tag="Grid", font = X02.DefaultFont)
                     last_text_x = cur_x
                 self.draw_point(self.tx2cx(cur_x), self.ty2cy(cur_y), timepoint, value)
                 
@@ -715,22 +716,23 @@ class UserForm_ServoAnim:
         self.start_value = ()
         
     def get_led_value_and_send_to_ARDUINO(self):
-        new_LED_val = self.current_curve_point[1]
-        if new_LED_val > 255:
-            new_LED_val = 255
-        elif new_LED_val < 0:
-            new_LED_val = 0
-            
-        LED_address = self.Servo_Address_TextBox.Value
-        self.servotype = self.Servo_Type_ListBox.Selection
-        if self.servotype == 0:
-            self._update_servos(LED_address,new_LED_val, new_LED_val, new_LED_val)
-        elif self.servotype == 1:
-            self._update_servos(LED_address,new_LED_val, 0, 0)
-        elif self.servotype == 2:
-            self._update_servos(LED_address,0, new_LED_val, 0)
-        else:
-            self._update_servos(LED_address,0, 0, new_LED_val)    
+        if self.current_curve_point != None:
+            new_LED_val = self.current_curve_point[1]
+            if new_LED_val > 255:
+                new_LED_val = 255
+            elif new_LED_val < 0:
+                new_LED_val = 0
+                
+            LED_address = self.Servo_Address_TextBox.Value
+            self.servotype = self.Servo_Type_ListBox.Selection
+            if self.servotype == 0:
+                self._update_servos(LED_address,new_LED_val, new_LED_val, new_LED_val)
+            elif self.servotype == 1:
+                self._update_servos(LED_address,new_LED_val, 0, 0)
+            elif self.servotype == 2:
+                self._update_servos(LED_address,0, new_LED_val, 0)
+            else:
+                self._update_servos(LED_address,0, 0, new_LED_val)    
                 
     def on_click(self, event):
         selected = self.canvas.find_overlapping(event.x-10, event.y-10, event.x+10, event.y+10)

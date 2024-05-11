@@ -45,9 +45,7 @@ from vb2py.vbconstants import *
 from mlpyproggen.DefaultConstants import ARDUINO_WAITTIME,LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION,ARDUINO_LONG_WAITTIME
 # fromx mlpyproggen.configfile import ConfigFile
 from locale import getdefaultlocale
-# fromx tkintertable import TableCanvas, TableModel
-# fromx collections import OrderedDict
-#from ExcelAPI.XLA_Application import create_workbook
+
 import proggen.M02_Public as M02
 import proggen.M08_ARDUINO as M08
 import proggen.M40_ShellandWait as M40
@@ -56,54 +54,25 @@ import proggen.DieseArbeitsmappe as AM
 import ExcelAPI.XLA_Application as P01
 
 import os
-#import serial
-#import sys
-#import threading
+
 import subprocess
-#import queue
-#import time
+
 import logging
 import platform
-# fromx scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
-# fromx proggen.M06_Write_Header import Create_HeaderFile
-# fromx ExcelAPI.X02_Workbook import global_tablemodel
 
-# fromx datetime import datetime
-# fromx mlpyproggen.T01_exceltable import get_globaltabelmodel
 import  proggen.F00_mainbuttons as F00
 import proggen.M02_Public as M02
 import proggen.M09_Language as M09
 import proggen.M07_COM_Port as M07
 import proggen.M20_PageEvents_a_Functions as M20
-#import proggen.D08_Select_COM_Port_Userform as D08
+
 import pgcommon.G00_common as G00
 import proggen.Tabelle2 as T02
 
-
-# --- Translation - not used
-EN = {}
-FR = {"Red": "Rouge", "Green": "Vert", "Blue": "Bleu",
-      "Hue": "Teinte", "Saturation": "Saturation", "Value": "Valeur",
-      "Cancel": "Annuler", "Color Chooser": "Sélecteur de couleur",
-      "Alpha": "Alpha"}
-DE = {"Red": "Rot", "Green": "Grün", "Blue": "Blau",
-      "Hue": "Farbton", "Saturation": "Sättigung", "Value": "Helligkeit",
-      "Cancel": "Beenden", "Color Chooser": "Farbwähler",
-      "Alpha": "Alpha", "Configuration": "Einstellungen"}
-
-try:
-    TR = DE
-    #if getdefaultlocale()[0][:2] == 'fr':
-    #    TR = FR
-    #else:
-    #    if getdefaultlocale()[0][:2] == 'de':
-    #        TR = DE
-except ValueError or TypeError:
-    TR = EN
-
-def _(text):
+def _T(text):
     """Translate text."""
-    return TR.get(text, text)
+    tr_text = text # M09.Get_Language_Str(text)
+    return tr_text
 
 global_controller = None
 dialog_parent = None
@@ -307,43 +276,23 @@ class Prog_GeneratorPage(tk.Frame):
                          }
         
         macrodata = self.controller.MacroDef.data.get(self.tabClassName,{})
-        self.tabname = macrodata.get("MTabName",self.tabClassName)
-        self.title = macrodata.get("Title",self.tabClassName)
+        self.tabname = _T(macrodata.get("MTabName",self.tabClassName))
+        self.title = _T(macrodata.get("Title",self.tabClassName))
         self.Start_Compile_Time = 0
         
-        #button1_text = macrodata.get("Button_1",self.tabClassName)
-        #button2_text = macrodata.get("Button_2",self.tabClassName)
-        
-        #self.fontlabel = self.controller.get_font("FontLabel")
-        #self.fontspinbox = self.controller.get_font("FontSpinbox")
-        #self.fonttext = self.controller.get_font("FontText")
-        #self.fontbutton = self.controller.get_font("FontLabel")
-        #self.fontentry = self.controller.get_font("FontEntry")
         self.fonttext = self.controller.get_font("FontText")
-        #self.fontscale = self.controller.get_font("FontScale")
-        self.fonttitle = self.controller.get_font("FontTitle")        
-        
-        #self.grid_columnconfigure(0,weight=1)
-        #self.grid_rowconfigure(0,weight=1)
+
+        self.fonttitle = self.controller.get_font("FontTitle")
         
         self.frame=ttk.Frame(self,relief="ridge", borderwidth=2)
         self.frame.grid_columnconfigure(0,weight=1)
         self.frame.grid_rowconfigure(0,weight=1)
-        #self.frame.columnconfigure(0,weight=1)
-        #self.frame.rowconfigure(0,weight=1)            
-        
-        #self.scroll_main_frame = ScrolledFrame(self.frame)
-        #self.scroll_main_frame.grid_columnconfigure(0,weight=1)
-        #self.scroll_main_frame.grid_rowconfigure(0,weight=1)
-        
-        #self.main_frame = ttk.Frame(self.scroll_main_frame.interior, relief="ridge", borderwidth=2)
-        #self.main_frame.grid_columnconfigure(0,weight=1)
-        #self.main_frame.grid_rowconfigure(2,weight=1)         
-
-        
-        #config_frame = self.controller.create_macroparam_frame(self.main_frame,self.tabClassName, maxcolumns=1,startrow =1,style="CONFIGPage")        
+        # Tabframe
+        self.frame.grid(row=0,column=0,sticky="nesw")
 
         self.parent = parent
+        self.parent.grid_columnconfigure(0,weight=1)
+        self.parent.grid_rowconfigure(0,weight=1)        
         
         title_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2)
         self.info_frame  = ttk.Frame(self.frame, borderwidth=0)
@@ -356,18 +305,16 @@ class Prog_GeneratorPage(tk.Frame):
         self.filedir5 = os.path.dirname(filedir4)
         self.workbook_frame.rowconfigure(0,weight=1)
         self.workbook_frame.columnconfigure(0,weight=1)
-        #self.workbook_frame.grid_rowconfigure(0,weight=1)
-        #self.workbook_frame.grid_columnconfigure(0,weight=1)
+        self.workbook_frame.grid(row=2,column=0,columnspan=2,sticky="nesw",pady=(10, 10), padx=10)
+
         
         self.workbook_width = self.controller.window_width-120
         self.workbook_height = self.controller.window_height-420
         
-        #self.workbook = create_workbook(frame=self.workbook_frame,path=filedir2, pyProgPath=filedir2, workbookName="ProgGenerator", sheetdict=sheetdict_PROGGEN,start_sheet=start_sheet,p_global_controller=global_controller,width=self.workbook_width,height=self.workbook_height)
-        #self.workbook = create_workbook(frame=self.workbook_frame,path=filedir2, pyProgPath=filedir2, workbookName="ProgGenerator", sheetdict={},start_sheet=start_sheet,p_global_controller=global_controller,width=self.workbook_width,height=self.workbook_height)
         self.workbookname = "ProgGenerator"
         self.tempworkbookFilname = self.controller.tempworkbookFilname
         temp_workbook_filename = os.path.join(filedir2,self.tempworkbookFilname+"_"+self.workbookname+".json")
-        
+
         #************************************************
         #* Open Workbook ProgGen
         #************************************************
@@ -393,9 +340,6 @@ class Prog_GeneratorPage(tk.Frame):
            
         self.workbook.SetInitWorkbookFunction(F00.workbook_init)
                 
-        # Tabframe
-        self.frame.grid(row=0,column=0,sticky="nesw")
-
         label = ttk.Label(title_frame, text=self.title, font=self.fonttitle)
         label.pack(padx=5,pady=(5,5))
         
@@ -410,7 +354,7 @@ class Prog_GeneratorPage(tk.Frame):
         title_frame.grid(row=0, column=0, sticky="n",pady=(10, 10), padx=10)
         self.button_frame.grid(row=1, column=0, sticky="nw",pady=(10, 10), padx=10)
         self.info_frame.grid(row=1,column=1,sticky="nw",pady=(10, 10), padx=10)
-        self.workbook_frame.grid(row=2,column=0,columnspan=2,sticky="nesw",pady=(10, 10), padx=10)
+        
     
         #config_frame.grid(row=1, columnspan=2, pady=(20, 30), padx=10)        
         #in_button_frame.grid(row=2, column=0, sticky="n", padx=4, pady=4)
@@ -569,7 +513,7 @@ class Prog_GeneratorPage(tk.Frame):
             button=tk.Button(self.button_frame, text=button_text, image=self.icon_dict[button_desc["Icon_name"]], command=button_desc["command"]) #,compound="center")
         
         button.pack( side="left",padx=button_desc["padx"])
-        self.controller.ToolTip(button, text=button_desc["tooltip"])
+        self.controller.ToolTip(button, text=_T(button_desc["tooltip"]))
     
     def get_param_config_dict(self, paramkey):
         paramconfig_dict = self.controller.MacroParamDef.data.get(paramkey,{})
@@ -823,10 +767,10 @@ class Prog_GeneratorPage(tk.Frame):
     def upload_to_ARDUINO(self,_event=None,arduino_type="LED",init_arduino=False):
     # send effect to ARDUINO
         if self.controller.ARDUINO_status == "Connecting":
-            tk.messagebox.showwarning(title="Zum ARDUINO Hochladen", message="PC versucht gerade sich mit dem ARDUINO zu verbinden, bitte warten Sie bis der Vorgang beendet ist!")
+            tk.messagebox.showwarning(title=_T("Zum ARDUINO Hochladen"), message=_T("PC versucht gerade sich mit dem ARDUINO zu verbinden, bitte warten Sie bis der Vorgang beendet ist!"))
             return
         self.controller.disconnect()
-        self.controller.set_connectstatusmessage("Kompilieren und Hochladen ...",fg="green")
+        self.controller.set_connectstatusmessage(_T("Kompilieren und Hochladen ..."),fg="green")
         
         #if arduino_type == "LED":
         #    self.create_ARDUINO_CMD(init_arduino=init_arduino)
@@ -882,7 +826,7 @@ class Prog_GeneratorPage(tk.Frame):
                 self.ARDUINO_message4 = macrodata.get("Message_4","") + repr(Win_ARDUINO_searchlist)
         logging.debug("upload_to_ARDUINO - Filename: %s",filename)
         self.controller.showFramebyName("ARDUINOMonitorPage")
-        self.controller.set_connectstatusmessage("Kompilieren und Hochladen ...",fg="green")
+        self.controller.set_connectstatusmessage(_T("Kompilieren und Hochladen ..."),fg="green")
         self.update()
         
         if file_not_found:
@@ -894,9 +838,9 @@ class Prog_GeneratorPage(tk.Frame):
             ArduinotypeList = ArduinoTypeNumber_config_dict["Values2Params"]
             ArduinoType = ArduinotypeList[arduinotypenumber]
             
-            self.ARDUINO_message1 = macrodata.get("Message_1","")
-            self.ARDUINO_message2 = macrodata.get("Message_2","")
-            self.ARDUINO_message3 = macrodata.get("Message_3","")
+            self.ARDUINO_message1 = _T(macrodata.get("Message_1",""))
+            self.ARDUINO_message2 = _T(macrodata.get("Message_2",""))
+            self.ARDUINO_message3 = _T(macrodata.get("Message_3",""))
             
             #h_filedir = os.path.dirname(filename)
             filedir = os.path.dirname(os.path.realpath(__file__))

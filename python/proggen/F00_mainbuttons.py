@@ -63,7 +63,7 @@ import proggen.Userform_DialogGuide1 as D01
 import proggen.Userform_Select_Typ_DCC as D02
 import proggen.Userform_Select_Typ_SX as D02SX
 import proggen.Userform_Description as D03
-import proggen.Userform_Connector as D04
+import proggen.UserForm_Connector as D04
 import proggen.StatusMsg_Userform as D09
 import proggen.Select_COM_Port_Userform as D08
 import proggen.UserForm_Options as D10
@@ -340,7 +340,7 @@ def init_UserForms():
     UserForm_Select_Typ_DCC = D02.UserForm_Select_Typ_DCC()
     UserForm_Select_Typ_SX = D02SX.UserForm_Select_Typ_SX()
     UserForm_Description = D03.UserForm_Description()
-    UserForm_Connector = D04.UserForm_Connector()
+    UserForm_Connector = D04.UserForm_Connector(PG.global_controller)
     Select_COM_Port_UserForm = D08.CSelect_COM_Port_UserForm()
     StatusMsg_UserForm = D09.CStatusMsg_UserForm()
     UserForm_Options = D10.CUserForm_Options()
