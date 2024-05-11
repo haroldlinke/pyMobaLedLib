@@ -8,6 +8,7 @@ This Branch is based on LX4.19 of the Linux version of MobaLedLib_pyProgGen
 Requirements:
 - ARDUINO IDE and MobaledLib > 3.2.1 have to be installed
 - Python >V3.9.0
+- optimised for 1920x1080 resolution - Scale 100%. Smaller screens or higher scaling is possible but more scrolling is then needed to access all parts of the forms.
 
 # Principal Installation using Python files
 1. search for the folder ARDUINO HOME/Arduino
