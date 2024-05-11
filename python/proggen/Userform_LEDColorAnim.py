@@ -97,7 +97,7 @@ class UserForm_LEDColorAnim:
                                              {"Name":"LED_DauerEin_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"",
                                                "ControlTipText":"Dauer der Einschaltanimation in msec",
-                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":30,"Type":"NumBox","Value": 2500 ,"Visible":True,"Width":50},
+                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":30,"Type":"NumBox","Value": 6000 ,"Visible":True,"Width":50},
                                              {"Name":"LED_PauseE_Ein_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"Endepause (msec)",
                                                "ControlTipText":"Pause am Ende der Einschaltanimation in msec",
@@ -132,7 +132,7 @@ class UserForm_LEDColorAnim:
                                                     {"Name":"LED_AnfangsFarbwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"",
                                                      "ControlTipText":"Startfarbton (0..255)",
-                                                     "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"NumBox","Value": 20 ,"Visible":True,"Width":50},
+                                                     "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
                                                     {"Name":"LED_AnfangsSättigungswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"Sättigung (0..255)",
                                                      "ControlTipText":"Startfarbton (0..255)",
@@ -162,7 +162,7 @@ class UserForm_LEDColorAnim:
                                                     {"Name":"LED_EndFarbwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"",
                                                      "ControlTipText":"Endefarbton (0..255)",
-                                                     "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"NumBox","Value": 20 ,"Visible":True,"Width":50},
+                                                     "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
                                                     {"Name":"LED_EndSättigungswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"Sättigung (0..255)",
                                                      "ControlTipText":"Endefarbton (0..255)",
@@ -274,17 +274,26 @@ class UserForm_LEDColorAnim:
     def determine_curve_points_from_Macro(self, Macro_str):
         curve_points = []
         macro_str_lines = Macro_str.split("\n")
-        if len(macro_str_lines) == 3:
-            pattern_macro_complete = macro_str_lines[2]
+        if len(macro_str_lines) > 1:
+            pattern_macro_complete = macro_str_lines[-1]
             pattern_macro_split = pattern_macro_complete.split(" ") # split into macro and gotoact part
             pattern_macro_params = pattern_macro_split[0].split(",")
-            timestep = int(pattern_macro_params[8])
-            param_idx = 9
+            pattern_macro_start = pattern_macro_params[0].split("(")
+            pattern_macro_start_parts =  pattern_macro_start[0].split("T")
+            number_of_timeslots = int(pattern_macro_start_parts[1])
+            param_idx = 8
+            timedelta_list = []
+            for i in range(0, number_of_timeslots):
+                timedelta_list.append(int(pattern_macro_params[param_idx]))
+                param_idx += 1
             curr_time = 0
+            time_idx = 0
             while param_idx < len(pattern_macro_params):
+                curr_time += timedelta_list[time_idx]
+                if time_idx < number_of_timeslots - 1:
+                    time_idx += 1
                 curve_points.append([curr_time, int(pattern_macro_params[param_idx])])
                 param_idx += 3
-                curr_time += timestep
         return curve_points
         
     
@@ -525,7 +534,7 @@ class UserForm_LEDColorAnim:
         
         #APatternT1(#LED,28,SI_LocalVar,3,0,128,0,PM_NORMAL,250,10,1,0,40,1,0,70,1,0,100,1,0,130,1,0,180,1,0,210,1,0,240,1,0,250,1,0,250,1,0,220,1,0,190,1,0,160,1,0,130,1,0,100,1,0,70,1,0,40,1,0,10,1,0  ,0,0,0,0,0,0,0,0,63,128,0,0,0,0,0,0,0,63)
         self.Userform_Res = self.Userform_Res + "A"
-        self.Userform_Res = self.Userform_Res + "PatternT"+str(total_points-1)+"(#LED,"
+        self.Userform_Res = self.Userform_Res + "PatternT"+str(total_points)+"(#LED,"
 
         self.Userform_Res = self.Userform_Res +"28,"
         
@@ -539,7 +548,7 @@ class UserForm_LEDColorAnim:
         s = self.LED_AnfangsSättigungswert_TextBox.Value
         v = self.LED_AnfangsHelligkeitswert_TextBox.Value
         
-        for point in self.curve_points[1:]:
+        for point in self.curve_points:
             timepoint = point[0]
             timepointdelta = timepoint - lasttimepoint
             timepoint_str += "," + str(timepointdelta)
@@ -547,7 +556,7 @@ class UserForm_LEDColorAnim:
                     
         self.Userform_Res = self.Userform_Res + timepoint_str # "," + str(self.LED_Abstand_TextBox.Value)
 
-        for point in self.curve_points[1:]:
+        for point in self.curve_points:
             #self.Userform_Res = self.Userform_Res + "," + str(point[1]) + "," + str(point[1]) + "," + str(point[1])
             self.Userform_Res = self.Userform_Res + "," + str(point[1]) + ","+str(s)+"," + str(v) # + str(point[1]) + "," + str(point[1])
                 
