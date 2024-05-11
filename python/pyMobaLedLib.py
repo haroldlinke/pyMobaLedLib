@@ -679,7 +679,7 @@ class pyMobaLedLibapp(tk.Tk):
         return loc
 
     def About(self):
-        tk.messagebox("MobaCheckColor by Harold Linke")
+        messagebox.showinfo('About',"pyMobaLedLib by Harold"+"\n\n"+ "Version "+ PROG_VERSION)
 
     def OpenHelp(self):
         self.call_helppage()
@@ -688,7 +688,8 @@ class pyMobaLedLibapp(tk.Tk):
         logging.debug("Open logfile: %s",self.logfilename)
         dst = self.logfilename + ".tmp.log"     # logfile is locked by logger, open a copy with the os specific viewer
         shutil.copyfile(self.logfilename, dst)
-        subprocess.run(dst, shell=True)
+        #subprocess.run(dst, shell=True)
+        subprocess.Popen(dst, shell=True)
         
     def OpenExcelWorkbook(self):
         self.activeworkbook.LoadExcelWorkbook()    

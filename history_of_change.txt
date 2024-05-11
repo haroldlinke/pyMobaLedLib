@@ -3,6 +3,8 @@ Improved:
 - LED Color Animation
 Corrected:
 - view on small monitors, added scrollbars
+- about message open failed
+- logfile open is blocking the program
 
 5.3.0 - 08.05.2024
 - update to MLL3.3.2B
