@@ -2848,7 +2848,7 @@ def check_version():
         version_str = response.read().decode('utf-8')
     except:
         version_str = ""
-    print("Github-Version :", version_str)
+    
     
     return
  
