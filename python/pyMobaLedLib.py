@@ -53,6 +53,7 @@
 # 2021-01-08 V4.03 HL: - added Workbook Save and Load
 import sys
 import os
+import urllib
 module_path = os.path.abspath(__file__)  # Full path to the module file
 module_directory = os.path.dirname(module_path)  # Directory containing the module
 sys.path.append(module_directory)
@@ -2839,6 +2840,19 @@ def img_resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
+def check_version():
+    
+    Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version.py"
+    try:
+        response = urllib.request.urlopen(Version_URL)
+        version_str = response.read().decode('utf-8')
+    except:
+        version_str = ""
+    print("Github-Version :", version_str)
+    
+    return
+ 
+
 
 #-------------------------------------------
 
@@ -2985,6 +2999,7 @@ def main_entry():
         COMMAND_LINE_ARG_DICT["colortest_only"]= "True"
         
     logger.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
+    check_version()
     
     try:
         app = pyMobaLedLibapp()

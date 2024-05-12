@@ -414,6 +414,10 @@ class CUserForm_Options:
             dstpath = workbookpath #workbookpath3+"/pyMobaLedLib/python"
             if not dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy when destination is development folder
                 F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
+                try:
+                    shutil.rmtree(workbookpath+"/LEDs_AutoProg")
+                except:
+                    pass
                 self.copytree(srcpath,dstpath)
             
             

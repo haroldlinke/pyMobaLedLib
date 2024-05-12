@@ -56,10 +56,9 @@
 # * License: http://creativecommons.org/licenses/by-sa/3.0/
 # ***************************************************************************
 
+from version import Version
 
-
-
-PROG_VERSION ="V3.3.2B(5.3.0B) 11.05.2024"
+PROG_VERSION = Version
 
 DATA_VERSION = "102"
 Pattgen_Min_Data_Version = DATA_VERSION
