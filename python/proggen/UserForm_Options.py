@@ -364,10 +364,12 @@ class CUserForm_Options:
                     shutil.copy2(srcname, dstname)
                 # XXX What about devices, sockets etc.?
             except (IOError, os.error) as why:
+                logging.error(why, exc_info=True)
                 errors.append((srcname, dstname, str(why)))
             # catch the Error from the recursive copytree so that we can
             # continue with other files
             except BaseException as err:
+                logging.error(err, exc_info=True)
                 errors.extend(err.args[0])
         try:
             shutil.copystat(src, dst)
@@ -375,8 +377,10 @@ class CUserForm_Options:
             # can't copy file access times on Windows
             pass
         except OSError as why:
+            logging.error(why, exc_info=True)
             errors.extend((src, dst, str(why)))
         if errors:
+            logging.error(why, exc_info=True)
             raise Error(errors) 
         
     def show_download_status(self,a,b,c):
@@ -416,8 +420,8 @@ class CUserForm_Options:
                 F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
                 try:
                     shutil.rmtree(workbookpath+"/LEDs_AutoProg")
-                except:
-                    pass
+                except BaseException as e:
+                    logging.error(e, exc_info=True)
                 self.copytree(srcpath,dstpath)
             
             
@@ -426,6 +430,7 @@ class CUserForm_Options:
                 PG.global_controller.restart()
             
         except BaseException as e:
+            logging.error(e, exc_info=True)
             Debug.Print("Update_MobaLedLib exception:",e)
             P01.MsgBox(M09.Get_Language_Str('Fehler beim Download oder Installieren?'),vbInformation, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib'))
    
