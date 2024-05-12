@@ -380,8 +380,7 @@ class CUserForm_Options:
             logging.error(why, exc_info=True)
             errors.extend((src, dst, str(why)))
         if errors:
-            logging.error(why, exc_info=True)
-            raise Error(errors) 
+            raise BaseException(errors) 
         
     def show_download_status(self,a,b,c):
         
@@ -410,19 +409,23 @@ class CUserForm_Options:
             workbookpath3 = os.path.dirname(workbookpath2)
             zipfilenamepath = workbookpath3+"/pyMobaLedLib.zip"
             F00.StatusMsg_UserForm.Set_Label("Download Python MobaLedLib Program")
+            logging.debug("Update pyMobaLedLib from Github - Lokales Verzeichnis:"+ workbookpath)
+            logging.debug("Update pyMobaLedLib from Github -download from Github")
             urllib.request.urlretrieve(URL, zipfilenamepath,self.show_download_status)
-            
             F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programms")
+            logging.debug("Update pyMobaLedLib from Github -unzip file:"+zipfilenamepath+" nach " + workbookpath3)
             M30.UnzipAFile(zipfilenamepath,workbookpath3)
             srcpath = workbookpath3+"/pyMobaLedLib-master/python"
             dstpath = workbookpath #workbookpath3+"/pyMobaLedLib/python"
             if not dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy when destination is development folder
                 F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
                 try:
+                    logging.debug("Update pyMobaLedLib from Github -delete folder:"+ workbookpath3+"/LEDs_AutoProg")
                     shutil.rmtree(workbookpath+"/LEDs_AutoProg")
                 except BaseException as e:
                     logging.error(e, exc_info=True)
                 self.copytree(srcpath,dstpath)
+                logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
             
             
             if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:

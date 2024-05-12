@@ -2694,7 +2694,7 @@ class pyMobaLedLibapp(tk.Tk):
 
 
     def stop_process_serial_all(self):
-        logging.debug("Pyrog-Stop_process_serial")
+        logging.debug("Pyprog-Stop_process_serial")
         print("pyMobaLedLib: stop_process_serial_all")
         SerialMonitorPage = self.getFramebyName("SerialMonitorPage")
         SerialMonitorPage.set_check_RMBUS(value=False)
