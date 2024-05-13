@@ -437,7 +437,7 @@ class CWorkbook(object):
     def Save(self,filename=None):
         if filename == None:
             filename = tk.filedialog.asksaveasfilename(parent=self.master,
-                                                        defaultextension='.table',
+                                                        defaultextension='.json',
                                                         #initialdir=os.getcwd(),
                                                         filetypes=[("JSON","*.json"),
                                                           ("All files","*.*")])
@@ -449,7 +449,7 @@ class CWorkbook(object):
         """load from a file"""
         if filename == None:
             filename = tk.filedialog.askopenfilename(parent=self.master,
-                                                      defaultextension='.table',
+                                                      defaultextension='.json',
                                                       #initialdir=os.getcwd(),
                                                       filetypes=[("JSON","*.json"),
                                                         ("All files","*.*")])
@@ -457,7 +457,7 @@ class CWorkbook(object):
             #print ('file does not exist')
             return
         if filename:
-            self.LoadWorkbook(filename,workbookname=self.Name)
+            self.LoadWorkbook(filename,workbookname=self.Name, keep_filename=False)
         return
     
     def refreshicons(self):
@@ -627,7 +627,7 @@ class CWorkbook(object):
             logging.debug("Workbook: Save Workbook Error: "+filename)            
         return
     
-    def LoadWorkbook(self,filename: str,workbookname=""):
+    def LoadWorkbook(self,filename: str,workbookname="", keep_filename=True):
         if shift_key:
             logging.debug("Load Workbook: Shift Key pressed:"+filename+" not loaded")
             return
@@ -641,7 +641,8 @@ class CWorkbook(object):
                 with open(filename, "r", encoding='utf8') as read_file:
                     file_not_found=False
                     jsondata = json.load(read_file)
-                    self.workbookfilename = filename
+                    if keep_filename:
+                        self.workbookfilename = filename
             except ValueError as err:
                 logging.error ("ERROR: JSON Error in Config File %s",filename)
                 logging.error(err)
@@ -1721,14 +1722,14 @@ class CWorksheet(object):
             self.tksheet.del_rows(cur_row)
         else:
             self.tksheet.del_rows(rows)
-        
-        self.deleteShapeatRow(rows[0], rows[-1])
-        scrow_x1, scrow_y1, scrow_x2, scrow_y2 = self.getCellCoords(rows[0], 0)
-        scrow2_x1, scrow2_y1, scrow2_x2, scrow2_y2 = self.getCellCoords(rows[-1], 0)
-        minY1 = scrow_y1
-        maxY1 = scrow2_y2
-        deltaY = scrow2_y2 - scrow_y1
-        self.moveShapesVertical(minY1, y2=maxY1, deltaY=deltaY)
+        if len(rows) > 0:
+            self.deleteShapeatRow(rows[0], rows[-1])
+            scrow_x1, scrow_y1, scrow_x2, scrow_y2 = self.getCellCoords(rows[0], 0)
+            scrow2_x1, scrow2_y1, scrow2_x2, scrow2_y2 = self.getCellCoords(rows[-1], 0)
+            minY1 = scrow_y1
+            maxY1 = scrow2_y2
+            deltaY = scrow2_y2 - scrow_y1
+            self.moveShapesVertical(minY1, y2=maxY1, deltaY=deltaY)
         
         
     def int_moveRows(self, sc_rowlist, destrow):

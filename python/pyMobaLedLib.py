@@ -1258,12 +1258,12 @@ class pyMobaLedLibapp(tk.Tk):
             self.ARDUINO_status=""
         self.set_connectstatusmessage("Nicht Verbunden",fg="black")
             
-    def connect_if_not_connected(self):
+    def connect_if_not_connected(self, port=None):
         logging.debug("Connect_if_not_connected")
         if self.arduino:
             if self.arduino.isOpen():
                 return True
-        return self.connect()
+        return self.connect(port=port)
 
     def checkconnection(self):
         #logging.debug("Check_connection")

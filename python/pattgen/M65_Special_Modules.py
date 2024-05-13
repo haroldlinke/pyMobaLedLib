@@ -132,7 +132,7 @@ def Create_Set_Fuses_Cmd_file(ResultName, Mode, DstDir):
         # & Mode & "' in 'Create_Set_Fuses_Cmd_file()'", vbCritical, "Internal Error"
         M30.EndProg()
     fp = FreeFile()
-    Name = DstDir + 'Set_Fuses.cmd'
+    Name = DstDir + '/Set_Fuses.cmd'
     # VB2PY (UntranslatedCode) On Error GoTo WriteError
     VBFiles.openFile(fp, Name, 'w') 
     VBFiles.writeText(fp, '@ECHO OFF', '\n')
@@ -509,7 +509,7 @@ def Prog_Servo_2():
     
     hexfile_name =  "RailMail-TinyServo.hex"
     
-    if Dir(WorkDir + hexfile_name) == '':
+    if Dir(WorkDir + "/"+ hexfile_name) == '':
         # ask for filename - makefile or hexfile_name
         
         filenameandpath = filedialog.askopenfilename(filetypes=[("hex-File","*.hex"), ("makefile","makefile")])
