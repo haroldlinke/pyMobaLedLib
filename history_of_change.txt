@@ -1,3 +1,12 @@
+5.3.0H - 13.05.2024
+correction
+- error when reading individuell servo animation data for single servos.
+- error in DCC button handling after reconnection after Send_to_ARDUINO
+- error in saving workbook when closing workbook. Use filename of last load instead of standard filename.
+
+5.3.0G - 12.05.2024
+correction
+- crash when deleting rows and no row selected
 5.3.0B - 11.05.2024
 Improved:
 - LED Color Animation

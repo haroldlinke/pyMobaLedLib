@@ -1135,7 +1135,7 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
     #Ctrl_Pressed = GetAsyncKeyState(VK_CONTROL) != 0
     #if Ctrl_Pressed:
     #    UserForm_Header_Created.DontShowAgain = False
-    #M25.Make_sure_that_Col_Variables_match()
+    M25.Make_sure_that_Col_Variables_match()
     #P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. Init Headerfile Generation"))
     
     #if not Init_HeaderFile_Generation():

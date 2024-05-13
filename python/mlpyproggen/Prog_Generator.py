@@ -433,7 +433,7 @@ class Prog_GeneratorPage(tk.Frame):
                          "padx"     : 20,
                          "tooltip"  : "Dialog aufrufen"},
                         {"Icon_name": "Btn_Send_to_ARDUINO.png",
-                         "command"  : F00.Arduino_Button_Click,
+                         "command"  : self.upload_to_ARDUINO_Button_click, #F00.Arduino_Button_Click,
                          "shift_command": F00.Arduino_Button_Shift_Click,
                          "text"     : "Z. Arduino\nschicken",
                          "padx"     : 20,
@@ -609,6 +609,16 @@ class Prog_GeneratorPage(tk.Frame):
         else:
             P01.Application.OnTime(15000, self.ClearStatusbar)    
             
+    def upload_to_ARDUINO_Button_click(self, event=None):
+        self.arduinoMonitorPage=self.controller.getFramebyName ("ARDUINOMonitorPage")
+        self.arduinoMonitorPage.delete_text_from_textwindow()        
+        self.arduinoMonitorPage.add_text_to_textwindow("\n\n*******************************************************\n"+ "Preparation of Program Started" +"\n*******************************************************\n\n")
+        self.controller.showFramebyName("ARDUINOMonitorPage")
+        self.arduinoMonitorPage.update()
+        F00.Arduino_Button_Click()
+    
+    
+    
     def upload_to_ARDUINO_end(self,error_flag):
         pass
         if error_flag:

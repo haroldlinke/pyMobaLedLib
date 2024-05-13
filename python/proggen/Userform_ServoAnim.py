@@ -264,19 +264,22 @@ class UserForm_ServoAnim:
     def determine_curve_points_from_Macro(self, Macro_str):
         curve_points = []
         macro_str_lines = Macro_str.split("\n")
-        if len(macro_str_lines) == 3:
-            pattern_macro_complete = macro_str_lines[2]
+        if len(macro_str_lines) > 1:
+            pattern_macro_complete = macro_str_lines[-1]
             pattern_macro_split = pattern_macro_complete.split(" ") # split into macro and gotoact part
             pattern_macro_params = pattern_macro_split[0].split(",")
             timestep = int(pattern_macro_params[8])
             param_idx = 9
             curr_time = 0
+            pattern_macro_params[-1] = pattern_macro_params[-1][:-1] # remove last ")"
             while param_idx < len(pattern_macro_params):
                 curve_points.append([curr_time, int(pattern_macro_params[param_idx])])
-                param_idx += 3
+                if self.servotype == 0: # DM Servo
+                    param_idx += 3
+                else:
+                    param_idx += 1 # LED Servo
                 curr_time += timestep
         return curve_points
-        
     
     def __UserForm_Initialize(self):
         #--------------------------------
