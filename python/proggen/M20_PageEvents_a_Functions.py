@@ -1019,6 +1019,7 @@ def Update_TestButtons(Row, onValue=0, First_Call=True, redraw=False):
                     Addr = M25.Get_First_Number_of_Range(P01.ActiveSheet.Shapes.getShape(i).TopLeftCell_Row, AddrColumn)
                     if Addr == '':
                         P01.ActiveSheet.Shapes.Delete(i)
+                        i = i - 1
             i = i + 1
     else:
         if redraw:

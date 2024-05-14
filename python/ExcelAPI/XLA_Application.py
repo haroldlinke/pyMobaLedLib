@@ -176,8 +176,8 @@ def val(value):
             return 0
     return int(value)
     
-def set_statusmessage(message):
-    global_controller.set_statusmessage(message)
+def set_statusmessage(message, monitor_message=False):
+    global_controller.set_statusmessage(message, monitor_message=monitor_message)
     global_controller.update()
 
 __VK_LBUTTON = 0x1
@@ -1806,7 +1806,7 @@ class CWorksheet(object):
                 
     def deleteShapeatRow(self,y1,y2):
         for shape in self.shapelist:
-            if shape.Top in range(y1,y2):
+            if shape.TopLeftCell_Row in range(y1,y2):
                 shape.set_activeflag(False)
         #        deleteList.insert(0, index)
         #if len(deleteList)>0:
@@ -4052,11 +4052,12 @@ class CShape(object):
         self.Rotation = rotation
         self.Visible_val = True
         if Top==None:
-            self.TopLeftCell_Row=Row-1
-            self.TopLeftCell_Col=Col-1
+
+            self.TopLeftCell_Row=Row # -1 removed 13.5.2024 HL
+            self.TopLeftCell_Col=Col # -1 removed 13.5.2024 HL
         else:
-            self.TopLeftCell_Row=ws.calc_row_from_y(Top+1)
-            self.TopLeftCell_Col=ws.calc_col_from_x(Left+1)
+            self.TopLeftCell_Row=ws.calc_row_from_y(Top+1) + 1
+            self.TopLeftCell_Col=ws.calc_col_from_x(Left+1) + 1
         self.Index = 0
         self.OnAction_val = ""
         self.ZOrder_Val=zorder
@@ -4163,13 +4164,21 @@ class CShape(object):
     Top = property(get_top, set_top, doc='Shape-Top')    
     
     def get_TopLeftCell(self):
-        TopLeftCell= CRange(self.TopLeftCell_Row,self.TopLeftCell_Col)
+        TopLeftCell = CRange(self.TopLeftCell_Row,self.TopLeftCell_Col)
         return TopLeftCell
     
     def set_TopLeftCell(self, value):
         pass
     
     TopLeftCell = property(get_TopLeftCell, set_TopLeftCell, doc='Shape-Name')
+
+    def get_TopLeftCellRow(self):
+        return self.TopLeftCell_Row_val
+    
+    def set_TopLeftCellRow(self, value):
+        self.TopLeftCell_Row_val = value
+    
+    TopLeftCell_Row = property(get_TopLeftCellRow, set_TopLeftCellRow, doc='Shape-Name')
 
     def get_OnAction(self):
         return self.OnAction_val

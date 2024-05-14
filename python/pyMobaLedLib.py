@@ -323,6 +323,7 @@ class pyMobaLedLibapp(tk.Tk):
             self.window_width=1920
         self.pos_x= self.getConfigData("pos_x")
         self.pos_y = self.getConfigData("pos_y")
+        self.lastactive_tabname = self.getConfigData("lastactive_tabname") 
         
         #if self.getConfigData("pos_x") < 1920 and self.getConfigData("pos_y") < 1080:
         #    self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.getConfigData("pos_x"), self.getConfigData("pos_y")))        
@@ -521,17 +522,21 @@ class pyMobaLedLibapp(tk.Tk):
         self.container.insert(10, self.tabdict["ARDUINOMonitorPage"])
         
         self.continueCheckDisconnectFile = True
-        self.onCheckDisconnectFile() 
+        self.onCheckDisconnectFile()
         
         self.container.bind("<<NotebookTabChanged>>",self.TabChanged)
+        
         
         
         # set ProgranGeneraor as aktive workbook.
         P01.Application.setActiveWorkbook("ProgGenerator")
         
         # set final startpagew
-        startpagename = self.getStartPageClassName()
-        self.showFramebyName(startpagename)
+        if self.lastactive_tabname == "":
+            startpagename = self.getStartPageClassName()
+            self.showFramebyName(startpagename)
+        else:
+            self.showFramebyName(self.lastactive_tabname)
         
         filedir = self.mainfile_dir # os.path.dirname(os.path.realpath(__file__))
         self.update()
@@ -569,6 +574,8 @@ class pyMobaLedLibapp(tk.Tk):
             self.executetests = True
         else:
             self.executetests = False
+        
+        self.arduinoMonitorPage=self.getFramebyName ("ARDUINOMonitorPage")
         
         self.focus_set()
         #self.wait_visibility()
@@ -786,6 +793,7 @@ class pyMobaLedLibapp(tk.Tk):
         logging.debug("Cancel_with_save2")
         self.setConfigData("pos_x", self.winfo_x())
         self.setConfigData("pos_y", self.winfo_y())
+        self.setConfigData("lastactive_tabname", self.lastactive_tabname)
         logging.debug("Cancel_Save_Data: pos_x=%s pos_y=%s",self.winfo_x(), self.winfo_y())
         self.save_persistent_params()
         self.SaveConfigData()
@@ -907,7 +915,7 @@ class pyMobaLedLibapp(tk.Tk):
 
     # ----------------------------------------------------------------
     # Event TabChanged
-    # ----------------------------------------------------------------        
+    # ----------------------------------------------------------------
     def TabChanged(self,_event=None):
         self.oldTabName = self.currentTabClass
         if self.oldTabName != "":
@@ -918,6 +926,7 @@ class pyMobaLedLibapp(tk.Tk):
             newtab = self.nametowidget(newtab_name)
             self.currentTabClass = newtab_name
             self.current_tab = newtab
+            self.lastactive_tabname = newtab.tabClassName
             newtab.tabselected()
         logging.debug("TabChanged %s - %s",self.oldTabName,newtab_name)
 
@@ -1229,7 +1238,6 @@ class pyMobaLedLibapp(tk.Tk):
         port_dcc_data = self.serial_port_dict.get(port,{})
         if port_dcc_data != {}:
             arduino = port_dcc_data.get("ARDUINO",None)                
-        
             if arduino:
                 arduino.close()
                 arduino = None
@@ -1345,9 +1353,11 @@ class pyMobaLedLibapp(tk.Tk):
         logging.debug("set_connectstatusmessage: %s",status_text)
         self.connectstatusmessage.configure(text="Status: " + status_text,fg=fg)
         
-    def set_statusmessage(self,status_text,fg="black"):
+    def set_statusmessage(self,status_text,fg="black", monitor_message=False):
         logging.debug("set_statusmessage: %s",status_text)
-        self.statusmessage.configure(text=status_text,fg=fg)    
+        self.statusmessage.configure(text=status_text,fg=fg)
+        if monitor_message:
+            self.arduinoMonitorPage.add_text_to_textwindow(status_text)
 
     def set_ARDUINOmessage(self,status_text,fg="black"):
         logging.debug("set_ARDUINOmessage %s",status_text)

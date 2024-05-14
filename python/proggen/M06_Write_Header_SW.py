@@ -313,7 +313,7 @@ def First_Scan_of_Data_Rows():
     Var_COL = M25.Get_Address_Col()
     Switch_Damping_Fact = ''
     for r in vbForRange(M02.FirstDat_Row, M30.LastUsedRow()):
-        P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. 1st round - Macrozeile: "+str(r)))
+        P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. 1st round - Macrozeile: "+str(r)), monitor_message=True)
         if not P01.Rows(r).EntireRow.Hidden and P01.Cells(r, M02.Enable_Col) != '':
             Var_Name = P01.Cells(r, Var_COL)
             if Is_Switch_Var_then_Add_to_Ctr(Var_Name) == - 1:
