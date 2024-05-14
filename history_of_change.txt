@@ -1,3 +1,9 @@
+5.3.0.I - 14.05.2024
+new:
+- last tab saved and will be opened at reopening
+correction :
+- error: testbutton  inactive after after Send-to-ARDUINO
+
 5.3.0H - 13.05.2024
 correction
 - error when reading individuell servo animation data for single servos.

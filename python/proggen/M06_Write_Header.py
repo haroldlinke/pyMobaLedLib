@@ -1257,7 +1257,8 @@ def ProcessLine(r, sx, addressOffset, LEDsOffset, LEDsInUse, MaxLEDNrInSheet):
     Offset = 0
     _fn_return_value = False        
     if not P01.Rows(r).EntireRow.Hidden and P01.Cells(r, M02.Enable_Col) != '':
-        P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. 2nd round - Macrozeile: "+str(r)))
+        P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. 2nd round - Macrozeile: "+str(r)), monitor_message=True)
+        
         Cmd = Trim(P01.Cells(r, M25.Config__Col))
         if IsIncludeMacro(Cmd):
             res, SheetName, Offset=GetIncludeArgs(Cmd, SheetName, Offset)
