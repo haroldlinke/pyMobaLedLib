@@ -2850,6 +2850,7 @@ def img_resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
+
 def check_version():
     
     Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version.py"
@@ -2858,8 +2859,13 @@ def check_version():
         version_str = response.read().decode('utf-8')
     except:
         version_str = ""
-    
-    
+        
+    if version_str != "":
+        version_str_split = version_str.split('"')
+        version_str = version_str_split[1]
+
+    if version_str != PROG_VERSION:
+        answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
     return
  
 

@@ -465,7 +465,7 @@ class UserForm_ServoAnim:
         return curve_points
         
     
-    def OK_Button_Click(self):
+    def OK_Button_Click(self, event=None):
         #------------------------------
         runtype = self.Servo_RunType_ListBox.Selection
         self.curvetype =  self.Servo_CurveType_ListBox.Selection 
@@ -547,14 +547,14 @@ class UserForm_ServoAnim:
         # To keep the last position of the dialog
         self.Hide()
         
-    def Abort_Button_Click(self):
+    def Abort_Button_Click(self, event=None):
         #-----------------------------
         ## VB2PY (CheckDirective) VB directive took path 1 on 1
         #X02.Shell('Explorer https://wiki.mobaledlib.de/anleitungen/spezial/patterngenerator')
         self.Hide()
         self.Userform_Res = ""
         
-    def Update_Button_Click(self):
+    def Update_Button_Click(self, event=None):
         anzahl_werte_Ein = int((self.Servo_PauseS_Ein_TextBox.Value + self.Servo_DauerEin_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value) / self.Servo_Abstand_TextBox.Value)
         runtype = self.Servo_RunType_ListBox.TKWidget.curselection()
         if runtype == ():
@@ -729,7 +729,7 @@ class UserForm_ServoAnim:
             LED_address = self.Servo_Address_TextBox.Value
             self.servotype = self.Servo_Type_ListBox.Selection
             if self.servotype == 0:
-                self._update_servos(LED_address,new_LED_val, new_LED_val, new_LED_val)
+                self._update_servos(LED_address,new_LED_val,1, 0)
             elif self.servotype == 1:
                 self._update_servos(LED_address,new_LED_val, 0, 0)
             elif self.servotype == 2:
