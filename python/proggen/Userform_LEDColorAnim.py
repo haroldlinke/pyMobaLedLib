@@ -416,34 +416,50 @@ class UserForm_LEDColorAnim:
             # remove jump
             del self.curve_points[index+1]
         
-    def calculate_linear_curve(self, duration, start_val, end_val, start_time, up=True):
+    def calculate_linear_curve(self, duration, start_val, end_val, start_time, time_distance, up=True):
         curve_points = []
         if up:
             if end_val > start_val:
                 steigung =  (end_val - start_val) / duration
                 calc_jumptime = False
+                jump_time = duration
             else:
                 steigung = (256 - start_val + end_val) / duration
                 calc_jumptime = True
+                jump_time = round((256 - start_val) / steigung) + start_time
             # calculate time steps only 2 or 3 time steps: - start_time -> jumptime -> endtime
             curve_points.append((start_time, start_val))
             if calc_jumptime:
                 jump_time = round((256 - start_val) / steigung) + start_time
                 curve_points.append((jump_time, 255))
                 curve_points.append((jump_time, 0))
+            else:
+                t = time_distance
+                while t < duration:
+                    val = int(round(steigung * t + start_val, 0))
+                    curve_points.append((t+start_time, val))
+                    t += time_distance                
         else:
             if start_val > end_val:
                 steigung =  (end_val - start_val) / duration
                 calc_jumptime = False
+                jump_time = duration
             else:
                 steigung = (256 - end_val + start_val) / duration
                 calc_jumptime = True
+                jump_time = round((start_val) / steigung) + start_time
             # calculate time steps only 2 or 3 time steps: - start_time -> jumptime -> endtime
             curve_points.append((start_time, start_val))
             if calc_jumptime:
                 jump_time = round((start_val) / steigung) + start_time
                 curve_points.append((jump_time, 0))
                 curve_points.append((jump_time, 255))
+            else:
+                t = time_distance
+                while t < duration:
+                    val = int(round(steigung * t + start_val, 0))
+                    curve_points.append((t+start_time, val))
+                    t += time_distance                    
         curve_points.append((start_time+duration, end_val))
             
         #while t <= duration:
@@ -452,13 +468,15 @@ class UserForm_LEDColorAnim:
         #    t += time_distance
         return curve_points
     
-    def calculate_pause_curve(self, duration, val, start_time, skip_first=False):
+    def calculate_pause_curve(self, duration, val, start_time, time_distance, skip_first=False):
         curve_points = []
         if skip_first:
-            t = duration
+            t = time_distance
         else:
             t = 0
-        curve_points.append((t+start_time, val))
+        while t <= duration: 
+            curve_points.append((t+start_time, val))
+            t += time_distance
         return curve_points
     
     def calculate_curve(self, duration, start_val, end_val, start_time, time_distance, pauseS=None, pauseE=None, skip_first=False):
@@ -468,9 +486,9 @@ class UserForm_LEDColorAnim:
         else:
             point_list1 = []
         if self.curvetype == 0: # linear aufsteigend
-            point_list2 = self.calculate_linear_curve(duration, start_val, end_val, start_time, up=True)
+            point_list2 = self.calculate_linear_curve(duration, start_val, end_val, start_time, time_distance, up=True)
         elif self.curvetype == 1: # linear aufsteigend
-            point_list2 = self.calculate_linear_curve(duration, start_val, end_val, start_time, up=False)
+            point_list2 = self.calculate_linear_curve(duration, start_val, end_val, start_time, time_distance, up=False)
         else: # individuell
             point_list2 = []
         point_list1.extend(point_list2)
@@ -478,7 +496,7 @@ class UserForm_LEDColorAnim:
             skip_first = True
         start_time += duration
         if pauseE != None and pauseE > 0:
-            point_list3 = self.calculate_pause_curve(pauseE, end_val, start_time, skip_first=skip_first)
+            point_list3 = self.calculate_pause_curve(pauseE, end_val, start_time, time_distance, skip_first=skip_first)
         else:
             point_list3 = []
         point_list1.extend(point_list3)

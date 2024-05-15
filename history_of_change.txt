@@ -1,3 +1,9 @@
+5.3.0.J - 15.05.2024
+new:
+- check for new Version on Github
+correction :
+- error: crash when selecting on a Cell outside the available rows
+
 5.3.0.I - 14.05.2024
 new:
 - last tab saved and will be opened at reopening
@@ -13,6 +19,19 @@ correction
 5.3.0G - 12.05.2024
 correction
 - crash when deleting rows and no row selected
+
+5.3.0F - 12.05.2024
+correction
+- delete LEDs_AutoProg before copying new version
+
+5.3.0D - 11.5.2024
+correction
+- save and load PGF file errors
+
+5.3.0C - 11.5.2024
+corrected
+- update of pyMLL program for Farbtest call from Excel
+
 5.3.0B - 11.05.2024
 Improved:
 - LED Color Animation

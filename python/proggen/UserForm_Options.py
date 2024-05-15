@@ -400,10 +400,12 @@ class CUserForm_Options:
         self.Hide()
         if P01.MsgBox(M09.Get_Language_Str('Soll die Python MobaLedLib aktualisiert werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) != vbYes:
             return
+        self.__Update_pyMobaLedLib()
+    
+    def __Update_pyMobaLedLib(self):
         F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Python MobaLedLib Programm'), '')
         URL= "https://github.com/HaroldLinke/pyMobaLedLib/archive/master.zip"
         try:
-            
             workbookpath = PG.ThisWorkbook.Path
             workbookpath2 = os.path.dirname(workbookpath)
             workbookpath3 = os.path.dirname(workbookpath2)
@@ -426,7 +428,6 @@ class CUserForm_Options:
                     logging.error(e, exc_info=True)
                 self.copytree(srcpath,dstpath)
                 logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
-            
             
             if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
                 # shutdown and restart

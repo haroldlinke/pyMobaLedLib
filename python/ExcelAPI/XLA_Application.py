@@ -1651,8 +1651,12 @@ class CWorksheet(object):
             return None        
         
     def setSelectedCells(self, r1, r2, c1, c2):
-        self.tksheet.set_currently_selected(r1, c1)
-        self.tksheet.create_selection_box(r1, c1, r2, c2)
+        try:
+            self.tksheet.set_currently_selected(r1, c1)
+            self.tksheet.create_selection_box(r1, c1, r2, c2)
+        except BaseException as e:
+            logging.debug(e, exc_info=True) 
+            logging.debug("setSelectedCells %s,%s,%s,%s", r1, r2, c1, c2)            
     
     def setSelectedShapes(self,shape):
         self.selectedShapes=[shape]
@@ -1730,7 +1734,6 @@ class CWorksheet(object):
             maxY1 = scrow2_y2
             deltaY = scrow2_y2 - scrow_y1
             self.moveShapesVertical(minY1, y2=maxY1, deltaY=deltaY)
-        
         
     def int_moveRows(self, sc_rowlist, destrow):
         self.tksheet.move_rows(move_to=destrow, to_move=sc_rowlist, move_data=True, create_selections=False)
@@ -2115,6 +2118,7 @@ class CWorksheet(object):
                             self.tksheet.MT.tag_raise(shape.textidx)
                         else:
                             self.tksheet.MT.tag_lower(shape.textidx)
+                        self.tksheet.MT.itemconfigure(shape.textidx, text=shape.Text)
                         self.tksheet.MT.coords(shape.textidx,int(shape.Left+shape.Width/2),int(shape.Top+shape.Height/2))
     
     def drawGrid(self, startrow=None, endrow=None):
@@ -4214,7 +4218,7 @@ class CShape(object):
         if self.rectidx!=0 or self.formwin!=None:
             worksheet=self.Worksheet # global_worksheet_dict[self.tablename]
             self.updatecontrol = True
-            worksheet.drawShape(self,force=True) 
+            worksheet.drawShape(self, force=True) 
             self.updatecontrol = False
         
     Text = property(get_text, set_text, doc='Shape-Text')    
