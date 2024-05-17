@@ -43,7 +43,7 @@ The VBA Code of the PatternGenerator was translated by an enhanced version of th
 - ARDUINO connected to USB is not recognized correctly in LINUX and MAC OS automatically. Please select the correct type in the Options Menu and select the correct USB-Port manually.
   
 
-History of Change
+# History of Change
 
 5.3.1- 17.05.2024
 correction:
