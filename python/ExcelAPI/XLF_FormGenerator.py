@@ -39,7 +39,7 @@ from tkinter import ttk
 import os
 import sys
 import ExcelAPI.XLA_Application as X02
-import pattgen.M09_Language as M09
+import proggen.M09_Language as M09
 import pattgen.D00_GlobalProcs as D00
 #import tkcolorpicker.spinbox as SB
 from scrolledFrame.ScrolledFrame import ScrolledFrame
@@ -166,7 +166,11 @@ def ToolTip(widget,text="", key="",button_1=False):
         tooltip_var.unschedule()
         tooltip_var.hide()
         tooltip_var.update_text(text)            
-    return    
+    return
+
+def translate_text(text):
+    trans = M09.Get_Language_Str(text)
+    return trans
 
 def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={},defaultfont=("Calibri",10), jump_table={}, window=None):
     gui_factor_label_width = guifactor
@@ -185,7 +189,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             comp.Init_Value = persistent_controls.get(comp.Name,None)
             if not comp.Init_Value:
                 comp.Init_Value = component_dict.get("Value",None)
-            comp.Caption = M09.Get_Language_Str(component_dict.get("Caption",""))
+            comp.Caption = translate_text(component_dict.get("Caption",""))
             comp.AlternativeText = component_dict.get("AlternativeText","")
             comp.Font = component_dict.get("Font",defaultfont)
             comp.SpecialEffect = component_dict.get("SpecialEffect","")
@@ -210,6 +214,21 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             #comp_font = self.fontlabel
             comp.ControlTipText = component_dict.get("ControlTipText","")
             comp.format_dict = format_dict.get(comp.Name,None)
+            
+            comp.Command = component_dict.get("Command",None)
+            if type(comp.Command) == str:
+                if comp.Command != "":
+                    comp.Command = D00.globalprocs.get(comp.Command,None)
+                else:
+                    # test standard command "Name_clicked"
+                    command_str = comp.Name + "_Click"
+                    if hasattr(dlg, command_str):
+                        comp.Command = getattr(dlg, command_str)
+                    else:
+                        comp.Command = None
+            comp.Accelerator = component_dict.get("Accelerator","")
+            comp.icon = component_dict.get("IconName","")            
+            
             dlg.AddControl(comp)
             
             #****************************************************
@@ -226,7 +245,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     page.Type = page_dict["Type"]
                     if page.Type == "Page":
                         page.Name = page_dict.get("Name","")
-                        page.Caption = M09.Get_Language_Str(page_dict.get("Caption",""))
+                        page.Caption = translate_text(page_dict.get("Caption",""))
                         page_frame = tk.Frame(container)
                         container.add(page_frame, text=page.Caption)
                         page.TKWidget=page_frame
@@ -282,19 +301,6 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             #* CommandButton
             #****************************************************                   
             elif comp.Type == "CommandButton":
-                comp.Command = component_dict.get("Command",None)
-                if type(comp.Command) == str:
-                    if comp.Command != "":
-                        comp.Command = D00.globalprocs.get(comp.Command,None)
-                    else:
-                        # test standard command "Name_clicked"
-                        command_str = comp.Name + "_Click"
-                        if hasattr(dlg, command_str):
-                            comp.Command = getattr(dlg, command_str)
-                        else:
-                            comp.Command = None
-                comp.Accelerator = component_dict.get("Accelerator","")
-                comp.icon = component_dict.get("IconName","")
                 if comp.Accelerator!="":
                     if window:
                         window.bind(comp.Accelerator, comp.Command)
@@ -378,13 +384,13 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     init_value=0
                 comp.TKVar = tk.IntVar(value=init_value)
                 setattr(dlg,comp.Name,comp)
-                textbox=ttk.Spinbox(parent, from_=0,to=65535,textvariable=comp.TKVar, width=comp.Width ,font=comp.Font)
-                if comp.Caption != None:
-                    textbox.insert("1.0",comp.Caption)
-                textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
-                comp.TKWidget=textbox
+                numbox=ttk.Spinbox(parent, from_=0,to=65535,textvariable=comp.TKVar, command=comp.Command, width=comp.Width ,font=comp.Font)
+                #if comp.Caption != None and comp.Caption != "":
+                #    textbox.insert("1.0",comp.Caption)
+                numbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                comp.TKWidget=numbox
                 if comp.ControlTipText!="":
-                    ToolTip(textbox, text=comp.ControlTipText)
+                    ToolTip(numbox, text=comp.ControlTipText)
             #****************************************************
             #* ListBox
             #****************************************************                   
@@ -467,7 +473,7 @@ def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}, defaultfo
         
         window_title = userform_dict.get("Caption","Title")
         
-        top.title(M09.Get_Language_Str(window_title))
+        top.title(translate_text(window_title))
         
         scrolledcontainer = ScrolledFrame(top)
         scrolledcontainer.grid(row=0,column=0, rowspan=1,columnspan=2, sticky="nesw")

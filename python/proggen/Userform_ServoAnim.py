@@ -167,7 +167,7 @@ class UserForm_ServoAnim:
                                               "ControlTipText":"Anfangswert (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":45,"Type":"Label","Visible":True,"Width":148},
                                              {"Name":"Servo_Anfangswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                              "Caption":"",
+                                              "Caption":"", "Command":"",
                                               "ControlTipText":"Anfangswert (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":45,"Type":"NumBox","Value": 20 ,"Visible":True,"Width":50},
                                              {"Name":"Servo_Endwert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
@@ -175,7 +175,7 @@ class UserForm_ServoAnim:
                                               "ControlTipText":"Endwert (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":69,"Type":"Label","Visible":True,"Width":148},
                                              {"Name":"Servo_Endwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                              "Caption":"",
+                                              "Caption":"", "Command":"",
                                               "ControlTipText":"Endwert (0..255)",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":69,"Type":"NumBox","Value": 220 ,"Visible":True,"Width":50},
                                              {"Name":"Ueberblendung","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
@@ -574,6 +574,46 @@ class UserForm_ServoAnim:
         on_off_line = self.calculate_on_off_line()
         horizontal_range = (self.curve_points[0][0],self.curve_points[-1][0])
         self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, on_off_line=on_off_line, horizontal_range=horizontal_range)
+
+    def Servo_Anfangswert_TextBox_Click(self, event=None):
+        
+        new_LED_val = self.Servo_Anfangswert_TextBox.Value
+        if new_LED_val > 255:
+            new_LED_val = 255
+        elif new_LED_val < 0:
+            new_LED_val = 0
+            
+        LED_address = self.Servo_Address_TextBox.Value
+        self.servotype = self.Servo_Type_ListBox.Selection
+        if self.servotype == 0:
+            self._update_servos(LED_address,new_LED_val,1, 0)
+        elif self.servotype == 1:
+            self._update_servos(LED_address,new_LED_val, 0, 0)
+        elif self.servotype == 2:
+            self._update_servos(LED_address,0, new_LED_val, 0)
+        else:
+            self._update_servos(LED_address,0, 0, new_LED_val)
+            
+    def Servo_Endwert_TextBox_Click(self, event=None):
+        
+        new_LED_val = self.Servo_Endwert_TextBox.Value
+        if new_LED_val > 255:
+            new_LED_val = 255
+        elif new_LED_val < 0:
+            new_LED_val = 0
+            
+        LED_address = self.Servo_Address_TextBox.Value
+        self.servotype = self.Servo_Type_ListBox.Selection
+        if self.servotype == 0:
+            self._update_servos(LED_address,new_LED_val,1, 0)
+        elif self.servotype == 1:
+            self._update_servos(LED_address,new_LED_val, 0, 0)
+        elif self.servotype == 2:
+            self._update_servos(LED_address,0, new_LED_val, 0)
+        else:
+            self._update_servos(LED_address,0, 0, new_LED_val)          
+    
+
         
     def init_graph(self, frame=None, vertical_params=None, horizontal_params=None, num_vertical=None, num_horizontal=None):
         frame.update()

@@ -41,6 +41,7 @@ import pattgen.M09_Language as M09
 import pattgen.M30_Tools as M30
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.F00_mainbuttons as F00
+import proggen.M09_Language as M09_Language
 
 #**************************
 #'  Port handling functions
@@ -131,4 +132,7 @@ def InputBox(Message:str, Title:str, Default=None):
     if res == None:
         res=""
     return res
+
+def _T(text):
+    return M09_Language.Get_Language_Str(text)
 

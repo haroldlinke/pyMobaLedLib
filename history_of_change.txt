@@ -1,10 +1,17 @@
-5.3.0.J - 15.05.2024
+5.3.1- 17.05.2024
+correction:
+- crash when using mousewheel in macro tree and some other forms
+new
+- servoanimation: servo follows values of Afnagswert und Endwert
+- first part of support for translation into other languages added (not final yet)
+
+5.3.0J - 15.05.2024
 new:
 - check for new Version on Github
 correction :
 - error: crash when selecting on a Cell outside the available rows
 
-5.3.0.I - 14.05.2024
+5.3.0I - 14.05.2024
 new:
 - last tab saved and will be opened at reopening
 correction :

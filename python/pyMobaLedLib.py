@@ -526,8 +526,6 @@ class pyMobaLedLibapp(tk.Tk):
         
         self.container.bind("<<NotebookTabChanged>>",self.TabChanged)
         
-        
-        
         # set ProgranGeneraor as aktive workbook.
         P01.Application.setActiveWorkbook("ProgGenerator")
         
@@ -3029,7 +3027,7 @@ def main_entry():
     
     except BaseException as e:
         logging.error(e, exc_info=True)
-        print(e, exc_info=True)
+        #print(e, exc_info=True)
         pass    
     
     logging.info("Program End")

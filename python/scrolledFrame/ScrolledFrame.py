@@ -238,11 +238,17 @@ class ScrolledFrame(Frame):
         
     def _on_mousewheel(self, event):
         if(self.focused):
-            self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+            try:
+                self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+            except:
+                pass
             
     def _on_shift_mousewheel(self, event):
         if(self.focused):
-            self.canvas.xview_scroll(int(-1 * (event.delta / 120)), "units")
+            try:
+                self.canvas.xview_scroll(int(-1 * (event.delta / 120)), "units")
+            except:
+                pass
             
     def _on_ctrl_mousewheel(self, event):
         pass

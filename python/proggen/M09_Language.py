@@ -681,38 +681,34 @@ def __Get_Language_Str_Sub(Desc, GenError, Look_At):
     
     LSh = PG.ThisWorkbook.Sheets(M02.LANGUAGES_SH)
     
-    _ret = LSh.find_in_col_ret_col_val(Desc,FirstLangCol,FirstLangCol + Get_ExcelLanguage(),cache=True)
+    # test fast access to translation
     
-    if _ret:
-        if _ret!="":
+    trans = LSh.find_in_col_ret_col_val(Desc,FirstLangCol,FirstLangCol + Get_ExcelLanguage(),cache=True)
+    
+    if trans != None:
+        if trans!="":
+            return trans
+    
+    _with13 = LSh
+    Row = Find_Language_Str_Row(Desc, Look_At)
+    if Row > 0:
+        _ret = _with13.Cells(Row, FirstLangCol + Get_ExcelLanguage()).Value
+        if _ret != r'':
             return _ret
+    # The language string was not found
+    if GenError:
+        P01.MsgBox(r'Error translation missing in sheet "Languages" for:' + vbCr + r'  '' + Desc + r''', vbCritical, r'Error: Translation missing')
     else:
-        _with13 = LSh
-        Row = Find_Language_Str_Row(Desc, Look_At)
-        if Row > 0:
-            _ret = _with13.Cells(Row, FirstLangCol + Get_ExcelLanguage()).Value
-            if __Get_Language_Str_Sub() != r'':
-                return _ret
-        # The language string was not found
-        if GenError:
-            P01.MsgBox(r'Error translation missing in sheet "Languages" for:' + vbCr + r'  '' + Desc + r''', vbCritical, r'Error: Translation missing')
-        else:
-            Debug.Print(r'*** Translation not found for:' + vbCr + Desc)
-            
-        # get English translation:
-    _ret = LSh.find_in_col_ret_col_val(Desc,FirstLangCol,FirstLangCol+1)
-    
-    if _ret and _ret!="":
-        return _ret
-    else:
-        return Desc
-    
+        Debug.Print(r'*** Translation not found for:' + vbCr + Desc)
+
     if Row > 0:
         _ret = _with13.Cells(Row, FirstLangCol + 1).Value
         # Use the Enlish text if available  ' 26.01.20:
-    if __Get_Language_Str_Sub() == r'':
+    if _ret == r'':
         _ret = Desc
     __Add_Entry_to_Languages_Sheet(Desc)
+    # Add the german text to the 'Languages' sheet
+        # 24.01.20:    
     return _ret
 
 def __Change_Lang_in_MultiPage(o):

@@ -62,6 +62,7 @@ from .XLC_Excel_Consts import *
 from .P01_Worksheetcalc import Calc_Worksheet
 from pathlib import Path
 import subprocess
+import proggen.M09_Translate as M09_Translate
 
 
 try:
@@ -1214,6 +1215,7 @@ class CWorksheet(object):
                 
         self.tksheet.bind("<<SheetModified>>", self.sheet_was_modified)
         self.tksheet.bind("<Double-Button-1>", self.EventWSdoubleclick)
+
         
         self.tksheet.popup_menu_add_command(
                     "Set Color",
@@ -1641,7 +1643,7 @@ class CWorksheet(object):
     def getSelectedColumn(self):
         currently_selected = self.tksheet.get_currently_selected()
         if currently_selected:
-            column = currently_selected.column + 1
+            column = currently_selected.column
             type_ = currently_selected.type_               
             if type_ in ["row", "column", "cell"]:
                 return column
@@ -3612,7 +3614,7 @@ class CSelection(object):
     def set_ColRange(self, newval):
         pass
     def get_ColRange(self):
-        selectedcol=ActiveSheet.getSelectedColumn()
+        selectedcol=ActiveSheet.getSelectedColumn() + 1
         if selectedcol != None:
             colrange=(selectedcol,selectedcol+1)
         else:
