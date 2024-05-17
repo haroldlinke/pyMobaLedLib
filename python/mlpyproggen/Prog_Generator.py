@@ -69,6 +69,8 @@ import proggen.M20_PageEvents_a_Functions as M20
 import pgcommon.G00_common as G00
 import proggen.Tabelle2 as T02
 
+import proggen.M09_Translate as M09_Translate
+
 def _T(text):
     """Translate text."""
     tr_text = text # M09.Get_Language_Str(text)
@@ -363,9 +365,10 @@ class Prog_GeneratorPage(tk.Frame):
         #    pass #test sheet.tablemodel.resetDataChanged()
         
         self.workbook.activate_sheet(start_sheet)
+        
+        self.bind_all("<Control-Shift-T>", M09_Translate.Translate_Selection)
             
-        
-        
+
         # ----------------------------------------------------------------
         # Standardprocedures for every tabpage
         # ----------------------------------------------------------------
@@ -616,8 +619,6 @@ class Prog_GeneratorPage(tk.Frame):
         self.controller.showFramebyName("ARDUINOMonitorPage")
         self.arduinoMonitorPage.update()
         F00.Arduino_Button_Click()
-    
-    
     
     def upload_to_ARDUINO_end(self,error_flag):
         pass
