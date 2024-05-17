@@ -44,6 +44,7 @@ The VBA Code of the PatternGenerator was translated by an enhanced version of th
   
 
 History of Change
+
 5.3.1- 17.05.2024
 correction:
 - crash when using mousewheel in macro tree and some other forms
