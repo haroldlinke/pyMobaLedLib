@@ -1,0 +1,7 @@
+webgrabber is a conversion of the tkinter program wsgui.py, which is a GUI front-end to websucker.py. The original websucker.py and webchecker.py files are located in your Python\Tools\webchecker directory.
+
+I've included the webchecker.py and websucker.py files with this sample because it isn't possible to import directly from the Tools\webchecker directory.
+
+This sample shows how to use a one-shot timer and a separate thread that communicates back to the GUI event loop via a Queue. It should also give a rough idea of the difference between a simple tkinter program and a simple PythonCard program, though the PythonCard program is not an exact conversion, since I decided to drop the option to have many grabbing processes active at once. If you want to do that it is simple to just start another copy of the webgrabber.py application.
+
+Enter a URL into the URL field and a directory you would like to save the results to. If no directory is entered, then the results will be saved to the webgrabber directory. Click to "Go" button to start the "grabbing". The default verbosity level is set at 2 so messages will appear in the console as each file is checked. A message will also appear in the statusbar. You can click "Cancel" or close the app at any time to stop the download. Once the download is complete, the statusbar will show "[done]". If you click "Go" without changing the URL or directory, all the files will be checked and only new files downloaded.

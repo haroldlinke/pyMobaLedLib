@@ -1,0 +1,143 @@
+===============
+Migration Guide
+===============
+
+Last changed 2004-08-25.
+
+Introduction
+------------
+The purpose of this guide is to help people migrate their programs written for PythonCardPrototype release 0.7.3.1 to release 0.8. For a complete list of changes, please refer to the changelog.txt file. All the samples and tools included with PythonCard have already been updated to the new API, so you can also look at that code for examples. Some of the documentation included with PythonCard may still refer to the older APIs. If you spot a mistake, please email me at altis@semi-retired.com and I will update the documentation for the next release.
+
+Version 0.8 is the first release on the way to finalizing the PythonCard API for a 1.0 release later this year or early 2005, whenever wxPython 2.6 is released. Like previous releases of the prototype package (PythonCardPrototype) you can expect changes from release to release until vesion 1.0 is done. One of the biggest changes to be aware of is that PythonCard is now keeping pace with each new wxPython release with the intent of basing the PythonCard 1.0 API on wxPython 2.6, thus the minimum requirements have been changed. wxPython 2.4.x will not be supported by PythonCard, there are simply too many changes and no effective way to maintain a code base that supports older wxPython releases. In addition, Python 2.2.x will not be supported.
+
+
+Minimum Requirements
+--------------------
+Python 2.3 or later and wxPython 2.5.2.8 or later.
+
+
+Package Name Change
+-------------------
+The main package name has changed from PythonCardPrototype to PythonCard. Since the package name has been changed it is possible to run older PythonCardPrototype programs even with the new package installed.
+
+
+Resource File Changes
+---------------------
+The Stack class was removed, so the first line of your .rsrc.py file needs to have the 'stack' and 'Stack' strings replaced with 'application' and 'Application' as shown below.
+::
+
+ { 'stack':{ 'type':'Stack',
+
+to
+
+::
+
+ { 'application':{ 'type':'Application',
+
+In addition, in your source, self.stack.app references are now just self.application.
+
+
+PythonCardApp Class Renamed
+---------------------------
+PythonCardApp was renamed to Application. The application initialization and startup code for your module will need to be updated to use the Application class. For example, here's the new code for the minimal sample.
+
+::
+
+ if __name__ == '__main__':
+     app = model.Application(Minimal)
+     app.MainLoop()
+
+
+Events
+------
+openBackground was renamed to initialize, so rename your on_openBackground event handlers to on_initialize.
+
+restore (inverse of minimize) and deactivate (inverse of activate) background window events were added.
+
+The event binding and dispatch system was completely rewritten and simplified for release 0.8. If you were using any of the internal event classes or relying on how events were bound and dispatched, you should double-check your code to make sure it still works. A complete discussion of the changes is not appropriate for this document, so please bring up any issues you have on the pythoncard-users mailing list.
+
+
+New-style Classes and Attributes (Properties)
+---------------------------------------------
+wxPython now uses new-style classes. This allowed the PythonCard components to be changed to use the property() function for attributes instead of __getattr__ and __setattr__ methods. Once again, this dramatically simplified the framework sources for components. In addition, we were able to remove get/set methods for position, size, foregroundColor, backgroundColor, etc. in the Background and CustomDialog classes and replace those get/set methods with attributes.
+
+
+selection and stringSelection Attributes
+----------------------------------------
+The Choice, ComboBox, List, RadioGroup components were updated to use 'selection' and 'stringSelection' attributes instead of mixed-capability 'selected' and 'selection' attributes. If you were using these attributes previously, you will have to update both your source and resource files.
+
+The correct way to get the result of a selection now is to use either the attribute 'selection' to retrieve the integer index, or 'stringSelection' for the text value; if you previously used functions such as getSelection() or getSelectionIndex() or getStringSelection() these need to be changed to use the attributes directly.
+
+mixedCase Method Names
+----------------------
+All methods in PythonCard exposed to user code now use the mixedCase naming style to distinguish PythonCard methods from wxPython, which uses the CamelCase style for method names. In the PythonCard shell, the wxPython method names are suppressed in the auto-complete popup window.
+
+
+wx Import Change
+----------------
+All imports from the wxPython.wx package have been changed to use the new wx package. For example:
+::
+
+ from wxPython import wx
+
+has been changed to
+
+::
+
+ import wx
+
+The biggest impact is that the wx prefix is no longer used (e.g. wx.wxFrame is now wx.Frame) in the framework or samples except for wxPython constants.
+
+
+Module Names Changes
+--------------------
+
+::
+
+ Old          New
+ -----------------------------
+ config.py    configuration.py
+ pom.py       component.py
+ res.py       resource.py
+
+
+Added Modules
+-------------
+timer.py contains a simple wx.Timer class wrapper.
+
+
+Deleted Modules
+---------------
+dispatch.py
+
+
+Dialogs
+-------
+The dialog module is now a thin wrapper around the wx.lib.dialogs module. The biggest change to your code is that the result of dialogs is now a DialogResults class instead of a dictionary. See the dialogs sample for examples of usage, but in general if you had something like result['accepted'] it will now be result.accepted.
+
+The order of the message and title args for any dialogs that take both has been reversed from previous versions of PythonCard. The message arg comes before title now. For example, 
+::
+
+ dialog.singleChoiceDialog(self, "message", "title", ['one', 'two', 'three'])
+
+Any optional style args now use wx constants rather the old dialog module aliases. For example, you'll need to use wx.TE_PASSWORD or wx.TE_MULTILINE for the textEntryDialog if you want one of those styles.
+
+Calendar Component
+------------------
+The Calendar component was changed to use the CAL_SEQUENTIAL_MONTH_SELECTION style. A style attribute may need to be added to the Calendar component in future releases to allow different calendar styles to be used.
+
+
+Image Component
+---------------
+PythonCard now uses wx.lib.statbmp.GenStaticBitmap on GTK for the Image component so that the Image component can get mouse events on all platforms. If you want to use a bitmap with transparency, then you'll also want to use the Image component to get the same appearance on all platforms.
+
+
+StatusBar
+---------
+statusbar.StatusBar a direct subclass of wx.StatusBar so it is now possible to provide your own StatusBar subclass to use instead of the default. See the createStatusBar method in model.py
+
+
+Miscellaneous
+-------------
+Renamed stc-styles.rc.cfg to stc-styles.cfg, but this shouldn't impact any user programs.
+

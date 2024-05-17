@@ -1,0 +1,76 @@
+{'type':'CustomDialog',
+    'name':'Template',
+    'title':'Dialog Template',
+    'position':(5, 5),
+    'size':(300, 197),
+    'components': [
+
+{'type':'TextField', 
+    'name':'fldHost', 
+    'position':(95, 10), 
+    'alignment':'left', 
+    'text':'127.0.0.1', 
+    },
+
+{'type':'TextField', 
+    'name':'fldPort', 
+    'position':(95, 33), 
+    'size':(48, -1), 
+    'alignment':'left', 
+    'text':'80', 
+    },
+
+{'type':'TextField', 
+    'name':'fldUsername', 
+    'position':(95, 57), 
+    'alignment':'left', 
+    'text':'guest', 
+    },
+
+{'type':'TextField', 
+    'name':'fldPassword', 
+    'position':(95, 81), 
+    'alignment':'left', 
+    'text':'guest', 
+    },
+
+{'type':'StaticText', 
+    'name':'stcHost', 
+    'position':(10, 10), 
+    'text':'Host:', 
+    },
+
+{'type':'StaticText', 
+    'name':'stcPort', 
+    'position':(12, 34), 
+    'text':'Port:', 
+    },
+
+{'type':'StaticText', 
+    'name':'stcPassword', 
+    'position':(13, 86), 
+    'text':'Password:', 
+    },
+
+{'type':'StaticText', 
+    'name':'stcUsername', 
+    'position':(11, 61), 
+    'text':'Username:', 
+    },
+
+{'type':'Button', 
+    'id':5100, 
+    'name':'btnOK', 
+    'position':(9, 119), 
+    'label':'OK', 
+    },
+
+{'type':'Button', 
+    'id':5101, 
+    'name':'btnCancel', 
+    'position':(101, 119), 
+    'label':'Cancel', 
+    },
+
+] # end components
+} # end CustomDialog

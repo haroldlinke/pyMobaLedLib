@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+    <meta name="author" content="Dan Shafer" />
+    <link rel="stylesheet" href="PythonCard.css" type="text/css" />
+    <title>PythonCard Walk-Through No. 2</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>PythonCard Documentation</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <h1>Creating a Complete PythonCard Application from Scratch</h1>
+    <h4>by Dan Shafer (<a href="mailto:pydan@danshafer.com">pydan@danshafer.com</a>)</h4>
+    <h3>Background</h3>
+    <p>This is the second in a series of PythonCard walk-through documents. It 
+    assumes you have either read and worked your way through 
+    <a href="walkthrough1.html">PythonCard Walk-Through No. 1</a> which teaches 
+    you the basics of working in the PythonCard environment or that you already 
+    understand those basics.</p>
+    <h3>Purpose and Scope</h3>
+    <p>The purpose of this walk-through is to walk you, step by step, through the
+    process of creating a PythonCard application. By the time you have finished 
+    this walk-through, you will:</p>
+    <ul>
+      <li>understand how PythonCard's GUI building facilities work</li>
+      <li>know how to create a starting point for a new PythonCard application</li>
+      <li>have a grasp of the basic event-handling architecture that gives 
+      PythonCard applications life</li>
+      <li>know how to create menus and menu items in PythonCard and to hook those
+      items up to actions</li>
+    </ul>
+    <p>Over the years as I've played with various GUI tools and development 
+    environments, I have traditionally created a simple counter application as a 
+    way of getting familiar with the tool's basic operation and gaining some 
+    nodding acquaintance with its language and architecture/API. When PythonCard 
+    appeared in my life courtesy of my old colleague Kevin Altis, I decided that 
+    I should do the same. Kevin encouraged me to document my efforts and this is 
+    the result.</p>
+    <p>This document walks you step by step through the process of creating an
+    intentionally simplistic PythonCard application. I don't claim that this is 
+    the best way to accomplish this objective, let alone the only one. It just 
+    happens to be the way I approached it. At the end of this tutorial, I will 
+    make a few observations about other things that I could have done that would 
+    make the example more instructive or interesting. Note that this tutorial 
+    describes how this process is handled in PythonCard 0.8.2. 
+    Continuing enhancements to the UI, especially in the resourceEditor, will
+    make the process more and more streamlined over time.</p>
+    <h3>The Application</h3>
+    <p>This simple application, the finished result of which is shown in Figure 1,
+    consists of three buttons and a text field. The text field holds a numeric 
+    value (represented as a string) which is manipulated by the three buttons.
+    The buttons add 1 to the current value displayed in the field, subtract 1
+    from that field's value, and reset the field's value to 0.</p>
+    <p class="imageCaption"><img src="images/wt2fig1.png" alt="Finished Counter Application" /><br />
+    Figure 1. Finished Counter Walk-Through Application</p>
+    <h3>The Application Creation Process</h3>
+    <p>Creating an application in PythonCard begins with the creation of a basic
+    structure. There are two ways to do this. One is to use the PythonCard 
+    Resource Editor (called resourceEditor.py), start with the basic empty
+    window, and code from scratch. The other is to copy an existing application's
+    folder, rename a few basic things, and begin with a somewhat more complete 
+    starting point. I'm taking the latter course here.</p>
+    <h3>The process in summary</h3>
+    <ol type="A">
+      <li>Run resourceEditor to create or modify an existing application.</li>
+      <li>Lay out the application's window in Resource Editor. </li>
+      <li>Script the components that will trigger actions (buttons and/or menus)</li>
+      <li>Cleaning up artifacts of the copied program. </li>
+    </ol>
+    <p>Let's go through those steps with my simple Counter tutorial.</p>
+    <h4>A. Run resourceEditor to modify an existing application.  </h4>
+    <ol>
+      <li>Make a copy of the &quot;minimal&quot; project folder in the samples 
+      folder of the PythonCard distribution. Put into its own folder called 
+      &quot;counter.&quot; (The folder name isn't important to PythonCard.)</li>
+      <li>Rename &quot;minimal.py&quot; to &quot;counter.py&quot; and &quot;
+      minimal.rsrc.py&quot; to &quot;counter.rsrc.py.&quot;</li>
+      <li>Launch resourceEditor, which is found in the PythonCard distribution's 
+      tools folder</li>
+      <li>Open the file counter.rsrc.py in the folder you just created. The 
+      window looks identical to the minimal application when it is running, 
+      except for the menu bar which remains the resourceEditor's menu bar since
+      we are running resourceEditor at the moment) rather than the Counter 
+      application's menu bar. Figure 2 depicts this start-up situation. 
+      resourceEditor is a &quot;live&quot; editor; the GUI components of the 
+      application are running while you edit the window layout.</li>
+    </ol>
+    <p class="imageCaption"><img src="images/wt2fig2.png" alt="Startup Screen for Walk-Through" /><br />
+    Figure 2. Startup Screen for Walk-Through Counter Application</p>
+    <h4>B. Laying out the window for the counter tutorial application.</h4>
+    <ol>
+      <li>Select the text field containing the words &quot;Hello PythonCard&quot; 
+      by clicking anywhere in it. </li>
+      <li>In the Property Editor window, select the &quot;text&quot; property in 
+      the right-hand list of properties for the field1 Text Field object. Select 
+      the words in the field and delete them with the Backspace key.</li>
+      <li>Type the number &quot;42&quot; (or some other number; I just happen to 
+      be a Douglas Adams fan) into the box.</li>
+      <li>Click Update.</li>
+      <li>In the Property Editor window, select the &quot;font&quot; property in 
+      the right-hand list of properties for the field1 Text Field object. Click 
+      on the &quot;Font&quot; button and set the font size to 24. [Note that 
+      there is a bug in the GTK version of wxPython 2.3.2.1 that prevents the 
+      font from being changed. This will be fixed in the next release of 
+      wxPython.]</li>
+      <li>Click Update.</li>
+      <li>Use the resize handles to shape the field so that the entire value 
+      &quot;42&quot; shows. Then position the field near the right edge of the 
+      window and approximately centered vertically. (You will probably need to 
+      resize the window itself; use the same technique for doing so on your 
+      system as you'd use for any window.)</li>
+      <li>Select the &quot;editable&quot; property of the Text Field object 
+      called field1 and uncheck the checkbox. (By making the field read-only, we 
+      avoid the necessity of error-checking that would be required if we let the 
+      user enter a value directly into the field.) </li>
+      <li>Click Update.</li>
+      <li>Select Save from the File menu to save the counter.rsrc.py resource 
+      file.</li>
+      <li>From the &quot;Components&quot; menu, select &quot;Button&quot;</li>
+      <!-- we need to enhance this with a description of Alex's dialogs -->
+      <li>In the Property Editor window, select the &quot;name&quot; property in 
+      the right-hand list of properties for the Button1 Button object. Change the 
+      default name to incrBtn (for &quot;increment button&quot;)</li>
+      <li>Click Update.</li>
+      <li>In the Property Editor window, select the &quot;label&quot; property in
+      the right-hand list of properties for the incrBtn Button object. Change the 
+      label from Button1 to Increment.</li>
+      <li>Click Update.</li>
+      <li>Position this button in the upper left portion of the window.</li>
+      <li>Repeat steps 11-15, but this time change the default name to decrBtn
+      (for &quot;decrement button&quot; and the label from Button1 to Decrement.
+      Remember to click the &quot;Update&quot; button in the Property Editor 
+      after setting each property.</li>
+      <li>Position the Decrement button below the Increment button, approximately 
+       in the middle of the window.</li>
+      <li>Repeat steps 11-15 one more time. Change the default 'name' to 
+      'resetBtn' and the 'label' to 'Reset'.</li>
+      <li>Position the Reset button to the bottom of the vertical row of three
+       buttons.</li>
+      <li>Save your work.</li>
+    </ol>
+    <p>Your project should now look like Figure 3.</p>
+    <p class="imageCaption"><img src="images/wt2fig3.png" alt="Project With Buttons Added" /><br />
+    Figure 3. Project With Buttons Added</p>
+    <h4>C. Scripting the Buttons</h4>
+    <p>Application scripts are stored in the Python (.py) file that represents
+    the application. In this case, that means they are in the file counter.py.</p>
+    <ol>
+      <li>Using PythonCard's built-in codeEditor or your favorite Python code 
+      editor, open the file counter.py. It is a small file with a self-explanatory
+      comment and only one event-handling script right now (which responds to the
+      user selecting Exit from the File menu). codeEditor is found in the tools 
+      directory of your PythonCard distribution.</li>
+      <li>Delete the last line of the class definition, which currently says <span class="code">pass</span>.</li>
+      <li>Enter the following script, remembering that Python is white-space 
+      aware so that indentations of lines are significant. Since this is a definition
+      of a method of the class, the first line will be indented, and subsequent 
+      lines will be indented twice.</li>
+    </ol>
+<pre>
+    def on_incrBtn_mouseClick(self, event):
+        startValue = int(self.components.field1.text)
+        endValue = startValue + 1
+        self.components.field1.text = str(endValue)
+</pre>
+    <p>Let's examine this script because the others we will write are all but 
+    identical.</p>
+    <p>The opening line of a PythonCard event handler always starts with the 
+    keyword &quot;def&quot; which is standard Python for function and method 
+    definition. The next expression in the line starts with the PythonCard 
+    keyword &quot;on_&quot; and is followed by the name of the component we are 
+    scripting. In this case, it's the Increment Button, whose name is &quot;
+    incrBtn&quot;. After another connecting underscore, the last portion of the 
+    handler definition line defines the event for which this handler is to be 
+    called. All events take the same basic set of parameters as shown above.</p>
+    <p>The next lines are simple Python for the most part. The first line defines 
+    a variable called &quot;startValue&quot; to which we assign the current 
+    contents of the field, coerced to an integer so we can perform arithmetic on 
+    it. The second line adds one to the value we just retrieved. The third line 
+    assigns this new result to the field's text property after coercing it to a 
+    string.</p>
+    <ol start="4">
+      <li>As long as we're in the application's main code file, let's also make
+      our program a little more internally consistent. Change the name of the
+      class we're creating from Minimal to Counter. At the end of the file, 
+      replace &quot;Minimal&quot; with &quot;Counter&quot; in the line that 
+      begins &quot;app = &quot;. The result should look like Figure 4.</li>
+    </ol>
+    <p class="imageCaption"><img src="images/wt2fig4.png" alt="Code Changes in counter.py" /><br />
+    Figure 4. Code Changes in counter.py</p>
+    <ol start="5">
+      <li>Save your work.</li>
+      <li>From the resourceEditor's File menu, select &quot;Run.&quot;</li>
+      <li>When the Counter application appears, click on the Increment button and
+      watch the displayed value in the text field to confirm that it is 
+      incrementing as expected.</li>
+      <li>Exit the application.</li>
+      <li>Back in your Python Editor, copy the function we just created for the
+      Increment button and paste it under that function, being sure indentation
+      remains correct.</li>
+      <li>Edit the new handler to change the name of the button from incrBtn to
+      decrBtn and the '+' sign to a minus (' - ') sign.</li>
+      <li>Create a final handler for the Reset button that looks like this:</li>
+    </ol>
+<pre>
+    def on_resetBtn_mouseClick(self, event):
+        self.components.field1.text = "0"
+</pre>
+    <p>Figure 5 shows you what your editor window should look like now.</p>
+    <p class="imageCaption"><img src="images/wt2fig5.png" alt="Editor Showing Final Code Changes" /><br />
+    Figure 5. Editor Showing Final Code Changes</p>
+    <ol start="12">
+      <li>Save your work and test the application again to be sure it still 
+      works.</li>
+    </ol>
+    <p>What if the application doesn't run? In that case, you can use the &quot;
+    Run with interpreter&quot; command under the &quot;File&quot; menu to get a 
+    look at what errors, if any, are occurring. To see this in action, let's 
+    introduce a typographical error into counter.py. (You can skip this 
+    discussion if you either already know how to do this or are confident that 
+    you'll never create a PythonCard bug that will cause the programs to fail.)</p>
+    <ol>
+      <li>Open counter.py in your Python editor if it isn't already open.</li>
+      <li>Change the word &quot;class&quot; to &quot;classy&quot; and save the 
+      program.</li>
+      <li>Run the application as you have been doing. You will probably see a 
+      brief console window appear and then disappear. Nothing else happens.</li>
+      <li>From the File menu in resourceEditor, choose &quot;Run With Interpreter.
+      &quot; This launches your PythonCard application with the Python interpreter
+      in a command console for your system so that you can see what error is being
+      generated.</li>
+      <li>You should see a syntax error indicated in the new window. It should be
+      displaying the line where we created the intentional typo. (See Figure 6)</li>
+    </ol>
+    <p class="imageCaption"><img src="images/wt2fig6.png" alt="Error Shown in Console Window" /><br />
+    Figure 6. Error Shown in Console Window</p>
+    <ol start="6">
+      <li>Press Ctrl-Z and Enter to terminate the Python interpreter and close 
+      the console window.</li>
+      <li>Go back to the counter.py file and fix the line. Save the file and then
+      re-run the application either from the resourceEditor's File menu or from
+      the command line.</li>
+    </ol>
+    <h4>D. Cleaning up artifacts of the original program</h4>
+    <p>We already took care of changing the class name and the runtime invocation
+    name of the application from Minimal to Counter. Now let's change the resource
+    file to reflect the program's new name.</p>
+    <p>In resourceEditor, go to the Edit menu and select &quot;Background Info...
+    &quot; Change the name of the application to &quot;PythonCard Counter&quot; 
+    and click OK.</p>
+    <p>That ends the basic aspect of this second PythonCard walk-through. You now
+    have a finished and working PythonCard application.</p>
+    <h3>Optional Step: Adding a Menu</h3>
+    <p>We'll add one optional step for a program like Counter, one which you may
+    well need to take in any application of even a little greater complexity than
+    this one. We'll add a menu to the application.</p>
+    <ol>
+      <li>In the resourceEditor, go to the Edit menu and choose &quot;Menu Editor
+      ...&quot;</li>
+      <li>A dialog box appears (see Figure 7) with the current menu structure 
+      displayed on the left. As you can see, the Counter application, which was
+      started from the sample application called minimal., has a single menu with
+      a single menu choice.</li>
+    </ol>
+    <p class="imageCaption"><img src="images/wt2fig7.png" alt="Opening Screen of Menu Editor" /><br />
+    Figure 7. Opening Screen of Menu Editor</p>
+    <ol start="3">
+      <li>Click on the "New Menu" button. You should see a dialog box like the one
+      in Figure 8.</li>
+    </ol>
+    <p class="imageCaption"><img src="images/wt2fig8.png" alt="New Menu Dialog Box" /><br />
+    Figure 8. New Menu Item Dialog Box</p>
+    <ol start="4">
+      <li>In the editing area to the right of the display showing the menu, change
+      the name of the menu to menuCounterMenu and its label to Counter.</li>
+      <li>Now click on &quot;New Menu Item&quot; and add a new menu item named 
+      &quot;counterMenuIncrement&quot;. Make its label &quot;Increment&quot;.</li>
+      <li>Click on &quot;New Menu Item&quot; again and do the same for new menu 
+      items &quot;Decrement&quot; and &quot;Reset&quot;. When you're done your 
+      work should look something like Figure 9.</li>
+    </ol>
+    <p class="imageCaption"><img src="images/wt2fig9.png" alt="Menu Editor With All Menu Items Defined" width="480" /><br />
+    Figure 9. Menu Editor With All Menu Items Defined</p>
+    <ol start="7">
+      <li>Save your application in resourceEditor.</li>
+      <li>Open the counter.py Python code file in your Python editor. Add the 
+      handler name shown here:</li>
+    </ol>
+<pre>
+    def on_counterMenuIncrement_select(self, event):
+</pre>
+    <ol start="9">
+      <li>Copy the three lines of the function in <span class="code">on_incrBtn_mouseClick</span>
+      and paste them into the definition of this menu function. (Be sure levels
+      of indentation are consistent.)</li>
+      <li>Follow the same procedure for hooking up the Decrement and Reset menu
+      options. When you're finished, your code window should look something like
+      Figure 10.</li>
+    </ol>
+    <p class="imageCaption"><img src="images/wt2fig10.png" alt="All Menu Items Programmed and Ready to Go" /><br />
+    Figure 10. All Menu Items Programmed and Ready to Go</p>
+    <ol start="11">
+      <li>Save your work.</li>
+    </ol>
+    <p>(You'll notice that the new menu doesn't appear in your application in 
+    resourceEditor. Rest assured it will be there when you run the application
+    outside resourceEditor.)</p>
+    <ol start="12">
+      <li>Run the application (see Figure 11) and confirm everything works as
+      expected.</li>
+    </ol>
+    <p class="imageCaption"><img src="images/wt2fig11.png" alt="Finished C ounter Application With Counter Menu" /><br />
+    Figure 11. Finished Counter Application With Counter Menu</p>
+    <p>(<strong>NOTE</strong> that it would obviously be better design to factor 
+    out the duplicated code into methods that handle the increment, decrement and
+    reset buttons and menus as processes and then to call those methods from
+    within the event handlers. We leave that you as an exercise for the reader.
+    Don't you hate when we do that to you?)</p>
+    <p><a href="walkthrough3.html">Continue on to Walk-Through 3</a></p>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.15 $ : $Author: alextweedly $ : Last update $Date: 2006/04/06 11:00:25 $</p>
+    </div> <!-- end of content -->
+  </body>
+</html>

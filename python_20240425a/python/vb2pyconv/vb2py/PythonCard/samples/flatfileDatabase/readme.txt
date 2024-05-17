@@ -1,0 +1,5 @@
+flatfileDatabase implements persistant storage, transparent loading and saving of the data to a separate text file. The limitation on data size is that all data is read into memory when the application starts up and is written to disk when the application exits.
+
+This is not a robust storage solution, so by default a backup of the data file is made prior to writing the new file. [KEA not implemented yet 2002-04-22]. Obviously, there will be startup and shutdown delays with the app if you have a large set of data; large is relative ;-) If the app crashes for some reason before making a clean exit (this is extremely unlikely) then whatever changes were made since the last save will be lost. I went ahead and added a File->Save menu item so that the user could force a data save while they're using the app.
+
+The flatfile, textIndexer, and addresses sample provide the start of a generic transparent data storage model for PythonCard that will eventually be available to all PythonCard apps that want to use it. Patrick O'Brien's addressesZODB sample explores the same issues using ZODB as the storage format.

@@ -1,0 +1,411 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+		<title>The official U.S. time - clock</title>
+		<script language="javascript1.1"><!--
+var ClientRecieveTime=new Date();
+
+// BEGIN - NIST DYNAMIC DATA /////////////////////////////
+
+
+var NISTSendTime = new Date( "July 22, 2001 20:00:57");
+var QueryTimeZone = -7;
+var QueryTimeZoneOffsetMin = -420
+var QueryTimeZoneName = "Pacific";
+var QueryDSTString = "Daylight Saving Time";
+
+// END - NIST DYNAMIC DATA ////////////////////////////////////
+
+
+// convert NIST time to ms
+var NISTSendTimeGMTms = NISTSendTime.getTime() ;
+
+// NIST start time in the query time zone
+var QueryTimeZoneOffset = ( QueryTimeZoneOffsetMin * 60 * 1000 ) ;
+
+// Client start time in some time zone
+var ClientRecieveTimems = ClientRecieveTime.getTime() ;
+
+// what timezone does your computer think it is? - in minutes
+var ClientTimeZone = Math.floor(NISTSendTime.getTimezoneOffset()) ;
+
+var ClientNISTDelta = Math.floor(NISTSendTimeGMTms - ClientRecieveTimems);
+// -->
+		</script>
+		<csscriptdict>
+			<script><!--
+CSStopExecution = false;
+CSInit = new Array;
+function CSScriptInit() {
+idxArray = new Array;
+for(var i=0;i<CSInit.length;i++)
+	idxArray[i] = i;
+CSAction2(CSInit, idxArray);
+}
+CSAg = window.navigator.userAgent; CSBVers = parseInt(CSAg.charAt(CSAg.indexOf("/")+1),10);
+function IsIE() { return CSAg.indexOf("MSIE") > 0;}
+function CSIEStyl(s) { return document.all.tags("div")[s].style; }
+function CSNSStyl(s) { return CSFindElement(s,0); }
+function CSFindElement(n,ly) { if (CSBVers < 4) return document[n];
+	var curDoc = ly ? ly.document : document; var elem = curDoc[n];
+	if (!elem) { for (var i=0;i<curDoc.layers.length;i++) {
+		elem = CSFindElement(n,curDoc.layers[i]); if (elem) return elem; }}
+	return elem;
+}
+function CSButtonReturn () {
+	var bAgent = window.navigator.userAgent; 
+	var bAppName = window.navigator.appName;
+	if ((bAppName.indexOf("Explorer") >= 0) && (bAgent.indexOf("Mozilla/3") >= 0) && (bAgent.indexOf("Mac") >= 0))
+		return false; // follow link
+	else return true; // follow link
+}
+CSIm = new Object();
+function CSIShow(n,i) {
+	if (document.images) {
+		if (CSIm[n]) {
+			var img = (!IsIE()) ? CSFindElement(n,0) : document[n];
+			if (img && typeof(CSIm[n][i].src) != "undefined") {img.src = CSIm[n][i].src;}
+			if(i != 0)
+				self.status = CSIm[n][3];
+			else
+				self.status = " ";
+			return true;
+		}
+	}
+	return false;
+}
+function CSILoad(action) {
+	im = action[1];
+	if (document.images) {
+		CSIm[im] = new Object();
+		for (var i=2;i<5;i++) {
+			if (action[i] != '') { CSIm[im][i-2] = new Image(); CSIm[im][i-2].src = action[i]; }
+			else CSIm[im][i-2] = 0;
+		}
+		CSIm[im][3] = action[5];
+	}
+}
+CSStopExecution = false;
+
+function CSAction(array) { 
+	return CSAction2(CSAct, array);
+}
+function CSAction2(fct, array) { 
+	var result;
+	for (var i=0;i<array.length;i++) {
+		if(CSStopExecution) return false; 
+		var actArray = fct[array[i]];
+		var tempArray = new Array;
+		for(var j=1;j<actArray.length;j++) {
+			if((actArray[j] != null) && (typeof(actArray[j]) == "object") && (actArray[j].length == 2)) {
+				if(actArray[j][0] == "VAR") {
+					tempArray[j] = CSStateArray[actArray[j][1]];
+				}
+				else {
+					if(actArray[j][0] == "ACT") {
+						tempArray[j] = CSAction(new Array(new String(actArray[j][1])));
+					}
+				else
+					tempArray[j] = actArray[j];
+				}
+			}
+			else
+				tempArray[j] = actArray[j];
+		}			
+		result = actArray[0](tempArray);
+	}
+	return result;
+}
+CSAct = new Object;
+
+// --></script>
+		</csscriptdict>
+		<csactiondict>
+		<script><!--
+CSInit[CSInit.length] = new Array(CSILoad,/*CMP*/'change time zone',/*URL*/'images/clock/changetz4.gif',/*URL*/'images/clock/changetz3.gif',/*URL*/'','');
+CSInit[CSInit.length] = new Array(CSILoad,/*CMP*/'home',/*URL*/'images/clock/clockhome1.gif',/*URL*/'images/clock/clockhome2.gif',/*URL*/'','');
+CSInit[CSInit.length] = new Array(CSILoad,/*CMP*/'problems',/*URL*/'images/prob3.gif',/*URL*/'images/prob4.gif',/*URL*/'','');
+// --></script>
+		</csactiondict>
+	</head>
+
+ <body bgcolor="black" onload="CSScriptInit();">
+  <center>
+   <table border="0" cellpadding="0" cellspacing="0" frame="" width="100%" height="93%">
+    <tr align="center" valign="middle">
+     <td>
+      <table border="0" cellpadding="0" cellspacing="0">
+       <tr>
+        <td></td>
+        <td align="right">
+        <a href="timezone.cgi?Pacific/d/-8"><img src="images/javaoffdk.gif" vspace="1" width="157" height="5" name="IsJava" border="0" alt="Switch to non-animated version of this page (without Java)"></a>
+</td>
+        <td></td>
+       </tr>
+       <tr>
+        <td colspan="3" bgcolor="#ffcd38"><spacer type="block" width="1" height="1"></td>
+       </tr>
+       <tr>
+        <td bgcolor="#ffcd38"><spacer type="block" width="1" height="1"></td>
+        <td>
+         <table border="0" cellpadding="0" cellspacing="0" frame="" width="480" bgcolor="#00695e"  background="images/bgndteal.gif">
+          <tr>
+           <td width="21" rowspan="7" valign="top" background="images/starstripe-bg.jpg"><img height="416" width="21" src="images/starstripe.jpg"></td>
+           <td><img height="26" width="372" src="images/rightnow3.gif" border="0" hspace="5" vspace="5" alt="Right now, the official U.S. time is:"></td>
+          </tr>
+          <tr>
+           <td align="center">
+           
+  <applet code="utcnist4.class" codebase="/" width="350" height="100" ignore>
+   <param name="MINUTESOFFSET" value="-420">
+   <param name="BACKGROUNDCOLOR" value="0x00695E">
+   <param name="FOREGROUNDCOLOR" value="0xFFFFEE">
+  </applet>
+</td>
+										</tr>
+										<tr>
+											<td align="center"><img height="3" width="438" src="images/clock/horz2line.gif" vspace="5"></td>
+										</tr>
+										<tr valign="middle">
+											<td align="center"><font size="6">
+												<table border="0" cellpadding="0" cellspacing="4" frame="">
+													<tr>
+														<td><a href="/" onmouseover="return CSIShow(/*CMP*/'button2',1)" onmouseout="return CSIShow(/*CMP*/'button2',0)" onclick="return CSButtonReturn()"><csobj w="74" h="39" t="Button" ht="images/clock/changetz3.gif"><a href="/" onmouseover="return CSIShow(/*CMP*/'change time zone',1)" onmouseout="return CSIShow(/*CMP*/'change time zone',0)" onclick="return CSButtonReturn()"><img src="images/clock/changetz4.gif" width="74" height="39" name="change time zone" border="0"></a></csobj></a></td>
+														<td></td>
+														<td align="center"><font color="#c7ee59" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">You have chosen the <b>
+															<script language="JavaScript1.2"><!--
+document.write ( QueryTimeZoneName );
+// -->
+															</script>
+															timezone</b></font><br>
+															<font size="2" color="#c7ee59" face="Arial,Helvetica,Geneva,Swiss,SunSans-Regular">
+															<script language="JavaScript1.2"><!--
+if ( Math.floor (QueryTimeZone) < 0) 
+  document.write ( ' Coordinated Universal Time ' + QueryTimeZone  + ' hours; ' );
+else
+  document.write ( ' Coordinated Universal Time +' + QueryTimeZone  +  ' hours; ' );
+
+document.write (QueryDSTString + '.');
+
+
+// -->
+															</script>
+															</font></td>
+															<td></td>
+							<td align="right"><csobj w="74" h="39" t="Button" ht="images/prob4.gif"><a href="about.html" onmouseover="return CSIShow(/*CMP*/'problems',1)" onmouseout="return CSIShow(/*CMP*/'problems',0)" onclick="return CSButtonReturn()"><img src="images/prob3.gif" width="74" height="39" name="problems" border="0"></a></csobj></a></td>
+							   						
+													</tr>
+												</table>
+												</font></td>
+										</tr>
+										<tr>
+											<td align="center"><img height="3" width="438" src="images/clock/horz2line.gif" vspace="5"></td>
+										</tr>
+										<tr>
+											<td align="center">
+												<table border="0" cellpadding="0" cellspacing="0" frame="">
+													<tr>
+														<td width="77" align="center" valign="top"></td>
+														<td width="296"><img height="160" width="300" src="images/xearths/night.jpg" name="xearth"></td>
+														<td width="78" align="left" valign="bottom"><img height="120" width="46" src="images/clock/sunshine.gif" hspace="3" vspace="5"></td>
+													</tr>
+													<tr>
+														<td width="77"></td>
+														<td width="296" align="center">&nbsp;</td>
+														<td width="78"></td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td align="center">
+												<table border="0" cellpadding="0" cellspacing="0">
+													<tr>
+														<td colspan="2"><img height="11" width="221" src="images/timeby.gif"></td>
+													</tr>
+													<tr>
+														<td align="right"><a href="about.html"><img height="17" width="118" src="images/aboutsite_sm.gif" border="0"></a></td>
+														<td><a href="exhibits.html"><img height="17" width="102" src="images/timeexhibits_sm.gif" border="0"></a></td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+								</td>
+								<td bgcolor="#ffcd38"><spacer type="block" width="1" height="1"></td>
+							</tr>
+							<tr>
+								<td colspan="3" bgcolor="#ffcd38"><spacer type="block" width="1" height="1"></td>
+							</tr>
+						</table>
+						<br clear="all">
+						<csobj w="301" h="34" t="Button" ht="images/clock/clockhome2.gif"><a href="/" onmouseover="return CSIShow(/*CMP*/'home',1)" onmouseout="return CSIShow(/*CMP*/'home',0)" onclick="return CSButtonReturn()"><img src="images/clock/clockhome1.gif" width="301" height="34" name="home" border="0"></a></csobj></td>
+				</tr>
+			</table>
+			<p>&nbsp;
+			<script language="JavaScript1.2"><!--
+updatexearthImage();
+
+function updatexearthImage() {
+
+  // get the computer's date
+  var Thisdate = new Date();
+  // convert to NIST date, using offset calculated in ClientNISTDelta
+  ThisMilliseconds =  Thisdate.getTime() + ClientNISTDelta ;
+
+  document.images['xearth'].src = xearthSrc(ThisMilliseconds);
+
+  setTimeout("updatexearthImage()", 10000);
+}
+
+function xearthSrc(ThisMilliseconds) {
+
+var ssue = ThisMilliseconds / 1000;
+var TWOPI = 2 * Math.PI;
+var EpochStart = 631065600;
+var DaysSinceEpoch = (ssue - EpochStart) / (24*3600);
+
+var RadsPerDay = TWOPI / 365.242191;
+
+var Epsilon_g = 279.403303 * (TWOPI / 360);
+var OmegaBar_g = 282.768422 * (TWOPI / 360);
+var Eccentricity = 0.016713;
+
+var MeanObliquity = 23.440592 * (TWOPI / 360);
+
+//Compute lambda = sun_ecliptic_longitude(ssue)
+//Begin sun_ecliptic_longitude
+  var D = DaysSinceEpoch;
+  var N = RadsPerDay * D;
+  N = N % TWOPI;
+  if (N < 0) N += TWOPI;
+
+  var M_sun = N + Epsilon_g - OmegaBar_g;
+  if (M_sun < 0) M_sun += TWOPI;
+
+  //Compute var E = solve_keplers_equation(M_sun);
+  //Begin solve_keplers_equation
+    var E = M_sun;
+    var delta;
+    while (1) {
+      delta = E - (Eccentricity*Math.sin(E)) - M_sun;
+      if (Math.abs(delta) <= 1E-10) break;
+      E -= delta / (1 - (Eccentricity*Math.cos(E)));
+    }
+  //End solve_keplers_equation
+
+  var lambda = OmegaBar_g + (2 * Math.atan(Math.sqrt((1+Eccentricity) / (1-Eccentricity)) * Math.tan(E/2)));
+//End sun_ecliptic_longitude
+
+
+//Compute ecliptic_to_equatorial(lambda, 0.0, alpha, delta)
+  var sin_e = Math.sin(MeanObliquity);
+  var cos_e = Math.cos(MeanObliquity);
+  var alpha = Math.atan2(Math.sin(lambda)*cos_e, Math.cos(lambda));
+  var delta = Math.asin(sin_e*Math.sin(lambda));
+//End ecliptic_to_equatorial
+
+//Compute GST(ssue)
+  //Compute JD = julian_date(year, month, day)
+    var TmpDate = new Date(ThisMilliseconds);
+	var OffsetMilliseconds = ThisMilliseconds ; //+ (60000*TmpDate.getTimezoneOffset());
+    var ThisDate = new Date(OffsetMilliseconds);
+    var y = ThisDate.getYear();
+      if (y < 1000) y += 1900;
+    var m = ThisDate.getMonth() + 1;
+    var z = ThisDate.getDate();
+    
+//	if ((m==1) || (m==2)) {
+//	  y -= 1;
+//	  m += 12; }
+
+	var A = y / 100;
+	var B = 2 - A + (A/4);
+	var C = 365.25 * y;
+	var D = 30.6001 * (m+1);
+
+	var JD = B + C + D + z + 1720994.5;
+  //End julian_date
+
+  var T = (JD - 2451545) / 36525;
+  var T0 = ((((T + 2.5862E-5) * T) + 2400.051336) * T) + 6.697374558;
+
+  T0 = T0 % 24;
+  if (T0 < 0) T0 += 24;
+
+  var UT = ThisDate.getHours() + ((ThisDate.getMinutes() + (ThisDate.getSeconds() / 60)) / 60);
+ 
+  T0 += UT * 1.002737909;
+  T0 = T0 % 24;
+  if (T0 < 0) T0 += 24;
+//End GST
+
+var tmp = alpha - ((TWOPI/24)*T0);
+while (tmp < -Math.PI) {tmp += TWOPI;};
+while (tmp > Math.PI) {tmp -= TWOPI;};
+
+var lon = tmp * (360/TWOPI);
+var lat = delta * (360/TWOPI);
+
+//Generate the path of the appropriate xearth image
+
+//lon is even
+lon = Math.round(lon);
+//if (lon & 1 != 0) {
+if (lon % 2 != 0) {
+  if (lon > 0) {
+    lon -= 1;
+    }
+  else {
+    lon += 1;
+    }
+  }
+  
+  // force even for mozilla 4.01-4.05
+  // Consolidate lines, 4/5/01 - PRF
+  lon = Math.round(lon/2) * 2;
+  
+if (lon <= -181) lon = -180;
+if (lon >= 181) lon = 180;
+
+//lat is odd
+lat = Math.round(lat);
+//if (lat & 1 == 0) {
+if (lat % 2 == 0) {
+  if (lat > 0) {
+    lat -= 1;
+    }
+  else {
+    lat += 1;
+    }
+  }
+  
+  // force odd for mozilla 4.01-4.05
+  // Fixed broken algorithm, 4/5/01 - PRF
+  lat =  (Math.round(lat/2 - 1) * 2) + 1;
+  
+  
+if (lat <= -24) lat = -23;
+if (lat >= 24) lat = 23;
+
+var latStr; var lonStr;
+if (lat < 0) 
+  latStr = (-lat) + "S";
+else 
+  latStr = lat + "N";
+
+if (lon < 0) 
+  lonStr = (-lon) + "S";
+else 
+  lonStr = lon + "N";
+
+return "images/xearths/" + latStr + "/" + lonStr + ".jpg";
+//return lon;
+}
+// -->
+			</script>
+		</center>
+	</body>
+
+</html>

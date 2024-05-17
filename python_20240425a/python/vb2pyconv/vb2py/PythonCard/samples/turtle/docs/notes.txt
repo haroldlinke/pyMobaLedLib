@@ -1,0 +1,30 @@
+Notes
+
+Revision: $Revision: 1.1 $
+Date:     $Date: 2001/08/06 21:15:05 $
+
+Some Goals
+An abstract base module should be suitable for subclasses such that the subclasses can implement features suitable to a given output device: ascii, wxPython, tk, PostScript or some other non-bitmap format, external turtle robot most likely controlled via the serial port (Lego Mindstorms?). The robot could be used to draw large patterns. [Note that in some cases the underlying logic would have to change since in the case of a robot a plot(x, y) command would require an implicit: save pen state, save current x, y, penUp, goto x, y, penDown, do the plot, penUp, restore saved x, y, restore pen state, etc. or something like that.]
+
+The wxTurtle module should be suitable for use in applications other than the PythonCard sample. Guido's turtle.py seems difficult to use as a module in a different app, but maybe I just don't understand its use?!
+
+Support a fast turtle (current version) as well as throttling and a visible turtle so that regardless of machine speed the user can see exactly what the turtle is doing.
+
+Use of wxTurtle should conform to Python programming standards, not attempt to simulate logo. If you learn to program using wxTurtle, then that knowledge should apply to other programming projects and wxTurtle should support Python programming constructs without any extra parsing overhead.
+
+support multiple turtles simply by creating multiple objects
+t1 = turtleCoat()
+t2 = turtleCoat()
+t3 = turtleCoat()
+
+Each turtle can have its own coordinate system, pen attributes such as width, color, line style (dotted, hatched), line ending (rounded), etc. Since the underlying drawing is mostly likely done within a single graphics canvas any routine that does actual drawing will need to set the current color... prior to drawing. The safest thing to do would be to save the current settings, then set them according to the current turtle, then restore the old settings, but it is probably simpler to just overwrite the current settings since we can probably be sure that the next turtle doing some drawing will set the variables as well. If the overhead is high for the setup, then a class can be created that shares color settings, etc. among turtles.
+
+It may be possible to have each turtle in a separate thread and draw independently, but probably not unless all the components are thread safe. More likely would be sequential drawing, so if there was a list containing three turtle objects a loop... could do an operation such as forward and right on each turtle in sequence to get interesting patterns. The initial states (color, angle) would be different for each turtle.
+
+With wxPython need a way to copy the current canvas contents to an offscreen buffer, then when the window gets a paint event like OnPaint, the offscreen buffer would be copied back to the canvas. The offscreen buffer would either be automatically updated after each drawing operation (slow) or during some kind pause in processing or explicitly in the code.
+
+I think the Logo coordinate system wraps.
+
+support basic Logo turtle graphic commands and their abbreviations, plus Guido's version. Don't support various capitalizations, always use Python standard such as "showTurtle" instead of "ShowTurtle". Also, some turtle graphic implementations have different names for the same command such as ClearGraphics (cg) for ClearScreen (cs), so I have to decide whether to support lots of aliases for commands to simplify porting code from other sources at the risk of users of wxTurtle having too many ways of doing the same thing and making code hard to read.
+
+If all you want to do is plot points or draw lines using a cartesian coordinate system then wxTurtle is overkill and actually slows down the drawing if you wanted to skip setting the pen. However, it is probably convenient to have simple drawing in wxTurtle to hide some of the setup... of accessing wxPython/wxWindows drawing routines directly. In addition, wxTurtle will eventually have a virtual coordinate space so you can adjust scaling, the 0,0 point offsets, etc. so any drawing code like chaos or hopalong will benefit from these additions.

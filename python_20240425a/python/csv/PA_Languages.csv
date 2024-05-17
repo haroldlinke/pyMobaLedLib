@@ -1,0 +1,1581 @@
+;;"Attention: Spelling errors in the German text must be corrected here AND in the program ! Otherwise the text is not recognized the next time ;-(";"Leading and tailing space characters are importand. Also mace sude that qouotes are placed correctly at the bebinning or end of a message.
+The '|' is used to mark a new line.";Version 0.7 by Misha;Version 0.7 by Misha;;;
+Type;Param;German;English;Nederlands (Dutch);French;;;
+Cell;D2;Erste RGB LED: ;First RGB LED: ;Eerste RGB LED: ;Première LED RVB:;;;
+Cell;D3;Startkanal der RGB LED: ;Start channel first RGB LED: ;Start kanaal eerste RGB LED: ;Canal de démarrage de la LED RVB:;;;
+Cell;D4;Schalter Nummer: ;Switch number: ;Schakelaar nummer: ;Numéro de commutateur:;;;
+Cell;D5;Anzahl der Ausgabe Kanäle: ;Number of output channels: ;Aantal uitgangs kanalen: ;Nombre de canaux de sortie:;;;
+Cell;D6;Bits pro Wert: ;Bits per value: ;Aantal Bits per waarde: ;Bits par valeur:;;;
+Cell;D7;Wert Min: ;Minimal value: ;Minimale waarde: ;Valeur min:;;;
+Cell;D8;Wert Max: ;Maximal value: ;Maximale waarde: ;Valeur max:;;;
+Cell;D9;Wert ausgeschaltet: ;Value off: ;Uitgeschakelde waarde: ;Valeur désactivée:;;;
+Cell;D10;Mode: ;Mode: ;Modus: ;Mode:;;;
+Cell;D11;Analoges Überblenden: ;Analog fading: ;Analoge regeling: ;Fondu enchaîné analogique:;;;
+Cell;D12;Goto Mode: ;Goto mode: ;Goto modus: ;Mode Goto:;;;
+Cell;D13;Goto Aktivierung: ;Goto activation:;Goto aktivering: ;Goto activé:;;;
+Cell;D14;Grafische Anzeige: ;Grafical display: ;Grafische weergave: ;Affichage graphique:;;;
+Cell;D15;Spezial Mode: ;Special mode: ;Speciale modus: ;Mode spécial:;;;
+Cell;D16;RGB Modul Nummer: ;RGB module number: ;RGB module nummer: ;Numéro de module RVB:;;;
+Cell;D17;Charlieplexing LED Zuordnung: ;Charlieplexing LED assignement: ;Charlieplexing LED toewijzing: ;Cartographie LED Charlieplexing:;;;
+Cell;D18;Analoge Eingänge: ;Analog inputs: ;Analoge ingangen: ;Entrées analogiques:;;;
+Cell;D20;Ergebnis: ;Result: ;Resultaten: ;Résultat:;;;
+Cell;D22;Makro Name: ;Macro name: ;Macro naam: ;Nom de la macro:;;;
+Cell;D23;Makro: ;Macro: ;Macro: ;Macro: ;;;
+;;;;;;;;
+Cell;E27; Wenn gleiche Zeiten verwendet werden, dann sollten nur die ersten Zeiten eingetragen werden. Bei leeren Spalten werden die vorangegangenen Zeiten wiederholt. Das reduziert die Anzahl der Timing Parameter.;If same times are used only the first times should be entered. For empty columns, the previous times are repeated. This reduces the number of timing parameters.;Als dezelfde tijden worden gebruikt, moeten alleen de eerste tijden worden ingevoerd. Voor lege kolommen worden de vorige tijden herhaald. Dit vermindert het aantal timingparameters.; Si les mêmes heures sont utilisées, seules les premières heures doivent être entrées. Si les colonnes sont vides, les heures précédentes sont répétées. Cela réduit le nombre de paramètres de synchronisation.;;;
+Cell;E28;Dauer;Duration;Tijdsduur;Durée;;;
+Cell;E49;Spalte Nr  ->;Column No  ->;Kolom Nr ->; N ° de colonne ->;;;
+Cell;D49;LED Nr;LED No;LED Nr;N° LED ;;;
+Cell;E47;Goto Tabelle;Goto table;Goto tabel;Aller à la table;;;
+;;;;;;;;
+;_Name_;;;;;;;
+Button;Update;Aktualisieren;Update;Vernieuwen;Mettre à jour;;;
+Button;New Sheet;Neues Blatt;New sheet;Nieuw Tabblad;Nouvelle feuille;;;
+;;;;;;;;
+;_Range_;;;;;;;
+Comment;D2;"Position der LED innerhalb der LED Kette beginnend mit 0.
+Die letzte mögliche LED hat die Nummer 255.";"Position of the LED within the LED chain beginning with 0.
+The last possible LED has the number 255. ";"Positie van de LED in de LED-ketting beginnend met 0.
+De laatst mogelijke LED heeft het nummer 255.";Position de la LED dans la chaîne de LED commençant par 0. La dernière LED possible porte le numéro 255.;;;
+Comment;D3;"Startkanal innerhalb der ersten RGB LED (0..2)
+0 = Rot, 1 = Grün, 2 = Blau";Start channel within the first RGB LED (0..2)0 = red, 1 = green, 2 = blue;Start kanaal binnen de eerste RGB LED (0..2) 0 = rood, 1 = groen, 2 = blauw;Démarrer le canal dans la première LED RGB (0..2) 0 = rouge, 1 = vert, 2 = bleu;;;
+Comment;D4;"Nummer des Eingangskanals (0..250).
+Symbolische Namen sind auch möglich.
+z.B.: SI_1 = immer an";"Number of the input channel (0..250). |
+Symbolic names are also possible.|
+For example: SI_1 = always on";"Nummer van het ingangskanaal (0..250). | 
+Symbolische namen zijn ook mogelijk. | 
+Bijvoorbeeld: SI_1 = altijd aan";"Numéro du canal d'entrée (0..250). | 
+Des noms symboliques sont également possibles, | 
+par exemple SI_1 = toujours activé";;;
+Comment;D5;"Bestimmt die Anzahl der Ausgabekanäle. Der Wert beschreibt die Nummer der einzelnen LEDs (Eine RGB LED besteht aus 3 einzelnen LEDs). 
+Wertebereich 1..100";"Determines the number of output channels. The value describes the number of the individual LEDs (one RGB LED consists of 3 individual LEDs).
+Value range 1..100";"Bepaalt het aantal uitgangskanalen. De waarde beschrijft het aantal afzonderlijke LED's (een RGB-LED bestaat uit 3 afzonderlijke LED's).
+Waardebereik 1..100";"Détermine le nombre de canaux de sortie. La valeur décrit le nombre de LED individuelles (une LED RVB se compose de 3 LED individuelles). 
+Plage de valeurs 1..100";;;
+Comment;D6;Anzahl der Bits welche für einen Helligkeitswert benutzt werden (1..8);Number of bits used for a brightness value (1..8);Aantal bits gebruikt voor een helderheidswaarde (1..8);Nombre de bits utilisés pour une valeur de luminosité (1..8);;;
+Comment;D7;"Dieser Wert wird verwendet wenn in der Tabelle unten nichts oder 0 steht.
+Wert Min muss zwischen 0 und 255 liegen.
+Wenn ""Bits pro Wert"" 8 ist, dann wird diese Angabe nicht benutzt.";"This value is used if there is nothing or 0 in the table below.
+Value Min must be between 0 and 255.
+If ""bits per value"" is 8, then this value is not used.";"Deze waarde wordt gebruikt als er niets of 0 in de onderstaande tabel staat.
+Waarde Min moet tussen 0 en 255 liggen.
+Als ""bits per waarde"" 8 is, wordt deze waarde niet gebruikt. ";"Cette valeur est utilisée s'il n'y a rien ou 0 dans le tableau ci-dessous. 
+La valeur minimale doit être comprise entre 0 et 255. 
+Si ""Bits par valeur"" est égal à 8, cette entrée n'est pas utilisée.";;;
+Comment;D8;"Dieser Wert wird verwendet wenn in der Tabelle unten ein ""x"" oder die maximale Helligkeitsstufe steht. 
+Wertebereich (0..255)
+Wenn ""Bits pro Wert"" 8 ist, dann wird diese Angabe nicht benutzt.";"This value is used when the table below shows an ""x"" or maximum brightness level.
+Value range (0..255)
+
+If ""bits per value"" is 8, then this value is not used.";"Deze waarde wordt gebruikt wanneer de onderstaande tabel een ""x"" of maximum helderheidsniveau toont.
+Waardebereik (0..255)
+
+Als ""bits per waarde"" 8 is, wordt deze waarde niet gebruikt.";"Cette valeur est utilisée s'il y a un ""x"" ou le niveau de luminosité maximum dans le tableau ci-dessous. Plage de valeurs (0..255) Si ""Bits par valeur"" est égal à 8, cette entrée n'est pas utilisée.";;;
+Comment;D9;"Dieser Wert wird ausgegeben wenn der Schalter ausgeschaltet ist. 
+Wertebereich 0..255.
+
+Wenn im ""Mode"" der Schalter ""PF_NO_SWITCH_OFF"" angegeben wird, dann wird der Wert ignoriert. Die LEDs behalten im Ausgeschalteten Zustand ihren letzten Wert.
+";"This value is output when the switch is off.|
+Value range 0..255.|
+|
+If the ""PF_NO_SWITCH_OFF"" switch is specified in ""Mode"" then the value is ignored. The LEDs retain their last value when switched off.";"Deze waarde wordt uitgevoerd wanneer de schakelaar is uitgeschakeld. |
+Waardebereik 0..255.|
+|
+Als de schakelaar ''PF_NO_SWITCH_OFF'' is opgegeven in ' Modus'', wordt de waarde genegeerd. De LED's behouden hun laatste waarde wanneer ze zijn uitgeschakeld.";"Cette valeur est sortie lorsque l'interrupteur est désactivé. |
+Plage de valeurs 0..255. |
+|
+Si le commutateur ""PF_NO_SWITCH_OFF"" est spécifié dans ""Mode"", la valeur est ignorée. Les LED conservent leur dernière valeur lorsqu'elles sont éteintes.";;;
+Comment;D10;"Modes:
+- PM_SEQUENZ_W_RESTART:
+  Flanken getriggerter einmalige Sequenz. 
+  Bei neuer Flanke wird mit State 0 begonnen
+- PM_SEQUENZ_W_ABORT:
+  Flanken getriggerter einmalige Sequenz.
+  Abbruch bei neuer Flanke während der Laufzeit
+- PM_SEQUENZ_NO_RESTART:
+  Flanken getriggerter einmalige Sequenz. 
+  Kein Neustart während der Laufzeit
+- PM_PINGPONG:
+  Richtungswechsel am Ende
+
+Flags:  (Können mit den Modes über + kombiniert werden)
+- PF_SLOW: 
+  4-mal langsamer. Zeitangaben in 4 ms. 
+  Dadurch können Zeiten bis zu 4 Minuten verwendet werden.
+- PF_INVERT_INP:
+  Invertiert das Eingangssignal
+";"Modes:|
+- PM_SEQUENZ_W_RESTART:|
+   Flanks triggered unique sequence.|
+   With a new edge, state 0 is started.|
+- PM_SEQUENZ_W_ABORT:|
+   Flanks triggered unique sequence.|
+   Abort on new flank during the runtime.|
+- PM_SEQUENZ_NO_RESTART:|
+   Flanks triggered unique sequence.|
+   No restart during runtime.|
+- PM_PINGPONG:|
+   Change of direction at the end.|
+|
+Flags: (Can be combined with the modes above with +)|
+- PF_SLOW:|
+   4 times slower. Time information in 4 ms.|
++D46   This allows times up to 4 minutes to be used.|
+- PF_INVERT_INP:|
+   Inverts the input signal.";"Modes: |
+- PM_SEQUENZ_W_RESTART:|
+    Flanken hebben een unieke reeks geactiveerd.|
+    Met een nieuwe edge wordt status 0 gestart.|
+- PM_SEQUENZ_W_ABORT:|
+    Flanken hebben een unieke reeks geactiveerd.|
+    Tijdens de looptijd op nieuwe flank afbreken.|
+- PM_SEQUENZ_NO_RESTART:|
+    Flanken hebben een unieke reeks geactiveerd.|
+    Geen herstart tijdens runtime.|
+- PM_PINGPONG:|
+    Aan het einde van richting veranderen.|
+|
+Vlaggen: (kan worden gecombineerd met de bovenstaande modi met +)|
+- PF_SLOW:|
+    4 keer langzamer. Tijdinformatie in 4 ms.|
+    Hierdoor kunnen tijden tot 4 minuten worden gebruikt.|
+- PF_INVERT_INP:|
+    Inverteert het ingangssignaal.";"Modes: |
+PM_SEQUENZ_W_RESTART: |
+   Front d'une séquence unique déclenchée. |
+   Avec un nouveau front, l'état 0 commence.|
+PM_SEQUENZ_W_ABORT:|
+   Front d'une séquence unique déclenchée. |
+   Abandon sur un nouveau front pendant l'exécution. |
+PM_SEQUENZ_NO_RESTART: |
+   Les fronts ont déclenché une séquence unique. |
+   Pas de redémarrage pendant l'exécution. |
+PM_PINGPONG: |
+   Changement de direction à la fin.|
+|
+Drapeaux: (peut être combiné avec les modes via +) |
+PF_SLOW: |
+   4 fois plus lent. Temps en 4 ms. |
+   Cela permet d'utiliser des durées allant jusqu'à 4 minutes. |
+PF_INVERT_INP: |
+   Inverse le signal d'entrée.";;;
+Comment;D11;"Aktiviert das analoge Überblenden der Helligkeiten. Damit wird die Helligkeit innerhalb der über die ""Dauer"" angegebenen Zeit vom vorangegangenen Wert auf den neuen Wert Übergeblendet.
+
+Mit 1 wird das analoge Überblenden aktiviert.
+
+Ein X Aktiviert eine besondere Überblendfunktion welche vom tatsächlichen Helligkeitswert zum neuen Wert überblendet. Das kann für Konfigurationen verwendet werden bei denen mehrere Zeilen die selben LEDs beeinflussen. Das wird z.B. bei Lichtsignalen verwendet. 
+Achtung: Diese Funktion benötigt zusätzlichen Speicher (1 Byte RAM pro LED).";"Activates the analog crossfading of the brightnesses. This causes the brightness to fade from the previous value to the new value within the time specified by ""Duration"".
+
+'1' activates analogue crossfading.
+
+'X' activates a special crossfade function which fades from the actual brightness value to the new value. This can be used for configurations where multiple rows affect the same LEDs. This is e.g. used in light signals.Attention: 
+
+Attention: This function requires additional memory (1 byte of RAM per LED)";"Activeert de analoge crossfading van de helderheden. Dit zorgt ervoor dat de helderheid van de vorige waarde vervaagt naar de nieuwe waarde binnen de tijd die is opgegeven met ""Duur"".
+
+'1' activeert analoge crossfading.
+
+'X' activeert een speciale crossfade-functie die vervaagt van de werkelijke helderheidswaarde naar de nieuwe waarde. Dit kan worden gebruikt voor configuraties waarbij meerdere rijen dezelfde LED's beïnvloeden. Dit is b.v. gebruikt in lichtsignalen. Let op:
+
+Let op: Deze functie vereist extra geheugen (1 byte RAM per LED)";"Active le mélange analogique de la luminosité. La luminosité passe ainsi de la valeur précédente à la nouvelle valeur dans le temps spécifié sur la ""Durée"". 
+
+Avec 1, le fondu analogique est activé. 
+
+On X active une fonction de fondu spécial qui passe de la valeur de luminosité réelle à la nouvelle valeur. Cela peut être utilisé pour les configurations dans lesquelles plusieurs lignes affectent les mêmes LED. Ce sera par exemple utilisé avec des signaux lumineux. 
+
+Attention: Cette fonction nécessite de la mémoire supplémentaire (1 octet de RAM par LED).";;;
+Comment;D12;"Mit dem ""Goto Mode"" können bestimmte Spalten abhängig von externen Ereignissen angesprungen werden.";"With the ""Goto Mode"" certain columns can be jumped depending on external events.";"Met de ""Ga naar modus"" kunnen bepaalde kolommen worden gesprongen, afhankelijk van externe gebeurtenissen.";"Avec le ""Mode Aller"", certaines colonnes peuvent être sautées en fonction des événements externes.";;;
+Comment;D14;"Aktiviert die automatische Aktualisierung der grafischen Anzeige der LED Werte und der Goto Pfeile.
+
+Die Anzeige kann auch über den Knopf rechts aktualisiert werden. 
+Zum löschen der Grafik 0 eintragen oder ALT+""Aktualisiern"" drücken.
+
+L: Wenn nur LED Helligkeiten dargestellt werden sollen
+G: Wenn nur die Goto Pfeile angezeigt werden sollen
+1: Zeigt beides an
+
+D: Passt die Breite der Spalten an die Dauer an. 'D' kan zusammen mit den anderen Flags benutzt werden.";"Activates the automatic update of the graphical display of the LED values and the Goto arrows.
+
+The display can also be updated via the button on the right.
+To delete the graphic, enter 0 or press ALT + ""Update "".
+
+L: If only LED brightnesses should be displayed
+G: If only the goto arrows should be displayed
+1: Displays both
+D: Adjusts the width of the columns to the duration. 'D' can be used together with the other flags. ";"Activeert de automatische update van de grafische weergave van de LED-waarden en de Goto-pijlen.
+
+Het display kan ook worden bijgewerkt via de knop aan de rechterkant.
+Om de afbeelding te verwijderen, voert u 0 in of drukt u op ALT + ""Update"".
+
+L: Als alleen LED-helderheden moeten worden weergegeven
+G: Als alleen de ga-pijlen moeten worden weergegeven
+1: geeft beide weer
+D: Past de breedte van de kolommen aan de duur aan. 'D' kan samen met de andere vlaggen worden gebruikt. ";"Active la mise à jour automatique de l'affichage graphique des valeurs LED et des flèches Goto.
+
+L'affichage peut également être mis à jour à l'aide du bouton de droite. 
+Pour supprimer le graphique, entrez 0 ou appuyez sur ALT ""Actualiser"". 
+
+L: Si seulement la luminosité des LED doit être affichée 
+G: Si seulement les flèches Goto doivent être affichées 
+1: Affiche les deux 
+D: Ajuste la largeur des colonnes à la durée. 'D' peut être utilisé avec les autres drapeaux.";;;
+Comment;D15;"Speziellen Mode aktivieren:
+C = Charlieplexing
+       Damit können Muster für die Charlieplexing
+       Platine erstellt werden und direkt zum ATTiny
+       geschickt werden.";"Activate special mode:
+C = Charlieplexing
+        Is used to generate patterns for the 
+        Charlieplexing circuit board. They
+        could be send directly to the ATTiny.";"Activeer speciale modus:
+C = Charlieplexing
+         Wordt gebruikt om patronen te genereren voor de
+         Charlieplexing printplaat.
+         Ze kan rechtstreeks naar de ATTiny worden verzonden.";"Activer le mode spécial: 
+C = Charlieplexing
+       Cela permet de créer des motifs pour la carte Charlieplexing |
+       et de les envoyer directement à ATTiny.";;;
+Comment;D16;"RGB LED Nummer der (Charlieplexing) Platine. Die Nummer hängt von der aktuellen Reihenfolge der an die Hauptplatine angeschlossenen LEDs ab. Über diese Nummer wird das Modul konfiguriert.
+Später kann es an einer anderen Position eingesetzt werden.
+?: Mit der Eingabe eines Fragezeichens wird ein Dialog geöffnet über den man die Nummer auswählen kann.";"RGB LED number of the (Charlieplexing) board. The number depends on the current order of the LEDs connected to the main board. The module is configured via this number.
+It can later be used in another position.
+?: When you enter a question mark, a dialog opens in which you can select the number.";"RGB LED-nummer van de (Charlieplexing) -kaart. Het aantal is afhankelijk van de huidige volgorde van de LED's die op de hoofdkaart zijn aangesloten. De module wordt via dit nummer geconfigureerd.
+Het kan later in een andere positie worden gebruikt.
+?: Wanneer u een vraagteken invoert, wordt een dialoogvenster geopend waarin u het nummer kunt selecteren.";"Numéro de LED RVB de la carte (Charlieplexing). Le nombre dépend de l'ordre actuel des LED connectées à la carte principale. Le module est configuré via ce numéro. 
+Plus tard, il peut être utilisé dans une position différente.?: En entrant un point d'interrogation, une boîte de dialogue s'ouvre dans laquelle le numéro peut être sélectionné.";;;
+Comment;D17;"Definiert die Zuordnung der LED Nummern. Damit kann ein Muster an die verschiedenen Nummerierungen unterschiedlicher Hersteller angepasst werden.
+Mit einem Doppelklick in das Feld wird ein Dialog zur Auswahl der LED Zuordnung geöffnet. Eigene Zuordnungen können direkt in das Feld eingegeben werden (Liste mit 12 LED Nummern zwischen 0 und 11)";"Defines the assignment of the LED numbers. This means that a pattern can be adapted to the different numberings of different manufacturers.
+Double-clicking in the field opens a dialog for selecting the LED assignment. Own assignments can be entered directly in the field (list with 12 LED numbers between 0 and 11)";"Definieert de toewijzing van de LED-nummers. Dit betekent dat een patroon kan worden aangepast aan de verschillende nummeringen van verschillende fabrikanten.
+Dubbelklikken in het veld opent een dialoogvenster voor het selecteren van de LED-toewijzing. Eigen toewijzingen kunnen direct in het veld worden ingevoerd (lijst met 12 LED-nummers tussen 0 en 11)";"Définit l'affectation des numéros de LED. Cela permet d'adapter un motif aux différentes numérotations de différents fabricants.
+Un double-clic dans le champ ouvre une boîte de dialogue pour sélectionner l'affectation des LED. Les affectations personnelles peuvent être saisies directement dans le champ (liste avec 12 numéros de LED entre 0 et 11)";;;
+Comment;D18;"Eine 1 aktiviert den analogen Eingang des Charlieplexing Moduls. Damit können die (Signal-)Bilder über  widerstandskodierte Schalter aktiviert werden.
+
+Optional kann auch eine Liste von bis zu 10 Schwellwerten übergeben werden mit denen individuelle Widerstandswerte ausgewertet werden können.";"Entering 1 activates the analog input of the Charlieplexing module. This enables activation of the (signal) images via resistance-coded switches.
+
+Optionally, a list of up to 10 threshold values can also be entered to be able to use individual resistor values.";"Door 1 in te voeren wordt de analoge ingang van de Charlieplexing-module geactiveerd. Dit maakt activering van de (signaal) beelden via weerstandgecodeerde schakelaars mogelijk.
+
+Optioneel kan ook een lijst met maximaal 10 drempelwaarden worden ingevoerd om afzonderlijke weerstandswaarden te kunnen gebruiken.";"Un 1 active l'entrée analogique du module Charlieplexing. Cela permet d'activer les images (de signal) via des commutateurs à codage de résistance.
+
+En option, une liste de 10 valeurs de seuil peut également être transférée avec laquelle les valeurs de résistance individuelles peuvent être évaluées.";;;
+Comment;D20;Diese Zeile kann in das Konfigurationsarray des Programms kopiert werden.;This line can be copied to the configuration array of the program.;Deze regel kan worden gekopieerd naar de configuratie-array van het programma.;Cette ligne peut être copiée dans le tableau de configuration du programme.;;;
+Comment;E47;"In dieser Zeile werden die 
+- Startspalten (S)
+- Positionen für die Goto Anweisung (P)
+- Goto Anweisungen (G nr)
+- GoEnd Anweisungen (E)
+eingetragen wenn der Goto Mode aktiviert ist.
+Die Startspalten werden angesprungen, wenn ein vorangegangener Befehl (z.B. Counter) einen neuen Wert ermittelt hat. Die erste Spalte wird angesprungen, wenn eine 0 ermittelt wurde. Die erste mit S markierte Spalte wird angesprungen, wenn eine 1 vom vorangegangenen Befehl generiert wurde.  
+Mit der Goto Anweisung wird die als nächste auszuführende Spalte bestimmt. 
+Wenn auf den Goto Befehl eine 1 folgt wird die erste mit einem P markierte Position angesprungen. 
+Bei dem GoEnd Befehl wird zum Ende des Musters gesprungen.
+Start (S), Position (P), Goto (G) oder GoEnd (E) können gemeinsam in einer Zelle benutzt werden.
+Beispiel:
+   S  P G  3";"In this line, the
+- Starting columns (S)
+- Positions for the Goto instruction (P)
+- Goto instructions (G nr)
+- GoEnd instructions (E)
+are entered if the Goto mode is activated.
+The start columns are jumped when a previous command (e.g., counter) has detected a new value. The first column is jumped if a 0 was determined. The first column marked S is jumped if a 1 from the previous command was generated.
+The Goto statement determines the next column to be executed.
+If the Goto command is followed by a 1, the first position marked with a P is jumped to.
+The GoEnd command jumps to the end of the pattern.Start (S), Position (P), Goto (G) or GoEnd (E) can be used together in one cell.
+Example:
+    S P G 3 ";"In deze regel, de
+- Startkolommen (S)
+- Posities voor de Goto-instructie (P)
+- Ga naar instructies (G nr)
+- GoEnd-instructies (E)
+worden ingevoerd als de Goto-modus is geactiveerd.
+Naar de startkolommen worden gesprongen wanneer een vorige opdracht (bijv. Teller) een nieuwe waarde heeft gedetecteerd. Naar de eerste kolom wordt gesprongen als een 0 werd bepaald. Naar de eerste kolom gemarkeerd S wordt gesprongen als een 1 van de vorige opdracht werd gegenereerd.
+De instructie Goto bepaalt de volgende kolom die moet worden uitgevoerd.
+Als het Goto-commando wordt gevolgd door een 1, wordt verplaatst naar de eerste positie gemarkeerd met een P .
+De opdracht GoEnd springt naar het einde van het patroon. 
+Start (S), Positie (P), Goto (G) of GoEnd (E) kunnen samen in één cel worden gebruikt.
+Voorbeeld:
+     S P G 3";"Dans cette ligne, les 
+- Colonnes de départ (S)
+- Positions pour l'instruction Goto (P) 
+- Instructions Goto (G nr) 
+- Les instructions GoEnd (E) 
+sont entrées si le mode Goto est activé. Les colonnes de départ sont sautées si une commande précédente ( par exemple compteur) a déterminé une nouvelle valeur. La première colonne est sautée si un 0 a été déterminé. La première colonne marquée avec S est sautée si un 1 a été généré par la commande précédente. La colonne suivante à exécuter est déterminée avec l'instruction Goto. Si un 1 suit la commande Goto, la première position marquée d'un P est sautée. La commande GoEnd passe à la fin du motif: Start (S), Position (P), Goto (G) ou GoEnd (E) peuvent être utilisés ensemble dans une cellule, 
+par exemple: 
+      S P G 3";;;
+;;;;;;;;
+;;;ATTENTION: Don't translate the formulas IF();;;;;
+Cell;F2;"=IF(RC[-1]="""",""<= Bitte erste RGB LED des Musters eingeben"","""")";"=IF(RC[-1]="""",""<= Please enter the first RGB LED of the pattern"","""")";"=IF(RC[-1]="""",""<= Voer de eerste RGB-led van het patroon in"", """")";"=IF(RC[-1]="""",""<= Veuillez entrer la première LED RVB du motif"","""")";;;
+Cell;F3;"=IF(OR(AND(RC[-1] <>"""",RC[-1]=0),RC[-1]=1,RC[-1]=2),"""",""<= Bitte Startkanal innerhalb der RGB LED angeben"")";"=IF(OR(AND(RC[-1] <>"""",RC[-1]=0),RC[-1]=1,RC[-1]=2),"""",""<= Please specify start channel within the RGB LED"")";"=IF(OR(AND(RC[-1] <>"""",RC[-1]=0),RC[-1]=1,RC[-1]=2),"""",""<= Specificeer het startkanaal binnen de RGB LED"")";"=IF(OR(AND(RC[-1] <>"""",RC[-1]=0),RC[-1]=1,RC[-1]=2),"""",""<= Veuillez spécifier le canal de démarrage dans la LED RVB"")";;;
+Cell;F4;"=IF(RC[-1]="""",""<= Bitte Nummer des Schalters eingeben"","""")";"=IF(RC[-1]="""",""<= Please enter the number of the switch"","""")";"=IF(RC[-1]="""",""<= Voer het nummer van de schakelaar in"","""")";"=IF(RC[-1]="""",""<= Veuillez saisir le numéro du compteur"","""")";;;
+Cell;F5;"=IF(AND(ISNUMBER(Kanaele),Kanaele>0,Kanaele<=100),"""",""<- Bitte Anzahl der Kanäle eingeben(1..100)"")";"=IF(AND(ISNUMBER(Kanaele),Kanaele>0,Kanaele<=100),"""",""<- Please enter number of channels (1..100)"")";"=IF(AND(ISNUMBER(Kanaele),Kanaele>0,Kanaele<=100),"""",""<- Voer het aantal kanalen in (1..100)"")";"=IF(AND(ISNUMBER(Kanaele),Kanaele>0,Kanaele<=100),"""",""<- Veuillez entrer le nombre de canaux(1..100)"")";;;
+Cell;F6;"=CONCATENATE(""  => "",2^Bits_pro_Wert,"" Helligkeitsstufen (0.."",2^Bits_pro_Wert-1,"")"")";"=CONCATENATE(""  => "",2^Bits_pro_Wert,"" Brightness levels (0.."",2^Bits_pro_Wert-1,"")"")";"=CONCATENATE(""=> "",2^Bits_pro_Wert,"" Helderheidsniveaus (0 .."", 2^Bits_pro_Wert-1,"")"")";"=CONCATENATE(""  => "",2^Bits_pro_Wert,"" niveaux de luminosité (0.."",2^Bits_pro_Wert-1,"")"")";;;
+Cell;F7;"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Bitte Wert für nicht aktive LED angeben (0..255)"","""")";"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Please specify value for inactive LED (0..255)"","""")";"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Geef een waarde op voor de inactieve LED (0..255)"","""" )";"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Veuillez saisir une valeur pour la LED inactive (0..255)"","""")";;;
+Cell;F8;"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Bitte Wert für aktive LED angeben (0..255)"","""")";"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Please specify value for active LED (0..255)"","""")";"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Geef een waarde op voor de actieve LED (0..255)"","""" )";"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Veuillez saisir la valeur pour la LED active (0..255)"","""")";;;
+Cell;F9;"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Bitte LED Wert angeben wenn Schalter aus ist"","""")";"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Please indicate LED value if switch is off"","""")";"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Geef de LED-waarde aan als de schakelaar is uitgeschakeld"","""")";"=IF(OR(RC[-1]="""",RC[-1]<0,RC[-1]>255),""<= Veuillez indiquer la valeur LED lorsque l'interrupteur est ouvert"","""")";;;
+Cell;F48;"=IF(COUNTA(R[2]C[0]:R[9]C[33])=0,""Bitte Tabelle ausfüllen. Positionen an denen die LEDs leuchten sollen werden mit einem Zeichen (z.B. x) markiert. Bei einer leeren Zellen ist die LED aus."","""")";"=IF(COUNTA(R[2]C[0]:R[9]C[33])=0,""Please fill in the table. Positions where the LEDs should light are marked with a character (for example, x). If the cell is empty, the LED is off."","""")";"=IF(COUNTA(R[2]C[0]:R[9]C[33])=0,""Vul de tabel in. Posities waar de LED's moeten oplichten zijn gemarkeerd met een karakter (bijvoorbeeld x) Als de cel leeg is, is de LED uit. "","""")";"=IF(COUNTA(R[2]C[0]:R[9]C[33])=0,""Veuillez remplir le tableau. Les positions auxquelles les LED doivent s'allumer sont marquées d'un caractère (par exemple x). Si les cellules sont vides, la LED est éteinte."","""")";;;
+Cell;D28;"=IF(Zeiten="""",""Bitte Dauer eintragen =>"","""")";"=IF(Zeiten="""",""Please enter duration =>"","""")";"=IF(Zeiten="""",""Voer duur in =>"","""")";"=IF(Zeiten="""",""Veuillez saisir la durée =>"","""")";;;
+NumberFormat;E46;"""Flash Bedarf: "" 0 ""Bytes""";"""required flash: "" 0 ""Bytes""";"""Gebruikt flash:"" 0 ""Bytes""";"""Exigence Flash:"" 0 ""octets""";;;
+;;;;;;;;
+;;;;;;;;
+ErrorMessage;E2;"Die ""Erste RGB LED"" muss eine ganze Zahl zwischen 0 und 255 sein.
+Namen sind auch erlaubt. Diese können aber nicht in Excel geprüft werden.";"The ""First RGB LED"" ""must be an integer between 0 and 255.
+Names are also allowed. These can not be checked in Excel.";"De ""Eerste RGB LED"" moet een geheel getal tussen 0 en 255 zijn.
+Namen zijn ook toegestaan. Deze kunnen niet worden gecontroleerd in Excel. ";"La ""Première LED RVB"" doit être un entier compris entre 0 et 255. Les noms sont également autorisés. Cependant, ceux-ci ne peuvent pas être vérifiés dans Excel.";;;
+ErrorMessage;E3;Der Startkanal muss zwischen 0 und 2 liegen;The start channel must be between 0 and 2;Het startkanaal moet tussen 0 en 2 liggen;Le canal de départ doit être compris entre 0 et 2;;;
+ErrorMessage;E4;Die Schalter Nummer mus zwischen 0 und 255 liegen. Symbolische Namen sind auch möglich, können aber nicht in Excel überprüft werden.;The switch number mus must be between 0 and 255. Symbolic names are also possible but can not be checked in Excel.;Het schakelnummer moet tussen 0 en 255 liggen. Symbolische namen zijn ook mogelijk, maar kunnen niet worden gecontroleerd in Excel.;Le numéro de commutateur doit être compris entre 0 et 255. Les noms symboliques sont également possibles, mais ne peuvent pas être vérifiés dans Excel.;;;
+ErrorMessage;E5;Die Anzahl der Ausgabekanäle muss zwischen 1 und 100 liegen;The number of output channels must be between 1 and 100;Het aantal uitgangskanalen moet tussen 1 en 100 liggen;Le nombre de canaux de sortie doit être compris entre 1 et 100;;;
+ErrorMessage;E6;"""Bits pro Wert"" muss zwischen 1 und 8 liegen";"""Bits per value"" must be between 1 and 8";"""Bits per waarde"" moet tussen 1 en 8 liggen";"Les ""bits par valeur"" doivent être compris entre 1 et 8";;;
+ErrorMessage;E7;"""Wert Min"" muss zwischen 0 und 255 liegen";"""Minimal value"" must be between 0 and 255";"""Minimale waarde"" moet tussen 0 en 255 liggen";"La ""Value Min"" doit être compris entre 0 et 255";;;
+ErrorMessage;E8;"""Wert Max"" mus zwischen 0 und 255 liegen";"""Maximal value"" must be between 0 and 255";"""Maximale waarde"" moet tussen 0 en 255 liggen";"La ""valeur maximale"" doit être comprise entre 0 et 255";;;
+ErrorMessage;E9;"Wert ausgeschaltet"""" muss zwischen 0 und 255 liegen.";"""Value off"" must be between 0 and 255";"""Waarde uit"" moet tussen 0 en 255 liggen";"La ""valeur désactivée"" doit être comprise entre 0 et 255.";;;
+;;;;;;;;
+;;;;;;;;
+ErrorTitle;E2;Falscher Wert;Wrong value;Verkeerde waarde;Mauvaise valeur;;;
+ErrorTitle;E3;Falscher Wert;Wrong value;Verkeerde waarde;Mauvaise valeur;;;
+ErrorTitle;E4;Falscher Wert;Wrong value;Verkeerde waarde;Mauvaise valeur;;;
+ErrorTitle;E5;Falscher Wert;Wrong value;Verkeerde waarde;Mauvaise valeur;;;
+ErrorTitle;E6;Falscher Wert;Wrong value;Verkeerde waarde;Mauvaise valeur;;;
+ErrorTitle;E7;Falscher Wert;Wrong value;Verkeerde waarde;Mauvaise valeur;;;
+ErrorTitle;E8;Falscher Wert;Wrong value;Verkeerde waarde;Mauvaise valeur;;;
+ErrorTitle;E9;Falscher Wert;Wrong value;Verkeerde waarde;Mauvaise valeur;;;
+;;;;;;;;
+;;;;;;;;
+Dialog;;Das Sheet 'Main' kann nicht gelöscht werden;The sheet 'Main' can not be deleted;Het blad 'Main' kan niet worden verwijderd;La feuille «principale» ne peut pas être supprimée;;;
+Dialog;;Fehler;Error;FOUT;Erreur;;;
+Dialog;;Fehler: Die Hilfe Datei ist nicht vorhanden:;Error: The help file does not exist:;FOUT: het helpbestand bestaat niet:;Erreur: le fichier d'aide n'existe pas:;;;
+Dialog;;MobaLedLib Ein kurzer Ueberblick.pdf;MobaLedLib Short Overview.pdf;MobaLedLib Short Overview.pdf;MobaLedLib Short Overview.pdf;;;
+Dialog;;Soll die Hilfe aus dem Internet geöffnet werden?;Should the help be opened from the internet?;Moet de hulp via internet worden geopend?;Faut-il ouvrir l'aide à partir d'Internet?;;;
+Dialog;;Fehler beim öffnen der Hilfe;Error opening Help;Fout met openen Help;Erreur lors de l'ouverture de l'aide;;;
+Dialog;;https://github.com/Hardi-St/MobaLedLib/raw/master/MobaLedLib%20Ein%20kurzer%20Ueberblick.pdf;https://github.com/Hardi-St/MobaLedLib/raw/master/MobaLedLib%20Short%20Overview.pdf;https://github.com/Hardi-St/MobaLedLib/raw/master/MobaLedLib%20Short%20Overview.pdf;https://github.com/Hardi-St/MobaLedLib/raw/master/MobaLedLib%20Ein%20kurzer%20Ueberblick.pdf;;;
+Dialog;;Pattern configurator Beispiel (*.MLL_pcf), *.MLL_pcf;Pattern configurator example (*.MLL_pcf), *.MLL_pcf;Pattern configurator voorbeeld (*.MLL_pcf), *.MLL_pcf;Exemple de configurateur de modèle (* .MLL_pcf), * .MLL_pcf;;;
+Dialog;;Lade Beispiele;Load Examples;Laad voorbeelden;Charger des exemples;;;
+Dialog;;Speichere Beispiele;Save examples;Sla voorbeelden op;Enregistrer des exemples;;;
+Dialog;;Die folgenden Beispiel Seite(n) wurden gespeichert:;The following example page (s) have been saved:;De volgende voorbeeld tabbladen zijn opgeslagen:;Les pages d'exemple suivantes ont été enregistrées:;;;
+Dialog;;Achtung die Darstellung der Spaltenbreite wurde begrenzt;Attention the representation of the column width has been limited;Let op: De kolom breedte is gelimiteerd!;Attention l'affichage de la largeur de colonne a été limité;;;
+Dialog;;Lade Beispielseiten...;Loading sample pages ...;Laden voorbeeld tabbladen;Charger des exemples de pages ...;;;
+Dialog;;Beispiele geladen;Examples loaded;Voorbeelden geladen;Exemples chargés;;;
+Dialog;;Sollen die Einstellungen des aktuellen Blatts übernommen werden?;Do you want to use the settings of the current sheet?;Wil je de instellingen van het huidige tabblad gebruiken?;Faut-il adopter les paramètres de la feuille actuelle?;;;
+Dialog;;Neues Blatt anlegen;Create new sheet;Nieuw tabblad aanmaken;Créer une nouvelle feuille;;;
+Dialog;;Name des neuen Blattes?;Name of the new sheet?;Naam van het nieuwe tabblad?;Nom de la nouvelle feuille?;;;
+Dialog;;Neues Blatt anlegen;Creating new sheet;Nieuw tabblad wordt aangemaakt;Créer une nouvelle feuille;;;
+Dialog;Mit diesem Blatt kann die Konfiguration;"Mit diesem Blatt kann die Konfiguration eines LED Musters erstellt werden.
+Die Gelb hinterlegten Felder und die Tabellen können verändert werden.
+Die Spalten der Tabelle beschreiben einen Abschnitt des Musters welches für eine bestimmte Zeit angezeigt wird. Die Dauer wird in der ersten Tabelle eingetragen.
+Die Zeiten können in Minuten (""Min"") oder Sekunden (""Sec""= angegeben werden. Wird keine Einheit angegeben dann ist die Zeitangabe in Millisekunden (""ms"").
+Achtung zwischen Zahl und Einheit muss ein Leerzeichen stehen und die Groß- und Kleinschreibung muss exakt stimmen. Wenn Spalten die gleiche Anzeigedauer
+haben, dann sollte die Zeit nur in den ersten Spalten angegeben werden zur Minimierung des Speicherverbrauchs. Die Folgenden Zeilen können als Formel Angegeben
+werden damit man sieht wie lange der Abschnitt dauert. Im Beispiel unten ist das bei den Spalten 4 bis 8 gemacht.
+In der zweiten Tabelle wird mit einem x markiert welche LED in dem Abschnitt leuchten soll. Wenn mehrere Helligkeiststufen benutzt werden, dann wird die Helligkeit
+als Zahl eingetragen. Die Anzahl der Abschnitte wird automatisch anhand der eingetragenen Markierungen bestimmt. Wenn am Ende leere Abschnitte verwendet
+werden sollen, dann muss in die letzte Spalte ein Punkt eingefügt werden.{Attrib}B1,75
+";"This sheet can be used to create the configuration of an LED pattern.
+The yellow fields and the tables can be changed.
+The columns of the table describe a section of the pattern which is displayed for a certain time. The duration is entered in the first table.
+The times can be specified in minutes (""min"") or seconds (""sec"" = if no unit is specified then the time is in milliseconds (""ms"").
+Attention between number and unit must be a space and the capitalization must be exactly correct. If columns have the same display duration then the time should only be specified in the first columns to minimize memory usage. The following lines can be given as a formula so you can see how long the section takes. In the example below, this is done in columns 4 through 8.
+In the second table is marked with an x ??which LED should light in the section. If several brightness levels are used, then the brightness becomes entered as a number. The number of sections is determined automatically based on the registered markings. When at the end uses empty sections should be added, then in the last column, a point. {Attrib}B1,69";"Dit blad kan worden gebruikt om de configuratie van een LED-patroon te maken.
+De gele velden en de tabellen kunnen worden gewijzigd.
+De kolommen van de tabel beschrijven een gedeelte van het patroon dat gedurende een bepaalde tijd wordt weergegeven. De duur wordt ingevoerd in de eerste tabel.
+De tijden kunnen worden opgegeven in minuten (""min"") of seconden (""sec"" = als er geen eenheid is opgegeven, is de tijd in milliseconden (""ms"").
+Aandacht tussen getal en eenheid moet een spatie zijn en het hoofdlettergebruik moet exact correct zijn. Als kolommen dezelfde weergaveduur hebben dan moet de tijd alleen worden opgegeven in de eerste kolommen om geheugengebruik te minimaliseren. De volgende regels kunnen als formule worden gegeven zodat u kunt zien hoe lang de sectie duurt. In het onderstaande voorbeeld gebeurt dit in de kolommen 4 tot en met 8.
+In de tweede tabel is gemarkeerd met een x welke LED zou moeten branden in de sectie. Als er meerdere helderheidsniveaus worden gebruikt, wordt de helderheid ingevoerd als een nummer. Het aantal secties wordt automatisch bepaald op basis van de geregistreerde markeringen. Wanneer aan het einde lege secties worden gebruikt moet worden toegevoegd en vervolgens in de laatste kolom een ??punt. {Attrib} B1,77";"Cette feuille peut être utilisée pour créer la configuration d'un motif LED. 
+Les champs jaunes et les tableaux peuvent être modifiés. 
+Les colonnes du tableau décrivent une section du motif qui s'affiche pendant un certain temps. La durée est entrée dans le premier tableau. 
+Les heures peuvent être spécifiées en minutes (""Min"") ou en secondes (""Sec"" =. Si aucune unité n'est spécifiée, l'heure est en millisecondes (""ms""). 
+Attention entre le nombre et l'unité il doit y avoir un espace et la casse doit être correcte. 
+Si les colonnes ont le même temps d'affichage, le temps ne doit être indiqué que dans les premières colonnes pour minimiser la consommation de mémoire. Les lignes suivantes peuvent être spécifiées sous forme de formule afin que vous puissiez voir combien de temps la section Dans l'exemple ci-dessous, cela se fait pour les colonnes 4 à 8. Dans le deuxième tableau, un x est utilisé pour marquer quelle LED doit s'allumer dans la section. Si plusieurs niveaux de luminosité sont utilisés, la luminosité est entrée sous forme de nombre. Le nombre de sections est entré déterminé automatiquement sur la base des marquages ??saisis. Si des sections vides doivent être utilisées à la fin, alors un point doit être dans la dernière colonne t peut être inséré. {Attrib} B1,75";;;
+Dialog;;Name des angezeigten Bildes eingeben (Wenn das Bild gleich ist wie ein vorangegangenes Bild, dann sollte der gleiche Name verwendet werden);Enter the name of the picture (Use the same name as used before if the pictures are equal);"Voer de naam van de weergegeven afbeelding in. 
+Als de afbeelding hetzelfde is als een vorige afbeelding, moet dezelfde naam worden gebruikt!";Entrez le nom de l'image affichée (si l'image est la même qu'une image précédente, alors le même nom doit être utilisé);;;
+Dialog;;Fehler: LED Tabelle nicht gefunden;Error: LED table not found;Fout: LED-tabel niet gevonden;Erreur: table LED introuvable;;;
+Dialog;;"Fehler in Funktion 'Adjust_Column_With_to_Duration' ;-(";"Error in function 'Adjust_Column_With_to_Duration' ;-(";"Fout in functie 'Adjust_Column_With_to_Duration' ;-(";"Erreur dans la fonction 'Adjust_Column_With_to_Duration' ;-(";;;
+Dialog;Error: Number of used bytes to high !;"Fehler: Anzahl der benutzten Bytes ist zu groß !
+
+Maximal ";"Error: Number of used bytes to high !
+
+Maximal ";"FOUT: Tveel Bytes gebruikt!
+
+Maximaal";Erreur: le nombre d'octets utilisés est trop important! Maximum;;;
+Dialog;; Bytes sind möglich.; bytes are possible.;Bytes zijn mogelijk.; Les octets sont possibles.;;;
+Dialog;;Error to many bytes used;Error to many bytes used;Fout, teveel Bytes gebruikt;Erreur sur plusieurs octets utilisés;;;
+Dialog;;Die aktuelle Konfiguration benutzt ;The current configuration uses ;De huidige configuratie gebruikt;La configuration actuelle est utilisée;;;
+Dialog;;" Bytes ;-(";" bytes ;-(";" Bytes ;-(";" Octets ;-(";;;
+Dialog;;Ignorierte Ausdrücke: ;Ignored expresions: ;Negeer uitdrukkingen;Expressions ignorées:;;;
+Dialog;;Falsche oder fehlende Nummer in Spalte gefunden: ;Wrong or missing number found in column: ;Verkeerd of missend nummer gevonden in kolom:;Numéro incorrect ou manquant dans la colonne:;;;
+;;(Gültiger Bereich: 1..63);(Valid range: 1..63);(Toegestane reeks: 1..63);(Plage valide: 1..63);;;
+Dialog;;Probleme in der Goto Tabelle:;Problems in Goto tabele:;Probelmen met de Goto tabel;Problèmes dans le tableau Goto:;;;
+Dialog;;Fehler ';Error: ';FOUT: ';Erreur ';;;
+Dialog;;nicht gefunden in ;not found in ;niet gevonden in;introuvable dans;;;
+Dialog;;Fehler beim laden von: ;Error loading: ;Er is iets fout gegaan bij het laden van:;Erreur de chargement:;;;
+Dialog;;Fehler: Die Datei ';Error: The file ';Er is iets fout gegaan met het bestand ';Erreur: le fichier ';;;
+Dialog;;existiert nicht.;doesn't exist.;bestaat niet.;n'existe pas.;;;
+Dialog;;Fehler beim laden des Bildes: ;Error loading the picture: ;Er is iets fout gegaan bij het laden van afbeelding:;Erreur lors du chargement de l'image:;;;
+;;;;;;;;
+DialogBox;MainMenu_Form;Pattern Configurator;Pattern Configurator;Pattern Configurator;Pattern Configurator;;;
+DialogBox;;"Achtung: Bei den Schaltern wurde bewusst auf die ""Sind sie sicher..."" Abfragen verzichtet. Wenn ein Knopf gedrückt wird, dann löst er die entsprechende Aktion sofort aus.";"Attention: The buttons were deliberately omitted the ""Are you sure ..."" queries. When a button is pressed, it triggers the corresponding action immediately.";"!!! Let op !!!: Het vragen van ""Weet u het zeker ?"" is opzettelijk weggelaten. |
+Wanneer een knop wordt ingedrukt, wordt de bijbehorende actie |
+onmiddellijk geactiveerd.";"Attention: Les requêtes ""Êtes-vous sûr ..."" ont été délibérément omises des compteurs. 
+Si un bouton est enfoncé, il déclenche immédiatement l'action correspondante.";;;
+DialogBox;;"Lädt alle Beispiele aus der Datei ""AllExamples.MLL_pcf"" im Verzeichnis ""Pattern_Config_Examples"".";Loads all samples from the AllExamples.MLL_pcf file in the Pattern_Config_Examples directory.;Laadt alle voorbeelden uit het bestand AllExamples.MLL_pcf in de map Pattern_Config_Examples.;"Charge tous les échantillons du fichier ""AllExamples.MLL_pcf"" dans le répertoire ""Pattern_Config_Examples"".";;;
+DialogBox;;Öffnet einen Auswahldialog mit dem eine Text Datei mit einem oder mehreren Beispielen geladen wird.;Opens a selection dialog to load a text file with one or more examples.;Opent een selectiedialoogvenster om een tekstbestand met een of meer voorbeelden te laden.;Ouvre une boîte de dialogue de sélection avec laquelle un fichier texte contenant un ou plusieurs exemples est chargé.;;;
+DialogBox;;"Speichert alle Beispielseiten in der Datei  ""MyExamples.MLL_pcf"" im Verzeichnis |
+""Eigene Dokumente\MyPattern_Config_Examples"".";"Saves all sample pages in the ""MyExamples.MLL_pcf"" file in the directory |
+""My Documents\MyPattern_Config_Examples"".";"Slaat alle voorbeeldpagina's op in het bestand ""MyExamples.MLL_pcf"" in de map 
+ ""Mijn documenten \ MyPattern_Config_Examples"".";"Enregistre toutes les pages d'exemple dans le fichier ""MyExamples.MLL_pcf"" du répertoire ""Mes Documents\MyPattern_Config_Examples"".";;;
+DialogBox;;Speichert die aktuelle, oder alle ausgewählten Seiten in einer Datei. (Mit Strg+Klick auf den Seitennamen können mehrere Seiten ausgewählt werden.);Saves the current or all selected pages to a file. (Several pages can be selected with Ctrl + click on the page name.);Slaat de huidige of alle geselecteerde pagina's op in een bestand. (Verschillende pagina's kunnen worden geselecteerd met Ctrl + klik op de paginanaam.);Enregistre la page actuelle ou toutes les pages sélectionnées dans un fichier. (Avec Ctrl, cliquez sur le nom de la page, plusieurs pages peuvent être sélectionnées.);;;
+DialogBox;;Löscht ALLE Beispielseiten.;Deletes ALL sample pages.;Wist ALLE voorbeeldpagina's.;Supprime TOUTES les pages d'exemple.;;;
+DialogBox;;"Löscht die aktuelle, oder alle ausgewählten Seiten.|
+(Mehrere Seiten können mit Strg+Klick auf den Seitennamen ausgewählt werden.)";"Deletes the current or all selected pages.|
+(Several pages can be selected with Ctrl + click on the page name.)";"Hiermee verwijdert u de huidige of alle geselecteerde pagina's. |
+(U kunt meerdere pagina's selecteren met Ctrl + klikken op de paginanaam.)";"Supprime la page actuelle ou toutes les pages sélectionnées. | 
+(Plusieurs pages peuvent être sélectionnées en cliquant sur le nom de la page avec Ctrl.)";;;
+DialogBox;;Laden;Load;Laden;Charge;;;
+DialogBox;;Speichern;Save;Opslaan;Sauver;;;
+DialogBox;;Löschen;Delete;Verwijderen;Effacer;;;
+DialogBox;;Alle Beispiele laden;Load all examples;Laad alle voorbeelden;Charger tous les exemples;;;
+DialogBox;;Beispiel laden;Load example;Laad voorbeeld;Exemple de chargement;;;
+DialogBox;;Alle Beispiele speichern;Save all examples;Alle voorbeelden opslaan;Enregistrer tous les exemples;;;
+DialogBox;;Aktuelle Seite(n) speichern;Save actual sheet(s);Sla actuele tabblad(en) op;Enregistrer les pages actuelles;;;
+DialogBox;;Alle Beispielseiten löschen;Delete all examples;Verwijder alle voorbeelden;Supprimer toutes les pages d'exemple;;;
+DialogBox;;Aktuelle Seite(n) löschen;Delete actual sheet(s);Verwijder actuele tabblad(en);Supprimer les pages en cours;;;
+DialogBox;;Hilfe;Help;Help;Aide;;;
+DialogBox;;Dialog schließen;Close dialog;Sluit dialoog;Fermer la boîte de dialogue;;;
+DialogBox;;Öffnet das GitHub repository der MobaLedLib;Opens the GitHub repository of MobaLedLib;Open de GitHub repository van MobaLedLib;Ouvre le référentiel GitHub de MobaLedLib;;;
+DialogBox;;Öffnet die MobaLedLib im Stummi Forum;Open the MobaLedLib in the Stummi Forum;Open de MobaLedLib op het Stummi Forum;Ouvre le MobaLedLib dans le forum Stummi;;;
+;;;;;;;;
+DialogBox;;Diese Seite enthält Funktionen mit denen spezielle, auf dem ATTiny basierte Module programmiert und getestet werden können.;This page contains functions for programming and testing of special modules based on the ATTiny.;Deze pagina bevat functies voor het programmeren en testen van speciale modules op basis van de ATTiny.;Cette page contient des fonctions avec lesquelles des modules spéciaux basés sur ATTiny peuvent être programmés et testés.;;;
+DialogBox;;Programmieradapter;Programming adapter;Programmeer adapter;adaptateur de programmation;;;
+DialogBox;;Ein ATTiny hat keinen USB Anschluss. Darum benötigt man zur Programmierung einen Programmieradapter (In Circuit Programmer). Das kann ein Arduino mit besonderen Programm sein. Mit dem Knopf Links wird das Programm zu Arduino übertragen.;An ATTiny has no USB connection. That is why a programming adapter (In Circuit Programmer) is required for programming. This can be an Arduino with a special program. With the left button the program is transferred to Arduino.;Een ATTiny heeft geen USB-verbinding. Daarom is een programmeeradapter (In Circuit Programmer) vereist voor het programmeren. Dit kan een Arduino zijn met een speciaal programma. Met de linkerknop wordt het programma overgedragen naar Arduino.;Un ATTiny n'a pas de connexion USB. C'est pourquoi un adaptateur de programmation (In Circuit Programmer) est requis pour la programmation. Cela peut être un Arduino avec un programme spécial. Avec le bouton gauche, le programme est transféré vers Arduino.;;;
+DialogBox;;"Dieses Programm kann auf dem Tiny_UniProg und auf einen ""Nackten"" Arduino in einem Steckbrett eingesetzt werden.|
+Der ""HV Reset"" ist allerdings nur mit der ""Tiny_UniProg"" Platine möglich. Er wird für das Programmieren des Servo Programms benötigt.";"This program can be used on the Tiny_UniProg and on a ""naked"" Arduino in a breadboard.|
+Attention: The ""HV Reset"" is only possible with the ""Tiny_UniProg"" board. It is required for programming the servo program.";"Dit programma kan worden gebruikt op de Tiny_UniProg en op een ""naakte"" Arduino in een breadboard. |
+Let op: de ""HV Reset"" is alleen mogelijk met het ""Tiny_UniProg"" -bord. Het is vereist voor het programmeren van het servoprogramma.";"Ce programme peut être utilisé sur le Tiny_UniProg et sur un Arduino ""nu"" dans une planche à pain. |
+La ""HV Reset"" n'est possible qu'avec la carte ""Tiny_UniProg"". Il est nécessaire pour la programmation du programme d'asservissement.";;;
+DialogBox;;Prog. ISP;Prog. ISP;Prog. ISP;Prog. ISP;;;
+DialogBox;;Charlieplexing Modul;Charlieplexing module;Charlieplexing module;Module Charlieplexing;;;
+DialogBox;;"Mit dem Charlieplexing Modul können bis zu 12 LEDs über nur 4 Kabel angesteuert werden. Diese Technik wird z.B. bei Lichtsignalen oder Ampeln eingesetzt wo nur wenig Platz für die Anschlussleitungen vorhanden ist.|
+Zur Programmierung des ATTiny85 wird ein Programmieradapter benötigt (siehe oben) in der der ATTiny eingesteckt wird.";"With the Charlieplexing module, up to 12 LEDs can be controlled via only 4 cables. This technique is e.g. used with light signals or traffic lights where there is little space for the connecting cables.|
+To program the ATTiny85 a programming adapter is required (see above) in which the ATTiny is inserted.";"Met de Charlieplexing-module kunnen maximaal 12 LED's worden aangestuurd via slechts 4 kabels. Deze techniek is b.v. gebruikt met lichtsignalen of verkeerslichten waar weinig ruimte is voor de verbindingskabels. |
+Voor het programmeren van de ATTiny85 is een programmeeradapter vereist (zie hierboven) waarin de ATTiny is geplaatst.";"Avec le module Charlieplexing, jusqu'à 12 LED peuvent être contrôlées via seulement 4 câbles. Cette technique est par exemple utilisé pour les signaux lumineux ou les feux de circulation où il y a peu d'espace pour les câbles de connexion. | 
+Pour programmer l'ATTiny85, un adaptateur de programmation est nécessaire (voir ci-dessus) dans lequel l'ATTiny est inséré.";;;
+DialogBox;;Prog. Charlieplex;Prog. Charlieplex;Prog. Charlieplex;Prog. Charlieplex;;;
+DialogBox;;"Das Servo Modul kann bis zu 3 Servos ansteuern.|
+|
+Zur Programmierung des ATTiny85 wird ein Programmieradapter benötigt (siehe oben) in der der ATTiny eingesteckt wird.|
+|
+Achtung: Die Software für das Servo Modul ist noch in der Entwicklung.";"The servo module can control up to 3 servos. |
+|
+ |
+To program the ATTiny85 a programming adapter is required (see above) in which the ATTiny is inserted. |
+|
+Attention: The software for the servo module is still under development.";"De servomodule kan maximaal 3 servo's aansturen. |
+|
+Voor het programmeren van de ATTiny85 is een programmeeradapter vereist (zie hierboven) waarin de ATTiny is geplaatst. |
+|
+Let op: De software voor de servomodule is nog in ontwikkeling.";"Le module d'asservissement peut contrôler jusqu'à 3 servos. |
+| 
+Pour programmer l'ATTiny85, un adaptateur de programmation est nécessaire (voir ci-dessus) dans lequel l'ATTiny est inséré. | 
+| 
+Attention: Le logiciel du module d'asservissement est toujours en cours de développement.";;;
+DialogBox;;Prog. Servo;Prog. Servo;Prog. Servo;Prog. Servo;;;
+DialogBox;;Beispiele;Examples;Voorbeelden;Exemples;;;
+DialogBox;;Spezielle Module;Special modules;Speciale modules;Modules spéciaux;;;
+DialogBox;;Charlieplexing;Charlieplexing;Charlieplexing;Charlieplexing;;;
+DialogBox;;Servo;Servo;Servo;Servo;;;
+;;;;;;;;
+DialogBox;Percent_Msg_UserForm;Übertrage die Daten zum ATTiny ...;Sending data to the ATTiny ;Overbrengen van de gegevens naar de ATTiny ;Transférer les données vers ATTiny ...;;;
+DialogBox;;"Achtung: Während der Übertragung flackern die LEDs am ATTiny. |
+Falls nicht, dann liegt ein Kommunikationsfehler vor. |
+|
+Bei einem CRC Fehler blinken die LEDs am Ende mit 0.5Hz. |
+|
+Bei einer falschen Firmware Version flackern die LEDs nur am Anfang.";Attention: The LEDs on the ATTiny flicker during the transmission. | If not, there is a communication error. || In the event of a CRC error, the LEDs flash at 0.5Hz at the end. || If the firmware version is wrong, the LEDs only flicker at the beginning.;Let op: De LED's op de ATTiny knipperen tijdens het zenden. | Zo niet, dan is er een communicatiefout. || In het geval van een CRC-fout knipperen de leds aan het einde met 0,5 Hz. || Als de firmwareversie niet klopt, knipperen de leds alleen aan het begin.;Attention: les voyants de l'ATTiny clignotent pendant la transmission. | Sinon, il y a une erreur de communication. || En cas d'erreur CRC, les LED clignotent à 0,5 Hz à la fin. || Si la version du micrologiciel est erronée, les voyants ne clignotent qu'au début.;;;
+;;;;;;;;
+DialogBox;Copy_Select_GotoAct_Form;Auswahl der Goto Aktivierung;Selection of the Goto activation;Selectie van de Goto-activering;Sélection de l'activation Goto;;;
+DialogBox;;Abbruch;Cancel;Annuleren;Annulation;;;
+DialogBox;;Auswahl;Select;Selecteren;Sélection;;;
+DialogBox;;Goto Aktivierung auswählen:;Select Goto activation:;Selecteer Ga naar activering:;Sélectionnez Goto Activation:;;;
+DialogBox;;Ausgewählt:     0;Selected:     0;Geselecteerd :     0;Sélectionné: 0;;;
+DialogBox;;Beschreibung;Description;Beschrijving;Description;;;
+DialogBox;;"Wenn der Goto Mode verwendet wird, dann kann das Muster an verschiedenen Stellen gestartet werden. Diese Spalten sind in der Tabelle mit nummerierten Pfeilen markiert. |
+Mit diesem Dialog wird definiert wie die Startspalte im Betrieb ausgewählt wird.";"If the Goto Mode is used, the pattern can be started from different columns. These columns are marked with numbered arrows in the table. |
+This dialog defines how the start column is selected during operation.";"Als de Goto-modus wordt gebruikt, kan het patroon op verschillende plaatsen worden gestart. Deze kolommen zijn gemarkeerd met genummerde pijlen in de tabel. |
+Dit dialoogvenster definieert hoe de startkolom wordt geselecteerd tijdens de bewerking.";"Si le mode Goto est utilisé, le motif peut être démarré à différents endroits. Ces colonnes sont marquées de flèches numérotées dans le tableau. |
+Cette boîte de dialogue définit la manière dont la colonne de démarrage est sélectionnée pendant l'opération.";;;
+DialogBox;;...;...;...;...;;;
+;;;;;;;;
+DialogBox;Select_from_Sheet_Form;Dialog_Titel;Dialog_Titel;Dialog_Titel;Dialog_Titel;;;
+DialogBox;;Head_Label;Head_Label;Head_Label;Head_Label;;;
+DialogBox;;Description_Label;Description_Label;Description_Label;Description_Label;;;
+DialogBox;;Expertenmodus;Expertmode;Expert mode;mode expert;;;
+DialogBox;;Name;Name;Naam;Nom;;;
+;;;;;;;;
+DialogBox;Select_LED_Address;Auswahl der LED / Modul Adresse;Selection of the LED / module address;Selectie van de LED / Module Adres;Sélection de l'adresse LED / module;;;
+DialogBox;;+;+;+;+;;;
+DialogBox;;-;-;-;-;;;
+DialogBox;;LED Adresse:;LED address:;LED Adres:;Adresse LED:;;;
+DialogBox;;Abbrechen;Cancel;Annuleren;Annuler;;;
+DialogBox;;OK;OK;OK;OK;;;
+DialogBox;;Max:;Max:;Max:;Max:;;;
+DialogBox;;"Mit diesem Dialog wird die Adresse einer LED oder eines RGB Moduls ausgewählt.|
+Zur lokalisierung der LED wird diese abwechseln Ein- und Ausgeschaltet.|
+Die Adresse kann über das Eingabefeld oder mit '+' und '-' verändert werden.|
+Zu Beginn muss die Adresse mit Enter bestätigt werden. |
+Wenn die gewünschte LED Blinkt, dann wird der Dialog über 'OK' (ENTER) beendet.";"With this dialog the address of an LED or an RGB module is selected.|
+To locate the LED, it is alternately switched on and off.|
+The address can be changed via the input field or with '+' and '-'.|
+At the beginning, the address must be confirmed with Enter. |
+If the desired LED flashes, the dialog is closed with 'OK' (ENTER).";"Met dit dialoogvenster wordt het adres van een LED of een RGB-module geselecteerd.|
+Om de LED te lokaliseren, wordt deze afwisselend in- en uitgeschakeld.|
+Het adres kan worden gewijzigd via het invoerveld of met '+' en '-'. |
+In het begin moet het adres worden bevestigd met Enter.|
+Als de gewenste LED knippert, wordt het dialoogvenster gesloten met 'OK' (ENTER).";"Cette boîte de dialogue permet de sélectionner l'adresse d'une LED ou d'un module RVB. | 
+Pour localiser la LED, allumez et éteignez alternativement. | 
+L'adresse peut être modifiée via le champ de saisie ou avec '' et '-'. | 
+Au début, le L'adresse peut être confirmée avec Enter. | 
+Si la LED souhaitée clignote, la boîte de dialogue se ferme avec ""OK"" (ENTER).";;;
+;;;;;;;;
+DialogBox;StatusMsg_UserForm;Bitte etwas Geduld...;Please be patient...;Even geduld alstublieft ...;Veuillez patienter ...;;;
+DialogBox;;"Lade alle Beispiele|
+Bitte etwas Geduld...";"Load all examples|
+Please be patient";"Laden van alle voorbeelden|
+Even geduld aub ";"Charger tous les exemples|
+Veuillez patienter ...";;;
+;;;;;;;;
+DialogBox;Test_GotoNr_Form;Test der Start Nummern;Test the start numbers;Test de startnummers;Testez les numéros de départ;;;
+DialogBox;;Start Nummern testen:;Test start numbers:;Test startnummers:;Numéros de début de test:;;;
+DialogBox;;"Über den ""Goto Mode"" können verschiedene Startpunkte eines Musters definiert werden. Diese Punkte können später über DCC oder ein anderes Protokoll angesprungen werden. Mit diesem Dialog kann geprüft werden ob das richtig funktioniert.|
+Mit einem Druck auf die entsprechende Taste sollte das entsprechende Muster angezeigt werden.|
+Zur Kontrolle wird die blaue LED am Modul mit der entsprechenden Helligkeit angesteuert.";"Different starting points of a pattern can be defined via the ""Goto Mode"". These points can later be accessed via DCC or another protocol. This dialog can be used to check whether this works correctly.|
+The corresponding pattern should be displayed by pressing the corresponding button.|
+As a check, the blue LED on the module is controlled with the appropriate brightness.";"Verschillende startpunten van een patroon kunnen worden gedefinieerd via de ""Ga naar modus"". Deze punten zijn later toegankelijk via DCC of een ander protocol. Dit dialoogvenster kan worden gebruikt om te controleren of dit correct werkt.|
+Het bijbehorende patroon moet worden weergegeven door op de bijbehorende toets te drukken.|
+Ter controle wordt de blauwe LED op de module bestuurd met de juiste helderheid.";"Différents points de départ d'un motif peuvent être définis via le ""Mode Goto"". Ces points sont accessibles ultérieurement via DCC ou un autre protocole. Cette boîte de dialogue peut être utilisée pour vérifier si cela fonctionne correctement. | 
+En appuyant sur la touche correspondante, le motif correspondant doit être affiché. | 
+À des fins de vérification, la LED bleue du module est contrôlée avec la luminosité appropriée.";;;
+DialogBox;;Dieser Dialog kann mit STRG+'Zum Modul schicken' geöffnet werden ohne das die Daten erneut geschickt werden.;This dialog can be opened with CTRL + 'Send to module' without the data being sent again.;Dit dialoogvenster kan worden geopend met CTRL + 'Verzenden naar module' zonder dat de gegevens opnieuw worden verzonden.;Cette boîte de dialogue peut être ouverte avec CTRL 'Envoyer au module' sans que les données soient renvoyées.;;;
+DialogBox;;CMD 0;CMD 0;CMD 0;CMD 0;;;
+;;CMD 255;CMD 255;CMD 255;CMD 255;;;
+DialogBox;;CMD:;CMD:;CMD:;CMD:;;;
+DialogBox;;Ende;End;Einde;Fin;;;
+;;;;;;;;
+DialogBox;;"Der Parameter ""On_Min"" beschreibt wie viele Räume mindestens beleuchtet sein sollen. Nach dem Einschalten werden nach einer zufälligen Zeit so lange Lichter eingeschaltet bis die vorgegebene Anzahl erreicht ist. Dabei werden auch die Zimmer zufällig bestimmt";"The ""On_Min"" parameter describes the minimum number of rooms that should be illuminated. After switching on, lights are switched on after a random time until the specified number has been reached. The rooms are also chosen at random";"De parameter ""On_Min"" beschrijft het minimum aantal kamers dat moet worden verlicht. Na het inschakelen worden de lichten na een willekeurige tijd ingeschakeld totdat het opgegeven aantal is bereikt. De kamers worden ook willekeurig gekozen";"Le paramètre ""On_Min"" décrit le nombre minimum de pièces à éclairer. Après la mise sous tension, les lumières sont allumées après un temps aléatoire jusqu'à ce que le nombre spécifié soit atteint. Les chambres sont également choisies au hasard";;;
+;;;;;;;;
+DialogBox;UserForm_Other;UserForm1;UserForm1;UserForm1;UserForm1;;;
+DialogBox;;Par1;Par1;Par1;Par1;;;
+DialogBox;;Par2;Par2;Par2;Par2;;;
+DialogBox;;Par3;Par3;Par3;Par3;;;
+DialogBox;;Par4;Par4;Par4;Par4;;;
+DialogBox;;Par5;Par5;Par5;Par5;;;
+DialogBox;;Par6;Par6;Par6;Par6;;;
+DialogBox;;Par7;Par7;Par7;Par7;;;
+DialogBox;;Schalter für Zähler Funktion;Switch for counter function;Schakelaar voor tellerfunctie;Interrupteur pour fonction compteur;;;
+DialogBox;;Eingang invertieren;Invert input;Ingang inverteren;Inverser l'entrée;;;
+DialogBox;;Reset wenn lange betätigt;Reset when pressed for a long time;Reset wanneer lang ingedrukt;Réinitialiser en cas de pression prolongée;;;
+DialogBox;;Auf und Abzähler (Zählrichtung am Ende umkehren);Up and down counter (reverse counting direction at the end);Op en neer teller (omgekeerde telrichting aan het einde);Compteur haut et bas (sens de comptage inversé à la fin);;;
+DialogBox;;Am Ende wieder von vorne beginnen;At the end start all over again;Begin aan het einde opnieuw;À la fin recommencer à nouveau;;;
+DialogBox;;Null überspringen (0 nur beim start oder Reset);Skip zero (0 only at start or reset);Sla nul over (0 alleen bij start of reset);Ignorer zéro (0 uniquement au démarrage ou à la réinitialisation);;;
+;;;;;;;;
+DialogBox;;UserForm_USB_Connection;UserForm_USB_Connection;UserForm_USB_Connection;UserForm_USB_Connection;;;
+DialogBox;;Lade Main_1;Lade Main_1;Lade Main_1;Lade Main_1;;;
+DialogBox;;zum PC;to PC;naar PC;au PC;;;
+DialogBox;;Default;Default;Default;Default;;;
+DialogBox;;Titel;Titel;Titel;Titel;;;
+DialogBox;;"Achtung die größe und Position der Bilder ist unterschiedlich bei verschiedenen Rechnern ;-(|
+Das hängt das von den Windows Vergrößerungseinstellungen ab. |
+(siehe Bilder bei verschiedenen BS Auflösungen.pptx)|
+|
+Achtung: Auf meinem PC sind die Bilder kleiner als auf anderen Rechnern.";No translation needed;No translation needed;No translation needed;;;
+DialogBox;;Keine Verbindung zum PC;No connection to the PC;Geen verbinding met de pc;Pas de connexion au PC;;;
+DialogBox;;Prüfen;Check;Overwegen;Envisager;;;
+DialogBox;;Umstellung der Sprache;Change of language;Verandering van taal;Changement de langue;;;
+;;;;;;;;
+;First found in;;;;;;;
+VBA;M07_Save_Sheet_Data 184;Name des Bildes Eingeben (Gleichen Namen verwenden bei identischen Bildern);Enter the name of the image (use the same name for identical images);"Voer de naam van de afbeelding in.  
+Gebruik dezelfde naam voor identieke afbeeldingen.";Entrez le nom de l'image (utilisez le même nom pour des images identiques);;;
+VBA;M07_Save_Sheet_Data 420;Schreibe ; Writing ; schrijven; écriture;;;
+VBA;M08_Load_Sheet_Data 352;Warte auf '; Waiting for '; wachten op '; Attendez ';;;
+VBA;M08_Load_Sheet_Data 387;Fehler: Das Bild ';Error: the picture ';Fout: De afbeelding ';Erreur: l'image ';;;
+VBA;M08_Load_Sheet_Data 387;' existiert nicht in folgenen Verzeichnissen:;does not exist in the following directories:; bestaat niet in de volgende mappen: ;n'existe pas dans les répertoires suivants:;;;
+VBA;M08_Load_Sheet_Data 388;Bild nicht gefunden;Image not found;Afbeelding niet gevonden;Image non trouvée;;;
+VBA;M08_Load_Sheet_Data 482;Lade ;Loading;Laden;Chargement;;;
+VBA;M08_Load_Sheet_Data 556;Achtung: Soll die Seite ';Should the page ';Let op: Moet de pagina ';Attention: si la page ';;;
+VBA;M08_Load_Sheet_Data 556; werden?;?; worden?; être?;;;
+VBA;M07_Save_Sheet_Data 419;gespeichert;be saved; opgeslagen ;enregistré;;;
+VBA;M08_Load_Sheet_Data 572;gelöscht;be deleted; verwijderd;deleted;;;
+VBA;M09_Language 156;übersetzt;be translated; vertaald;traduit;;;
+VBA;M17_Import_a_Decode_Macro 222;verglichen;be compared; vergeleken;comparé;;;
+VBA;M08_Load_Sheet_Data 556;Unbekannte Seite entdeckt;Unknown page discovered;Onbekende pagina gevonden;Page inconnue découverte;;;
+VBA;M20_Morsecode 27;Morsetext;Morse text;Morsetekst;Morse texte;;;
+VBA;M20_Morsecode 28;7#3#Dauer Dit in ms;7#3#Dit duration in ms;7#3#Duur Dit in ms;7#3#Durée Dit en ms;;;
+VBA;M20_Morsecode 29;Spruchanfang/-ende senden;Send beginning / end of message;Stuur begin of einde van het bericht;Envoyer le début / la fin du dicton;;;
+VBA;M20_Morsecode 30;Nach dem Erstellen vorführen;Show off after creating;Laten zien na het maken;Montrer après avoir créé;;;
+VBA;M20_Morsecode 32;{SOS} Rettet Hardi;{SOS} Save Hardi;{SOS} Red Hardi;{SOS} Enregistrer Hardi;;;
+VBA;M20_Morsecode 34;Nein;No;Nee;Aucun;;;
+VBA;M20_Morsecode 35;Ja;Yes;Ja;Oui;;;
+VBA;M20_Morsecode 194;Unbekanntes Spezial Signal ';Unknown special signal';Onbekend speciaal signaal ';Signal spécial inconnu »;;;
+VBA;M20_Morsecode 194;Unbekanntes Signal;Unknown signal;Onbekend signaal;Signal inconnu;;;
+VBA;M20_Morsecode 225;Achtung die folgenden Zeichen existieren nicht im Morse Alphabet:;Warning the following characters do not exist in the Morse alphabet:;Waarschuwing: de volgende tekens bestaan ??niet in het Morse-alfabet:;Attention, les caractères suivants n'existent pas dans l'alphabet Morse:;;;
+VBA;M20_Morsecode 227;Die Zeichen wurden weggelassen;The characters have been left out;De tekens zijn weggelaten;Les personnages ont été laissés de côté;;;
+VBA;M20_Morsecode 227;Falsche Zeichen erkannt;Wrong characters recognized;Verkeerde tekens herkend;Mauvais caractères reconnus;;;
+VBA;M20_Morsecode 231;Der Morsecode ist zu lang (;Morse code is too long (;Morsecode is te lang (;Le code Morse est trop long (;;;
+VBA;M20_Morsecode 231;). Maximal 148 Abschnitte sind möglich.;). A maximum of 148 sections are possible.;). Er zijn maximaal 148 secties mogelijk.;). Un maximum de 148 sections sont possibles.;;;
+VBA;M20_Morsecode 231;Morsecode zu lang;Morse code too long;Morsecode te lang;Code Morse trop long;;;
+VBA;M20_Morsecode 313;Fehler die Bilder wurden nicht geladen. Bitte sicherstellen, dass sie in der 'MLL_pcf' Datei VOR dem Button (msoFormControl) stehen.;The images were not loaded. Please make sure that they are in the 'MLL_pcf' file BEFORE the button (msoFormControl).;De afbeeldingen zijn niet geladen. Zorg ervoor dat ze zich in het 'MLL_pcf'-bestand bevinden VOOR de button (msoFormControl).;Les images n'ont pas été chargées. Veuillez vous assurer qu'ils se trouvent dans le fichier 'MLL_pcf' AVANT le bouton (msoFormControl).;;;
+VBA;M20_Morsecode 313;Fehler in Beispiel Datei;Error in example file;Fout in voorbeeldbestand;Erreur dans le fichier d'exemple;;;
+VBA;M11_To_Prog_Gen 37;Fehler: Das Programm ';Error: the program ';Fout: het programma ';Erreur: le programme ';;;
+VBA;M11_To_Prog_Gen 38;existiert nicht im Standard Verzeichnis:;does not exist in the standard directory:; bestaat niet in de standaardmap:;n'existe pas dans le répertoire standard:;;;
+VBA;M11_To_Prog_Gen 40; nicht vorhanden; unavailable; is niet beschikbaar; non disponible;;;
+VBA;M11_To_Prog_Gen 80;Fehler in Makro Zeile: Klammer zu fehlt;Error in macro line: closing bracket missing;Fout in macrolijn: sluithaak ontbreekt;Erreur de ligne de macro: parenthèse manquante;;;
+VBA;M11_To_Prog_Gen 80;Interner Macro Fehler;Internal macro error;Interne macrofout;Erreur de macro interne;;;
+VBA;M11_To_Prog_Gen 119;Soll die bestehende Beschreibung durch;Should the existing description replaced by;Moet de bestaande beschrijving vervangen worden door ';La description existante doit-elle;;;
+VBA;M11_To_Prog_Gen 120;' ersetzt werden?;'?;'?;à remplacer?;;;
+VBA;M11_To_Prog_Gen 122;Bestehende Beschreibung ersetzen?;Replace existing description?;Bestaande beschrijving vervangen?;Remplacer la description existante?;;;
+VBA;M11_To_Prog_Gen 151;"Fehler in der markierten Spalte der Dauer Tabelle!|
+  Ungültiger Eintrag: '";"Error in the marked column of the duration table! |
+   Invalid entry: '";"Fout in de gemarkeerde kolom van de 'tijdsduurregel'! |
+Ongeldige invoer: '";Erreur dans la colonne marquée du tableau de durée! Entrée non valide: ';;;
+VBA;M11_To_Prog_Gen 157;"Folgende Bedingungen müssen erfüllt sein:|
+ -Der Eintrag muss kleiner als 17 Minuten sein|
+ -Es dürfen nur folgende Einheiten benutzt werden:|
+   Min, Sek, Sec, sek, sec, Ms, ms|
+ -Zwischen Zahl und Einheit muss ein Leerzeichen stehen";"The following conditions must be met:
+  - The entry must be less than 17 minutes |
+  - Only the following units may be used: |
+     Min, sec, sec, sec, sec, ms, ms |
+  - There must be a space between the number and the unit";"Aan de volgende voorwaarden moet worden voldaan:
+- De invoer moet korter zijn dan 17 minuten |
+- Alleen de volgende eenheden mogen worden gebruikt: |
+   Min, Sek, Sec, sek, sec, Ms, ms |
+- Er moet een spatie staan ??tussen het nummer en de eenheid";"Les conditions suivantes doivent être remplies: |
+- L'entrée doit être inférieure à 17 minutes | 
+- Seules les unités suivantes peuvent être utilisées: | 
+   Min, sec, sec, sec, sec, ms, ms | 
+- Il doit y avoir un espace entre le numéro et l'unité";;;
+VBA;M11_To_Prog_Gen 158;Fehler in 'Dauer' Tabelle;Error in 'Duration' table;Fout in 'tijdsduurregel';Erreur dans le tableau «durée»;;;
+VBA;M11_To_Prog_Gen 163;"Fehler: In der Dauer Tabelle dürfen keine Lücken sein|
+|
+Es müssen nicht alle Spalten der 'Dauer' Tabelle ausgefüllt werden. Bei Fehlenden Einträgen werden die Zeiten aus dem Anfang der Tabelle gelesen.";"Error: There must be no gaps in the duration table
+|
+It is not necessary to fill out all the columns in the 'Duration' table. If entries are missing, the times are read from the beginning of the table.";"Fout: Er mogen geen gaten in de 'Tijdsduurregel' zijn! |
+|
+Het is niet nodig om alle kolommen in de tabel 'Tijdsduurregel' in te vullen. Als vermeldingen ontbreken, worden de tijden vanaf het begin van de tabel gelezen.";"Erreur: il ne doit pas y avoir de lacunes dans le tableau de durée | 
+| 
+Il n'est pas nécessaire de remplir toutes les colonnes du tableau de ""durée"". Si des entrées sont manquantes, les heures sont lues depuis le début du tableau.";;;
+VBA;M11_To_Prog_Gen 164;Lücke in der Dauer Tabelle entdeckt;Gap in the duration table discovered;Gat in 'Tijdsduurregel' gevonden;Lacune dans la table de durée découverte;;;
+VBA;M11_To_Prog_Gen 165;Unbekannter Fehler in der 'Dauer' Spalte;Unknown error in the 'Duration' column;Onbekende fout in de kolom van de 'Tijdsduurregel';"Erreur inconnue dans la colonne ""Durée""";;;
+VBA;M11_To_Prog_Gen 165;Internal Error:;Internal error:;Interne fout:;Erreur interne:;;;
+VBA;M11_To_Prog_Gen 176;Fehler in 'Dauer' Reihe;Error in 'Duration' row;Fout in 'Tijdsduurregel';"Erreur dans la ligne ""durée""";;;
+VBA;M11_To_Prog_Gen 192;Fehler die 'Dauer' Reihe darf keine leeren Zellen enthalten;Errors in the 'Duration' row cannot contain empty cells;Fouten in de regel 'Tijdsduur' mogen geen lege cellen voor komen;"Les erreurs dans la ligne ""Durée"" ne peuvent pas contenir de cellules vides";;;
+VBA;M11_To_Prog_Gen 217;Fehler die Dauer in der markierten Zelle ist ungültig;Error: The duration in the selected cell is invalid;Fout: de tijdsduur in de geselecteerde cel is ongeldig;La durée de l'erreur dans la cellule sélectionnée n'est pas valide;;;
+VBA;M11_To_Prog_Gen 235;"Wenn der Goto Mode aktiv ist, und mehrere Start Spalten vorhanden sind, dann muss eine Aktivierungsmethode angegeben werden sonst können die Einsprung Spalten nicht erreicht werden.|
+|
+Soll die Methode jetzt definiert weden?";"If the Goto Mode is active and there are several start columns, then an activation method must be specified otherwise the entry columns cannot be reached.
+|
+Should the method be defined now?";"Als de Goto-modus actief is en er zijn verschillende startkolommen, moet een activeringsmethode worden opgegeven, anders kunnen de invoerkolommen niet worden bereikt.
+|
+Moet de methode nu worden gedefinieerd?";"Si le mode Goto est actif et qu'il existe plusieurs colonnes de démarrage, une méthode d'activation doit être spécifiée, sinon les colonnes d'entrée ne peuvent pas être atteintes. | 
+| 
+La méthode doit-elle être définie maintenant?";;;
+VBA;M11_To_Prog_Gen 236;Goto Aktivierung fehlt;Goto activation is missing;Goto activering ontbreekt;L'activation de Goto est manquante;;;
+VBA;M11_To_Prog_Gen 245;"Es wurde noch kein Makroname eingegeben ;-(";"No macro name has been entered yet ;-(";"Er is nog geen macronaam ingevoerd ;-(";"Aucun nom de macro n'a encore été saisi ;-(";;;
+VBA;M11_To_Prog_Gen 246;Bitte Makro name eingeben;Please enter macro name;Voer een macronaam in;Veuillez saisir le nom de la macro;;;
+VBA;M11_To_Prog_Gen 253;Die LED Tabelle ist leer. Bitte die Felder mit einem 'x' markieren in denen die LEDs leuchten sein sollen;The LED table is empty. Please mark the fields with an 'x' in which the LEDs should light up;De LED-tabel is leeg. Markeer de velden met een 'x' waarin de LED's moeten branden;La table LED est vide. Veuillez marquer les champs avec un «x» dans lequel les LED doivent s'allumer;;;
+VBA;M11_To_Prog_Gen 254;LED Tabelle leer;LED table is empty;LED-Tabel is leeg;Table LED vide;;;
+VBA;M11_To_Prog_Gen 290;"Fehler: Das Prog_Generator Programm hat nicht die richtige Version.|
+|
+Es muss mindesten die Version ";"Error: The Prog_Generator program does not have the correct version. |
+|
+At version must be ";"Fout: Het programma Prog_Generator heeft niet de juiste versie! |
+|
+Bij versie moet ";"Erreur: Le programme Prog_Generator n'a pas la version correcte. | 
+| 
+Au moins la version doit être";;;
+VBA;M11_To_Prog_Gen 290; haben; at least; tenminste; avoir;;;
+VBA;M11_To_Prog_Gen 291;Falsche Prog_Generator Version;Wrong Prog_Generator version;Verkeerde Prog_Generator-versie;Mauvaise version de Prog_Generator;;;
+VBA;M13_Goto_Act 58;"Falsche Parameter Anzahl in 'RandButton...()' Funktion ;-(|
+Es müssen folgende zwei Parameter angegeben werden:|
+  Flags, Timeout";"Wrong number of parameters in 'RandButton ... ()' function ;-( |
+The following two parameters must be specified: |
+   Flags, timeout";"Onjuist aantal parameters in de functie 'RandButton ... ()' ;-( 
+De volgende twee parameters moeten worden gespecificeerd: 
+  Flags, Time-out ";"Nombre de paramètres incorrect dans la fonction 'RandButton ... ()' ;-( | 
+Les deux paramètres suivants doivent être spécifiés: | 
+  Indicateurs, délai d'expiration";;;
+VBA;M13_Goto_Act 59;Falsche Parameter Anzahl in;Wrong number of parameters in;Onjuist aantal parameters in;Nombre de paramètres incorrect dans;;;
+VBA;M13_Goto_Act 125;"Falsche Parameter Anzahl in 'RandButton()' Funktion ;-(|
+Es müssen folgende zwei Parameter angegeben werden:|
+  Flags, Timeout";"Wrong number of parameters in 'RandButton ()' function.  ;-( |
+|
+The following two parameters must be specified: |
+   Flags, timeout";"Onjuist aantal parameters in de functie 'RandButton ()' .  ;-( |
+|
+De volgende twee parameters moeten worden gespecificeerd: 
+  Flags, Time-out """;"Nombre de paramètres incorrect dans la fonction 'RandButton ()' .  ;-( | 
+Les deux paramètres suivants doivent être spécifiés: | 
+   Indicateurs, délai d'expiration";;;
+VBA;M13_Goto_Act 152;"Falsche Parameter Anzahl in 'Counter()' Funktion ;-(|
+Es müssen folgende zwei Parameter angegeben werden:|
+  MinTime, MaxTime";"Wrong number of parameters in 'Counter ()' function.   ;-( |
+The following two parameters must be specified: |
+   MinTime, MaxTime";"Onjuist aantal parameters in de functie 'Counter ()'.   ;-(  |
+De volgende twee parameters moeten worden gespecificeerd: |
+  MinTime, MaxTime """;"Nombre de paramètres incorrect dans la fonction 'Counter ()'.   ;-( |
+Les deux paramètres suivants doivent être spécifiés: | 
+   MinTime, MaxTime";;;
+VBA;M14_Select_GotoAct 56;"Wenn der Goto Mode verwendet wird, dann kann das Muster an verschiedenen Stellen gestartet werden. Diese Spalten sind in der Tabelle mit nummerierten Pfeilen markiert.|
+Mit diesem Dialog wird definiert wie die Startspalte im Betrieb ausgewählt wird.";"If the Goto Mode is used, the pattern can be started in different places. These columns are marked in the table with numbered arrows.|
+This dialog defines how the start column is selected during operation.";"Als de Goto-modus wordt gebruikt, kan het patroon op verschillende plaatsen worden gestart. Deze kolommen zijn in de tabel gemarkeerd met genummerde pijlen. |
+Dit dialoogvenster definieert hoe de startkolom wordt geselecteerd tijdens de bewerking.";"Si le mode Goto est utilisé, le motif peut être démarré à différents endroits. Ces colonnes sont marquées dans le tableau par des flèches numérotées. | 
+Cette boîte de dialogue définit la manière dont la colonne de début est sélectionnée pendant l'opération.";;;
+VBA;M15_Par_Description 26;Fehler: Der Parameter Name ';Error: The parameter name ';Fout: de parameternaam ';Erreur: le nom du paramètre ';;;
+VBA;M15_Par_Description 26;' wurde nicht im Sheet ';' was not found in the sheet ';is niet gevonden in blad';«n'était pas sur la feuille»;;;
+VBA;M15_Par_Description 26;' gefunden!;' !;' !;trouvé!;;;
+VBA;M15_Par_Description 27;Internal Error;Internal Error;Internal Error;Erreur interne;;;
+VBA;M16_Add_Del_Columns 62;Zum einfügen oder löschen von Spalten muss sich aktuelle Zelle innerhalb der Tabelle befinden.;To insert or delete columns, the current cell must be within the table.;Als u kolommen wilt invoegen of verwijderen, moet de huidige cel zich in de tabel bevinden.;Pour insérer ou supprimer des colonnes, la cellule actuelle doit se trouver dans le tableau.;;;
+VBA;M16_Add_Del_Columns 62;Cursor außerhalb der Tabelle;Cursor outside the table;Cursor buiten de tabel;Curseur en dehors de la table;;;
+VBA;M16_Add_Del_Columns 133;"Mit diesem Knopf wird eine Spalte in die Tabelle eingefügt.|
+Die Spalte wird vor links neben der aktuellen Position eingefügt.";"This button inserts a column in the table.|
+The column is inserted to the left of the current position.";"Met deze knop wordt een kolom in de tabel ingevoegd.
+De kolom wordt links van de huidige positie ingevoegd. ";Ce bouton insère une colonne dans le tableau. | La colonne est insérée avant la gauche de la position actuelle.;;;
+VBA;M16_Add_Del_Columns 134;Spalte in Tabelle einfügen;Insert column in table;Kolom in tabel invoegen;Insérer une colonne dans le tableau;;;
+VBA;M16_Add_Del_Columns 136;"Mit diesem Knopf wird die Spalte in der Tabelle gelöscht|
+in der sich der Cursor befindet.";"This button deletes the column in the table
+in which the cursor is located.";"Met deze knop wordt de kolom verwijderdin de tabel
+waarin de cursor zich bevindt. ";Ce bouton supprime la colonne du tableau dans laquelle se trouve le curseur.;;;
+VBA;M16_Add_Del_Columns 137;Spalte in Tabelle löschen;Delete column in table;Kolom in tabel verwijderen;Supprimer la colonne du tableau;;;
+VBA;M16_Add_Del_Columns 139;Achtung: Diese Meldung wird nur ein mal angezeigt;Attention: This message is only displayed once;Let op: Dit bericht wordt slechts eenmaal weergegeven!;Attention: ce message ne s'affiche qu'une seule fois;;;
+VBA;M17_Import_a_Decode_Macro 10;Fehler beim Dekodieren des Makros;Macro decoding failed;Macrodecodering is mislukt;Le décodage des macros a échoué;;;
+VBA;M17_Import_a_Decode_Macro 39;Fehler: Unbekannter Pattern Name ';Error: Unknown Pattern name ';Fout: Onbekende patroonnaam ';Erreur: Nom de modèle inconnu ';;;
+VBA;M17_Import_a_Decode_Macro 53;Fehler: Unbekanter Pattern Typ ';Error: Unknown pattern type ';Fout: Onbekend patroontype ';Erreur: Type de modèle inconnu ';;;
+VBA;M17_Import_a_Decode_Macro 197;"Fehler beim importieren des Makros aufgetreten ;-(|
+|
+Das Macro entspricht leider nicht genau dem original Macro.|
+Problem bitte an Hardi melden...";"An error occurred while importing the macro ;-( |
+|
+Unfortunately, the macro does not exactly match the original macro
+Please report the problem to Hardi ";"Er is een fout opgetreden bij het importeren van de macro!  ;-( |
+|
+Helaas komt de macro niet exact overeen met de originele macro. |
+Meld het probleem aan Hardi ... ";"Une erreur s'est produite lors de l'importation de la macro ;-( | 
+| 
+La macro n'est pas exactement la même que la macro d'origine. | 
+??Veuillez signaler le problème à Hardi ...";;;
+VBA;M17_Import_a_Decode_Macro 198;Interne Fehler beim importieren des Macros;Internal errors when importing the macro;Interne fouten bij het importeren van de macro;Erreurs internes lors de l'importation de la macro;;;
+VBA;M17_Import_a_Decode_Macro 282;"Soll die Zeile in das aktuelle Blatt eingefügt werden?|
+|
+Ja: Die Daten in diesem Blatt werden überschrieben|
+Nein: Es wird ein neues Blatt angelegt";"Should the line be inserted in the current sheet?
+|
+Yes: The data in this sheet will be overwritten|
+No:  A new sheet is created";"Moet de regel in het huidige blad worden ingevoegd? |
+|
+Ja:       De gegevens in dit blad worden overschreven.|
+Nee:  Er wordt een nieuw blad gemaakt.";"La ligne doit-elle être insérée dans la feuille actuelle? | 
+| 
+Oui:  Les données de cette feuille seront écrasées | 
+Non: Une nouvelle feuille sera créée";;;
+VBA;M17_Import_a_Decode_Macro 283;Daten in aktuelles oder neues Blatt einfügen;Insert data in current or new sheet;Gegevens invoegen in huidig ??of in nieuw blad;Insérer des données dans la feuille actuelle ou nouvelle;;;
+VBA;M12_Copy_Prog 23;Fehler: Die Datei oder das Verzeichnis ';Error: The file or directory ';Fout: Het bestand of de map ';Erreur: Le fichier ou le répertoire ';;;
+VBA;M12_Copy_Prog 23;' ist nicht im Verzeichnis;' doesn't exist in the directory;' bestaat niet in de map!;' n'est pas dans le répertoire;;;
+VBA;M12_Copy_Prog 25;vorhanden.; ; ;disponible.;;;
+VBA;M12_Copy_Prog 25;Fehler beim kopieren;Copy failed;Kopiëren mislukt;La copie a échoué;;;
+VBA;M12_Copy_Prog 42;Es ist ein Fehler beim kopieren der Datei oder des Verzeichnisses ';There is an error copying the file or directory ';Er is een fout bij het kopiëren van het bestand of de map ';Une erreur s'est produite lors de la copie du fichier ou du répertoire ';;;
+VBA;M12_Copy_Prog 42;' vom Verzeichnis;' from the directory;' uit de map;' du répertoire;;;
+VBA;M12_Copy_Prog 44;nach ';to ';naar ';après ';;;
+VBA;M12_Copy_Prog 44;' aufgetreten;' occurred;' opgetreden;' s'est produit;;;
+VBA;M12_Copy_Prog 59;"Fehler: Die Variable 'USERPROFILE' ist nicht definiert ;-(|
+|
+Das Programm wird nach 'C:";"Error: The variable' USERPROFILE 'is not defined ;-( |
+|
+The program is copied to 'C:";"Fout: De variabele 'USERPROFILE' is niet gedefinieerd!  ;-(  |
+|
+Het programma wordt gekopieerd naar 'C: ";"Erreur: La variable 'USERPROFILE' n'est pas définie ;-( | 
+| 
+Le programme est après 'C:";;;
+VBA;M12_Copy_Prog 59;' kopiert.;'.;'.;' copié.;;;
+VBA;M12_Copy_Prog 60;Fehler beim kopieren des LED Programmiertool;Error copying the LED programming tool;Fout bij het kopiëren van het LED-programmeergereedschap;Erreur lors de la copie de l'outil de programmation LED;;;
+VBA;M12_Copy_Prog 98;Achtung: Die Datei ';Attention: The file ';Let op: Het bestand ';Attention: Le fichier ';;;
+VBA;M12_Copy_Prog 98;' existiert bereits im Verzeichnis;'already exists in the directory;bestaat al in de map;existe déjà dans le répertoire;;;
+VBA;M12_Copy_Prog 101;Das existierende Programm wurde unter dem Namen ';"The existing program was saved to |
+'";"Het bestaande programma is opgeslagen in 
+'";Le programme existant s'appelait «;;;
+VBA;M12_Copy_Prog 101;' gesichert.;'.;'.;' sécurisé.;;;
+VBA;M12_Copy_Prog 104;Dieser Fehler tritt auf wenn das Programm mehrfach aus dem extras Verzeichnis der Bibliothek gestartet wird.;This error occurs when the program is started several times from the 'extras' directory of the library.;Deze fout treedt op wanneer het programma meerdere keren wordt gestart vanuit de map 'extra's' in de Arduino bibliotheek.;Cette erreur se produit lorsque le programme est démarré plusieurs fois à partir du répertoire extras de la bibliothèque.;;;
+VBA;M12_Copy_Prog 108;"Das Programm muss nur beim ersten mal nach der Installation der MobaLedLib aus dem Bibliotheksverzeichnis gestartet werden. Dabei wird es in das oben genannte Verzeichnis kopiert damit die Bibliothek unverändert bleibt.|
+Im folgenden wird ein Link auf dem Desktop kreiert über den das Programm in Zukunft gestartet wird.";"The program only needs to be started once from the library directory after installing the MobaLedLib. It is copied into the above directory so that the library remains unchanged.|
+In the following a link is created on the desktop via which the program will be started in the future.";"Het programma hoeft slechts eenmaal te worden gestart vanuit de bibliotheekmap na installatie van MobaLedLib. Het wordt gekopieerd naar de bovenstaande map zodat de bibliotheek ongewijzigd blijft. |
+Vervolgens wordt een snelkoppeling op het bureaublad gemaakt waarmee het programma in de toekomst kan worden gestart.";"Le programme doit uniquement être démarré à partir du répertoire de la bibliothèque la première fois après l'installation de MobaLedLib. Il est copié dans le répertoire ci-dessus afin que la bibliothèque reste inchangée. |
+Dans ce qui suit, un lien est créé sur le bureau via lequel le programme sera démarré à l'avenir.";;;
+VBA;M12_Copy_Prog 121;Das Programm wird unter dem Namen ';The program is saved with the new name ';Het programma wordt opgeslagen met de nieuwe naam ';Le programme s'appelle ';;;
+VBA;M12_Copy_Prog 128;"' gespeichert.|
+|
+Dieser Fehler tritt auf wenn das Programm mehrfach aus dem extras Verzeichnis der Bibliothek gestartet wird.|
+Das Programm muss nur beim ersten mal nach der Installation der MobaLedLib aus dem Bibliotheksverzeichnis gestartet werden. Dabei wird es in das oben genannte Verzeichnis kopiert damit die Bibliothek unverändert bleibt.|
+Im folgenden wird ein Link auf dem Desktop kreiert über den das Programm in Zukunft gestartet wird.";"'. |
+|
+This error occurs if the program is started several times from the extras directory of the library
+The program only needs to be started from the library directory the first time after installing MobaLedLib. It is copied into the above directory so that the library remains unchanged
+In the following a link is created on the desktop via which the program will be started in the future.";". 
+
+Deze fout treedt op als het programma meerdere keren wordt gestart vanuit de map met extra's van in de Arduino bibliotheek.
+Het programma hoeft alleen na de installatie van MobaLedLib te worden gestart vanuit de bibliotheekmap. Het wordt gekopieerd naar de bovenstaande map zodat de bibliotheek ongewijzigd blijft.
+Vervolgens wordt een snelkoppeling op het bureaublad gemaakt waarmee het programma in de toekomst kan worden gestart.";"saved. | 
+| 
+Cette erreur se produit lorsque le programme est démarré plusieurs fois à partir du répertoire extras de la bibliothèque. | Le programme ne doit être démarré qu'à partir du répertoire de la bibliothèque la première fois après l'installation de MobaLedLib. Il est copié dans le répertoire ci-dessus afin que la bibliothèque reste inchangée. Dans ce qui suit, un lien est créé sur le bureau via lequel le programme sera démarré à l'avenir.";;;
+VBA;M12_Copy_Prog 129;Programm existiert bereits (Mehrfacher Start aus 'extras' Verzeichnis);Program already exists (multiple start from 'extras' directory);Programma bestaat al! (meervoudig gestart vanuit de map 'extra's');Le programme existe déjà (démarrage multiple à partir du répertoire 'extras');;;
+VBA;M12_Copy_Prog 139;Das Programm wurde in das Verzeichnis;The program was copied to the directory ';Het programma is gekopieerd naar de map ';Le programme était dans le répertoire ';;;
+VBA;M12_Copy_Prog 141;kopiert.;'.;'.;' copié.;;;
+VBA;M12_Copy_Prog 145;In Zukunft kann das Programm über den Link;In the future, the program can be accessed via the link;In de toekomst is het programma toegankelijk via de link;À l'avenir, le programme sera accessible via le lien;;;
+VBA;M12_Copy_Prog 148;auf dem Desktop gestartet werden;on the desktop;op de desktop;être démarré sur le bureau;;;
+VBA;M12_Copy_Prog 149;Programm kopiert und Link auf Desktop erzeugt;Copied the program and created a link to the desktop;Het programma is gekopieerd en er is een snelkoppeling op het bureaublad gemaakt;Copié le programme et créé un lien vers le bureau;;;
+VBA;M12_Copy_Prog 152;"Beim Anlegen des Links gab es Probleme ;-(|
+Das Programm kann trotzdem von der oben angegebenen Position aus gestartet werden.";"There were problems creating the link ;-( |
+The program can still be started from the position shown above.";"Er waren problemen bij het maken van de link!  ;-( |
+Het programma kan nog steeds worden gestart vanaf de hierboven weergegeven positie.";"Des problèmes sont survenus lors de la création du lien. ;-( | 
+Le programme peut toujours être démarré à partir de la position ci-dessus.";;;
+VBA;M12_Copy_Prog 153;Programm kopiert;Program copied;Programma gekopieerd;Programme copié;;;
+VBA;M12_Copy_Prog 159;Fehler beim Speichern des Programms im Verzeichnis:;Error saving program in directory:;Fout bij het opslaan van programma in map: ;Erreur lors de l'enregistrement du programme dans le répertoire:;;;
+VBA;M12_Copy_Prog 161;Fehler beim Speichen des Excel Programms;Error saving Excel program;Fout bij het opslaan van het Excel-programma;Erreur lors de l'enregistrement du programme Excel;;;
+VBA;M12_Copy_Prog 172;"In folgenden wird ein Link auf dem Desktop angelegt über den das Excel Programm in Zukunft einfach gestartet werden kann.|
+Dummerweise gefällt das manchen Viren Scannern|
+(z.B. dem Microsoft Scanner) nicht.|
+Wenn sich gleich der Viren Scanner meldet, dann muss man den Link von Hand anlegen.|
+Dazu kopiert man den Inhalt der Zwischenablage mit STRG+V in die Adresszeile eines Windows Explorers und startet diese mit ENTER.";"In the following a link is created on the desktop via which the Excel program can be started easily in the future.|
+Unfortunately, some virus scanners (e.g. the Microsoft Scanner) doesn't like this .|
+If the virus scanner reports a problem, then you have to create the link by hand.|
+To do this, copy the contents of the clipboard with CTRL + V into the address line of a Windows Explorer and start it with ENTER.";"Hierna wordt een snelkoppeling op het bureaublad gemaakt waarmee het Excel-programma in de toekomst gemakkelijk kan worden gestart.|
+Helaas vinden sommige virusscanners (bijvoorbeeld de Microsoft Scanner) dit niet leuk.|
+Als de virusscanner een probleem meldt, moet u de link handmatig maken.|
+Hiertoe kopieert u de inhoud van het klembord met CTRL + V naar de adresregel van een Windows Verkenner en start u deze met ENTER.";"Dans ce qui suit, un lien est créé sur le bureau via lequel le programme Excel peut être démarré à l'avenir. | 
+Malheureusement, certains antivirus n'aiment pas cela (par exemple, le scanner Microsoft). | 
+Si le scanner antivirus signale immédiatement, alors vous devez Créer un lien à la main. |
+Pour ce faire, copiez le contenu du presse-papiers avec CTRL V dans la ligne d'adresse d'un explorateur Windows et démarrez-le avec ENTRÉE.";;;
+VBA;M12_Copy_Prog 173;Anlegen einer Desktop Verknüpfung;Create a desktop shortcut;Maak een snelkoppeling op het bureaublad;Créer un raccourci sur le bureau;;;
+VBA;M12_Copy_Prog 194;"Das anlegen des Links hat NICHT funktioniert ;-(|
+|
+Der Link muss von Hand erzeugt werden. Dazu kopiert man den inhalt der Zwischenablage in die Adresszeile eines Windows Explorers mit STRG+V";"Creating the link did NOT work ;-( |
+|
+The link must be created by hand. To do this, copy the contents of the clipboard into the address line of a Windows Explorer with CTRL+V";"Het maken van de sne;koppeling is NIET gelukt!   ;-(  |
+|
+De snelkoppeling moet handmatig worden gemaakt. Hiertoe kopieert u de inhoud van het klembord naar de adresregel van een Windows Explorer met CTRL + V """;"La création du lien n'a PAS fonctionné.  ;-( | 
+| 
+Le lien doit être créé manuellement. Pour ce faire, copiez le contenu du presse-papiers dans la ligne d'adresse d'un explorateur Windows avec CTRL V";;;
+VBA;M12_Copy_Prog 195;Fehler beim anlegen des Links;Error creating the link;Fout bij het maken van de snelkoppeling;Erreur lors de la création du lien;;;
+VBA;M12_Copy_Prog 200;Fehler beim schreiben der Datei ';Error writing file ';Fout bij het schrijven van bestand ';"Erreur lors de l'écriture du fichier """;;;
+VBA;M12_Copy_Prog 200;Fehler beim erzeugen der Kommandodatei;Error creating the command file;Fout bij het maken van het opdrachtbestand;Erreur lors de la création du fichier de commandes;;;
+VBA;M55_PWM_Data_Send 137;Fehler beim verbinden mit dem Arduino über COM;Error connecting to the Arduino via COM;Fout bij het verbinden met de Arduino via COM;Erreur de connexion à l'Arduino via COM;;;
+VBA;M55_PWM_Data_Send 141;"Evtl. ist der Port bereits von einem anderen Programm (Arduino IDE, Farbtest, serieller Monitor) belegt.|
+Falls das Excel Programm vorher mit einer Fehlermeldung abgebrochen wurde, dann kann es sein, dass der Port nicht richtig geschlossen wurde. In dem Fall müssen alle Excel Fenster geschlossen werden ;-(";"Possibly the port is already occupied by another program (Arduino IDE, color test, serial monitor).|
+If the Excel program was previously terminated with an error message, it may be that the port was not closed properly. In this case, all Excel windows must be closed ;-(";"Mogelijk is de poort al bezet door een ander programma (Arduino IDE, kleurentest, seriële monitor) |
+Als het Excel-programma eerder werd beëindigd met een foutmelding, kan het zijn dat de poort niet goed is gesloten. In dit geval moeten alle Excel-vensters worden gesloten.  ;-(";"peut-être le port est déjà occupé par un autre programme (Arduino IDE, test de couleur, moniteur série). | 
+Si le programme Excel a déjà été annulé avec un message d'erreur, il se peut que le port n'ait pas été fermé correctement. Dans ce cas, toutes les fenêtres Excel doivent être fermées ;-(";;;
+VBA;M55_PWM_Data_Send 142;Fehler beim öffnen des COM Ports;Error opening the COM port;Fout bij het openen van de COM-poort;Erreur lors de l'ouverture du port COM;;;
+VBA;M55_PWM_Data_Send 368;Fehler: Ungültige analoge Schwelle ';Error: Invalid analog threshold ';Fout: ongeldige analoge drempel ';Erreur: Seuil analogique non valide ';;;
+VBA;M55_PWM_Data_Send 368;' erkannt. ;' detected;' gedetecteerd;' reconnu.;;;
+VBA;M55_PWM_Data_Send 368;Ungültige analoge Schwelle;Invalid analog threshold;Ongeldige analoge drempelwaarde;Seuil analogique non valide;;;
+VBA;M55_PWM_Data_Send 379;Es wurden zu viele analoge Schwellen angegeben. Nur die ersten ;Too many analog thresholds were specified. Only the first;Er zijn te veel analoge drempels opgegeven. Alleen de eerste;Trop de seuils analogiques ont été spécifiés. Seul le premier;;;
+VBA;M55_PWM_Data_Send 379; werden verwendet;are used;worden gebruikt; sont utilisés;;;
+VBA;M55_PWM_Data_Send 379;Zu viele analoge Schwellen;Too many analog thresholds;Te veel analoge drempels;Trop de seuils analogiques;;;
+VBA;M55_PWM_Data_Send 478;Öffne Verbindung...;Opening connection ...;Verbinding openen ;Connexion ouverte ...;;;
+VBA;M55_PWM_Data_Send 486;Fehler: Der Adruino reagiert nicht;Error: The Adruino is not responding;Fout: De Adruino reageert niet;Erreur: L'Adruino ne répond pas;;;
+VBA;M55_PWM_Data_Send 486;Fehler beim zugriff auf den Arduino an COM;Error accessing the Arduino on COM;Fout bij toegang tot de Arduino op COM ;Erreur d'accès à l'Arduino sur COM;;;
+VBA;M55_PWM_Data_Send 498;"Fehler: Auf dem Arduino ist nicht das richtige Programm installiert.|
+Der Arduino muss mit dem Excel Programm 'Prog_Generator' konfiguriert werden.Dabei muss der 'LED Farbtest Mode' im 'Config' Blatt aktiviert sein.|
+|
+Meldung von Arduino:";"Error: The correct program is not installed on the Arduino.|
+The Arduino must be configured with the Excel program 'Prog_Generator', with the 'LED color test mode' activated in the 'Config' sheet|
+|
+Arduino message:";"Fout: Het juiste programma is niet op de Arduino geïnstalleerd!|
+De Arduino moet worden geconfigureerd met het Excel-programma 'Prog_Generator', waarbij de 'LED-kleurentestmodus' is geactiveerd in het blad 'Config'.|
+|
+Arduino-bericht:";"Erreur: Le programme correct n'est pas installé sur l'Arduino. | 
+L'Arduino doit être configuré avec le programme Excel 'Prog_Generator'. Le 'Mode de test de couleur LED' doit être activé dans la feuille 'Config'. | 
+| 
+Message Arduino:";;;
+VBA;M55_PWM_Data_Send 499;Falsches Programm auf dem Arduino installiert;Wrong program installed on the Arduino;Verkeerd programma geïnstalleerd op de Arduino;Mauvais programme installé sur l'Arduino;;;
+VBA;M55_PWM_Data_Send 605;Fehler: Die Anzahl Einträge (;Error: The number of entries (;Fout: het aantal vermeldingen (;Erreur: Le nombre d'entrées (;;;
+VBA;M55_PWM_Data_Send 609;") in der LED Zuordnungsliste ist falsch. Es müssen genau 12 per Komma getrennte Zahlen angegeben werden. |
+Jede Zahl beschreibt die LED Nummer welche von der entsprechenden Zeile der Mustertabelle angesprochen werden soll. Die erste Zahl steht dabei für die erste Zeile, ...";") in the LED assignment list is wrong. Exactly 12 numbers separated by commas must be specified. |
+Each number describes the LED number which should be addressed by the corresponding line in the sample table. The first number stands for the first line, ...";") in de LED-toewijzingslijst is verkeerd. Precies 12 nummers gescheiden door komma's moeten worden opgegeven. |
+Elk nummer beschrijft het LED-nummer dat moet worden geadresseerd door de overeenkomstige regel in de voorbeeldtabel. Het eerste cijfer staat voor de eerste regel, ... ";") dans la liste d'attribution des LED est incorrect. Il faut spécifier exactement 12 nombres séparés par des virgules. | 
+Chaque numéro décrit le numéro de LED qui doit être adressé par la ligne correspondante dans le tableau d'échantillons. Le premier chiffre représente la première ligne, ...";;;
+VBA;M55_PWM_Data_Send 609;Falsche Anzahl in 'Charliplexing LED Zuordnung';Wrong number in 'Charliplexing LED assignment';Verkeerd nummer in 'Charliplexing LED-toewijzing';Numéro incorrect dans «Affectation des LED Charliplexing»;;;
+VBA;M55_PWM_Data_Send 618;Fehler: Der Eintrag ';Error: the entry';Fout: De invoer ';Erreur: L'entrée ';;;
+VBA;M55_PWM_Data_Send 619;"' in der LED Zuordnungstabele ist keine gültige Zahl.|
+Es sind nur Zahlen zwischen 0 und 11 erlaubt.";"' in the LED allocation table is not a valid number. |
+Only numbers between 0 and 11 are allowed.";"Er is geen geldig nummer in de LED-allocatietabel. |
+Alleen getallen tussen 0 en 11 zijn toegestaan.";dans le tableau d'affectation des LED n'est pas un nombre valide. | Seuls les nombres compris entre 0 et 11 sont autorisés.;;;
+VBA;M55_PWM_Data_Send 619;Ungültiger Eintrag in 'Charliplexing LED Zuordnung';Invalid entry in 'Charliplexing LED mapping';Ongeldige invoer in 'Charliplexing LED mapping';Entrée invalide dans «Charliplexing LED mapping»;;;
+VBA;M55_PWM_Data_Send 654;Fehler: Die LED Zuordnung in Sheet ';Error: The LED assignment in sheet ';Fout: De LED-toewijzing in blad ';Erreur: L'affectation des LED dans la feuille ';;;
+VBA;M55_PWM_Data_Send 654; enthält nicht genau 12 Werte; does not contain exactly 12 values; bevat niet precies 12 waarden; ne contient pas exactement 12 valeurs;;;
+VBA;M55_PWM_Data_Send 654;Interner Fehler;Internal error;Interne fout;Erreur interne;;;
+VBA;M55_PWM_Data_Send 687;Fehler: Falsche RGB LED Modul Nummer: ;Error: Wrong RGB LED module number:;Fout: Verkeerde RGB LED-modulenummer:;Erreur: Numéro de module LED RVB incorrect:;;;
+VBA;M55_PWM_Data_Send 688;Die Modul Nummer muss zwischen 0 und ;The module number must be between 0 and;Het modulenummer moet tussen 0 en;Le numéro de module doit être compris entre 0 et;;;
+VBA;M55_PWM_Data_Send 694;" liegen.|
+|
+Die maximal mögliche Modul Nummer wird von der auf dem Arduino installierten Konfiguration bestimmt. Es können nur so viele LEDs angesprochen werden wie im 'Prog_Generator' angegeben wurden. Wenn sich das Modul an einer noch nicht eingetragenen Position befindet, dann kann der Befehl 'Reserve LEDs' im 'Prog_Generator' benutzt werden damit zusätzliche LEDs angesprochen werden können.";"|
+|
+The maximum possible module number is determined by the configuration installed on the Arduino. Only as many LEDs can be addressed as specified in the 'Prog_Generator'. If the module is in a position that has not yet been entered, the 'Reserve LEDs' command in the 'Prog_Generator' can be used to be able to access additional LEDs.";"|
+|
+Het maximaal aantal mogelijke WS281x modules wordt bepaald door de configuratie die op de Arduino is geïnstalleerd. Slechts zoveel LED's kunnen worden geadresseerd zoals gespecificeerd in de 'Prog_Generator'. 
+Als er op een positie geen WS281x module is geplaatst, kan de opdracht 'Reserve LEDs' in de 'Prog_Generator' worden gebruikt om de niet gebruikte posities over te slaan en toegang te krijgen tot volgende LED's.";" | 
+| 
+Le nombre maximal de modules possible est déterminé par la configuration installée sur l'Arduino. Seuls autant de LED peuvent être adressées que celles spécifiées dans le 'Prog_Generator'. Si le module se trouve dans une position qui n'a pas encore été saisie, la commande 'Reserve LEDs' dans 'Prog_Generator' peut être utilisée afin que des LED supplémentaires puissent être adressées.";;;
+VBA;M55_PWM_Data_Send 694;RGB LED Nummer des Moduls ist falsch;RGB LED number of the module is wrong;RGB LED-nummer van de module is verkeerd;Le numéro de LED RVB du module est incorrect;;;
+VBA;M55_PWM_Data_Send 711;Sende Kennung...;Send identifier ;Verzend ID ...;Envoyer l'identifiant ...;;;
+VBA;M55_PWM_Data_Send 724;Fehler: Die LED Zuordnung ';Error: The LED assignment ';Fout: De LED-toewijzing ';Erreur: L'affectation des LED ';;;
+VBA;M55_PWM_Data_Send 724;' ist unbekannt;' is unknown;' is onbekend;'est inconnu;;;
+VBA;M55_PWM_Data_Send 724;Unbekannte LED Zuordnung;Unknown LED assignment;Onbekende LED-opdracht;Affectation des LED inconnue;;;
+VBA;M55_PWM_Data_Send 757;Fehler bei der Datenübertragung zum ATTiny;Data transmission error to ATTiny;Gegevensoverdracht fout naar ATTiny;Erreur de transmission de données à ATTiny;;;
+VBA;M55_PWM_Data_Send 757;Datenübertragungsfehler;Data transmission errors;Gegevensoverdracht fouten;erreurs de transmission de données;;;
+VBA;M55_PWM_Data_Send 766;LED Zuordnung definieren;Define LED assignment;Definieer LED-toewijzing;Définir l'affectation des LED;;;
+VBA;M55_PWM_Data_Send 767;Auswahl der LED Zuordnung;Selection of the LED assignment;Selectie van de LED-opdracht;Sélection de l'affectation des LED;;;
+VBA;M55_PWM_Data_Send 768;Die Zuordnung der Charliplexing LEDs ist von Hersteller zu Hersteller unterschiedlich. Mit diesem Dialog kann die passende Zuordnung der Muster Zeilen zu den LEDs gewählt werden.;The assignment of the Charlieplexing LEDs differs from manufacturer to manufacturer. With this dialog, the appropriate assignment of the pattern lines to the LEDs can be selected.;De toewijzing van de Charlieplexing-LED's verschilt van fabrikant tot fabrikant. Met dit dialoogvenster kan de juiste toewijzing van de patroonlijnen aan de LED's worden geselecteerd.;L'affectation des LED Charliplexing diffère d'un fabricant à l'autre. Cette boîte de dialogue permet de sélectionner l'affectation appropriée des lignes de motif aux LED.;;;
+VBA;M07_COM_Port 31;"Fehler: Das Abfragen der COM Ports ist fehlgeschlagen ;-(";"Error: The query of the COM ports failed ;-(";"Fout: de zoekopdracht van de COM-poorten is mislukt  ;-(";"Erreur: La requête des ports COM a échoué ;-(";;;
+VBA;M07_COM_Port 32;Fehler beim abfragen der COM Ports;Error querying the COM ports;Fout bij het opvragen van de COM-poorten;Erreur lors de l'interrogation des ports COM;;;
+VBA;M07_COM_Port 65;rechte;right;rechter;droits;;;
+VBA;M07_COM_Port 66;linke;left;linker;gauche;;;
+VBA;M07_COM_Port 71;(Dann sollten, anders als auf dem Bild gezeigt, auch keine LEDs auf der Platine leuchten.);(Then, unlike the picture, no LEDs should light up on the board.);(In tegenstelling tot de afbeelding zouden er dan geen LED's op het bord moeten branden.);(Ensuite, contrairement à l'image, aucune LED ne doit s'allumer sur la carte.);;;
+VBA;M07_COM_Port 74;Erkennung des USB Anschlusses;Detection of the USB connection;Detectie van de USB-Poort;Détection de la connexion USB;;;
+VBA;M07_COM_Port 80;"Schritt 1:|
+|
+Zur Erkennung des USB Anschlusses darf der Arduino zunächst NICHT am PC angeschlossen sein.|
+|
+Wenn keine Verbindung vom Arduino zum PC besteht OK betätigen.";"Step 1: |
+|
+To recognize the USB connection, the Arduino must NOT be connected to the PC.
+|
+If there is no connection from the Arduino to the PC, press OK.";"Stap 1: |
+|
+Om de USB-Poort automatisch te kunnen herkennen, mag de Arduino NIET op de pc worden aangesloten.|
+|
+Als er GEEN verbinding is tussen de Arduino en de PC, drukt u op OK. ";"Étape 1: | 
+| 
+Pour reconnaître la connexion USB, l'Arduino ne doit PAS être connecté au PC en premier. | 
+| 
+S'il n'y a pas de connexion de l'Arduino au PC, appuyez sur OK.";;;
+VBA;M07_COM_Port 85;P Prüfen;C Check;C Controleer;V Vérification;;;
+VBA;M07_COM_Port 85;A Abbrechen;A Abort;A Annuleren;A Annuler;;;
+VBA;M07_COM_Port 86;USB Verbindung erkennen;Detect USB connection;Detecteren USB-Poort;Détecter la connexion USB;;;
+VBA;M07_COM_Port 95;"Schritt 2:|
+|
+Jetzt muss der ";"Step 2: |
+|
+Now the ";"Stap 2: 
+
+Nu moet de """;"Étape 2: | 
+| 
+Maintenant, le '";;;
+VBA;M07_COM_Port 100;" Arduino an den PC angeschlossen werden.|
+|
+Wenn der Arduino mit dem PC verbunden ist OK betätigen.|
+|
+Meistens ertönt ein Klang wenn der PC den neu angeschlossenen Rechner erkannt hat.";"Arduino has to be connected to the PC. |
+|
+When the Arduino is connected to the PC press OK. |
+|
+Usually a tone sounds when the PC has recognized the newly connected controller.";""" Arduino verbonden worden met de pc. |
+|
+Wanneer de Arduino op de PC is aangesloten, drukt u op OK. |
+|
+Meestal klinkt er een toon wanneer er op de PC de (op)nieuw aangesloten controller wordt herkend.";"' L'Arduino peut être connecté au PC. | 
+| 
+Lorsque l'Arduino est connecté au PC, appuyez sur OK. | 
+| 
+Généralement, un son est entendu lorsque le PC a reconnu l'ordinateur nouvellement connecté.";;;
+VBA;M07_COM_Port 103;Jetzt mit PC verbinden;Connect to PC;Maak verbinding met pc;Connectez-vous au PC maintenant;;;
+VBA;M07_COM_Port 116;"Im Schritt 2 wurden weniger Anschlüsse als in Stritt 1 entdeckt ;-(|
+|
+Kann es sein, dass der Arduino versehentlich bei Schritt 1 angeschlossen und bei Schritt 2 nicht mehr angeschlossen war ?|
+|
+Wollen Sie es nochmal versuchen?";"In step 2 fewer connections were discovered than in step 1 ;-( |
+|
+Could it be that the Arduino was accidentally connected in step 1 and was no longer connected in step 2? |
+|
+Do you want to try again? ";"In stap 2 werden minder verbindingen ontdekt dan in stap 1 !  ;-(  |
+|
+|
+Zou het kunnen dat de Arduino per ongeluk was verbonden in stap 1 en niet langer was aangesloten in stap 2? |
+|
+Wil je het opnieuw proberen? ";"Moins de connexions ont été trouvées à l'étape 2 qu'à l'étape 1.  ;-( | 
+| 
+L'Arduino pourrait-il être accidentellement connecté à l'étape 1 et ne plus être connecté à l'étape 2? | 
+| 
+Voulez-vous réessayer?";;;
+VBA;M07_COM_Port 121;"Es wurde kein Arduino entdeckt ;-(|
+|
+Evtl. ist der Arduino, das Kabel oder der USB Anschluss defekt.|
+|
+Wollen Sie es nochmal mit anderen Komponenten und anderem USB Anschluss versuchen?";"No Arduino was found ;-( |
+|
+The Arduino, the cable or the USB connection may be defective.
+|
+Do you want to try again with other components and a different USB connection?";"Geen Arduino gevonden!    ;-(  |
+|
+De Arduino, de kabel of de USB-Poort is mogelijk defect!|
+|
+Wilt u het opnieuw proberen met andere componenten en een andere USB-verbinding?";"Aucun Arduino n'a été trouvé!   ;-( | 
+| 
+Peut-être que l'Arduino, le câble ou la connexion USB sont défectueux. | 
+| 
+Voulez-vous réessayer avec d'autres composants et une autre connexion USB?";;;
+VBA;M07_COM_Port 123;Kein Arduino erkannt;No Arduino recognized;Geen Arduino herkend;Aucun Arduino reconnu;;;
+VBA;M07_COM_Port 129;"Fehler: Es wurden mehrere neue Arduinos gefunden!|
+Kann es sein, dass ";"Error: Several new Arduinos were found! |
+Is it possible that ";"Fout: Er zijn verschillende nieuwe Arduinos gevonden! 
+Is het mogelijk dat ";"Erreur: Plusieurs nouveaux Arduinos ont été trouvés! | 
+Il se peut que ";;;
+VBA;M07_COM_Port 130;" Arduinos angeschlossen wurden?|
+Das kann z.B. über einen USB Hub passiert sein";" Arduinos have been connected? |
+This can e.g. happened via a USB hub ";" Arduinos zijn verbonden? 
+Dit kan b.v. gebeuren via een USB-hub """; Arduinos ont été connectés? arrivé via un hub USB;;;
+VBA;M07_COM_Port 131;Mehrer Arduinos erkannt;Several Arduinos recognized;Verschillende Arduinos herkend;Plusieurs Arduinos reconnus;;;
+VBA;M07_COM_Port 145;Der Arduino ist an COM;The Arduino connected to COM;De Arduino verbonden met COM ;L'Arduino est sur COM;;;
+VBA;M07_COM_Port 147;" angeschlossen.|
+|
+Während dieser Sitzung wird der ";"|
+|
+During this session, the ";"|
+|
+Tijdens deze sessie wordt de ";" connecté. | 
+| 
+Au cours de cette session, le";;;
+VBA;M07_COM_Port 147; Arduino über diesen Anschluss angesprochen.; Arduino is addressed via this connection.; Arduino wordt via deze verbinding geadresseerd.; Arduino adressé via cette connexion.;;;
+VBA;M07_COM_Port 148;Arduino erkannt an COM;Arduino recognized on COM;Arduino herkend op COM ;Arduino reconnu sur COM;;;
+VBA;M07_COM_Port 152;Interner Fehler: Kein neuer USB Port gefunden;Internal error: No new USB port found;Interne fout: Geen nieuwe USB-poort gevonden!;Erreur interne: aucun nouveau port USB trouvé;;;
+VBA;M07_COM_Port 197;Der USB Port an den der ;The USB port the ;De USB-poort die met de ;Le port USB du;;;
+VBA;M07_COM_Port 199;" Arduino angeschlossen ist wurde noch nicht festgelegt.|
+|
+Soll der Port jetzt gesucht werden?";" Arduino is connected to is not defined yet. |
+|
+Do you want to search for the port now?";" Arduino is verbonden is nog niet gedefinieerd. |
+|
+Wilt u nu naar de aangesloten USB-poort zoeken?";" Arduino n'est pas encore défini. | 
+| 
+Voulez-vous rechercher le port maintenant?";;;
+VBA;M07_COM_Port 200;USB Port für ;Define the USB port for the ;Definieer de USB-poort voor de ;Port USB pour;;;
+VBA;M07_COM_Port 200; Arduino festlegen;Arduino;Arduino; Définir Arduino;;;
+VBA;M07_COM_Port 205;Letzten USB Port wieder benutzen ?;Use last USB port again?;Laatste USB-poort opnieuw gebruiken?;Utiliser à nouveau le dernier port USB?;;;
+VBA;M07_COM_Port 206;Der Arduino war beim letzten Mal an Port COM;The Arduino was connected to port COM;De Arduino was de laatste keer verbonden met COM poort ;L'Arduino était le dernier sur le port COM;;;
+VBA;M07_COM_Port 215;" angeschlossen.|
+|
+Soll überprüft werden ob dieser Anschluss immer noch gültig ist ?|
+|
+Prüfen: Der USB Anschluss wird überprüft. Dazu muss der Arduino im Folgenden Dialog Ab- und Angesteckt werden.|
+|
+Übernehmen: Der Anschluss wird ohne Prüfung übernommen und während dieser Sitzung immer verwendet.";" the last time. |
+|
+Should it be checked whether this connection is still valid?
+|
+Check: The USB connection is checked. To do this, the Arduino must be unplugged and plugged in the following dialog
+|
+Apply: The connection is accepted without checking and is always used during this session. ";". |
+|
+Moet worden gecontroleerd of deze verbinding nog geldig is?|
+|
+Controle: De USB-verbinding is aangevinkt. Om dit te doen, moet de Arduino worden losgekoppeld en aangesloten in het volgende dialoogvenster. |
+|
+Toepassen: De verbinding wordt zonder controle geaccepteerd en wordt altijd tijdens deze sessie gebruikt.";" connecté. | 
+| 
+Voulez-vous vérifier si cette connexion est toujours valide? | 
+| 
+Vérifier: La connexion USB est vérifiée. Pour ce faire, l'Arduino doit être débranché et débranché dans la boîte de dialogue suivante. | 
+| 
+Appliquer: La connexion est acceptée sans vérification et est toujours utilisée pendant cette session.";;;
+VBA;M07_COM_Port 217;B Übernehmen;P Apply;T Toepassen;A Appliquer;;;
+VBA;M07_COM_Port 218;Letzte Verbindung zum PC: COM;Last connection to the PC: COM;Laatste verbinding met de pc: COM ;Dernière connexion au PC: COM;;;
+VBA;M07_COM_Port 219;Überprüfung des zuletzt benutzten USB Anschlusses;Check the last used USB connection;Controleer de laatst gebruikte USB-verbinding;Vérifiez la dernière connexion USB utilisée;;;
+VBA;M60_Select_LED 123;Auswahl der Spezial Modes;Selection of special modes;Selectie van speciale modi;Sélection de modes spéciaux;;;
+VBA;M60_Select_LED 124;Spezial Mode;Special mode;Speciale Modus;Mode spéciale;;;
+VBA;M60_Select_LED 126;"Mit dem Pattern_Configurator können spezielle Module konfiguriert werden.|
+Die Muster werden in diesem Fall direkt zu dem entsprechenden Modul geschickt. Dort wird die Konfiguration dann autark abgearbeitet.";"Special modules can be configured with the Pattern_Configurator.|
+In this case, the samples are sent directly to the corresponding module. The configuration is then processed independently.";"Speciale modules kunnen worden geconfigureerd met de Pattern_Configurator.|
+In dit geval worden de patronen rechtstreeks naar de overeenkomstige module verzonden. De configuratie wordt vervolgens onafhankelijk verwerkt. ";"Des modules spéciaux peuvent être configurés avec Pattern_Configurator. | 
+Dans ce cas, les modèles sont envoyés directement au module correspondant. La configuration est ensuite traitée indépendamment.";;;
+VBA;M65_Special_Modules 32;Fehler: ';Error: ';Fout. ';Erreur: ';;;
+VBA;M65_Special_Modules 32;' existiert nicht in dem Verzeichnis:;' does not exist in the directory:;bestaat niet in de map: ;n'existe pas dans le répertoire:;;;
+VBA;M65_Special_Modules 33;"Fehler: Datei wurde nicht gefunden ;-(";"Error: file was not found ;-(";"Fout: Bestand is niet gevonden ;-(";"Erreur: Le fichier est introuvable ;-(";;;
+VBA;M65_Special_Modules 109;"ECHO Programmierung der Fuses fuer den ATTiny|
+ECHO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+ECHO Mit diesem Programm werden die Fuses des ATTiny85 gesetzt.|
+ECHO Die Fuses bestimmen die Taktfrequenz (";"ECHO Programming of the fuses for the ATTiny|
+ECHO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+ECHO With this program the fuses of the ATTiny85 are set
+ECHO The fuses determine the clock frequency (";"ECHO Programmering van de zekeringen voor de ATTiny|
+ECHO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+ECHO Met dit programma worden de zekeringen van de ATTiny85 ingesteld. |
+ECHO De zekeringen bepalen de klokfrequentie (";"Programmation ECHO des fusibles du ATTiny| 
+ECHO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~| 
+ECHO Avec ce programme, les fusibles de l'ATTiny85 sont réglés. | 
+ECHO Les fusibles déterminent la fréquence d'horloge (";;;
+VBA;M65_Special_Modules 109;") und die|
+ECHO Unterspannungserkennung (B.O.D. Level ";") and the |
+ECHO undervoltage detection (B.O.D. level ";") en de 
+ECHO-onderspanningsdetectie (B.O.D. niveau ";") et la détection de sous-tension | 
+ECHO (niveau de B.O.B  ";;;
+VBA;M65_Special_Modules 109;"ECHO Der ATTiny85 muss dazu in die Tiny_UniProg Platine gesteckt sein.|
+ECHO Dieser Vorgang muss nur ein mal gemacht werden. Danach wird nur noch die geaenderte|
+ECHO Konfiguration vom Pattern_Configuartor aus zum ATTiny geschickt.";") |
+ECHO The ATTiny85 must be plugged into the Tiny_UniProg board. |
+ECHO This process only needs to be done once. After that, only the changed ECHO configuration sent from Pattern_Configuartor to ATTiny.";") |
+ECHO De ATTiny85 moet op het Tiny_UniProg-bord worden aangesloten. |
+ECHO Dit proces hoeft slechts eenmaal te worden uitgevoerd. Daarna wordt alleen de gewijzigde de ECHO configuratie verzonden van Pattern_Configuartor naar ATTiny.";") | ECHO Der ATTiny85 doit être connecté à la carte Tiny_UniProg. | 
+ECHO Ce processus ne doit être effectué qu'une seule fois. Ensuite, seule la configuration ECHO modifiée est envoyée de Pattern_Configuartor à ATTiny.";;;
+VBA;M65_Special_Modules 135;"* Da ist was schief gegangen ;-(            *";"* Something went wrong ;-( *";"* Er is iets fout gegaan ;-( *";"* Quelque chose a mal tourné ;-( *";;;
+VBA;M65_Special_Modules 148;Fehler beim erzeugen der cmd Datei;Error creating the cmd file;Fout bij het maken van het cmd-bestand ;Erreur lors de la création du fichier cmd;;;
+VBA;M65_Special_Modules 172; beim starten des Arduino Programms '; when starting the Arduino program '; bij het starten van het Arduino-programma '; lors du démarrage du programme Arduino ';;;
+VBA;M65_Special_Modules 173;Fehler beim starten des Arduino programms;Error starting the Arduino program;Fout bij het starten van het Arduino-programma;Erreur lors du démarrage du programme Arduino;;;
+VBA;M65_Special_Modules 188;"Es ist ein Fehler beim setzen der Fuses aufgetreten ;-(|
+|
+Falls die blaue 'Reset as IOPin' LED am Tiny_UniProg leuchtet, dann muss die rechte Taste ('Cng Reset Pin') am Tiny_UniProc für eine Sekunde gedückt werden. Damit wird der Reset Pin wieder aktiviert.|
+Wenn die Taste länger als 3 Sekunden gehalten wird, dann wird der Pin zum Ein/Ausgang umprogrammiert.|
+Das erkennt man an der blauen LED. Dieser Modus wird z.B. bei der Servo Platine benötigt.|
+|
+Wenn der Fehler immer wieder auftritt, dann kann ein Screenshot des vorangegangenen Bildschirms zusammen mit einer ausführlichen Beschreibung an |
+  MobaLedLib@gmx.de|
+geschickt werden.";"An error occurred while setting the fuses ;-( |
+|
+If the blue 'Reset as IOPin' LED on the Tiny_UniProg lights up, then the right button ('Cng Reset Pin') on the Tiny_UniProc must be pressed for one second. This will reactivate the reset pin.|
+If the button is held longer than 3 seconds, the pin is reprogrammed as 'input / output'.|
+The blue LED is indicating that. This mode is e.g. required for the servo board.|
+If the error occurs again and again, then a screenshot of the previous screen together with a detailed description can be sent to|
+   MobaLedLib@gmx.de";"Er is een fout opgetreden bij het instellen van de zekeringen!   ;-(  |
+|
+Als de blauwe 'Reset as IOPin' LED op de Tiny_UniProg oplicht, moet de rechterknop (' Cng Reset Pin ') op de Tiny_UniProc gedurende een seconde worden ingedrukt. Hierdoor wordt de resetpin opnieuw geactiveerd. |
+Als de knop langer dan 3 seconden wordt ingedrukt, wordt de pin opnieuw geprogrammeerd als 'invoer / uitvoer'. |
+De blauwe LED geeft dat aan. Deze modus is b.v. vereist voor het servobord. |
+Als de fout zich steeds opnieuw voordoet, kan een screenshot van het vorige scherm met een gedetailleerde beschrijving worden verzonden naar : |
+MobaLedLib@gmx.de.";"Une erreur s'est produite lors du réglage des fusibles.  ;-( | 
+| 
+Si la LED bleue 'Reset as IOPin' du Tiny_UniProg s'allume, alors le bouton droit ('Cng Reset Pin') du Tiny_UniProc doit être enfoncé pendant une seconde Réinitialisation de la broche réactivée. | 
+Si le bouton est maintenu enfoncé pendant plus de 3 secondes, la broche est reprogrammée en entrée / sortie. | 
+Cela peut être vu à partir de la LED bleue. Ce mode est requis pour la carte servo, par exemple. | 
+| 
+Si l'erreur se produit encore et encore, puis une capture d'écran de l'écran précédent avec une description détaillée peut être envoyée à: | 
+MobaLedLib@gmx.de.";;;
+VBA;M65_Special_Modules 188;Fehler schreiben der Fuses;Error writing the fuses;Fout bij het schrijven van de zekeringen;Erreur lors de l'écriture des fusibles;;;
+VBA;M65_Special_Modules 209;Fehler das Program ;Error in the program;Fout in het programma;Erreur dans le programme;;;
+VBA;M65_Special_Modules 209; ist nicht vorhanden in:; is not available in:;is niet beschikbaar in: ; n'est pas disponible en:;;;
+VBA;M65_Special_Modules 210;Fehler Ino-Programm nicht vorhanden;Ino program error not present;Geen INO-Programmer gevonden;Erreur de programme ino non présente;;;
+VBA;M65_Special_Modules 227;"Es ist ein Fehler aufgetreten ;-(|
+|
+Kommunikationsprobleme erkennt man an dieser Meldung: |
+   avrdude: ser_open(): can't open device ""\\.\COM";"An error has occurred ;-( |
+|
+Communication problems can be recognized by this message: |
+    avrdude: ser_open (): can't open device ""\\.\ COM";"Er is een fout opgetreden!   ;-(   |
+|
+Communicatieproblemen zijn te herkennen aan dit bericht: |
+avrdude: ser_open (): can't open device ""\\.\ COM";"Une erreur s'est produite!   ;-( | 
+| 
+Les problèmes de communication peuvent être reconnus par ce message: | 
+avrdude: ser_open (): impossible d'ouvrir le périphérique ""\\.\ COM";;;
+VBA;M65_Special_Modules 234;"   Das System kann die angegebene Datei nicht finden.|
+In diesem Fall müssen die Verbindungen überprüft und der Arduino durch einen neuen ersetzt werden.|
+|
+Wenn der Fehler nicht immer wieder auftritt, dann kann ein Screenshot des vorangegangenen Bildschirms zusammen mit einer ausführlichen Beschreibung an |
+  MobaLedLib@gmx.de|
+geschickt werden.";"   The system cannot find the specified file.|
+In this case, the connections must be checked and the Arduino replaced with a new one.|
+|
+If the error does not occur again and again, then a screenshot of the previous screen together with a detailed description can be sent to |
+   MobaLedLib@gmx.d.";"    Het systeem kan het opgegeven bestand niet vinden. |
+In dit geval moeten de verbindingen worden gecontroleerd en moet de Arduino worden vervangen door een nieuwe. |
+|
+Als de fout niet steeds opnieuw optreedt, kan een screenshot van het vorige scherm met een gedetailleerde beschrijving worden verzonden naar : |
+MobaLedLib@gmx.de.";"   Le système ne trouve pas le fichier spécifié. | 
+Dans ce cas, les connexions doivent être vérifiées et l'Arduino remplacé par un nouveau. | 
+| 
+Si l'erreur ne se reproduit pas, une capture d'écran de l'écran précédent avec une description détaillée peut être envoyée à | 
+MobaLedLib@gmx.de | 
+peut être envoyé.";;;
+VBA;M65_Special_Modules 234;Fehler beim Hochladen des Programms;Program upload failed;Programma-upload mislukt;Échec du téléchargement du programme;;;
+VBA;M65_Special_Modules 238;Programm erfolgreich hochgeladen. Kompilieren und Hochladen dauerte ;Program successfully uploaded. Compiling and uploading took ;Programma succesvol geüpload. Compileren en uploaden heeft plaatsgevonden;Programme téléchargé avec succès. La compilation et le téléchargement ont pris;;;
+VBA;M65_Special_Modules 270;"Achtung: Der Programmieradapter (Tiny_UniProg) benötigt nach den anstecken das USB Steckers bis zu 3 Sekunden zum starten und erkennen des eingesteckten ATTinys. Das er bereit ist erkennt man an der pulsierenden grünen 'Heart Beat' LED. Außerdem darf die rote 'Error' LED nicht leuchten.|
+Der Programmiervorgang kann erst gestartet werden wenn beide Bedingungen erfüllt sind.|
+|
+Die Erkennung des ATTinys kann mit einem kurzen Druck Reset Taste am Arduino neu gestartet werden falls die 'Error' LED leuchtet.|
+|
+Falls die blaue 'Reset as IOPin' LED leuchtet, dann muss die rechte Taste ('Cng Reset Pin') am Tiny_UniProc für eine Sekunde gedückt werden. Damit wird der Reset Pin wieder aktiviert.|
+Wenn die Taste länger als 3 Sekunden gehalten wird, dann wird der Pin zum Ein/Ausgang umprogrammiert.|
+Das erkennt man an der blauen LED. Dieser Modus wird z.B. bei der Servo Platine benötigt.|
+|
+Soll die Programmierung jetzt gestartet werden ?";"Attention: The programming adapter (Tiny_UniProg) takes up to 3 seconds after connecting the USB plug to start and recognize the inserted ATTiny. It's ready if the green 'Heart Beat' LED is pulsing. In addition, the red 'Error' LED must not light up.|
+The programming process can only be started when both conditions are met.|
+|
+The detection of the ATTiny can be restarted with a short push reset button on the Arduino if the 'Error' LED is lit. |
+|
+If the blue 'Reset as IOPin' LED lights up, then the right button ('Cng Reset Pin') on the Tiny_UniProc must be pressed for one second. This will reactivate the reset pin.|
+If the button is held longer than 3 seconds, the pin is reprogrammed as 'input / output'.|
+You can see that from the blue LED. This mode is e.g. required for the servo board.|
+|
+Do you want to start programming now?";"Let op: De programmeeradapter (Tiny_UniProg) heeft tot wel 3 seconden nodig, na het aansluiten van de USB-stekker, om de geplaatste ATTiny te starten en te herkennen. Hij is klaar als de groene 'Heart Beat' LED pulseert. Bovendien moet de rode 'Error' LED niet oplichten. |
+Het programmeerproces kan alleen worden gestart als aan beide voorwaarden is voldaan.|
+|
+De detectie van de ATTiny kan opnieuw worden gestart met een korte resetknop op de Arduino als de LED 'Error' brandt. |
+|
+Als de blauwe 'Reset as IOPin' LED oplicht, moet de rechter knop ('Cng Reset Pin') op de Tiny_UniProc gedurende een seconde worden ingedrukt. Hierdoor wordt de resetpin opnieuw geactiveerd. |
+Als de knop langer dan 3 seconden wordt ingedrukt, wordt de pin opnieuw geprogrammeerd als 'invoer / uitvoer'. 
+Dat zie je aan de blauwe LED. Deze modus is b.v. vereist voor het servobord. |
+|
+Wilt u nu beginnen met programmeren? ";"Attention: l'adaptateur de programmation (Tiny_UniProg) a besoin de jusqu'à 3 secondes après avoir branché la prise USB pour démarrer et reconnaître l'ATTiny inséré. Vous pouvez dire qu'il est prêt par la LED verte 'Heart Beat' pulsante. De plus, la LED rouge ""Erreur"" ne doit pas s'allumer. | 
+Le processus de programmation ne peut être démarré que lorsque les deux conditions sont remplies. | 
+| 
+La détection de l'ATTiny peut être redémarrée en appuyant brièvement sur le bouton de réinitialisation de l'Arduino si la LED ""Erreur"" s'allume. | 
+| 
+Si la LED bleue 'Reset as IOPin' s'allume, alors le bouton droit ('Cng Reset Pin') sur le Tiny_UniProc doit être pressé pendant une seconde. Cela active à nouveau la broche de réinitialisation. | 
+Si le bouton est maintenu enfoncé pendant plus de 3 secondes, la broche est reprogrammée en entrée / sortie. | Cela peut être reconnu par la LED bleue. Ce mode est par exemple requis pour la carte servo. | 
+| 
+La programmation doit-elle être lancée maintenant?";;;
+VBA;M65_Special_Modules 271;Programmieradapter Bereit ?;Programming adapter Ready?;Programmeeradapter Klaar?;Adaptateur de programmation Prêt?;;;
+VBA;MainMenu_Form 143;Beispiel wurde erfolgreich gespeichert;Example was saved successfully;Voorbeeld is succesvol opgeslagen;L'exemple a été enregistré avec succès;;;
+VBA;MainMenu_Form 152;"Speicher alle Beispiele
+Bitte etwas Geduld...";"Save all examples
+Please be patient";"Bewaar alle voorbeelden
+Wees alstublieft geduldig";Sauvegardez tous les exemples, soyez patient ...;;;
+VBA;MainMenu_Form 188;"Das Servo Modul ist noch nicht fertiggestellt ;-(|
+|
+Frag mal bei Hardi nach...";"The servo module is not yet finished ;-( |
+|
+Ask Hardi about ";"De servomodule is nog niet klaar!   ;-(   |
+|
+Vraag het aan Hardi ... ";"Le module d'asservissement n'est pas encore terminé!   ;-( | 
+| 
+Demandez à Hardi à propos de ...";;;
+VBA;MainMenu_Form 188;Das Servo Modul ist noch nicht ganz fertig;The servo module is not yet completely finished;De servomodule is nog niet helemaal klaar;Le module d'asservissement n'est pas encore complètement terminé;;;
+VBA;UserForm_Other 25;Bitte einen Wert zwischen ;Please enter a value between;Voer een waarde in tussen ;Veuillez saisir une valeur entre;;;
+VBA;UserForm_Other 25; und ;  and; en ; et;;;
+VBA;UserForm_Other 25; eingeben.;  enter.; enter; Entrez.;;;
+VBA;UserForm_Other 27;leer.;empty.;leeg.;vide.;;;
+VBA;UserForm_Other 29;keine gültige Zahl.;not a valid number.;geen geldig nummer.;pas un numéro valide.;;;
+VBA;UserForm_Other 31;nicht Ganzzahlig.;not integer.;is geen geheel getal.;pas entier.;;;
+VBA;UserForm_Other 34;"zu klein!|
+Der Minimal zulässiger Wert ist: ";"too small! |
+The minimum permissible value is:";"te klein! 
+De minimaal toegestane waarde is: ";"trop petite! | 
+La valeur minimale autorisée est:";;;
+VBA;UserForm_Other 36;"zu groß!|
+Der Maximal zulässige Wert ist: ";"too big!
+The maximum allowed value is:";"te groot!
+De maximaal toegestane waarde is: ";"trop grande! | 
+La valeur maximale autorisée est:";;;
+VBA;UserForm_Other 41;Der Parameter ';The parameter ';De parameter ';Le paramètre ';;;
+VBA;UserForm_Other 41;' ist ;' is; is ;est;;;
+VBA;UserForm_Other 41;Bereichsüberschreitung;Out of range;Buiten bereik;hors de portée;;;
+VBA;UserForm_Other 51;Bitte einen Zeit zwischen ;Please enter a time between;Voer een tijd in tussen ;S'il vous plaît un temps entre;;;
+VBA;UserForm_Other 51; ms und ;  ms and; ms en ; ms et;;;
+VBA;UserForm_Other 55;" ms eingeben.|
+Die Zeitangabe kann auch eine der folgenden Einheit enthalten:|
+ Min, Sec, ms |
+Achtung: Zwischen zahl und Einheit muss ein Leerzeichen stehen.|
+Beispiel: 3 Sec";" ms. |
+The time can also contain one of the following units: |
+  Min, Sec, ms |
+Warning: there must be a space between the number and the unit
+Example: 3 Sec ";"ms. |
+De tijd kan ook een van de volgende eenheden bevatten: |
+Min, sec, ms |
+Waarschuwing: Er moet een spatie zijn tussen het nummer en de eenheid.|
+Voorbeeld: 3 sec ";" Entrez ms. | 
+L'heure peut également contenir l'une des unités suivantes: | 
+Min, Sec, ms | 
+Attention: il doit y avoir un espace entre le nombre et l'unité. | 
+Exemple: 3 Sec";;;
+VBA;UserForm_Other 61;' ist ungültig;' is invalid; is ongeldig;n'est pas valide;;;
+VBA;UserForm_Other 61;Ungültiger Parameter;Invalid parameter;Ongeldige parameter;Paramètre non valide;;;
+VBA;UserForm_Other 151;Noch keine Beschreibung zur Funktion ';No description of the function yet ';Nog geen beschrijving van deze functie ';Pas encore de description de la fonction ';;;
+VBA;UserForm_Other 151;"' vorhanden ;-(";"' available ;-(";" beschikbaar ;-(";"disponible ;-(";;;
+VBA;UserForm_Other 157;Parametereingabe der ';Parameter input of the ';Parameterinvoer van de ';Entrée des paramètres du ';;;
+VBA;UserForm_Other 157;' Funktion;' Function;Functie ;«Fonction;;;
+VBA;UserForm_Other 222;Fehler der Parameter ';Error the parameter ';Fout bij de parameter ';Erreur de paramètre ';;;
+VBA;UserForm_Other 222;' wurde nicht gefunden;' was not found;' was niet gevonden;' n'a pas été trouvé;;;
+VBA;UserForm_Other 222;Programm Fehler;Program error;Programmafout;Erreur de programme;;;
+VBA;DieseArbeitsmappe 19;"Beim ersten start des Programms werden alle Beispiele geladen.|
+Das Programm sollte anschließend gespeichert werden damit das beim nächsten mal nicht mehr nötig ist.";"When the program is started for the first time, all examples are loaded. |
+The program should then be saved so that it is no longer necessary the next time. ";"Wanneer het programma voor het eerst wordt gestart, worden alle voorbeelden geladen. |
+Het programma moet dan worden opgeslagen, zodat het de volgende keer niet meer nodig is. ";"Lorsque le programme est démarré pour la première fois, tous les exemples sont chargés. | 
+Le programme doit ensuite être enregistré afin qu'il ne soit plus nécessaire la prochaine fois.";;;
+VBA;DieseArbeitsmappe 19;Lade alle Beispiele;Load all the examples;Laad alle voorbeelden;Charger tous les exemples;;;
+VBA;DieseArbeitsmappe 34;Das Excel Programm sollte gespeichert werden damit die Beispiele beim nächsten Start nicht erneut geladen werden müssen.;The Excel program should be saved so that the examples do not have to be reloaded the next time it is started.;Het Excel-programma moet worden opgeslagen, zodat de voorbeelden niet opnieuw hoeven te worden geladen de volgende keer dat het wordt gestart.;Le programme Excel doit être enregistré afin que les exemples n'aient pas à être rechargés au prochain démarrage.;;;
+VBA;DieseArbeitsmappe 34;Bitte Excel speichern;Please save Excel;Bewaar Excel;Veuillez enregistrer Excel;;;
+VBA;M65_Special_Modules;Verzeichnis nicht gefunden;Directory not found;Directory not found;Directory not found;;;
+VBA;M65_Special_Modules;Fehler: Das Verzeichnis '#1#' wurde nicht gefunden;Fehler: Das Verzeichnis '#1#' wurde nicht gefunden;Fehler: Das Verzeichnis '#1#' wurde nicht gefunden;Fehler: Das Verzeichnis '#1#' wurde nicht gefunden;;;
+;;Dieser Fehler tritt auf wenn das Programm mehrfach aus dem 'extras' Verzeichnis der Bibliothek gestartet wird.;This error occurs when the program is started several times from the 'extras' directory of the library.;Deze fout treedt op wanneer het programma meerdere keren wordt gestart vanuit de map 'extra's' van de bibliotheek.;Cette erreur se produit lorsque le programme est démarré plusieurs fois à partir du répertoire «extras» de la bibliothèque.;;;
+;;Fehler beim lesen der Datei:;Error reading file:;Fout bij lezen van bestand:;Erreur de lecture du fichier:;;;
+;;Fehler beim Datei lesen;Error reading file;Fout bij lezen van bestand;Erreur de lecture du fichier;;;
+;;;;;;;;
+DialogBox;M80_Create_Multiplexer_INI;Diese Seite enthält zusätzliche Programme, die die Arbeit mit der MobaLedLib unterstützen.;This page contains additional programs that support working with the MobaLedLib.;Deze pagina bevat extra programma's die het werken met de MobaLedLib ondersteunen.;Cette page contient des programmes supplémentaires qui prennent en charge l'utilisation de MobaLedLib.;;;
+DialogBox;M80_Create_Multiplexer_INI;Extras;Extras;Extra's;Suppléments;;;
+DialogBox;M80_Create_Multiplexer_INI;Mit dem Mustermultiplexer können Sie mehrere Muster kombinieren und in beliebiger Kombination verwenden. Mit dem Multiplexer-Editor können Multiplexer erstellt und die gewünschten Muster ausgewählt und eingefügt werden.;The Pattern Multiplexer allows you to combine multiple patterns and use them in any combination. The multiplexer editor can be used to create multiplexers and select and insert the desired patterns.;Met de Pattern Multiplexer kun je meerdere patronen combineren en in elke combinatie gebruiken. De multiplexer-editor kunt u gebruiken om multiplexers aan te maken en de gewenste patronen te selecteren en in te voegen.;Le multiplexeur de motifs vous permet de combiner plusieurs motifs et de les utiliser dans n'importe quelle combinaison. L'éditeur de multiplexeur peut être utilisé pour créer des multiplexeurs et sélectionner et insérer les motifs souhaités.;;;
+DialogBox;M80_Create_Multiplexer_INI;Die erstellten Multiplexer können einfach über einen MLL-Makro im Programmgenerator ausgewählt und eingestellt werden. Mit einer Option im Makro können die Multiplexer auch einfach mehrfach multipliziert werden. Infolgedessen sind weniger Einstellungen für ein sich wiederholendes Muster erforderlich.;The created Multiplexers can easily be selected and set in the Program Generator by means of an MLL Macro. With an option in the Macro, the Multiplexers can also easily be multiplied multiple times. As a result, fewer settings are required for a repeating pattern.;De aangemaakte Multiplexers kunnen in de Programma Generator eenvoudig middels een MLL Macro geselecteerd en ingesteld worden. Met een optie in de Macro kunnen de Multiplexers ook eenvoudig meerdere keren vermenigvuldigd worden. Hierdoor zijn er minder instellingen benodigd voor een herhalend patroon.;Les multiplexeurs créés peuvent être facilement sélectionnés et définis dans le générateur de programme au moyen d'une macro MLL. Avec une option dans la macro, les multiplexeurs peuvent également être facilement multipliés plusieurs fois. Par conséquent, moins de paramètres sont requis pour un motif répétitif.;;;
+Multiplexer;UserForm_Import_Pattern;Importieren Sie das gewünschte Pattern für das Makro : ;Import the desired pattern for the macro: ;Importeer het gewenste patroon voor de macro: ;Importez le modèle souhaité pour la macro:;;;
+Multiplexer;UserForm_Import_Pattern;Wählen Sie Muster für ;Select Pattern for ;Selecteer Patroon voor ;Sélectionnez un motif pour;;;
+Multiplexer;M80_Create_Multiplexer_INI;Optionsname;Option Name;Optienaam;Nom de l'option;;;
+Multiplexer;M80_Create_Multiplexer_INI;Optionsmuster;Option Pattern;Optiepatroon;Modèle d'option;;;
+Multiplexer;M80_Create_Multiplexer_INI;Neu laden ;Reload;Herladen ;Recharger;;;
+Multiplexer;M80_Create_Multiplexer_INI;Schließen ;Close ;Sluiten ;proche;;;
+Multiplexer;M80_Create_Multiplexer_INI;Speichern ;Save ;Opslaan ;sauver;;;
+Multiplexer;M80_Create_Multiplexer_INI;Neues Multiplexer;New Multiplexer;Nieuwe Multiplexer;Nouveau multiplexeur;;;
+Multiplexer;M80_Create_Multiplexer_INI;Löschen;Delete;Verwijderen;Supprimer;;;
+Multiplexer;M80_Create_Multiplexer_INI;Test;Test;Test;Tester;;;
+Multiplexer;M80_Create_Multiplexer_INI;LEDs in Gruppe;LEDs in Group;LEDs in Groep;LED en groupe;;;
+Multiplexer;M80_Create_Multiplexer_INI;Option ;Option ;Optie ;Option;;;
+Multiplexer;M80_Create_Multiplexer_INI; Name; Name; Naam; Nom;;;
+Multiplexer;M80_Create_Multiplexer_INI;Multiplexer beschreibung;Multiplexer Description;Multiplexer Beschrijving;Description du multiplexeur;;;
+Multiplexer;M80_Create_Multiplexer_INI;Multiplexername;Multiplexer Name;Multiplexernaam;Nom du multiplexeur;;;
+Multiplexer;M80_Create_Multiplexer_INI; Muster; Pattern; Patroon; Modèle;;;
+Multiplexer;M80_Create_Multiplexer_INI;Wählen Sie im Pattern_Configurator die Arbeitsblatt mit dem gewünschten Muster.;Select the worksheet with the desired Pattern in the Pattern_Configurator.;Selecteer het tabblad met het gewenste patroon in de Pattern_Configurator.;Sélectionnez la feuille de calcul avec le motif souhaité dans Pattern_Configurator.;;;
+Multiplexer;M80_Create_Multiplexer_INI;Drücken Sie dann die Taste 'SELECT'.;Then press 'SELECT' button.;Druk vervolgens op de knop 'SELECT'.;Appuyez ensuite sur le bouton «SELECT».;;;
+Multiplexer;M80_Create_Multiplexer_INI;IN ACHT NEHMEN! Wählen Sie nur Patronen aus, die für die richtige Anzahl von LEDs geeignet sind!;BEWARE! Select only Patterns suitable for the correct number of LEDs !;PAS OP! Selecteer alleen Patronen geschikt voor het juiste aantal LED's !;IL FAUT SE MÉFIER! Sélectionnez uniquement des motifs adaptés au nombre correct de LED!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Makro ;Macro ;Macro ;Macro;;;
+Multiplexer;M80_Create_Multiplexer_INI; NICHT gefunden!; NOT found!; NIET gevonden!; Pas trouvé!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Möchten Sie das Multiplexer-Makro wirklich entfernen? ;Are you shure that you want to delete the Multiplexer Macro? ;Weet u zeker dat u de Multiplexer Macro wilt verwijderen? ;Êtes-vous sûr de vouloir supprimer la macro multiplexeur?;;;
+Multiplexer;M80_Create_Multiplexer_INI;Multiplexer löschen ...;Deleting Multiplexer ...;Multiplexer verwijderen ...;Suppression du multiplexeur ...;;;
+Multiplexer;M80_Create_Multiplexer_INI;Möchten Sie wirklich alle Multiplexer Makros löschen?;Are you shure that you want to delete all the Multiplexer Macro's;Weet u zeker dat u alle Multiplexer-Macro's wilt verwijderen?;Êtes-vous sûr de vouloir supprimer toutes les macro multiplexeurs;;;
+Multiplexer;M80_Create_Multiplexer_INI;und die Multiplexer Datei neu laden?;and reload the Multiplexer file?;en het Multiplexer bestand opnieuw laden?;et recharger le fichier multiplexeur?;;;
+Multiplexer;M80_Create_Multiplexer_INI;Alle Änderungen werden ignoriert!;All changes are ignored!;Alle wijzigingen worden genegeerd!;Toutes les modifications sont ignorées!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Alle Multiplexer löschen ...;Deleting All Multiplexers ...;Alle Multiplexer's verwijderen ...;Suppression de tous les multiplexeurs ...;;;
+Multiplexer;M80_Create_Multiplexer_INI;Kein Muster gefunden !!!;No Pattern found !!!;Geen patroon gevonden !!!;Aucun motif trouvé !!!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Test Muster ...;Testing Pattern ...;Test Patroon ...;Modèle de test ...;;;
+Multiplexer;M80_Create_Multiplexer_INI;Abschnitt oder Schlüssel zum Lesen Nicht angegeben !!!;Section Or Key To Read Not Specified !!!;Sectie of sleutel om te lezen Niet gespecificeerd !!!;Section ou clé à lire non spécifié !!!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Möchten Sie die Datei Multiplexer wirklich überschreiben?;Are you sure you want to overwrite the Multiplexer file?;Weet je zeker dat je het bestand Multiplexer wilt overschrijven?;Voulez-vous vraiment remplacer le fichier multiplexeur?;;;
+Multiplexer;M80_Create_Multiplexer_INI;Speichern Sie die Datei Multiplexer ...;Saving Multiplexer file ...;Multiplexer bestand opslaan ...;Enregistrement du fichier multiplexeur ...;;;
+Multiplexer;M80_Create_Multiplexer_INI;Abschnitt oder Schlüssel zum Schreiben nicht angegeben !!!;Section Or Key To Write Not Specified !!!;Sectie of sleutel om te schrijven niet gespecificeerd !!!;Section ou clé à écrire non spécifiée !!!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Das Pattern ist kein korrektes Muster für den Multiplexer!;The Pattern is not an correct Pattern for the Multiplexer!;Het Patroon is niet een geldig Patroon voor de Multiplexer!;Le modèle n'est pas un modèle correct pour le multiplexeur!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Überprüfen, ob die Muster gültig ist ...;Check if Pattern is valid ...;Controleer of Patroon geldig is ...;Vérifiez si le modèle est valide ...;;;
+Multiplexer;M80_Create_Multiplexer_INI;Der Multiplexername ist ungültig! Dies sollte mit 'Multiplexer_' beginnen.;The Multiplexer name is not valid! This should start with 'Multiplexer_'.;De Multiplexernaam is niet geldig! Deze moet beginnen met 'Multiplexer_'.;Le nom du multiplexeur n'est pas valide! Cela devrait commencer par «Multiplexeur_».;;;
+Multiplexer;M80_Create_Multiplexer_INI;Überprüfen, ob der Multiplexername gültig ist ...;Check if Multiplexer name is valid ...;Controleer of Multiplexernaam geldig is ...;Vérifiez si le nom du multiplexeur est valide ...;;;
+Multiplexer;M80_Create_Multiplexer_INI;Ein Goto-Muster wurde ausgewählt. Es wird vom Multiplexer nicht unterstützt!;A goto Pattern has been chosen. It is not supported by the Multiplexer!;Er is een goto Pattern gekozen. Deze wordt niet ondersteund door de Multiplexer!;Un motif goto a été choisi. Il n'est pas pris en charge par le multiplexeur!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Muster mit falscher Anzahl von LEDs gewählt!;Pattern chosen with an incorrect number of LEDs!;Patroon gekozen met een onjuist aantal LED's!;Motif choisi avec un nombre incorrect de LED!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Es wurde kein Pattern Makro gefunden!;No Pattern Macro was found!;Er is geen Pattern Macro gevonden!;Aucune macro de motif n'a été trouvée!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Die 'Multiplexer' wurde noch nicht gespeichert. Willst du das noch machen?;The 'Multiplexer' has not been saved yet. Do you still want to do that?;De 'Multiplexer' is nog niet opgeslagen. Wil je dat nog doen?;Le «multiplexeur» n'a pas encore été enregistré. Voulez-vous toujours faire ça?;;;
+Multiplexer;M80_Create_Multiplexer_INI;Schließen 'Multiplexer';Close 'Multiplexer';Sluiten 'Multiplexer' ;Fermer 'Multiplexeur';;;
+Multiplexer;M80_Create_Multiplexer_INI;"Mit dem Mustertester können Sie das Muster der aktuellen Registerkarte testen.|
+Pass auf! (Noch) werden nicht alle Muster unterstützt.";"With the Pattern Tester you can test the Pattern of the current tab.
+Pay attention! Not all patterns are supported (yet). ";"Met de Pattern Tester kun je het Patroon testen van het huidige tabblad.
+Let op! (Nog) niet alle patronen worden ondersteund.";Avec le Pattern Tester, vous pouvez tester le Pattern de l'onglet actuel. Faites attention! Tous les modèles ne sont pas encore pris en charge.;;;
+Multiplexer;M80_Create_Multiplexer_INI;Pattern Multiplexer;Pattern Multiplexer;Pattern Multiplexer;Multiplexeur de motifs;;;
+Multiplexer;M80_Create_Multiplexer_INI;Test Pattern;Test Pattern;Test Pattern;Modèle de test;;;
+Multiplexer;M80_Create_Multiplexer_INI;Multiplexer Editor;Multiplexer Editor;Multiplexer Editor;Éditeur de multiplexeur;;;
+Multiplexer;M80_Create_Multiplexer_INI;Pattern Tester;Pattern Tester;Pattern Tester;Testeur de motifs;;;
+Multiplexer;M80_Create_Multiplexer_INI;Test Pattern;Test Pattern;Test Pattern;Modèle de test;;;
+Multiplexer;M80_Create_Multiplexer_INI;Multiplexer-Gruppe;Multiplexer Group;Multiplexer Groep;Groupe multiplexeur;;;
+Comment;D49;"Bei einzelnen LEDs definiert die Hintergrundfarbe der Zelle die Farbe der LED in der Vorschau. 
+
+Bei RGB LEDs wird die Farbe aus den Einträgen der Tabelle ermittelt. 
+Durch ein Häkchen bei ""RGB LED"" wird festgelegt dass es sich um RGB LEDs handelt. Ohne das Häkchen werden die Zeilen als einzelne LEDs behandelt.";"For individual LEDs, the background color of the cell defines the color of the LED in the preview. 
+
+For RGB LEDs, the color is determined from the entries in the table. 
+A check mark next to ""RGB LED"" specifies that the LEDs are RGB. Without the check mark, the lines are treated as individual LEDs.";"Voor individuele LED's bepaalt de achtergrondkleur van de cel de kleur van de LED in het voorbeeld. 
+
+Voor RGB-leds wordt de kleur bepaald uit de vermeldingen in de tabel. Een vinkje naast ""RGB-led"" geeft aan dat de leds RGB zijn. 
+Zonder vinkje worden de lijnen behandeld als individuele LED's.";"Pour les LED individuelles, la couleur d'arrière-plan de la cellule définit la couleur de la LED dans l'aperçu. 
+
+Pour les LED RVB, la couleur est déterminée à partir des entrées du tableau. Une coche à côté de ""LED RGB"" indique que les LED sont RGB. 
+Sans la coche, les lignes sont traitées comme des LED individuelles.";;;
+Multiplexer;M80_Create_Multiplexer_INI;Single LEDs;Single LEDs;Single LEDs;LED simples;;;
+Multiplexer;M80_Create_Multiplexer_INI;RGB LEDs;RGB LEDs;RGB LEDs;LED RGB;;;
+Multiplexer;M80_Create_Multiplexer_INI;Kombinationen von Einzel- und RGB-LEDs werden vom Multiplexer nicht unterstützt !!!;Combinations of Single- and RGB LEDs are not supported by the Multiplexer !!!;Combinaties van Single- en RGB-leds worden niet ondersteund door de multiplexer !!!;Les combinaisons de LED simples et RVB ne sont pas prises en charge par le multiplexeur !!!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Importfehler!;Import error!;Importeerfout!;Erreur d'importation!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Makrobeschreibung ist leer!;MacroDescription is empty!;Macrobeschrijving is leeg!;MacroDescription est vide!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Name muss mit 'multiplexer_' beginnen' !;Name must start with 'multiplexer_' !;Naam moet beginnen met 'Multiplexer_'!;Le nom doit commencer par 'multiplexeur_'!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Kein Multiplexername hinzugefügt!;No MultiplexerName added!;Geen Multiplexernaam toegevoegd!;Aucun MultiplexerName ajouté!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Der Multiplexer kann nicht gespeichert werden, da Fehler erkannt wurden!;The Multiplexer cannot be saved because errors have been detected!;De Multiplexer kan niet worden opgeslagen omdat er fouten zijn geconstatterd!;Le multiplexeur ne peut pas être enregistré car des erreurs ont été détectées!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Testen, ob die Bedingungen erfüllt sind ;Testing if the conditions are met ;Testen of aan de voorwaarden wordt voldaan ;Tester si les conditions sont remplies;;;
+Multiplexer;M80_Create_Multiplexer_INI;Wenn dieser Multiplexer-Gruppe bereits ein Muster zugewiesen wurde, dürfen die Multiplexer-Gruppenparameter nicht mehr geändert werden!;If a Pattern has already been assigned to this Multiplexer group, the Multiplexer group parameters may no longer be changed!;Als er reeds een Patroon is toegewezen aan deze Multiplexer groep dan mogen de Multiplexer groep parameters niet meer gewijzigd worden!;Si un motif a déjà été attribué à ce groupe de multiplexeurs, les paramètres du groupe de multiplexeurs ne peuvent plus être modifiés!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Kein Tab mit einem ausgewählten Muster !!!;No Tab with a Pattern chosen !!!;Geen Tabblad met een patroon gekozen !!!;Aucun onglet avec un motif choisi !!!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Fehler das Verzeichnis existiert nicht:;Error the folder does not exist:;Fout de map bestaat niet:;Erreur, le dossier n'existe pas:;;;
+Multiplexer;M80_Create_Multiplexer_INI;Multiplexer Verzeichnis nicht vorhanden;Multiplexer directory not available;Multiplexer-directory niet beschikbaar;Répertoire multiplexeur non disponible;;;
+Multiplexer;M80_Create_Multiplexer_INI;Fehler die Datei existiert nicht:;Error the file does not exist:;Fout het bestand bestaat niet:;Erreur le fichier n'existe pas:;;;
+Multiplexer;M80_Create_Multiplexer_INI;Multiplexer Datei nicht gefunden!;Multiplexer file not found!;Multiplexer bestand niet gevonden!;Fichier multiplexeur introuvable!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Die Anzahl der Multiplexer ist Null! Schließen Sie den Multiplexer und öffnen Sie den Multiplexer erneut.;Number of Multiplexers is Zero! Close Multiplexer and re-open Multiplexer.;Het aantal Multiplexers is nul! Sluit de Multiplexer en open de Multiplexer opnieuw.;Le nombre de multiplexeurs est nul! Fermez le multiplexeur et rouvrez le multiplexeur.;;;
+Multiplexer;M80_Create_Multiplexer_INI;Fehler beim Deleting_Shapes;Error Deleting_Shapes;Fout in Deleting_Shapes;Erreur Deleting_Shapes;;;
+Multiplexer;M80_Create_Multiplexer_INI;Eine neue 'Multiplexer.ini' wird erstellt.;A new 'Multiplexer.ini' is created.;Er wordt een nieuwe 'Multiplexer.ini' aangemaakt.;Un nouveau «Multiplexer.ini» est créé.;;;
+Multiplexer;M80_Create_Multiplexer_INI;Geben Sie zuerst die Anzahl der LEDs und den LED-Typ ein, bevor Sie ein Muster hinzufügen!;First enter the number of LEDs and the LED Type before adding a Pattern!;Vul eerst het aantal LEDs en het LED Type in alvorens een Patroon toe te voegen!;Entrez d'abord le nombre de LED et le type de LED avant d'ajouter un motif!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Testen, ob die Multiplexer-Gruppe eingestellt ist ;Testing if the Multiplexer Group is Set ;Testen of de Multiplexergroep is ingesteld ;Test si le groupe de multiplexeurs est défini;;;
+Multiplexer;M80_Create_Multiplexer_INI;Import_Pattern;Import_Pattern;Import_Pattern;Import_Pattern;;;
+Multiplexer;M80_Create_Multiplexer_INI;Option Name:;Option name:;Optienaam:;Nom de l'option:;;;
+Multiplexer;M80_Create_Multiplexer_INI;Option Pattern:;Option pattern:;Optiepatroon:;Modèle d'option:;;;
+Multiplexer;M80_Create_Multiplexer_INI;Select Pattern for x  LED's.;Select pattern for x LEDs.;Selecteer patroon voor x LED's.;Sélectionnez le modèle pour x LED.;;;
+Multiplexer;M80_Create_Multiplexer_INI;SELECT;SELECT;SELECTEER;SÉLECTIONNER;;;
+Multiplexer;M80_Create_Multiplexer_INI;Simmulation der Konfiguration am PC;Simulation of the configuration on the PC;Simulatie van de configuratie op de pc;Simulation de la configuration sur le PC;;;
+Multiplexer;M80_Create_Multiplexer_INI;Auswahl der Nummer:;Selection of the number:;Selectie van het nummer:;Sélection du nombre:;;;
+Multiplexer;M80_Create_Multiplexer_INI;"Diese Konfiguration kann hat verschiedenen Startpunkte. |
+Sie sind in der ""Goto Tabelle"" über ein ""S"" markiert und werden, wenn die ""Grafische Anzeige"" aktiviert ist mit einem Pfeil und der Startnummer angezeigt.";"This configuration can have different starting points. |
+ They are marked in the ""Goto table"" with an ""S"" and are shown with an arrow and the start number when the ""Graphic display"" is activated.";"Deze configuratie kan verschillende uitgangspunten hebben. |
+ Ze zijn gemarkeerd in de ""Ga naar tabel"" met een ""S"" en worden weergegeven met een pijl en het startnummer wanneer de ""Grafische weergave"" is geactiveerd.";"Cette configuration peut avoir différents points de départ. | Ils sont marqués dans le ""tableau Aller à"" par un ""S"" et sont affichés avec une flèche et le numéro de départ lorsque ""Affichage graphique"" est activé.";;;
+Multiplexer;M80_Create_Multiplexer_INI;Auswahl der Start Nummer:;Selection of the start number:;Selectie van het startnummer:;Sélection du numéro de départ:;;;
+Multiplexer;M80_Create_Multiplexer_INI;"Diese Konfiguration kann hat verschiedenen Startpunkte. |
+Sie sind in der ""Goto Tabelle"" über ein ""S"" markiert und werden, wenn die ""Grafische Anzeige"" aktiviert ist, mit einem Pfeil und der Startnummer angezeigt.|
+Zum aktivieren eines Startpunkts wird der entsprechende Taster betätigt. Der Startpunkt 0 wird automatisch am Afang aktiviert.";"This configuration can have different starting points. | They are marked in the ""Goto table"" by an ""S"" and, when the ""Graphic display"" is activated, they are indicated with an arrow and the start number. | To activate a start point, the corresponding button is pressed. Starting point 0 is automatically activated at the beginning.";"Deze configuratie kan verschillende uitgangspunten hebben. |Ze worden in de ""Ga naar tabel"" gemarkeerd met een ""S"" en, wanneer de ""Grafische weergave"" is geactiveerd, worden ze aangegeven met een pijl en het startnummer. |Om een ??startpunt te activeren, wordt de bijbehorende knop ingedrukt. |Startpunt 0 wordt aan het begin automatisch geactiveerd.";"Cette configuration peut avoir différents points de départ. | Ils sont marqués dans le ""Tableau Goto"" par un ""S"" et, lorsque ""Affichage graphique"" est activé, ils sont indiqués par une flèche et le numéro de départ. | Pour activer un point de départ, le bouton correspondant est enfoncé. Le point de départ 0 est automatiquement activé au début.";;;
+Multiplexer;M80_Create_Multiplexer_INI;Fehler: Die Multiplexer Ini-Datei ist nicht vorhanden:;Error: The multiplexer ini file does not exist:;Fout: het multiplexer ini-bestand bestaat niet:;Erreur: le fichier ini du multiplexeur n'existe pas:;;;
+Multiplexer;M80_Create_Multiplexer_INI;Fehler die 'Multiplexer.ini' Datei existiert nicht:;Error the 'Multiplexer.ini' file does not exist:;Fout het bestand 'Multiplexer.ini' bestaat niet:;Erreur le fichier 'Multiplexer.ini' n'existe pas:;;;
+Multiplexer;M80_Create_Multiplexer_INI;Soll die Datei mit Beispiel Daten generiert werden?;Should the file be generated with sample data?;Moet het bestand worden gegenereerd met voorbeeldgegevens?;Le fichier doit-il être généré avec des exemples de données?;;;
+Multiplexer;M80_Create_Multiplexer_INI;Multiplexer Datei nicht vorhanden;Multiplexer file not available;Multiplexer-bestand niet beschikbaar;Fichier multiplexeur non disponible;;;
+Multiplexer;M80_Create_Multiplexer_INI;Keine Nummer in 'LEDs in Gruppe'!;No number in 'LEDs in Group'!;Geen nummer in 'LED's in groep'!;Pas de numéro dans les «LED du groupe»!;;;
+Multiplexer;M80_Create_Multiplexer_INI;Leerer Optionsname oder leeres Optionsmuster gefunden!;Empty Option Name or Empty Option Pattern found!;Lege optienaam of leeg optiepatroon gevonden!;Nom d'option vide ou modèle d'option vide trouvé!;;;
+;;Überträgt das Muster zum Programm Generator und sendet die Konfiguration zum Arduino;Transfers the pattern to the generator program and sends the configuration to the Arduino;Brengt het patroon over naar het generatorprogramma en stuurt de configuratie naar de Arduino;Transfère le motif au programme générateur et envoie la configuration à l'Arduino;;;
+;;Überträgt das Muster über die Haupltplatine zum Modul. ;Transfers the pattern to the module via the main circuit board.;Brengt het patroon over naar de module via de hoofdprintplaat.;Transfère le motif au module via la carte de circuit imprimé principale.;;;
+;;Rot;red;Rood;rouge;;;
+;;Grün;green;Groen;vert;;;
+;;AnAus;On off;Aan uit;Allumé éteint;;;
+;;Tast;Tast;Smaak;Goût;;;
+;;Überprüfung des USB Ports;Check the USB port;Controleer de USB-poort;Vérifiez le port USB;;;
+;;Auswahl des Ardiono COM Ports;Selection of the Ardiono COM port;Selectie van de Ardiono COM-poort;Sélection du port COM Ardiono;;;
+;;"Mit diesem Dialog wird der COM Port überprüft bzw. ausgewählt an den der #1# Arduino angeschlossen ist.|
+|
+OK, wenn die LEDs am richtigen Arduino schnell blinken.";This dialog is used to check or select the COM port to which the #1# Arduino is connected. || OK if the LEDs on the correct Arduino are flashing quickly.;Dit dialoogvenster wordt gebruikt om de COM-poort te controleren of te selecteren waarmee de #1# Arduino is verbonden. || OK als de LED's op de juiste Arduino snel knipperen.;Cette boîte de dialogue est utilisée pour vérifier ou sélectionner le port COM auquel le #1# Arduino est connecté. || OK si les LED du bon Arduino clignotent rapidement.;;;
+;;Tipp: Der ausgewählte Arduino blinkt schnell;Tip: The selected Arduino flashes quickly;Tip: de geselecteerde Arduino knippert snel;Astuce: l'Arduino sélectionné clignote rapidement;;;
+;;Text;text;tekst;texte;;;
+;;"Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.|
+|
+Ein anderer COM Port kann über die Pfeiltasten ausgewählt werden.|
+|
+Der Arduino kann auch nachträglich angesteckt werden.";"The LEDs of the selected Arduino flash quickly to identify the Arduino. |
+|
+ Another COM port can be selected using the arrow keys. |
+|
+ The Arduino can also be connected later.";"De LED's van de geselecteerde Arduino knipperen snel om de Arduino te identificeren. |
+|
+ |
+Met de pijltoetsen kan een andere COM-poort worden geselecteerd. |
+|
+ |
+De Arduino kan ook later worden aangesloten.";"Les LED de l'Arduino sélectionné clignotent rapidement pour identifier l'Arduino. |
+| 
+Un autre port COM peut être sélectionné à l'aide des touches fléchées. |
+|
+L'Arduino peut également être connecté ultérieurement.";;;
+;;Verfügbare Ports:;Available ports:;Beschikbare havens:;Ports disponibles:;;;
+;;Unbekannte Ports zeigen;Show unknown ports;Toon onbekende poorten;Afficher les ports inconnus;;;
+;;Red_Hint;Red_Hint;Red_Hint;Red_Hint;;;
+;;Aktualisiere Status ...;Update status ...;Status bijwerken ...;État de mise à jour ...;;;
+;;"Der Bestückungsdruck der LEDs bei der ersten ""TinyUniProg"" Platine vom 16.06.19 ist dummerweise falsch ;-(|
+|
+Soll das Programm auf einer neueren Platine verwendet werden bzw. ist der Plus Pol der LEDs auf der linken Seite der Platine (=Abgeflachte Seite der LED rechts) ?|
+|
+Ja:  Plus Pol links, abgeflachte Seite rechts|
+Nein: Plus Pol rechts, abgeflachte Seite links";"The mounting pressure of the LEDs on the first ""TinyUniProg"" board from June 16, 2019 is unfortunately wrong ;-( || Should the program be used on a newer board or is the plus pole of the LEDs on the left side of the board (= flattened side the LED on the right)? || Yes: plus pole left, flattened side right | No: plus pole right, flattened side left";"De montagedruk van de LED's op het eerste ""TinyUniProg"" -bord vanaf 16 juni 2019 is helaas verkeerd ;-( || Moet het programma worden gebruikt op een nieuwer bord of is de pluspool van de LED's aan de linkerkant van het bord (= afgeplatte zijde de LED aan de rechterkant)? || Ja: plus pool links, afgeplatte zijde rechts | Nee: plus pole rechts, afgeplatte zijde links";"La pression de montage des LED sur la première carte ""TinyUniProg"" à partir du 16 juin 2019 est malheureusement fausse ;-( || Si le programme doit être utilisé sur une carte plus récente ou est le pôle positif des LED sur le côté gauche de la carte (= côté aplati la LED à droite)? || Oui: plus pôle gauche, côté aplati droit | Non: plus pôle droit, côté aplati gauche";;;
+;;Einbaurichtung der LEDs?;Installation direction of the LEDs?;Installatierichting van de LED's?;Direction d'installation des LED?;;;
+;;"Fehler: Der COM Port #1# wird bereits von einem anderen Programm benutzt.|
+Das kann z.B. der serielle Monitor der Arduino IDE oder das Farbtestprogramm sein.|
+|
+Das entsprechende Programm muss geschlossen werden.";Error: The COM port #1# is already being used by another program. | This can e.g. be the serial monitor of the Arduino IDE or the color test program. || The corresponding program must be closed.;Fout: de COM-poort #1# wordt al gebruikt door een ander programma. | Dit kan b.v. worden de seriële monitor van de Arduino IDE of het kleurentestprogramma. || Het bijbehorende programma moet worden afgesloten.;Erreur: le port COM #1# est déjà utilisé par un autre programme. | Cela peut par exemple être le moniteur série de l'Arduino IDE ou le programme de test de couleur. || Le programme correspondant doit être fermé.;;;
+;;Wollen sie es noch mal mit einem anderen Arduino oder einem anderen COM Port versuchen?;Do you want to try another Arduino or COM port again?;Wil je nog een keer een andere Arduino- of COM-poort proberen?;Voulez-vous réessayer un autre port Arduino ou COM?;;;
+;;Fehler bei der Überprüfung des angeschlossenen Arduinos;Error when checking the connected Arduino;Fout bij het controleren van de aangesloten Arduino;Erreur lors de la vérification de l'Arduino connecté;;;
+;;"Achtung: Der Arduino wird von einem anderen Programm benutzt.|
+(Serieller Monitor?)|
+Das Programm muss geschlossen werden! ";Attention: The Arduino is used by another program. | (Serial monitor?) | The program must be closed!;Let op: de Arduino wordt gebruikt door een ander programma. | (Seriële monitor?) | Het programma moet worden afgesloten!;Attention: l'Arduino est utilisé par un autre programme. | (Moniteur série?) | Le programme doit être fermé!;;;
+;;"Das ""Betriebssystem"" des Servo Moduls wurde erfolgreich programmiert.|
+Dieser Schritt ist nur ein mal pro Platine nötig.|
+Als nächstes sollten die Endpositionen und die Geschwindigkeiten eingestellt werden.|
+Das kann mit zwei verschiednen Programmen gemacht werden:|
+- das Arduino Programm ""01.Servo_Pos""|
+- das ""Farbtest"" Programm von Harold ('Prog_Generator' Menü)""";"The ""operating system"" of the servo module was successfully programmed. | This step is only necessary once per board. | Next, the end positions and the speeds should be set. | This can be done with two different programs: | - the Arduino program "" 01.Servo_Pos ""| - the"" color test ""program by Harold ('Prog_Generator' menu)""";"Het ""besturingssysteem"" van de servomodule is succesvol geprogrammeerd. | Deze stap is slechts één keer per bord nodig. | Vervolgens moeten de eindposities en de snelheden worden ingesteld. | Dit kan met twee verschillende programma's: | - het Arduino-programma ""01.Servo_Pos"" | - het ""kleurentest"" programma van Harold ('Prog_Generator' menu) """;"Le ""système d'exploitation"" du module d'asservissement a été programmé avec succès. | Cette étape n'est nécessaire qu'une fois par planche. | Ensuite, les positions finales et les vitesses doivent être définies. | Cela peut être fait avec deux programmes différents: | - le programme Arduino ""01.Servo_Pos"" | - le programme ""color test"" de Harold (menu 'Prog_Generator') """;;;
+;;Programm erfolgreich zum ATTiny übertragen;Program successfully transferred to ATTiny;Programma succesvol overgedragen aan ATTiny;Transfert réussi du programme à ATTiny;;;
+;;"Das ""Betriebssystem"" des Charlieplexing Moduls wurde erfolgreich programmiert.|
+Dieser Schritt ist nur ein mal pro Platine nötig.|
+Als nächstes muss die Konfiguration zum ATTiny geschickt werden. Das wird über den ""Zum Modul schicken"" Knopf der entsprechenden Seite gemacht.";"The ""operating system"" of the Charlieplexing module has been successfully programmed. | This step is only necessary once per board. | Next, the configuration must be sent to the ATTiny. This is done using the ""Send to module"" button on the corresponding page.";"Het ""besturingssysteem"" van de Charlieplexing-module is succesvol geprogrammeerd. | Deze stap is slechts één keer per bord nodig. | Vervolgens moet de configuratie naar de ATTiny worden gestuurd. Dit doet u via de knop ""Verzenden naar module"" op de betreffende pagina.";"Le ""système d'exploitation"" du module Charlieplexing a été programmé avec succès. | Cette étape n'est nécessaire qu'une fois par planche. | Ensuite, la configuration doit être envoyée à ATTiny. Cela se fait en utilisant le bouton ""Envoyer au module"" sur la page correspondante.";;;
+;;Lade ;Loading;Bezig met laden;Chargement;;;
+;;Beispiele Laden;Loading Examples;Voorbeelden laden;Exemples de chargement;;;
+;;Auswahl der Beispiele;Selection of examples;Selectie van voorbeelden;Sélection d'exemples;;;
+;;Allgemein;General;Algemeen;Général;;;
+;;Ampeln;Traffic lights;Verkeerslichten;Feux de circulation;;;
+;;Baustellenlichter;Construction site lights;Verlichting op de bouwplaats;Lumières de chantier;;;
+;;Signale;Signals;Signalen;Signaux;;;
+;;Sounds;Sounds;Klinkt;Des sons;;;
+;;Taster mit Status Anzeige;Push button with status display;Drukknop met statusweergave;Bouton poussoir avec affichage de l'état;;;
+;;Illuminations;Illuminations;Verlichting;Illuminations;;;
+;;Beispiele laden;Load examples;Laad voorbeelden;Charger des exemples;;;
+;;Eigene Daten laden;Load own data;Laad eigen data;Charger ses propres données;;;
+;;Alle Seiten speichern;Save all pages;Bewaar alle pagina's;Enregistrer toutes les pages;;;
+;;Alle Datenseiten löschen;Delete all data pages;Verwijder alle gegevenspagina's;Supprimer toutes les pages de données;;;
+;;"Lädt ausgewählte Standard Beispiele aus Verzeichnis ""Pattern_Config_Examples"".";"Loads selected standard samples from the ""Pattern_Config_Examples"" directory.";"Laadt geselecteerde standaardmonsters uit de map ""Pattern_Config_Examples"".";"Charge les échantillons standard sélectionnés à partir du répertoire ""Pattern_Config_Examples"".";;;
+;;"Speichert alle Patternseiten in der Datei  ""MyExamples.MLL_pcf"" im Verzeichnis |
+""Eigene Dokumente\MyPattern_Config_Examples"".";"Saves all pattern pages in the file ""MyExamples.MLL_pcf"" in the directory ""My Documents \ MyPattern_Config_Examples"".";"Slaat alle patroonpagina's op in het bestand ""MyExamples.MLL_pcf"" in de map ""My Documents \ MyPattern_Config_Examples"".";"Enregistre toutes les pages de modèle dans le fichier ""MyExamples.MLL_pcf"" dans le répertoire ""My Documents \ MyPattern_Config_Examples"".";;;
+;;Öffnet einen Auswahldialog mit dem eine Text Datei mit einem oder mehreren Pattern geladen wird.;Opens a selection dialog with which a text file with one or more patterns is loaded.;Opent een selectiedialoog waarmee een tekstbestand met een of meer patronen wordt geladen.;Ouvre une boîte de dialogue de sélection avec laquelle un fichier texte avec un ou plusieurs motifs est chargé.;;;
+;;Löscht ALLE Datenseiten.;Deletes ALL data pages.;Verwijdert ALLE gegevenspagina's.;Supprime TOUTES les pages de données.;;;
+;;Alle Beispiele;All examples;Alle voorbeelden;Tous les exemples;;;
+;;Lade Multiplexer...;Loading multiplexers ...;Multiplexers laden ...;Chargement des multiplexeurs ...;;;
+;;" ; A Abbruch; O Ok";" ; A Abbort; O Ok";" ; A Abortus; O Ok";" ; A Abbort; O Ok";;;
+;;* Zeigen Sie mit der Maus auf eine Form und drücken Sie kurz die UMSCHALTTASTE, um die Form auszuwählen.;* Point to a Shape with the Mouse and brievely Press the SHIFT key to select the Shape,;* Wijs met de muis naar een vorm en druk kort op de SHIFT-toets om de vorm te selecteren,;;;;
+;;* Sobald die Form ausgewählt ist, lassen Sie die Umschalttaste los und ziehen Sie die Form an die Zielposition!;* Once the Shape is selected, release the Shift key and drag the Shape around to the target position!;* Zodra de vorm is geselecteerd, laat u de Shift-toets los en sleept u de vorm naar de doelpositie!;;;;
+;;* Um den Bearbeitungsmodus zu verlassen, drücken Sie die rote Taste 'Bearbeitungsmodus'.;* To exit Edit Mode, press the red 'Edit Mode' button.;* Om de Edit-Mode af te sluiten druk u op de rode 'Edit Mode' toets.;;;;
+;;Formen verschieben;Move Shapes;Vormen verplaatsen;;;;
+;;"* Zeigen Sie mit der Maus auf eine Form und drücken Sie kurz die UMSCHALTTASTE, um die Form auszuwählen.|
+|
+* Sobald die Form ausgewählt ist, lassen Sie die Umschalttaste los und ziehen Sie die Form an die Zielposition!|
+|
+* Um den Bearbeitungsmodus zu verlassen, drücken Sie die rote Taste 'Bearbeitungsmodus'.|
+";"* Point to a Shape with the Mouse and brievely Press the SHIFT key to select the Shape,|
+|
+* Once the Shape is selected, release the Shift key and drag the Shape around to the target position!|
+|
+* To exit Edit Mode, press the red 'Edit Mode' button.|
+";"* Wijs met de muis naar een vorm en druk kort op de SHIFT-toets om de vorm te selecteren,|
+|
+* Zodra de vorm is geselecteerd, laat u de Shift-toets los en sleept u de vorm naar de doelpositie!|
+|
+* Om de Edit-Mode af te sluiten druk u op de rode 'Edit Mode' toets.|
+";;;;
+;;"Bilder  (*.png; *.jpg; *.jpeg), *.png;*.jpg;*.jpeg";"Images (* .png; * .jpg; * .jpeg), * .png; *. jpg; *. Jpeg";"Afbeeldingen (* .png; * .jpg; * .jpeg), * .png; *. jpg; *. Jpeg";"Images (* .png; * .jpg; * .jpeg), * .png; *. jpg; *. jpeg";;;
+;;Auswahl eines Bildes;Select an image;Selecteer een afbeelding;Sélectionnez une image;;;
+;;"Das Bild '#1#' ist bereits im Verzeichnis|
+  '#2#' vorhanden.|
+|
+Soll die Datei überschrieben werden?|
+|
+Das beeinflusst unter Umständen andere Beispiele";"The image '#1#' is already in the directory |
+  '#2#' available. |
+| Should the file be overwritten? |
+|
+This may influence other examples";"De afbeelding '#1#' staat al in de directory |
+  '#2#' beschikbaar. |
+|
+Moet het bestand worden overschreven? |
+|
+Dit kan andere voorbeelden beïnvloeden";"L'image '#1#' est déjà dans le répertoire |
+  '#2#' disponible. |
+|
+Le fichier doit-il être écrasé? |
+|
+Cela peut influencer d'autres exemples";;;
+;;Bild ist bereits im Beispiel Verzeichnis vorhanden;Image already exists in the directory example;Afbeelding bestaat al in het directoryvoorbeeld;L'image existe déjà dans l'exemple de répertoire;;;
+;;"Bei der Servo Platine der Version 1.0 hat sich ein Fehler bei der Pin Definition des SMD WS2811 eingeschlichen ;-(|
+Das führt dazu, das der rote und grüne Kanal vertauscht sind.|
+|
+Korrektur der SMD WS2811 Pins?|
+|
+Ja:|
+Wenn die Platine vom 14.6.19 ist UND ein SMD WS2811 bestückt wurde|
+Nein:|
+Bei einer neueren Platine oder wenn ein DIL WS2811 verwendet wird";"With the servo board of version 1.0 an error crept in with the pin definition of the SMD WS2811 ;-( | This leads to the red and green channels being swapped. || Correction of the SMD WS2811 pins? || Yes: | If the board is from June 14th, 2019 AND a SMD WS2811 was fitted | No: | With a newer board or if a DIL WS2811 is used";"Met het servobord van versie 1.0 is er een fout geslopen met de pin-definitie van de SMD WS2811 ;-( | Dit leidt tot verwisseling van de rode en groene kanalen. || Correctie van de SMD WS2811-pinnen? || Ja: | Als de board is van 14 juni 2019 EN er is een SMD WS2811 gemonteerd | Nee: | Met een nieuwer board of indien een DIL WS2811 wordt gebruikt";"Avec la carte servo de la version 1.0, une erreur s'est glissée dans la définition des broches du SMD WS2811 ;-( | Cela conduit à permuter les canaux rouge et vert. || Correction des broches du SMD WS2811? || Oui: | Si le La carte date du 14 juin 2019 ET un SMD WS2811 a été installé | Non: | Avec une carte plus récente ou si un DIL WS2811 est utilisé";;;
+;;Korrektur der SMD WS2811 Pins?;Correction of the SMD WS2811 pins?;Correctie van de SMD WS2811-pinnen?;Correction des broches SMD WS2811?;;;
+;;"Kein COM Port erkannt.|
+Bitte Arduino an einen USB Anschluss des Computers anschließen";No COM port detected. | Please connect the Arduino to a USB port on the computer;Geen COM-poort gedetecteerd. | Sluit de Arduino aan op een USB-poort op de computer;Aucun port COM détecté. | Veuillez connecter l'Arduino à un port USB de l'ordinateur;;;
+;;Fehler: Es ist kein Arduino an COM Port #1# angeschlossen.;Error: There is no Arduino connected to COM port #1#.;Fout: er is geen Arduino aangesloten op COM-poort #1#.;Erreur: il n'y a pas d'Arduino connecté au port COM #1#.;;;
+;;Error: Invalid Charlieplexing mode entered;Error: Invalid Charlieplexing mode entered;Fout: ongeldige Charlieplexing-modus ingevoerd;Erreur: mode Charlieplexing non valide entré;;;
+;;Fehler: Zu viele Zeiten in der 'Dauer' Zeile verwendet. Es sind maximal #1# Zeiten bei Version '#2#' möglich;Error: Too many times used in the 'Duration' line. A maximum of #1# times are possible with version '#2#';Fout: te vaak gebruikt in de regel 'Duur'. Maximaal #1# tijden zijn mogelijk met versie '#2#';Erreur: trop souvent utilisé dans la ligne «Durée». Un maximum de temps #1# est possible avec la version '#2#';;;
+;;Fehler: Zu viele Zeiten benutzt;Error: Used too many times;Fout: te vaak gebruikt;Erreur: utilisé trop de fois;;;
+;;"Fehler: Der EEPROM Speicher des ATTinys ist zu klein für diese riesige Konfiguration ;-(|
+Tip: 'Bits pro Wert' oder die Anzahl der Zeiten verringern";"Error: The EEPROM memory of the ATTiny is too small for this huge configuration ;-( | Tip: 'Bits per value' or reduce the number of times";"Fout: Het EEPROM-geheugen van de ATTiny is te klein voor deze enorme configuratie ;-( | Tip: 'Bits per waarde' of verminder het aantal keren";"Erreur: la mémoire EEPROM de l'ATTiny est trop petite pour cette énorme configuration ;-( | Astuce: 'Bits par valeur' ??ou réduire le nombre de fois";;;
+;;Konfiguration passt nicht in EEPROM;Configuration does not fit in EEPROM;Configuratie past niet in EEPROM;La configuration ne rentre pas dans l'EEPROM;;;
+;;Fehler: Es können maximal 12 LEDs mit dem Charlieplexing Modul angesteuert werden;Error: A maximum of 12 LEDs can be controlled with the Charlieplexing module;Fout: Er kunnen maximaal 12 LED's worden aangestuurd met de Charlieplexing-module;Erreur: 12 LED au maximum peuvent être contrôlées avec le module Charlieplexing;;;
+;;Fehler: Zu viele LED Kanäle benutzt;Error: Too many LED channels used;Fout: te veel LED-kanalen gebruikt;Erreur: trop de canaux LED utilisés;;;
+;;Signale 3D Druck RGB LEDs;;;;;;
+;;Neuer ;New;Nieuw;Nouveau;Nuovo;Nuevo;Ny
+;;Deleting Multiplexers...;Deleting Multiplexers ...;Multiplexers verwijderen ...;Suppression des multiplexeurs ...;Eliminazione dei multiplexer ...;Eliminación de multiplexores ...;Sletning af multipleksere ...
+;;Servo-MP3;;;;;;
+;;Prog.Servo/MP3;;;;;;
+;;"Man das Servo-Modul auf zur Ansteuerung von Soundmodulen nutzen (JQ6500/MP3-TF-16p) nutzen.|
+|
+Dabei werden die Soundmodule mit je einem 1k Widerstand an die Signal-Pins der Servoausgänge angeschlossen. Zusätzlich ist die Masse zu verbinden. Die Stromversorgung kann man getrennt lösen - meist funktioniert es aber auch die 5V von den Servoanschlüssen zu nutzen.|
+|
+Zur Programmierung des ATTiny85 wird ein Programmieradapter benötigt (siehe oben) in der der ATTiny eingesteckt wird.|
+|
+Achtung: Die Software für das Servo Modul ist noch in der Entwicklung.";;;;;;
+;;"Das ""Betriebssystem"" des Servo Moduls wurde erfolgreich zur Anbindung von MP3-Modulen programmiert.|
+Dieser Schritt ist nur ein mal pro Platine nötig.|
+Als nächstes sollten angeschlossenen Soundmodule konfiguriert werden (siehe Anleitung|
+im Verzeichnis 'U:\Udo\Hobby\Modellbahn\MobaLedLib\MobaLedLib_Docu\Betatest\MobaLedLib-master\examples\80.Modules\03.ATTiny85_Sound\'";;;;;;
+;;Diese Excel Version wird nicht unterstützt.Bitte besuchen sie die Webseite #1# für weitergehende Informationen.Das Programm wird weiter ausgeführt, es kann jedoch zu unerwarteten Fehlfunktionen, Fehlermeldung und Abstürzen kommen.;This Excel version is not supported. Please visit the website #1# for further information. The program will continue to be executed, but unexpected malfunctions, error messages and crashes may occur.;Deze Excel-versie wordt niet ondersteund. Bezoek de website #1# voor meer informatie. Het programma wordt verder uitgevoerd, maar er kunnen onverwachte storingen, foutmeldingen en crashes optreden.;Cette version d'Excel n'est pas prise en charge. Veuillez visiter le site Web #1# pour plus d'informations. Le programme continuera à être exécuté, mais des dysfonctionnements inattendus, des messages d'erreur et des plantages peuvent se produire.;;;
+;;Versionsprüfung;Version check;Versiecontrole;Vérification des versions;;;

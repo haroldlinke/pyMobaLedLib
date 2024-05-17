@@ -1,0 +1,165 @@
+on exportToPythonCard
+  put stackInfo() into sInfo
+  put backgroundInfo() after sInfo
+  put "] }" & return & "] }" & return & "}" & return after sInfo
+  -- write results to a 'export.rsrc.py' file
+  -- loop through the cards of the background and export
+  -- the data to a dictionary
+  put exportDataToList() into aList
+end exportToPythonCard
+
+function exportDataToList
+  put "[" into txt
+  go to first card of this bg
+  repeat with b = 1 to number of cds in this bg
+    put "{" & return after txt
+    repeat with c = 1 to number of bg flds
+      if not the sharedText of bg fld c then
+        put "'" & removeSpaces(short name of bg fld c) & "': '" after txt
+        put fixReturns(bg fld c) after txt
+        put "', " & return after txt
+      end if
+    end repeat
+    put "}," & return after txt
+    go next
+  end repeat
+  put "]" & return after txt
+  return txt
+end exportDataToList
+
+function removeSpaces txt
+  put offset(" ", txt) into o
+  repeat while o > 0
+    put empty into char o of txt
+    put offset(" ", txt) into o
+  end repeat
+  return txt
+end removeSpaces
+
+function fixReturns txt
+  put offset(return, txt) into o
+  repeat while o > 0
+    put "\n" into char o of txt
+    put offset(return, txt) into o
+  end repeat
+  return txt
+end fixReturns
+
+function stackInfo
+  put "{'stack'}" into bob
+  put "{'stack':{'type':'Stack'," & return into s
+  put "'name':'" & removeSpaces(the short name of this stack) & "'," & return after s
+  put "'title':'" & removeSpaces(the short name of this stack) & "'," & return after s
+  put "'position':(" after s
+  put the topLeft of card window & "), " & return after s
+  put "'size':(" after s
+  put the width of this card & ", " after s
+  put (the height of this card) + 40 & ")," & return after s
+  put "'backgrounds':" & return & "[" & return after s
+  return s
+end stackInfo
+
+function backgroundInfo
+  put "{'type':'Background'," & return into s
+  put "'file':'addresses.py'," & return after s
+  put "'classname':'Addresses'," & return  after s
+  put "'name':'bgBody'," & return after s
+  put "'components':" & return & "[" & return after s
+  repeat with i = 1 to the number of flds
+    put fldDescription(i) after s
+  end repeat
+  repeat with i = 1 to the number of bg btns
+    put btnDescription(i) after s
+  end repeat
+  return s
+end backgroundInfo
+
+function fldDescription i
+  -- determine the field type
+  put fldType(i) into fieldType
+  if fieldType = "StaticText" then
+    put "'text':'" & the value of bg fld i & "', " & return into textStr
+    put "'alignment':'" & the textAlign of bg fld i & "', " & return after textStr
+  else
+    if the sharedText of bg fld i then
+      put "'text':'" & the value of bg fld i & "', " & return into textStr
+    else
+      put "" into textStr
+    end if
+    -- this doesn't look all that great, so I commented it out
+    -- if the style of bg fld i = "transparent" then
+    -- put "'border':'none', " & return after textStr
+    -- end if
+  end if
+  
+  -- then build up the attributes appropriately
+  put "{'type':'" & fieldType & "', 'name':'" & fldName(i) & "'," & return into s
+  put "'position':(" & the topLeft of bg fld i & "), " & return after s
+  put "'size':(" & the width of bg fld i & ", " after s
+  put the height of bg fld i & "), " & return after s
+  put textStr after s
+  if fldVisible(i) = 0 then
+    put "'visible':0, " & return after s
+  end if
+  put "}, " & return after s
+  return s
+end fldDescription
+
+function btnDescription i
+  -- determine the button type
+  put btnType(i) into buttonType
+  if buttonType = "Button" then
+    put "'label':'" & short name of bg btn i & "', " & return into textStr
+  else
+    put "" into textStr
+  end if
+  
+  -- then build up the attributes appropriately
+  put "{'type':'" & buttonType & "', 'name':'" & btnName(i) & "'," & return into s
+  put "'position':(" & the topLeft of bg btn i & "), " & return after s
+  put "'size':(" & the width of bg btn i & ", " after s
+  put the height of bg btn i & "), " & return after s
+  put textStr after s
+  put "}, " & return after s
+  return s
+end btnDescription
+
+function btnType i
+  -- this is just a quick hack
+  -- bad things will happen if it is used
+  -- on button types like radio, check box, popup, etc.
+  return "Button"
+end btnType
+
+function btnName i
+  return removeSpaces(the short name of bg btn i)
+end btnName
+
+function fldName i
+  return removeSpaces(the short name of bg fld i)
+end fldName
+
+function fldType i
+  if the sharedText of bg fld i then
+    -- maybe look at lockText as well?
+    if the textAlign of bg fld i = "left" then
+      return "TextField"
+    else
+      return "StaticText"
+    end if
+  else if the dontWrap of bg fld i then
+    return "TextField"
+  else
+    -- should probably check the
+    return "TextArea"
+  end if
+end fldType
+
+function fldVisible i
+  if the visible of bg fld i then
+    return 1
+  else
+    return 0
+  end if
+end fldVisible
+

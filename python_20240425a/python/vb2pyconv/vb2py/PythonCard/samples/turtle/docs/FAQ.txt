@@ -1,0 +1,24 @@
+Frequently Asked Questions (FAQ)
+
+Revision: $Revision: 1.5 $
+Date:     $Date: 2004/04/08 21:07:35 $
+
+Q: How do I control the turtle from the shell.
+A: You can do the simple example below and anything else
+you see in the scripts directory directly from the shell.
+
+>>> from PythonCard.turtle import BitmapTurtle
+>>> t = BitmapTurtle(bg.components.bufOff)
+>>> t.st()
+>>> t.color('blue')
+>>> t.fd(100)
+>>> for i in range(5):
+... 	t.fd(50)
+... 	t.rt(72)
+
+Note that the first part of this example is no longer necessary since the pycrustrc.py file automatically loads the first commands, so you can start experimenting at the "t.st()" line.
+
+
+Since the turtle library uses floating-point numbers and tests and conversions quite often, some "strange" behavior may crop up. I suggest reading:
+  Floating Point Arithmetic: Issues and Limitations
+  http://python.sourceforge.net/devel-docs/tut/node14.html

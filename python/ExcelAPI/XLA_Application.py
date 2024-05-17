@@ -158,6 +158,9 @@ def val(value):
     if valtype is CRange:
         cellvalue = str(value.get_value())
         if cellvalue != "":
+            if "§" in cellvalue:
+                cellpart = cellvalue.split("§")
+                cellvalue = cellpart[0]
             if IsNumeric(cellvalue):
                 return int(float(cellvalue))
             else:

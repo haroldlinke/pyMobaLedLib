@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+                                                       
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+                                                       
+  <meta name="author" content="Dan Shafer">
+  <title>Alert Dialog</title>
+   
+</head>
+  <body>
+                           
+<h1>Alert Dialog</h1>
+              <img height="119" width="126" alt="Alert Dialog Sample"
+ src="images/dialogsfig10.png">
+               <br>
+              <br>
+                           
+<h2>Creating the Dialog</h2>
+              Create an Alert Dialog by calling dialog.alertDialog    with
+  the three arguments shown in the following table.<br>
+              <br>
+                           
+<table cellpadding="2" cellspacing="2" border="1" width="80%">
+                <tbody>
+                  <tr>
+                     <td valign="top"><b>Argument</b><br>
+                    </td>
+                    <td valign="top"><b>Data type/notes</b><br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">self<br>
+                     </td>
+                    <td valign="top">the window (background) that is the
+parent    for   the  dialog<br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">message<br>
+                    </td>
+                    <td valign="top">quoted string of alert message to be
+displayed inside dialog<br>
+                     </td>
+                  </tr>
+    <tr>
+      <td valign="top">title<br>
+      </td>
+      <td valign="top">quoted string of text to be displayed in dialog's
+title bar<br>
+      </td>
+    </tr>
+                                                                        
+                          
+  </tbody>              
+</table>
+               <br>
+              <b>Example:<br>
+              <br>
+              </b>Above dialog was created with this line of code:<br>
+              <br>
+             <code>result = dialog.alertDialog(self, 'a message', 'a title')</code><br>
+<h2>Interacting With the Dialog</h2>
+              The alertDialog component returns two values, stored as elements
+      of the Python dictionary called "results" returned by all PythonCard
+ dialogs.     These results are as shown in the following table.<br>
+              <br>
+                           
+<table cellpadding="2" cellspacing="2" border="1" width="80%">
+                <tbody>
+                  <tr>
+                    <td valign="top"><b>Name of value</b><br>
+                     </td>
+                    <td valign="top"><b>Description</b><br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">accepted<br>
+                    </td>
+                    <td valign="top">True = user clicked OK<br>
+               False = user clicked Cancel<br>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">returned</td>
+      <td valign="top">string containing the name of the button clicked by
+the user<br>
+                     </td>
+                  </tr>
+                                                       
+  </tbody>              
+</table>
+              <br>
+             <b>Example:<br>
+             <br>
+          </b>   The sample dialog shown at the top of this page returns
+the   following    results when the user clicks its only button:<b><br>
+             <br>
+             </b>accepted: True<br>
+returned: Ok<br>
+<br>
+             <br>
+              &nbsp; <br>
+              <br>
+              <br>
+                <br>
+            <br>
+            <br>
+      <br>
+    <br>
+ 
+</body>
+</html>

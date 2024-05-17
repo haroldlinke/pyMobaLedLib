@@ -1,0 +1,594 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+    <meta name="author" content="Dan Shafer + Alex Tweedly" />
+    <link rel="stylesheet" href="PythonCard.css" type="text/css" />
+    <title>PythonCard's resourceEditor: An Overview</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>Meet the resourceEditor</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <h2>Scope and Purpose</h2>
+    <p>This document describes the resourceEditor which is used to design, 
+    lay out, and manipulate PythonCard applications' graphical components. 
+    It is current as of Version 0.8.2 of the PythonCard release; you should 
+    expect only minor changes in the behavior of the resourceEditor to 
+    change between now and release 1.0 of the product.</p>
+    <p>This document is not so much about how to <em>use</em> the resourceEditor 
+    as it is an operational reference overview of the functionality it contains.
+    The <a href="documentation.html">walkthroughs that constitute the primary 
+    tutorials for PythonCard developers</a> provide step-by-step instructions for 
+    using the resourceEditor to construct applications and are therefore closer 
+    to what you would consider a tutorial.</p>
+    <p> For the most part, this discussion confines itself to the use of the
+    resourceEditor in building applications on Windows platforms. But 
+    PythonCard can also be used on *nix systems and Macintosh OS X.
+    </p>
+    <h2>Overview of resourceEditor</h2>
+    <p>The resourceEditor is located in the tools directory of the PythonCard
+    distribution. There is also an experimental version of the resourceEditor 
+    which presents the component properties in a very different format 
+    and allows a variety of operations on multiple components; 
+    this is in the same directory, but called multiresourceEditor.</p>
+    <p>The resourceEditor is the most common starting point for constructing 
+    a PythonCard application. Using this tool, you can create, position, size,
+    describe and connect not only your application's windows and all of the
+    components they contain (buttons, fields, and other controls), but also
+    its menus and supporting dialogs. A direct-manipulation interface enables
+    you to create, drag, and size window components in the grand tradition 
+    of Integrated Development Environments (IDEs). The resourceEditor also 
+    incorporates a menu editor and a background editor for managing the 
+    non-component portions of your PythonCard's application.</p>
+    <p>Scripting is not integrated into the resourceEditor. Instead, we
+    allow you to choose your favorite Python script editor to write the
+    code that gives your application its intelligence and behavior. (We would
+    recommend you look at the codeEditor application that comes with
+    PythonCard. It is a very capable Python-aware editor and its source is 
+    available so you can change it to suit your tastes.)</p>
+    <h3>The 10,000-Foot View of PythonCard Application Development</h3>
+    <p>Most PythonCard applications have at least two basic files. It is 
+    possible to build a PythonCard application in a single file, see the 
+    &quot;noresource&quot; sample in the samples directory.</p>
+    <p>One file, which has a double file extension of &quot;.rsrc.py&quot; and is
+    referred to as the &quot;resource file&quot;, describes the user interface 
+    elements. It is a text file containing a Python dictionary object, which 
+    PythonCard parses and uses to create the user interface for your application 
+    at both design time and runtime. This file, being a standard Python code file,
+    can be edited in any text editor to modify the user interface. As a rule,
+    you will only do this if you need to add a component to the interface which 
+    is not directly supported by PythonCard. For most purposes, it is best 
+    to allow the resourceEditor to manage the contents of the resource file.</p>
+    <p>The second file is a standard Python script file ending with the extension
+    .py (or .pyw depending on how you want it executed). It contains the code
+    your application executes. This code consists of event-triggered methods and 
+    commands that will be executed as the user interacts with your PythonCard 
+    application.</p>
+    <p>Of course, any PythonCard application may contain multiple script 
+    files and, if it contains multiple windows or if it uses dialogs, may 
+    also have more than one resource file. In addition, data and configuration 
+    files may also be part of the application. This document, however, focuses 
+    on the resource file, only describing the script file where necessary to
+    explain the resourceEditor's functionality.</p>
+    <p>It may not be entirely obvious why we would divide a PythonCard 
+    application into two files. This approach was popularized by Apple's 
+    Macintosh system, which actually used only one file for a typical 
+    application but divided that file into two parts which were managed 
+    separately. One contained the application code itself and the other 
+    contained information about the resources the application used for its user 
+    interface. PythonCard, which has some roots in a famous Apple Computer 
+    product called HyperCard, adopted this strategy of separating layout from 
+    executable source code. Doing so allows PythonCard developers, e.g., to 
+    change the layout of an application without even examining, let alone 
+    understanding and editing, source code for the application. This design also 
+    facilitates internationalization and other stylistic changes that a designer 
+    or other non-programming user can make without touching the rather more 
+    complicated source code that gives the application its behavior.</p>
+    <h3>Basic Development Process</h3>
+    <p>The typical process for developing a PythonCard application involves
+    the following steps.</p>
+    <ol>
+      <li>Decide whether to start with an existing application or sample or
+     to begin with a built-in application template.</li>
+     <li>Make a copy of the starting point if you're using one.</li>
+     <li>Launch resourceEditor and open the resource file for the starting
+     point if you're using one.</li>
+     <li>Add, delete, rename, reposition, and otherwise manipulate the visible
+     components of the interface.</li>
+     <li>Edit the background properties that describe the window itself.</li>
+     <li>Edit the menu(s) to be included in the application, if any.</li>
+     <li>Connect menus and components to their behavioral code to be stored
+     in the Python script file for the application.</li>
+    </ol>
+    <p>This is not a strict sequence of steps. Once you get past Step 3, you can
+    and will freely intermix the other steps in an iterative style of application 
+    development as has become standard in using modern IDEs.</p>
+    <p>The first three steps are described in each of the 
+    <a href="documentation.html">walkthroughs</a> that make up the primary 
+    tutorials for PythonCard, so we won't repeat them here except to say that 
+    you launch resourceEditor the same way you launch any other Python 
+    application on your system.</p>
+    <p>Before we look into the remaining steps and how they are carried out in
+    the resourceEditor, let's look at all of the windows that comprise the 
+    resourceEditor.</p>
+    <h3>The resourceEditor's User Interface</h3>
+    <p>In its default configuration &quot;out of the box,&quot; the 
+    resourceEditor, when you launch it, will open two windows plus a console 
+    window. The two windows are:</p>
+    <ul>
+      <li>the Standard Template with File->Exit Resource window (see Figure 1), 
+      which is the default
+      window in which you will begin constructing your UI unless you elect to   
+      open an existing resource file</li>
+     <li>the Property Editor window (Figure 2), where you will manipulate such
+     things as fonts, colors, sizes, positions, labels, names, and other details
+     describing each component you add to the application's window</li>
+    </ul>
+    <p>The Property Editor window always
+    reflects information about the currently selected component in the resource
+    window, including showing the size and position of the selected component
+    in its status bar.</p>
+    <p class="imageCaption"><img src="images/resEditorFig1.png" alt="resourceEditor default resource window" /><br />
+    Figure 1. Default Resource Window in resourceEditor</p>
+    <p class="imageCaption"><img src="images/resEditorFig2.png" alt="Property Editor Window" /><br />
+    Figure 2. Blank Property Editor Window (No Component Selected)</p>
+    <p>When you wish to edit elements of the user interface for which the 
+    resourceEditor does not automatically open a window, you will encounter two 
+    other windows: the menu editor and the background editor, shown, 
+    respectively, in Figures 3 and 4.</p>
+    <p class="imageCaption"><img src="images/resEditorFig3.png" alt="background editor window" /><br />
+    Figure 3. Background Info Editor Window<br/>
+    <img src="images/resEditorFig4.png" alt="menu editor window" /><br />
+    Figure 4. Menu Editor Window<br /></p>
+    <p>There is also a String Editor which can be used to improve the 
+    flexibility and ease of internationalization of your application;
+    this window is shown in Figure 5.</p>
+    <p class="imageCaption"><img src="images/resEditorFig5.png" alt="string editor window" /><br />
+    Figure 5. String Editor Window<br /></p>
+    <p>We will look at each of these windows in greater detail in subsequent 
+    sections of this document.</p>
+    <h2>Using a Built-In PythonCard Template</h2>
+    <p>The File menu in the resourceEditor's resource window contains a 
+    &quot;New...&quot; item that, when selected, produces a dialog box like the 
+    one shown in Figure 6. From this list, which will likely grow before the 
+    official release of PythonCard 1.0, you can choose one of four basic 
+    templates for creating a PythonCard application.</p>
+    <p class="imageCaption"><img src="images/resEditorFig6.png" alt="dialog for using built-in templates" /><br />
+    Figure 6. Dialog for Selecting Built-In Templates as Starting Point for
+    New Application</p>
+    <p>The names of the templates describe the various options for creating a new
+    application. You can select one of these, but it is oftne more productive to
+    begin by copying an existing 
+    application and renaming files as outlined in walkthrough1 of the PythonCard 
+    documentation suite.</p>
+    <h2>Managing User Interface Components</h2>
+    <p>Once you have a window open in the resourceEditor, you can add components
+    to it, select existing components and manipulate or edit them, and otherwise
+    use components to build a PythonCard application's GUI.</p>
+    <p>To add a component to the window, select it from the Component menu in
+    the resourceEditor. Figure 7 shows the menu open so that you can see the 
+    components supported in this release. All of these components are inherited
+    from wxPython.</p>
+    <p class="imageCaption"><img src="images/resEditorFig7.png" alt="component menu" /><br />
+    Figure 7. Component Menu in Resource Window</p>
+    <p>When you select a component type, you are presented with a dialog to 
+    allow you to specify the name and, if appropriate, the label or text 
+    content for the new component. Figure 8 shows this name dialog; since it's 
+    a button component, it has a field for the Label as well as the one for 
+    the Name.</p>
+    <p class="imageCaption">
+    <img src="images/resEditorFig8.png" alt="component name dialog" /><br />
+    Figure 8. Name and Label/Text dialog</p>
+    <p>Once specified, the new instance of that component gets
+    placed in the window in the upper left corner. Figure 9 shows a button 
+    placed in the top left of the Resource Editor Window</p>
+    <p class="imageCaption">
+    <img src="images/resEditorFig9.png" alt="new button placed in resource window" /><br />
+    Figure 9. New Button Placed in Resource Editor Window</p>
+    <p>It is selected so that its properties are immediately available for 
+    editing in the Property Editor window. Figure 10 shows
+    the Property Editor window's contents immediately after the initial placement
+    of the button, with the size and position shown in the window's status 
+    bar.</p>
+    <p class="imageCaption">
+    <img src="images/resEditorFig10.png" alt="property editor window on new button"  /><br />
+    Figure 10. Property Editor Window on Newly Placed Button</p>
+    <p>The top left area of the Property Editor Window (Figure 10 above) 
+    shows the name
+    of the currently selected object (&quot;Button1&quot;) and the name 
+    of its class (&quot;Button&quot;). The top right area lists all of the 
+    properties associated with the object. The bottom portion of the window 
+    changes depending on which property is being edited. At the very bottom 
+    of the window, the status bar shows the component's position and size.
+    Figure 11, for example, 
+    shows what the bottom area looks like if you select the button's 
+    &quot;font&quot; property. Notice the &quot;Font...&quot; button which, if 
+    clicked, will display the system's standard font dialog from which you can 
+    choose new settings.</p>
+    <p class="imageCaption"><img src="images/resEditorFig11.png" alt="setting font on newly placed button"  /><br />
+    Figure 11. Property Editor Window Preparing to Edit Font of Selected 
+    Button</p>
+    <p>To modify any built-in property of a component in the resourceEditor, you 
+    first select the object, which you can do either by clicking on the component
+    in the Resource Editor Window or by selecting it from the list of objects
+    in the Property Editor Window. Then you select the property you wish to 
+    change from the scrolling list of properties, make the appropriate adjustment
+    to the setting, and either click the &quot;Update&quot; button or simply
+    leave the edit field to instruct the 
+    resourceEditor to apply the new setting.</p>
+    <p>Each component has a set of properties, some of which are shared with all
+    or some other components and some of which may be unique to the specific 
+    component. These properties are delineated in the soon-to-be-published 
+    PythonCard Component Description document.</p>
+    <p>The status bar of the Property Editor Window displays the size and 
+    position for the selected
+    window in your application or for the selected component in the window, but
+    its contents are not editable. To change those properties, you must either 
+    directly manipulate the component or edit the appropriate property.</p>
+    <h2>Managing Background Properties</h2>
+    <p>Every window in a PythonCard application automatically includes a 
+    background. This background describes the characteristics of the window as a 
+    whole, and acts as the backdrop against which components are placed and which
+    is the container of those components.</p>
+    <p>As we saw in Figure 3, above, you can modify the properties of the 
+    application window's background using the Background Info Editor, 
+    which is displayed by selecting &quot;Background Info...&quot; from the 
+    resourceEditor's &quot;Edit&quot; menu.</p>
+    <p>You will want to change the background's name to something that reflects
+    your application's name if for no other reason than it will be easier to
+    remember its name when you refer to it in your Python scripts. The Title
+    field should contain the text you want to display as the window's title in
+    its title bar.</p>
+    <p>The position and size settings are the default values. When the window
+    opens, it will open at that location on the screen and at the indicated
+    size. You'll find that if you resize the window and move it around on the
+    screen, then reopen the Background Info Editor, it will update to
+    reflect your changes.</p>
+    <p>You can alter the foreground and background colors of the window using
+    standard color selector dialogs for your system. In this release, we 
+    recommend you not alter those properties if you intend to run your PythonCard
+    application on other platforms because cross-platform color compatibility is 
+    still a bit shaky in wxPython. It is possible to give your window a graphic 
+    image as a background. If you check the &quot;Tile&quot; checkbox, the image 
+    will appear in its original size, tiled as needed to fill the background. If 
+    you do not check &quot;Tile,&quot; the image will be stretched or collapsed 
+    to the size of the window.</p>
+    <p>If you wish to select an icon to represent your application when it is
+    collapsed or in the launch area for the system on which it runs, identify
+    the image file for the icon in the space provided. If you do not supply
+    an icon, PythonCard uses the standard Python icon, a cute green snake.</p>
+    <p>The last two items you can control about a background are whether it
+    displays a status bar (default is off) and whether it is visible when your
+    application starts (default is on).</p>
+    <p>Once you make changes to the background, you should save your 
+    application's resource file.</p>
+    <h2>Managing Menus</h2>
+    <p>The PythonCard resourceEditor incorporates a full-featured menu editor
+    that uses industry-standard terminology and allows you to define shortcuts
+    and accelerator keys for all menu options. Figure 12 shows you what the
+    Menu Editor looks like when it has a complex set of menus defined. (It 
+    actually depicts the menus in the resourceEditor itself.)</p>
+    <p class="imageCaption"><img src="images/resEditorFig12.png" alt="menu editor with full set of menus" /><br />
+    Figure 12. Menu Editor Showing Menus in resourceEditor's Resource File</p>
+    <p>You can add a new menu by clicking on the New Menu button. The result 
+    looks like Figure 13. Notice that the new menu is called &quot;New Menu&quot;
+    and appears at the bottom of the current list of menus in the application.</p>
+    <p class="imageCaption"><img src="images/resEditorFig13.png" alt="menu editor with new menu defined" /><br />
+    Figure 13. Menu Editor Showing New Menu Being Defined</p>
+    <p>By convention, you should name your menus starting with the word 
+    &quot;menu&quot; (in lower case), followed by the name of the menu itself 
+    (e.g., the File menu). The File menu should be named menuFile. Following this
+    convention makes it easy to remember their names when you are writing the 
+    Python scripts to respond to the user's selection of your menus.</p> 
+    <p>Similarly, you create new items to appear on menus by clicking the 
+    &quot;New MenuItem&quot; button in the Menu Editor. This creates a new menu 
+    item at the bottom of the current list of menus and menu items, as shown in 
+    Figure 14.</p>
+    <p class="imageCaption"><img src="images/resEditorFig14.png" alt="menu editor showing new menu item"  /><br />
+    Figure 14. Menu Editor Showing New Menu Item Being Edited</p>
+    <p>Again, naming conventions are useful. We recommend you name new menu items
+    beginning with the tag &quot;menu&quot;, followed by the name of the menu on 
+    which the item appears (e.g., File), and then by the name of the item itself 
+    (e.g.  Exit): menuFileExit.</p>
+    <p>In providing a label for a menu item (but not, of course, for a menu, 
+    which is not executable), you may select an accelerator key by preceding 
+    any letter in the label with an ampersand (&quot;&amp;&quot;). Figure 15 
+    shows an example of this using the menuFileOpen menu item. Notice the 
+    ampersand preceding the letter &quot;O&quot; in the menu item's label. This 
+    means the user can select the File Open option by typing Alt-F (to select the
+    File menu) followed by Alt-O. Notice, too, that the Ctrl+O shortcut is also 
+    defined, allowing the user to open a resource file by typing Control-O. To 
+    enter a shortcut key combination, just press the keys you wish to use. 
+    PythonCard places a text represetation of the key combination in the 
+    field.</p>
+    <p class="imageCaption"><img src="images/resEditorFig15.png" alt="menu editor showing menu item"  /><br />
+    Figure 15. Menu Editor Showing Menu Item With Accelerator Key and Shortcut
+    Defined</p>
+    <p>You can also connect the menu to a command object defined in your Python 
+    script (see &quot;Connecting Components and Menus to Scripts,&quot; below). 
+    Since many UIs have alternate ways to do the same operations available
+    from the menu (e.g. command buttons, toolbars, etc.), a convenient way to 
+    do this is to use the command object, and connect to it from both the menu 
+    and the alternate button.</p>
+    <p>In addition, you can determine whether the menu item is enabled when the 
+    application launches, whether it is checkable and whether its default 
+    condition is to be checked if it is checkable. PythonCard handles the 
+    checking and un-checking of menu items that are defined as 
+    &quot;Checkable&quot; as the user interacts with the application.</p>
+    <p>The final feature of the Menu Editor to note is the &quot;Up&quot; and 
+    &quot;Down&quot; buttons. Since new menus and menu items are always created 
+    at the bottom of the list of menus and menu items, we need some way to move 
+    them around to associate them with the appropriate menu and to arrange menus 
+    in the desired order. Selecting any menu or menu item and then clicking the 
+    &quot;Up&quot; and &quot;Down&quot; buttons moves the selected object in the 
+    list.</p>
+    <p>Note that if you wish to create a menu separator within a menu, simply
+    create a new menu item and make its label a single hyphen. Leave all other
+    characteristics of the menu item unchanged.</p>
+    <h2>Creating and Editing Dialogs</h2>
+    <p>You can also use the PythonCard resourceEditor to create dialogs to be
+    used in your application. You create a new dialog by selecting the &quot;New
+    Dialog&quot; option from the File menu. The resulting editor looks like Figure
+    16.</p>
+    <p class="imageCaption"><img src="images/resEditorFig16.png" alt="new dialog dialog" /><br />
+    Figure 16. Editing Window for New Dialog</p>
+    <p>Notice that a new dialog template includes two buttons by default, one 
+    labeled &quot;OK&quot; and set as the default button, the other labeled 
+    &quot;Cancel.&quot; Editing a dialog is similar to editing a window, with the
+    following exceptions:</p>
+    <ul>
+      <li>Dialogs have no menus, so there is no menu editor.</li>
+      <li>Dialogs have no backgrounds, so there is no background editor. (There
+      is instead a Dialog Info... Window, shown in Figure 17, which presents
+      a subset of a Background Editor containing only information pertinent to
+      dialogs).</li>
+    </ul>
+    <p class="imageCaption"><img src="images/resEditorFig17.png" alt="dialog info editor" /><br />
+    Figure 17. Dialog Information Editor Window</p>
+    <p>A discussion of how to incorporate dialogs into your PythonCard
+    applications is beyond the scope of this document. See 
+    <a href="walkthrough3.html">walkthrough3</a> for a tutorial and 
+    example.</p>
+    <h2>Connecting Components and Menus to Scripts</h2>
+    <p>There are two ways to create a connection between an active component or 
+    menu item in your PythonCard application and the application's behavior as
+    defined in your Python script file: events and commands. (Remember that
+    not all components need to have actions associated with them). 
+    The resourceEditor creates and manages the visual components of your
+    application. Actions for these components are created in the associated
+    Python script ...
+    For details and examples, see the tutorial
+    walk-throughs, particularly <a href="walkthrough2.html">walkthrough2</a>
+    and <a href="walkthrough3.html">walkthrough3</a></p>
+    <h3>Events</h3>
+    <p>When the user activates a component in your PythonCard application, that
+    action triggers an event. Your Python script consists principally of methods 
+    defining how to respond to user-triggered events. There is a one-to-one 
+    correspondence between the event that is triggered and the name of the method
+    or handler your program calls in response to the action.</p>
+    <p>For example, when the user clicks on a button, PythonCard generates a 
+    mouseClick event on that button. The full name of the event passed to your 
+    Python script in the case of a button-press looks like this: 
+    buttonSave_mouseClick (assuming the user has clicked on a button whose name 
+    is &quot;buttonSave&quot;.) </p>
+    <p><strong>Note </strong> that it is the button's <strong>name</strong>, not 
+    its <strong>label</strong> that is used here. In your Python script, the 
+    handler that will be run when the user clicks on the Save button would begin 
+    with the following line of Python code:</p>
+    <p class="code">on_buttonSave_mouseClick(self, event):</p>
+    <p>Your Python code would then go on to define what you wanted the 
+    application to do when the user clicks on the Save button. If there is no 
+    handler called <span class="code">on_buttonSave_mouseClick</span>, then if 
+    the user clicks on the button named buttonSave, nothing will happen.</p>
+    <p>Similarly, if the user selects a menu item, the event triggered is called
+    something like menuFileSave_selected and your handler for this event would
+    start with a line of Python code like this:</p>
+    <p class="code">on_menuFileSave_selected(self, event):</p>
+    <p>The events each component can trigger is defined in the 
+    soon-to-be-published Component Reference Documentation.</p>
+    <h3>Commands</h3>
+    <p>In situations where you want the same behavior to be carried out by more 
+    than one component <strong>and</strong> each of those components can trigger 
+    only one action, you can use a single PythonCard command in your script file 
+    and connect each component to it. This requires two steps: definition of the
+    command in your Python script, and pointing the component to the command it
+    is to execute when it is activated.</p>
+    <p>Defining a command in your Python script simply requires following the
+    definition convention of naming the command handler something like this:</p>
+    <p class="code">on_editClear_command(self, event):</p>
+    <p>Next, you need to tell all of the components whose activation you wish to 
+    result in executing that command that they are connected to it. You do this 
+    in the Property Editor as shown in Figure 18. Notice that the name of the 
+    command is the middle portion of the handler name, which in Figure 17 results
+    in the object being told it is to execute the command editClear.</p>
+    <p class="imageCaption"><img src="images/resEditorFig18.png" alt="connecting a button to a command" /><br />
+    Figure 18. Connecting a Button to the editClear Command</p>
+    <h2>Additional Features</h2>
+    <p>This section describes three additional features of the resourceEditor:</p>
+    <ul>
+      <li>testing your application from within the resourceEditor</li>
+      <li>using a grid to align objects</li>
+      <li>viewing the contents of the resource file itself</li>
+    </ul>
+    <h3>Testing Your Application</h3>
+    <p>You can run your PythonCard application directly from resourceEditor. This
+    results in a highly interactive, seamless development environment which will
+    further accelerate the rapidity with which you can create Python applications
+    using PythonCard as the GUI tool.</p>
+    <h4>Setting Up Runtime Options</h4>
+    <p>Before you run your PythonCard application, you can set up some parameters 
+    that determine the level of detail with which you can examine and interact 
+    with the running application. From the File menu, choose &quot;Run 
+    options...&quot; The dialog box shown in Figure 19 appears.</p>
+    <p class="imageCaption"><img src="images/resEditorFig19.png" alt="run options dialog" /><br />
+    Figure 19. Run Options Dialog</p>
+    <p>You can check any or all of the options in this dialog to affect the way 
+    your PythonCard application works when you are testing in resourceEditor. 
+    (The lower-case letter preceded by a hyphen in parentheses after each option 
+    tells you what switch you would use to invoke this same setting if you were 
+    to launch your application from the PythonCard shell or some other 
+    interpreter environment.)</p>
+    <p>None of these options &quot;sticks&quot; automatically. You can set up a 
+    configuration in which all of your options are remembered for all PythonCard 
+    applications you launch in the resourceEditor. We cover this option 
+    <a href="#config">below.</a> When you run the application outside the 
+    resourceEditor environment, these settings are ignored.</p>
+    <p>If you turn on logging, then run your application, PythonCard logs 
+    debugging information directly to the system console (referred to as 
+    &quot;stdout&quot; in programmer terminology). Optionally, you can instruct 
+    PythonCard to create a text file and route logging information to it. This 
+    file tracks debugging information about your application. A sample of this 
+    log file is shown in Figure 20 as it would appear if routed to a file called 
+    pythoncard.log. An explanation of the log is beyond the scope of this 
+    document.</p>
+    <p class="imageCaption"><img src="images/resEditorFig20.png" alt="sample debugging log file"  /><br />
+    Figure 20. Sample Debugging Log File</p>
+    <p>The Message Watcher runtime option opens a window (see Figure 21) that 
+    monitors messages as they are triggered inside your application.</p>
+    <p class="imageCaption"><img src="images/resEditorFig21.png" alt="message watcher window" /><br />
+    Figure 21. Message Watcher Window Showing Sample Message Information</p>
+    <p>The checkboxes at the top of the window allow you to restrict the messages
+    that appear. If your application uses any timer-based events and you want to 
+    monitor their firing, e.g., you will want to uncheck the &quot;Hide 
+    timers&quot; checkbox so those events will be displayed as they are triggered.
+    Leaving the &quot;Hide unused&quot; checkbox in its default checked state 
+    means you will only see messages for which you have defined a handler. 
+    Unchecking that checkbox will result in you being able to see all messages 
+    generated by the user interacting with your application.</p>
+    <p>If you turn on the Namespace Viewer, you'll see a window like the one in 
+    Figure 22 when you run your PythonCard application. This window shows in its 
+    left pane a complete tree of all of the objects and methods in the namespace
+    in which your application is running. Selecting objects in that list -- 
+    which is a tree outline and therefore can expand and collapse as desired -- 
+    displays appropriate information about them in the right text pane.</p>
+    <p class="imageCaption"><img src="images/resEditorFig22.png" alt="namespace viewer" /><br />
+    Figure 22. Namespace Viewer Window With Representative Content</p>
+    <p>If you check the &quot;Property Editor&quot; checkbox in the Run Options 
+    dialog and then run your PythonCard application, a duplicate Property Editor 
+    window opens in the context of your application. You can use this window to 
+    change aspects of your program's interface (e.g., font settings) while the 
+    application is running. You have to be careful, obviously. Changing something
+    on which the program's success depends can produce unexpected results.</p>
+    <p>Changes you make in the runtime Property Editor are not preserved when 
+    you quit the application and return to the resourceEditor.</p>
+    <p>One of the most powerful things you can do when running a PythonCard 
+    application from inside the resourceEditor is to open the shell by selecting 
+    that option from the Run Options dialog. When you do this, the standard 
+    PythonCard shell window opens. As you can see in Figure 23, you can interact 
+    with your program from this shell, inspect settings and properties, etc. In 
+    the window shown in Figure 23, we've asked the background of our application 
+    for its name and for a list of the components it contains. The component list
+    is a dictionary which can be quite revealing when you are trying to debug a 
+    difficult-to-locate error. You can also use the Shell to send messages to 
+    your application manually.</p>
+    <p class="imageCaption"><img src="images/resEditorFig23.png" alt="shell window open in application" /><br />
+    Figure 23. Shell Window Showing Interaction With Running Application</p>
+    <h4>Debugging a Running PythonCard Application</h4>
+    <p>You may have noticed if you've been running the resourceEditor and 
+    selecting the run options outlined above that you will often see a 
+    &quot;Debug&quot; menu in your application's menu bar (see Figure 24). 
+    Choosing any of the run options except logging will produce this menu when 
+    you run your application in the resourceEditor.</p>
+    <p>While the options on this menu are largely self-explanatory, let's run 
+    through them so you'll be sure you know how to use this powerful feature 
+    of PythonCard's resourceEditor.</p>
+    <p class="imageCaption"><img src="images/resEditorFig24.png" alt="debug menu in running application" /><br />
+    Figure 24. Debug Menu in Running PythonCard Application</p>
+    <p>The first four items are toggles. If you wish to open the Message Watcher 
+    window when it isn't or to close it when it's open, choose that option. The 
+    same is true for the other menu items in the first group.</p>
+    <p>&quot;Redirect stdout to Shell&quot; is a useful debugging tool. If your 
+    application generates errors, the only way to see and capture them is by 
+    examining the results sent by Python to a terminal window called stdout. But 
+    since that window isn't open when you are running in PythonCard, you need a 
+    way to handle this output. This menu option allows you to have these messages 
+    displayed in the PythonCard Shell. This implies, of course, that you'll want 
+    to be sure the Shell is open before you choose this option.</p>
+    <a name="config"></a>
+    <p>The &quot;Save Configuration&quot; option allows you to set up a standard 
+    configuration for running PythonCard applications. You use this feature as 
+    follows:</p>
+    <ol>
+      <li>Before running your PythonCard application, choose the debugging 
+      options you'd like to set up. For example, if you always want to run your 
+      PythonCard applications with the Message Watcher and the Shell available, 
+      choose those options in the Run Options dialog.</li>
+      <li>Run your application. Position the debugging windows where you'd like 
+      them on the screen.</li>
+     <li>From the Debug menu, choose &quot;Save Configuration.&quot;</li>
+    </ol>
+    <p>Now any time you launch <strong>any</strong> PythonCard application from 
+    the resourceEditor, these debugging windows will appear in the same positions
+    as they were when you saved the configuration.</p>
+    <p>Note, however, that if you add new debugging windows to your running 
+    application by opening, say, the Namespace Viewer, and then save the 
+    configuration again, that window will not appear next time you launch a 
+    PythonCard application. You must set up the options <strong>before</strong> 
+    you run the application.</p>
+    <p>You may, of course, change this configuration any time simply by changing
+    your Run Options, running your application, and then saving the 
+    configuration.</p>
+    <p>The next two menu items in the Debug menu launch your Web browser and
+    take you to the PythonCard home and documentation pages, respectively.</p>
+    <p>The final option displays a dialog box which tells you the version of
+    PythonCard you are running, the versions of all supporting programs that are
+    installed with it, and pointers to other useful information.</p>
+    <h3>Using the Grid</h3>
+    <p>Like most IDEs, PythonCard's resourceEditor includes a grid capability.
+    The grid can be turned on or off, its size altered, and objects made to
+    adhere to it using choices on the Options menu. There are only two choices
+    on this menu. The first allows you to set the size of the grid in pixels.
+    The default setting is 5. A value of zero effectively turns off the grid.
+    The second menu option makes the grid active or inactive. It is a toggle
+    for which you can use Ctrl-G as the shortcut. If the grid is active, then
+    when you move components around on the background of your PythonCard 
+    application, they move in increments the size of the grid. If it is off, you 
+    can place components anywhere you like.</p>
+    <p>There is no way in the resourceEditor to cause existing objects to snap
+    to a grid or to align with one another other than manually. If you have one
+    or more components selected and choose to turn the grid on, the objects do
+    not move, or &quot;snap&quot;, to the grid. The grid only controls the 
+    parameters for your direct movement of components.</p>
+    <h3>Viewing the Resource File</h3>
+    <p>The View menu in the resourceEditor has toggle options to show and hide
+    the Property Editor and the Position &amp; Size Window. Its third item allows 
+    you to open and inspect but not edit the resource file for the open 
+    application. Selecting that menu option produces a window something like the 
+    one shown in Figure 25.</p>
+    <p class="imageCaption"><img src="images/resEditorFig25.png" alt="viewing the resource file" /><br />
+    Figure 25. Resource Viewer</p>
+    <p>Examining the resource file, which as you can see stores a single Python 
+    dictionary object that describes all the elements of the PythonCard 
+    application's user interface, can often be helpful in understanding how 
+    things work together in your program.</p>
+    <p>Note that although you cannot edit the resource file here, the resource
+    file <strong>can</strong> be edited by any text editor (preferably a 
+    Python-aware editor). However, we strongly discourage direct editing of the 
+    resource file until you've had considerable experience with PythonCard and 
+    with editing Python dictionaries. If this file becomes disorganized, your 
+    PythonCard application may have to be built again from scratch.</p>
+    <h2>Concluding Thoughts</h2>
+    <p>There is obviously a lot of power and capability in the PythonCard 
+    resourceEditor. While we have tried to be thorough here, we have not been 
+    exhaustive. For example, each of the components you can place on the 
+    background has its set of properties. Dealing with multiple-window 
+    applications in the resourceEditor has also not been addressed here. You'll 
+    find that in <a href="walkthrough3.html">walkthrough3</a> of our 
+    tutorial series.</p>
+    <p>That concludes our tour of Pythoncard's resourceEditor. We hope it gets
+    you on the way to being productive quickly.</p>
+    <p>The resourceEditor's UI is built in resourceEditor. You are free to examine it 
+    and, of course, in the grand tradition of Open Source, you are free to modify
+    it, add to its functionality. If you do this please feed changes back into
+    the Pythoncard community and consider joining the development list:
+    pythoncard-devel@lists.sourceforge.net. User questions are dealt with
+    helpfully and promptly on the user list:
+    pythoncard-users@lists.sourceforge.net.}</p>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.5 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:25 $</p>
+    </div> <!-- end of content -->
+  </body>
+</html>

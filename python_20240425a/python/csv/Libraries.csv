@@ -1,0 +1,47 @@
+﻿x;;;;;;;;;
+;;;;Last update:;;Arduino IDE:;1.8.19;Sketchbook_Path: 'C:\Users\Harold\Documents\Arduino';
+;;;;11.8.22 13:59;;Std. Boards (Nano, Uno, …): ;1.8.5;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;Select;Installed;Lib / Board;Library Name;Test File;Required Version;Detected Version;Other Source / Add URL;Comments
+;;1;L;MobaLedLib;MobaLedLib.h;;3.2.1;;Installation aus Arduino Datenbank
+;;1;L*;MobaLedLib;MobaLedLib.h;;3.2.1;https://github.com/Hardi-St/MobaLedLib/archive/master.zip;Manuelle Installation von GitHub
+;;1;L*;MobaLedLib;MobaLedLib.h;;3.2.1;https://github.com/Hardi-St/MobaLedLib_Docu/raw/master/Betatest/MobaLedLib-master.zip;Manuelle Beta Test Installation von GitHub
+;;1;L;FastLED;FastLED.h;;3.5.0;;
+;;1;L;NmraDcc;NmraDcc.h;2.0.10;2.0.10;;
+;;1;L;AnalogScanner;AnalogScanner.h;;?;https://github.com/merose/AnalogScanner/archive/master.zip;
+;;1;L;ATtinySerialOut;ATtinySerialOut.h;;2.0.0;;
+;;1;L;DIO2;DIO2.h;;1.6.0;;
+;;1;L;EWMA;EwmaT.h;;1.0.2;;Charlieplex
+;;1;L;MobaTools;MobaTools.h;;2.4.2;;Servo
+;;1;L;TimerOne;TimerOne.h;;1.1;;
+;;1;B;ATTinyCore:avr;ATTinyCore/src/ATTinyCore.h; ;1.5.2;http://drazzy.com/package_drazzy.com_index.json;Servo, Charliplexing
+;;1;B;arduino:avr;cores/arduino/Arduino.h;1.8.2;1.8.5;;Standard library for Nano, Uno, …
+;;1;B;esp32:esp32;ESP32/src/dummy.h;1.0.4;1.0.4;https://dl.espressif.com/dl/package_esp32_index.json;"Board for ESP32
+Use the actual FastLed library from
+  https://github.com/FastLED/FastLED
+until a newer oficial version than 3.3.3 is released because here the flicker during the OTA Upload is fixed."
+;;1;BE*;esp32:tools/esptool_py;esptool.exe;;2.6.1;;Installed with ESP32 platform
+;;1;L*;WiFiManager;WiFiManager.h;;2.0.3-alpha;;Library for ESP32 Wifi access
+;;1;L;U8g2;clib/u8g2.h;;2.32.15;;Library for ESP32 display support
+;;1;L;EspSoftwareSerial;SoftwareSerial.h;6.15.2;6.15.2;https://github.com/Jueff/espsoftwareserial/archive/refs/heads/master.zip;Library for ESP32 SoftwareSerial support
+;;;B*;rp2040:rp2040;rp2040/dummy_rp2040.h;1.9.6;;https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json;Board for Raspberry Pico  (Experimental)
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;The following lines are not used. Additional lines could be inserted above. There must be at least one empty line.;;;;;;;
+;;;B;arduino;"megaavr:Wire/src/Wire.h""";;1.6.26;;Nano every, …
+;;;L*;LocoNetStream;LocoNetStream.h;;;;Not released version from Jürgen (Actually in the MLL)
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;
+;;;;;;;;;

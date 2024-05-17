@@ -1,0 +1,38 @@
+digraph RM {
+    node[shape=record,color=green, style=filled];
+    edge [style=bold, color=green];
+    v0_1 -> v0_2 [style=bold];
+    v0_2 -> v0_3;
+    v0_3 -> v0_3_1 [color=grey, label=" PythonCard discontinued", fontcolor=grey];
+    v0_3 -> v0_3_2;
+    v0_3_2 -> v0_4;
+    node [color=orange];
+    v0_4 -> v0_5 [color=orange, label="  planned", fontcolor=orange];
+    v0_5 -> v0_6 [color=orange, label="  planned", fontcolor=orange];
+
+    v0_1 [label="v0.1|7/2003"];
+    v0_2 [label="v0.2|2/2004"];
+    v0_3 [label="v0.3|3/2019"];
+    v0_3_1 [color=grey, label="v0.3.1|3/2019", style=filled];
+    v0_3_2 [label="v0.3.2|3/2019"];
+    v0_4 [label="v0.4|5/2019"];
+    v0_5 [label="v0.5|7/2019"];
+    v0_6 [label="v0.6|9/2019"];
+
+    node[shape=box, color=cyan];
+    v0_1_f [label="Single layout conversion"]
+    v0_2_f [label="Simple code conversion"]
+    v0_3_f [label="Projects and controls"]
+    v0_3_2_f [label="Web version - single files"]
+    v0_4_f [label="Python 3 support"]
+    v0_5_f [label="Web version - full projects"]
+    v0_6_f [label="VB.NET supported"]
+
+    edge [style=dotted, color=cyan, dir=none];
+    v0_1_f -> v0_2_f;
+    v0_2_f -> v0_3_f;
+    v0_3_f -> v0_3_2_f;
+    v0_3_2_f -> v0_4_f;
+    v0_4_f -> v0_5_f;
+    v0_5_f -> v0_6_f;
+}
