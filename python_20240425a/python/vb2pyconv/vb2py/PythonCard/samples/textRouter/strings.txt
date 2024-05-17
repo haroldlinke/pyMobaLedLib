@@ -1,0 +1,211 @@
+{
+    # Each user preference usually has two entries in this file.  One for the small prompt shown
+    # on the preference screen, and one for the longer help text.  In this file, each preference has a
+    # short ID, for example, the Default Directory settings' ID is 'defDir'   This is then combined with
+    # a letter to show what type of string it is; So 'defDirP' is the Default Directory prompt, and
+    # 'defDirH' is the Default Directory's help message.
+
+ # General Preferences Prompts + Help Messages
+ "genPrefs" :
+ {
+    "defDirP" : "Default Diretory: ",
+    "defDirH" : "This settings controls the directory location where all the File Dialog boxes start at, you probably want this as your HOME or 'My Documents' directory.",
+
+    "tmpFileP" : "Temporary File: ",
+    "tmpFileH" : "Some operations require the use of a temporary file, this setting lets you choose where to put the temporary file.  (It needs to be writable)",
+
+    "aClrP" : "Auto clear text box ?",
+    "aClrH" : "If set, TextRouter will clear the text input box each time you route some text.",
+
+    "aSaveP" : "Auto-save config file ?",
+    "aSaveH" : "Setting this option means the configuration file will be saved automatically every time you TextRouter.",
+
+    "aLdTxtP" : "Auto load file on startup ?",
+    "aLdTxtH" : "If set, this option will cause the default load-files contents to be opened when TextRouter starts.",
+    
+    "aSvTxtP" : "Auto save file on exit ?",
+    "aSvTxtH" : "If set, this option will cause the current text to be saved to the default save-file when TextRouter exits.",
+
+    "undoP" : "Number of undo levels ?",
+    "undoH" : "The number of levels you want the 'Undo' (and 'Redo') operation to work to.  10 is recommened, you can have as many as you want, but it may slow things down if you have too many.",
+
+    "pWdthP" : "Paragraph width ?",
+    "pWdthH" : "This controls how wide paragraphs are when you use the 'Edit->Wrap Text' function.",
+
+    "usePxyP" : "Use proxy server?",
+    "usePxyH" : "This specifies whehter you want to use the proxy server specified below.",
+
+    "pxyServP" : "Proxy server:",
+    "pxyServH" : "The server name of your HTTP proxy server (with out the 'http://').",
+
+    "pxyPortP" : "Proxy server port:",
+    "pxyPortH" : "The port which the proxy runs on. ",
+
+    },
+
+ # HTML Preferences Prompts + Help Messages
+ "htmlPrefs" :
+ {
+    "bTagP" : "Tag to use for bold ?",
+    "bTagH" : "What tag to use for bold text, you probaby want B, but if your using XHTML you might want STRONG.",
+
+    "iTagP" : "Tag to use for italic ?",
+    "iTagH" : "What tag to use for italicized text, you probaby want I, but if your using XHTML you might want EM.",
+
+    "cTagP" : "Tag to use for centering ?",
+    "cTagH" : "What tag scheme you want to use for centernig text, the default is to use <div align=\"center\"> but you may want to just use the <CENTER> tag.",
+
+    },
+
+ # Manila Preferences Prompts + Help Messages
+ "mnlPrefs" :
+ {
+    "aLogP" : "Auto-login to Manila ?",
+    "aLogH" : "If set, this option will cause TextRouter to automatically login to the Manila account upon startup.",
+
+    "aGetP" : "Auto-get Manila Homepage ?",
+    "aGetH" : "If set, this option will cause TextRouter to automatically get the current homepage on startup.  (Auto-Login to Manila must be set for this to work).",
+
+    "rToMP" : "Route-To-Manila function:",
+    "rToMH" : "This option configures how the \"Route To->Manila\" menu item works.  If it is \"adds\", then the \"Route To->Manila\" menu item will add the text to the current homepage, if it is \"sets\", the text will become the homepage, overwriting whatever was there.  If it is \"opml\", then the homepage will be set directly from the defined OPML outline for the account.  All actions are always available via the main Manila menu.",
+
+    "aRndrP" : "Do HTML rendering ?",
+    "aRndrH" : "This controls whether TextRouter tells Manila to push the posted text through the default HTML renderer.  All this basiclly does is convert blank lines in to two <BR> tags.  You will probably want it on, but you may want to turn it off if your posting already formatted HTML with already existing <BR>",
+    
+    },
+ 
+ # Blogger Preferences Prompts + Help Messages
+ "blgPrefs" :
+ {
+    "aLogP" : "Auto-login to Blogger ?",
+    "aLogH" : "If set, this option will cause TextRouter to automatically login to the Blogger account upon startup.",
+
+    },
+ 
+ # Email Settings Prompts + Help Messages
+ "emlPrefs" :
+ {
+    "srvNamP" : "SMTP Email server:",
+    "srvNamH" : "This is the address of your email server, e.g, mail.isp.com",
+
+    "srvPtP" : "SMTP server port:",
+    "srvPtH" : "The port of your ISP's SMTP server, almost always 25.",
+
+    "nameP" : "Your name:",
+    "nameH" : "This should be your full name, it is used to construct the From: header which will be placed on outgoing emails.",
+
+    "addrP" : "Email address:",
+    "addrH" : "This should be your email address, it is used to construct the From: header which will be placed on outgoing emails.",
+
+    },
+ 
+ # Utility Preferences Prompts + Help Messages
+ "utilPrefs" :
+ {
+    
+    "extEdP" : "External editor:",
+    "extEdH" : "This is the external editor to run whe the Utilities->External Editor menu command is selected.",
+
+    "tsDelP" : "Text Scroller Delay:",
+    "tsDelH" : "This is the delay used between words by the Text Scroller app.",
+
+    "tsWrdsP" : "Text Scroller Words:",
+    "tsWrdsH" : "This is the number of words the Text Scroller should show at once.",
+
+    "tsFntP" : "Text Scroller Font:",
+    "tsFntH" : "This is the font used by the TextScroller for the text which the main word is displayed in.",
+
+    "shctFP" : "Shortcuts file:",
+    "shctFH" : "The file you would like to store your shortcuts in.",
+
+    "asShctP" : "Auto save shortcuts file ?",
+    "asShctH" : "This setting allows you to specify whether you save your shortcuts automatically when TextRouter quits.",
+
+    "apShctP" : "Auto apply shortcuts to: ",
+    "apShctH" : "This controls when the shortcuts are expanded; 'none' means the shortcuts will never be automatically expanded, 'all' means they will be expanded when you post to Blogger + Manila and 'blogger' means they will only be expanded when you post to blogger."
+
+    },
+
+ # New Predefined Email Address Prompts + Help Messages
+ "newEmlPrefs" :
+ {
+    
+    "nameP" : "Recipient's Name:",
+    "nameH" : "This is the full name of the person/mailing list who the address belongs to.",
+
+    "addrP" : "Email address:",
+    "addrH" : "The email address you want to define.",
+
+    },
+
+
+ # Prompts + Messages for the New Filter screen
+ "newFltPrefs" :
+ {
+
+    "nameP" : "Filter Name:",
+    "nameH" : "A friendly name you want to give the filter.",
+
+    "cmdP" : "Command:",
+    "cmdH" : "The actual filter command (as you would type it on the command line).",
+
+    },
+
+ # Prompts + Messages for the New Manila Account screen
+ "newMnlPrefs" :
+ {
+    
+    "siteUrlP" : "Site URL:",
+    "siteUrlH" : "The URL of the main root page of your website (e.g. http://www.example.com/).",
+
+    "rpcP" : "RPC Server URL:",
+    "rpcH" : "The URL of the RPC server for your account, usually something like: http://www.example.com/RPC2.",
+
+    "userP" : "Username:",
+    "userH" : "Your username on the remote Manila server (usually your email address).",
+
+    "passP" : "Password:",
+    "passH" : "Your password on the Manila server.",
+
+    "opmlP" : "Weblog OPML file:",
+    "opmlH" : "This is the file that will be used when posting to your Manila weblog direct from an OPML file.",
+    "usePosP" : "Use 'Posted By' Line?",
+    "usePosH" : "If this is set to 'Yes', then the following line will be added to every post you make to Manila via the 'Add To HP' menu item.",
+    
+    "postedP" : "Custom 'Posted By' line:",
+    "postedH" : "This line will be added to each post you make via the 'Add To HP' function.  You can use any of the replacements used by the 'strftime' POSIX system call, if you don't know what that means, the following are the most useful:  %H = Current hour (24), %I = Current hour (12), %M = Current minute, %p = AM or PM.  See the help for more details.",
+
+    },
+
+ # Prompts + Messages for the Blogger Account settings screen
+ "newBlgPrefs" :
+ {
+    
+    "rpcP" : "RPC Server URL:",
+    "rpcH" : "The URL of the RPC server for your account.  This will be http://plant.blogger.com/api/RPC2 for all Blogger.com accounts.  It will only be different if you are using a Blogger compatible system.",
+
+    "userP" : "Username:",
+    "userH" : "Your username for this Blogger account.",
+
+    "passP" : "Password:",
+    "passH" : "Your password for this Blogger account.",
+
+    "bWelogsP" : "Ping Weblogs.com ?",
+    "bWelogsH" : "Should TextRouter 'ping' weblogs.com everytime you update your site to let it know you've updated ?  This will result in your blog being listed at weblogs.com",
+
+    },
+
+
+ # Prompts + Messages for the New Filter screen
+ "newShortcut" :
+ {
+
+    "nameP" : "Shortcut Name:",
+    "nameH" : "A name of this shortcut, this is the text you will type to use the shortcut.  (You type the text in quotes to use it)",
+
+    "scP" : "Shortcut:",
+    "scH" : "The full text that the shortcut will be expanded to.",
+
+    },
+
+ }

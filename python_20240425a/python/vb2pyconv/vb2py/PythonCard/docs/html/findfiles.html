@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+    <meta name="author" content="Dan Shafer" />
+    <link rel="stylesheet" href="PythonCard.css" type="text/css" />
+    <title>Using the Power of findfiles in PythonCard</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>Using the Power of findfiles in PythonCard</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <p>by <a href="mailto:pydan@danshafer.com"><b>Dan Shafer</b></a></p>
+    <p>One of the most powerful tools in the PythonCard scripter's arsenal
+    is also one of the easiest to overlook. Its innocuous name gives the 
+    impression that findfiles is a utility similar to what one would expect in a 
+    file finding utility at the operating system level. And while it does bear 
+    some strong resemblance to such programs, findfiles in PythonCard is much 
+    more than a simple file locator utility.</p>
+    <p>Very often when you are programming in <strong>any</strong> programming 
+    or scripting language, you want to find out how a particular function works 
+    or whether a particular property is settable, or any of a number of other 
+    questions. In many cases, you can find the answers to your questions by 
+    looking at the source code of the application or tool you're using. This is 
+    sometimes referred  to as "code shopping," particularly when what you really 
+    hope to find is a method that does exactly what you want to do.</p>
+    <p>The PythonCard findfiles tool is designed to support you in these efforts.</p>
+    <p>Type in a string for which to search, tell findfiles the directories
+    (yes, you can have more than one) in which to search for files containing
+    that string, and send findfiles off to locate Python files with that specific
+    content. Scroll through the list of files, each with a line reproducing
+    part of the located line for each occurrence in the file, find the one you
+    think is what you are looking for, and double-click the line. Voila! Either
+    codeEditor or textEditor -- two other useful PythonCard utilities -- opens
+    and scrolls instantly to the line you've selected.</p>
+    <p>This document describes how to use findfiles and provides some 
+    getting-started tips as well as some ideas you'll find useful as you come to 
+    rely more and more on this handy little application, as we have.</p>
+    <h2>Getting Started with findfiles</h2>
+    <p>To start using findfiles, first launch the application (it's in the
+    PythonCard/tools/findfiles directory). You'll be greeted with a 
+    window that looks something like Figure 1, though its size will probably be 
+    different.</p>
+    <p class="imageCaption"><img src="images/findfilesfig1.png" alt="starting findfiles window" width="688" height="399" /><br />
+    Figure 1. Opening Default Window in findfiles</p>
+    <p>In the File types field, type *.py;*.pyw. The semicolon is important; it 
+    separates multiple file types (and search directories) in the application.</p>
+    <p>Now click on the "Add Dirs" button and navigate to your PythonCard 
+    directory. Figure 2 shows approximately what your findfiles window 
+    should look like after you've done these steps.</p>
+    <p class="imageCaption"><img src="images/findfilesfig2.png" alt="findfiles window set up properly" width="688" height="399" /><br />
+    Figure 2. Initial Setup for findfiles Window</p>
+    <p>(Since we've left the "Search subdirectories" checkbox checked, this 
+    search will look in all of the directories inside the PythonCard 
+    directory, including, of course, the samples directory. If you wanted a 
+    search that would focus <strong>only</strong> on the samples directory, you 
+    could create another search pointing only at that directory.)</p>
+    <p>Now go to the File menu and select "Save As..." and save the search 
+    configuration you've just created as PythonCard.grep". You'll want 
+    to be sure this file is in the same directory as the findfiles.py file you 
+    launched.</p>
+    <p>OK, now you can type in any search term you'd like findfiles to locate
+    in any of the files stored in the PythonCard directory or any
+    of its sub-directories. Let's start with a simple example. Let's say you
+    want to see how a "choice" component is used in PythonCard  samples. Type
+    the word "choice" into the "Search for" field and click on "Search." After
+    a very brief pause (findfiles is quite fast), you should be looking at a
+    window something like Figure 3.</p>
+    <p class="imageCaption"><img src="images/findfilesfig3.png" alt="findfiles after looking for &quot;choice&quot;" width="688" height="399" /><br />
+    Figure 3. findfiles Window After Searching for "choice"</p>
+    <p>Notice that the result is an indented list. At the left margin is the 
+    complete path to the file in which the "hit" is located. Indented under that
+    file name is a set of one or more rows showing the line number in that file
+    where the targeted string was found, and displaying the line in question.</p>
+    <p>Select any of these lines. We chose line 82 in the first file above, 
+    "SourceForgeTracker.py" but you can choose any line in any file you like. 
+    When you either click on the "Open Selected File" button or double-click on 
+    the line, the PythonCard codeEditor launches if it isn't running, opens the 
+    target file, and scrolls to the line number in question, as you can see in 
+    Figure 4.</p>
+    <p class="imageCaption"><img src="images/findfilesfig4.png" alt="codeEditor opened to found line" width="724" height="622" /><br />
+    Figure 4. PythonCard codeEditor Open to Selected Line</p>
+    <p>If you point findfiles at text files rather than Python or PythonCard code
+    files, then double-clicking the line in the results list or selecting a
+    line and clicking on the "Open Selected File" button will launch the 
+    PythonCard textEditor rather than codeEditor. Otherwise, the behavior is 
+    identical.</p>
+    <p>Essentially, this is all there is to using findfiles. You point it at one
+    or more directories, tell it what types of files to search for, give it
+    a string to look for in those files, and let it go off and find those files
+    for you. When you identify a file and line that are promising prospects
+    for telling you what you want to know, double-click on the line in findfiles
+    or select the line and click on "Open Selected File" and codeEditor
+    opens on that file, scrolling to the found line.</p>
+    <p>We have three remaining topics of potential interest to discuss: special 
+    character in search strings, saving and using GREP files and using more 
+    sophisticated search strings.</p>
+    <h2>Special Character Usage in findfiles</h2>
+    <p>As you've no doubt surmised by now, findfiles uses classic Unix grep
+    (regular  expression) searches. If you know grep, that's probably all we
+    need to say here. If, however, you have no clue why you should care about
+    grep, read on.</p>
+    <p>The grep utility uses a technique called regular expression matching to
+    locate information. In regular expressions, some characters have a special
+    meaning. If you want to search for any of these special characters in the
+    strings you supply in findfiles, you'll have to escape them by preceding
+    them with a backward slash (\) character.</p>
+    <p>While there are many such characters in regular expressions, the ones
+    with which you will need to be most careful are: question mark (?), asterisk 
+    (*),  addition/concatenation operator (+), pipe or vertical bar (|), caret 
+    (^) and dollar sign ($). To search for a dollar sign in the target 
+    directories, for example, put "\$" into the search field. (Putting in a $ by 
+    itself will crash findfiles fairly reliably.)</p>
+    <h2>Saving and Using grep Files</h2>
+    <p>As you saw earlier when we walked through how to set up findfiles the
+    first time you use it, you can define search parameters and then save them
+    in a file which you can later load to re-run the same search. These files
+    end with the suffix ".grep" and are saved in the same directory as the 
+    findfiles.py file.</p>
+    <p>We have set up several commonly used search patterns that include various 
+    combinations of directories to search and terms for which to search. For 
+    example, we quite often want to find stuff in the wxPython files since 
+    PythonCard relies heavily on wxPython for its GUI components. So we have 
+    defined one file that has nothing in the search field but has a pointer to 
+    the wxPython directory in the directories list. Another common use for this 
+    capability is to create a directory entry that points to your own source 
+    code files for your project(s).</p>
+    <p>A slightly more complex example is shown in Figure 5. There, I've defined 
+    a search that looks only in the directory where I keep my personal projects, 
+    and the search term "def." This enables me to obtain quickly a list of all 
+    the functions I've defined in my projects.</p>
+    <p class="imageCaption"><img src="images/findfilesfig5.png" alt="example grep" width="688" height="399" /><br />
+    Figure 5. Sample findfiles Search Through Personal Projects for Methods</p>
+    <p>I save this file as "myproject_methods.grep" and load it whenever I need 
+    to repeat the search. Using pre-stored search patterns like this, combined 
+    with the fast execution of the find process itself, makes using findfiles 
+    a very powerful addition to your PythonCard development tool arsenal.</p>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.5 $ : $Author: kasplat $ : Last updated $Date: 2004/07/26 15:35:31 $</p>
+    </div>
+  </body>
+</html>

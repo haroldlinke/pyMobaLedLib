@@ -1,0 +1,15 @@
+>>> blogs = blogger.getUsersBlogs('kealtis', 'mypassword')
+>>> blogs
+[{'blogName': 'altis blogger blog', 'blogid': '3309566', 'isAdmin': <Boolean True at 15b751c>, 'url': 'http://altis.blogspot.com'}]
+
+>>> import blogger
+>>> username = 'kealtis'
+>>> password = 'mypassword')
+>>> blogs = blogger.getUsersBlogs(username, password)
+>>> myFirstBlog = blogs[0]
+>>> url = myFirstBlog["url"]
+>>> blogID = myFirstBlog["blogid"]
+>>> txt = 'This post was made from the shell using blogger.py'
+>>> postID = blogger.newPost(blogID, username, password, txt, 1)
+>>> print "New post is available at %s#%s" % (url, postID)
+New post is available at http://altis.blogspot.com#9283060

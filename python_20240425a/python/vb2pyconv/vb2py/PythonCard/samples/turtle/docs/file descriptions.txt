@@ -1,0 +1,11 @@
+Revision: $Revision: 1.3 $
+Date:     $Date: 2002/02/06 20:05:49 $
+
+Modules
+    wxTurtleCurves.py
+        Contains some standard curves such as dragon, c, and Hilbert.
+    tWrapper.py
+        Wrapper for wxTurtle to hide the underlying module used by a script. This is the module most scripts should use. wxTurtleCurves subclasses tWrapper, so whatever tWrapper subclasses will impact them as well.
+
+turtle.py
+    A program for viewing the output of scripts that use the turtle library.

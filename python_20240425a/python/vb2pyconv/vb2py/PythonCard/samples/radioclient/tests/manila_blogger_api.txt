@@ -1,0 +1,13 @@
+>>> url = 'http://bloggerapitest.manilasites.com/RPC2'
+>>> username = 'publictestaccount@nowhere.com'
+>>> password = 'easy2guess'
+>>> appkey = '4621527933BBFAB9CBE39BAFFD41313009CBEB1E'
+>>> posts = blogger.listPosts(url, username, password, 3, url)
+>>> len(posts)
+3
+>>> posts
+[{'dateCreated': (2002, 1, 28, 12, 19, 17, 0, 0, 0), 'userid': 'publictestaccount@nowhere.com', 'postid': 'bloggerApiTestmanilasitescomManilaWebsite#583', 'content': '<P><FONT face="Times New Roman,Times,Serif" color=purple size=5><STRONG>An Open Question To Those In The Know....</STRONG></FONT></P>\r\n<P><FONT face=Geneva,Arial,Sans-Serif></FONT>&nbsp;</P>\r\n<P>Hmmm.&nbsp; To blend and bridge the <A href="http://deanland.weblogs.com">Deanland</A> blog with this one, the documentation indicates one must put a check in the box making it a news-items-oriented blogsite.&nbsp; So I did that.</P>\r\n<P>And lost all the prior content of the blog.</P>\r\n<P>Fortunately, turning the switch off and refreshing the blog brought it back to its original form.&nbsp; Content returned, normalcy (or something akin to that), too.</P>\r\n<P>Comes the question: how does it work?&nbsp; Surely there\'s a way to blend the Deanland blog into <A href="http://radio.weblogs.com/0102551/">this one</A>&nbsp;while maintaining the content and integrity of the original site.......isn\'t there?</P>\r\n<P>&nbsp;</P>'}, {'dateCreated': (2002, 1, 28, 14, 35, 52, 0, 0, 0), 'userid': 'publictestaccount@nowhere.com', 'postid': 'bloggerApiTestmanilasitescomManilaWebsite#584', 'content': '<a href="http://www.dpreview.com/news/0201/02012802sonymsprices.asp">Sony cuts Memory Stick prices</a>. Sony    has today announced price cuts to its Memory Stick storage (this actually    took place last Friday). This is the second price cut in six months. This    latest reduction brings the street price of Memory Stick... [<a href="http://www.dpreview.com/">Digital Photography Review (dpreview.com)</a>]'}, {'dateCreated': (2002, 1, 28, 14, 38, 18, 0, 0, 0), 'userid': 'publictestaccount@nowhere.com', 'postid': 'bloggerApiTestmanilasitescomManilaWebsite#585', 'content': '&amp;lt;%lhd.utils.dprview("<a href=\\"http://www.dpreview.com/news/0201/02012802sonymsprices.asp\\">Sony cuts Memory Stick prices</a>") Sony    has today announced price cuts to its Memory Stick storage (this actually    took place last Friday). This is the second price cut in six months. This    latest reduction brings the street price of Memory Stick... [<a href="http://www.dpreview.com/">Digital Photography Review (dpreview.com)</a>]'}]
+>>> for p in posts:
+...     bg.components.listPosts.append(p['postid'])
+...
+

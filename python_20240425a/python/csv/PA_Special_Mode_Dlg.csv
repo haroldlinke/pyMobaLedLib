@@ -1,0 +1,49 @@
+Liste der Special Modes;;;;;02.01.2020
+oMode_Dat_COL;;oLowerWin_COL;oName_Dat_COL;oShortDescCOL;oMiddleWinCOL
+Mode;Par;Not used;Name;Kurzbeschreibung;Ausführliche Beschreibung
+;;;Charlieplexing V2;Verwendet die Servo_LED Platine zur Ansteuerung von Charlieplexing/Multiplexing Signalen.;"Charlieplexing ist ein Verfahren mit dem man bis zu 12 LEDs über nur 4 Leitungen ansteuern kann. Damit können z.B. Lichtsignale oder Ampeln sehr einfach verkabelt werden. Bei Viessmann wird es ""Multiplexing"" genannt."
+;;;Charlieplexing V1;Ansteuerung von Charlieplexing/Multiplexing Signalen mit alter Firmware Version (1.xx);Charlieplexing Platinen bei denen das Betriebssystem mit einer alten Bibliothek der Version 1.xx erstellt wurde können mit diesem Mode konfiguriert werden. Dann stehen aber nur 23 Timer Kanäle zur Verfügung. Mit der neuen Version können 64 Zeiten angegeben werden. Es wird empfohlen die Firmware zu aktualisieren.
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+Liste der verfügbaren LED Assignements für den Auswahldialog;;;;;02.01.2020
+oMode_Dat_COL;;oLowerWin_COL;oName_Dat_COL;oShortDescCOL;oMiddleWinCOL
+Mode;Par;LED Assignement;Name;Kurzbeschreibung;Ausführliche Beschreibung
+;;8, 6, 7, 3, 0, 1, 2, 10, 11, 4, 5, 9;Viessmann;LED Zuordnung der Viessman Multiplex Signale. (LED 8 und 9 könnten auch vertauscht sein);
+;;0, 1, 8, 9, 11, 10, 3, 2, 4, 5, 7, 6;UniProg;LED Zuordnung entsprechend des UniProg Schaltplans.;
+;;11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0;Reverse;Umgekehrte LED Reihenfolge.;
+;;0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5;Bright6LED;Bei dieser LED Zuordnung können die ersten 6 LEDs mit doppelter Helligkeit angesteuert werden.;
+;;11, 6,  7, 1, 0, 3, 2, 11, 11, 11, 11, 11;HV_Matthias;HV Platine von Matthias mit 6 LEDs. Nicht vorhandene LEDs = 11;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;
+;;;;;

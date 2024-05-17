@@ -1,0 +1,1 @@
+Until we have a Notebook integrated into some of the other samples or tools this will serve as a basic test app, but I don't expect to include it in releases.

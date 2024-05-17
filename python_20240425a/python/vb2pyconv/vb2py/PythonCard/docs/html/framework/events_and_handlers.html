@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="../PythonCard.css" type="text/css" />
+  <title>Framework Overview - Events and Handlers</title>
+</head>
+  <body>
+<div id="banner">
+<h1>Framework Overview - Events and Handlers</h1>
+</div>
+<?php include "../sidebar.php" ?>
+<div id="content">
+<p>Updated: March 31, 2006 for release 0.8.2</p>
+
+<p>I'll cover the main points from a user point of view.</p>
+
+<p>I listed most of the events supported by PythonCard components in an earlier message, but here they are again:</p>
+
+<pre>
+  gainFocus
+  loseFocus
+  mouseContextDoubleClick
+  mouseContextDown
+  mouseContextUp
+  mouseDoubleClick
+  mouseDown
+  mouseDrag
+  mouseEnter
+  mouseLeave
+  mouseMiddleDoubleClick
+  mouseMiddleDown
+  mouseMiddleUp
+  mouseMove
+  mouseUp
+  timer
+</pre>
+
+<p>The most common events you see in the samples are not the ones above, but these:</p>
+
+<pre>
+  command
+  mouseClick
+  initialize
+  select
+</pre>
+
+
+<p>Every component and menu can have an associated command event. 
+As an example, here's a menu item definition from addresses.rsrc.py that uses 'command' and the associated handler.</p>
+
+<pre>
+
+    { 'type':"MenuItem",
+      'name':"menuEditNewCard",
+      'label':"&New Card\tCtrl+N",
+      'command':'editNewCard'},
+
+
+    def on_editNewCard_command(self, event):
+        self.newRecord()
+</pre>
+
+<p>All component and menu event handlers take the form 
+
+<pre>  on_componentName_eventName</pre>
+
+or
+
+<pre>  on_commandName_command</pre>
+
+
+more examples...
+<pre>
+    def on_menuFileExit_select(self, event):
+
+    def on_btnColor_mouseClick(self, event):
+
+    def on_bufOff_mouseDrag(self, event):
+</pre>
+
+<p>The underscores are used by the framework to identify a handler method and 
+they have the added benefit of making the handlers stick out from other 
+methods in the user code. All events go first to the target of the event and 
+if they aren't handled, then the framework searches for a match at the 
+background level. The tictactoe sample shows an example of using a background 
+handler for mouseClick events.</p>
+
+<p>It is common to have an initialize event such as </p>
+
+<pre>
+    def on_initialize(self, event):
+</pre>
+
+<p>which can be used to perform app initialization (in the prototype framework 
+it is more like the HyperCard openStack system message). The other background events are:</p>
+<pre>  activate
+  deactivate  close  idle       <- sent when the message queue empties  minimize  maximize
+  restore  move  size</pre>
+
+
+<p>The handler method arguments (self, event) are just names, so like 
+any other Python program you can use what names you want, but for 
+readability it is better to use self and event. The 'target' of the 
+event can be referenced as event.target, which simplifies manipulating 
+the component. In the example below bufOff is a BitmapCanvas and line is one 
+of its methods.</p>
+
+<pre>
+    def on_bufOff_mouseDrag(self, event):
+        x, y = event.position
+        event.target.line(self.x, self.y, x, y)
+        self.x = x
+        self.y = y
+</pre>
+
+<hr>| <a href="general_concepts_and_limitations.html">General Concepts and Limitations</a> | <a href="components.html">Components</a> | <a href="dialogs.html">Dialogs</a> | <a href="events_and_handlers.html">Events and Handlers</a> | <a href="menus.html">Menus</a> | <a href="resource_files.html">Resource Files</a> | <a href="runtime_tools.html">Runtime Tools</a> <hr>    <?php include "../footer.php" ?>
+    <p>$Revision: 1.4 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:26 $</p>
+</div> <!-- end of content -->
+</body>
+</html>

@@ -1,0 +1,19 @@
+# http://sellsbrothers.com/wahooscores/wahooscores.asmx
+>>> import SOAP
+>>> server = SOAP.SOAPProxy("http://sellsbrothers.com/wahooscores/wahooscores.asmx", namespace="uri:http://sellsbrothers.com/WahooScoresService/", soapaction="http://sellsbrothers.com/WahooScoresService/GetScores")
+>>> scores = server.GetScores()
+>>> scores.WahooScore
+[<SOAP.structType WahooScore at 24404764>, <SOAP.structType WahooScore at 24406772>, <SOAP.structType WahooScore at 24407348>, <SOAP.structType WahooScore at 24410324>, <SOAP.structType WahooScore at 24410900>, <SOAP.structType WahooScore at 24413892>, <SOAP.structType WahooScore at 24380148>, <SOAP.structType WahooScore at 24382148>, <SOAP.structType WahooScore at 24384532>, <SOAP.structType WahooScore at 24386532>]
+>>> for score in scores.WahooScore:
+...     print score.Name, score.Score
+...     
+Don't ya just love insecure webservices? 2147483647
+j00 4r3 H4x0r3d 1900000000
+test 444444444
+A. Einstein 31415926
+csells 3456000
+Johnson 1239782
+Jay D 999999
+Jay D 999999
+Hello 999999
+coucou 300000

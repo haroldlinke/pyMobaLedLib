@@ -1,0 +1,1 @@
+The file_upload.py script will place uploaded files in this directory.

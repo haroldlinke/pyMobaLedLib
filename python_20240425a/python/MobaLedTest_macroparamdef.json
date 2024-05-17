@@ -1,0 +1,984 @@
+{
+    "ARDUINO Baudrate": {
+        "ParName": "ARDUINO-Baudrate",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Values": [
+            "115200",
+            "57600"
+        ],
+        "ValuesText": [
+            "115200",
+            "57600"
+        ],
+        "ConfigName": [
+            "Baudrate",
+            "baudratenumber"
+        ],
+        "AllowValueEntry": "False",
+        "Hide": "True",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Baudrate",
+        "Hint": "Baudrate des angeschlossenen ARDUINOs"
+    },
+    "ARDUINO Port": {
+        "ParName": "ARDUINO-Port",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Values": [],
+        "ValuesText": [
+            "NO DEVICE",
+            "COM1",
+            "COM2",
+            "COM3",
+            "COM4",
+            "COM5"
+        ],
+        "ConfigName": [
+            "serportname",
+            ""
+        ],
+        "AllowValueEntry": "True",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Anschluss",
+        "Hint": "Anschluss, an den der ARDUINO angeschlossen ist"
+    },
+    "ARDUINO Type": {
+        "ParName": "ARDUINO-Type",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Values": [
+            "NanoOld",
+            "NanoNew",
+            "ESP32",
+            "IDE"
+        ],
+        "ValuesText": [
+            "Nano/Uno (alt)",
+            "Nano/Uno (neu)",
+            "ESP32",
+            "Typ von Arduino IDE"
+        ],
+        "ConfigName": [
+            "ArduinoTypeName",
+            "ArduinoTypeNumber"
+        ],
+        "Values2Params": [
+            "arduino:avr:nano:cpu=atmega328old",
+            "arduino:avr:nano:cpu=atmega328",
+            "ESP32",
+            " "
+        ],
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Board-Typ",
+        "Hint": "Board-Typ des angeschlossenen ARDUINOs"
+    },
+    "ARDUINOBlink": {
+        "ParName": "ARDUINOBlink",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ARDUINOBlink",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "ARDUINO blinken lassen",
+        "Hint": "ARDUINO blinkt, wenn er ausgewählt wird. \nACHTUNG: Die Reaktionszeit der Benutzeroberfläche wird dadurch langsamer"
+    },
+    "ARDUINOConnected": {
+        "ParName": "ARDUINO-Connected",
+        "Cnt": "1",
+        "Type": "Text",
+        "Lines": "4",
+        "Min": "0",
+        "Max": "255",
+        "ReadOnly": "True",
+        "Default": "No connected ARDUINO found",
+        "Input Text": "gefundene Geräte",
+        "Hint": "Zeigt alle angeschlossenen Geräte an - bei Original-Arduinos erscheint der Name, z.B. ARDUINO NANO. Clones werden mit dem verbauten Chip aufgeführt, z.B. CH340 oder ähnlich"
+    },
+    "ARDUINODetect": {
+        "ParName": "ARDUINODetect",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": " ",
+        "Hint": " ",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "ARDUINOShowAll",
+            "ARDUINOTakeOver",
+            "ARDUINOBlink",
+            "AutoConnect"
+        ]
+    },
+    "ARDUINOMessage": {
+        "ParName": "ARDUINOMessage",
+        "Cnt": "1",
+        "Type": "Text",
+        "Lines": "1",
+        "Min": "0",
+        "Max": "255",
+        "ReadOnly": "True",
+        "Default": "Working ...",
+        "Input Text": "ARDUINO-Erkennung Status",
+        "Hint": "Zeigt den Status der ARDUINO-Erkennung an."
+    },
+    "ARDUINOMobaLedLib": {
+        "ParName": "ARDUINOMobaLedLib",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": "ARDUINO MobaLedLib",
+        "Hint": "ARDUINO-Button",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "ButtonARDUINOTest",
+            "ButtonARDUINOInitLED",
+            "MLL_DigitalSystem",
+            "ButtonARDUINOInitDCC"
+        ]
+    },
+    "ARDUINOParams": {
+        "ParName": "ARDUINOParams",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": "ARDUINO-Daten",
+        "Hint": "ARDUINO-Daten",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "ARDUINO Port",
+            "ARDUINO Type",
+            "ARDUINO Baudrate"
+        ]
+    },
+    "ARDUINOShowAll": {
+        "ParName": "ARDUINOShowAll",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ARDUINOShowAll",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Alle Anschlüsse zeigen",
+        "Hint": "Alle gefundenen Anschlüsse werden angezeigt"
+    },
+    "ARDUINOTakeOver": {
+        "ParName": "ARDUINOTakeOver",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ARDUINOTakeOver",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Automatisch übernehmen",
+        "Hint": "Daten des ARDUINO werden automatisch übernommen"
+    },
+    "AutoConnect": {
+        "ParName": "Autoconnect",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "autoconnect",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Automatisch verbinden",
+        "Hint": "Es wird automatisch eine Verbindung zum ARDUINO aufgebaut"
+    },
+    "AutoLoadWorkbooks": {
+        "ParName": "AutoLoadWorkbooks",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "AutoLoadWorkbooks",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Workbooks automatisch laden",
+        "Hint": "Beim Start werden die letzten Workbooks automatisch geladen"
+    },
+    "B_LED_Cx": {
+        "ParName": "B_LED_Cx",
+        "Cnt": "12",
+        "Type": "CX",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": "=> Dialog",
+        "Hint": "",
+        "Implementation comment": ""
+    },
+    "ButtonARDUINOInitDCC": {
+        "ParName": "ButtonARDUINOInitDCC",
+        "Cnt": "1",
+        "Type": "Button",
+        "Function": "ButtonARDUINOInitDCC",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Init DCC/Selectrix-ARDUINO",
+        "Hint": "Initialisiere DCC/Selectrix-ARDUINO"
+    },
+    "ButtonARDUINOInitLED": {
+        "ParName": "ButtonARDUINOInitLED",
+        "Cnt": "1",
+        "Type": "Button",
+        "Function": "ButtonARDUINOInitLED",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Initialisiere LED-ARDUINO",
+        "Hint": "Initialisiere LED-ARDUINO"
+    },
+    "ButtonARDUINOTest": {
+        "ParName": "ButtonARDUINOTest",
+        "Cnt": "1",
+        "Type": "Button",
+        "Function": "ButtonARDUINOTest",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Verbinden mit LED-ARDUINO",
+        "Hint": "Stellt die Verbindung zum ausgewählten ARDUINO her und testet, ob die MobaLedLib richtig antwortet. Wenn alles ok ist, wird unten im Statusfeld <Verbunden> angezeigt"
+    },
+    "CC_BLUE": {
+        "ParName": "CC_BLUE",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "led_correction_b",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Blue",
+        "Hint": "Blue"
+    },
+    "CC_GREEN": {
+        "ParName": "CC_GREEN",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "led_correction_g",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Green",
+        "Hint": "Green"
+    },
+    "CC_RED": {
+        "ParName": "CC_RED",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "led_correction_r",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "RED",
+        "Hint": "RED"
+    },
+    "ColorCheckButton_ok": {
+        "ParName": "ColorCheckButton_ok",
+        "Cnt": "1",
+        "Type": "Button",
+        "Function": "ButtonColorCheck_OK",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Hide": "Cond",
+        "ParamLabelWidth": "40",
+        "Input Text": "Palette an SetColTab-Macro übergeben und Farbtester beenden",
+        "Hint": "Die aktuelle Palette wird an Set_ColTab übergeben und der Farbtester beendet",
+        "Implementation comment": ""
+    },
+    "CtrMode": {
+        "ParName": "CtrMode",
+        "Cnt": "1",
+        "Type": "Mode",
+        "Min": "",
+        "Max": "",
+        "Default": "CM_NORMAL",
+        "Input Text": "Mode",
+        "Hint": "Ein oder mehrere Modes: CM_NORMAL, CF_INV_INPUT, CF_INV_ENABLE, CF_BINARY, CF_RESET_LONG, CF_UP_DOWN, CF_ROTATE, CF_PINGPONG, CF_SKIP0, CF_RANDOM, CF_LOCAL_VAR, CF_ONLY_LOCALVAR  getrennt über '|'",
+        "Implementation comment": ""
+    },
+    "DCC BaseAddress": {
+        "ParName": "DCC_BaseAddress",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "DCC_BaseAddress",
+        "Min": "1",
+        "Max": "9999",
+        "Persistent": "True",
+        "Default": "200",
+        "Input Text": "DCC-Basisadresse",
+        "Hint": "Basisadresse des DCC-Keyboards"
+    },
+    "DCC End": {
+        "ParName": "DCC_End",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "dcc_end",
+        "Min": "1",
+        "Max": "9999",
+        "Default": "9999",
+        "Input Text": "DCC-Ende",
+        "Hint": "Ende des DCC-Adressbereichs, den der ARDUINO abdecken soll"
+    },
+    "DCC Start": {
+        "ParName": "DCC_Start",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "dcc_start",
+        "Min": "1",
+        "Max": "9999",
+        "Default": "1",
+        "Input Text": "DCC-Start",
+        "Hint": "Start des DCC-Adressbereichs, den der ARDUINO abdecken soll"
+    },
+    "Farbauswahl": {
+        "ParName": "Farbauswahl",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Values": [
+            "HSV",
+            "Farbrad"
+        ],
+        "ValuesText": [
+            "HSV-Farbton",
+            "Farbrad"
+        ],
+        "ConfigName": [
+            "",
+            "colorview"
+        ],
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Farbauswahl",
+        "Hint": "Farbauswahl - Neustart notwendig"
+    },
+    "FontConfig": {
+        "ParName": "FontConfig",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": "Schriftgröße anpassen",
+        "Hint": "Schrifteinstellungen (nur nach Neustart sichtbar)",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "FontTitle",
+            "FontLabel",
+            "FontSpinbox",
+            "FontScale"
+        ]
+    },
+    "FontConfig_PattGen": {
+        "ParName": "FontConfig_PattGen",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": "ProgGen/PattGen DefaultFont",
+        "Hint": "ProgGen/PattGen DefaultFont (nur nach Neustart sichtbar)",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "FontName",
+            "FontSmall",
+            "FontNormal",
+            "FontLarge"
+        ]
+    },
+    "FontTitle": {
+        "ParName": "FontTitle",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontTitle",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "12",
+        "Input Text": "Titel",
+        "Hint": "Titel-Schriftgröße in Punkten"
+    },
+    "FontLabel": {
+        "ParName": "FontLabel",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontLabel",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "8",
+        "Input Text": "Beschriftung",
+        "Hint": "Parameter-Beschriftung Schriftgröße in Punkten"
+    },
+    "FontLarge": {
+        "ParName": "FontLarge",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontLarge",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "14",
+        "Input Text": "Große Schrift",
+        "Hint": "Schriftgröße für große Schrift in Punkten"
+    },
+    "FontName": {
+        "ParName": "FontName",
+        "Cnt": "1",
+        "Type": "BigEntry",
+        "ConfigName": "FontName",
+        "Min": "",
+        "Max": "",
+        "Persistent": "True",
+        "Default": "Arial",
+        "Input Text": "Schriftart",
+        "Hint": "Schriftart z.B. Arial, Calibri"
+    },
+    "FontNormal": {
+        "ParName": "FontNormal",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontNormal",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "11",
+        "Input Text": "Normale Schrift",
+        "Hint": "Schriftgröße für normale Schrift in Punkten"
+    },
+    "FontSmall": {
+        "ParName": "FontSmall",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontSmall",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "8",
+        "Input Text": "Kleine Schrift",
+        "Hint": "Schriftgröße für kleine Schrift in Punkten"
+    },
+    "FontSpinbox": {
+        "ParName": "FontSpinbox",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontSpinbox",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "8",
+        "Input Text": "Spinbox",
+        "Hint": "SpinBox-Schriftgröße in Punkten"
+    },
+    "FontScale": {
+        "ParName": "FontScale",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "FontScale",
+        "Min": "4",
+        "Max": "20",
+        "Persistent": "True",
+        "Default": "8",
+        "Input Text": "Scale",
+        "Hint": "Scale-Schriftgröße in Punkten"
+    },
+    "G_Max": {
+        "ParName": "G_Max",
+        "Cnt": "2",
+        "Type": "",
+        "Min": "0",
+        "Max": "255",
+        "Default": "210",
+        "Input Text": "Maximaler zufälliger Grünanteil",
+        "Hint": "",
+        "Implementation comment": ""
+    },
+    "G_Min": {
+        "ParName": "G_Min",
+        "Cnt": "2",
+        "Type": "",
+        "Min": "0",
+        "Max": "255",
+        "Default": "70",
+        "Input Text": "Minimaler zufälliger Grünanteil",
+        "Hint": "",
+        "Implementation comment": ""
+    },
+    "Language": {
+        "ParName": "Language",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Values": [
+            "Auto",
+            "Deutsch",
+            "English",
+            "Nederlands (Dutch)",
+            "French",
+            "Italian",
+            "Spanish",
+            "Denmark"
+        ],
+        "ValuesText": [
+            "Auto",
+            "Deutsch",
+            "English",
+            "Nederlands (Dutch)",
+            "French",
+            "Italian",
+            "Spanish",
+            "Denmark"
+        ],
+        "ConfigName": [
+            "languagename",
+            "language"
+        ],
+        "Min": "0",
+        "Max": "255",
+        "Default": "Auto",
+        "Input Text": "Sprache",
+        "Hint": "Sprache der Benutzeroberfläche (Auto=Windows-Einstellung)"
+    },
+    "LED": {
+        "ParName": "LED",
+        "Cnt": "67",
+        "Type": "#",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": "",
+        "Hint": "",
+        "Implementation comment": ""
+    },
+    "LEDColourCorrection": {
+        "ParName": "LEDColourCorrection",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": "LED-Farbkorrektur",
+        "Hint": "LED-Farbkorrektur",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "CC_RED",
+            "CC_GREEN",
+            "CC_BLUE"
+        ]
+    },
+    "Logging-Level": {
+        "ParName": "Logging-Level",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Values": [
+            "debug",
+            "info",
+            "warning",
+            "error",
+            "critical"
+        ],
+        "ValuesText": [
+            "debug",
+            "info",
+            "warning",
+            "error",
+            "critical"
+        ],
+        "ConfigName": [
+            "LoggingLevelName",
+            "LoggingLevelNumber"
+        ],
+        "Pesistent": "True",
+        "Min": "0",
+        "Max": "255",
+        "Default": "error",
+        "Input Text": "Logging Level",
+        "Hint": "Level für Logging-Ausgaben"
+    },
+    "MLL_DigitalSystem": {
+        "ParName": "MLL_DigitalSystem",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Persistent": "True",
+        "Values": [
+            "None",
+            "CAN",
+            "DCC",
+            "Selectrix"
+        ],
+        "ValuesText": [
+            "Kein System",
+            "CAN",
+            "DCC",
+            "Selectrix"
+        ],
+        "ConfigName": [
+            "MLLDigSysName",
+            "MLLDigSysNumber"
+        ],
+        "Hide": "",
+        "Min": "0",
+        "Max": "255",
+        "Default": "3",
+        "Input Text": "Digital System",
+        "Hint": "Digitalsystem, mit dem die MobaLedLib gesteuert wird"
+    },
+    "MacroStartPageText": {
+        "ParName": "MacroStartPageText",
+        "Cnt": "1",
+        "Type": "Text",
+        "Min": "0",
+        "Max": "255",
+        "ReadOnly": "True",
+        "Default": "Starttext für Macros und Effekte",
+        "Input Text": "Macros und Effekte:",
+        "Hint": "Zeigt die angeschlossenen ARDUINOs an"
+    },
+    "MaxBrightness": {
+        "ParName": "MaxBrightness",
+        "Cnt": "2",
+        "Type": "",
+        "Min": "1",
+        "Max": "255",
+        "Default": "255",
+        "Input Text": "Maximale Helligkeit der LEDs",
+        "Hint": "Die Helligkeit ist eine Zahl zwischen 0 und 255.",
+        "Implementation comment": ""
+    },
+    "MaxLEDcnt": {
+        "ParName": "MaxLEDcnt",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "maxLEDcount",
+        "Min": "0",
+        "Max": "255",
+        "Default": "20",
+        "Input Text": "maximale Anzahl LED",
+        "Hint": "maximale Anzahl LED"
+    },
+    "LEDchannel": {
+        "ParName": "LEDchannel",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "LEDchannel",
+        "Min": "0",
+        "Max": "255",
+        "Default": "0",
+        "Input Text": "LED Kanal",
+        "Hint": "Kanalnummer, an die die LEDs-Geräte angeschlossen sind, die bearbeitet werden sollen"
+    },
+    "RMbusTimer": {
+        "ParName": "RMbusTimer",
+        "Cnt": "1",
+        "Type": "",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Hide": "True",
+        "Input Text": "RMBUS-Interval (x 100ms)",
+        "Hint": "Definiert die Wartezeit zwischen zwei Abfragen der Taster am ARDUINO (x 100ms) - Standard = 1 entspricht 100ms",
+        "Implementation comment": ""
+    },
+    "ShowProgramGenerator": {
+        "ParName": "ShowProgramGenerator",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ShowProgramGenerator",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Programmgenerator anzeigen",
+        "Hint": "Die ProgrammGenerator-Seite wird nach Neustart angezeigt"
+    },
+    "ShowPatternGenerator": {
+        "ParName": "ShowPatternGenerator",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ShowPatternGenerator",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Patterngenerator anzeigen (Test)",
+        "Hint": "Die Patterngenerator-Seite wird nach Neustart angezeigt (nur zum Testen)"
+    },
+    "ShowHiddentables": {
+        "ParName": "ShowHiddentables",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ShowHiddentables",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Programmgenerator versteckte Tabellen anzeigen",
+        "Hint": "Die versteckten Tabellen werden im ProgrammGenerator angezeigt"
+    },
+    "SerialMonitorInput": {
+        "ParName": "SerialMonitorInput",
+        "Cnt": "1",
+        "Type": "BigEntry",
+        "Min": "1",
+        "Max": "255",
+        "Default": "",
+        "ValueChangeEvent": "True",
+        "Input Text": "Eingabe",
+        "Hint": "Eingabe eines Kommandos für den ARDUINO",
+        "Implementation comment": ""
+    },
+    "ServoAddress": {
+        "ParName": "ServoAddress",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "ServoAddress",
+        "Min": "0",
+        "Max": "9999",
+        "Persistent": "True",
+        "Default": "1",
+        "Input Text": "Servo Modul Adresse",
+        "Hint": "Moduladresse des Servos (LED-Nummer des Anschlusses)"
+    },
+    "ServoChannel": {
+        "ParName": "ServoChannel",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "ServoChannel",
+        "Min": "0",
+        "Max": "2",
+        "Persistent": "True",
+        "Default": "0",
+        "Input Text": "Servo Anschluss",
+        "Hint": "Anschluss des Servos (RGB-Nummer des Anschlusses)"
+    },
+    "ServoControl": {
+        "ParName": "ServoControl",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+        ],
+        "ValuesText": [
+            "Normal Position",
+            "Training End Pos",
+            "Training End Pos (special for Experts only)",
+            "Einstellen Max Geschwindigkeit",
+            "Reset Servo"
+        ],
+        "ConfigName": [
+            "ServoControlName",
+            "ServoControlNumber"
+        ],
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Servo Control Betriebsart",
+        "Hint": "Betriebsart des Servos (1=Normal, 2=std training, 3=wide training, 4=max speed, 5=reset)"
+    },
+    "ServoCRCold": {
+        "ParName": "ServoCRCold",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ServoCRCold",
+        "Min": "0",
+        "Max": "255",
+        "Persistent": "True",
+        "Default": "",
+        "Input Text": "Use Old CRC",
+        "Hint": "Alten CRC verwenden (nur für Experten)"
+    },
+    
+    "SoundAddress": {
+        "ParName": "Sound_Address",
+        "Cnt": "",
+        "Type": "",
+        "Min": "0",
+        "Max": "255",
+        "Default": "0",
+        "Persistent": "True",
+        "ValueChangeEvent": "True",
+        "Input Text": "Soundmodul-Adresse",
+        "Hint": "Adresse des Soundmoduls"
+    },
+    "SoundImpulsLength": {
+        "ParName": "Sound_ImpulsLength",
+        "Cnt": "",
+        "Type": "",
+        "Min": "0",
+        "Max": "1200",
+        "Default": "0",
+        "Persistent": "True",
+        "ValueChangeEvent": "True",
+        "Input Text": "Impulslänge",
+        "Hint": "Länge des Impulses"
+    },
+    "Sound_BLUE": {
+        "ParName": "Sound_BLUE",
+        "Cnt": "",
+        "Type": "",
+        "Min": "0",
+        "Max": "255",
+        "Default": "0",
+        "Persistent": "True",
+        "ValueChangeEvent": "True",
+        "Input Text": "Sound Anschluss B",
+        "Hint": "Sound Anschluss B"
+    },
+    "Sound_GREEN": {
+        "ParName": "Sound_GREEN",
+        "Cnt": "",
+        "Type": "",
+        "Min": "0",
+        "Max": "255",
+        "Default": "0",
+        "Persistent": "True",
+        "ValueChangeEvent": "True",
+        "Input Text": "Sound Anschluss G",
+        "Hint": "Sound Anschluss G"
+    },
+    "Sound_LED": {
+        "ParName": "Sound_LED",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Input Text": "Sound-Auswahl",
+        "Hint": "Anschluss des Sound-Moduls",
+        "ValueChangeEvent": "True",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "Sound_RED",
+            "Sound_GREEN",
+            "Sound_BLUE"
+        ]
+    },
+    "Sound_RED": {
+        "ParName": "Sound_RED",
+        "Cnt": "",
+        "Type": "",
+        "Min": "0",
+        "Max": "255",
+        "Key_Up": "<Control-r>",
+        "Key_Down": "<Alt-r>",
+        "Default": "0",
+        "Persistent": "True",
+        "ValueChangeEvent": "True",
+        "Input Text": "Sound Anschluss R",
+        "Hint": "Sound Anschluss R"
+    },
+    "StartFileParams": {
+        "ParName": "StartFileParams",
+        "Cnt": "1",
+        "Type": "BigEntry",
+        "Min": "1",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Startdatei-Parameter",
+        "Hint": "Parameter der Startdatei",
+        "Implementation comment": ""
+    },
+    "Startseite": {
+        "ParName": "Startseite",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Values": [
+            "ColorCheckPage",
+            "Prog_GeneratorPage",
+            "SerialMonitorPage",
+            "StartPage"
+        ],
+        "ValuesText": [
+            "Farbtest",
+            "Programmgenerator",
+            "Serieller Monitor",
+            "Startseite"
+        ],
+        "ConfigName": [
+            "startpagename",
+            "startpage"
+        ],
+        "Min": "0",
+        "Max": "255",
+        "Default": "4",
+        "Input Text": "Startseite",
+        "Hint": "Seite auswählen, die als Startseite gezeigt werden soll"
+    },
+    "Steps": {
+        "ParName": "Steps",
+        "Cnt": "4",
+        "Type": "",
+        "Min": "1",
+        "Max": "255",
+        "Default": "1",
+        "Input Text": "Schritte",
+        "Hint": "Anzahl der Schritte, um welche die Lautstärke verringert/erhöht werden soll",
+        "Implementation comment": ""
+    },
+    "UseCOM_Port_UserForm": {
+        "ParName": "UseCOM_Port_UserForm",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "UseCOM_Port_UserForm",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Use COM_Port_UserForm",
+        "Hint": "COM-Port mit COM-Port UserForm abfragen und nicht ARDUINO-Einstellungen-Seite verwenden"
+    },
+    "UseZ21Data": {
+        "ParName": "UseZ21Data",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "UseZ21Data",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Z21 Port Liste verwenden",
+        "Hint": "Wenn diese Option gesetzt wird, verwendet der Z21-Simulator die Eintragungen in der nachfolgenden Tabelle (für Experten)"
+    },
+    "Z21Data": {
+        "ParName": "Z21data",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "Min": "",
+        "Max": "",
+        "Default": "",
+        "Repeat": "3",
+        "Input Text": "Port-Daten für Z21",
+        "Hint": "Port Daten für Z21",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "ARDUINO Port",
+            "DCC Start",
+            "DCC End"
+        ]
+    },
+    "Z21KeyTestInput": {
+        "ParName": "Z21KeyTestInput",
+        "Cnt": "1",
+        "Type": "BigEntry",
+        "Min": "1",
+        "Max": "255",
+        "Default": "",
+        "Hide": "True",
+        "ValueChangeEvent": "True",
+        "Input Text": "ARDUINO Testeingabe",
+        "Hint": "Simulation von Meldungen des ARDUINOs",
+        "Implementation comment": ""
+    }
+}

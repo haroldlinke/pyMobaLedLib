@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>TextRouter README</title>
+</head>
+<body bgcolor="#ffffff">
+<div align="center"><h1>TextRouter README</h1></div>
+<font size="+1"><strong>What is it ?</strong></font><br /><br />
+<table><tr><td width="20">&nbsp;</td><td>TextRouter is a generic weblogging and text "routing" client.  It's main use is for posting to Blogger and/or Manila maintained weblogs.  It is designed to be the sort of app which is kept running the whole time; the idea being that if you find a piece of text you'd like to send somewhere, you can simply copy and paste it into TextRouter and send it on its way.<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>Some screen shots are available at: <a href="http://simon.kittle.info/stories/storyReader$116">http://simon.kittle.info/stories/storyReader$116</a><br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>There is now a textRouter mailing list which you are welcome to post questions, comments, bugs, feature requests, etc, to.  It is at : <a href="http://groups.yahoo.com/group/textrouter">http://groups.yahoo.com/group/textrouter</a>.<br /><br /></td></tr></table>
+<font size="+1"><strong>Features</strong></font><br /><br />
+<table><tr><td width="20">&nbsp;</td><td>The aim of TextRouter is to be as convinient as possible.  Features that exist to help make TextRouter reach this goal include:<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>1.&nbsp;Posting to Blogger and Manila.<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>2.&nbsp;Multiple Blogger and multiple Manila accounts supported.<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>3.&nbsp;Blogger support includes: new/edit/delete posts and upload/downloading of templates.<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>4.&nbsp;Automatic weblogs.com "pinging" for Blogger accounts. (Manila has support for this buil in)<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>5.&nbsp;Manila support includes: homepage flip/add/get/set, stories new/edit, uploading of pictures and uploading of OPML files direct to the homepage.<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>6.&nbsp;Input/Output "modes" which allow you to select what portion of text the next operation (loading/saving/blogging/cutting/pasting) works on.<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>7.&nbsp;Common editing functionality; make bold/italic, center, inserting hyperlink, stripping HTML, formatting paragraphs.<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>8.&nbsp;Drag + Drop for URL's; turning them automatically in to links.<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>9.&nbsp;Shortcuts (Manila style, implemented locally for Blogger)<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>10.&nbsp;Proxy support. (This is a little experimental at the moment, but should work.)<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>Things that are planned:<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>1.&nbsp;Movable Type support. (Once the XML-RPC interface is done)<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>2.&nbsp;LiveJournal support.<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>3.&nbsp;Support for more Manila specific features.<br /><br /></td></tr></table>
+<table><tr><td width="40">&nbsp;</td><td>4.&nbsp;Routing to RSS Files on the local disk<br /><br /></td></tr></table>
+<font size="+1"><strong>Blogger</strong></font><br /><br />
+<table><tr><td width="20">&nbsp;</td><td>Blogger (<a href="http://www.blogger.com">http://www.blogger.com</a>) is a free service which allows a user to easily maintain a weblog on their website.  When you update your weblog (either via a web based form or a client like this one) Blogger takes care of updating all the HTML, archiving old posts, and FTP'ing the data to your website.<br /><br /></td></tr></table>
+<font size="+1"><strong>Manila</strong></font><br /><br />
+<table><tr><td width="20">&nbsp;</td><td>Manila (<a href="http://manila.userland.com">http://manila.userland.com</a>) is a Content Management System from Userland Software, Inc. While Manila can manage whole websites, it has a number of specific features for maintaining weblog type sites.  There is a list of companies that provide Manila hosting at: <a href="http://www.edithere.com/directory/22/websiteHostingServices/manila">http://www.edithere.com/directory/22/websiteHostingServices/manila</a>.<br /><br /></td></tr></table>
+<font size="+1"><strong>Requirements</strong></font><br /><br />
+<table><tr><td width="20">&nbsp;</td><td>TextRouter is written using the PythonCard framework (<a href="http://pythoncard.sourceforge.net">http://pythoncard.sourceforge.net</a>), if you want to run it on *nix systems you will need to download PythonCard. (There is an exe package for Windows which is self-contained.)<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>PythonCard requires version 2.0 or higher of Python and wxPython 2.3.x (<a href="http://www.wxpython.org">http://www.wxpython.org</a>). As soon as 2.3.2 is available, that will probably be the minimum wxPython requirement.<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>The only other requirement is the Python XML-RPC library from PythonWare (<a href="http://www.pythonware.com/products/xmlrpc/">http://www.pythonware.com/products/xmlrpc/</a>).<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td><b>Note</b> that you need the latest development version of the XML-RPC library, the 0.9.8 stable version is not good enough.  (In 0.9.9 the Transport() classes were all changed, which made proxy stuff easier to do, but is also incompatible with earlier Transport() classes).<br /><br /></td></tr></table>
+<font size="+1"><strong>Downloading</strong></font><br /><br />
+<table><tr><td width="20">&nbsp;</td><td><b>NOTE:</b> This software is released under the Python License, it comes with no warranty, etc, etc.  See <a href="http://www.python.org/2.2/license.html">http://www.python.org/2.2/license.html</a> for details.<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>If you are on Windows by far the simplest and quickest way to get TextRouter is to download this zip package: <a href="http://www.tswoam.co.uk/files/textrouter/textrouter-0.58.zip">http://www.tswoam.co.uk/files/textrouter/textrouter-0.58.zip</a>.  This is self contained and so has everything you ened to run TextRouter including the documentation.<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>If you are on a Linux/Unix system, or if you are on Windows but want to run the very latest version, then you need to first get Python 2.x and wxPython 2.3.x.  Once these are working then you just need to download PythonCard.  For this go to <a href="http://pythoncard.sourceforge.net">the PythonCard homepage</a> and either download a ZIP'ed release of PythonCard, or get the very latest version from anonymous CVS.  (Instructions for CVS are on the SourceForge site)<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td><b>Note:</b> If you are running it from the source code, you will need version 2.3.2b7 of wxPython to use the drag + drop URL functionality.<br /><br /></td></tr></table>
+<font size="+1"><strong>Details</strong></font><br /><br />
+<table><tr><td width="20">&nbsp;</td><td>Last Updated: {lastUpdateString}<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>Contact: simon@kittle.co.uk<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>Latest info: http://simon.kittle.info/textrouter<br /><br /></td></tr></table>
+<table><tr><td width="20">&nbsp;</td><td>Mailing List: http://groups.yahoo.com/group/textrouter<br /><br /></td></tr></table>
+<br />
+<br />
+Comments to <a href="mailto:simon@kittle.co.uk">Simon Kittle</a>.&nbsp;&nbsp;&nbsp;&nbsp;Last Updated: Tue, 27 Nov 2001 11:15:21 GMT<br />
+<small><a href="/home/simon/writing/manila_messages/0112_TextRouter.opml">OPML Version</a></small>
+</body>
+</html>

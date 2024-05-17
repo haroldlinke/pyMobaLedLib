@@ -1,3 +1,8 @@
+5.3.1A - 17.05.2024
+correction:
+- Linux/Mac - Upload to ARDUINO was not working
+- Macro Flash - incorrect error message that input value is too large
+
 5.3.1- 17.05.2024
 correction:
 - crash when using mousewheel in macro tree and some other forms

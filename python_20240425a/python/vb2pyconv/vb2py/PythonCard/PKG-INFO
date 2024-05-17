@@ -1,0 +1,33 @@
+Metadata-Version: 1.0
+Name: PythonCard
+Version: 0.8.2
+Summary: PythonCard GUI-builder
+Home-page: http://pythoncard.sourceforge.net/
+Author: PythonCard Developers
+Author-email: pythoncard-users@lists.sourceforge.net
+License: BSD
+Download-URL: http://sourceforge.net/project/showfiles.php?group_id=19015
+Description: PythonCard is a GUI construction kit for building cross-platform desktop applications on Windows, Mac OS X, and Linux, using the Python language.
+Platform: Mac OS X
+Platform: Windows
+Platform: Linux
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: MacOS X
+Classifier: Environment :: MacOS X :: Carbon
+Classifier: Environment :: Win32 (MS Windows)
+Classifier: Environment :: X11 Applications :: GTK
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: Other Audience
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: User Interfaces

@@ -1,0 +1,144 @@
+** August 30, 2020 - Significant .NET improvements **
+
+There are a large number of improvements in handling of VB.NET
+conversion. There is still some way to go just to parse and convert the
+code, let alone get the standard library to work. However, these updates should help in getting some of the main structures
+converted for VB.NET projects.
+
+** May 30, 2020 - New Website **
+
+The website has been revamped and cleaned up. This makes
+it easier to navigate and easier to maintain.
+
+** April 11, 2020 - Improved online translation **
+
+The online translation has been improved significantly particularly in
+cases where there were some lines that were not recognized. This
+generally now still parses. Also you can set multiple options to get
+fine grained control over the conversion.
+
+** April 4, 2020 - Examples for translation **
+
+The live translation page now includes multiple examples that
+you can pull up to see how the conversion handles various
+kinds of code. Once you have pulled them up you can edit them
+also to see how that impacts the conversion.
+
+** March 15 , 2019 - Version 0.3 released**
+
+Version 0.3 of the converter is released. This includes many
+parsing and conversion fixes. Based on converting a few projects
+from github the conversion has improved from ~10% to 90% of files
+first time round.
+
+** March 2 , 2019 - Website revamp under way **
+
+After many years the site is being revamped to allow you to convert code much more easily.
+The old dependencies were making it very hard to download the code and get this to work.
+The site is being revamped to make this easier for common use cases.
+
+** Feburuary 1 , 2004 - Version 0.2.1 has been released  **
+
+v0.2.1 is a bug fix and minor enhancement version. Quite a large number of Visual Basic functions and keywords were not supported in v0.2 and this is addressed to some extent by this release. The following additional functions were added for this release:
+
+Array, ChDir, Choose, Environ, EOF, Erase, FileCopy, FileLen, Filter, FreeFile, IIf, Input, InStrRev, IsArray, Join, Kill, Let, Lof, LSet, LTrim, RTrim, Trim, MkDir, Name, Randomize, Replace, Reset, RGB, RmDir, Rnd, Round, RSet, GetAllSettings, GetSetting, SaveSetting, DeleteSetting, Spc, Split, StrReverse, Switch, Timer.
+
+The coverage is still not 100% but if you whave an urgent need for a function it can easily be bumped up the queue!
+
+Version 0.2.1 Download
+
+** January 26 , 2004 - The Wiki has been updated  **
+
+The Wiki, which was previously a very simple system, is now running MoinMoin and so should be much easier for people to add comments and should be much more useable for sketching development ideas.
+
+Click here to take a look.
+
+
+
+** January 26 , 2004 - Automatic code testing available on CVS version  **
+
+Converting large VB applications can be daunting because there is so much code to test to confirm that the VB and Python version really do behave in the same way. To aid in this process there is now an experimental code tester available on the CVS version.
+
+This tester allows you to copy VB code into one pane and have the code converted and tested automatically. This works by using the Windows Scripting host so this only works on Windows and currently only supports VB Script (so some valid VB code will not work).
+
+Click here to see some screenshots.
+
+
+
+** October 13 , 2003 - Online demo available **
+
+You can now try out vb2Py online without all the hassle of installing libraries etc. Follow this link to the demo page and type or paste in your VB code and the watch as it is converted to Python before your very eyes!
+
+The conversion is based on the v0.2 code base and currently only supports Code and Class module conversion for a single file. However, this is a good way to try things out or to convert small sections of VB code. Depending on the type of code you may need to down load the vb2py package to actually run the code as many of the VB intrinsic functions are only defined in the package.
+
+
+
+** September 9 , 2003 - Version 0.2 released  **
+
+Version 0.2 is now available.
+
+The key development in v0.2 is the inclusion of the full VB code parser and converter. Whereas v0.1 was just a form layout converter, v0.2 parses all the VB code and translates it to the equivalent Python code. All major code constructs from VB are covered (Sub, Fn, If, While, For, Select, With, Classes, Properties, Types, etc) and most instrinsic functions and constants are implemented as Python equivalents.
+
+The other major addition to v0.2 is the inclusion of a GUI to enable the progress of the conversion to be monitored and tweaked using the options system. The GUI is a PythonCard application running on top of the main vb2py library. The GUI is not required to convert VB code, a fully functioning command line alternative is available.
+
+Linux is now supported (this was badly broken in v0.1!)
+
+The main download is available here.
+
+The GUI download is here.
+
+
+
+** August 23, 2003 - GUI Screenshots have arrived  **
+
+There are now some screenshots of the GUI available. Things are still at an early stage, but it is actually useable to browse projects and see the converted code. Using the Options dialog you can see the impact of changing global settings.
+
+The GUI pictures are available here.
+
+
+
+** August 19 , 2003 - Online documentation started **
+
+The online documentation for v0.2 is now online - this documentation covers the upcoming v0.2 release and also the CVS code. The docs cover various aspects of the code conversion and detail the options which are available to fine tune the translation process.
+
+The documentation is available here.
+
+
+
+** August 1 , 2003 - Version 0.1.1 Released **
+
+This is a bug-fix release for v0.1 - there were a number of issues relating to forms which contained controls with unset properties. These would cause vb2py to fall over. Many of these issues have now been resolved and even if one form fails the conversion for other forms will continue.
+
+The download is available here.
+
+
+
+** July 20, 2003 - Forums launched  **
+
+There are now a series of Forums where people can discuss various issues regarding the software and its development. I will be using the forum to give detailed updates on the progress that is being made (rather than posting news items here).
+
+The aim of the forum is to complement the mailing list rather than replacing it. The mailing list is good for asking questions and getting quick answers. The forum is a good place to enter into more detailed discussions.
+
+We are using the phpBB system rather than the Sourceforge forums because the later get hard to use for longer discussions.
+
+
+
+** July 14, 2003 - User mailing list launched  **
+
+The mailing list for vb2Py users was launched today. This provides another way for people to discuss the use of the software.
+
+You can subscribe to the mailing list here.
+
+
+
+** July 9, 2003 - Version 0.1 Released **
+
+This initial release contains code which converts simple forms with standard controls to PythonCard forms. A very simplistic attempt is made to convert some VB code and control event names but there is still a long way to go.
+
+The download is available here.
+
+
+
+** July 5, 2003 - The vb2Py website was launched **
+
+The project itself has been in development for a while now but I finally got around to putting some web pages up here.

@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+    <link rel="stylesheet" type="text/css" href="PythonCard.css" />
+    <title>PythonCard standaloneBuilder tool</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>PythonCard standaloneBuilder tool</h1>
+    </div>
+    <?php include "sidebar.php" ?>
+    <div id="content">
+    <h2>Introduction</h2>
+    <p>The process of converting a PythonCard project into a stand-alone application,
+    complete with installer and un-install entry, is fairly tedious to do 'by
+    hand'. Whilst writing some documentation (see <a href="standalone.html">here</a>) to
+    cover this, it became clear that there was a need for some application
+    software (written using PythonCard, naturally!) to help automate the process. The
+    <i>standaloneBuilder</i> tool is the result. The program offers the user the
+    ability to manage the development and release of successive versions of an
+    application project written using PythonCard.</p>
+
+    <p>Comments on this document and/or bug reports related to the <i>standaloneBuilder</i> tool
+    may be posted to the PythonCard users mailing list, <a href="http://lists.sourceforge.net/lists/listinfo/pythoncard-users">http://lists.sourceforge.net/lists/listinfo/pythoncard-users</a>, for discussion.</p>
+
+	<h2>Pre-Requisites</h2>
+	<p>As well as Python, wxPython and PythonCard, you will need to have installed and configured
+	McMillan Installer and Inno Setup on your computer. These packages can be downloaded from
+	the following locations as of the time of writing:
+	<ul>
+		<li>McMillan Installer: <a href="http://paulbaranowski.org/modules.php?name=Downloads&d_op=getit&lid=8">http://paulbaranowski.org/modules.php?name=Downloads&d_op=getit&lid=8</a></li>
+		<li>Inno Setup: <a href="http://www.jrsoftware.org/isdl.php">http://www.jrsoftware.org/isdl.php</a></li>
+	</ul>
+	Both packages come with comprehensive documentation - installation and setup should be
+	painless.</p>
+
+	<h2>Configuring <i>standaloneBuilder</i></h2>
+	<p>When launching <i>standaloneBuilder</i> for the first time, it detects that the
+	preferences need to be configured and drops you straight into the preferences
+	dialog.</p>
+	<div align="center"><img src="pic1.jpg" /></div>
+	<p>You can come back to this dialog at any time by clicking the preferences
+	button on the main screen. All of the options have help buttons (marked with
+	'?') associated with them, so you can (hopefully) figure out what each one is
+	for without too much difficulty. The program will try to find as much information as it
+	can, you should only need to tell it your name and where to find the directory
+	you keep all your projects in.</p>
+	<div align="center"><img src="pic2.jpg" /></div>
+
+	<p>After filling in any missing information, click the OK button to save your
+	preferences for use In future projects.
+
+	<h2>Creating a new project</h2>
+
+	<p>For the purposes of this
+	document, we'll use the <i>standaloneBuilder</i> tool in conjunction with the
+	application created in <a href="walkthrough2.html">walkthrough #2,</a> to illustrate
+	the steps involved in the creation, development and distribution of a typical PythonCard
+	program. We'll assume that you have already followed the walkthrough and you have the
+	<i>counter.py</i> application fully functional.</p>
+
+	<div align="center"><img src="pic3.jpg" /></div>
+
+	<p>To begin, click on the 'New' button to start the new project wizard and fill
+	in the details as required:</p>
+	<div align="center"><img src="pic4.jpg" /></div><br />
+	<div align="center"><img src="pic5.jpg" /></div><br />
+	<div align="center"><img src="pic6.jpg" /></div><br />
+	<div align="center"><img src="pic7.jpg" /></div><br />
+	<div align="center"><img src="pic8.jpg" /></div><br />
+
+	<p>After completing the new project wizard, the program will create the project
+	and add in some default folders and template files. A 'save' dialog will then
+	be presented to allow the project details to be written to disk. The main
+	window will now appear as shown below:</p>
+
+	<div align="center"><img src="pic9.jpg" /></div>
+
+	<h2>Adding files to the project</h2>
+	<p>The first step will be to define the main script file for the project. In this case,
+	there is only one script, namely <i>counter.py</i>, so click the '...' button next to
+	the main script file text field. Navigate to the <i>sab-demo</i> folder and select the
+	'counter.py' script. Click the Open button to add it to the project:</p>
+
+	<div align="center"><img src="pic10.jpg" /></div><br />
+	<div align="center"><img src="pic11.jpg" /></div>
+
+	<p>A note is probably in order at this point about the <i>Script files</i> box. Generally,
+	McMillan Installer is quite good at working out if there are any additional source files
+	associated with the main script, simply by examining any <i>import</i> lines in the
+	source code. This may appear to make the <i>Script files</i> box largely superfluous. If
+	you intend to only ever build projects for Windows platforms, then you may well find that
+	you never need to explicitly list any additional script files. If, however, you also want
+	to distribute your project to Linux users, then things are slightly different. When running
+	<i>standaloneBuilder</i> on Linux, the rebuild button simply builds a compressed tar file
+	containing the items you have specified as making up your project. In this scenario, only
+	those files that you have explicitly listed will be included in the tar file. Also, by
+	including your script files explicitly, the usefulness of <i>standaloneBuilder</i> as a
+	general purpose project manager comes into play. You can edit a given script file by
+	simply selecting it in the list and clicking the <i>Edit...</i> button.</p>
+
+	<p>Now, under the <i>Resource files</i> section of the main window, click the Add button.
+	Select the <i>counter.rsrc.py</i> file and click on Open. This adds the resource file
+	into the project:</p>
+
+	<div align="center"><img src="pic12.jpg" /></div>
+
+	<p>Having added the resource file, you can now open it in the resource editor simply by
+	clicking on the Edit button on the main window. Files which are added in other sections
+	of the main window can be edited in the same way. Script files will be opened using the
+	program defined as the text editor in preferences. This defaults to the PythonCard code
+	editor, but can be changed if required. Files listed under the Pixmaps section will
+	be opened using whatever you specify as your default image editor in preferences,</p>
+
+	<h2>Project properties</h2>
+	<p>That pretty much covers the mechanics of adding and editing the files which make up
+	your project. The project properties dialog provides a number of options which affect
+	how the final standalone version of your program is built. To access this, click the
+	Properties button on the main window:</p>
+
+	<div align="center"><img src="pic13.jpg" /></div>
+
+	<p>The first few fields determine the folder layout within your project. All the paths
+	used within standaloneBuilder are relative. For example, the default build directory
+	is simply called 'build' - in practice, this folder would be created in whatever you
+	specified as the base folder when the project was initially created, this would in turn
+	be created as a sub folder of your top level 'projects' folder defined in the
+	preferences. Thus, in this example:</p>
+
+	<ul>
+		<li>Projects folder in preferences is <i>P:\</i></li>
+		<li>The project was created in a folder called <i>sab-demo</i></li>
+		<li>The build directory is called simply <i>build</i></li>
+	</ul>
+
+	<p>The full path to the build directory is therefore <i>P:\sab-demo\build</i>. Having
+	all of the folder references relative to each other allows <i>standaloneBuilder</i>
+	to maintain projects on both Windows and Linux platforms, with Python itself taking
+	care of the differences in path separators.</p>
+
+	<p>The application publisher, application URL and application licence fields are
+	used by Inno Setup when the final version of the program is built</p>
+
+	<p>The other options from <i>Deployment type</i> onwards correspond to the same
+	options in the McMillan Installer. Note that new projects are always created with
+	the <i>Console</i> option turned on - this is intended to aid with debugging. The
+	build process generates a warning message to remind you to turn this off before making
+	a release of your finished application.</p>
+
+	<h2>Changelog & README buttons</h2>
+	<p>Clicking the Changelog button launches the text editor defined in preferences and
+	opens the project changelog file for further editing:</p>
+
+	<div align="center"><img src="pic14.jpg" /></div>
+
+	<p>Additional entries can be made directly using this option. Alternatively, there
+	is an 'add changelog entry' option on the 'tools' menu. This pops up a small text
+	entry dialog like so:</p>
+	<div align="center"><img src="pic15.jpg" /></div>
+	<p>The entry then gets added to the changelog. Entries are made so that the
+	most recently added is at the top:</p>
+	<div align="center"><img src="pic16.jpg" /></div>
+
+	<p>The README button does a similar thing, but instead uses the text editor
+	to open a file called <i>readme.txt</i> in the project base folder</p>
+
+	<h2>The Run Button</h2>
+	<p>When clicked, the <i>Run...</i> button executes the main script of your project. It firstly pops
+	up a small dialog wherein you can specify a number of useful command line options:</p>
+	<div align="center"><img src="pic28.jpg" /></div>
+	<p>There must be a reason why this looks suspiciously like the run-time options dialog
+	from the PythonCard resource editor, but I'm sure I couldn't even begin to guess what
+	that reason might be... :-)</p>
+
+	<h2>The Rebuild button</h2>
+	<p>Clicking this button causes the standalone version of your application to be rebuilt. As
+	<i>sab-demo</i> is a new project, it has been created with the console option switched on.
+	The first thing <i>standaloneBuilder</i> does is to remind you about this:</p>
+	<div align="center"><img src="pic17.jpg" /></div>
+	<p>The build then proceeds. If all is successful, the program will tell you where it has
+	stored the installer for the project:</p>
+	<div align="center"><img src="pic18.jpg" /></div>
+	<p>A scrolling text window is also displayed where you can see the output from the
+	build process:</p>
+	<div align="center"><img src="pic19.jpg" /></div>
+	<p>When the build has completed, the self extracting installer executable can be
+	copied to another Windows machine ad run. The resulting setup wizard looks the same
+	as virtually any other piece of 'professionally' produced software:</p>
+	<div align="center"><img src="pic21.jpg" /></div>
+	<p>The executable itself looks and behaves exactly the same as any other program. This
+	is the result of right-clicking the <i>sab-demo.exe</i> file and selecting 'Properties':</p>
+	<div align="center"><img src="pic20.jpg" /></div>
+
+	<h2>The Release button</h2>
+	<p>When you are happy that you have thoroughly debugged your project and are ready to
+	release it to the outside world, you should open the project in <i>standaloneBuilder</i>
+	and click the Release button. Doing this puts the current release of the project into
+	a <i>frozen</i> state, in which no further changes can be made until you have checked and
+	confirmed that the release is okay.</p>
+
+	<p>The first thing that happens upon clicking the Release button is that a warning dialog
+	pops up to give you the option of changing your mind:</p>
+	<div align="center"><img src="pic22.jpg" /></div>
+
+	<p>Assuming that you click OK at this point, a number of things then happen to the project.
+	Firstly, the status gets changed from <i>Open</i> to <i>Frozen</i> and the majority
+	of the controls on the main window get disabled:</p>
+	<div align="center"><img src="pic23.jpg" /></div>
+	<p>Secondly, the 'release date TBA' tag at the top of the project changelog gets replaced
+	by the current date. At this point, only the <i>Rebuild</i> and <Release</i> buttons
+	will work. You should carry out a final rebuild of your project under both Windows and
+	Linux, if applicable. Under Linux, the <i>Rebuild</i> process simply produces a TAR archive
+	of the files which make up your project, as opposed to a standalone binary executable.</p>
+
+	<p>When you are happy that everything has been rebuilt as you need it, you are ready to
+	close off the current release and start the next version of your project. To do this, just
+	click the <i>Release</i> button again. You will be presented with this dialog:</p>
+	<div align="center"><img src="pic24.jpg" /></div>
+	<p>Click OK to confirm the release. You then have an opportunity to decide what the next
+	version number of your project will be, with the option to override what the program offers
+	as a deafult. In the example shown below I have decided that the next release of the
+	<i>sab-demo</i> project should have a version number of 0.9.1:</p>
+	<div align="center"><img src="pic25.jpg" /></div>
+	<p>The main window is then refreshed. The build number has been reset to 1 and a new
+	changelog entry has been added to indicate the start of the release cycle for the new
+	version number:</p>
+	<div align="center"><img src="pic26.jpg" /></div><br />
+	<div align="center"><img src="pic27.jpg" /></div>
+
+
+
+        <?php include "footer.php" ?>
+    <p>$Revision: 1.4 $ : $Author: l2kphil $ : Last updated $Date: 2005/05/12 19:36:04 $</p>
+    </div> <!-- end of content -->
+  </body>
+</html>

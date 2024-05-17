@@ -1,0 +1,199 @@
+                             TextRouter Help
+                             ===============
+
+
+Intro
+=====
+
+  TextRouter is a weblogging client that you run on your desktop; it is
+  used to interact with Content Management Systems such as Blogger and
+  Manila.  This document explains each part of the app; what it is for
+  and how it works.  For more info on the concept of TextRouter see the
+  'readme.txt' file.
+
+The Main TextRouter Window
+==========================
+
+  At the top of the main TextRouter window is a one-line high text
+  field; this text box is for entering the subject of email's, and the
+  title/subject of any Manila stories which you edit.  Below this is a
+  large text area (known as the "buffer"), two buttons, and two
+  radio-groups.  The buffer is where you type in text you want to
+  "route" (send) to Blogger, Manila, etc.  The two buttons - "Clear It"
+  and "Get Clipboard Text" - do exactly what you'd expect, they clear
+  the buffer and place text from the clipboard in to the buffer
+  respectively.  They exist purely for convenience - convenience is
+  what this app is about.
+
+  The two radio-groups are for specifying the current Input and Output
+  mode.  These are explained below.
+
+Input/Output Modes
+==================
+
+  If the behaviour of TextRouter seems quirky it is probably due to the
+  "Input Action" and/or the "Output Action" radio-groups at the bottom
+  of the display.
+
+  The "Input Action" radio-group lets you specify how input operations
+  are handled.	An input operation is any operation which results in
+  text coming in to TextRouter; this includes pasting text, reading in
+  files, getting previous Blogger posts and getting the current Manila
+  homepage.
+
+  If the "Input Action" is set to "inserts" things will probably behave
+  as you would expect; incoming text will be inserted at the current
+  cursor position.  If a chunk of text is selected, this text will be
+  replaced with the incoming text.  This is the default mode.
+
+  The the "Input Action" is set to "appends" then incoming text will
+  always be appended to the end of the buffer, even if there is an
+  existing selection.  If "Input Action" is set to "replaces" then the
+  incoming text will replace completey what text there was in the
+  buffer, even if it wasn't selected.
+
+  The "Output Action" radio-group is more simple, it lets you specify
+  what text is "routed" when you send/process text.  So if you have
+  three paragraphs of text in the buffer, but you only want to blog one
+  to your Manila/Blogger website, you can just select that paragraph,
+  check "selection", and blog away.  If "all" is selected, then all the
+  text in the buffer will be output.
+
+  It's worth noting that the Input/Output modes also apply to internal
+  operations.  So if you want to strip the HTML from only one
+  paragraph, you can simply set the output mode to "selection", set the
+  input mode to "inserts" and hit "Strip HTML".  This will replace the
+  selected paragraph with a HTML free version of the same text.
+
+The Main Preferences
+====================
+
+  The main textRouter preferences, accessible from the 'File ->
+  Preferences' menu, holds settings such as auto save config, paragraph
+  width, number of undo levels, and your proxy settings.  All of the
+  preferences here (and in all Preferences windows) have little "?"
+  buttons, which when clicked will display some pop-up help for that
+  specific preference.
+
+  The only thing to note regarding these preferences, is that if you
+  change the proxy settings, you will need to restart TextRouter for
+  the changes to take effect.
+
+The "Route Text To" Menu
+========================
+
+  The "Route To" menu is how you quickly route text to some place,
+  Blogger, Manila, an email address, etc.  All the items on the menu
+  have quick key combinations to make things faster for these common
+  functions.
+
+  The "Blogger" menu item simply takes the current output text (either
+  all of the buffer, or just the selection, depending on the mode) and
+  blogs it to the currently active blog.  The "Manila" menu item by
+  default does the equivalent thing, it add's the output text to the
+  homepage.  However, it is possible to alter what this menu item does
+  depending on how you work.  You can either have it ADD text to the
+  Manila homepage,  you can have this menu item SET the current text as
+  the homepage (overwriting what was there), or you can use the OPML
+  setting which means 'Route To Manila' will upload the OPML document
+  (outline file) associated with your Manila account direct to the
+  Manila server.
+
+  The "Email" menu items let you send the output text to an email
+  address, either a predefined one (think mailing lists) or one you
+  enter there and then.  The "RSS File" menu item is not currently
+  implemented but will eventually route the text to an RSS file on the
+  local disk.
+
+The Manila Menu
+===============
+
+  The Manila Menu is where you define and setup your Manila accounts. 
+  Most items are fairly straight forward.  The preferences allow you to
+  setup things like auto-logging in, etc, the "Accounts" menu items
+  allow you to define your accounts.  The "Jump To URL" menu lets you
+  fire up a browser with your Manila homepage or one of your statistics
+  page	in it.
+
+  The "Get Homepage" item will download the current homepage, and "Flip
+  Homepage" lets you flip the homepage performing exactly the same
+  operation as the browser based "Flip Homepage" button.  Two other
+  menu items - "Add To Homepage" and "Set As Homepage" - are available
+  from this menu, but it is envisaged that you will assign one of these
+  functions to the "Route To Manila" menu item and use it from there
+  (where it has a quick key combination).
+
+  The "Set Homepage From OPML" menu item uploads a specified OPML file
+  direct to the Manila server.	The OPML file (outline file) is
+  specified in the Manila accounts setup section.  It always uses the
+  same file for convinience.
+
+  The "Story" menu items let you download, edit, and then upload
+  stories from and to the Manila server.  The "Upload Picture" menu
+  item is also fairly self explanatory.
+
+  The "Set Story as Homepage" menu item will set the contents of the
+  current homepage (the content listed under today's date) to be that
+  of the story you choose.  Note:, this doesn't automatically Flip The
+  Homepage, so you'll need to make sure you do this manaually if
+  required.
+
+The Blogger Menu
+================
+
+  The Blogger menu is the Blogger equivalent of the Manila menu.  It
+  allows you to define your Blogger accounts and preferences, choose
+  your active blog, get the list of previous posts, start editing a
+  previous post and delete previous posts.  You can also get and set
+  the Blogger HTML templates from here too, this is especailly useful
+  for downloading the template and then firing up an external HTML
+  editor (Emacs :) to edit it with.
+
+  The 'Fetch Previous Posts' menu item is available so you can force
+  textRouter to refresh it's cache of old posts.  If you want to edit
+  an old post, you can either 'Insert Previous Post..' (which will
+  automatically download the last 10 posts, if they haven't already
+  been downloaded) or you can use 'Get Post by ID', using the later,
+  you will need to know the numeric ID of the post.  At the moment,
+  these ID's are not logged to a text file, so you'll have to look them
+  up manaully, but this will be changed soon.
+
+  Once your editing a post though, you simply use 'Update Post' to save
+  the changes to the server.
+
+The Email Menu
+==============
+
+  This is where you define your email settings and any predefined email
+  addresses you'd like to use.
+
+The Utilities Menu
+==================
+
+  This menu provides a few utility functions.  They are not
+  particularly polished functions yet, but may still be useful. 
+  External editor fires up an external editor loaded up with a
+  temporary file which contains the contents of the current buffer. 
+  Text Auto-Scroller brings up a window which allows you to have the
+  current text of the buffer auto-scrolled for you, so there is no need
+  to use scroll bars to read down a long page.
+
+  The third option on this menu applies a "filter".  Filters allow you
+  to define a program which accepts a standard input stream and which
+  outputs a standard output steam, i.e, a pipe.  The current output
+  text (the selection or all, depending, as always, on the current
+  output mode) is feed in to the pipe and the output from the pipe is
+  feed back in to the buffer.
+
+  The "New Shortcut" and "Remove Shortcut" items simply define
+  shortcuts which you can use in your text.  A shortcut is simply a
+  small piece of text you type in quotes which is then expanded to it's
+  full version when the text is sent to Blogger.  You can use shortcuts
+  to define short names for URL's, for	links, or for any lengthy piece
+  of text you type often.
+
+  The shortcuts file is automatically loaded at startup, if it exists,
+  and by default it is automatically saved at shutdown.  In future,
+  there may be functionality to automatically merge two shortcut files,
+  etc.
+

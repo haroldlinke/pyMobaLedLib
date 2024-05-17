@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+    <link rel="stylesheet" href="PythonCard.css" type="text/css" />
+    <title>PythonCard Documentation: The Shell</title>
+  </head>
+  <body>
+    <div id="banner">
+    <h1>PythonCard</h1>
+    </div>
+<?php include "sidebar.php" ?>
+    <div id="content">
+    <h2>Using the Shell in PythonCard</h2>
+    <p>PythonCard integrates a rich, high-level interactive Python shell. This 
+    document describes how to launch and use this shell as you create PythonCard 
+    applications. It is based on Version 0.8.2 of PythonCard.</p>
+    <p>The PythonCard shell utilizes the PyCrust 
+    package created by Patrick O'Brien of Orbtech which is included with wxPython.
+    <h3>Overview of Basic Shell Functionality</h3>
+    <p>In many ways, the PythonCard shell resembles the shell in IDLE, the Python editor
+    that is included in Python distributions. IDLE is Python's default editor. 
+    But the PythonCard shell is more extensive and more robust both in its
+    editing capabilities and in its programming support than IDLE.</p>
+    <p>As you can see from Figure 1, the shell allows you to do interactive
+    programming at the standard Python prompt of three angle brackets 
+    ("&gt;&gt;&gt;"). It behaves like IDLE, so there's nothing new to learn in 
+    this respect.</p>
+    <p class="imageCaption"><img src="images/shellfig1.png" alt="PythonCard Shell" /><br />
+    Figure 1. Using PythonCard Shell as Interactive Programming Environment</p>
+    <p>Figure 1 also illustrates the shell's inclusion of syntax highlighting and 
+    coloring, which can be customized via the <a href="tools/codeEditor.html">codeEditor</a> Styles dialog.</p>
+    <p>Pressing Enter anywhere on a line in the shell always processes the command
+    on that line if that line is the last one in the current editing window. 
+    Pressing Enter on any other line copies that line's contents and places them 
+    on the last line in the window, enabling you to execute the command again or 
+    modify it slightly. This feature is quite valuable during testing when you 
+    often type the same commands repeatedly. In Figure 2, we positioned the cursor
+    at the end of the line containing the simple statement &quot;5+2&quot; and
+    pressed Enter. Notice that 5+2 now appears as the last line in the editor. 
+    Pressing Enter now produces the expected output of &quot;7&quot; on the next 
+    line in the editor.</p>
+    <p class="imageCaption"><img src="images/shellfig2.png" alt="Copying commands in the shell" /><br />
+    Figure 2. Copying a Previous Command Line With Enter Key</p>
+    <p>You can use the ESCape key to change your mind about a line of Python code
+    you are entering that has not yet been executed bypressing Enter. This will 
+    simply erase all the characters on the current line and return your cursor to
+    the Python prompt.</p>
+    <p>You can always obtain some basic help in the use of the shell by typing 
+    &quot;shell.help()&quot; in the interactive editor area and pressing Enter.
+    The result will look something like Figure 3.</p>
+    <p class="imageCaption"><img src="images/shellfig3.png" alt="Help in the shell" /><br />
+    Figure 3. Result of Typing &quot;shell.help()&quot; in PythonCard Shell</p>
+    <p>The arrow keys navigate up, down, left and right in text displayed in the 
+    shell, as you'd expect. Holding down the Ctrl key with the right or left arrow
+    moves the cursor by the rough equivalent of a &quot;word&quot; in the 
+    direction of the arrow, with movement continuing across line boundaries.</p>
+    <p>By default, lines typed into the shell wrap. If you don't wish to see the
+    lines in your shell window wrap at the right border of the shell window,
+    type in the shell: shell.SetWrapMode(0). To turn it back on, type 
+    shell.SetWrapMode(1).</p>
+    <h3>Key Bindings in the Shell</h3>
+    <p>Table 1 shows all of the key bindings defined in the PythonCard shell and 
+    describes their usage.</p>
+    <p class="imageCaption">Table 1. Key Bindings in PythonCard Shell</p>
+    <table cellpadding="2" cellspacing="2" border="1" width="95%">
+      <tr>
+        <th>Key Combination</th>
+        <th>Usage</th>
+      </tr>
+      <tr>
+        <td>Home</td>
+        <td>Go to the beginning of the line</td>
+      </tr>
+      <tr>
+        <td>Shift + Home</td>
+        <td>Select from current cursor position to the beginning of the line</td>
+      </tr>
+      <tr>
+        <td>Shift + End</td>
+        <td>Select from the current cursor position to the end of the line</td>
+      </tr>
+      <tr>
+        <td>End</td>
+        <td>Go to the end of the line</td>
+      </tr>
+      <tr>
+        <td>Ctrl + Right Arrow</td>
+        <td>Move cursor to the right roughly by a word</td>
+      </tr>
+      <tr>
+        <td>Ctrl + Left Arrow</td>
+        <td>Move cursor to the left roughly by a word</td>
+      </tr>
+      <tr>
+        <td>Ctrl + C</td>
+        <td>Copy the selection to the clipboard, removing prompts, if any</td>
+      </tr>
+      <tr>
+        <td>Ctrl + Shift + C</td>
+        <td>Copy the selection including the prompts, if any, to the clipboard</td>
+      </tr>
+      <tr>
+        <td>Ctrl + X</td>
+        <td>Cut the selection to the clipboard</td>
+      </tr>
+      <tr>
+        <td>Ctrl + V</td>
+        <td>Paste the clipboard contents at the cursor location</td>
+      </tr>
+      <tr>
+        <td>Ctrl + Shift + V</td>
+        <td>Paste and <strong>run</strong> the current multi-line clipboard contents</td>
+      </tr>
+      <tr>
+        <td>Ctrl + Enter</td>
+        <td>Inserts a blank line between existing lines in a multiline command.</td>
+      </tr>
+      <tr>
+        <td>Ctrl + Up Arrow</td>
+        <td>Retrieve previous History item</td>
+      </tr>
+      <tr>
+        <td>Alt + P</td>
+        <td>Retrieve previous History item</td>
+      </tr>
+      <tr>
+        <td>Ctrl + Down Arrow</td>
+        <td>Retrieve next History item</td>
+      </tr>
+      <tr>
+        <td>Alt + N</td>
+        <td>Retrieve next History item</td>
+      </tr>
+      <tr>
+        <td>Shift + Up Arrow</td>
+        <td>Insert previous History item at cursor position</td>
+      </tr>
+      <tr>
+        <td>Shift + Down Arrow</td>
+        <td>Insert next History item at cursor position</td>
+      </tr>
+      <tr>
+        <td>F8</td>
+        <td>Retrieve a specific History item by typing its first few characters and then pressing F8</td>
+      </tr>
+      <tr>
+        <td>Ctrl+]</td>
+        <td>Increase font size</td>
+      </tr>
+      <tr>
+        <td>Ctrl+[</td>
+        <td>Decrease font size</td>
+      </tr>
+      <tr>
+        <td>Ctrl+=</td>
+        <td>Default font size</td>
+      </tr>
+    </table>
+    <h3>Auto-Completion in the Shell</h3>
+    <p>One of the biggest time-saving features built into the PythonCard shell is
+    auto-completion. Whenever you type a period in identifying a Python or 
+    PythonCard object, method, or property, the shell displays a popup menu with 
+    all of the legal completions to that statement that the shell knows about. 
+    For example, in Figure 4, we imported the standard &quot;os&quot; module and 
+    then typed &quot;os&quot; followed by a period. The popup menu shown in the
+    figure appears.</p>
+    <p class="imageCaption"><img src="images/shellfig4.png" alt="Shell with pop-up" /><br />
+    Figure 4. Auto-CompletionPopup Menu</p>
+    <p>There are three ways to find the text you wish to type to complete this 
+    portion of the descriptor:</p>
+    <ol>
+      <li>You can keep typing. The popup menu uses incremental search to keep
+      scrolling to the next string that matches what you are typing.</li>
+      <li>You can scroll the popup menu with the mouse in the usual way and
+      select the proper completion string.</li>
+      <li>You can use the arrow keys to move around inside the popup menu and
+      select the proper completion string.</li>
+    </ol>
+    <p>Once you have selected the completion string you want, you can press Enter
+    or the Tab key to insert it into the text at the insertion point.</p>
+    <p>If the auto-completion menu gets in your way, you can click anywhere 
+    outside its boundaries or simply press the ESCape key to close it.</p>
+    <p>You can turn this auto-completion feature on and off by typing appropriate
+    commands in the shell. To turn the feature on, type in the shell:</p>
+    <p class="code">shell.autoComplete = True</p>
+    <p>To turn the feature off, substitute a False for True in the above command.</p>
+    <p>Special Python attributes are prefixed with underscore characters. Some 
+    of these attributes use only a single underscore while others use two. You 
+    can include or exclude each of these types of attributes in the 
+    auto-completion list that appears in the shell by setting two different 
+    variables: autoCompleteIncludeSingle and autoCompleteIncludeDouble. For 
+    example, to exclude attributes preceded by single underscores from the list, 
+    type:</p>
+    <p class="code">shell.autoCompleteIncludeSingle = False</p>
+    <p>Similarly, setting autoCompleteIncludeSingle to a value of True will include 
+    those attributes. The same is true for the autoCompleteIncludeDouble 
+    setting. If you want to see all of the underlying wxPython methods for a
+    component, background, etc. then type:
+    <p class="code">shell.autoCompleteWxMethods = True</p>
+    <p>The defaults for these attributes are defined in your pycrustrc.py along 
+    with the commands that are automatically run when your <a href="shell.html">shell</a> 
+    first starts up. They are defined as:</p>
+<pre>
+shell.autoCompleteIncludeMagic = True
+shell.autoCompleteIncludeSingle = False
+shell.autoCompleteIncludeDouble = False
+shell.autoCompleteWxMethods = False
+</pre>
+<!-- 
+     the following section should probably be removed since it refers to 
+     a feature in PythonCard prior to using Python properties
+-->
+    <p>Python objects include another type of attribute, often referred to as 
+    &quot;magic attributes.&quot; These attributes' values can only be obtained 
+    by calling the object's _getAttributeNames() method, if it has one. You can 
+    determine whether these attributes are included in the auto-completion popup 
+    by setting the variable autoCompleteIncludeMagic to True to include them, False to 
+    exclude them:</p>
+    <p class="code">shell.autoCompleteIncludeMagic = True</p>
+    <h3>Documentation Auto-Display in the Shell</h3>
+    <p>Similarly to the auto-completion popup described in the preceding section, 
+    the PythonCard shell also includes the ability to automatically display 
+    important documentation for any function or method. Simply type the method 
+    or function name and the opening (left) parenthesis and the shell displays 
+    helpful information describing the function. These &quot;call tips&quot; 
+    attempt to display on their first line all of the arguments expected by a 
+    callable object. Where the object involved is the class name, the arguments 
+    expected by the class constructor are displayed. The second line of the call 
+    tip displays the docstring for the object if it has one.</p>
+    <p>Figure 5 demonstrates this feature. We have typed &quot;os.fdopen(&quot; 
+    and the resulting tool tip tells us the required and optional parameters and 
+    what the function does as well as what it returns.</p>
+    <p class="imageCaption"><img src="images/shellfig5.png" alt="Tool tips in the shell" /><br />
+    Figure 5. Tool Tip Shows Documentation String While Typing Functions and Methods</p>
+    <p>Virtually all of PythonCard's built-in functions and methods have 
+    docstrings associated with them or will have prior to the final release of 
+    the product.</p>
+    <h3>Editing and Retrieving Functions and Compound Statements in the Shell</h3>
+    <p>You can copy, paste, edit, and execute multi-line functions and compound 
+    statements in the PythonCard shell. This can be a huge time-saver when you 
+    want to re-execute a method you've defined in the interactive editor. To do 
+    so, simply use any of the history retrieval methods outlined in Table 1 to 
+    copy any group of multiple lines and then edit them in place. If you, e.g., 
+    define a function or class in the shell and you make a mistake, you can avoid
+    the usually mandatory complete re-typing of the code by copying the whole 
+    thing and then editing the mistakes. You can also use the PythonCard shell
+    in conjunction with another Python-aware editor. You could, e.g., create a 
+    class in another editor, then copy its definition and paste it into the shell
+    to experiment with it. Each time you need a new copy of the class definition,
+    simply paste it again.</p>
+    <p>You may find yourself occasionally wanting to re-execute multiple 
+    <em>commands</em> , each of which may be a single line or a multi-line 
+    command. In that situation, pasting those lines into the shell using 
+    Shift+Ctrl+V will paste all the lines and run all of the commands contained 
+    in the selection.</p>
+    <p>If you want to copy multi-line commands from the shell into another file 
+    (e.g., for documentation purposes), you can select and then use Ctrl+C to 
+    copy those lines. This will strip the Python shell prompts out of the copied
+    material. If, however, you wish to <em>retain</em> those prompts, use 
+    Shift+Ctrl+C to perform the copy and the prompts will be preserved when you 
+    paste the selection into another window or file.</p>
+    <?php include "footer.php" ?>
+    <p>$Revision: 1.7 $ : $Author: alextweedly $ : Last updated $Date: 2006/04/06 11:00:25 $</p>
+    </div>
+  </body>
+</html>

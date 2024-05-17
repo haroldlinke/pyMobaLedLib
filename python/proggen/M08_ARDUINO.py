@@ -1321,7 +1321,19 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
         # 27.11.20: Juergen
     CPUType = GetCPUTypeFromSignature(DeviceSignature, 'atmega328p')
     # 08.12.23: Jürgen
-    CommandStr = '"' + Create_Cmd_file(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType) + '"'
+    #CommandStr = '"' + Create_Cmd_file(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType) + '"'
+    # added support for Linux and Mac
+    system_platform = platform.platform()
+    if not "Windows" in system_platform:
+        useARDUINO_IDE=True
+    else:
+        useARDUINO_IDE=False
+    if not useARDUINO_IDE: 
+        CommandStr = '"' + Create_Cmd_file(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType) + '"'
+    else:
+        CommandStr = Create_ARDUINO_IDE_Cmd(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType)
+        
+    
     # 02.11.19: Added Quotation marks to prevent Problems with special characters in the path like '&'
     # Disable "serial.SerialDiscovery" trial 2
     # 16.03.20:

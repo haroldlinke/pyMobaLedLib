@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+                               
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+                               
+  <meta name="author" content="Dan Shafer">
+  <title>File Dialog</title>
+   
+<meta name="generator" content="Namo WebEditor v5.0(Trial)">
+</head>
+  <body>
+               
+<h1>File Dialog</h1>
+        <img src="images/dialogsfig7.png" alt="Find Dialog Sample"
+ width="563" height="344">
+          <br>
+        <h2> </h2>
+ 
+<h2>Creating the Dialog</h2>
+    
+<p>  Create a File Dialog by calling dialog.fileDialog  with  the arguments
+shown in the following table.</p>
+   
+<table cellpadding="2" cellspacing="2" border="1" width="50%">
+      <tbody>
+        <tr>
+          <td valign="top"><b>Argument</b><br>
+          </td>
+          <td valign="top"><b>Data type/notes</b><br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">self<br>
+          </td>
+          <td valign="top">the window (background) that is the parent for 
+the  dialog<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">message<br>
+          </td>
+          <td valign="top">quoted string defining the title for the dialog
+          </td>
+        </tr>
+    <tr>
+      <td valign="top">
+            <p>path</p>
+
+      </td>
+      <td valign="top">
+            <p>quoted string defining the default path to be used for the dialog</p>
+
+      </td>
+    </tr>
+               
+    <tr>
+      <td valign="top">
+            <p>fileName</p>
+
+      </td>
+      <td valign="top">
+            <p>quoted string defining a file name to be used typically in saving 
+            a file</p>
+
+      </td>
+    </tr>
+               
+    <tr>
+      <td valign="top">filter<br>
+      </td>
+      <td valign="top">quoted string containing the pattern to be used to identify
+files to be shown to the user by default when the File Dialog opens. The
+dialog above was created with a pattern of &quot;*.py.&quot; A more complex example
+is shown below.<br>
+      </td>
+    </tr>
+               
+    <tr>
+      <td valign="top">
+            <p>OPTIONAL style</p>
+
+      </td>
+      <td valign="top">
+            <p>A boolean logic expression containing one or more pre-defined 
+            window style constants that define how the window will look and 
+            behave.</p>
+
+      </td>
+    </tr>
+  </tbody>    
+</table>
+   <br>
+        <b>Example:<br>
+        <br>
+        </b>The above dialog was created with this line of code:<br>
+        <br>
+&nbsp;<code>result = dialog.fileDialog(self, 'Open', '', '', wildcard )</code><br>
+<code><br>
+        </code>after setting the variable wildcard to the string &quot;*.py&quot;.<br>
+<br>
+To open a File Dialog showing all JPEG and GIF files in the current directory,
+you would first set the wildcard string to &quot;JPG files (*.jpg;*.jpeg)|*.jpg;*.jpeg|GIF
+files (*.gif)|*.gif|All Files (*.*)|*.*&quot; and then use the above line to open
+the File Dialog.<br>
+                 
+<p>The optional style argument in dialog.fileDialog is generally not used when 
+opening a File dialog to save a document because its default settings -- wx.OPEN 
+| wx.MULTIPLE -- is the generally accepted norm for such dialogs. In creating 
+dialogs for <i>saving</i> files, on the other hand, it is often useful to define 
+a variable (here called &quot;aStyle&quot;) which defines more fully how the 
+save process will be managed. For example:</p>
+<p>aStyle = wx.SAVE | wx.HIDE_READONLY | wx.OVERWRITE_PROMPT</p>
+<p>will create a file save dialog (rather than the default file open), in which 
+read-only files are not shown and an attempt to overwrite an existing file is 
+confirmed with a prompt dialog.</p>
+<h2>Interacting With the Dialog</h2>
+        The fileDialog component returns its values, stored as attributes  
+of an instance of the DialogResults class called &quot;results&quot; returned by all PythonCard dialogs. 
+  These  results are as shown in the following table.<br>
+        <br>
+               
+<table cellpadding="2" cellspacing="2" border="1" width="50%">
+          <tbody>
+            <tr>
+              <td valign="top"><b>Name of value</b><br>
+                </td>
+              <td valign="top"><b>Description</b><br>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">accepted<br>
+              </td>
+              <td valign="top">True = user clicked OK<br>
+          False = user clicked Cancel<br>
+              </td>
+            </tr>
+            <tr>
+              <td valign="top">paths<br>
+              </td>
+              <td valign="top">list of strings containing the full pathnames
+to all files selected by the user<br>
+                </td>
+            </tr>
+                                      
+  </tbody>        
+</table>
+        <br>
+       <b>Example:<br>
+       <br>
+       </b>The sample dialog shown at the top of this page returns the following
+  results:<br>
+<br>
+accepted: True<br>
+paths: ['C:\\pycode\\PythonCard\\setup.py']<br>
+        &nbsp; <br>
+        <br>
+         <br>
+           <br>
+     <br>
+  <br>
+ 
+</body>
+</html>
