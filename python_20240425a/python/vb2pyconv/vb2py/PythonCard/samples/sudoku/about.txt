@@ -1,5 +1,0 @@
-Sudoku Solver
-
-0.1
-
-(c) 2005  Alex Tweedly.
