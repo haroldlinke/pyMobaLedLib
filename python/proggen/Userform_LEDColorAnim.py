@@ -383,13 +383,9 @@ class UserForm_LEDColorAnim:
     def Show_With_Existing_Data(self, MacroName, ConfigLine, LED_Channel, Def_Channel):
         Txt = String()
         #----------------------------------------------------------------------------------------------------------------------
-        #self.__SetMode(MacroName)
         self.__LED_CntList = ''
-        #self.IndividualTimes_CheckBox_svar.set(False)
-        #self.show() #*HL
         self.Macro_str = ConfigLine
         self.Show()
-        
         
     def check_for_jump(self, index):
         if index + 1 < len(self.curve_points):

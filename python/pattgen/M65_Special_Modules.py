@@ -501,18 +501,16 @@ def Prog_Servo_2():
 
     #----------------------
     PG.ThisWorkbook.Activate()
-    if LCase(Right(PG.ThisWorkbook.Path, Len('extras'))) == 'extras':
-        WorkDir = PG.ThisWorkbook.Path
-    else:
-        WorkDir = M01a.Get_SrcDirInLib()
-    WorkDir = Replace(WorkDir, 'extras', 'examples\\80.Modules\\04.ATTiny85_Servo2', Compare= X01.vbTextCompare)
+    WorkDir = PG.ThisWorkbook.Path + "/hex-files"
+
+    #WorkDir = Replace(WorkDir, 'extras', 'examples\\80.Modules\\04.ATTiny85_Servo2', Compare= X01.vbTextCompare)
     
     hexfile_name =  "RailMail-TinyServo.hex"
     
     if Dir(WorkDir + "/"+ hexfile_name) == '':
         # ask for filename - makefile or hexfile_name
         
-        filenameandpath = filedialog.askopenfilename(filetypes=[("hex-File","*.hex"), ("makefile","makefile")])
+        filenameandpath = filedialog.askopenfilename(filetypes=[("hex-File","*.hex"), ("makefile","makefile")], initialdir=WorkDir)
         if not filenameandpath:
             return
         if not os.path.exists(filenameandpath):

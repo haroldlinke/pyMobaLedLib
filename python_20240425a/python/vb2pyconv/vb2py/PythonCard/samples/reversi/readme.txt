@@ -1,1 +1,0 @@
-A simplistic implementation of the board game Reversi, better known as Othello.

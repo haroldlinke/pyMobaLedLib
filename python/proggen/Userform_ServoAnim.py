@@ -268,6 +268,31 @@ class UserForm_ServoAnim:
             pattern_macro_complete = macro_str_lines[-1]
             pattern_macro_split = pattern_macro_complete.split(" ") # split into macro and gotoact part
             pattern_macro_params = pattern_macro_split[0].split(",")
+            pattern_macro_start = pattern_macro_params[0].split("(")
+            pattern_macro_start_parts =  pattern_macro_start[0].split("T")
+            number_of_timeslots = int(pattern_macro_start_parts[1])
+            param_idx = 8
+            timedelta_list = []
+            for i in range(0, number_of_timeslots):
+                timedelta_list.append(int(pattern_macro_params[param_idx]))
+                param_idx += 1
+            curr_time = 0
+            time_idx = 0
+            while param_idx < len(pattern_macro_params):
+                curr_time += timedelta_list[time_idx]
+                if time_idx < number_of_timeslots - 1:
+                    time_idx += 1
+                curve_points.append([curr_time, int(pattern_macro_params[param_idx])])
+                param_idx += 3
+        return curve_points    
+    
+    def determine_curve_points_from_Macro_old(self, Macro_str):
+        curve_points = []
+        macro_str_lines = Macro_str.split("\n")
+        if len(macro_str_lines) > 1:
+            pattern_macro_complete = macro_str_lines[-1]
+            pattern_macro_split = pattern_macro_complete.split(" ") # split into macro and gotoact part
+            pattern_macro_params = pattern_macro_split[0].split(",")
             timestep = int(pattern_macro_params[8])
             param_idx = 9
             curr_time = 0
@@ -284,9 +309,6 @@ class UserForm_ServoAnim:
     def __UserForm_Initialize(self):
         #--------------------------------
         # Is called once to initialice the form
-        #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
-        #Change_Language_in_Dialog(Me)
-        #Center_Form(Me)
         self.Userform_Res = ""
         self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont)
         self.patterntype = 0
@@ -327,12 +349,6 @@ class UserForm_ServoAnim:
                             self.curvetype = self.Servo_CurveType_ListBox.Selection
                             self.servotype = self.Servo_Type_ListBox.Selection 
 
-        #anzahl_werte_Ein = int(self.Servo_DauerEin_TextBox.Value / self.Servo_Abstand_TextBox.Value)
-        #if self.patterntype != 1: # Not PINGPONG Ausschaltsequenz anhängen
-        #    anzahl_werte_Aus = int(self.Servo_DauerAus_TextBox.Value / self.Servo_Abstand_TextBox.Value)
-        #else:
-        #    anzahl_werte_Aus = 0
-        #anzahl_werte = anzahl_werte_Ein + anzahl_werte_Aus +1
         if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
             self.Servo_Abstand_TextBox.Value = int(self.Servo_DauerEin_TextBox.Value / 4)
         if self.curvetype == 2: # individuel
@@ -374,10 +390,7 @@ class UserForm_ServoAnim:
     def Show_With_Existing_Data(self, MacroName, ConfigLine, LED_Channel, Def_Channel):
         Txt = String()
         #----------------------------------------------------------------------------------------------------------------------
-        #self.__SetMode(MacroName)
         self.__LED_CntList = ''
-        #self.IndividualTimes_CheckBox_svar.set(False)
-        #self.show() #*HL
         self.Macro_str = ConfigLine
         self.Show()
         
@@ -486,9 +499,15 @@ class UserForm_ServoAnim:
             servotype_str = str(self.servotype)
             LED = "C"+servotype_str+"-"+servotype_str
         if gotoaction:
-            self.Userform_Res = LED + "$// Activation: Binary #ServoAnim("
-            self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
-            self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n"
+            use_nbuttons = True
+            if use_nbuttons:
+                self.Userform_Res = LED + "$// Activation: N_Buttons #ServoAnim("
+                self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
+                self.Userform_Res = self.Userform_Res + ")\n" + "InCh_to_TmpVar(#InCh, 2) \n"                
+            else:
+                self.Userform_Res = LED + "$// Activation: Binary #ServoAnim("
+                self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
+                self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n"
         else:
             self.Userform_Res = LED + "$// #ServoAnim("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)

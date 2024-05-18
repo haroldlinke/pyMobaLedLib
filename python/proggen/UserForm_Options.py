@@ -400,9 +400,9 @@ class CUserForm_Options:
         self.Hide()
         if P01.MsgBox(M09.Get_Language_Str('Soll die Python MobaLedLib aktualisiert werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) != vbYes:
             return
-        self.__Update_pyMobaLedLib()
+        self.Update_pyMobaLedLib()
     
-    def __Update_pyMobaLedLib(self):
+    def Update_pyMobaLedLib(self):
         F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Python MobaLedLib Programm'), '')
         URL= "https://github.com/HaroldLinke/pyMobaLedLib/archive/master.zip"
         try:

@@ -57,6 +57,7 @@ import urllib
 module_path = os.path.abspath(__file__)  # Full path to the module file
 module_directory = os.path.dirname(module_path)  # Directory containing the module
 sys.path.append(module_directory)
+from vb2py.vbconstants import vbQuestion, vbYesNo, vbYes
 
 import tkinter as tk
 from tkinter import ttk,messagebox,filedialog, colorchooser
@@ -108,6 +109,9 @@ import proggen.M07_COM_Port_New as M07New
 import proggen.M25_Columns as M25
 import proggen.M18_Save_Load as M18
 import proggen.M37_Inst_Libraries as M37
+import proggen.M30_Tools as M30
+import proggen.F00_mainbuttons as F00
+import proggen.M09_Language as M09
 
 # --- Translation - not used
 EN = {}
@@ -420,6 +424,7 @@ class pyMobaLedLibapp(tk.Tk):
         menu.add_cascade(label="Hilfe", menu=helpmenu)
         helpmenu.add_command(label="Hilfe öffnen", command=self.OpenHelp)
         helpmenu.add_command(label="Logfile öffnen", command=self.OpenLogFile)
+        helpmenu.add_command(label="Update pyMobaLedLib", command=self.UpdatePyMLL)
         helpmenu.add_command(label="Über...", command=self.About)
         
         testmenu = tk.Menu(menu)
@@ -689,6 +694,9 @@ class pyMobaLedLibapp(tk.Tk):
 
     def OpenHelp(self):
         self.call_helppage()
+        
+    def UpdatePyMLL(self):
+        self.check_version(exec_update=True)
         
     def OpenLogFile(self):
         logging.debug("Open logfile: %s",self.logfilename)
@@ -2703,7 +2711,7 @@ class pyMobaLedLibapp(tk.Tk):
 
     def stop_process_serial_all(self):
         logging.debug("Pyprog-Stop_process_serial")
-        print("pyMobaLedLib: stop_process_serial_all")
+        #print("pyMobaLedLib: stop_process_serial_all")
         SerialMonitorPage = self.getFramebyName("SerialMonitorPage")
         SerialMonitorPage.set_check_RMBUS(value=False)
         global ThreadEvent
@@ -2788,7 +2796,82 @@ class pyMobaLedLibapp(tk.Tk):
             else:
                 self._send_ledcolor_to_ARDUINO(lednum, ledcount, "#000000")
                 self.on_ledon = True
-                self.after(int(500/BLINKFRQ),self.onblink_led)    
+                self.after(int(500/BLINKFRQ),self.onblink_led)
+                
+    def show_download_status(self, a,b,c):
+        '''''Callback function 
+        @a:Downloaded data block 
+        @b:Block size 
+        @c:Size of the remote file 
+        '''  
+        per=100.0*a*b/c  
+        if per>100:  
+            per=100  
+        #print '%.2f%%' % per          
+    
+        F00.StatusMsg_UserForm.Set_ActSheet_Label(P01.Format(int(time.time()) - M37.Update_Time, 'hh:mm:ss')+"\n"+str(a*b))
+
+    def Update_pyMobaLedLib(self):
+        F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Python MobaLedLib Programm'), '')
+        URL= "https://github.com/HaroldLinke/pyMobaLedLib/archive/master.zip"
+        try:
+            workbookpath = filedir
+            workbookpath2 = os.path.dirname(workbookpath)
+            workbookpath3 = os.path.dirname(workbookpath2)
+            zipfilenamepath = workbookpath3+"/pyMobaLedLib.zip"
+            F00.StatusMsg_UserForm.Set_Label("Download Python MobaLedLib Program")
+            logging.debug("Update pyMobaLedLib from Github - Lokales Verzeichnis:"+ workbookpath)
+            logging.debug("Update pyMobaLedLib from Github -download from Github")
+            urllib.request.urlretrieve(URL, zipfilenamepath,self.show_download_status)
+            F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programms")
+            logging.debug("Update pyMobaLedLib from Github -unzip file:"+zipfilenamepath+" nach " + workbookpath3)
+            M30.UnzipAFile(zipfilenamepath,workbookpath3)
+            srcpath = workbookpath3+"/pyMobaLedLib-master/python"
+            dstpath = workbookpath #workbookpath3+"/pyMobaLedLib/python"
+            if not dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy when destination is development folder
+                F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
+                try:
+                    logging.debug("Update pyMobaLedLib from Github -delete folder:"+ workbookpath3+"/LEDs_AutoProg")
+                    shutil.rmtree(workbookpath+"/LEDs_AutoProg")
+                except BaseException as e:
+                    logging.error(e, exc_info=True)
+                self.copytree(srcpath,dstpath)
+                logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
+            if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
+                # shutdown and restart
+                self.restart()
+            
+        except BaseException as e:
+            logging.error(e, exc_info=True)
+            #Debug.Print("Update_MobaLedLib exception:",e)
+            P01.MsgBox(M09.Get_Language_Str('Fehler beim Download oder Installieren?'),vbInformation, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib'))
+        P01.Unload(F00.StatusMsg_UserForm)
+    
+    def check_version(self, exec_update=False):
+        Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version.py"
+        try:
+            response = urllib.request.urlopen(Version_URL)
+            version_str = response.read().decode('utf-8')
+        except:
+            version_str = ""
+            
+        if version_str != "":
+            version_str_split = version_str.split('"')
+            version_str = version_str_split[1]
+        if not exec_update:
+            if version_str != PROG_VERSION:
+                answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
+        else:
+            if version_str != PROG_VERSION:
+                answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
+                if answer == False:
+                    return
+                else:
+                    self.Update_pyMobaLedLib()
+            else:
+                answer = tk.messagebox.showinfo ('Check pyMLL Version','Es gibt eine keine neue pyMLL Version \n\nAktuelle Version: '+ PROG_VERSION)
+        return
+     
 
 
 class SerialThreadx(threading.Thread):
@@ -2848,8 +2931,7 @@ def img_resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-
-def check_version():
+def check_version(exec_update=False):
     
     Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version.py"
     try:
@@ -2861,9 +2943,18 @@ def check_version():
     if version_str != "":
         version_str_split = version_str.split('"')
         version_str = version_str_split[1]
-
-    if version_str != PROG_VERSION:
-        answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
+    if not exec_update:
+        if version_str != PROG_VERSION:
+            answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
+    else:
+        if version_str != PROG_VERSION:
+            answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
+            if answer == False:
+                return
+            else:
+                pass
+        else:
+            answer = tk.messagebox.showinfo ('Check pyMLL Version','Es gibt eine keine neue pyMLL Version \n\nAktuelle Version: '+ PROG_VERSION)
     return
  
 
@@ -2876,11 +2967,14 @@ logger=logging.getLogger(__name__)
 
 ScaleFactor = 1
 
+filedir = ""
+
 def main_entry():
     global DEBUG
     global ScaleFactor
     
     global COMMAND_LINE_ARG_DICT
+    global filedir
     
     #import wingdbstub
     try:
