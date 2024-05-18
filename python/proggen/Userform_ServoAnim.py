@@ -499,7 +499,7 @@ class UserForm_ServoAnim:
             servotype_str = str(self.servotype)
             LED = "C"+servotype_str+"-"+servotype_str
         if gotoaction:
-            use_nbuttons = True
+            use_nbuttons = False
             if use_nbuttons:
                 self.Userform_Res = LED + "$// Activation: N_Buttons #ServoAnim("
                 self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
