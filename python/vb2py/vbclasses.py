@@ -136,10 +136,10 @@ if __name__ == '__main__':
     c = Collection()
     c['a'] = 'va'
     c['b'] = 'vb'
-    print(c['a'])
-    print(c[2])
+    #print(c['a'])
+    #print(c[2])
     del c[1]
-    print(c[1])
+    #print(c[1])
 
 
 class _DebugClass:

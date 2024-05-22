@@ -656,7 +656,8 @@ def Find_Macro_in_Lib_Macros_Sheet(p_str):
     #---------------------------------------------------------------------------
     _with3 = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
     p_str = Replace(p_str, 'HouseT(', 'House(')
-    p_str = Replace(p_str, "// Activation: Binary ", "")
+    p_str = Replace(p_str, "// Activation: Binary ", "") #*HL
+    p_str = Replace(p_str, "// Activation: N_Buttons ", "") #*HL
     p_str = Replace(p_str, "\n", " ")
 
     if InStr(p_str, '(') > 0:

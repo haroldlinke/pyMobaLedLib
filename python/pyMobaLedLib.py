@@ -196,6 +196,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.executetests = COMMAND_LINE_ARG_DICT.get("test","")== "True"
         self.loaddatafile = COMMAND_LINE_ARG_DICT["loaddatafile"]!="False"
         self.logfilename =  COMMAND_LINE_ARG_DICT["logfilename"]
+        self.useARDUINO_IDE = COMMAND_LINE_ARG_DICT.get("useARDUINO_IDE", False)
         self.coltab = None
         self.checkcolor_callback = None
         self.ledhighlight = False
@@ -680,10 +681,10 @@ class pyMobaLedLibapp(tk.Tk):
             elif os.path.isdir(path):
                 folders.append(x)
                 next_dirs.append(path)
-        print(f'cd: {cd}')
-        print(f'files ({len(files)}): {files}')
-        print(f'dirs: {folders}')
-        print(f'loc: {loc}\n')
+        #print(f'cd: {cd}')
+        #print(f'files ({len(files)}): {files}')
+        #print(f'dirs: {folders}')
+        #print(f'loc: {loc}\n')
         for next_dir in next_dirs:
             loc += self.find_loc(next_dir)
         
@@ -2687,7 +2688,7 @@ class pyMobaLedLibapp(tk.Tk):
             self.after(100, self.process_serial)
 
     def start_process_serial_all(self):
-        print("pyMobaLedLib: start_process_serial_all")
+        #print("pyMobaLedLib: start_process_serial_all")
         #SerialMonitorPage = self.getFramebyName("SerialMonitorPage")
         #SerialMonitorPage.start_process_serial()
         
@@ -2980,7 +2981,7 @@ def main_entry():
     try:
         import ctypes
         ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
-        print("Scalefactor:", ScaleFactor)
+        #print("Scalefactor:", ScaleFactor)
         ctypes.windll.user32.SetProcessDPIAware()
     except:
         pass
@@ -3001,7 +3002,7 @@ def main_entry():
     parser.add_argument('--caller',choices=["SetColTab",""],help="Only for MLL-ProgrammGenerator: If <SetColTab> only the Colorcheckpage is available and the chnage coltab is returned after closing the program")
     parser.add_argument('--test',choices=["True","False"],help="if <True> test routines are started at start of program")
     parser.add_argument('--vb2py',choices=["True","False"],help="if <True> VB2PYpage is shown - for developers only")
-    
+    parser.add_argument('--ARDUINO_IDE',choices=["True", "False"],help="Forces the use of the ARDUINO IDE instead of the Windows batch files")
     try:
         args = parser.parse_args()
     except argparse.ArgumentError:
@@ -3091,6 +3092,10 @@ def main_entry():
         
     if args.vb2py:
         COMMAND_LINE_ARG_DICT["vb2py"]=args.vb2py
+        
+    if args.ARDUINO_IDE:
+        if args.ARDUINO_IDE == "True":
+            COMMAND_LINE_ARG_DICT["useARDUINO_IDE"] = True
         
     # check if colortest only is needed
     try: #check if a COLORTESTONLY_FILE is in the main Dir 

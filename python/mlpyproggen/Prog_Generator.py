@@ -65,6 +65,8 @@ import proggen.M02_Public as M02
 import proggen.M09_Language as M09
 import proggen.M07_COM_Port as M07
 import proggen.M20_PageEvents_a_Functions as M20
+import proggen.M25_Columns as M25
+import proggen.M30_Tools as M30
 
 import pgcommon.G00_common as G00
 import proggen.Tabelle2 as T02
@@ -476,11 +478,11 @@ class Prog_GeneratorPage(tk.Frame):
                          "text"     : "Lösche\nTabelle",
                          "padx"     : 10,
                          "tooltip"  : "Tabelle löschen"},
-                        #{"Icon_name": "Btn_New_Table.png",
-                        # "command"  : F00.NewSheet_Button_Click,
-                        # "text"     : "Neue\nTabelle",
-                        # "padx"     : 10,
-                        # "tooltip"  : "Neue Tabelle einfügen"},                        
+                        {"Icon_name": "Btn_New_Table.png",
+                         "command"  : F00.NewSheet_Button_Click,
+                         "text"     : "Neue\nTabelle",
+                         "padx"     : 10,
+                         "tooltip"  : "Neue Tabelle einfügen"},                        
                         {"Icon_name": "Btn_Options.png",
                          "command"  : F00.Options_Button_Click,
                          "text"     : "Optionen",
@@ -631,19 +633,141 @@ class Prog_GeneratorPage(tk.Frame):
             #Debug.Print('Compile and upload duration: ' + P01.Format(P01.Time() - Start, 'hh:mm:ss'))
             self.Show_Status_for_a_while(M09.Get_Language_Str('Programm erfolgreich hochgeladen. Kompilieren und Hochladen dauerte ') + P01.Format(self.upload_duration, 'hh:mm:ss'), '00:02:00')
     
-    def start_ARDUINO_program_cmd(self,startfile,arduino_type="LED"):
+    def start_ARDUINO_program_cmd(self,startfile,arduino_type="Left", empty_text=True, show_intro=True):
         self.Update_Compile_Time(Start=True)
         macrodata = self.controller.MacroDef.data.get("ARDUINOMonitorPage",{})
         self.ARDUINO_message1 = macrodata.get("Message_1","")
         self.ARDUINO_message2 = macrodata.get("Message_2","")
         self.ARDUINO_message3 = macrodata.get("Message_3","")        
         self.arduinoMonitorPage=self.controller.getFramebyName ("ARDUINOMonitorPage")
-        self.arduinoMonitorPage.delete_text_from_textwindow()
-        
+        if empty_text:
+            self.arduinoMonitorPage.delete_text_from_textwindow()
+        self.controller.showFramebyName("ARDUINOMonitorPage")
         logging.debug(repr(startfile))
+        
+        Mode = arduino_type
         
         self.arduinoMonitorPage.add_text_to_textwindow("\n\n*******************************************************\n"+self.ARDUINO_message1+"\n*******************************************************\n\n")
         
+        if show_intro:
+            if (Mode == 'Left'):
+                self.arduinoMonitorPage.add_text_to_textwindow('COLOR 1F', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "    Zum                                                                  "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "     PC                    Prog_Generator ' + M30.AddSpaceToLen(M02.Prog_Version, 20) + ' by Hardi  "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "      \\\\                                                                 "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "       \\\\                                                                "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "    ____\\\\___________________                                            "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  | [_] | | [_] |[oo]    |  ' + M09.Get_Language_Str('Achtung: Es muss der linke               "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |     |        |  ' + M09.Get_Language_Str('Arduino mit dem PC verbunden             "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |     |        |  ' + M09.Get_Language_Str('sein.                                    "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  | LED | |     |        |                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  | Nano| |     |        |  ' + M09.Get_Language_Str('Wenn alles gut geht, dann wird das       "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |     |        |  ' + M09.Get_Language_Str('Fenster ohne eine weitere Meldung        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |     |        |  ' + M09.Get_Language_Str('geschlossen (Liest ja eh keiner).        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |_____| |_____| [O]    |                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    [@] [@] [@]          |  ' + M09.Get_Language_Str('Falls Probleme auftreten, dann wird      "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |__________________[:::]__|  ' + M09.Get_Language_Str('das angezeigt.                           "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "                                                                         "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+            elif (Mode == 'Right'):
+                #self.arduinoMonitorPage.add_text_to_textwindow('COLOR 2F', '\n')
+                if (M25.Page_ID == 'DCC'):
+                    RightName = ' DCC '
+                elif (M25.Page_ID == 'Selectrix'):
+                    RightName = ' S X '
+                elif (M25.Page_ID == 'LNet'):
+                    RightName = 'LNET'
+                else:
+                    P01.MsgBox('Interner Fehler: Unbekante M25.Page_ID: \'' + M25.Page_ID + '\'', vbCritical, 'Interner Fehler')
+                    M30.EndProg()
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "            Zum                                                          "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "             PC            Prog_Generator ' + M30.AddSpaceToLen(M02.Prog_Version, 20) + ' by Hardi  "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "              \\\\                                                         "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "               \\\\                                                        "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "    ____________\\\\___________                                            "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  | [_] | | [_] |[oo]    |  ' + M09.Get_Language_Str('Achtung: Es muss der rechte              "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |     |        |  ' + M09.Get_Language_Str('Arduino mit dem PC verbunden             "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |     |        |  ' + M09.Get_Language_Str('sein.                                    "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |' + RightName + '|        |                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | | Nano|        |  ' + M09.Get_Language_Str('Wenn alles gut geht, dann wird das       "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |     |        |  ' + M09.Get_Language_Str('Fenster ohne eine weitere Meldung        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |     |        |  ' + M09.Get_Language_Str('geschlossen (Liest ja eh keiner).        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |_____| |_____| [O]    |                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    [@] [@] [@]          |  ' + M09.Get_Language_Str('Falls Probleme auftreten, dann wird      "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |__________________[:::]__|  ' + M09.Get_Language_Str('das angezeigt.                           "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "                                                                         "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+            elif (Mode == 'CAN'):
+                #self.arduinoMonitorPage.add_text_to_textwindow('COLOR 3F', '\n')
+                # White on Aqua
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "    Zum                                                                  "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "     PC                    Prog_Generator ' + M30.AddSpaceToLen(M02.Prog_Version, 20) + ' by Hardi  "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "      \\\\                                                                 "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "       \\\\                                                                "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "    ____\\\\___________________                                            "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  | [_] |O _________    _|  ' + M09.Get_Language_Str('Achtung: Es wird nur der linke           "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |         |  |C|  ' + M09.Get_Language_Str('Arduino und ein MCP2515 CAN Modul        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | | MCP2515 |  |A|  ' + M09.Get_Language_Str('verwendet.                               "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  | LED | |   CAN   |  |N|                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  | Nano| |  Modul  |   ~|  ' + M09.Get_Language_Str('Wenn alles gut geht, dann wird das       "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     | |_________|    |  ' + M09.Get_Language_Str('Fenster ohne eine weitere Meldung        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |     |                |  ' + M09.Get_Language_Str('geschlossen (Liest ja eh keiner).        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |  |_____|         [O]    |                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    [@] [@] [@]          |  ' + M09.Get_Language_Str('Falls Probleme auftreten, dann wird      "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |__________________[:::]__|  ' + M09.Get_Language_Str('das angezeigt.                           "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "                                                                         "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+            elif (Mode == 'ESP32'):
+                # 13.11.20:
+                #self.arduinoMonitorPage.add_text_to_textwindow('COLOR 1E', '\n')
+                # Yellow on Blue
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "        Zum                                                              "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "         PC                Prog_Generator ' + M30.AddSpaceToLen(M02.Prog_Version, 19) + ' by Juergen "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "          \\\\                                                   and Hardi "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "           \\\\                                                            "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "    ________\\\\_______________                                            "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | # [_] # |  [oo]   _|  ' + M09.Get_Language_Str('Achtung: Es wird nur ein ESP32           "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    |         |  DCC   |C|  ' + M09.Get_Language_Str('         Modul verwendet.                "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | ::::::: |        |A|                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    |  _____  |        |N|                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | |     | |         ~|  ' + M09.Get_Language_Str('Wenn alles gut geht, dann wird das       "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | |ESP32| |          |  ' + M09.Get_Language_Str('Fenster ohne eine weitere Meldung        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | |_____| |          |  ' + M09.Get_Language_Str('geschlossen (Liest ja eh keiner).        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    |_________|   [O]    |                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    [@] [@] [@]          |  ' + M09.Get_Language_Str('Falls Probleme auftreten, dann wird      "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |__________________[:::]__|  ' + M09.Get_Language_Str('das angezeigt.                           "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "                                                                         "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+            elif (Mode == 'PICO'):
+                # 18.04.21:
+                #self.arduinoMonitorPage.add_text_to_textwindow('COLOR 0E', '\n')
+                # Yellow on Black
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "        Zum                                                              "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "         PC                Prog_Generator ' + M30.AddSpaceToLen(M02.Prog_Version, 19) + ' by Juergen "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "          \\\\                                                   and Hardi "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "           \\\\                                                            "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "    ________\\\\_______________                                            "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | # [_] # |  [oo]   _|  ' + M09.Get_Language_Str('Achtung: Es wird nur ein Raspberry PICO  "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    |         |  DCC   |C|  ' + M09.Get_Language_Str('         Modul verwendet.                "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | ::::::: |        |A|                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    |  _____  |        |N|                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | |     | |         ~|  ' + M09.Get_Language_Str('Wenn alles gut geht, dann wird das       "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | |PICO | |          |  ' + M09.Get_Language_Str('Fenster ohne eine weitere Meldung        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    | |_____| |          |  ' + M09.Get_Language_Str('geschlossen (Liest ja eh keiner).        "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    |_________|   [O]    |                                           "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |    [@] [@] [@]          |  ' + M09.Get_Language_Str('Falls Probleme auftreten, dann wird      "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |__________________[:::]__|  ' + M09.Get_Language_Str('das angezeigt.                           "'), '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "                                                                         "', '\n')
+                self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
+                
+            self.arduinoMonitorPage.add_text_to_textwindow('', '\n')
+    
+        """
         if arduino_type=="LED":
             self.arduinoMonitorPage.add_text_to_textwindow("***************************************************************************\n")
             self.arduinoMonitorPage.add_text_to_textwindow("*    Zum                                                                  *\n")
@@ -684,10 +808,8 @@ class Prog_GeneratorPage(tk.Frame):
             self.arduinoMonitorPage.add_text_to_textwindow("***************************************************************************\n")                
         else:
             pass
-        
-        self.controller.showFramebyName("ARDUINOMonitorPage")
-        
-        res = self.execute_shell_cmd(startfile,"Upload started")
+        """      
+        res = self.execute_shell_cmd(startfile,"", empty_text=False)
         self.Stop_Compile_Time_Display()
         return res
     
@@ -706,11 +828,14 @@ class Prog_GeneratorPage(tk.Frame):
         self.arduinoMonitorPage.add_text_to_textwindow("\n* Program Terminated by User\n",highlight="Error")
         self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
         self.process.terminate()
+        self.userbreak = True
     
-    def execute_shell_cmd(self,cmd_str,message1):
-        
+    def execute_shell_cmd(self,cmd_str,message1,empty_text=True):
+        self.userbreak = False
         self.arduinoMonitorPage=self.controller.getFramebyName ("ARDUINOMonitorPage")
-        self.arduinoMonitorPage.delete_text_from_textwindow()
+        if empty_text:
+            self.arduinoMonitorPage.delete_text_from_textwindow()
+        self.controller.bind("Control-c",self.terminate_process)
         self.controller.bind("c",self.terminate_process)
         
         logging.debug("execute_shell_cmd:"+cmd_str)
@@ -733,13 +858,14 @@ class Prog_GeneratorPage(tk.Frame):
                     break
                 if output:
                     self.arduinoMonitorPage.add_text_to_textwindow(output.decode('utf-8')+"\n")
-                    
                     self.arduinoMonitorPage.update()
-    
     
             rc = self.process.returncode
             
             self.arduinoMonitorPage.update()
+            
+            if self.userbreak:
+                rc = M40.UserBreak
             
             if rc != 0:
                 self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")

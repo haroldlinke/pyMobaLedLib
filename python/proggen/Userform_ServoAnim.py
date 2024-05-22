@@ -18,27 +18,19 @@ import tkinter as tk
 from tkinter import ttk
 
 import logging
+import pgcommon.CanvasFrame as CF
 
+runtype_pingpong = 1
+runtype_on_off = 2
+runtype_repeat = 0
 
+curvetype_linear = 0
+curvetype_accel = 1
+curvetype_individuell = 2
 
-def OK_Button_Click():
-    #------------------------------
-    pass
-    #D00.MainMenu_Form.Hide()
-    # To keep the last position of the dialog
-
-def Close2Button_Click():
-    #-------------------------------
-    # Tab: "Spezielle Module"
-    OK_Button_Click()
-
-
-def Abort_Button_Click():
-    #-----------------------------
-    ## VB2PY (CheckDirective) VB directive took path 1 on 1
-    #X02.Shell('Explorer https://wiki.mobaledlib.de/anleitungen/spezial/patterngenerator')
-    pass
-
+timesteptype_auto = 0
+timesteptype_fix = 1
+timesteptype_individuell = 2
 
 class UserForm_ServoAnim:
     
@@ -180,11 +172,11 @@ class UserForm_ServoAnim:
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":69,"Type":"NumBox","Value": 220 ,"Visible":True,"Width":50},
                                              {"Name":"Ueberblendung","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"ARDUINO Überblendung AUS",
-                                              "ControlTipText":"ARDUINO interne Überblendung zwischen den Werten NICHT nutzen (zum Testen)","ForeColor":"#000012","Height":12,"Left":12,"Top":194,"Type":"CheckBox","Visible":True,"Width":160,"AlternativeText":""},
+                                              "ControlTipText":"ARDUINO interne Überblendung zwischen den Werten NICHT nutzen (zum Testen)","ForeColor":"#000012","Height":12,"Left":12,"Top":93,"Type":"CheckBox","Visible":True,"Width":160,"AlternativeText":""},
                                              ]},
                                         {"Name": "Frame7","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                          "Caption"       : "Ausführung Parameter",
-                                         "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 464,"Type": "Frame","Visible": True,"Width": 154,
+                                         "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 478,"Type": "Frame","Visible": True,"Width": 154,
                                          "Components"    :
                                               [                                                                
                                              {"Name":"ServoRunType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
@@ -198,7 +190,7 @@ class UserForm_ServoAnim:
                                              ]},
                                         {"Name": "Frame3","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                          "Caption"       : "Zeitstufen Parameter",
-                                         "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 522,"Type": "Frame","Visible": True,"Width": 154,
+                                         "ControlTipText": "","ForeColor": "#000012","Height": 282,"Left": 6,"Top": 536,"Type": "Frame","Visible": True,"Width": 154,
                                          "Components"    :
                                             [
                                             {"Name":"ServoTimeStepType_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
@@ -207,8 +199,8 @@ class UserForm_ServoAnim:
                                              "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
                                             {"Name":"Servo_TimeStepType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                              "Caption":"Zeitstufen",
-                                             "ControlTipText":"Wie sollen die Zeitstufen ermittelt werden \nAutomatisch \nFester Wert",
-                                             "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 1,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Automatisch", "Fester Wert"] ,"Visible":True,"Width":60},
+                                             "ControlTipText":"Wie sollen die Zeitstufen ermittelt werden \nAutomatisch \nFester Wert \nIndividuell",
+                                             "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 1,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Automatisch", "Fester Wert", "Individuell"] ,"Visible":True,"Width":60},
                                             {"Name":"Servo_Abstand_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Stufenabstand (msec)",
                                               "ControlTipText":"Abstand in msec zwischen zwei Stufen, die an den Servo gesendet werden.",
@@ -224,6 +216,23 @@ class UserForm_ServoAnim:
                                        "Components"    :
                                             [
                                                 ]},
+                                      {"Name":"Kurve_Zeit_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"Zeit:",
+                                       "ControlTipText":"Zeigt die  Zeit an, auf der der Mauszeiger steht",
+                                       "ForeColor":"#FF0000","Height":18,"Left":170, "TextAlign":"fmTextAlignLeft","Top":570,"Type":"Label","Visible":True,"Width":40},
+                                      {"Name":"Kurve_Zeitanzeige_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"0",
+                                       "ControlTipText":"Zeigt die  Zeit an, auf der der Mauszeiger steht",
+                                       "ForeColor":"#FF0000","Height":18,"Left":210,"TextAlign":"fmTextAlignLeft","Top":570,"Type":"Label","Visible":True,"Width":40},                                      
+                                      {"Name":"Kurve_Wert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"Wert:",
+                                       "ControlTipText":"Zeigt den Wert an, auf dem der Mauszeiger steht",
+                                       "ForeColor":"#FF0000","Height":18,"Left":240, "TextAlign":"fmTextAlignLeft","Top":570,"Type":"Label","Visible":True,"Width":40},
+                                      {"Name":"Kurve_Wertanzeige_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"0",
+                                       "ControlTipText":"Zeigt den Wert an, auf dem der Mauszeiger steht",
+                                       "ForeColor":"#FF0000","Height":18,"Left":280,"TextAlign":"fmTextAlignLeft","Top":570,"Type":"Label","Visible":True,"Width":40},                                         
+                                      
                                       {"Name":"OK_Button","Accelerator":"<Return>","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"OK",
                                        "Command":self.OK_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":25,"Left":750,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
@@ -279,32 +288,12 @@ class UserForm_ServoAnim:
             curr_time = 0
             time_idx = 0
             while param_idx < len(pattern_macro_params):
-                curr_time += timedelta_list[time_idx]
-                if time_idx < number_of_timeslots - 1:
-                    time_idx += 1
                 curve_points.append([curr_time, int(pattern_macro_params[param_idx])])
                 param_idx += 3
+                curr_time += timedelta_list[time_idx]
+                if time_idx < number_of_timeslots - 1:
+                    time_idx += 1                
         return curve_points    
-    
-    def determine_curve_points_from_Macro_old(self, Macro_str):
-        curve_points = []
-        macro_str_lines = Macro_str.split("\n")
-        if len(macro_str_lines) > 1:
-            pattern_macro_complete = macro_str_lines[-1]
-            pattern_macro_split = pattern_macro_complete.split(" ") # split into macro and gotoact part
-            pattern_macro_params = pattern_macro_split[0].split(",")
-            timestep = int(pattern_macro_params[8])
-            param_idx = 9
-            curr_time = 0
-            pattern_macro_params[-1] = pattern_macro_params[-1][:-1] # remove last ")"
-            while param_idx < len(pattern_macro_params):
-                curve_points.append([curr_time, int(pattern_macro_params[param_idx])])
-                if self.servotype == 0: # DM Servo
-                    param_idx += 3
-                else:
-                    param_idx += 1 # LED Servo
-                curr_time += timestep
-        return curve_points
     
     def __UserForm_Initialize(self):
         #--------------------------------
@@ -312,7 +301,7 @@ class UserForm_ServoAnim:
         self.Userform_Res = ""
         self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont)
         self.patterntype = 0
-        self.curvetype = 0
+        self.curvetype = curvetype_linear
         self.curve_points = []
         self.current_curve_point = None
         self.start_value = ()
@@ -329,7 +318,8 @@ class UserForm_ServoAnim:
             self.Servo_PauseS_Aus_TextBox, 
             self.Servo_PauseE_Aus_TextBox,
             self.Servo_TimeStepType_ListBox,
-            self.Servo_Type_ListBox
+            self.Servo_Type_ListBox,
+            self.Ueberblendung
         ]
         if self.Macro_str != "":
             # read parameters from Macrostring
@@ -349,9 +339,9 @@ class UserForm_ServoAnim:
                             self.curvetype = self.Servo_CurveType_ListBox.Selection
                             self.servotype = self.Servo_Type_ListBox.Selection 
 
-        if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
-            self.Servo_Abstand_TextBox.Value = int(self.Servo_DauerEin_TextBox.Value / 4)
-        if self.curvetype == 2: # individuel
+        #if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
+        #    self.Servo_Abstand_TextBox.Value = int(self.Servo_DauerEin_TextBox.Value / 4)
+        if self.curvetype == curvetype_individuell: # individuel
             self.curve_points = self.determine_curve_points_from_Macro(self.Macro_str)
             
         self.canvas = self.init_graph(frame=self.Frame2.TKWidget)
@@ -396,6 +386,8 @@ class UserForm_ServoAnim:
         
     def calculate_accell_curve(self, duration, start_val, end_val, start_time, time_distance, skip_first=False):
         curve_points = []
+        if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
+            time_distance = int(duration / 2.0)        
         a = 2 * (end_val - start_val) / (duration * duration)
         if skip_first:
             t = time_distance
@@ -405,10 +397,12 @@ class UserForm_ServoAnim:
             val = int(round(0.5 * a * t * t, 0)) + start_val
             curve_points.append((t+start_time, val))
             t += time_distance
-        return curve_points        
+        return curve_points
         
     def calculate_linear_curve(self, duration, start_val, end_val, start_time, time_distance, skip_first=False):
         curve_points = []
+        if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
+            time_distance = int(duration / 2.0)
         if skip_first:
             t = time_distance
         else:
@@ -422,6 +416,8 @@ class UserForm_ServoAnim:
     
     def calculate_pause_curve(self, duration, val, start_time, time_distance, skip_first=False):
         curve_points = []
+        if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
+            time_distance = int(duration / 2.0)
         if skip_first:
             t = time_distance
         else:
@@ -439,11 +435,11 @@ class UserForm_ServoAnim:
             point_list1 = []
         if point_list1 != []:
             skip_first = True
-        if self.curvetype == 0: # linear
+        if self.curvetype == curvetype_linear: # linear
             point_list2 = self.calculate_linear_curve(duration, start_val, end_val, start_time, time_distance, skip_first=skip_first)
-        elif self.curvetype == 1: # Beschleunigung
+        elif self.curvetype == curvetype_accel: # Beschleunigung
             point_list2 = self.calculate_accell_curve(duration, start_val, end_val, start_time, time_distance, skip_first=skip_first)
-        else: # individuell
+        else: # individuell, should not happen here
             point_list2 = []
         point_list1.extend(point_list2)
         if point_list1 != []:
@@ -459,7 +455,7 @@ class UserForm_ServoAnim:
     def calculate_complete_curve(self):
         self.curvetype = self.Servo_CurveType_ListBox.Selection
         self.patterntype = self.Servo_RunType_ListBox.Selection
-        if self.curvetype != 2: # individuel
+        if self.curvetype != curvetype_individuell: # individuel
             curve_points = self.calculate_curve(self.Servo_DauerEin_TextBox.Value, self.Servo_Anfangswert_TextBox.Value, self.Servo_Endwert_TextBox.Value, 0 , self.Servo_Abstand_TextBox.Value, pauseS=self.Servo_PauseS_Ein_TextBox.Value, pauseE=self.Servo_PauseE_Ein_TextBox.Value)
             if self.patterntype != 1:
                 t = self.Servo_PauseS_Ein_TextBox.Value + self.Servo_DauerEin_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value
@@ -476,16 +472,31 @@ class UserForm_ServoAnim:
                     self.curve_points[index] = curve_point
             curve_points = self.curve_points            
         return curve_points
-        
+    
+    def determine_delta_timepoints_count(self):
+        delta_timepoints_count = len(self.curve_points) - 1 # number of deltas between timepoints
+        #check for repeating timedeltas from the end:
+        if delta_timepoints_count > 1:
+            curr_time = self.curve_points[-1][0]  # time of last curve point
+            curr_delta = curr_time - self.curve_points[-2][0]
+            curr_time = self.curve_points[-2][0]
+            for i in range(delta_timepoints_count-2, -1, -1):
+                new_delta=curr_time - self.curve_points[i][0]
+                if new_delta == curr_delta:
+                    delta_timepoints_count -= 1
+                    curr_time = self.curve_points[i][0] 
+                else:
+                    break
+        return delta_timepoints_count
     
     def OK_Button_Click(self, event=None):
         #------------------------------
         runtype = self.Servo_RunType_ListBox.Selection
         self.curvetype =  self.Servo_CurveType_ListBox.Selection 
-        if runtype == 2: #"Ein/Aus":
+        if runtype == runtype_on_off: #"Ein/Aus":
             gotoaction = True
             self.patterntype_str = "PM_NORMAL"
-        elif runtype == 1: #"PingPong":
+        elif runtype == runtype_pingpong: #"PingPong":
             gotoaction = False
             self.patterntype_str = "PM_PINGPONG"
         else:
@@ -498,8 +509,13 @@ class UserForm_ServoAnim:
         else:
             servotype_str = str(self.servotype)
             LED = "C"+servotype_str+"-"+servotype_str
+        
+        total_points_count = len(self.curve_points)
+        delta_timepoints_count = total_points_count - 1 # number of deltas between timepoints
+        delta_timepoints_count = self.determine_delta_timepoints_count()
+        
         if gotoaction:
-            use_nbuttons = False
+            use_nbuttons = True
             if use_nbuttons:
                 self.Userform_Res = LED + "$// Activation: N_Buttons #ServoAnim("
                 self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
@@ -516,54 +532,48 @@ class UserForm_ServoAnim:
         #APatternT1(#LED,28,SI_LocalVar,3,0,128,0,PM_NORMAL,250,10,1,0,40,1,0,70,1,0,100,1,0,130,1,0,180,1,0,210,1,0,240,1,0,250,1,0,250,1,0,220,1,0,190,1,0,160,1,0,130,1,0,100,1,0,70,1,0,40,1,0,10,1,0  ,0,0,0,0,0,0,0,0,63,128,0,0,0,0,0,0,0,63)
         if self.Ueberblendung.Value !=1:
             self.Userform_Res = self.Userform_Res + "A"
-        self.Userform_Res = self.Userform_Res + "PatternT1(#LED,"
-        
+        self.Userform_Res = self.Userform_Res + "PatternT"+str(delta_timepoints_count)+"(#LED,"
         if self.servotype==0 :
             self.Userform_Res = self.Userform_Res +"28,"
             anzahl_led = "3"
         else:
             self.Userform_Res = self.Userform_Res + str(27 +self.servotype)+","
             anzahl_led = "1"
-        
         if gotoaction:
             self.Userform_Res = self.Userform_Res + "SI_LocalVar," + anzahl_led + ",0,128,0,"
         else:
             self.Userform_Res = self.Userform_Res + "#InCh," + anzahl_led + ",0,128,0,"
-
         self.Userform_Res = self.Userform_Res + self.patterntype_str
-        self.Userform_Res = self.Userform_Res + "," + str(self.Servo_Abstand_TextBox.Value)
-
+        
+        #self.Userform_Res = self.Userform_Res + "," + str(self.Servo_Abstand_TextBox.Value)
+        timepoint_str = ""
+        lasttimepoint = 0
+        timepointdelta = 0
+        for i in range(delta_timepoints_count):
+            point = self.curve_points[i+1]
+            timepoint = point[0]
+            timepointdelta = timepoint - lasttimepoint
+            timepoint_str += "," + str(timepointdelta)
+            lasttimepoint = timepoint
+        self.Userform_Res = self.Userform_Res + timepoint_str # "," + str(self.LED_Abstand_TextBox.Value)
         for point in self.curve_points:
             if anzahl_led == "3":
                 self.Userform_Res = self.Userform_Res + "," + str(point[1]) + ",1,0"
             else:
                 self.Userform_Res = self.Userform_Res + "," + str(point[1])
-                
-        total_points = len(self.curve_points)
-
+        
         # goto action
         if gotoaction:
-            anzahl_werte_Ein = int((self.Servo_DauerEin_TextBox.Value + self.Servo_PauseS_Ein_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value) / self.Servo_Abstand_TextBox.Value)
-            anzahl_werte_Aus = int((self.Servo_DauerAus_TextBox.Value + self.Servo_PauseS_Aus_TextBox.Value + self.Servo_PauseE_Aus_TextBox.Value)/ self.Servo_Abstand_TextBox.Value) -2
-            if anzahl_werte_Aus + anzahl_werte_Ein + 3 != total_points:
-                logging.debug("UserForm_LEDAnim: Ok-ButtonClick-total_points wrong")
+            dauer_ein = self.Servo_DauerEin_TextBox.Value + self.Servo_PauseS_Ein_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value 
             self.Userform_Res = self.Userform_Res + "  "
-            for i in range(anzahl_werte_Ein):
-                self.Userform_Res = self.Userform_Res + ",0"
-            self.Userform_Res = self.Userform_Res + ",63,128"
-            for i in range(anzahl_werte_Aus):
-                self.Userform_Res = self.Userform_Res + ",0"
+            for i in range(total_points_count-2):
+                if self.curve_points[i][0] == dauer_ein: 
+                    self.Userform_Res = self.Userform_Res + ",63,128"
+                else:
+                    self.Userform_Res = self.Userform_Res + ",0"
+                
             self.Userform_Res = self.Userform_Res + ",63"
-            
         self.Userform_Res = self.Userform_Res + ')$0'
-        #if self.__Mode == 'House':
-        #    self.Userform_Res = self.Userform_Res + self.MinCnt_TextBox_svar.get() + ', ' + self.MaxCnt_TextBox_svar.get() + ', '
-        #    if self.Analoge_Crossfade.get()=="1":
-        #        self.Userform_Res = self.Userform_Res + self.OnTime_TextBox_svar.get() + ', ' + self.OffTime_TextBox_svar.get() + ', '
-        #self.Userform_Res = self.Userform_Res + self.SelectedRooms_TextBox.get(1.0, tk.END+"-1c") + ')$' + self.LED_Channel_TextBox_svar.get()
-        #Store_Pos(Me, HouseForm_Pos)
-        #Unload(Me)        
-        # To keep the last position of the dialog
         self.Hide()
         
     def Abort_Button_Click(self, event=None):
@@ -574,28 +584,9 @@ class UserForm_ServoAnim:
         self.Userform_Res = ""
         
     def Update_Button_Click(self, event=None):
-        anzahl_werte_Ein = int((self.Servo_PauseS_Ein_TextBox.Value + self.Servo_DauerEin_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value) / self.Servo_Abstand_TextBox.Value)
-        runtype = self.Servo_RunType_ListBox.TKWidget.curselection()
-        if runtype == ():
-            self.pattertype = 0
-        else:
-            self.pattertype = runtype[0]
-        if self.patterntype != 1: # PINGPONG Ausschaltsequenz anhängen
-            anzahl_werte_Aus = int((self.Servo_PauseS_Aus_TextBox.Value + self.Servo_DauerAus_TextBox.Value + self.Servo_PauseE_Aus_TextBox.Value)/ self.Servo_Abstand_TextBox.Value)
-        else:
-            anzahl_werte_Aus = 0
-        anzahl_werte = anzahl_werte_Ein + anzahl_werte_Aus +1
-        
-        if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
-            self.Servo_Abstand_TextBox.Value = int(self.Servo_DauerEin_TextBox.Value / 5)
-        self.curve_points = self.calculate_complete_curve()
-        anzahl_werte = len(self.curve_points) - 1
-        on_off_line = self.calculate_on_off_line()
-        horizontal_range = (self.curve_points[0][0],self.curve_points[-1][0])
-        self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, on_off_line=on_off_line, horizontal_range=horizontal_range)
+        self.redraw_canvas()
 
     def Servo_Anfangswert_TextBox_Click(self, event=None):
-        
         new_LED_val = self.Servo_Anfangswert_TextBox.Value
         if new_LED_val > 255:
             new_LED_val = 255
@@ -614,13 +605,11 @@ class UserForm_ServoAnim:
             self._update_servos(LED_address,0, 0, new_LED_val)
             
     def Servo_Endwert_TextBox_Click(self, event=None):
-        
         new_LED_val = self.Servo_Endwert_TextBox.Value
         if new_LED_val > 255:
             new_LED_val = 255
         elif new_LED_val < 0:
             new_LED_val = 0
-            
         LED_address = self.Servo_Address_TextBox.Value
         self.servotype = self.Servo_Type_ListBox.Selection
         if self.servotype == 0:
@@ -631,54 +620,80 @@ class UserForm_ServoAnim:
             self._update_servos(LED_address,0, new_LED_val, 0)
         else:
             self._update_servos(LED_address,0, 0, new_LED_val)          
-    
-
         
     def init_graph(self, frame=None, vertical_params=None, horizontal_params=None, num_vertical=None, num_horizontal=None):
         frame.update()
         # Get the actual width and height
-        self.framewidth = frame.winfo_width()
-        self.frameheight = frame.winfo_height() 
+        self.framewidth = frame.winfo_width() - 20
+        self.frameheight = frame.winfo_height() - 40
         self.graphTop = 40
         self.graphLeft = 40
         self.graphWidth = self.framewidth - self.graphLeft - 40
         self.graphHeight = self.frameheight - self.graphTop - 40
-
-        canvas=tk.Canvas(frame,width=self.framewidth,height=self.frameheight,bg="white")
-        canvas.grid(row=1, column=1)
-        #canvas.bind("<Button-1>", self.on_click)
-        #canvas.bind("<B1-Motion>", self.on_drag)
+        self.canvasframe = CF.CanvasFrame(frame, self.frameheight, self.framewidth)
+        self.canvasframe.grid(row=1, column=1)
+        canvas = self.canvasframe.canvas
+        
+        canvas.bind("<Up>", self.OnKeyup)
+        canvas.bind("<Down>", self.OnKeydown)
+        canvas.bind("<Right>", self.OnKeyright)
+        canvas.bind("<Left>", self.OnKeyleft)
         return canvas
     
 
-    def draw_point(self, x, y, xvalue, yvalue):
-        python_green = "#00FF00"
-        size = 4
-        x1, y1 = (x - size), (y - size)
-        x2, y2 = (x + size), (y + size)
-        objid = self.canvas.create_oval(x1, y1, x2, y2, fill=python_green, tag=["point", x , y ,str(xvalue), str(yvalue)])
-        #self.controller.ToolTip_canvas(self.canvas, objid, text="("+str(xvalue)+","+str(yvalue)+")",button_1=True)
-        self.canvas.tag_bind(objid,"<Button-1>" ,lambda e,Object=objid:self.MouseButton1(e,Object))
-        self.canvas.tag_bind(objid,"<ButtonRelease 1>",lambda e,Object=objid:self.MouseRelease1())
+    def draw_point(self, x, y, xvalue, yvalue, index):
+        objid = -1
+        if self.Servo_CurveType_ListBox.Selection == curvetype_individuell:
+            python_green = "#00FF00"
+            size = 4
+            x1, y1 = (x - size), (y - size)
+            x2, y2 = (x + size), (y + size)
+            objid = self.canvas.create_oval(x1, y1, x2, y2, fill=python_green, tag=["point", "x:" + str(xvalue), "y:" + str(yvalue), "idx:" + str(index)], width=1, activewidth=3)
+            #self.controller.ToolTip_canvas(self.canvas, objid, text="("+str(xvalue)+","+str(yvalue)+")",button_1=True)
+            self.canvas.tag_bind(objid,"<Button-1>" ,lambda e,Object=objid:self.MouseButton1(e,Object))
+            self.canvas.tag_bind(objid,"<ButtonRelease 1>",lambda e,Object=objid:self.MouseRelease1())
+            # Event für Mausbewegung
+            self.canvas.tag_bind(objid,"<B1-Motion>",lambda e,Object=objid:self.MouseMove(e,Object))
+        return objid
         
-        # Event für Mausbewegung
-        self.canvas.tag_bind(objid,"<B1-Motion>",lambda e,Object=objid:self.MouseMove(e,Object))
-      
         
     def tx2cx(self, x):
-        return self.graphLeft + x
+        x1 = self.canvas.canvasx(x)
+        res = self.graphLeft + x1 * self.canvasframe.total_scalefactor
+        return res
     
     def ty2cy(self, y):
-        return self.graphTop + self.graphHeight - y
+        y1 = self.canvas.canvasy(y)
+        res = (self.graphTop + self.graphHeight) - y1 * self.canvasframe.total_scalefactor 
+        return res
     
     def cy2val(self,cy):
-        ty = self.graphTop + self.graphHeight - cy
+        y1 = cy # self.canvas.canvasy(cy)
+        ty = (self.graphTop + self.graphHeight) - (y1 / self.canvasframe.total_scalefactor) 
         val = ty / self.vertical_value_factor
+        #print("cy2val:", cy, val, self.canvasframe.total_scalefactor)
         return val
     
+    def cx2val(self,cx):
+        x1 = cx #self.canvas.canvasx(cx)
+        tx = (x1 / self.canvasframe.total_scalefactor) - self.graphLeft
+        val = tx / self.horizontal_value_factor
+        #print("cx2val:", cx, val, self.canvasframe.total_scalefactor)
+        return val
+    
+    def valx2cx(self, val):
+        tx = val * self.horizontal_value_factor
+        x1 = (tx + self.graphLeft) * self.canvasframe.total_scalefactor
+        return x1
+    
+    def valy2cy(self, val):
+        ty = val * self.vertical_value_factor
+        y1 = ((self.graphTop + self.graphHeight) - ty) * self.canvasframe.total_scalefactor
+        return y1
+    
     def draw_graph(self, line_params=None,  vertical_params=None, horizontal_params=None, num_vertical=8, num_horizontal=10, graph=None, vertical_range=(0, 256), horizontal_range=(0, 20000), on_off_line = 0):
+        self.canvasframe.resize(1.0/self.canvasframe.total_scalefactor)
         self.canvas.delete("all")
-        self.canvas.create_rectangle(self.tx2cx(0), self.ty2cy(0), self.tx2cx(self.graphWidth), self.ty2cy(self.graphHeight), width=4)
         # Print the grid lines
         s_color="#000000"
         s_width=1
@@ -699,12 +714,14 @@ class UserForm_ServoAnim:
             horizontal_max = graph[-1][0]
             self.horizontal_value_factor = self.graphWidth / horizontal_max
         else:
-            self.horizontal_value_factor = 0
+            self.horizontal_value_factor = 1
         
         self.vertical_value_factor = self.graphHeight / vertical_max
         vertical_line_dist = int(self.graphHeight  / num_vertical)
         
         horizontal_text_pos = self.graphHeight + 10
+        
+        self.canvas.create_rectangle(self.tx2cx(0), self.ty2cy(0), self.tx2cx(self.graphWidth), self.ty2cy(self.graphHeight), width=4)
         
         cur_value = 0
         value_dist = int(vertical_max / num_vertical)
@@ -713,6 +730,8 @@ class UserForm_ServoAnim:
             objid = self.canvas.create_line(self.tx2cx(0), self.ty2cy(cur_y), self.tx2cx(self.graphWidth), self.ty2cy(cur_y), width=s_width, fill=s_color,dash=s_linedashed,tag="Grid")
             text_objid = self.canvas.create_text(20, self.ty2cy(cur_y), text = cur_value, width=30, fill=s_color,tag="Grid", font=X02.DefaultFont)
             cur_value += value_dist
+            
+        objid = -1
 
         if graph != []:
             self.graph_points = []
@@ -725,61 +744,153 @@ class UserForm_ServoAnim:
                 cur_x = int(graph[i][0] * self.horizontal_value_factor)
                 self.graph_points.extend([self.tx2cx(cur_x), self.ty2cy(cur_y)])
                 # draw_vertical line
-                objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=s_width, fill=s_color,dash=s_linedashed,tag="Grid")
+                objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=s_width, fill=s_color,dash=s_linedashed,tag="TimeGrid", activewidth=s_width*2)
+                self.canvas.tag_bind(objid,"<Button-1>" ,lambda e,Object=objid:self.MouseButton1(e,Object))
+                self.canvas.tag_bind(objid,"<ButtonRelease 1>",lambda e,Object=objid:self.MouseRelease1())
+                # Event für Mausbewegung
+                self.canvas.tag_bind(objid,"<B1-Motion>",lambda e,Object=objid:self.MouseMove(e,Object))                
+                
                 if cur_x - last_text_x >= 40:
                     text_objid = self.canvas.create_text(self.tx2cx(cur_x), self.ty2cy(horizontal_text_pos), text = timestr, width=30, fill=s_color,tag="Grid", font = X02.DefaultFont)
                     last_text_x = cur_x
-                self.draw_point(self.tx2cx(cur_x), self.ty2cy(cur_y), timepoint, value)
+                point_id = self.draw_point(self.tx2cx(cur_x), self.ty2cy(cur_y), timepoint, value, i)
                 
             self.line_objid = self.canvas.create_line(self.graph_points, width=gr_width, fill=gr_color,dash=gr_linedashed,tag="Line")
             # create EIN/AUS Line
             if on_off_line > 0:
                 cur_x = on_off_line * self.horizontal_value_factor
-                objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=th_width, fill=th_color,dash=th_linedashed,tag="Grid")
-        
+                objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=th_width, fill=th_color,dash=th_linedashed,tag="TimeGrid", activewidth=th_width*2)
         self.canvas.tag_raise("Line")
         self.canvas.tag_raise("point")
         
+    def redraw_canvas(self):
+        self.canvas = self.init_graph(frame=self.Frame2.TKWidget)
+        self.curve_points = self.calculate_complete_curve()
+        anzahl_werte = len(self.curve_points) - 1
+        on_off_line =  self.calculate_on_off_line()
+        self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, on_off_line=on_off_line)        
+        
     def MouseButton1(self,event,cvobject):
-        if self.Servo_CurveType_ListBox.Selection == 2: # individuel
+        self.startxy = None
+        self.canvas.focus_set()
+        self.point_idx = -1
+        self.current_objid = -1
+        if cvobject != -1 and self.Servo_CurveType_ListBox.Selection == 2: # individuel
             tags = self.canvas.gettags(cvobject)
             objecttype = tags[0]
             if objecttype == "point":
-                self.start_value= (tags[1], tags[2], tags[3], tags[4])
-                self.canvas.startxy = (event.x, event.y)
-            else:
-                self.start_value = ()
+                point_idx_str= tags[3].split(":")
+                if point_idx_str[0] == "idx":
+                    self.point_idx = int(point_idx_str[1])
+                    valx = self.curve_points[self.point_idx][0]
+                    valy = self.curve_points[self.point_idx][1]
+                    self.startxy = (self.valx2cx(valx),self.valy2cy(valy))
+                    print("MouseButton,1:", valx, valy, self.startxy)
+                else:
+                    self.point_idx = -1
+                    self.startxy = (event.x, event.y)
+                self.mm_canvas_coord_list = self.canvas.coords(self.line_objid)
+                self.mm_canvas_coord_list_org = self.mm_canvas_coord_list.copy()
+                self.Kurve_Zeitanzeige_Label.Value = valx
+                self.Kurve_Wertanzeige_Label.Value = valy
+                self.current_objid = cvobject
 
     def MouseMove(self,event,cvobject):
-        if self.start_value != ():
-            dx, dy = event.x-self.canvas.startxy[0], event.y-self.canvas.startxy[1]
-            # move the selected item
-            self.canvas.move(cvobject, 0, dy)
-            # update last position
-            self.canvas.startxy = (self.canvas.startxy[0], event.y)
+        if self.point_idx != - 1:
+            pos_x = self.canvas.canvasx(event.x)
+            pos_y = self.canvas.canvasy(event.y)
+            dx = pos_x-self.startxy[0]
+            dy = pos_y-self.startxy[1]
+            if self.Servo_TimeStepType_ListBox.Selection != timesteptype_individuell:
+                # keep x pos
+                dx = 0
+                pos_x = self.startxy[0] 
+            self.startxy = (pos_x, pos_y)
+            self.canvas.move(cvobject, dx, dy)
+
             # update graph points:
-            search_x = int(self.start_value[0])
-            for index, point in enumerate(self.graph_points):
-                if index % 2 == 0 and point == search_x:
-                    self.graph_points[index+1] += dy
-                    self.current_curve_point = [self.curve_points[int(index/2)][0], int(self.cy2val(event.y))]
-                    self.curve_points[int(index/2)] = self.current_curve_point
-                    #print(self.current_curve_point)
-                    break
-            self.canvas.coords(self.line_objid,self.graph_points)
+            self.mm_canvas_coord_list[self.point_idx*2 +1] += dy
+            self.mm_canvas_coord_list[self.point_idx*2] += dx
+            #val_x =  self.curve_points[self.point_idx][0]
+            val_x = int(self.cx2val(pos_x))
+            val_y = int(self.cy2val(pos_y))
+            self.current_curve_point = [val_x, val_y]
+            #print("MouseMove:", val_x, val_y, self.current_curve_point, pos_x, pos_y, event.x, event.y)
+            self.curve_points[self.point_idx] = self.current_curve_point
+            self.canvas.coords(self.line_objid,self.mm_canvas_coord_list)
+            self.Kurve_Zeitanzeige_Label.Value = self.current_curve_point[0]
+            self.Kurve_Wertanzeige_Label.Value = self.current_curve_point[1]
             
             
     def MouseRelease1(self):
         # update line
         # update graphpoints
         # update graph
-        if self.start_value != ():
+        if self.startxy != None:
             self.get_led_value_and_send_to_ARDUINO()
-        self.start_value = ()
+        self.startxy = None
+        
+    def move_point(self, objid, dvalx, dvaly):
+        if objid != -1:
+            tags = self.canvas.gettags(objid)
+            objecttype = tags[0]
+            if objecttype == "point":
+                point_idx_str= tags[3].split(":")
+                if point_idx_str[0] == "idx":
+                    self.point_idx = int(point_idx_str[1])
+                    if self.Servo_TimeStepType_ListBox.Selection != timesteptype_individuell:
+                        dvalx = 0
+                    val_x1 = self.curve_points[self.point_idx][0]
+                    pos_x1 = self.valx2cx(val_x1)
+                    val_x2 = val_x1 + dvalx
+                    pos_x2 = self.valx2cx(val_x2)
+                   
+                    val_y1 = self.curve_points[self.point_idx][1]
+                    pos_y1 = self.valy2cy(val_y1)
+                    val_y2 = val_y1 + dvaly
+                    pos_y2 = self.valy2cy(val_y2)
+                
+                    self.mm_canvas_coord_list = self.canvas.coords(self.line_objid)
+                    self.mm_canvas_coord_list_org = self.mm_canvas_coord_list.copy()
+                    
+                    pos_x = self.valx2cx(val_x2)
+                    pos_y = self.valy2cy(val_y2)
+                    self.startxy = (pos_x, pos_y)
+                    dx = pos_x2 - pos_x1
+                    dy = pos_y2 - pos_y1
+                    self.canvas.move(objid, dx, dy)
+                    # update graph points:
+                    self.mm_canvas_coord_list[self.point_idx*2 +1] += dy
+                    self.mm_canvas_coord_list[self.point_idx*2] += dx
+                    #val_x =  self.curve_points[self.point_idx][0]
+                    self.current_curve_point = [val_x2, val_y2]
+                    #print("MouseMove:", val_x, val_y, self.current_curve_point, pos_x, pos_y, event.x, event.y)
+                    self.curve_points[self.point_idx] = self.current_curve_point
+                    self.canvas.coords(self.line_objid,self.mm_canvas_coord_list)
+                    self.Kurve_Zeitanzeige_Label.Value = self.current_curve_point[0]
+                    self.Kurve_Wertanzeige_Label.Value = self.current_curve_point[1]
+                    if dvaly > 0:
+                        self.get_led_value_and_send_to_ARDUINO()
+        
+    def OnKeyup(self,event=None):
+        if self.current_objid != -1:
+            self.move_point(self.current_objid, 0, 1)
+    
+    def OnKeydown(self,event=None):
+        if self.current_objid != -1:
+            self.move_point(self.current_objid, 0, -1)
+        
+    def OnKeyright(self,event=None):
+        if self.current_objid != -1:
+            self.move_point(self.current_objid, 20, 0)
+    
+    def OnKeyleft(self,event=None):
+        if self.current_objid != -1:
+            self.move_point(self.current_objid, -20, 0)
         
     def get_led_value_and_send_to_ARDUINO(self):
         if self.current_curve_point != None:
-            new_LED_val = self.current_curve_point[1]
+            new_LED_val = int(self.current_curve_point[1])
             if new_LED_val > 255:
                 new_LED_val = 255
             elif new_LED_val < 0:
@@ -800,7 +911,7 @@ class UserForm_ServoAnim:
         selected = self.canvas.find_overlapping(event.x-10, event.y-10, event.x+10, event.y+10)
         if selected:
             self.canvas.selected = selected[-1]  # select the top-most item
-            self.canvas.startxy = (event.x, event.y)
+            self.startxy = (event.x, event.y)
             #print(self.canvas.selected, self.canvas.startxy)
         else:
             self.canvas.selected = None
@@ -808,11 +919,11 @@ class UserForm_ServoAnim:
     def on_drag(self, event):
         if self.canvas.selected:
             # calculate distance moved from last position
-            dx, dy = event.x-self.canvas.startxy[0], event.y-self.canvas.startxy[1]
+            dx, dy = event.x-self.startxy[0], event.y-self.startxy[1]
             # move the selected item
             self.canvas.move(self.canvas.selected, dx, dy)
             # update last position
-            self.canvas.startxy = (event.x, event.y)
+            self.startxy = (event.x, event.y)
             
     def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):
         if self.controller.mobaledlib_version == 1:

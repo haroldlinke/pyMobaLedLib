@@ -289,12 +289,12 @@ class CWorkbook(object):
         
     def shift_press(self,event):
         global shift_key
-        print("Shift press")
+        #print("Shift press")
         shift_key=True
     
     def shift_release(sekf,event):
         global shift_key
-        print("Shift release") 
+        #print("Shift release") 
         shift_key=False
         
     def init_workbook(self):
@@ -663,9 +663,11 @@ class CWorkbook(object):
             logging.debug("FileVersion:"+savedData.get("Version","000"))
             dataversion = savedData.get("DataVersion","000")
             if workbookname=="ProgGenerator":
+                from_sheet = "DCC"
                 if int(dataversion) < int(self.controller.ProgGenMinDataVersion):
                     return
             elif workbookname =="PatternWorkbook":
+                from_sheet = "Main"
                 if int(dataversion) < int(self.controller.PattGenMinDataVersion):
                     return                    
             workbookdata=savedData["Workbookdata"]
@@ -673,10 +675,10 @@ class CWorkbook(object):
                 sheet = self.Sheets(sheetname)
                 #print("Load WB checking sheets: "+sheetname)
                 if sheet == None:
-                    self.add_sheet(sheetname, from_sheet="Main",nocontrols=True,noredraw=True)
+                    self.add_sheet(sheetname, from_sheet=from_sheet, nocontrols=True,noredraw=True)
             for sheet in self.sheets:
                 data = copy.deepcopy(workbookdata.get(sheet.Name,{}))
-                print("Load WB Loading:"+sheet.Name)
+                #print("Load WB Loading:"+sheet.Name)
                 self.controller.set_statusmessage("Workbook: "+workbookname+" Loading:"+sheet.Name)
                 self.controller.update()
                 if data !={}:
@@ -1109,6 +1111,8 @@ class CWorksheet(object):
         self.grid_color = "#000000"
         self.linewidth = 1
         self.wschanged_callback = None
+        self.wscalculation_callback = None
+        self.wsselected_callback = None        
         self._visible_val = True
         
         if False: #tablemodel:
@@ -1388,7 +1392,7 @@ class CWorksheet(object):
         self.moveShapesVertical(top_left_cell_row=row, deltaY=row_data["new_size"]-row_data["old_size"])
     
     def tkEvent_column_width_resize(self, event_data):
-        print(event_data.resized.columns)
+        #print(event_data.resized.columns)
         resized_columns = event_data.resized.columns
         logging.debug("tkEvent_column_width_resize:"+repr(resized_columns))
         for col in resized_columns.keys():
@@ -2199,7 +2203,7 @@ class CWorksheet(object):
         logging.debug("Import CSV_int: Filename="+str(filename))
 
         if not os.path.isfile(filename) or not os.path.exists(filename):
-            print ('no such file', filename)
+            #print ('no such file', filename)
             logging.debug("Import CSV_int: File notfound Filename="+filename)
             return None
         #takes first row as field names
@@ -2770,9 +2774,9 @@ class CFreeForm(object):
     def ConvertToShape(self):
         name="Freeform"
         shape=CShape(name, msoFreeform, self.Left, self.Top, None, None,Fillcolor=-1,nodelist=self.nodelist,zorder=0,segmenttype=self.SegmentType,editingtype=self.EditingType)
-        print("ConvertToShape", name, self.Left, self.Top, self.nodelist)
+        #print("ConvertToShape", name, self.Left, self.Top, self.nodelist)
         shape.Worksheet.shapelist.append(shape)
-        print(shape.Worksheet.shapelist)
+        #print(shape.Worksheet.shapelist)
         return shape
         
 class CShapeList(object):
@@ -2852,7 +2856,7 @@ class CShapeList(object):
         return shape # self.convTShape2CShape(shape)
     
     def BuildFreeform(self, EditingType, X1, Y1):
-        print("BuildFreeForm:", X1, Y1)
+        #print("BuildFreeForm:", X1, Y1)
         return CFreeForm(EditingType,X1,Y1)
         
     def Delete(self,shape):

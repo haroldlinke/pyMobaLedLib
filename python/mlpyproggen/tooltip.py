@@ -257,7 +257,7 @@ class Tooltip_Canvas:
 
             return x1, y1
 
-        print("Tooltip show Objid:",self.objid, self.text)
+        #print("Tooltip show Objid:",self.objid, self.text)
         bg = self.bg
         pad = self.pad
         widget = self.widget

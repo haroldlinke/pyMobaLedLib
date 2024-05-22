@@ -291,7 +291,7 @@ class SerialMonitorPage(tk.Frame):
 
     def stop_process_serial(self):
         logging.debug("stop_process_serial")
-        print("SerialMonitorPage: stop_process_serial")
+        #print("SerialMonitorPage: stop_process_serial")
         global ThreadEvent
         self.monitor_serial = False
         if ThreadEvent:

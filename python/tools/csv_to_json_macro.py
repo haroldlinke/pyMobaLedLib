@@ -73,7 +73,7 @@ if filepath:
         if macro:
             jsondict[macro]=csvdict
  
-print(jsondict)   
+#print(jsondict)   
 filename, file_extension = os.path.splitext(filepath)
 
 json_filename = filename+ ".json"
