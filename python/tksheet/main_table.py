@@ -5372,12 +5372,12 @@ class MainTable(tk.Canvas):
                         align = align
                     else:
                         align = self.align
-                    #****** test cellextension *******
-                    if align.endswith("x"):
-                        cellextension = True
-                        align = align[:-1]
-                    else:
-                        cellextension = False
+                    #****** test cellextension *******  # *HL*
+                    if align.endswith("x"): # *HL*
+                        cellextension = True # *HL*
+                        align = align[:-1] # *HL*
+                    else: # *HL*
+                        cellextension = False # *HL*
                     kwargs = self.get_cell_kwargs(datarn, datacn, key="dropdown")
                     if align == "w":
                         draw_x = cleftgridln + 3
@@ -5475,14 +5475,14 @@ class MainTable(tk.Canvas):
                         draw_y += start_ln * self.table_xtra_lines_increment
                         if draw_y + self.table_half_txt_height - 1 <= rbotgridln and len(lns) > start_ln:
                             for txt1 in islice(lns, start_ln, None):
-                                txtparts = txt1.split("§")
-                                if len(txtparts)>1:
-                                    txt=txtparts[0]
-                                    tooltip_txt = txtparts[1]
+                                txtparts = txt1.split("§") # *HL*
+                                if len(txtparts)>1: # *HL*
+                                    txt=txtparts[0] # *HL*
+                                    tooltip_txt = txtparts[1] # *HL*
                                 else:
-                                    tooltip_txt = ""
-                                    txt = txt1
-                                if False: #test self.hidd_text:
+                                    tooltip_txt = "" # *HL*
+                                    txt = txt1 # *HL*
+                                if False: #test self.hidd_text: # *HL*
                                     iid, showing = self.hidd_text.popitem()
                                     self.coords(iid, draw_x, draw_y)
                                     if showing:
@@ -5511,13 +5511,13 @@ class MainTable(tk.Canvas):
                                         fill=fill,
                                         font=font,
                                         anchor=align,
-                                        tag="t",
+                                        tag=("t", "R"+str(datarn)+"C"+str(datacn)),  # *HL*
                                     )
-                                    self.ToolTip_canvas(iid,text=tooltip_txt)
+                                    self.ToolTip_canvas(iid,text=tooltip_txt) # *HL*
                                 self.disp_text[iid] = True
                                 wd = self.bbox(iid)
                                 wd = wd[2] - wd[0]
-                                if (not cellextension) and (wd > mw):
+                                if (not cellextension) and (wd > mw):  # *HL*
                                     if align == "w":
                                         txt = txt[: int(len(txt) * (mw / wd))]
                                         self.itemconfig(iid, text=txt)

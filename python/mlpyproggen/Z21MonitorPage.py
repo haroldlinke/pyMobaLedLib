@@ -584,12 +584,12 @@ class Z21MonitorPage(tk.Frame):
     
     def test_convert_7bit_to_8bit(self):
         bytestring = b'\x40\x00'
-        print(self.convert_7bit_to_8bit(bytestring))
+        #print(self.convert_7bit_to_8bit(bytestring))
         bytestring = b'\x00\x40'
-        print(self.convert_7bit_to_8bit(bytestring))        
+        #print(self.convert_7bit_to_8bit(bytestring))        
         data_7bit_str=b"\x7F\x7F"
         v8bit_str=self.convert_7bit_to_8bit(data_7bit_str)
-        print("test_convert_7bit_to_8bit:",data_7bit_str,v8bit_str)
+        #print("test_convert_7bit_to_8bit:",data_7bit_str,v8bit_str)
         
     def convert_7bit_to_8bit(self,bytestring):
         

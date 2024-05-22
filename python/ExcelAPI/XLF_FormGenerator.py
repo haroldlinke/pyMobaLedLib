@@ -266,9 +266,11 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 else:
                     anchor="n"
                     justify=tk.CENTER
-                label=tk.Label(parent, text=comp.Caption,anchor=anchor, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,font=comp.Font, relief=comp.relief) #,font=comp_font)
+                comp.TKVar = tk.StringVar(value=comp.Caption)
+                label=tk.Label(parent, textvariable=comp.TKVar, anchor=anchor, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,font=comp.Font, relief=comp.relief) #,font=comp_font)
                 label.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=label
+                setattr(dlg,comp.Name,comp)
                 if comp.ControlTipText!="":
                     ToolTip(label, text=comp.ControlTipText)
             #****************************************************
@@ -295,6 +297,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 label=tk.Label(parent, text=comp.Caption,anchor=anchor, image=comp.iconImage, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,font=comp.Font, relief=comp.relief) #,font=comp_font)
                 label.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=label
+                setattr(dlg,comp.Name,comp)
                 if comp.ControlTipText!="":
                     ToolTip(label, text=comp.ControlTipText)                    
             #****************************************************
@@ -315,6 +318,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength, font=comp.Font)
                 button.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 comp.TKWidget=button
+                setattr(dlg,comp.Name,comp)
                 if comp.ControlTipText!="":
                     ToolTip(button, text=comp.ControlTipText)
                 pass
