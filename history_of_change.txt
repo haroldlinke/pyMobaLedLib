@@ -6,6 +6,7 @@
   - check for esptool_py only for ESP boards
 - support for ESP32 boards for Linux and Mac
 - ServoAnim - Individual timepoints: changes of Ein-/Aus-durations update all timepoints proportionally
+- use of On/Off switch instead of 2 Buttons (Red/Green) (Undo of change in V5.3.1B - no improvement, more issues)
 
 5.3.1B - 22.05.2024
 - ProgramGenerator: New pages generation is possible
