@@ -339,7 +339,18 @@ def __Get_State_of_BoardExtras_Row(row):
                 Sh.CellDict[row, DetectVer_Col] = Ver
                 with_1.Value = "1"
             else:
-                with_1.Value = ''
+                if TestFile == "esptool.exe": # hack for esptool in Linux and Mac OS the file is esptool.py instead of esptool.exe
+                    logging.debug("State of BoardsExtras: esptool.exe not found - check for esptool.py")
+                    TestFile = "esptool.py"
+                    if Dir(dirName + '/' + TestFile) != '':
+                        logging.debug("State of BoardsExtras: esptool.py found")
+                        Sh.CellDict[row, DetectVer_Col] = Ver
+                        with_1.Value = "1"
+                    else:
+                        logging.debug("State of BoardsExtras: esptool.py NOT found in path "+dirName + '/' + TestFile)
+                        with_1.Value = ''
+                else:
+                    with_1.Value = ''
             return
 
 def Get_All_Library_States():

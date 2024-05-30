@@ -31,23 +31,23 @@
 # *
 # *
 # ***************************************************************************
-import mlpyproggen.Pattern_Generator as PG
+import mlpyproggen.Pattern_Generator as PAG
 import pattgen.M20_Morsecode as M20
-import mlpyproggen.Pattern_Generator as PG
+import mlpyproggen.Prog_Generator as PRG
 import pattgen.M02_Main as M02
 import pattgen.Tabelle9 as PAT09
 
 globalprocs= {"Make_Morsecode_Init"                    : M20.Make_Morsecode_Init,
               "Make_Morsecode"                         : M20.Make_Morsecode,
-              "Add_Col_Button_Click"                   : PG.Add_Col_Button_Click,
-              "Del_Col_Button_Click"                   : PG.Del_Col_Button_Click,
+              "Add_Col_Button_Click"                   : PAG.Add_Col_Button_Click,
+              "Del_Col_Button_Click"                   : PAG.Del_Col_Button_Click,
               "M02.Main_Menu"                          : M02.Main_Menu,
               "PAT09.Import_from_ProgGen_Button_Click" : PAT09.Import_from_ProgGen_Button_Click,
               "PAT09.Prog_Generator_Button_Click"      : PAT09.Prog_Generator_Button_Click,
               "PAT09.InsertPicture_Button_Click"       : PAT09.InsertPicture_Button_Click,
-              "button_testen_cmd"                      : PG.button_testen_cmd,
-              "button_aktualisieren_cmd"               : PG.button_aktualisieren_cmd,
-              "button_newsheet_cmd"                    : PG.button_newsheet_cmd}
+              "button_testen_cmd"                      : PAG.button_testen_cmd,
+              "button_aktualisieren_cmd"               : PAG.button_aktualisieren_cmd,
+              "button_newsheet_cmd"                    : PAG.button_newsheet_cmd}
 
 
 

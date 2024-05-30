@@ -67,6 +67,7 @@ import proggen.M07_COM_Port as M07
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.M25_Columns as M25
 import proggen.M30_Tools as M30
+import proggen.M37_Inst_Libraries as M37
 
 import pgcommon.G00_common as G00
 import proggen.Tabelle2 as T02
@@ -99,6 +100,15 @@ BUTTONLABELWIDTH = 10
 
 start_sheet  = "DCC"
 ThisWorkbook = None
+
+def button_check_actual_versions_cmd():
+    M37.Check_Actual_Versions()
+
+def button_install_selected_cmd():
+    M37.Install_Selected()
+
+def button_delete_selected_cmd():
+    M37.Delete_Selected()
             
 class Prog_GeneratorPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -114,6 +124,10 @@ class Prog_GeneratorPage(tk.Frame):
         self.default_font        = self.controller.defaultfontnormal
         self.default_boldfont    = (self.default_font[0],self.default_font[1],"bold")
         self.default_smallfont   = self.controller.defaultfontsmall
+        
+        globalprocs= {"button_check_actual_versions_cmd"       : button_check_actual_versions_cmd,
+                      "button_install_selected_cmd"            : button_install_selected_cmd,
+                      "button_delete_selected_cmd"             : button_delete_selected_cmd}
         
         datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
         datasheet_formating = { "HideCells" : ("A1:C1", "E1"), #((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16)),
@@ -255,7 +269,76 @@ class Prog_GeneratorPage(tk.Frame):
                                                                }
                                                         },
                                     "left_click_callertype": "cell"
-                                    }
+                                    },
+                     "Controls" :  { "Default":{ "Components" : [{"Name":"Default",
+                                                                  "Accelerator":"",
+                                                                  "BackColor":"#00000F",
+                                                                  "BorderColor":"#000006",
+                                                                  "BorderStyle":"fmBorderStyleNone",
+                                                                  "IconName":"",
+                                                                  "Caption":"",
+                                                                  "Command": None ,
+                                                                  "ControlTipText":"",
+                                                                  "ForeColor":"#000012",
+                                                                  "Height":12,
+                                                                  "Left":0,
+                                                                  "Top":0,
+                                                                  "Type":"",
+                                                                  "Visible":True,
+                                                                  "Width":12,
+                                                                  "AlternativeText":"",
+                                                                  "Font" : self.default_font,
+                                                                  "CharFormat":{("1.0","1.end"): self.default_boldfont}}
+                                                                 ]},
+                                    "Form1": {  "Name"          : "Check_Actual_Versions",
+                                                "BackColor"     : "#FFFFFF",
+                                                "BorderColor"   : "#000012",
+                                                "Caption"       : "",
+                                                "Height"        : 24,
+                                                "Left"          : None,
+                                                "Col"           : 2,
+                                                "Top"           : None,
+                                                "Row"           : 2, 
+                                                "Type"          : "FormWindow",
+                                                "Visible"       : True,
+                                                "Width"         : 74,
+                                                "Components"    : [{"Name":"Check_Actual_Versions","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                                                    "Caption":"Check actual versions",
+                                                                    "Command": "button_check_actual_versions_cmd" ,"ControlTipText":"","ForeColor":"#000012","Height":20,"Left":2,"Top":2,"Type":"CommandButton","Visible":True,"Width":70},
+                                                                  ]},
+                                    "Form2": {  "Name"          : "Install_Selected",
+                                                "BackColor"     : "#FFFFFF",
+                                                "BorderColor"   : "#000012",
+                                                "Caption"       : "",
+                                                "Height"        : 24,
+                                                "Left"          : None,
+                                                "Col"           : 2,
+                                                "Top"           : None,
+                                                "Row"           : 4,
+                                                "Type"          : "FormWindow",
+                                                "Visible"       : True,
+                                                "Width"         : 74,
+                                                "Components"    : [{"Name":"Install_Selected","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                                                    "Caption":"Install selected",
+                                                                    "Command": "button_install_selected_cmd" ,"ControlTipText":"","ForeColor":"#000012","Height":20,"Left":2,"Top":2,"Type":"CommandButton","Visible":True,"Width":70},
+                                                                  ]},
+                                    "Form3": {  "Name"          : "Delete_Selected",
+                                                "BackColor"     : "#FFFFFF",
+                                                "BorderColor"   : "#000012",
+                                                "Caption"       : "",
+                                                "Height"        : 24,
+                                                "Left"          : None,
+                                                "Col"           : 2,
+                                                "Top"           : None,
+                                                "Row"           : 6,
+                                                "Type"          : "FormWindow",
+                                                "Visible"       : True,
+                                                "Width"         : 74,
+                                                "Components"    : [{"Name":"Delete_Selected","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone","IconName":"",
+                                                                    "Caption":"Delete selected",
+                                                                    "Command": "button_delete_selected_cmd" ,"ControlTipText":"","ForeColor":"#000012","Height":20,"Left":2,"Top":2,"Type":"CommandButton","Visible":True,"Width":70},
+                                                                  ]},
+                                },                     
                     },
                    "Par_Description":
                     {"Name":"Par_Description",
@@ -276,7 +359,8 @@ class Prog_GeneratorPage(tk.Frame):
         
         workbook_dict = {"Name": "ProgGenerator",
                          "Events": workbook_events,
-                         "SheetDict" : sheetdict_PROGGEN
+                         "SheetDict" : sheetdict_PROGGEN,
+                         "JumpTable" : globalprocs
                          }
         
         macrodata = self.controller.MacroDef.data.get(self.tabClassName,{})
@@ -426,7 +510,6 @@ class Prog_GeneratorPage(tk.Frame):
     # ----------------------------------------------------------------
     # End of Standardprocedures for every tabpage
     # ---------------------------------------------------------------- 
-    
 
         
     def create_button_list(self):
