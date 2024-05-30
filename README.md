@@ -42,8 +42,30 @@ The VBA Code of the PatternGenerator was translated by an enhanced version of th
 - Pattern Configurator: Icons and other objects on the page may to stay at the corect positon. To refresh select the Menu-Command: Tabelle->Refresh Icons
 - ARDUINO connected to USB is not recognized correctly in LINUX and MAC OS automatically. Please select the correct type in the Options Menu and select the correct USB-Port manually.
   
-
 # History of Change
+5.3.1C - 29-05.2024
+- libraries can now be updated via the library page and via options -> update -> status of libraries
+- problem with esptools_py solved
+  - replaced "\" with "/" in libname
+  - for Linux and Mac check for esptool.py instead of esptool.exe
+  - check for esptool_py only for ESP boards
+- support for ESP32 boards for Linux and Mac
+- ServoAnim - Individual timepoints: changes of Ein-/Aus-durations update all timepoints proportionally
+- use of On/Off switch instead of 2 Buttons (Red/Green) (Undo of change in V5.3.1B - no improvement, more issues)
+
+5.3.1B - 22.05.2024
+- ProgramGenerator: New pages generation is possible
+- Servo Animation improvements:
+  - use of 2 Buttons (Red/Green) instead of On/Off switch
+  - new: timestep individuell - allows to move the points in time right and left by mouse
+  - active point can be moved by cursor-keys
+  - zoom into graph with Ctrl-Mousewheel (and crtl-up/down-key - when a point is active)
+  - drag of canvas with shift-left-mousebutton or shift cursor-keys
+
+5.3.1A - 17.05.2024
+correction:
+- Linux/Mac - Upload to ARDUINO was not working
+- Macro Flash - incorrect error message that input value is too large
 
 5.3.1- 17.05.2024
 correction:
