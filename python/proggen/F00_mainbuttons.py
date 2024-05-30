@@ -279,8 +279,6 @@ def Workbook_Open():
     P01.Application.EnableEvents = True
     return
     MsgBox('Interner Fehler: Die Event Routinen wurden nicht gefunden', vbCritical, 'Interner Fehler')
-
-
         
 def workbook_init(workbook):
     #M01.__Release_or_Debug_Version(True)

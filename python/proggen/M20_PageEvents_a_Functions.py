@@ -666,8 +666,6 @@ def ClearSheet():
         
 def __set_column_width(sheet):
     M01.set_columnwidth(sheet)
-    
-
 
 def Show_Help():
     #---------------------
@@ -685,7 +683,7 @@ def Proc_DoubleCkick(Sh, Target, Cancel):
     M25.Make_sure_that_Col_Variables_match(Sh)
     if M28.Is_Data_Sheet(P01.ActiveSheet):
         if Target.Row >= M02.FirstDat_Row:
-            if (Target.Column == M25.Config__Col) or (Target.Column == M25.MacIcon_Col) or (Target.Column == M25.LanName_Col):
+            if (Target.Column == M25.MacIcon_Col) or (Target.Column == M25.LanName_Col): # (Target.Column == M25.Config__Col) or  - no double click for config col
                 Cancel = True
                 M09SM.SelectMacros()
             elif (Target.Column == M25.Inp_Typ_Col):

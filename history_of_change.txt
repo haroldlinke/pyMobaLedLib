@@ -1,3 +1,12 @@
+5.3.1C - 29-05.2024
+- libraries can now be updated via the library page and via options -> update -> status of libraries
+- problem with esptools_py solved
+  - replaced "\" with "/" in libname
+  - for Linux and Mac check for esptool.py instead of esptool.exe
+  - check for esptool_py only for ESP boards
+- support for ESP32 boards for Linux and Mac
+- ServoAnim - Individual timepoints: changes of Ein-/Aus-durations update all timepoints proportionally
+
 5.3.1B - 22.05.2024
 - ProgramGenerator: New pages generation is possible
 - Servo Animation improvements:

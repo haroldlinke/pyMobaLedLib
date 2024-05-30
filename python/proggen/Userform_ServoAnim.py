@@ -337,7 +337,10 @@ class UserForm_ServoAnim:
                             self.get_params_from_param_list(self.param_list)
                             self.patterntype = self.Servo_RunType_ListBox.Selection
                             self.curvetype = self.Servo_CurveType_ListBox.Selection
-                            self.servotype = self.Servo_Type_ListBox.Selection 
+                            self.servotype = self.Servo_Type_ListBox.Selection
+        
+        self.last_t_aus = 0
+        self.last_t_ein = 0        
 
         #if self.Servo_TimeStepType_ListBox.Selection == 0: # automatic
         #    self.Servo_Abstand_TextBox.Value = int(self.Servo_DauerEin_TextBox.Value / 4)
@@ -351,6 +354,7 @@ class UserForm_ServoAnim:
         self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, on_off_line=on_off_line)
         self.controller.connect_if_not_connected()
         self.controller.ARDUINO_begin_direct_mode()
+        
 
     def __UserForm_Activate(self):
         #------------------------------
@@ -410,7 +414,7 @@ class UserForm_ServoAnim:
         steigung =  (end_val - start_val) / duration
         while t <= duration:
             val = int(round(steigung * t + start_val, 0))
-            curve_points.append((t+start_time, val))
+            curve_points.append([t+start_time, val])
             t += time_distance
         return curve_points
     
@@ -423,7 +427,7 @@ class UserForm_ServoAnim:
         else:
             t = 0
         while t <= duration: 
-            curve_points.append((t+start_time, val))
+            curve_points.append([t+start_time, val])
             t += time_distance
         return curve_points
     
@@ -452,9 +456,21 @@ class UserForm_ServoAnim:
         point_list1.extend(point_list3)
         return point_list1
     
+    def update_timepoints(self, t_from=0, t_to=0, t_shift=0, t_factor=1):
+        if t_factor==1 and t_shift==0:
+            return
+        for index, curve_point in enumerate(self.curve_points):
+                if curve_point[0] > t_from:
+                    if curve_point[0] <= t_to:
+                        curve_point[0] = round((curve_point[0] - t_from)* t_factor) + t_shift
+                    else:
+                        break
+    
     def calculate_complete_curve(self):
         self.curvetype = self.Servo_CurveType_ListBox.Selection
         self.patterntype = self.Servo_RunType_ListBox.Selection
+        t_ein = self.Servo_PauseS_Ein_TextBox.Value + self.Servo_DauerEin_TextBox.Value + self.Servo_PauseE_Ein_TextBox.Value
+        t_aus = self.Servo_PauseS_Aus_TextBox.Value + self.Servo_DauerAus_TextBox.Value + self.Servo_PauseE_Aus_TextBox.Value        
         if self.curvetype != curvetype_individuell: # individuel
             curve_points = self.calculate_curve(self.Servo_DauerEin_TextBox.Value, self.Servo_Anfangswert_TextBox.Value, self.Servo_Endwert_TextBox.Value, 0 , self.Servo_Abstand_TextBox.Value, pauseS=self.Servo_PauseS_Ein_TextBox.Value, pauseE=self.Servo_PauseE_Ein_TextBox.Value)
             if self.patterntype != 1:
@@ -470,7 +486,26 @@ class UserForm_ServoAnim:
                 if curve_point[1] < 0:
                     curve_point[1] = 0
                     self.curve_points[index] = curve_point
-            curve_points = self.curve_points            
+            if t_ein != self.last_t_ein and self.last_t_ein > 0:
+                time_factor_ein = t_ein / self.last_t_ein
+            else:
+                time_factor_ein = 1
+            if t_aus != self.last_t_aus and self.last_t_aus > 0:
+                time_factor_aus = t_aus / self.last_t_aus
+            else:
+                time_factor_aus = 1
+            if time_factor_aus != 1 or time_factor_ein != 1:
+                if time_factor_ein < 1:
+                    self.update_timepoints(t_from=0, t_to=self.last_t_ein, t_factor = time_factor_ein)
+                    self.update_timepoints(t_from=self.last_t_ein, t_to=self.last_t_ein+self.last_t_aus, t_shift=t_ein, t_factor = time_factor_aus)
+                if time_factor_ein > 1:
+                    self.update_timepoints(t_from=self.last_t_ein, t_to=self.last_t_ein+self.last_t_aus, t_shift=t_ein, t_factor = time_factor_aus)
+                    self.update_timepoints(t_from=0, t_to=self.last_t_ein, t_factor = time_factor_ein)
+                if time_factor_ein == 1:
+                    self.update_timepoints(t_from=self.last_t_ein, t_to=self.last_t_ein+self.last_t_aus, t_shift=t_ein, t_factor = time_factor_aus)
+            curve_points = self.curve_points
+        self.last_t_ein = t_ein
+        self.last_t_aus = t_aus
         return curve_points
     
     def determine_delta_timepoints_count(self):
@@ -515,7 +550,7 @@ class UserForm_ServoAnim:
         delta_timepoints_count = self.determine_delta_timepoints_count()
         
         if gotoaction:
-            use_nbuttons = True
+            use_nbuttons = False
             if use_nbuttons:
                 self.Userform_Res = LED + "$// Activation: N_Buttons #ServoAnim("
                 self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
@@ -553,6 +588,8 @@ class UserForm_ServoAnim:
             point = self.curve_points[i+1]
             timepoint = point[0]
             timepointdelta = timepoint - lasttimepoint
+            if timepointdelta < 0:
+                timepointdelta = 0
             timepoint_str += "," + str(timepointdelta)
             lasttimepoint = timepoint
         self.Userform_Res = self.Userform_Res + timepoint_str # "," + str(self.LED_Abstand_TextBox.Value)
@@ -797,17 +834,30 @@ class UserForm_ServoAnim:
 
     def MouseMove(self,event,cvobject):
         if self.point_idx != - 1:
-            pos_x = self.canvas.canvasx(event.x)
-            pos_y = self.canvas.canvasy(event.y)
-            dx = pos_x-self.startxy[0]
-            dy = pos_y-self.startxy[1]
-            if self.Servo_TimeStepType_ListBox.Selection != timesteptype_individuell:
+            pos_x1 = self.canvas.canvasx(event.x)
+            pos_y1 = self.canvas.canvasy(event.y)
+            dx = pos_x1-self.startxy[0]
+            dy = pos_y1-self.startxy[1]
+            if self.Servo_TimeStepType_ListBox.Selection != timesteptype_individuell or self.point_idx == 0 or self.point_idx == len(self.curve_points) - 1:
                 # keep x pos
                 dx = 0
-                pos_x = self.startxy[0] 
+            new_x =  self.mm_canvas_coord_list[self.point_idx*2] + dx
+            if dx != 0:
+                xmin = self.mm_canvas_coord_list[(self.point_idx-1)*2]
+                xmax = self.mm_canvas_coord_list[(self.point_idx+1)*2] 
+                if (new_x < xmin):
+                    dx = 0
+                    pos_x = xmin
+                elif (new_x > xmax):
+                    dx = 0
+                    pos_x = xmax
+                else:
+                    pos_x = self.startxy[0] + dx
+            else:
+                pos_x = self.startxy[0] + dx
+            pos_y = self.startxy[1] + dy
             self.startxy = (pos_x, pos_y)
             self.canvas.move(cvobject, dx, dy)
-
             # update graph points:
             self.mm_canvas_coord_list[self.point_idx*2 +1] += dy
             self.mm_canvas_coord_list[self.point_idx*2] += dx
@@ -838,8 +888,9 @@ class UserForm_ServoAnim:
                 point_idx_str= tags[3].split(":")
                 if point_idx_str[0] == "idx":
                     self.point_idx = int(point_idx_str[1])
-                    if self.Servo_TimeStepType_ListBox.Selection != timesteptype_individuell:
+                    if self.Servo_TimeStepType_ListBox.Selection != timesteptype_individuell or self.point_idx == 0 or self.point_idx == len(self.curve_points) - 1:
                         dvalx = 0
+
                     val_x1 = self.curve_points[self.point_idx][0]
                     pos_x1 = self.valx2cx(val_x1)
                     val_x2 = val_x1 + dvalx

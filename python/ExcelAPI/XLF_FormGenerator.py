@@ -40,7 +40,7 @@ import os
 import sys
 import ExcelAPI.XLA_Application as X02
 import proggen.M09_Language as M09
-import pattgen.D00_GlobalProcs as D00
+#import pattgen.D00_GlobalProcs as D00
 #import tkcolorpicker.spinbox as SB
 from scrolledFrame.ScrolledFrame import ScrolledFrame
 
@@ -218,7 +218,9 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             comp.Command = component_dict.get("Command",None)
             if type(comp.Command) == str:
                 if comp.Command != "":
-                    comp.Command = D00.globalprocs.get(comp.Command,None)
+                    comp.Command = jump_table.get(comp.Command,None)
+#                    if comp.Command == None:
+#                        comp.Command = D00.globalprocs.get(comp.Command,None)
                 else:
                     # test standard command "Name_clicked"
                     command_str = comp.Name + "_Click"
