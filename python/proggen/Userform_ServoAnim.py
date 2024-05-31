@@ -675,6 +675,8 @@ class UserForm_ServoAnim:
         canvas.bind("<Down>", self.OnKeydown)
         canvas.bind("<Right>", self.OnKeyright)
         canvas.bind("<Left>", self.OnKeyleft)
+        canvas.bind("<Delete>", self.OnKeyDelete)
+        canvas.bind("<Insert>", self.OnKeyInsert)
         return canvas
     
 
@@ -707,25 +709,26 @@ class UserForm_ServoAnim:
     def cy2val(self,cy):
         y1 = cy # self.canvas.canvasy(cy)
         ty = (self.graphTop + self.graphHeight) - (y1 / self.canvasframe.total_scalefactor) 
-        val = ty / self.vertical_value_factor
+        val = round((ty / self.vertical_value_factor))
         #print("cy2val:", cy, val, self.canvasframe.total_scalefactor)
         return val
     
     def cx2val(self,cx):
         x1 = cx #self.canvas.canvasx(cx)
         tx = (x1 / self.canvasframe.total_scalefactor) - self.graphLeft
-        val = tx / self.horizontal_value_factor
+        val = round((tx / self.horizontal_value_factor))
         #print("cx2val:", cx, val, self.canvasframe.total_scalefactor)
-        return val
+        val20 = round(val / 20) * 20
+        return val20
     
     def valx2cx(self, val):
         tx = val * self.horizontal_value_factor
-        x1 = (tx + self.graphLeft) * self.canvasframe.total_scalefactor
+        x1 = round((tx + self.graphLeft) * self.canvasframe.total_scalefactor)
         return x1
     
     def valy2cy(self, val):
         ty = val * self.vertical_value_factor
-        y1 = ((self.graphTop + self.graphHeight) - ty) * self.canvasframe.total_scalefactor
+        y1 = round(((self.graphTop + self.graphHeight) - ty) * self.canvasframe.total_scalefactor)
         return y1
     
     def draw_graph(self, line_params=None,  vertical_params=None, horizontal_params=None, num_vertical=8, num_horizontal=10, graph=None, vertical_range=(0, 256), horizontal_range=(0, 20000), on_off_line = 0):
@@ -775,7 +778,7 @@ class UserForm_ServoAnim:
             last_text_x = -40
             for i in range(len(graph)):
                 value = graph[i][1]
-                timestr = str(graph[i][0])
+                timestr = str(int(graph[i][0]))
                 timepoint = graph[i][0]
                 cur_y = int((value * self.vertical_value_factor))
                 cur_x = int(graph[i][0] * self.horizontal_value_factor)
@@ -788,7 +791,7 @@ class UserForm_ServoAnim:
                 self.canvas.tag_bind(objid,"<B1-Motion>",lambda e,Object=objid:self.MouseMove(e,Object))                
                 
                 if cur_x - last_text_x >= 40:
-                    text_objid = self.canvas.create_text(self.tx2cx(cur_x), self.ty2cy(horizontal_text_pos), text = timestr, width=30, fill=s_color,tag="Grid", font = X02.DefaultFont)
+                    text_objid = self.canvas.create_text(self.tx2cx(cur_x), self.ty2cy(horizontal_text_pos), text = timestr, width=40, fill=s_color,tag="Grid", font = X02.DefaultFont)
                     last_text_x = cur_x
                 point_id = self.draw_point(self.tx2cx(cur_x), self.ty2cy(cur_y), timepoint, value, i)
                 
@@ -799,6 +802,10 @@ class UserForm_ServoAnim:
                 objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=th_width, fill=th_color,dash=th_linedashed,tag="TimeGrid", activewidth=th_width*2)
         self.canvas.tag_raise("Line")
         self.canvas.tag_raise("point")
+        
+    def round2interval(self, val, interval=20):
+        val_new = round(val / interval) * interval
+        return val_new
         
     def redraw_canvas(self):
         self.canvas = self.init_graph(frame=self.Frame2.TKWidget)
@@ -890,12 +897,18 @@ class UserForm_ServoAnim:
                     self.point_idx = int(point_idx_str[1])
                     if self.Servo_TimeStepType_ListBox.Selection != timesteptype_individuell or self.point_idx == 0 or self.point_idx == len(self.curve_points) - 1:
                         dvalx = 0
-
+                    xmin = self.mm_canvas_coord_list[(self.point_idx-1)*2]
+                    xmax = self.mm_canvas_coord_list[(self.point_idx+1)*2]
+                    val_xmin = self.cx2val(xmin)
+                    val_xmax = self.cx2val(xmax)
                     val_x1 = self.curve_points[self.point_idx][0]
                     pos_x1 = self.valx2cx(val_x1)
                     val_x2 = val_x1 + dvalx
+                    if val_x2 < val_xmin:
+                        val_x2 = val_xmin
+                    if val_x2 > val_xmax:
+                        val_x2 = val_xmax
                     pos_x2 = self.valx2cx(val_x2)
-                   
                     val_y1 = self.curve_points[self.point_idx][1]
                     pos_y1 = self.valy2cy(val_y1)
                     val_y2 = val_y1 + dvaly
@@ -922,6 +935,50 @@ class UserForm_ServoAnim:
                     self.Kurve_Wertanzeige_Label.Value = self.current_curve_point[1]
                     if dvaly > 0:
                         self.get_led_value_and_send_to_ARDUINO()
+                        
+                        
+    def delete_point(self, objid):
+        if objid != -1:
+            tags = self.canvas.gettags(objid)
+            objecttype = tags[0]
+            if objecttype == "point":
+                point_idx_str= tags[3].split(":")
+                if point_idx_str[0] == "idx":
+                    self.point_idx = int(point_idx_str[1])
+                    if self.point_idx != 0 and self.point_idx != len(self.curve_points) - 1:
+                        del self.curve_points[self.point_idx]
+                        del self.mm_canvas_coord_list[self.point_idx]
+                        self.current_objid = -1
+                        self.redraw_canvas()
+                    
+    def insert_point(self, objid):
+        if objid != -1:
+            tags = self.canvas.gettags(objid)
+            objecttype = tags[0]
+            if objecttype == "point":
+                point_idx_str= tags[3].split(":")
+                if point_idx_str[0] == "idx":
+                    self.point_idx = int(point_idx_str[1])
+                    if self.point_idx != len(self.curve_points) - 1:
+                        curve_point1 =  self.curve_points[self.point_idx]
+                        curve_point2 =  self.curve_points[self.point_idx+1]
+                        newx = curve_point1[0] + (curve_point2[0] - curve_point1[0]) / 2
+                        newx = self.round2interval(newx, 20)
+                        newy = curve_point1[1] + (curve_point2[1] - curve_point1[1]) / 2
+                        newy = self.round2interval(newy, 1)
+                        new_curve_point = [newx, newy]
+                        self.curve_points.insert(self.point_idx+1, new_curve_point)
+                        self.redraw_canvas()
+                    
+
+    def OnKeyDelete(self,event=None):
+        if self.current_objid != -1:
+            self.delete_point(self.current_objid)
+
+    def OnKeyInsert(self,event=None):
+        if self.current_objid != -1:
+            self.insert_point(self.current_objid)
+
         
     def OnKeyup(self,event=None):
         if self.current_objid != -1:
