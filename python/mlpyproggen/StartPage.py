@@ -138,14 +138,17 @@ class StartPage(tk.Frame):
         #text = macrodata.get("Ausführliche Beschreibung","")
         
         photo_filename = macrodata.get("Photo","")
-        
-        if photo_filename != "":
-            filedir = os.path.dirname(os.path.realpath(__file__))
-            self.photofilepath = os.path.join(filedir, photo_filename)
-            text1 = tk.Text(text_frame, width=30,bg=self.cget('bg'),relief="flat")
-            self.photo=tk.PhotoImage(file=self.photofilepath)
-            text1.insert(tk.END,'\n')
-            text1.image_create(tk.END, image=self.photo)
+        try:
+            if photo_filename != "":
+                filedir = os.path.dirname(os.path.realpath(__file__))
+                self.photofilepath = os.path.join(filedir, photo_filename)
+                text1 = tk.Text(text_frame, width=30,bg=self.cget('bg'),relief="flat")
+                self.photo=tk.PhotoImage(file=self.photofilepath)
+                text1.insert(tk.END,'\n')
+                text1.image_create(tk.END, image=self.photo)
+        except BaseException as e:
+            logging.debug("Startpage: Image "+self.photofilepath+" not found")
+            self.photo = None
         
         content = macrodata.get("Content",{})
         

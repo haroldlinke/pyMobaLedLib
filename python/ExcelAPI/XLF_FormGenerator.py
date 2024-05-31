@@ -314,8 +314,13 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     filedir = os.path.dirname(os.path.realpath(__file__))
                     filedir2 = os.path.dirname(filedir)                    
                     filepath = filedir2 + filename
-                    comp.iconImage = tk.PhotoImage(file=filepath)
-                    button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,image=comp.iconImage,font=comp.Font)
+                    try:
+                        comp.iconImage = tk.PhotoImage(file=filepath)
+                        button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,image=comp.iconImage,font=comp.Font)
+                    except BaseException as e:
+                        logging.debug("Form_Generator - create Command-Button: Image "+filepath+" not found")
+                        logging.debug(e, exc_info=True)
+                        button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength, font=comp.Font)
                 else:
                     button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength, font=comp.Font)
                 button.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)

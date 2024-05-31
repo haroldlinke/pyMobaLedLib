@@ -800,11 +800,30 @@ class UserForm_Other():
         else:
             return None
                 
-    
+
     
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Par - ByVal 
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Name - ByVal 
     def Show_UserForm_Other(self, Par, Name, Description, LedChannels, Show_Channel, LED_Channel, Def_Channel):
+        
+        MLLtype2widgettype = {"Mode" : "String",
+                              "SheetName" : "String",
+                              "Var" : "String",
+                              "CmpMod" : "String",
+                              "MB_LED" : "String",
+                              "List" : "List",
+                              "Time" : "Time",
+                              "RGB" : "String",
+                              "RGB2" : "String",
+                              "PinNr" : "String",
+                              "PinLst": "String",
+                              "InpVar": "String", 
+                              "GVarNr": "String",
+                              "OutList": "String",
+                              "Logic": "String",
+                              "Cx": "String",
+                              "#" : "String",
+                              }        
         
         OldCmdLine = String()
     
@@ -1087,9 +1106,10 @@ class UserForm_Other():
                 titlecolumn = 1
                 param_tooltip = Hint
                 combo_value_list = SelectValues
-                if param_type in ("Mode","Var","CmpMod","SheetName"):
-                    param_type = "String"
-                self.ParamVar[paramkey] = self.create_widget(self.Param_Frame, row, column, paramkey, param_title, param_type, param_min, param_max, param_default, titlerow, titlecolumn, param_tooltip,combo_value_list=combo_value_list)
+                w_param_type = MLLtype2widgettype.get(param_type.Value, "String")
+                #if param_type in ("Mode","Var","CmpMod","SheetName", "MB_LED"):
+                #    param_type = "String"
+                self.ParamVar[paramkey] = self.create_widget(self.Param_Frame, row, column, paramkey, param_title, w_param_type, param_min, param_max, param_default, titlerow, titlecolumn, param_tooltip,combo_value_list=combo_value_list)
                 
             if ( p == 'Cx' or p == 'B_LED_Cx' ) :
                 if UseOldParams:

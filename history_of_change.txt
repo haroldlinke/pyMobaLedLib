@@ -1,3 +1,9 @@
+5.3.1D - 31.05.2024
+- Correction
+  - Crash at Macro Mainboard_LED corrected
+- New
+  - Servo Animation: Delete and Add points to animation curve
+
 5.3.1C - 29-05.2024
 - libraries can now be updated via the library page and via options -> update -> status of libraries
 - problem with esptools_py solved
