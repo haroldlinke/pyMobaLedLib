@@ -98,6 +98,9 @@ class UserForm_House:
         self.Conn_Nr_R = ""
         self.res = False
         self.Userform_Res = ""
+        self.default_font = self.controller.defaultfontnormal
+        self.default_fontsmall = self.controller.defaultfontsmall
+        self.default_fontlarge = self.controller.defaultfontlarge        
         
         self.top = tk.Toplevel(self.controller)
         self.top.transient(self.controller)
@@ -144,28 +147,26 @@ class UserForm_House:
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)        
         
-        self.Description_Label = ttk.Label(self.container, text=self.Description_Label_txt,font=("Tahoma", 11),wraplength=window_width,relief=tk.SUNKEN, borderwidth=1)
-        self.Label_Beleuchtungstypen = ttk.Label(self.container, text=self.Label_Beleuchtungstypen_txt,font=("Tahoma", 11))
-        self.Label_NotchangableCol = ttk.Label(self.container, text=self.Label_NotchangableCol_txt,wraplength=window_width,font=("Tahoma", 8))
-        self.Label4_selected_lights = ttk.Label(self.container, text=self.label4_txt,font=("Tahoma", 11))
-        self.Label5_hint_txt = ttk.Label(self.container, text=self.label5_txt,font=("Tahoma", 8),justify="center")
-        #self.Label1_MinCnt = ttk.Label(self.top, text=self.Label1_MinCnt_txt,font=("Tahoma", 11))
-        #self.Label2_MaxCnt = ttk.Label(self.top, text=self.Label2_MaxCnt_txt,font=("Tahoma", 11))
+        self.Description_Label = ttk.Label(self.container, text=self.Description_Label_txt,font=self.default_font,wraplength=window_width,relief=tk.SUNKEN, borderwidth=1)
+        self.Label_Beleuchtungstypen = ttk.Label(self.container, text=self.Label_Beleuchtungstypen_txt,font=self.default_font)
+        self.Label_NotchangableCol = ttk.Label(self.container, text=self.Label_NotchangableCol_txt,wraplength=window_width,font=self.default_fontsmall)
+        self.Label4_selected_lights = ttk.Label(self.container, text=self.label4_txt,font=self.default_font)
+        self.Label5_hint_txt = ttk.Label(self.container, text=self.label5_txt,font=self.default_fontsmall,justify="center")
         
         self.MinCnt_TextBox_svar = tk.StringVar(self.controller)
         self.MinCnt_TextBox_svar.set("1")
         self.MinCnt_TextBox = tk.Entry(self.container,width=4,textvariable=self.MinCnt_TextBox_svar)
-        self.MinCnt_Label = ttk.Label(self.container, text=self.Label1_MinCnt_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.MinCnt_Label = ttk.Label(self.container, text=self.Label1_MinCnt_txt,wraplength=window_width,font=self.default_font)
         
         self.MaxCnt_TextBox_svar = tk.StringVar(self.controller)
         self.MaxCnt_TextBox_svar.set("255")
         self.MaxCnt_TextBox = tk.Entry(self.container,width=4,textvariable=self.MaxCnt_TextBox_svar)
-        self.MaxCnt_Label = ttk.Label(self.container, text=self.Label2_MaxCnt_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.MaxCnt_Label = ttk.Label(self.container, text=self.Label2_MaxCnt_txt,wraplength=window_width,font=self.default_font)
         
         self.LED_Channel_TextBox_svar = tk.StringVar(self.controller)
         self.LED_Channel_TextBox_svar.set("1")
         self.LED_Channel_TextBox = tk.Entry(self.container,width=4,textvariable=self.LED_Channel_TextBox_svar)
-        self.Label9_LED_Channel = ttk.Label(self.container, text=self.Label9_LED_Channel_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.Label9_LED_Channel = ttk.Label(self.container, text=self.Label9_LED_Channel_txt,wraplength=window_width,font=self.default_font)
         
         self.IndividualTimes_CheckBox_svar = tk.StringVar(self.controller)
         self.IndividualTimes_CheckBox_svar.set(0)
@@ -178,17 +179,17 @@ class UserForm_House:
         self.MinTime_TextBox_svar = tk.StringVar(self.controller)
         self.MinTime_TextBox_svar.set("1")
         self.MinTime_TextBox = tk.Entry(self.container,width=4,textvariable=self.MinTime_TextBox_svar)
-        self.MinTime_Label = ttk.Label(self.container, text=self.MinTime_Label_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.MinTime_Label = ttk.Label(self.container, text=self.MinTime_Label_txt,wraplength=window_width,font=self.default_font)
         
         self.MaxTime_TextBox_svar = tk.StringVar(self.controller)
         self.MaxTime_TextBox_svar.set("255")
         self.MaxTime_TextBox = tk.Entry(self.container,width=4,textvariable=self.MaxTime_TextBox_svar)
-        self.MaxTime_Label = ttk.Label(self.container, text=self.MaxTime_Label_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.MaxTime_Label = ttk.Label(self.container, text=self.MaxTime_Label_txt,wraplength=window_width,font=self.default_font)
         
-        self.RoomCnt_Label = ttk.Label(self.container, text=self.RoomCnt_Label_txt,font=("Tahoma", 11))
-        self.Used_RGB_LEDs_Label = ttk.Label(self.container, text=self.Used_RGB_LEDs_Label_txt,font=("Tahoma", 8))
-        self.Label7 = ttk.Label(self.container, text="*",font=("Tahoma", 11))
-        self.Label8 = ttk.Label(self.container, text="*",font=("Tahoma", 11))
+        self.RoomCnt_Label = ttk.Label(self.container, text=self.RoomCnt_Label_txt,font=self.default_font)
+        self.Used_RGB_LEDs_Label = ttk.Label(self.container, text=self.Used_RGB_LEDs_Label_txt,font=self.default_fontsmall)
+        self.Label7 = ttk.Label(self.container, text="*",font=self.default_font)
+        self.Label8 = ttk.Label(self.container, text="*",font=self.default_font)
        
         self.house_button_frame = ttk.Frame(self.container)
         if MacroName =="House":
@@ -202,7 +203,7 @@ class UserForm_House:
         row = 0
         for button_label in button_list:
             if button_label != "NL":
-                tempbutton = tk.Button(self.house_button_frame, text=button_label, command=lambda arg=button_label: self.house_button_cmd(arg), width=20,font=("Tahoma", 8))
+                tempbutton = tk.Button(self.house_button_frame, text=button_label, command=lambda arg=button_label: self.house_button_cmd(arg), width=20,font=self.default_fontsmall)
                 tempbutton.grid(row=row, column=col,sticky="e",padx=5,pady=5)
                 col = col + 1
             else: # new line
@@ -214,7 +215,7 @@ class UserForm_House:
         
         self.SelectedRooms_TextBox.bind("<Key>", self.dummy_proc)
         
-        self.button_delete_room = tk.Button(self.container, text=self.button_delete_room_txt, command=self.delete_room,width=10,font=("Tahoma", 11))
+        self.button_delete_room = tk.Button(self.container, text=self.button_delete_room_txt, command=self.delete_room,width=10,font=self.default_font)
 
         self.Description_Label.grid(row=0,column=0,columnspan=5,sticky="nesw",padx=10,pady=10)
         
@@ -254,8 +255,8 @@ class UserForm_House:
 
         self.button_frame = ttk.Frame(self.container)
         
-        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))
-        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=("Tahoma", 11))
+        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
+        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
 
         self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
         self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)

@@ -226,7 +226,7 @@ def Input_Address():
             Input_BitPos()
         elif (M25.Page_ID == 'CAN'):
             Input_Typ()
-        elif (M25.Page_ID == 'DCC'):
+        elif (M25.Page_ID == 'DCC') or (M25.Page_ID == 'LNet'):
             P01.Cells(P01.ActiveCell().Row, M25.Inp_Typ_Col).Offset(0, 1).Select()
             # 15.10.20: Added
             Input_Start_Val()
@@ -276,7 +276,7 @@ def Input_Start_Val():
     #Debug.Print "Inp_Typ_Col=" & Inp_Typ_Col
     Inp = P01.ActiveCell()
     while 1:
-        Inp = G00.InputBox(M09.Get_Language_Str('Startwert des Eingangs eingeben' + vbCr + vbCr + 'Der Startwert bestimmt das Verhalten nach dem Einschalten in Verbindung mit DCC, ' + 'CAN oder Selectrix. ' + vbCr + 'Normalerweise sind die Funktionen beim Start deaktiviert. ' + 'Erst wenn der erste ') + M25.Page_ID + M09.Get_Language_Str(' Einschaltbefehl von der Zentrale kommt wird ' + 'die Zeile aktiviert. ' + vbCr + 'Wenn eine bestimmte Funktion bereits beim Einschalten der ' + 'Anlage einen definierten Wert haben soll kann das über den ' + 'Startwert vorgegeben werden. Die meisten Funktionen haben einen Eingang mit dem sie ' + 'Ein- oder Ausgeschaltet werden. Hier wird eine 1 zum Einschalten angegeben.' + vbCr + 'Bei Funktionen mit mehreren Eingängen (z.B. Signale) ist der Wert ist Bitkodiert. ' + 'Hier wird der erste Eingang mit einer 1, zweite Eingang mit einer 2 und der dritte Eingang ' + 'mit einer 4 aktiviert.' + vbCr + vbCr + 'Startwert:  (Keine Eingabe wenn nicht benötigt)'), M09.Get_Language_Str('Definition des Startwerts'), Inp)
+        Inp = G00.InputBox(M09.Get_Language_Str('Startwert des Eingangs eingeben' + vbCr + vbCr + 'Der Startwert bestimmt das Verhalten nach dem Einschalten in Verbindung mit DCC, ' + 'LNet, CAN oder Selectrix. ' + vbCr + 'Normalerweise sind die Funktionen beim Start deaktiviert. ' + 'Erst wenn der erste ') + M25.Page_ID + M09.Get_Language_Str(' Einschaltbefehl von der Zentrale kommt wird ' + 'die Zeile aktiviert. ' + vbCr + 'Wenn eine bestimmte Funktion bereits beim Einschalten der ' + 'Anlage einen definierten Wert haben soll kann das über den ' + 'Startwert vorgegeben werden. Die meisten Funktionen haben einen Eingang mit dem sie ' + 'Ein- oder Ausgeschaltet werden. Hier wird eine 1 zum Einschalten angegeben.' + vbCr + 'Bei Funktionen mit mehreren Eingängen (z.B. Signale) ist der Wert ist Bitkodiert. ' + 'Hier wird der erste Eingang mit einer 1, zweite Eingang mit einer 2 und der dritte Eingang ' + 'mit einer 4 aktiviert.' + vbCr + vbCr + 'Startwert:  (Keine Eingabe wenn nicht benötigt)'), M09.Get_Language_Str('Definition des Startwerts'), Inp)
         if IsNumeric(Inp):
             Valid = P01.val(Inp) >= MinVal and P01.val(Inp) <= MaxVal #*HL and Int(Inp) == val(Inp)
         if Inp != '' and not Valid:

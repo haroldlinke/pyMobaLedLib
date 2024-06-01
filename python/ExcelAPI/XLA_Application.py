@@ -1718,31 +1718,37 @@ class CWorksheet(object):
             self.addrow_before_current_row()
         
     def addrow_before_current_row(self,copy=False):
-        cur_row = self.getSelectedRow()
-        rows = self.tksheet.get_selected_rows(get_cells_as_rows=True)
-        copyfromrow=None
-        if copy:
-            copyfromrow = cur_row
+        try:
+            cur_row = self.getSelectedRow()
+            rows = self.tksheet.get_selected_rows(get_cells_as_rows=True)
+            copyfromrow=None
+            if copy:
+                copyfromrow = cur_row
+                self.tksheet.insert_rows(rows=len(rows),idx=cur_row)
+                # copy content from old rows to new rows self.table.copy_row(rows=num_rows,idx=cur_row, from_row=copyfromrow)
+                copyxx()
             self.tksheet.insert_rows(rows=len(rows),idx=cur_row)
-            # copy content from old rows to new rows self.table.copy_row(rows=num_rows,idx=cur_row, from_row=copyfromrow)
-            copyxx()
-        self.tksheet.insert_rows(rows=len(rows),idx=cur_row)
+        except BaseException as e:
+            logging.debug("deleterows:", e, exc_info=True)        
     
     def deleterows(self):
-        cur_row = self.getSelectedRow()
-        rows = self.tksheet.get_selected_rows(get_cells_as_rows=True, return_tuple=True)
-        if len(rows) == 1:
-            self.tksheet.del_rows(cur_row)
-        else:
-            self.tksheet.del_rows(rows)
-        if len(rows) > 0:
-            self.deleteShapeatRow(rows[0], rows[-1])
-            scrow_x1, scrow_y1, scrow_x2, scrow_y2 = self.getCellCoords(rows[0], 0)
-            scrow2_x1, scrow2_y1, scrow2_x2, scrow2_y2 = self.getCellCoords(rows[-1], 0)
-            minY1 = scrow_y1
-            maxY1 = scrow2_y2
-            deltaY = scrow2_y2 - scrow_y1
-            self.moveShapesVertical(minY1, y2=maxY1, deltaY=deltaY)
+        try:
+            cur_row = self.getSelectedRow()
+            rows = self.tksheet.get_selected_rows(get_cells_as_rows=True, return_tuple=True)
+            if len(rows) == 1:
+                self.tksheet.del_rows(cur_row)
+            else:
+                self.tksheet.del_rows(rows)
+            if len(rows) > 0:
+                self.deleteShapeatRow(rows[0], rows[-1])
+                scrow_x1, scrow_y1, scrow_x2, scrow_y2 = self.getCellCoords(rows[0], 0)
+                scrow2_x1, scrow2_y1, scrow2_x2, scrow2_y2 = self.getCellCoords(rows[-1], 0)
+                minY1 = scrow_y1
+                maxY1 = scrow2_y2
+                deltaY = scrow2_y2 - scrow_y1
+                self.moveShapesVertical(minY1, y2=maxY1, deltaY=deltaY)
+        except BaseException as e:
+            logging.debug("deleterows:", e, exc_info=True)
         
     def int_moveRows(self, sc_rowlist, destrow):
         self.tksheet.move_rows(move_to=destrow, to_move=sc_rowlist, move_data=True, create_selections=False)

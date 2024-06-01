@@ -381,7 +381,7 @@ def Check_one_Switch_Lists_for_SPI_Pins(Sw_List):
     Sw_List = ' ' + Sw_List + ' '
     for Pin in Split('10 11 12', ' '):
         if InStr(Sw_List, ' ' + Pin + ' ') > 0:
-            P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Arduino Pin \'#1#\' kann nicht als Ein- oder Ausgang werden wenn ' + 'DCC oder Selectrix Daten per SPI Bus gelesen werden. Es muss ein anderer Anschluss verwendet ' + 'werden oder die SPI Kommunikation in der \'Config\' Seite deaktiviert werden.' + vbLf + 'Achtung: Die beiden Arduinos müssen dann per RS232 verbunden sein.'), "#1#", Pin), vbCritical, 'Fehler: Ungültiger Arduino Pin erkannt')
+            P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Arduino Pin \'#1#\' kann nicht als Ein- oder Ausgang werden wenn ' + 'DCC, LNet oder Selectrix Daten per SPI Bus gelesen werden. Es muss ein anderer Anschluss verwendet ' + 'werden oder die SPI Kommunikation in der \'Config\' Seite deaktiviert werden.' + vbLf + 'Achtung: Die beiden Arduinos müssen dann per RS232 verbunden sein.'), "#1#", Pin), vbCritical, 'Fehler: Ungültiger Arduino Pin erkannt')
             return _fn_return_value
     _fn_return_value = True
     return _fn_return_value

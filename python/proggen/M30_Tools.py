@@ -1502,6 +1502,8 @@ def __IsValidPageId(ID):
     fn_return_value = True
     if ID == 'DCC':
         return fn_return_value
+    if ID == 'LNet':
+        return fn_return_value    
     if ID == 'Selectrix':
         return fn_return_value
     if ID == 'CAN':

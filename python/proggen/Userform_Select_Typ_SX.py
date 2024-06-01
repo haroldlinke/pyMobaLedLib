@@ -60,6 +60,9 @@ class UserForm_Select_Typ_SX:
         #self.radiobtn3_txt = "Grün"
         self.res = tk.IntVar()
         self.Userform_res = ""
+        self.default_font = self.controller.defaultfontnormal
+        self.default_fontsmall = self.controller.defaultfontsmall
+        self.default_fontlarge = self.controller.defaultfontlarge        
         
         
     def __Abort_Button_Click(self):
@@ -138,7 +141,7 @@ class UserForm_Select_Typ_SX:
         self.top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))                
         
         if len(self.title) > 0: self.top.title(self.title)
-        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=("Tahoma", 11))
+        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=self.default_font)
         #self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width/2,font=("Tahoma", 11),foreground="#0000FF")
         #self.label3 = ttk.Label(self.top, text=self.label3_txt,wraplength=window_width,font=("Tahoma", 11))
         self.label1.grid(row=0,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
@@ -156,8 +159,8 @@ class UserForm_Select_Typ_SX:
         self.R1.focus_set()
         self.button_frame = ttk.Frame(self.top)
         
-        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))
-        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=("Tahoma", 11))
+        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
+        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
 
         self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
         self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)

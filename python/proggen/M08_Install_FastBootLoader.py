@@ -283,7 +283,7 @@ def Install_FastBootloader():
     Res = Boolean()
     #----------------------------------
     M25.Make_sure_that_Col_Variables_match()
-    if M25.Page_ID != 'DCC' and M25.Page_ID != 'Selectrix':
+    if M25.Page_ID != 'DCC' and M25.Page_ID != 'Selectrix'  and M25.Page_ID != 'LNet':
         P01.MsgBox(M09.Get_Language_Str('Die schnelle Bootloader kann nur von einer DCC, LNet oder Selectrix Seite aus installiert werden.'), vbInformation, M09.Get_Language_Str('Falsche Seite zum aktualisieren des Bootloaders ausgewählt'))
         return
     if M02.Get_BoardTyp() != 'AM328':

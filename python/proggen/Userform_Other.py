@@ -101,7 +101,10 @@ class UserForm_Other():
         self.DEFAULT_PAR_WIDTH = 48
         self.ParamVar = {}
         self.Controls={}
-        self.UserForm_Initialize()             
+        self.UserForm_Initialize()
+        self.default_font = self.controller.defaultfontnormal
+        self.default_fontsmall = self.controller.defaultfontsmall
+        self.default_fontlarge = self.controller.defaultfontlarge        
  
     def ok(self, event=None):
         self.IsActive = False
@@ -641,10 +644,10 @@ class UserForm_Other():
         param_readonly = False
         param_allow_value_entry = False
         
-        self.fontlabel = ("Tahoma", 11)
-        self.fontspinbox = ("Tahoma", 11)
-        self.fonttext = ("Tahoma", 11)
-        self.fontentry = ("Tahoma", 11)
+        self.fontlabel = self.default_font
+        self.fontspinbox = self.default_font
+        self.fonttext = self.default_font
+        self.fontentry = self.default_font
         
         if param_type == "": # number value param
             
@@ -881,7 +884,7 @@ class UserForm_Other():
         if Description == '':
             Description = M09.Get_Language_Str('Noch keine Beschreibung zur Funktion \'') + Name + M09.Get_Language_Str('\' vorhanden ;-(')
         
-        self.Description_TextBox = ttk.Label(self.top, text=Description,font=("Tahoma", 11),wraplength=window_width-20,relief=tk.SUNKEN, borderwidth=1)
+        self.Description_TextBox = ttk.Label(self.top, text=Description,font=self.default_font,wraplength=window_width-20,relief=tk.SUNKEN, borderwidth=1)
               
         self.Description_TextBox.focus_set()
 
@@ -921,7 +924,7 @@ class UserForm_Other():
                     OptionButton_23 = True
            
             self.LED_Kanal_Frame = ttk.Frame(self.top,relief=tk.RIDGE, borderwidth=1)
-            self.LED_Kanal_Frame_Caption = ttk.Label(self.top, text=M09.Get_Language_Str("LED Kanal Auswahl"),font=("Tahoma", 11))
+            self.LED_Kanal_Frame_Caption = ttk.Label(self.top, text=M09.Get_Language_Str("LED Kanal Auswahl"),font=self.default_font)
             self.LED_Kanal_Frame_Caption.grid(row=1,column=0)
             
             self.RB_Option_Button_var = tk.StringVar()
@@ -970,7 +973,7 @@ class UserForm_Other():
             self.LED_Channel_TextBox_svar = tk.StringVar(self.controller)
             self.LED_Channel_TextBox_svar.set("1")
             self.LED_Channel_TextBox = tk.Entry(self.top,width=4,textvariable=self.LED_Channel_TextBox_svar)
-            self.LED_Channel_Label = ttk.Label(self.top, text=self.LED_Channel_Label_txt,wraplength=window_width,font=("Tahoma", 11))
+            self.LED_Channel_Label = ttk.Label(self.top, text=self.LED_Channel_Label_txt,wraplength=window_width,font=self.default_font)
             self.LED_Channel_TextBox.grid(row=5,column=0,sticky="w",padx=10,pady=10)
             self.LED_Channel_Label.grid(row=5,column=1,sticky="w",padx=10,pady=10)
             
@@ -1153,8 +1156,8 @@ class UserForm_Other():
         
         self.button_frame = ttk.Frame(self.top)
         
-        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))
-        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=("Tahoma", 11))
+        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
+        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
 
         self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
         self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)

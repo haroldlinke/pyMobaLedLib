@@ -599,7 +599,7 @@ def Proc_Typ_Col(Target):
     #----------------------------------------------
     # Open the Typ Dialog if the "DCC Adresse" or "Bitposition" Cell is filled
     # but the "Typ" cell is empty
-    if (M25.Page_ID == 'DCC') or (M25.Page_ID == 'CAN'):
+    if (M25.Page_ID == 'DCC') or (M25.Page_ID == 'CAN') or (M25.Page_ID == 'LNet'):
         RefCol = M25.DCC_or_CAN_Add_Col
     elif (M25.Page_ID == 'Selectrix'):
         RefCol = M25.SX_Bitposi_Col
@@ -816,7 +816,7 @@ def Global_Worksheet_Change(Target):
                     M27.Del_Icons(Target)
                     # 22.10.21:
             elif (Target.Column == M25.DCC_or_CAN_Add_Col) or (Target.Column == M25.SX_Channel_Col):
-                if M25.Page_ID == 'DCC':
+                if M25.Page_ID == 'DCC' or M25.Page_ID == 'LNet':
                     Complete_Addr_Column_with_InCnt(Row)
                     Update_TestButtons(Row)
                     Update_StartValue(Row)

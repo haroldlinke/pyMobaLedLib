@@ -49,7 +49,10 @@ class UserForm_SimpleInput:
         self.button1_txt = M09.Get_Language_Str("Abbrechen")
         self.button2_txt = M09.Get_Language_Str("Ok")
         self.UserForm_res = ""
-        self.res = False    
+        self.res = False
+        self.default_font = self.controller.defaultfontnormal
+        self.default_fontsmall = self.controller.defaultfontsmall
+        self.default_fontlarge = self.controller.defaultfontlarge        
  
     def ok(self, event=None):
         self.IsActive = False
@@ -92,7 +95,7 @@ class UserForm_SimpleInput:
         self.top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))                 
 
         if len(self.title) > 0: self.top.title(self.title)
-        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=("Tahoma", 11))
+        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=self.default_font)
 
         self.label1.grid(row=0,column=0,columnspan=1,sticky="nesw",padx=10,pady=10)
 
@@ -101,8 +104,8 @@ class UserForm_SimpleInput:
 
         self.button_frame = ttk.Frame(self.top)
         
-        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))
-        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=("Tahoma", 11))
+        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
+        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
 
         self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
         self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)

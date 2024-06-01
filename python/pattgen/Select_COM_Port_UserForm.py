@@ -106,7 +106,7 @@ class CSelect_COM_Port_UserForm:
             Button_Text=(Mid(Text, 3, 255))
             Button_Accelerator = Left(Text, 1)
             #Button_Text = tk.StringVar(master=self.top)
-            Button = tk.Button(self.button_frame, text=Button_Text, command=Command,width=10,font=("Tahoma", 11))
+            Button = tk.Button(self.button_frame, text=Button_Text, command=Command,width=10,font=self.default_font)
             Button.grid(row=0,column=Column,sticky="e",padx=10,pady=10)
             self.top.bind(Button_Accelerator, Command)
         return      
@@ -269,20 +269,20 @@ class CSelect_COM_Port_UserForm:
             self.top.title(self.title) 
             
 
-        self.Title_Label = ttk.Label(self.top, text=Title,font=("Tahoma", 14),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+        self.Title_Label = ttk.Label(self.top, text=Title,font=self.default_font,width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
         self.Title_Label.focus_set()
         self.Title_Label.grid(row=0,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
         
-        self.Text_Label = ttk.Label(self.top, text=Text,font=("Tahoma", 11),width=40, wraplength=350,relief=tk.FLAT, borderwidth=1)
+        self.Text_Label = ttk.Label(self.top, text=Text,font=self.default_font,width=40, wraplength=350,relief=tk.FLAT, borderwidth=1)
         self.Text_Label.grid(row=1,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
         
-        self.Status_Label = ttk.Label(self.top, text="",font=("Tahoma", 11),width=15,wraplength=100,relief=tk.FLAT, borderwidth=1)
+        self.Status_Label = ttk.Label(self.top, text="",font=self.default_font,width=15,wraplength=100,relief=tk.FLAT, borderwidth=1)
         self.Status_Label.grid(row=2,column=1,rowspan=3,sticky="ne",padx=10,pady=10)
         
-        self.Error_Label = ttk.Label(self.top, text="",font=("Tahoma", 11),width=15, wraplength=100,relief=tk.FLAT, borderwidth=1)
+        self.Error_Label = ttk.Label(self.top, text="",font=self.default_font,width=15, wraplength=100,relief=tk.FLAT, borderwidth=1)
         self.Error_Label.grid(row=2,column=1,rowspan=3,sticky="ne",padx=10,pady=10)        
                 
-        self.AvailPortsTxt_Label = ttk.Label(self.top, text="",font=("Tahoma", 8),width=15, wraplength=100,relief=tk.FLAT, borderwidth=1)
+        self.AvailPortsTxt_Label = ttk.Label(self.top, text="",font=self.default_font_small,width=15, wraplength=100,relief=tk.FLAT, borderwidth=1)
         self.AvailPortsTxt_Label.grid(row=4,column=0,columnspan=2,sticky="new",padx=10,pady=10)
         
         Debug.Print("ComPort_ShowDialog - Define Imagepath")
@@ -300,10 +300,10 @@ class CSelect_COM_Port_UserForm:
         self.Image_Label = ttk.Label(self.top, image=img,relief=tk.FLAT, borderwidth=1)
         self.Image_Label.grid(row=0,column=2,rowspan=7,sticky="nesw",padx=10,pady=10)
         
-        self.Red_Hint_Label = ttk.Label(self.top, text=Red_Hint,font=("Tahoma", 11),foreground="#FF0000",width=20,wraplength=125,relief=tk.FLAT, borderwidth=1)
+        self.Red_Hint_Label = ttk.Label(self.top, text=Red_Hint,font=self.default_font,foreground="#FF0000",width=20,wraplength=125,relief=tk.FLAT, borderwidth=1)
         self.Red_Hint_Label.grid(row=0,column=2,columnspan=1,rowspan=2,sticky="ne",padx=10,pady=10)
          
-        self.Com_Port_Label = ttk.Combobox(self.top, width=30,font=("Tahoma", 11))
+        self.Com_Port_Label = ttk.Combobox(self.top, width=30,font=self.default_font)
         self.Com_Port_Label.grid(row=3,column=0,sticky="nesw",padx=10,pady=10)
         
         self.Com_Port_Label ["value"] = ["valuelist"]
@@ -312,13 +312,13 @@ class CSelect_COM_Port_UserForm:
         self.Show_Unknown_CheckBox_var = tk.IntVar(master=self.top)
         self.Show_Unknown_CheckBox_var.set(0)
 
-        self.Show_Unknown_CheckBox = tk.Checkbutton(self.top, text=M09.Get_Language_Str("Unbekante Ports anzeigen"),width=30,wraplength = 200,anchor="w",variable=self.Show_Unknown_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0)
+        self.Show_Unknown_CheckBox = tk.Checkbutton(self.top, text=M09.Get_Language_Str("Unbekante Ports anzeigen"),width=30,wraplength = 200,anchor="w",variable=self.Show_Unknown_CheckBox_var,font=self.default_fontsmall,onvalue = 1, offvalue = 0)
         self.Show_Unknown_CheckBox.grid(row=4, column=0, columnspan=2,sticky="nesw", padx=2, pady=2)
         
-        self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=("Tahoma", 11),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+        self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=self.default_font,width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
         self.Hint_Label.grid(row=7,column=0,columnspan=2,rowspan=2,sticky="nesw",padx=10,pady=10)
         
-        self.AvailPorts_Label = ttk.Label(self.top, text="",font=("Tahoma", 11),width=30, wraplength=350,relief=tk.FLAT, borderwidth=1)
+        self.AvailPorts_Label = ttk.Label(self.top, text="",font=self.default_font,width=30, wraplength=350,relief=tk.FLAT, borderwidth=1)
         self.AvailPorts_Label.grid(row=5,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
         
         # crate buttons

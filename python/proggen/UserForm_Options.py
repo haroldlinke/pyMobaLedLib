@@ -121,6 +121,9 @@ class CUserForm_Options:
         self.boardlist = ("dummy",M02.BOARD_NANO_OLD, M02.BOARD_NANO_NEW, M02.BOARD_NANO_FULL, M02.BOARD_UNO_NORM,'', M02.BOARD_ESP32, M02.BOARD_PICO)
         
         self.defaultboard = 7
+        self.default_font = self.controller.defaultfontnormal
+        self.default_fontsmall = self.controller.defaultfontsmall
+        self.default_fontlarge = self.controller.defaultfontlarge        
         
         #*HL Center_Form(Me)                
 
@@ -456,14 +459,14 @@ class CUserForm_Options:
         
     def Button_Setup(self,button_frame,Text,Command,Accelerator,Row=0,label_text="",state=tk.NORMAL):
         Text = Trim(Text)
-        Button = tk.Button(button_frame, text=Text, command=Command,width=20,height=2,font=("Tahoma", 8),state=state)
+        Button = tk.Button(button_frame, text=Text, command=Command,width=20,height=2,font=self.default_fontsmall,state=state)
         Button.grid(row=Row,column=0,sticky="n",padx=10,pady=10)
         
         if Accelerator!="":            
             button_frame.bind(Accelerator, Command)
         
         if label_text!="":
-            label = ttk.Label(button_frame, text=M09.Get_Language_Str(label_text),wraplength=300,font=("Tahoma", 11))
+            label = ttk.Label(button_frame, text=M09.Get_Language_Str(label_text),wraplength=300,font=self.default_font)
             label.grid(row=Row,column=1,sticky="NESW")            
         return
         
@@ -478,7 +481,7 @@ class CUserForm_Options:
             side="_L"
             self.Autodetect_Typ_L_CheckBox_var = tk.IntVar(master=self.top)
             self.Autodetect_Typ_L_CheckBox_var.set(0)
-            self.Autodetect_Typ_L_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_L_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0, command=self.__Autodetect_Typ_L_CheckBox_Click)
+            self.Autodetect_Typ_L_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_L_CheckBox_var,font=self.default_fontsmall,onvalue = 1, offvalue = 0, command=self.__Autodetect_Typ_L_CheckBox_Click)
             self.Autodetect_Typ_L_CheckBox.grid(row=0, column=0,sticky="nw", padx=2, pady=2)                    
         else:
             side="_R"
@@ -486,7 +489,7 @@ class CUserForm_Options:
             self.Button_Setup(frame,M09.Get_Language_Str("Prog. Installieren"),self.__ProInstall_Button_Click,"U",Row=2)    
             self.Autodetect_Typ_R_CheckBox_var = tk.IntVar(master=self.top)
             self.Autodetect_Typ_R_CheckBox_var.set(0)
-            self.Autodetect_Typ_R_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_R_CheckBox_var,font=("Tahoma", 8),onvalue = 1, offvalue = 0, command=self.__Autodetect_Typ_R_CheckBox_Click)
+            self.Autodetect_Typ_R_CheckBox = tk.Checkbutton(self.right_frame, text=M09.Get_Language_Str("Automatisch erkennen"),width=30,wraplength = 200,anchor="w",variable=self.Autodetect_Typ_R_CheckBox_var,font=self.default_fontsmall,onvalue = 1, offvalue = 0, command=self.__Autodetect_Typ_R_CheckBox_Click)
             self.Autodetect_Typ_R_CheckBox.grid(row=0, column=0,sticky="nw", padx=2, pady=2)                  
         
         for rb in self.radiobuttons.keys():
@@ -514,7 +517,7 @@ class CUserForm_Options:
         self.right_frame.grid(row=0,column=1)
         
         subtitle_txt = M09.Get_Language_Str("Für andere Hauptplatine")
-        self.subtitle_Label = ttk.Label(self.right_frame, text=subtitle_txt,font=("Tahoma", 8),width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+        self.subtitle_Label = ttk.Label(self.right_frame, text=subtitle_txt,font=self.default_fontsmall,width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
         self.subtitle_Label.grid(row=4,column=0,sticky="w",padx=10,pady=0)
    
     def __UserForm_Initialize(self, first_page_only=False):
@@ -577,8 +580,8 @@ class CUserForm_Options:
             self.Button_Setup(File_frame,M09.Get_Language_Str("Laden aus Datei"),self.__Load_Button_Click,"L",Row=2)
             self.Button_Setup(File_frame,M09.Get_Language_Str("Kopiere von Seite zu Seite"),self.__Copy_Page_Button_Click,"K",Row=3,state=tk.DISABLED)
             
-            self.label5 = ttk.Label(File_frame, text=M09.Get_Language_Str("Speichern und Laden einzelner oder mehrerer Seiten"),wraplength=window_width/2-20,font=("Tahoma", 11))
-            self.label6 = ttk.Label(File_frame, text=M09.Get_Language_Str("Mit den Knöpfen links können die Daten der aktuellen Seite gespeichert und wieder geladen werden."),wraplength=window_width/2-20,font=("Tahoma", 8))
+            self.label5 = ttk.Label(File_frame, text=M09.Get_Language_Str("Speichern und Laden einzelner oder mehrerer Seiten"),wraplength=window_width/2-20,font=self.default_font)
+            self.label6 = ttk.Label(File_frame, text=M09.Get_Language_Str("Mit den Knöpfen links können die Daten der aktuellen Seite gespeichert und wieder geladen werden."),wraplength=window_width/2-20,font=self.default_fontsmall)
             self.label5.grid(row=0,column=1)
             self.label6.grid(row=1,column=1,rowspan=3)
             

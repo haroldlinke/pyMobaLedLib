@@ -422,7 +422,7 @@ def Do_Replace_Sym_Pin_Name(Cmd, PinStr):
 def Proc_Special_Functions(Cmd, LEDNr, Channel):
 #----------------------------------------------------
     _fn_return_value = False
-    
+    Replace_Sym_Pin_Name = False
     if Left(Cmd, Len('Mainboard_LED(')) == 'Mainboard_LED(':
         PinOrNr = Split(Replace(Cmd, 'Mainboard_LED(', ''), ',')(0)
         if InStr(' ' + M02.MB_LED_NR_STR + ' ', ' ' + PinOrNr + ' ') > 0:
@@ -452,7 +452,7 @@ def Proc_Special_Functions(Cmd, LEDNr, Channel):
         fret, Cmd = M06Sound.Add_SoundPin_Entry(Cmd, LEDNr)
         if not fret:
             return _fn_return_value
-    _fn_return_value = True, Cmd
+    _fn_return_value = True
     return _fn_return_value, Cmd
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Channel_or_define - ByVal 

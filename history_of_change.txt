@@ -1,3 +1,10 @@
+5.3.1E - 1.6.2024
+Corrections
+- LNet Adress-Input creates an Error Message
+- Crash when uploading Macro Mainboard_LED
+New:
+- Fonts used for most of the Forms can be adapted to screen size on Einstellungen-Page
+
 5.3.1D - 31.05.2024
 - Correction
   - Crash at Macro Mainboard_LED corrected
