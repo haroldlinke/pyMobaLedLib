@@ -50,6 +50,9 @@ class UserForm_DialogGuide1:
         self.button1_txt = M09.Get_Language_Str("Abbrechen")
         self.button2_txt = M09.Get_Language_Str("Ok")
         self.res = None
+        self.default_font = self.controller.defaultfontnormal
+        self.default_fontsmall = self.controller.defaultfontsmall
+        self.default_fontlarge = self.controller.defaultfontlarge        
  
     def ok(self, event=None):
         
@@ -88,9 +91,9 @@ class UserForm_DialogGuide1:
                 
         
         if len(self.title) > 0: self.top.title(self.title)
-        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=("Tahoma", 11))
-        self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width-20,font=("Tahoma", 11),foreground="#0000FF")
-        self.label3 = ttk.Label(self.top, text=self.label3_txt,wraplength=window_width-20,font=("Tahoma", 11))
+        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=self.default_font)
+        self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width-20,font=self.default_font,foreground="#0000FF")
+        self.label3 = ttk.Label(self.top, text=self.label3_txt,wraplength=window_width-20,font=self.default_font)
         self.label1.grid(row=0,column=0,columnspan=3,sticky="nesw",padx=10,pady=10)
         self.label2.grid(row=1,column=0,columnspan=3,sticky="nesw",padx=10,pady=10)
         self.label3.grid(row=2,column=0,columnspan=3,sticky="nesw",padx=10,pady=10)
@@ -100,8 +103,8 @@ class UserForm_DialogGuide1:
         
         self.button_frame = ttk.Frame(self.top)
         
-        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))
-        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=("Tahoma", 11))
+        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
+        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
 
         self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
         self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)

@@ -92,6 +92,9 @@ class SelectMacrosTreeform:
         self.SelectMacro_Res = "" 
         self.ActKey = ""
         self.ActiveNode = None
+        self.default_font = self.controller.defaultfontnormal
+        self.default_fontsmall = self.controller.defaultfontsmall
+        self.default_fontlarge = self.controller.defaultfontlarge
 
  
     def ok(self, event=None):
@@ -115,15 +118,13 @@ class SelectMacrosTreeform:
         self.entry1_input.set("")
         
         self.std_font = Font(
-            family = 'Tahoma',
-            size = 11,
-            weight = 'bold'            
+            family = self.default_fontlarge[0],
+            size = self.default_fontlarge[1],
+            weight = 'bold'
         )
         
         self.entry1 = tk.Entry(self.top,width=10,textvariable=self.entry1_input)
         self.ActLanguage = M09.Get_ExcelLanguage()
-       
-        
         
         self.top.resizable(False, False)  # This code helps to disable windows from resizing
         
@@ -142,16 +143,16 @@ class SelectMacrosTreeform:
         self.top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))             
         
         if len(self.title) > 0: self.top.title(self.title)
-        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width,font=("Tahoma", 11))
-        self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width,font=("Tahoma", 11),foreground="#0000FF")
-        #self.label3 = ttk.Label(self.top, text=self.label3_txt,wraplength=window_width,font=("Tahoma", 11))
+        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width,font=self.default_font)
+        self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width,font=self.default_font,foreground="#0000FF")
+        
         
         self.description = tk.StringVar()
         self.description.set("var1")
-        self.label4 = ttk.Label(self.top, text="test1",wraplength=window_width,font=("Tahoma", 11),textvariable=self.description,relief=tk.SUNKEN,borderwidth=1)
+        self.label4 = ttk.Label(self.top, text="test1",wraplength=window_width,font=self.default_font,textvariable=self.description,relief=tk.SUNKEN,borderwidth=1)
         self.detail = tk.StringVar()
         self.detail.set("var2")
-        self.label5 = ttk.Label(self.top, text="Test2",wraplength=window_width,font=("Tahoma", 11),textvariable=self.detail,relief=tk.SUNKEN,borderwidth=1)
+        self.label5 = ttk.Label(self.top, text="Test2",wraplength=window_width,font=self.default_font,textvariable=self.detail,relief=tk.SUNKEN,borderwidth=1)
         self.label1.grid(row=0,column=0,columnspan=1,sticky="nesw",padx=10,pady=10)
         self.label2.grid(row=0,column=1,columnspan=1,rowspan=1,sticky="nesw",padx=10,pady=10)
         #self.label3.grid(row=3,column=0,columnspan=1,sticky="nesw",padx=10,pady=10)
@@ -166,8 +167,8 @@ class SelectMacrosTreeform:
         self.top.bind("<Escape>", self.cancel)            
         self.button_frame = ttk.Frame(self.top)
         
-        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=("Tahoma", 11))
-        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=("Tahoma", 11))
+        self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
+        self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
 
         self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
         self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)

@@ -91,6 +91,9 @@ class CStatusMsg_UserForm():
         self.label2 = None
         self.text = ""
         self.label_txt=""
+        self.default_font = self.controller.defaultfontnormal
+        self.default_fontsmall = self.controller.defaultfontsmall
+        self.default_fontlarge = self.controller.defaultfontlarge        
         
         
     def destroy(self):
@@ -136,8 +139,8 @@ class CStatusMsg_UserForm():
         self.top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))                
     
         if len(self.title) > 0: self.top.title(self.title)
-        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=("Tahoma", 11))
-        self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width/2,font=("Tahoma", 11),foreground="#0000FF")
+        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width-20,font=self.default_font)
+        self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width/2,font=self.default_font,foreground="#0000FF")
         #self.label3 = ttk.Label(self.top, text=self.label3_txt,wraplength=window_width,font=("Tahoma", 11))
         self.label1.grid(row=0,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
         self.label2.grid(row=1,column=1,columnspan=2,rowspan=3,sticky="nesw",padx=10,pady=10)
