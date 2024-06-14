@@ -194,7 +194,7 @@ def SendDCCAccessoryCommand(Addr, Direction, IsSwitch):
 def send_command_to_ARDUINO(command,comport=None):
     PG.global_controller.connect_if_not_connected(port=comport)
     for c in command:
-        PG.global_controller.send_to_ARDUINO(c,comport=comport)
+        PG.global_controller.send_to_ARDUINO(c, comport=comport)
         #time.sleep(0.01)
     c = chr(10)
     PG.global_controller.send_to_ARDUINO(c,comport=comport)    

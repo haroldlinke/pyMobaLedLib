@@ -41,7 +41,9 @@ class UserForm_ServoAnim:
         self.Userform_Res  = ""
         self.Controls      = []
         self.Controls_Dict = {}
-        self.Macro_str = "" 
+        self.Macro_str = ""
+        self.test_started = False
+        self.test_continue = False
         #*HL Center_Form(Me)
         
         self.Main_Menu_Form_RSC = {"UserForm":{
@@ -242,6 +244,9 @@ class UserForm_ServoAnim:
                                       {"Name":"Update_Button","Accelerator":"u","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"Update Grafik",
                                        "Command":"","ControlTipText":"","ForeColor":"#000012","Height":25,"Left":566,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
+                                      {"Name":"Test_Button","Accelerator":"u","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                       "Caption":"Starte Test",
+                                       "Command":"","ControlTipText":"","ForeColor":"#000012","Height":25,"Left":466,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},                                      
                                       ]}
                         }
     def get_params_from_param_list(self, param_list):
@@ -622,6 +627,59 @@ class UserForm_ServoAnim:
         
     def Update_Button_Click(self, event=None):
         self.redraw_canvas()
+        
+    def stop_test(self):
+        print("Stop Test")
+        self.Test_Button.TKWidget.configure(text="Starte Test")
+        self.test_continue = False
+        
+    def test_calculate_current_curve_point(self, curr_time):
+        curr_point_time = self.curve_points[self.curr_idx][0]
+        next_point_time = self.curve_points[self.curr_idx+1][0]
+        if curr_time == curr_point_time:
+            return self.curve_points[self.curr_idx][1]
+        if curr_time > curr_point_time and curr_time < next_point_time:
+            curr_value = self.curve_points[self.curr_idx][1]
+            next_value = self.curve_points[self.curr_idx+1][1]
+            return round(curr_value + (next_value - curr_value) * (curr_time - curr_point_time) / (next_point_time -curr_point_time)) # calculate intermediate curve point
+        if curr_time == next_point_time:
+            self.curr_idx += 1
+            return self.curve_points[self.curr_idx][1]
+    
+    def run_test_point(self):
+        if self.curr_time > self.test_maxtime:
+            self.curr_time = 0
+            self.curr_idx = 0
+        if self.curr_time <= self.test_maxtime and self.test_continue:
+            curr_led_value = self.test_calculate_current_curve_point(self.curr_time)
+            if curr_led_value != self.test_last_led_value:
+                self.get_led_value_and_send_to_ARDUINO(led_value=curr_led_value)
+                self.test_last_led_value = curr_led_value
+            self.curr_time += self.test_deltatime
+            self.canvasframe.after(self.test_deltatime, self.run_test_point)
+            self.Kurve_Zeitanzeige_Label.Value = self.curr_time
+        
+    def start_test(self):
+        print("Start Test")
+        self.Test_Button.TKWidget.configure(text="Stop Test")
+        self.max_idx = len(self.curve_points)
+        self.test_deltatime = 20 # 20ms steps
+        self.test_last_led_value = -1
+        self.curr_idx = 0
+        if self.max_idx > 1:
+            self.test_maxtime = self.curve_points[-1][0]
+            self.curr_time =0
+            self.test_continue = True
+            self.run_test_point()
+        
+        
+    def Test_Button_Click(self, event=None):
+        if self.test_started:
+            self.stop_test()
+            self.test_started = False
+        else:
+            self.test_started = True
+            self.start_test()
 
     def Servo_Anfangswert_TextBox_Click(self, event=None):
         new_LED_val = self.Servo_Anfangswert_TextBox.Value
@@ -830,6 +888,7 @@ class UserForm_ServoAnim:
                     valy = self.curve_points[self.point_idx][1]
                     self.startxy = (self.valx2cx(valx),self.valy2cy(valy))
                     print("MouseButton,1:", valx, valy, self.startxy)
+                    self.current_curve_point = self.curve_points[self.point_idx]
                 else:
                     self.point_idx = -1
                     self.startxy = (event.x, event.y)
@@ -871,12 +930,18 @@ class UserForm_ServoAnim:
             #val_x =  self.curve_points[self.point_idx][0]
             val_x = int(self.cx2val(pos_x))
             val_y = int(self.cy2val(pos_y))
+            if self.current_curve_point != None:
+                dval_y = self.current_curve_point[1] - val_y
+            else:
+                dval_y = 0
             self.current_curve_point = [val_x, val_y]
             #print("MouseMove:", val_x, val_y, self.current_curve_point, pos_x, pos_y, event.x, event.y)
             self.curve_points[self.point_idx] = self.current_curve_point
             self.canvas.coords(self.line_objid,self.mm_canvas_coord_list)
             self.Kurve_Zeitanzeige_Label.Value = self.current_curve_point[0]
             self.Kurve_Wertanzeige_Label.Value = self.current_curve_point[1]
+            if self.startxy != None and dval_y != 0 and not self.test_continue:
+                self.get_led_value_and_send_to_ARDUINO()            
             
             
     def MouseRelease1(self):
@@ -933,7 +998,7 @@ class UserForm_ServoAnim:
                     self.canvas.coords(self.line_objid,self.mm_canvas_coord_list)
                     self.Kurve_Zeitanzeige_Label.Value = self.current_curve_point[0]
                     self.Kurve_Wertanzeige_Label.Value = self.current_curve_point[1]
-                    if dvaly > 0:
+                    if dvaly != 0 and not self.test_continue:
                         self.get_led_value_and_send_to_ARDUINO()
                         
                         
@@ -996,24 +1061,30 @@ class UserForm_ServoAnim:
         if self.current_objid != -1:
             self.move_point(self.current_objid, -20, 0)
         
-    def get_led_value_and_send_to_ARDUINO(self):
-        if self.current_curve_point != None:
-            new_LED_val = int(self.current_curve_point[1])
-            if new_LED_val > 255:
-                new_LED_val = 255
-            elif new_LED_val < 0:
-                new_LED_val = 0
-                
-            LED_address = self.Servo_Address_TextBox.Value
-            self.servotype = self.Servo_Type_ListBox.Selection
-            if self.servotype == 0:
-                self._update_servos(LED_address,new_LED_val,1, 0)
-            elif self.servotype == 1:
-                self._update_servos(LED_address,new_LED_val, 0, 0)
-            elif self.servotype == 2:
-                self._update_servos(LED_address,0, new_LED_val, 0)
+    def get_led_value_and_send_to_ARDUINO(self, led_value=None):
+        
+        if led_value == None:
+            if self.current_curve_point != None:
+                new_LED_val = int(self.current_curve_point[1])
             else:
-                self._update_servos(LED_address,0, 0, new_LED_val)    
+                return
+        else:
+            new_LED_val = led_value
+        if new_LED_val > 255:
+            new_LED_val = 255
+        elif new_LED_val < 0:
+            new_LED_val = 0
+            
+        LED_address = self.Servo_Address_TextBox.Value
+        self.servotype = self.Servo_Type_ListBox.Selection
+        if self.servotype == 0:
+            self._update_servos(LED_address,new_LED_val,1, 0)
+        elif self.servotype == 1:
+            self._update_servos(LED_address,new_LED_val, 0, 0)
+        elif self.servotype == 2:
+            self._update_servos(LED_address,0, new_LED_val, 0)
+        else:
+            self._update_servos(LED_address,0, 0, new_LED_val)    
                 
     def on_click(self, event):
         selected = self.canvas.find_overlapping(event.x-10, event.y-10, event.x+10, event.y+10)
@@ -1039,7 +1110,7 @@ class UserForm_ServoAnim:
         else:
             message = "#L " + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:04x}'.format(1) + "\n"
         self.controller.send_to_ARDUINO(message)
-        time.sleep(0.2)    
+        #time.sleep(0.2)    
 
     
 
