@@ -628,7 +628,7 @@ class ServoTestPage1(tk.Frame):
         else:
             message = "#L " + '{:02x}'.format(lednum) + " " + '{:02x}'.format(servo_0) + " " + '{:02x}'.format(servo_1) + " " + '{:02x}'.format(servo_2) + " " + '{:02x}'.format(1) + "\n"
         self.controller.send_to_ARDUINO(message)
-        time.sleep(0.2)
+        #time.sleep(0.2)
 
 
             

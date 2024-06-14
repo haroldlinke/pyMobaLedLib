@@ -1,3 +1,11 @@
+5.3.1F - 14.6.2024
+Correction:
+- optimised communication via serial interface with ARDUINO
+New:
+- the optimised communication with ARDUINO allows the implementation of a test function  in the Servo Animation Window
+  after starting the test by clicking the test button, the servo is following the curve continously
+  during the test run, the values in the curve can be changed and are followed immediatly
+
 5.3.1E - 1.6.2024
 Corrections
 - LNet Adress-Input creates an Error Message

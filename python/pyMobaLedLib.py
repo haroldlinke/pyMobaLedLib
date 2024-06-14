@@ -57,7 +57,7 @@ import urllib
 module_path = os.path.abspath(__file__)  # Full path to the module file
 module_directory = os.path.dirname(module_path)  # Directory containing the module
 sys.path.append(module_directory)
-from vb2py.vbconstants import vbQuestion, vbYesNo, vbYes
+from vb2py.vbconstants import vbQuestion, vbYesNo, vbYes, vbInformation
 
 import tkinter as tk
 from tkinter import ttk,messagebox,filedialog, colorchooser
@@ -207,6 +207,8 @@ class pyMobaLedLibapp(tk.Tk):
         self.show_setcoltab_save_button = caller_setcoltab or not self.colortest_only
         
         self.queue = queue.Queue(maxsize=100)
+        self.serial_writebuffer = ""
+        self.send_active = False
         self.readConfigData()
         self.ARDUINO_current_portname = ""
         self.ARDUINO_status = ""
@@ -1370,19 +1372,76 @@ class pyMobaLedLibapp(tk.Tk):
         logging.debug("set_ARDUINOmessage %s",status_text)
         #self.statusmessage.configure(text=status_text,fg=fg)
         pass
+    
+    def send_to_ARDUINO_callback2(self):
+        if len(self.serial_writebuffer)>0 and self.arduino != None:
+            c = self.serial_writebuffer[0]
+            self.serial_writebuffer = self.serial_writebuffer[1:]
+            self.arduino.write(c.encode())
+            if len(self.serial_writebuffer)>0:
+                self.after(self.waittime_int, self.send_to_ARDUINO_callback)
+            else:
+                self.send_active = False
+        else:
+            self.send_active = False    
+    
+    def send_to_ARDUINO_callback(self):
+        if self.serial_writebuffer_idx < self.serial_writebuffer_len and self.arduino != None:
+            c = self.serial_writebuffer[self.serial_writebuffer_idx]
+            self.serial_writebuffer_idx += 1
+            self.arduino.write(c.encode())
+            if self.serial_writebuffer_idx < self.serial_writebuffer_len:
+                self.after(self.waittime_int, self.send_to_ARDUINO_callback)
+            else:
+                self.send_active = False
+                self.serial_writebuffer_idx = 0
+                self.serial_writebuffer = ""
+                
+        else:
+            self.send_active = False
 
     def send_to_ARDUINO(self, message,arduino=None,comport=None):
         if arduino == None:
             arduino = self.arduino
         if arduino:
             try:
-                arduino.write(message.encode())
-                logging.debug("Message send to ARDUINO: %s",message)
-                time.sleep(2*ARDUINO_WAITTIME)
+                # The interrupts in the Arduino are locked while the LEDs are updatet
+                # => To avoid loosing bits maximal one byte could be send over the RS232 while the interrupts are locked
+                # The delay is calculated by:
+                # 0.9 + 0.35us + 0.3 us = 1.55us / Bit
+                # 24 Bit / LED
+                # Resttime > 50 us
+                # Number of LEDs  between 20 and 256 LEDs => Delay 1ms to 12,8ms
+                #              
+                waittime = self.get_maxLEDcnt() * 0.05 # 50us
+                if waittime < 1.0:
+                    waittime = 1.0
+                self.waittime_int = round(waittime)
+                self.serial_writebuffer += message
+                self.serial_writebuffer_len = len(self.serial_writebuffer)
+                if not self.send_active:
+                    self.send_active = True
+                    self.serial_writebuffer_idx = 0
+                    self.after(self.waittime_int, self.send_to_ARDUINO_callback)
+            except BaseException as e:
+                logging.debug("Error write message to ARDUINO %s",message)
+                logging.debug(e, exc_info=True)
+                
+    def send_to_ARDUINO_old(self, message,arduino=None,comport=None):
+        if arduino == None:
+            arduino = self.arduino
+        if arduino:
+            try:
+                waittime = self.get_maxLEDcnt() * 0.00005
+                for c in message:
+                    arduino.write(c.encode())
+                    time.sleep(waittime)
+                #time.sleep(2*ARDUINO_WAITTIME)
+                logging.debug("Message send to ARDUINO: %s Waittime: %s",message, waittime)
                 self.queue.put( ">> " + str(message))
             except BaseException as e:
                 logging.debug("Error write message to ARDUINO %s",message)
-                logging.debug(e, exc_info=True) 
+                logging.debug(e, exc_info=True)     
     
     def set_maxLEDcnt(self,maxLEDcnt):
         self.maxLEDcnt = maxLEDcnt
@@ -2885,11 +2944,11 @@ class pyMobaLedLibapp(tk.Tk):
             if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
                 # shutdown and restart
                 self.restart()
-            
-        except BaseException as e:
+ 
+        except Exception as e:
             logging.error(e, exc_info=True)
             #Debug.Print("Update_MobaLedLib exception:",e)
-            P01.MsgBox(M09.Get_Language_Str('Fehler beim Download oder Installieren?'),vbInformation, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib'))
+            P01.MsgBox(M09.Get_Language_Str('Fehler beim Download oder Installieren!')+"\n\n"+str(e),vbInformation, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib'))
         P01.Unload(F00.StatusMsg_UserForm)
     
     def check_version(self, exec_update=False):
