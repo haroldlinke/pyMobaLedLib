@@ -1,3 +1,16 @@
+5.3.1G - 18.6.2024
+Corrections
+- Servoanimation: crash when entry field is empty or has no valid numerical value in the field
+Improved
+- Servoanimation: Servotest - adapted delay between steps to PC performance - better realtime behaviour of servos
+- Servoanimation: Servotest - red line cursor showing current timepoint
+New
+- Servoanimation: new Macro ServoAnim2B - ServoAnimation with 2 Buttons for testing
+- Servoanimation: automatically Enable_Store_Status is set by the Macro to enable the storing of the servo status
+Known Issues:
+- PatternConfigurator: Loading and saving PCF files does not work
+- When restarting ARDUINO, Servos execute the first pattern and go fast to the first position
+
 5.3.1F - 14.6.2024
 Correction:
 - optimised communication via serial interface with ARDUINO

@@ -2458,6 +2458,8 @@ class CWorksheet(object):
                 self.create_search_colcache(searchcol)
                 colcache = self.searchcache.get(searchcol,None)
             res_row = colcache.get(searchtext,None)
+            if res_row == None:
+                res_row = colcache.get(searchtext+" ",None)
             if not res_row:
                 return None # searchtext not found
             else:

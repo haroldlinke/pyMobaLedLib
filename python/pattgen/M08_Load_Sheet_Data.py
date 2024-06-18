@@ -692,7 +692,7 @@ def Load_AllExamples_Sheets():
         # Prevent loading duplicate sheets
         Loaded_Sheets=""
         for Example in Split(ExampleList, vbTab):
-            Load_Sheets(PG.ThisWorkbook.Path + '\\' + M01.ExampleDir + '\\' + Example + '.MLL_pcf', Loaded_Sheets, '<<LASTSHEET>>')
+            Load_Sheets(PG.ThisWorkbook.Path + '/' + M01.ExampleDir + '/' + Example + '.MLL_pcf', Loaded_Sheets, '<<LASTSHEET>>')
         if Left(X02.Application.StatusBar, Len(pattgen.M09_Language.Get_Language_Str('Lade Beispielseiten...'))) == pattgen.M09_Language.Get_Language_Str('Lade Beispielseiten...'):
             # Still the same status line and no error message
             X02.Application.StatusBar = pattgen.M09_Language.Get_Language_Str('Beispiele geladen')

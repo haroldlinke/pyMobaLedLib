@@ -44,6 +44,7 @@ class UserForm_ServoAnim:
         self.Macro_str = ""
         self.test_started = False
         self.test_continue = False
+        self.test_pause = False
         #*HL Center_Form(Me)
         
         self.Main_Menu_Form_RSC = {"UserForm":{
@@ -386,9 +387,10 @@ class UserForm_ServoAnim:
     
     # VB2PY (UntranslatedCode) Option Explicit
     
-    def Show_With_Existing_Data(self, MacroName, ConfigLine, LED_Channel, Def_Channel):
+    def Show_With_Existing_Data(self, MacroName, ConfigLine, LED_Channel, Def_Channel, use_NButtons=False):
         Txt = String()
         #----------------------------------------------------------------------------------------------------------------------
+        self.use_NButtons = use_NButtons
         self.__LED_CntList = ''
         self.Macro_str = ConfigLine
         self.Show()
@@ -555,15 +557,15 @@ class UserForm_ServoAnim:
         delta_timepoints_count = self.determine_delta_timepoints_count()
         
         if gotoaction:
-            use_nbuttons = False
-            if use_nbuttons:
-                self.Userform_Res = LED + "$// Activation: N_Buttons #ServoAnim("
+            
+            if self.use_NButtons:
+                self.Userform_Res = LED + "$// Activation: N_Buttons #ServoAnim2B("
                 self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
-                self.Userform_Res = self.Userform_Res + ")\n" + "InCh_to_TmpVar(#InCh, 2) \n"                
+                self.Userform_Res = self.Userform_Res + ")\n" + "InCh_to_TmpVar(#InCh, 2) \n#define ENABLE_STORE_STATUS()\n"                
             else:
                 self.Userform_Res = LED + "$// Activation: Binary #ServoAnim("
                 self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
-                self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n"
+                self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n#define ENABLE_STORE_STATUS()\n"
         else:
             self.Userform_Res = LED + "$// #ServoAnim("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
@@ -626,12 +628,16 @@ class UserForm_ServoAnim:
         self.Userform_Res = ""
         
     def Update_Button_Click(self, event=None):
+        self.test_started = False
+        self.test_continue = False
+        self.test_pause = False        
         self.redraw_canvas()
         
     def stop_test(self):
         print("Stop Test")
-        self.Test_Button.TKWidget.configure(text="Starte Test")
+        self.Test_Button.TKWidget.configure(text="Fortsetzen Test")
         self.test_continue = False
+        self.test_pause = True
         
     def test_calculate_current_curve_point(self, curr_time):
         curr_point_time = self.curve_points[self.curr_idx][0]
@@ -642,11 +648,12 @@ class UserForm_ServoAnim:
             curr_value = self.curve_points[self.curr_idx][1]
             next_value = self.curve_points[self.curr_idx+1][1]
             return round(curr_value + (next_value - curr_value) * (curr_time - curr_point_time) / (next_point_time -curr_point_time)) # calculate intermediate curve point
-        if curr_time == next_point_time:
+        if curr_time + self.test_deltatime >= next_point_time:
             self.curr_idx += 1
             return self.curve_points[self.curr_idx][1]
     
     def run_test_point(self):
+        self.test_maxtime =  self.curve_points[-1][0]
         if self.curr_time > self.test_maxtime:
             self.curr_time = 0
             self.curr_idx = 0
@@ -658,18 +665,26 @@ class UserForm_ServoAnim:
             self.curr_time += self.test_deltatime
             self.canvasframe.after(self.test_deltatime, self.run_test_point)
             self.Kurve_Zeitanzeige_Label.Value = self.curr_time
+            self.Kurve_Wertanzeige_Label.Value = str(self.test_deltatime) + "(" + str(int(self.controller.used_time * 1000)) + ")"
+            new_x = self.valx2cx(self.curr_time)
+            self.canvas.coords(self.test_cursor_line, new_x, self.ty2cy(0), new_x, self.ty2cy(self.graphHeight))
         
     def start_test(self):
-        print("Start Test")
-        self.Test_Button.TKWidget.configure(text="Stop Test")
-        self.max_idx = len(self.curve_points)
-        self.test_deltatime = 20 # 20ms steps
-        self.test_last_led_value = -1
-        self.curr_idx = 0
-        if self.max_idx > 1:
-            self.test_maxtime = self.curve_points[-1][0]
-            self.curr_time =0
+        if self.test_pause:
+            self.test_pause = False
             self.test_continue = True
+            self.run_test_point()
+        else:
+            print("Start Test")
+            self.Test_Button.TKWidget.configure(text="Stop Test")
+            self.max_idx = len(self.curve_points)
+            self.test_deltatime = 40 # 20 # 20ms steps
+            self.test_last_led_value = -1
+            self.curr_idx = 0
+            if self.max_idx > 1:
+                self.test_maxtime = self.curve_points[-1][0]
+                self.curr_time =0
+                self.test_continue = True
             self.run_test_point()
         
         
@@ -858,6 +873,7 @@ class UserForm_ServoAnim:
             if on_off_line > 0:
                 cur_x = on_off_line * self.horizontal_value_factor
                 objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=th_width, fill=th_color,dash=th_linedashed,tag="TimeGrid", activewidth=th_width*2)
+            self.test_cursor_line = self.canvas.create_line(self.tx2cx(0), self.ty2cy(0), self.tx2cx(0), self.ty2cy(self.graphHeight), width=gr_width, fill=gr_color,dash=gr_linedashed,tag="TestCursor", activewidth=th_width*2)
         self.canvas.tag_raise("Line")
         self.canvas.tag_raise("point")
         
