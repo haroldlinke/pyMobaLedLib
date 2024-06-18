@@ -537,6 +537,10 @@ def __SelectMacros_Sub():
                 UserForm_PCAnim = D15.UserForm_ServoAnim(PG.global_controller)
                 UserForm_PCAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
                 Res = UserForm_PCAnim.Userform_Res
+            elif MacroName == "ServoAnim2B":
+                UserForm_PCAnim = D15.UserForm_ServoAnim(PG.global_controller)
+                UserForm_PCAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel, use_NButtons=True)
+                Res = UserForm_PCAnim.Userform_Res            
             elif MacroName == "LEDAnim":
                 UserForm_LEDAnim = D14.UserForm_LEDAnim(PG.global_controller)
                 UserForm_LEDAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)

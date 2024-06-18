@@ -99,6 +99,12 @@ class CControl_Template(object):
 
     def get_value(self):
         if self.TKVar != None:
+            if self.Type == "NumBox":
+                try:
+                    value = self.TKVar.get()
+                except:
+                    value = 0
+                return value
             return self.TKVar.get()
         else:
             # textbox

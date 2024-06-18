@@ -303,6 +303,7 @@ class pyMobaLedLibapp(tk.Tk):
         
         self.currentTabClass = ""
         self.maxLEDcnt = self.getConfigData("MaxLEDcnt")
+        self.waittime_int = -1
         self.paramDataChanged = False
         self.palette = {}
         self.connection_startup = False
@@ -988,6 +989,7 @@ class pyMobaLedLibapp(tk.Tk):
         timeout_error = False
         read_error =False
         text_string = "ERROR"
+        self.send_active = False
         
         if self.arduino and self.arduino.isOpen():
             #if port == self.ARDUINO_current_portname:
@@ -1273,6 +1275,7 @@ class pyMobaLedLibapp(tk.Tk):
             self.arduino = None
             self.ARDUINO_current_portname=""
             self.ARDUINO_status=""
+            self.send_active = False
         self.set_connectstatusmessage("Nicht Verbunden",fg="black")
             
     def connect_if_not_connected(self, port=None):
@@ -1340,6 +1343,7 @@ class pyMobaLedLibapp(tk.Tk):
     
     def ARDUINO_begin_direct_mode(self):
         if self.arduino and self.arduino.isOpen():
+            self.send_active = False
             logging.debug("ARDUINO_Begin_direct_mode")
             if self.mobaledlib_version == 1:
                 self.send_to_ARDUINO("#BEGIN\n")
@@ -1351,6 +1355,7 @@ class pyMobaLedLibapp(tk.Tk):
 
     def ARDUINO_end_direct_mode(self):
         if self.arduino and self.arduino.isOpen():
+            self.send_active = False
             logging.debug("ARDUINO_End_direct_mode")
             self.set_connectstatusmessage("Verbunden "+ self.ARDUINO_current_portname + " - EFFECT Mode",fg="green")
             if self.mobaledlib_version == 1:
@@ -1386,21 +1391,28 @@ class pyMobaLedLibapp(tk.Tk):
             self.send_active = False    
     
     def send_to_ARDUINO_callback(self):
-        if self.serial_writebuffer_idx < self.serial_writebuffer_len and self.arduino != None:
-            c = self.serial_writebuffer[self.serial_writebuffer_idx]
-            self.serial_writebuffer_idx += 1
-            self.arduino.write(c.encode())
-            if self.serial_writebuffer_idx < self.serial_writebuffer_len:
-                self.after(self.waittime_int, self.send_to_ARDUINO_callback)
+        try:
+            if self.serial_writebuffer_idx < self.serial_writebuffer_len and self.arduino != None:
+                c = self.serial_writebuffer[self.serial_writebuffer_idx]
+                self.serial_writebuffer_idx += 1
+                self.arduino.write(c.encode())
+                if self.serial_writebuffer_idx < self.serial_writebuffer_len:
+                    self.after(self.waittime_int, self.send_to_ARDUINO_callback)
+                else:
+                    self.send_active = False
+                    self.serial_writebuffer_idx = 0
+                    self.serial_writebuffer = ""
+                    self.end_time = time.perf_counter()
+                    self.used_time = self.end_time - self.start_time
+                    
+                    
             else:
                 self.send_active = False
-                self.serial_writebuffer_idx = 0
-                self.serial_writebuffer = ""
-                
-        else:
-            self.send_active = False
+        except:
+            print("Serial Error")
 
     def send_to_ARDUINO(self, message,arduino=None,comport=None):
+        
         if arduino == None:
             arduino = self.arduino
         if arduino:
@@ -1413,10 +1425,12 @@ class pyMobaLedLibapp(tk.Tk):
                 # Resttime > 50 us
                 # Number of LEDs  between 20 and 256 LEDs => Delay 1ms to 12,8ms
                 #              
-                waittime = self.get_maxLEDcnt() * 0.05 # 50us
-                if waittime < 1.0:
-                    waittime = 1.0
-                self.waittime_int = round(waittime)
+                if self.waittime_int == -1:
+                    waittime = self.get_maxLEDcnt() * 0.05 # 50us
+                    if waittime < 1.0:
+                        waittime = 1.0
+                    self.waittime_int = round(waittime)
+                self.start_time = time.perf_counter()
                 self.serial_writebuffer += message
                 self.serial_writebuffer_len = len(self.serial_writebuffer)
                 if not self.send_active:
@@ -1447,7 +1461,6 @@ class pyMobaLedLibapp(tk.Tk):
         self.maxLEDcnt = maxLEDcnt
         self.setConfigData("maxLEDcount",maxLEDcnt)
         self.set_macroparam_val("ConfigurationPage","MaxLEDcnt",maxLEDcnt)
-        
         
     def get_maxLEDcnt(self):
         if self.maxLEDcnt:            

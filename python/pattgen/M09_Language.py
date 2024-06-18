@@ -402,9 +402,10 @@ def Find_Cell_Pos_by_Name(Desc):
     # If Desc is not found "" is returned
     LSh = PG.ThisWorkbook.Sheets(M01.LANGUAGES_SH)
     _with41 = LSh
-    Res = LSh.CellsFind.Find(What= Desc, After= _with41.Range('A1'), LookIn= X01.xlFormulas, LookAt= X01.xlPart, SearchOrder= X01.xlByRows, SearchDirection= X01.xlNext, MatchCase= True, SearchFormat= False) #*HL
-    if not Res is None:
-        _fn_return_value = _with41.Cells(Res.Row, LangParamCol).Value
+    #Res = LSh.CellsFind.Find(What= Desc, After= _with41.Range('A1'), LookIn= X01.xlFormulas, LookAt= X01.xlPart, SearchOrder= X01.xlByRows, SearchDirection= X01.xlNext, MatchCase= True, SearchFormat= False) #*HL
+    Row = LSh.find_in_col_ret_row(Desc, FirstLangCol)
+    if not Row is None:
+        _fn_return_value = _with41.Cells(Row, LangParamCol).Value
     return _fn_return_value
 
 def Test_Find_Cell_Pos_by_Name():
