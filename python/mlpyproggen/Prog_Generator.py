@@ -71,6 +71,8 @@ import proggen.M37_Inst_Libraries as M37
 
 import pgcommon.G00_common as G00
 import proggen.Tabelle2 as T02
+import proggen.Userform_Testgrafik as D15
+
 
 import proggen.M09_Translate as M09_Translate
 
@@ -131,8 +133,8 @@ class Prog_GeneratorPage(tk.Frame):
         
         datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
         datasheet_formating = { "HideCells" : ("A1:C1", "E1"), #((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16)),
-                                "ProtectedCells"  : (("1:2","M:Q") ),
-                                "ColumnWidth"     : (10,68,68,132,132,68,240,136,136,68,240,240,68,68,68), #(5,17,17,34,17,17,60,34,34,17,60,60,17,17,17),
+                                "ProtectedCells"  : (("1:2","M:R") ),
+                                "ColumnWidth"     : (10,68,68,132,132,68,240,136,136,68,240,240,68,68,68, 68), #(5,17,17,34,17,17,60,34,34,17,60,60,17,17,17),
                                 "ColumnAlignment" : {"c": ("B")
                                                      },                                 
                                 "left_click_callertype": "cell",
@@ -575,8 +577,13 @@ class Prog_GeneratorPage(tk.Frame):
                          "command"  : F00.Help_Button_Click,
                          "text"     : "Hilfe",
                          "padx"     : 20,
-                         "tooltip"  : "Hilfe aufrufenn"}                        
-                    )
+                         "tooltip"  : "Hilfe aufrufen"},
+                        {"Icon_name": "Btn_Grafik.png",
+                         "command"  : self.Grafik_Button_click,
+                         "text"     : "*Grafik",
+                         "padx"     : 20,
+                         "tooltip"  : "Grafik"}                                                
+        )
         
         filedir = os.path.dirname(os.path.realpath(__file__))
         self.filedir2 = os.path.dirname(filedir)
@@ -591,6 +598,9 @@ class Prog_GeneratorPage(tk.Frame):
         filepath = self.filedir2 + filename
         self.icon_dict[button_desc["Icon_name"]] = tk.PhotoImage(file=filepath)
         button_text = M09.Get_Language_Str(button_desc["text"])
+        if button_text[0] == "*":
+            if not self.controller.showspecialfeatures:
+                return
         try:
             button=tk.Button(self.button_frame, text=button_text, image=self.icon_dict[button_desc["Icon_name"]], command=button_desc["command"]) #,compound="center")
             shift_command = button_desc.get("shift_command",None)
@@ -700,7 +710,13 @@ class Prog_GeneratorPage(tk.Frame):
         if Txt != r'':
             P01.Application.OnTime(15000, self.ClearStatusbar)
         else:
-            P01.Application.OnTime(15000, self.ClearStatusbar)    
+            P01.Application.OnTime(15000, self.ClearStatusbar)
+            
+    def Grafik_Button_click(self, event=None):
+        background_image = ""
+        UserForm_TestGrafik = D15.UserForm_TestGrafik(self.controller, background_image=background_image)
+        UserForm_TestGrafik.Show_With_Existing_Data("")
+    
             
     def upload_to_ARDUINO_Button_click(self, event=None):
         self.arduinoMonitorPage=self.controller.getFramebyName ("ARDUINOMonitorPage")
