@@ -1,3 +1,13 @@
+5.3.1H - 06-07-2024
+Corrections:
+- ServoAnimation: After pressing the "Fortsetzen test"-Button - the Button is not updated to "Stop Test"
+- Macros for Color and LED animation hidden - they need to be updated to the Servo Animation functionality and do not work anymore correctly
+- added a hidden feature for testing
+- Servo Animation: servo values limited to 1..254 to avoid 0 and 255 as values to reduce unintended movement
+- Servo Animation: new Help-Button opens directly MLL-wiki page: Servo Animation
+- Servo Animation: Channel selection added
+- Serial Interface: Connection interruption were sometimes not correctly detected
+
 5.3.1G - 18.6.2024
 Corrections
 - Servoanimation: crash when entry field is empty or has no valid numerical value in the field

@@ -74,6 +74,7 @@ import pattgen.MainMenu_Form as MainMenu
 from mlpyproggen.ServoTestPage import ServoTestPage1
 from mlpyproggen.ServoTestPage2 import ServoTestPage2
 from mlpyproggen.VB2PyPage import VB2PYPage
+from mlpyproggen.TestPage import TestPage
 from mlpyproggen.Z21MonitorPage import Z21MonitorPage
 from mlpyproggen.ARDUINOMonitorPage import ARDUINOMonitorPage
 from mlpyproggen.StartPage import StartPage
@@ -194,6 +195,7 @@ class pyMobaLedLibapp(tk.Tk):
         caller_setcoltab = (caller == "SetColTab")
         self.colortest_only = COMMAND_LINE_ARG_DICT.get("colortest_only","")== "True"
         self.executetests = COMMAND_LINE_ARG_DICT.get("test","")== "True"
+        self.showspecialfeatures = COMMAND_LINE_ARG_DICT.get("special","")== "True"
         self.loaddatafile = COMMAND_LINE_ARG_DICT["loaddatafile"]!="False"
         self.logfilename =  COMMAND_LINE_ARG_DICT["logfilename"]
         self.useARDUINO_IDE = COMMAND_LINE_ARG_DICT.get("useARDUINO_IDE", False)
@@ -520,7 +522,10 @@ class pyMobaLedLibapp(tk.Tk):
         tabClassList = tabClassList_all #test, always show all pages 
         
         if COMMAND_LINE_ARG_DICT.get("vb2py","")=="True":
-            tabClassList += (VB2PYPage, )
+            self.arg_test = True
+            tabClassList += (VB2PYPage, TestPage)
+        else:
+            self.arg_test = False
         
         for tabClass in tabClassList:
             frame = tabClass(self.container,self)
@@ -991,7 +996,7 @@ class pyMobaLedLibapp(tk.Tk):
         text_string = "ERROR"
         self.send_active = False
         
-        if self.arduino and self.arduino.isOpen():
+        if self.arduino and self.arduino.is_open:
             #if port == self.ARDUINO_current_portname:
             #    return # port already open
             self.disconnect()
@@ -1277,6 +1282,17 @@ class pyMobaLedLibapp(tk.Tk):
             self.ARDUINO_status=""
             self.send_active = False
         self.set_connectstatusmessage("Nicht Verbunden",fg="black")
+        
+    def close_arduino_connection_after_write_error(self):
+        logging.debug("close ARDUINO port %s",self.arduino.portstr)
+        if self.arduino:
+            if self.arduino.is_open:
+                self.arduino.close()
+                self.arduino = None
+                self.ARDUINO_current_portname=""
+                self.ARDUINO_status=""
+        self.send_active = False
+        self.set_connectstatusmessage("Nicht Verbunden",fg="black")        
             
     def connect_if_not_connected(self, port=None):
         logging.debug("Connect_if_not_connected")
@@ -1284,6 +1300,12 @@ class pyMobaLedLibapp(tk.Tk):
             if self.arduino.isOpen():
                 return True
         return self.connect(port=port)
+    
+    def is_connection_open(self):
+        if self.arduino:
+            if self.arduino.is_open:
+                return True
+        return False
 
     def checkconnection(self):
         #logging.debug("Check_connection")
@@ -1345,17 +1367,19 @@ class pyMobaLedLibapp(tk.Tk):
         if self.arduino and self.arduino.isOpen():
             self.send_active = False
             logging.debug("ARDUINO_Begin_direct_mode")
+            self.set_connectstatusmessage("Verbunden "+ self.ARDUINO_current_portname + " - DIRECT Mode",fg="green")
             if self.mobaledlib_version == 1:
                 self.send_to_ARDUINO("#BEGIN\n")
             else:
                 self.send_to_ARDUINO("#?\n")
             time.sleep(ARDUINO_WAITTIME)
             self.led_off()
-            self.set_connectstatusmessage("Verbunden "+ self.ARDUINO_current_portname + " - DIRECT Mode",fg="green")
+            
 
     def ARDUINO_end_direct_mode(self):
         if self.arduino and self.arduino.isOpen():
             self.send_active = False
+            self.led_off()
             logging.debug("ARDUINO_End_direct_mode")
             self.set_connectstatusmessage("Verbunden "+ self.ARDUINO_current_portname + " - EFFECT Mode",fg="green")
             if self.mobaledlib_version == 1:
@@ -1402,17 +1426,20 @@ class pyMobaLedLibapp(tk.Tk):
                     self.send_active = False
                     self.serial_writebuffer_idx = 0
                     self.serial_writebuffer = ""
+                    self.serial_writebuffer_len = 0
                     self.end_time = time.perf_counter()
                     self.used_time = self.end_time - self.start_time
-                    
-                    
             else:
                 self.send_active = False
-        except:
+        except BaseException as e:
             print("Serial Error")
+            logging.debug("send_to_ARDUINO_callback - write Error")
+            logging.debug(e, exc_info=True)
+            self.close_arduino_connection_after_write_error()
+            self.send_active = False
+            self.send_error = True
 
     def send_to_ARDUINO(self, message,arduino=None,comport=None):
-        
         if arduino == None:
             arduino = self.arduino
         if arduino:
@@ -1438,7 +1465,7 @@ class pyMobaLedLibapp(tk.Tk):
                     self.serial_writebuffer_idx = 0
                     self.after(self.waittime_int, self.send_to_ARDUINO_callback)
             except BaseException as e:
-                logging.debug("Error write message to ARDUINO %s",message)
+                logging.debug("send_to_ARDUINO - Error write message to ARDUINO %s",message)
                 logging.debug(e, exc_info=True)
                 
     def send_to_ARDUINO_old(self, message,arduino=None,comport=None):
@@ -2945,15 +2972,16 @@ class pyMobaLedLibapp(tk.Tk):
             M30.UnzipAFile(zipfilenamepath,workbookpath3)
             srcpath = workbookpath3+"/pyMobaLedLib-master/python"
             dstpath = workbookpath #workbookpath3+"/pyMobaLedLib/python"
-            if not dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy when destination is development folder
-                F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
-                try:
-                    logging.debug("Update pyMobaLedLib from Github -delete folder:"+ workbookpath3+"/LEDs_AutoProg")
-                    shutil.rmtree(workbookpath+"/LEDs_AutoProg")
-                except BaseException as e:
-                    logging.error(e, exc_info=True)
-                self.copytree(srcpath,dstpath)
-                logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
+            if dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy into development folder
+                dstpath = r"D:\data\doc\pyMobaLedLibcopy"
+            F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
+            try:
+                logging.debug("Update pyMobaLedLib from Github -delete folder:"+ workbookpath3+"/LEDs_AutoProg")
+                shutil.rmtree(dstpath+"/LEDs_AutoProg")
+            except BaseException as e:
+                logging.error(e, exc_info=True)
+            self.copytree(srcpath,dstpath)
+            logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
             if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
                 # shutdown and restart
                 self.restart()
@@ -3118,6 +3146,7 @@ def main_entry():
     parser.add_argument('--caller',choices=["SetColTab",""],help="Only for MLL-ProgrammGenerator: If <SetColTab> only the Colorcheckpage is available and the chnage coltab is returned after closing the program")
     parser.add_argument('--test',choices=["True","False"],help="if <True> test routines are started at start of program")
     parser.add_argument('--vb2py',choices=["True","False"],help="if <True> VB2PYpage is shown - for developers only")
+    parser.add_argument('--special',choices=["True","False"],help="if <True> special feature are shown - for developers only")
     parser.add_argument('--ARDUINO_IDE',choices=["True", "False"],help="Forces the use of the ARDUINO IDE instead of the Windows batch files")
     try:
         args = parser.parse_args()
@@ -3206,8 +3235,11 @@ def main_entry():
     if args.test:
         COMMAND_LINE_ARG_DICT["test"]=args.test
         
-    if args.vb2py:
-        COMMAND_LINE_ARG_DICT["vb2py"]=args.vb2py
+        if args.test:
+            COMMAND_LINE_ARG_DICT["test"]=args.test    
+        
+    if args.special:
+        COMMAND_LINE_ARG_DICT["special"]=args.special
         
     if args.ARDUINO_IDE:
         if args.ARDUINO_IDE == "True":

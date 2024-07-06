@@ -1,9 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
+try:
+    from PIL import Image, ImageTk
+except:
+    pass
 
 
 class CanvasFrame(tk.Frame):
-    def __init__(self, parent, canvas_height, canvas_width):
+    def __init__(self, parent, canvas_height, canvas_width, bg_image=None):
         global total_scalefactor
         self.tabClassName = "CanvasFrame"
         self.parent = parent
@@ -13,29 +17,34 @@ class CanvasFrame(tk.Frame):
         self.canvas_width = canvas_width
         self.grid_columnconfigure(0,weight=1)
         self.grid_rowconfigure(0,weight=1)
-        self.frame=ttk.Frame(self,relief="ridge", borderwidth=1)
+        self.frame=ttk.Frame(self,relief="solid", borderwidth=1, width=self.canvas_width, height=self.canvas_height)
         self.frame.grid_columnconfigure(0,weight=1)
         self.frame.grid_rowconfigure(0,weight=1)
-        self.frame.grid(row=0,column=0,sticky="nesw")
+        self.frame.grid(row=0,column=0) #,sticky="nesw")
         self.cv_frame=None
         self.define_key_bindings()
-        self.canvas = self.create_canvas()
+        self.bg_image_pathname = bg_image
+        self.background_pil_image = None
         self.scalefactorunit = 0.95
         self.total_scalefactor = 1
         self.old_scalefactor = 1
         self.firstcall = True
         self.block_Canvas_movement_flag = False
         self.canvas_init = True
+        self.canvas = self.create_canvas()
+
  
     def create_canvas(self):
         if self.cv_frame:
             #self.cv_frame.destroy()
             pass
         else:
-            self.cv_frame = ttk.Frame(self.frame)
-        self.cv_frame.grid(row=0,column=0,sticky="nesw")
+            self.cv_frame = ttk.Frame(self.frame, width=self.canvas_width, height=self.canvas_height)
+        self.cv_frame.grid(row=0,column=0) #,sticky="nesw")
         self.cv_frame.grid_columnconfigure(0,weight=1)
         self.cv_frame.grid_rowconfigure(0,weight=1)
+        self.frame.grid_columnconfigure(0,weight=1)
+        self.frame.grid_rowconfigure(0,weight=1)
         if self.canvas and self.canvas != None:
             canvas = self.canvas
         else:
@@ -51,6 +60,15 @@ class CanvasFrame(tk.Frame):
             canvas.pack(side=tk.LEFT,expand=True,fill=tk.BOTH)
         self.canvas = canvas
         self.canvas_bindings()
+        try:
+            self.background_pil_image= Image.open(self.bg_image_pathname)
+            self.background_TK = ImageTk.PhotoImage(self.background_pil_image)
+            canvas.create_image(0, 0, anchor='nw', image=self.background_TK)
+            self.bg_width, self.bg_height = self.background_pil_image.size
+            self.imscale = 1.0  # scale for the canvaas image
+            self.delta = 1.3  # zoom magnitude                       
+        except:
+            pass        
         return canvas
         
     def define_key_bindings(self):
@@ -178,10 +196,16 @@ class CanvasFrame(tk.Frame):
         """
         x1 = x #self.canvas.canvasx(x)
         y1 = y #self.canvas.canvasy(y)
-        #self.scale_canvas_arround_object(scale, objectid)
+        
         self.canvas.scale('all', 0, 0, scale, scale)
         #print("Canvas.bbox:", self.canvas.bbox('all'))
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+        if self.background_pil_image != None:
+            width, height = self.background_pil_image.size
+            imagetk = ImageTk.PhotoImage(self.background_pil_image.resize((int(width*self.total_scalefactor), int(height*self.total_scalefactor))))
+            imageid = self.canvas.create_image(0, 0, anchor='nw', image=imagetk)
+            self.canvas.lower(imageid)  # set image into background
+            self.imagetk = imagetk  # keep an extra reference to preven            
                 
     def block_Canvas_movement(self,flag):
         self.block_Canvas_movement_flag = flag

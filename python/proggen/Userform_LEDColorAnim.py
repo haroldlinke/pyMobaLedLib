@@ -10,6 +10,7 @@ import proggen.M09_Language as M09
 #import pattgen.M65_Special_Modules
 #import pattgen.M80_Multiplexer_INI_Handling
 import mlpyproggen.Pattern_Generator as PG
+import proggen.Userform_Animation as UA
 from tkcolorpicker.functions import hsv_to_rgb,  rgb_to_hexa
 
 import ExcelAPI.XLF_FormGenerator as XLF
@@ -43,7 +44,7 @@ def Abort_Button_Click():
     pass
 
 
-class UserForm_LEDColorAnim:
+class UserForm_LEDColorAnim(UA.UserForm_Animation):
     
     def __init__(self,controller):
         self.controller    = controller
@@ -52,7 +53,10 @@ class UserForm_LEDColorAnim:
         self.Userform_Res  = ""
         self.Controls      = []
         self.Controls_Dict = {}
-        self.Macro_str = "" 
+        self.Macro_str = ""
+        self.test_started = False
+        self.test_continue = False
+        self.test_pause = False        
         #*HL Center_Form(Me)
         
         self.Main_Menu_Form_RSC = {"UserForm":{
@@ -72,37 +76,37 @@ class UserForm_LEDColorAnim:
                                       {"Name":"Label2","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"by Harold",
                                        "ControlTipText":"","ForeColor":"#FF0000","Height":12,"Left":318,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":100},
-                                      {"Name":"LED_Address_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                      {"Name":"Anim_Address_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"LED Adressse",
                                        "ControlTipText":"LED Adresse für Test","ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":90,"Type":"Label","Visible":True,"Width":348},
-                                      {"Name":"LED_Address_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                      {"Name":"Anim_Address_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"",
                                        "ControlTipText":"LED Adresse für Test","ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":90,"Type":"NumBox","Value": 1 ,"Visible":True,"Width":50},
                                       {"Name": "Frame4","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                          "Caption"       : "EIN-schalt Parameter",
                                          "ControlTipText": "","ForeColor": "#000012","Height": 90,"Left": 6,"Top": 112,"Type": "Frame","Visible": True,"Width": 154,
                                          "Components"    :
-                                            [{"Name":"LED_PauseS_Ein_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                            [{"Name":"Anim_PauseS_Ein_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Startpause (msec)",
                                               "ControlTipText":"Pause bevor die Einschaltanimation startet in msec",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"LED_PauseS_Ein_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"Anim_PauseS_Ein_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"",
                                               "ControlTipText":"Pause bevor die Einschaltanimation startet in msec",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
-                                             {"Name":"LED_DauerEin_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"Anim_DauerEin_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"Dauer EIN (msec)",
                                                "ControlTipText":"Dauer der Einschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":30,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"LED_DauerEin_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"Anim_DauerEin_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"",
                                                "ControlTipText":"Dauer der Einschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":30,"Type":"NumBox","Value": 6000 ,"Visible":True,"Width":50},
-                                             {"Name":"LED_PauseE_Ein_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"Anim_PauseE_Ein_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"Endepause (msec)",
                                                "ControlTipText":"Pause am Ende der Einschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":54,"Type":"Label","Visible":True,"Width":148},
-                                              {"Name":"LED_PauseE_Ein_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                              {"Name":"Anim_PauseE_Ein_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                "Caption":"",
                                                "ControlTipText":"Pause am Ende der Einschaltanimation in msec",
                                                "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":54,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
@@ -116,7 +120,7 @@ class UserForm_LEDColorAnim:
                                               "Caption":"Farbverlauf:",
                                               "ControlTipText":"Farbverlauf",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"LED_CurveType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"Anim_CurveType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Farbverlauf",
                                               "ControlTipText":"Wie soll der automatische Farbverlauf aussehen: \nAufsteigend\nAbsteigend\nIndividuell",
                                               "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Aufsteigend", "Absteigend", "Individuell"] ,"Visible":True,"Width":60},
@@ -125,27 +129,27 @@ class UserForm_LEDColorAnim:
                                               "ControlTipText": "","ForeColor": "#000012","Height":90,"Left": 6,"Top": 45,"Type": "Frame","Visible": True,"Width": 154,
                                               "Components"    :
                                                    [
-                                                    {"Name":"LED_AnfangsFarbwert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_AnfangsFarbwert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"Farbton (0..255)",
                                                      "ControlTipText":"Startfarbton (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                                    {"Name":"LED_AnfangsFarbwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_AnfangsFarbwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"",
                                                      "ControlTipText":"Startfarbton (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
-                                                    {"Name":"LED_AnfangsSättigungswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_AnfangsSättigungswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"Sättigung (0..255)",
                                                      "ControlTipText":"Startfarbton (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":30,"Type":"Label","Visible":True,"Width":148},
-                                                    {"Name":"LED_AnfangsSättigungswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_AnfangsSättigungswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"",
                                                      "ControlTipText":"Startsättigung (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":30,"Type":"NumBox","Value": 255 ,"Visible":True,"Width":50},
-                                                    {"Name":"LED_AnfangsHelligkeitswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_AnfangsHelligkeitswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"Helligkeit (0..255)",
                                                      "ControlTipText":"Starthelligkeit (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":54,"Type":"Label","Visible":True,"Width":148},
-                                                    {"Name":"LED_AnfangsHelligkeitswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_AnfangsHelligkeitswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"",
                                                      "ControlTipText":"Starthelligkeit (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":54,"Type":"NumBox","Value": 255 ,"Visible":True,"Width":50},
@@ -155,27 +159,27 @@ class UserForm_LEDColorAnim:
                                               "ControlTipText": "","ForeColor": "#000012","Height":90,"Left": 6,"Top": 141,"Type": "Frame","Visible": True,"Width": 154,
                                               "Components"    :
                                                    [
-                                                    {"Name":"LED_EndFarbwert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_EndFarbwert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"Farbton (0..255)",
                                                      "ControlTipText":"Endefarbton (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                                    {"Name":"LED_EndFarbwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_EndFarbwert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"",
                                                      "ControlTipText":"Endefarbton (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"NumBox","Value": 0 ,"Visible":True,"Width":50},
-                                                    {"Name":"LED_EndSättigungswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_EndSättigungswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"Sättigung (0..255)",
                                                      "ControlTipText":"Endefarbton (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":30,"Type":"Label","Visible":True,"Width":148},
-                                                    {"Name":"LED_EndSättigungswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_EndSättigungswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"",
                                                      "ControlTipText":"Endesättigung (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":30,"Type":"NumBox","Value": 255 ,"Visible":True,"Width":50},
-                                                    {"Name":"LED_EndHelligkeitswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_EndHelligkeitswert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"Helligkeit (0..255)",
                                                      "ControlTipText":"Endehelligkeit (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":54,"Type":"Label","Visible":True,"Width":148},
-                                                    {"Name":"LED_EndHelligkeitswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                                    {"Name":"Anim_EndHelligkeitswert_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                      "Caption":"",
                                                      "ControlTipText":"Endehelligkeit (0..255)",
                                                      "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":54,"Type":"NumBox","Value": 255 ,"Visible":True,"Width":50},
@@ -190,7 +194,7 @@ class UserForm_LEDColorAnim:
                                               "Caption":"Ausführung:",
                                               "ControlTipText":"Art der Ausführung der Sequenz",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"LED_RunType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"Anim_RunType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Ausführung",
                                               "ControlTipText":"Wie soll die Bewegung ausgeführt werden: \nWiederholen: Die Sequenz wird automatisch wiederholt.\nPingPong: Die Sequenz wird vorwärts und rückwärts abgespielt",
                                               "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Wiederholen", "PingPong"] ,"Visible":True,"Width":60},
@@ -204,15 +208,15 @@ class UserForm_LEDColorAnim:
                                              "Caption":"Zeitstufen",
                                              "ControlTipText":"Art der Zeitstufen für die Sequenz",
                                              "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":148},
-                                            {"Name":"LED_TimeStepType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                            {"Name":"Anim_TimeStepType_ListBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                              "Caption":"Zeitstufen",
                                              "ControlTipText":"Wie sollen die Zeitstufen ermittelt werden \nAutomatisch \nIndividuell",
-                                             "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Automatisch", "Individuell"] ,"Visible":True,"Width":60},
-                                            {"Name":"LED_Abstand_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             "ForeColor":"#FF0000","Height":33,"Left":6,"TextAlign":"fmTextAlignLeft","Selection": 0,"SpecialEffect": "fmSpecialEffectSunken","Top":6,"Type":"ListBox","Value": ["Automatisch", "Fix", "Individuell"] ,"Visible":True,"Width":60},
+                                            {"Name":"Anim_Abstand_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"Stufenabstand (msec)",
                                               "ControlTipText":"Abstand in msec zwischen zwei Stufen, die an den LED gesendet werden.",
                                               "ForeColor":"#FF0000","Height":18,"Left":68,"TextAlign":"fmTextAlignLeft","Top":45,"Type":"Label","Visible":True,"Width":148},
-                                             {"Name":"LED_Abstand_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                             {"Name":"Anim_Abstand_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                               "Caption":"",
                                               "ControlTipText":"Abstand in msec zwischen zwei Stufen, die an den LED gesendet werden.",
                                               "ForeColor":"#FF0000","Height":18,"Left":12,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":45,"Type":"NumBox","Value": 500 ,"Visible":True,"Width":50},
@@ -222,7 +226,24 @@ class UserForm_LEDColorAnim:
                                          "ControlTipText": "","ForeColor": "#000012","Height": 430,"Left": 170,"Top": 112,"Type": "Frame","Visible": True,"Width": 580,
                                          "Components"    :
                                               [
-                                                  ]},                                        
+                                                  ]},
+                                        {"Name":"Kurve_Zeit_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                         "Caption":"Zeit:",
+                                         "ControlTipText":"Zeigt die  Zeit an, auf der der Mauszeiger steht",
+                                         "ForeColor":"#FF0000","Height":18,"Left":170, "TextAlign":"fmTextAlignLeft","Top":570,"Type":"Label","Visible":True,"Width":40},
+                                        {"Name":"Kurve_Zeitanzeige_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                         "Caption":"0",
+                                         "ControlTipText":"Zeigt die  Zeit an, auf der der Mauszeiger steht",
+                                         "ForeColor":"#FF0000","Height":18,"Left":210,"TextAlign":"fmTextAlignLeft","Top":570,"Type":"Label","Visible":True,"Width":40},                                      
+                                        {"Name":"Kurve_Wert_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                         "Caption":"Wert:",
+                                         "ControlTipText":"Zeigt den Wert an, auf dem der Mauszeiger steht",
+                                         "ForeColor":"#FF0000","Height":18,"Left":240, "TextAlign":"fmTextAlignLeft","Top":570,"Type":"Label","Visible":True,"Width":40},
+                                        {"Name":"Kurve_Wertanzeige_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+                                         "Caption":"0",
+                                         "ControlTipText":"Zeigt den Wert an, auf dem der Mauszeiger steht",
+                                         "ForeColor":"#FF0000","Height":18,"Left":280,"TextAlign":"fmTextAlignLeft","Top":570,"Type":"Label","Visible":True,"Width":40},                                         
+                                                                        
                                       {"Name":"OK_Button","Accelerator":"<Return>","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                        "Caption":"OK",
                                        "Command":"","ControlTipText":"","ForeColor":"#000012","Height":25,"Left":666,"Top":570,"Type":"CommandButton","Visible":True,"Width":72},
@@ -271,7 +292,7 @@ class UserForm_LEDColorAnim:
         sel_color = hsv_to_rgb(h360, s100, v100)
         return sel_color[0], sel_color[1],  sel_color[2]        
    
-    def determine_curve_points_from_Macro(self, Macro_str):
+    def determine_curve_points_from_Macro_1(self, Macro_str):
         curve_points = []
         macro_str_lines = Macro_str.split("\n")
         if len(macro_str_lines) > 1:
@@ -295,9 +316,26 @@ class UserForm_LEDColorAnim:
                 curve_points.append([curr_time, int(pattern_macro_params[param_idx])])
                 param_idx += 3
         return curve_points
+    
+    def create_UI_Paramlist(self):
+        self.UI_paramlist = [
+            self.Anim_RunType_ListBox, 
+            self.Anim_CurveType_ListBox,
+            self.Anim_Abstand_TextBox, 
+            self.Anim_AnfangsFarbwert_TextBox,
+            self.Anim_AnfangsHelligkeitswert_TextBox,
+            self.Anim_AnfangsSättigungswert_TextBox, 
+            self.Anim_EndFarbwert_TextBox,
+            self.Anim_EndHelligkeitswert_TextBox,
+            self.Anim_EndSättigungswert_TextBox, 
+            self.Anim_DauerEin_TextBox,
+            self.Anim_PauseS_Ein_TextBox, 
+            self.Anim_PauseE_Ein_TextBox, 
+            self.Anim_TimeStepType_ListBox
+        ]
         
     
-    def __UserForm_Initialize(self):
+    def __UserForm_Initialize_1(self):
         #--------------------------------
         # Is called once to initialise the form
         #Debug.Print vbCr & Me.Name & ": UserForm_Initialize"
@@ -310,21 +348,7 @@ class UserForm_LEDColorAnim:
         self.curve_points = []
         self.current_curve_point = None
         self.start_value = ()
-        self.UI_paramlist = [
-            self.LED_RunType_ListBox, 
-            self.LED_CurveType_ListBox,
-            self.LED_Abstand_TextBox, 
-            self.LED_AnfangsFarbwert_TextBox,
-            self.LED_AnfangsHelligkeitswert_TextBox,
-            self.LED_AnfangsSättigungswert_TextBox, 
-            self.LED_EndFarbwert_TextBox,
-            self.LED_EndHelligkeitswert_TextBox,
-            self.LED_EndSättigungswert_TextBox, 
-            self.LED_DauerEin_TextBox,
-            self.LED_PauseS_Ein_TextBox, 
-            self.LED_PauseE_Ein_TextBox, 
-            self.LED_TimeStepType_ListBox
-        ]
+        self.create_UI_Paramlist()
         if self.Macro_str != "":
             # read parameters from Macrostring
             if self.Macro_str.find("#LEDColorAnim") != -1:
@@ -339,12 +363,12 @@ class UserForm_LEDColorAnim:
                             #self.patterntype = param_list[0]
                             #self.curvetype = param_list[1]
                             self.get_params_from_param_list(self.param_list)
-                            self.patterntype = self.LED_RunType_ListBox.Selection
-                            self.curvetype = self.LED_CurveType_ListBox.Selection
+                            self.patterntype = self.Anim_RunType_ListBox.Selection
+                            self.curvetype = self.Anim_CurveType_ListBox.Selection
                             self.LEDtype = 0
 
-        if self.LED_TimeStepType_ListBox.Selection == 0: # automatic
-            self.LED_Abstand_TextBox.Value = int(self.LED_DauerEin_TextBox.Value / 4)
+        if self.Anim_TimeStepType_ListBox.Selection == 0: # automatic
+            self.Anim_Abstand_TextBox.Value = int(self.Anim_DauerEin_TextBox.Value / 4)
         if self.curvetype == 2: # individuel
             self.curve_points = self.determine_curve_points_from_Macro(self.Macro_str)
             
@@ -372,7 +396,7 @@ class UserForm_LEDColorAnim:
     def Show_Dialog(self):
         self.Show()
         
-    def Show(self):
+    def Show_1(self):
         self.IsActive = True
         self.__UserForm_Initialize()
         self.__UserForm_Activate()
@@ -380,10 +404,10 @@ class UserForm_LEDColorAnim:
     
     # VB2PY (UntranslatedCode) Option Explicit
     
-    def Show_With_Existing_Data(self, MacroName, ConfigLine, LED_Channel, Def_Channel):
+    def Show_With_Existing_Data_1(self, MacroName, ConfigLine, Anim_Channel, Def_Channel):
         Txt = String()
         #----------------------------------------------------------------------------------------------------------------------
-        self.__LED_CntList = ''
+        self.__Anim_CntList = ''
         self.Macro_str = ConfigLine
         self.Show()
         
@@ -499,12 +523,12 @@ class UserForm_LEDColorAnim:
         return point_list1
     
     def calculate_complete_curve(self):
-        self.curvetype = self.LED_CurveType_ListBox.Selection
-        self.patterntype = self.LED_RunType_ListBox.Selection
+        self.curvetype = self.Anim_CurveType_ListBox.Selection
+        self.patterntype = self.Anim_RunType_ListBox.Selection
         if self.curvetype != 2: # individuel
-            curve_points = self.calculate_curve(self.LED_DauerEin_TextBox.Value, self.LED_AnfangsFarbwert_TextBox.Value, self.LED_EndFarbwert_TextBox.Value, 0 , self.LED_Abstand_TextBox.Value, pauseS=self.LED_PauseS_Ein_TextBox.Value, pauseE=self.LED_PauseE_Ein_TextBox.Value)
+            curve_points = self.calculate_curve(self.Anim_DauerEin_TextBox.Value, self.Anim_AnfangsFarbwert_TextBox.Value, self.Anim_EndFarbwert_TextBox.Value, 0 , self.Anim_Abstand_TextBox.Value, pauseS=self.Anim_PauseS_Ein_TextBox.Value, pauseE=self.Anim_PauseE_Ein_TextBox.Value)
             if self.patterntype != 1:
-                t = self.LED_PauseS_Ein_TextBox.Value + self.LED_DauerEin_TextBox.Value + self.LED_PauseE_Ein_TextBox.Value
+                t = self.Anim_PauseS_Ein_TextBox.Value + self.Anim_DauerEin_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value
         else:
             # check if curve points are in range 0 .. 255:
             for index, curve_point in enumerate(self.curve_points):
@@ -526,14 +550,14 @@ class UserForm_LEDColorAnim:
     
     def OK_Button_Click(self, event=None):
         #------------------------------
-        runtype = self.LED_RunType_ListBox.Selection
-        self.curvetype =  self.LED_CurveType_ListBox.Selection 
+        runtype = self.Anim_RunType_ListBox.Selection
+        self.curvetype =  self.Anim_CurveType_ListBox.Selection 
         if runtype == 1: #"PingPong":
             self.patterntype_str = "PM_HSV"
         else: # Wiederholen
             self.patterntype_str = "PM_HSV"
         self.curve_points = self.calculate_complete_curve()
-        self.LEDtype = 0 #self.LED_Type_ListBox.Selection
+        self.LEDtype = 0 #self.Anim_Type_ListBox.Selection
         if self.LEDtype == 0:
             LED = "1"
         else:
@@ -559,8 +583,8 @@ class UserForm_LEDColorAnim:
         timepoint_str = ""
         lasttimepoint = 0
         timepointdelta = 0
-        s = self.LED_AnfangsSättigungswert_TextBox.Value
-        v = self.LED_AnfangsHelligkeitswert_TextBox.Value
+        s = self.Anim_AnfangsSättigungswert_TextBox.Value
+        v = self.Anim_AnfangsHelligkeitswert_TextBox.Value
         
         for point in self.curve_points:
             timepoint = point[0]
@@ -568,7 +592,7 @@ class UserForm_LEDColorAnim:
             timepoint_str += "," + str(timepointdelta)
             lasttimepoint = timepoint
                     
-        self.Userform_Res = self.Userform_Res + timepoint_str # "," + str(self.LED_Abstand_TextBox.Value)
+        self.Userform_Res = self.Userform_Res + timepoint_str # "," + str(self.Anim_Abstand_TextBox.Value)
 
         for point in self.curve_points:
             #self.Userform_Res = self.Userform_Res + "," + str(point[1]) + "," + str(point[1]) + "," + str(point[1])
@@ -587,23 +611,23 @@ class UserForm_LEDColorAnim:
         self.Userform_Res = ""
         
     def Update_Button_Click(self, event=None):
-        anzahl_werte_Ein = int((self.LED_PauseS_Ein_TextBox.Value + self.LED_DauerEin_TextBox.Value + self.LED_PauseE_Ein_TextBox.Value) / self.LED_Abstand_TextBox.Value)
-        runtype = self.LED_RunType_ListBox.TKWidget.curselection()
+        anzahl_werte_Ein = int((self.Anim_PauseS_Ein_TextBox.Value + self.Anim_DauerEin_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value) / self.Anim_Abstand_TextBox.Value)
+        runtype = self.Anim_RunType_ListBox.TKWidget.curselection()
         if runtype == ():
             self.pattertype = 0
         else:
             self.pattertype = runtype[0]
-        if self.LED_TimeStepType_ListBox.Selection == 0: # automatic
-            self.LED_Abstand_TextBox.Value = int(self.LED_DauerEin_TextBox.Value / 5)
+        if self.Anim_TimeStepType_ListBox.Selection == 0: # automatic
+            self.Anim_Abstand_TextBox.Value = int(self.Anim_DauerEin_TextBox.Value / 5)
         self.curve_points = self.calculate_complete_curve()
         anzahl_werte = len(self.curve_points) - 1
         if anzahl_werte >= 1:
             horizontal_range = (self.curve_points[0][0],self.curve_points[-1][0])
         else:
-            horizontal_range = (0,self.LED_PauseS_Ein_TextBox.Value + self.LED_DauerEin_TextBox.Value + self.LED_PauseE_Ein_TextBox.Value )
+            horizontal_range = (0,self.Anim_PauseS_Ein_TextBox.Value + self.Anim_DauerEin_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value )
         self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, horizontal_range=horizontal_range)
         
-    def init_graph(self, frame=None, vertical_params=None, horizontal_params=None, num_vertical=None, num_horizontal=None):
+    def init_graph_1(self, frame=None, vertical_params=None, horizontal_params=None, num_vertical=None, num_horizontal=None):
         frame.update()
         # Get the actual width and height
         self.framewidth = frame.winfo_width()
@@ -618,9 +642,8 @@ class UserForm_LEDColorAnim:
         #canvas.bind("<Button-1>", self.on_click)
         #canvas.bind("<B1-Motion>", self.on_drag)
         return canvas
-    
 
-    def draw_point(self, x, y, xvalue, yvalue, color="00FF00"):
+    def draw_point_1(self, x, y, xvalue, yvalue, color="00FF00"):
         size = 8
         x1, y1 = (x - size), (y - size)
         x2, y2 = (x + size), (y + size)
@@ -632,18 +655,18 @@ class UserForm_LEDColorAnim:
         self.canvas.tag_bind(objid,"<B1-Motion>",lambda e,Object=objid:self.MouseMove(e,Object))
       
         
-    def tx2cx(self, x):
+    def tx2cx_1(self, x):
         return self.graphLeft + x
     
-    def ty2cy(self, y):
+    def ty2cy_1(self, y):
         return self.graphTop + self.graphHeight - y
     
-    def cy2val(self,cy):
+    def cy2val_1(self,cy):
         ty = self.graphTop + self.graphHeight - cy
         val = ty / self.vertical_value_factor
         return val
     
-    def draw_graph(self, line_params=None,  vertical_params=None, horizontal_params=None, num_vertical=16, num_horizontal=10, graph=None, vertical_range=(0, 256), horizontal_range=(0, 20000)):
+    def draw_graph_1(self, line_params=None,  vertical_params=None, horizontal_params=None, num_vertical=16, num_horizontal=10, graph=None, vertical_range=(0, 256), horizontal_range=(0, 20000)):
         self.canvas.delete("all")
         self.canvas.create_rectangle(self.tx2cx(0), self.ty2cy(0), self.tx2cx(self.graphWidth), self.ty2cy(self.graphHeight), width=4)
         # Print the grid lines
@@ -717,8 +740,8 @@ class UserForm_LEDColorAnim:
         self.canvas.tag_raise("Line")
         self.canvas.tag_raise("point")
         
-    def MouseButton1(self,event,cvobject):
-        if self.LED_CurveType_ListBox.Selection == 2: # individuel
+    def MouseButton1_1(self,event,cvobject):
+        if self.Anim_CurveType_ListBox.Selection == 2: # individuel
             tags = self.canvas.gettags(cvobject)
             objecttype = tags[0]
             if objecttype == "point":
@@ -727,7 +750,7 @@ class UserForm_LEDColorAnim:
             else:
                 self.start_value = ()
 
-    def MouseMove(self,event,cvobject):
+    def MouseMove_1(self,event,cvobject):
         if self.start_value != ():
             dx, dy = event.x-self.canvas.startxy[0], event.y-self.canvas.startxy[1]
             # move the selected item
@@ -741,17 +764,17 @@ class UserForm_LEDColorAnim:
                     self.graph_points[index+1] += dy
                     self.current_curve_point = [self.curve_points[int(index/2)][0], int(self.cy2val(event.y))]
                     self.curve_points[int(index/2)] = self.current_curve_point
-                    #self.get_led_value_and_send_to_ARDUINO()
+                    #self.get_Anim_value_and_send_to_ARDUINO()
                     #print(self.current_curve_point)
                     break
             self.canvas.coords(self.line_objid,self.graph_points)
             
-    def MouseRelease1(self):
+    def MouseRelease1_1(self):
         # update line
         # update graphpoints
         # update graph
         if self.start_value != ():
-            self.get_led_value_and_send_to_ARDUINO()
+            self.get_Anim_value_and_send_to_ARDUINO()
         self.start_value = ()
         #* redraw graph
         self.curve_points = self.calculate_complete_curve()
@@ -761,17 +784,17 @@ class UserForm_LEDColorAnim:
         
     def get_led_value_and_send_to_ARDUINO(self):
         if self.current_curve_point != None:
-            new_LED_val = self.current_curve_point[1]
-            if new_LED_val > 255:
-                new_LED_val = 255
-            elif new_LED_val < 0:
-                new_LED_val = 0
-            LED_address = self.LED_Address_TextBox.Value
-            h = new_LED_val
-            s = self.LED_AnfangsSättigungswert_TextBox.Value
-            v = self.LED_AnfangsHelligkeitswert_TextBox.Value
+            new_Anim_val = self.current_curve_point[1]
+            if new_Anim_val > 255:
+                new_Anim_val = 255
+            elif new_Anim_val < 0:
+                new_Anim_val = 0
+            Anim_address = self.Anim_Address_TextBox.Value
+            h = new_Anim_val
+            s = self.Anim_AnfangsSättigungswert_TextBox.Value
+            v = self.Anim_AnfangsHelligkeitswert_TextBox.Value
             r, g, b = self.hsv_to_LEDcolor(h, s, v)
-            self._update_LEDs(LED_address,r, g, b)
+            self._update_LEDs(Anim_address,r, g, b)
                 
     def on_click(self, event):
         selected = self.canvas.find_overlapping(event.x-10, event.y-10, event.x+10, event.y+10)

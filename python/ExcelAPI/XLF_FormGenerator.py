@@ -108,7 +108,10 @@ class CControl_Template(object):
             return self.TKVar.get()
         else:
             # textbox
-            return self.TKWidget.get('1.0', 'end')
+            value = self.TKWidget.get('1.0', 'end')
+            if value.endswith("\n"):
+                value = value[:-1]
+            return value
         return None
     
     def set_value(self,value):
@@ -178,7 +181,7 @@ def translate_text(text):
     trans = M09.Get_Language_Str(text)
     return trans
 
-def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={},defaultfont=("Calibri",10), jump_table={}, window=None):
+def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={},defaultfont=("Calibri",10), jump_table={}, window=None, geo_manager="place"):
     gui_factor_label_width = guifactor
     gui_factor_label_height = guifactor
     gui_factor_pos = guifactor
@@ -190,6 +193,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             #dlg.Controls.append(comp)
             comp.Name = component_dict.get("Name","")
             comp.Type = component_dict.get("Type","")
+            comp.parent = parent
             comp.Default = component_dict.get("Default",None)
             comp.Persistent = component_dict.get("Persistent",comp.Default)
             comp.Init_Value = persistent_controls.get(comp.Name,None)
@@ -205,18 +209,29 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 comp.relief = tk.FLAT
             width = component_dict.get("Width",0)
             height = component_dict.get("Height",0)
-            if type(width)==int:
-                comp.Width = int(width * gui_factor_label_width)
-                comp.Height = int(height * gui_factor_label_height)
-            elif type(width) == float:
+            if geo_manager == "place":
+                if type(width)==int:
+                    comp.Width = int(width * gui_factor_label_width)
+                    comp.Height = int(height * gui_factor_label_height)
+                elif type(width) == float:
+                    comp.Width = int(width)
+                    comp.Height = int(height)                
+                else:
+                    comp.Width = width
+                    comp.Height = height
+                comp.Wraplength = comp.Width
+                comp.Top = int(component_dict.get("Top",0) * gui_factor_pos)
+                comp.Left = int(component_dict.get("Left",0) * gui_factor_pos)
+            else: #"Grid"
+                comp.Top = int(component_dict.get("Top",0))
+                comp.Left = int(component_dict.get("Left",0))
+                comp.grid_sticky = component_dict.get("sticky","w")
+                comp.grid_padx = component_dict.get("padx",10)
+                comp.grid_pady = component_dict.get("pady",10)
                 comp.Width = int(width)
-                comp.Height = int(height)                
-            else:
-                comp.Width = width
-                comp.Height = height
-            comp.Wraplength = comp.Width
-            comp.Top = int(component_dict.get("Top",0) * gui_factor_pos)
-            comp.Left = int(component_dict.get("Left",0) * gui_factor_pos)
+                comp.Height = int(height)
+                comp.Wraplength = comp.Width * 8
+                
             #comp_font = self.fontlabel
             comp.ControlTipText = component_dict.get("ControlTipText","")
             comp.format_dict = format_dict.get(comp.Name,None)
@@ -245,7 +260,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             if comp.Type == "MultiPage":
                 mp_comp_list = component_dict.get("Components",[])
                 container = ttk.Notebook(parent)
-                container.place(x=comp.Left,y=comp.Top,width=comp.Width,height=comp.Height)
+                if geo_manager == "place":
+                    container.place(x=comp.Left,y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    container.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)
                 comp.TKWidget=container
                 setattr(dlg,comp.Name,comp)
                 for page_dict in mp_comp_list:
@@ -258,8 +276,9 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                         container.add(page_frame, text=page.Caption)
                         page.TKWidget=page_frame
                         page_comp = page_dict.get("Components",[])
+                        page_geo_manager = page_dict.get("Geo_Manager",geo_manager)
                         dlg.AddControl(page)
-                        generate_controls(page_comp,page_frame,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont)
+                        generate_controls(page_comp,page_frame,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont, geo_manager=page_geo_manager)
             #****************************************************
             #* Label
             #****************************************************                        
@@ -276,7 +295,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     justify=tk.CENTER
                 comp.TKVar = tk.StringVar(value=comp.Caption)
                 label=tk.Label(parent, textvariable=comp.TKVar, anchor=anchor, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,font=comp.Font, relief=comp.relief) #,font=comp_font)
-                label.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                if geo_manager == "place":
+                    label.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    label.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
                 comp.TKWidget=label
                 setattr(dlg,comp.Name,comp)
                 if comp.ControlTipText!="":
@@ -303,7 +325,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     filepath = filedir2 + filename
                     comp.iconImage = tk.PhotoImage(file=filepath)
                 label=tk.Label(parent, text=comp.Caption,anchor=anchor, image=comp.iconImage, justify=justify,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,font=comp.Font, relief=comp.relief) #,font=comp_font)
-                label.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                if geo_manager == "place":
+                    label.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    label.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
                 comp.TKWidget=label
                 setattr(dlg,comp.Name,comp)
                 if comp.ControlTipText!="":
@@ -329,7 +354,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                         button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength, font=comp.Font)
                 else:
                     button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength, font=comp.Font)
-                button.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                if geo_manager == "place":
+                    button.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    button.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
                 comp.TKWidget=button
                 setattr(dlg,comp.Name,comp)
                 if comp.ControlTipText!="":
@@ -350,7 +378,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 #if comp.Accelerator!="":
                 #    parent.bind(comp.Accelerator, Command)                    
                 checkbutton=tk.Checkbutton(parent, text=comp.Caption,width=comp.Width,wraplength = comp.Wraplength,anchor="w",variable=comp.TKVar,onvalue = 1, offvalue = 0,font=comp.Font)
-                checkbutton.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                if geo_manager == "place":
+                    checkbutton.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    checkbutton.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
                 comp.TKWidget=checkbutton
                 if comp.ControlTipText!="":
                     ToolTip(checkbutton, text=comp.ControlTipText)
@@ -385,7 +416,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                                 if charformat.ForeGround:
                                     textbox.tag_config(tagname, foreground=charformat.ForeGround)
                 #textbox.config(state=tk.DISABLED)
-                textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                if geo_manager == "place":
+                    textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    textbox.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
                 setattr(dlg,comp.Name,comp)
                 comp.TKWidget=textbox
                 if comp.ControlTipText!="":
@@ -404,7 +438,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 numbox=ttk.Spinbox(parent, from_=0,to=65535,textvariable=comp.TKVar, command=comp.Command, width=comp.Width ,font=comp.Font)
                 #if comp.Caption != None and comp.Caption != "":
                 #    textbox.insert("1.0",comp.Caption)
-                numbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                if geo_manager == "place":
+                    numbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    numbox.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
                 comp.TKWidget=numbox
                 if comp.ControlTipText!="":
                     ToolTip(numbox, text=comp.ControlTipText)
@@ -423,7 +460,10 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 #if comp.Accelerator!="":
                 #    parent.bind(comp.Accelerator, Command)                    
                 listbox=tk.Listbox(parent, height=comp.Height, width=comp.Width,listvariable=comp.TKVar,font=comp.Font,relief=comp.relief, exportselection = 0, selectmode=tk.SINGLE)
-                listbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                if geo_manager == "place":
+                    listbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    listbox.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
                 comp.TKWidget=listbox
                 comp.Selection = component_dict.get("Selection",None)
                 if comp.ControlTipText!="":
@@ -432,12 +472,16 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             #* Frame
             #****************************************************                   
             elif comp.Type == "Frame":
-                frame = ttk.LabelFrame(parent,text=comp.Caption,borderwidth=1,relief=tk.RIDGE)
-                frame.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                frame = ttk.LabelFrame(parent,text=comp.Caption,borderwidth=2,relief=tk.SOLID)
+                if geo_manager == "place":
+                    frame.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    frame.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
                 comp.TKWidget=frame
                 setattr(dlg,comp.Name,comp)
                 frame_comp = component_dict.get("Components",[])
-                generate_controls(frame_comp,frame,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont)
+                frame_geo_manager = component_dict.get("Geo_Manager",geo_manager)
+                generate_controls(frame_comp,frame,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont, geo_manager=frame_geo_manager)
                 if comp.ControlTipText!="":
                     ToolTip(frame, text=comp.ControlTipText)
             #****************************************************
@@ -445,27 +489,25 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             #****************************************************                   
             elif comp.Type == "Page":
                 mp_comp_list = component_dict["Components"]
-                generate_controls(mp_comp_list, parent, dlg=dlg, jump_table=jump_table)
+                page_geo_manager = component_dict.get("Geo_Manager",geo_manager)
+                generate_controls(mp_comp_list, parent, dlg=dlg, jump_table=jump_table, geo_manager=page_geo_manager)
             else:
                 pass
             comp.TKWidget.bind("<Tab>", comp.focus_next_widget)
             
-            
-def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}, defaultfont=("Calibri",10)):
+def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}, defaultfont=("Calibri",10), orig_window_height=None, orig_window_width=None):
     #create main window
     global scrolledcontainer
     dlg.Controls=[]
     
     userform_dict = form_dict.get("UserForm",None)
     if userform_dict:
-        top = tk.Toplevel(parent)
-        top.transient(parent)
-        if modal:
-            top.grab_set()
-        top.resizable(True, True)  # This code helps to disable windows from resizing
+        userform_modal = userform_dict.get("Modal",modal)
         
-        orig_window_height = int(userform_dict.get("Height",500)*guifactor)
-        orig_window_width = int(userform_dict.get("Width",600)*guifactor)
+        if orig_window_height == None:
+            orig_window_height = int(userform_dict.get("Height",500)*guifactor)
+        if orig_window_width == None:
+            orig_window_width = int(userform_dict.get("Width",600)*guifactor)
         
         winfo_x = X02.global_controller.winfo_x()
         winfo_y = X02.global_controller.winfo_y()
@@ -485,6 +527,11 @@ def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}, defaultfo
         x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
         y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
     
+        top = tk.Toplevel(parent)
+        top.transient(parent)
+        if userform_modal:
+            top.grab_set()
+        top.resizable(True, True)    
         top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
         #self.top.geometry("+{}+{}".format(x_cordinate, y_cordinate))
         
@@ -500,13 +547,18 @@ def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}, defaultfo
         top.grid_columnconfigure(0, weight=1)
         
         components = userform_dict.get("Components",None)
+        geo_manager = userform_dict.get("Geo_Manager","place")
+        columnconfigure = userform_dict.get("Columnconfigure",0)
+        rowconfigure = userform_dict.get("Rowconfigure",0)
         
         container = tk.Frame(scrolledcontainer.interior, width=orig_window_width-30, height=orig_window_height-30)
         container.grid(row=0,column=0,columnspan=2,sticky="nesw")
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
         
-        generate_controls(components,container,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont, window=top)
+        container.grid_rowconfigure(columnconfigure, weight=2)
+        container.grid_columnconfigure(rowconfigure, weight=2)
+           
+        
+        generate_controls(components,container,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont, window=top, geo_manager=geo_manager)
         
         return top
     else:

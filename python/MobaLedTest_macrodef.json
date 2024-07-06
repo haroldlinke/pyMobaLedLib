@@ -258,6 +258,21 @@
         "Params": [
                   ]
     },
+    "TestPage": {
+        "Typ": "TestPage",
+        "Name": "TestPage",
+        "MTabName": "Test",
+        "Title": "Test",
+        "Button_1": "Geänderte Einstellungen übernehmen",
+        "Button_2": "",
+        "Button_3": "Hintergrundbild einstellen",
+        "Button_4": "",
+        "Button_5": "Test Grafik aufrufen",
+        "Kurzbeschreibung": "Einstellungsparameter",
+        "Ausführliche Beschreibung": "Test",
+        "Params": [
+                  ]
+    },
     "Z21MonitorPage": {
         "Typ": "Z21MonitorPage",
         "Name": "Z21MonitorPage",
