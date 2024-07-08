@@ -1,3 +1,7 @@
+5.3.1I - 08-07-2024
+Corrections:
+- crash when the last icon in shapelist  was deleted
+
 5.3.1H - 06-07-2024
 Corrections:
 - ServoAnimation: After pressing the "Fortsetzen test"-Button - the Button is not updated to "Stop Test"
