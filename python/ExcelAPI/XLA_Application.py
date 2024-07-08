@@ -1933,6 +1933,7 @@ class CWorksheet(object):
         if type(shape)==int:
             shape=self.shapelist[shape-1]
             shape.set_activeflag(False)
+            self.shapelist.remove(shape) 
         else:
             if shape.rectidx!=0:
                 self.tksheet.MT.delete(shape.rectidx)
