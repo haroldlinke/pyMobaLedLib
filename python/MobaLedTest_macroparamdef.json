@@ -770,14 +770,20 @@
             "2",
             "3",
             "4",
-            "5"
+            "5",
+            "6",
+            "7",
+            "8"
         ],
         "ValuesText": [
             "Normal Position",
             "Training End Pos",
             "Training End Pos (special for Experts only)",
             "Einstellen Max Geschwindigkeit",
-            "Reset Servo"
+            "Toggle Invers",
+            "Reset Servo",
+            "Factory Reset",
+            "Reset last mem pos"
         ],
         "ConfigName": [
             "ServoControlName",

@@ -308,31 +308,70 @@ class ServoTestPage2(tk.Frame):
         D00.MainMenu_Form.Show(page1=1, page2=3)
         
     def servo_prog_label_pressed(self,event=None,code=0):
-    # send code to Servo
+    # send <Enter> to Servo
         event.widget.config(relief="sunken")
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
         servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
         servo_position = self.servo_position
-        if servo_control in [2, 3]: # add input bit only for pos training
+        if servo_control == 1: # normal position
+            self._update_servos(servo_address,servo_position,servo_control,0)
+        elif servo_control == 2 : # normal endpos training
             servo_control += 8 # set input bit
-        self._update_servos(servo_address,servo_position,servo_control,0)
+            self._update_servos(servo_address,servo_position,servo_control,0)
+        elif servo_control == 3 : # wide endpos training  
+            servo_control += 8 # set input bit
+            self._update_servos(servo_address,servo_position,servo_control,0)
+        elif servo_control == 4 : # prog max speed
+            servo_control += 8 # set input bit
+            self._update_servos(servo_address,servo_position,servo_control,0x9A)
+        elif servo_control == 5 : # Toggle invers
+            self._update_servos(servo_address,0xE9,4,0x8A)
+            self._update_servos(servo_address,0xE9,12,0x8A)
+        elif servo_control == 6 : # Reset servo
+            self._update_servos(servo_address,0xE9,5,0x8A)
+            self._update_servos(servo_address,0xE9,13,0x8A)
+        elif servo_control == 7 : # reset all factory defaults
+            self._update_servos(servo_address,0x16,5,0x75)
+            self._update_servos(servo_address,0x16,13,0x75)
+        elif servo_control == 8 : # reset last position
+            self._update_servos(servo_address,0x5A,5,0x9E)
+            self._update_servos(servo_address,0x5A,13,0x9E)            
+        #if servo_control in [2, 3]: # add input bit only for pos training
+        #    servo_control += 8 # set input bit
+        #self._update_servos(servo_address,servo_position,servo_control,0)
         
     def servo_prog_label_released(self,event=None,code=100):
-    # send code to Servo
+    # send <Enter> released to servo
         event.widget.config(relief="raised")
         servo_position = self.servo_position
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
         servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
-        self._update_servos(servo_address,servo_position,servo_control,0)
+        if servo_control == 1: # normal position
+            self._update_servos(servo_address,servo_position,servo_control,0)
+        elif servo_control == 2 : # normal endpos training
+            self._update_servos(servo_address,servo_position,servo_control,0)
+        elif servo_control == 3 : # wide endpos training  
+            self._update_servos(servo_address,servo_position,servo_control,0)             
+        elif servo_control == 4 : # prog max speed
+            self._update_servos(servo_address,servo_position,servo_control,0x9A)
+        elif servo_control == 5 : # Toggle invers
+            self._update_servos(servo_address,0xE9,4,0x8A)
+        elif servo_control == 6 : # Reset servo
+            self._update_servos(servo_address,0xE9,5,0x8A)
+        elif servo_control == 7 : # reset all factory defaults
+            self._update_servos(servo_address,0x16,5,0x75)
+        elif servo_control == 8 : # reset last position
+            self._update_servos(servo_address,0x5A,5,0x9E)
         
     def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):
-
         servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
-
-        if servo_use_old_crc:
-            newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow) 
+        if controlValue != 1:
+            if servo_use_old_crc:
+                newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow) 
+            else:
+                newcontrolValue =  CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow)
         else:
-            newcontrolValue =  CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow)
+            newcontrolValue = 1
         if self.controller.mobaledlib_version == 1:
             message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(newcontrolValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
         else:
