@@ -1058,13 +1058,17 @@ class pyMobaLedLibapp(tk.Tk):
             except:
                 logging.debug("Connect: Error Reset ARDUINO!")
             #time.sleep(1)
+            self.send_to_ARDUINO_init_buffer()
             self.send_to_ARDUINO("#?\r\n")
+            
             logging.debug ("send #?")
-            time.sleep(0.250)            
+            time.sleep(0.250)
+            self.update()
             no_of_trails = 25
             emptyline_no = 0
             for i in range(no_of_trails):
                 try:
+                    self.update()
                     text=""
                     timeout_error = True
                     text = self.arduino.readline()
@@ -1412,7 +1416,13 @@ class pyMobaLedLibapp(tk.Tk):
             else:
                 self.send_active = False
         else:
-            self.send_active = False    
+            self.send_active = False
+            
+    def send_to_ARDUINO_init_buffer(self):
+        self.serial_writebuffer = ""
+        self.serial_writebuffer_len = 0
+        self.send_active = False
+        self.serial_writebuffer_idx = 0
     
     def send_to_ARDUINO_callback(self):
         try:
@@ -1420,6 +1430,7 @@ class pyMobaLedLibapp(tk.Tk):
                 c = self.serial_writebuffer[self.serial_writebuffer_idx]
                 self.serial_writebuffer_idx += 1
                 self.arduino.write(c.encode())
+                logging.debug("send_to_ARDUINO_callback - write: "+str(c.encode()))
                 if self.serial_writebuffer_idx < self.serial_writebuffer_len:
                     self.after(self.waittime_int, self.send_to_ARDUINO_callback)
                 else:

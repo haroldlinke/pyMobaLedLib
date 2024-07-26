@@ -3074,6 +3074,10 @@ class MainTable(tk.Canvas):
     def double_b1(self, event=None):
         self.mouseclick_outside_editor_or_dropdown_all_canvases()
         self.focus_set()
+        #HLI extra_double_b1_func has to be caled before opening the cell
+        if self.extra_double_b1_func:
+            self.extra_double_b1_func(event)
+
         if (
             self.identify_col(x=event.x, allow_end=False) is None
             or self.identify_row(y=event.y, allow_end=False) is None
@@ -3093,8 +3097,8 @@ class MainTable(tk.Canvas):
                 self.toggle_select_cell(r, c, redraw=True)
                 if self.edit_cell_enabled:
                     self.open_cell(event)
-        if self.extra_double_b1_func:
-            self.extra_double_b1_func(event)
+        #if self.extra_double_b1_func:
+        #   self.extra_double_b1_func(event)
 
     def identify_row(self, event=None, y=None, allow_end=True):
         if event is None:

@@ -575,7 +575,7 @@ class UserForm_ServoAnim:
             else:
                 self.Userform_Res = LED + "$// Activation: Binary #ServoAnim("
                 self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
-                self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n#define ENABLE_STORE_STATUS()\n"
+                self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1) \n#define ENABLE_STORE_STATUS()\n"
         else:
             self.Userform_Res = LED + "$// #ServoAnim("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)

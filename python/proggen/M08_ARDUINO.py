@@ -458,6 +458,8 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
     Name = String()
 
     kk = Integer()
+    
+    fn_return_value = False
     #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     OptParts = Split(BuildOptions, ' ')
     if UBound(OptParts) >= 1:
@@ -490,7 +492,7 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
     if M30.VersionStr_is_Greater(M37.Get_Required_Version('NmraDcc'), M37.Get_Lib_Version('NmraDcc')):
         P01.MsgBox(M09.Get_Language_Str('Fehler: Die notwendige Version der Arduino Erweiterung ist nicht installiert: ') + '  \'' + 'NmraDcc ' + M37.Get_Required_Version('NmraDcc') + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
         return fn_return_value
-    Tool_Version = M37.Get_Lib_Version('esp32:tools\\esptool_py')
+    Tool_Version = M37.Get_Lib_Version('esp32:tools/esptool_py') #HLI 24.07.2024
     if Tool_Version == '':
         P01.MsgBox(M09.Get_Language_Str('Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:') + vbCr + '  \'' + 'esptool_py' + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
         return fn_return_value
@@ -504,7 +506,7 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
     VBFiles.writeText(fp, 'REM Build script to compile an ESP32 for the MobaLedLib by Juergen', '\n')
     VBFiles.writeText(fp, 'REM', '\n')
     VBFiles.writeText(fp, 'REM When the script is called the first time all libraries have to be compiled', '\n')
-    VBFiles.writeText(fp, 'REM This will tace up to 3 minutes. When the ESP is updated the next time only', '\n')
+    VBFiles.writeText(fp, 'REM This will take up to 3 minutes. When the ESP is updated the next time only', '\n')
     VBFiles.writeText(fp, 'REM the changed files have to be processed which will speed up the build process', '\n')
     VBFiles.writeText(fp, 'REM dramatically', '\n')
     VBFiles.writeText(fp, '', '\n')
@@ -1740,7 +1742,7 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     else:
         useARDUINO_IDE=False
         
-    if PG.get_global_controller().useARDUINO_IDE==True:
+    if PG.get_global_controller().useARDUINO_IDE==True or M02a.Get_BoardTyp() == 'ESP32':
         useARDUINO_IDE = True
         
     if not useARDUINO_IDE: 

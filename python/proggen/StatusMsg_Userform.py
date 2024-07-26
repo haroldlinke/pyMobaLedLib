@@ -196,7 +196,7 @@ class CStatusMsg_UserForm():
             self.text=Txt
             self.label2.configure(text=Txt)
             self.top.update()
-            self.top.focus()
+            #self.top.focus()
             #P01.DoEvents()
             #P01.set_statusmessage(self.label_txt +" "+ self.text)
     

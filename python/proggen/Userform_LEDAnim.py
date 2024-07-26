@@ -481,7 +481,7 @@ class UserForm_LEDAnim:
         if gotoaction:
             self.Userform_Res = LED + "$// Activation: Binary #LEDAnim("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
-            self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1.0) \n"
+            self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1) \n"
         else:
             self.Userform_Res = LED + "$// #LEDAnim("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
