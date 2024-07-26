@@ -248,12 +248,12 @@ def __Copy_and_Clear_Sheet(SheetName, Page_ID):
         for s in PG.ThisWorkbook.sheets:
             if M28.Is_Data_Sheet(s):
                 DstSh = s
-        Sh.Copy(after=DstSh)
+        Sh.Copy(SheetName=SheetName, After=DstSh)
         P01.ActiveSheet.Name = SheetName
         First_Row = M02.FirstDat_Row
         while P01.Cells(First_Row, 1).EntireRow.Hidden:
             First_Row = First_Row + 1
-        P01.Rows(M02.FirstDat_Row + ':' + P01.ActiveSheet.get_LastUsedRow()).ClearContents()
+        P01.Rows(str(M02.FirstDat_Row) + ':' + str(P01.ActiveSheet.get_LastUsedRow())).ClearContents()
         fn_return_value = True
     return fn_return_value
 

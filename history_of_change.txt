@@ -1,3 +1,10 @@
+5.3.1J - 26-07-2024
+Corrections:
+- double click in table now behaves as expected and opens dialog - changes in dialog are now saved correctly
+- Compilererror in Servo Anim: Bin_InCh_to_TmpVar(#InCh, 1.0) should be Bin_InCh_to_TmpVar(#InCh, 1)
+- Error for ESP32 under Win: esptools_py not found
+- Sometimes connection errors with ESP32
+
 5.3.1I - 08-07-2024
 Corrections:
 - crash when the last icon in shapelist  was deleted

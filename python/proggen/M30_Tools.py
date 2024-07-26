@@ -1413,7 +1413,7 @@ def Get_Platform_Int(PlatformKey, ParName, Silent=False):
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Pin - ByVal 
 def AliasToPin(Pin):
     fn_return_value = Get_Current_Platform_String(r'PIN_ALIAS_' + UCase(Pin), False, True)
-    if AliasToPin() == r'':
+    if fn_return_value == r'':
         # not a valid alias definition
         fn_return_value = Pin
     return fn_return_value
