@@ -181,7 +181,11 @@ class ServoTestPage2(tk.Frame):
         self.servo_scale.focus_set()
         self.servo_scale.bind("<Button-1>", self.servo_scale_focus_set)
         self.servo_position = 0
-        
+        self.enter_pressed = False
+        self.servo_programm_step_1 = False
+        self.servo_continue_update_status = False
+        self.servo_set_mode_normal = False
+       
         servo_program_frame =ttk.Frame(self.tab_frame,relief="flat", borderwidth=0,width=500)
         
         # ------------- SERVO Pos
@@ -242,13 +246,16 @@ class ServoTestPage2(tk.Frame):
 
         self.controller.bind("<F1>",self.controller.call_helppage)
         self.controller.bind("<Alt-F4>",self.cancel)
+        self.servo_continue_update_status = True
+        self.servo_status_loop()
         
     def tabunselected(self):
         logging.debug("Tabunselected: %s",self.tabname)
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)
         self.controller.ARDUINO_end_direct_mode()
-        pass
+        
+        self.servo_continue_update_status = False
         
         logging.info(self.tabname)
         pass        
@@ -289,9 +296,9 @@ class ServoTestPage2(tk.Frame):
 
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
         servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
-        if servo_control in [1, 2, 3]:
+        #if servo_control in [1, 2, 3]:
 
-            self._update_servo_channel(servo_address, servo_control, position_int)
+            #self._update_servo_channel(servo_address, servo_control, position_int)
         
     def led_off(self,_event=None):
     # switch off all LED
@@ -306,66 +313,84 @@ class ServoTestPage2(tk.Frame):
     def servo_program_button(self,event=None,code=0):
     # send code to Servo
         D00.MainMenu_Form.Show(page1=1, page2=3)
+    
+    def servo_status_loop(self, event=None):
+        self.servo_update_status()
+        if self.servo_continue_update_status:
+            self.after(100, self.servo_status_loop)
+        
+    def servo_update_status(self):
+        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
+        servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
+        servo_position = self.servo_position
+        enter_pressed = self.enter_pressed
+        #print("Servo status update", self.servo_position, servo_control, enter_pressed)
+        if servo_control == 1: # normal position
+            self._update_servos(servo_address,servo_position,servo_control,0)
+        elif servo_control == 2 : # normal endpos training
+            if enter_pressed:
+                servo_control += 8 # set input bit
+            self._update_servos(servo_address,servo_position,servo_control,0)
+        elif servo_control == 3 : # wide endpos training  
+            if enter_pressed:
+                servo_control += 8 # set input bit
+            self._update_servos(servo_address,servo_position,servo_control,0)
+        elif servo_control == 4 : # prog max speed
+            if enter_pressed:
+                servo_control += 8 # set input bit
+                self.servo_set_mode_normal = True
+            self._update_servos(servo_address,servo_position,servo_control,0x9A)
+        elif servo_control == 5 : # Toggle invers
+            if enter_pressed:
+                self._update_servos(servo_address,0xE9,12,0x8A)
+                self.servo_set_mode_normal = True
+            else:
+                self._update_servos(servo_address,0xE9,4,0x8A)
+        elif servo_control == 6 : # Reset servo
+            if enter_pressed:
+                self._update_servos(servo_address,0xE9,13,0x8A)
+                self.servo_set_mode_normal = True
+            else:
+                self._update_servos(servo_address,0xE9,5,0x8A)
+        elif servo_control == 7 : # reset all factory defaults
+            if enter_pressed:
+                self._update_servos(servo_address,0x16,13,0x75)
+                self.servo_set_mode_normal = True
+            else:
+                self._update_servos(servo_address,0x16,5,0x75)
+        elif servo_control == 8 : # reset last position
+            if enter_pressed:
+                self._update_servos(servo_address,0x5A,13,0x9E)
+                self.servo_set_mode_normal = True
+            else:
+                self._update_servos(servo_address,0x5A,5,0x9E)
         
     def servo_prog_label_pressed(self,event=None,code=0):
     # send <Enter> to Servo
         event.widget.config(relief="sunken")
-        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
+        self.enter_pressed = True
         servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
-        servo_position = self.servo_position
-        if servo_control == 1: # normal position
-            self._update_servos(servo_address,servo_position,servo_control,0)
-        elif servo_control == 2 : # normal endpos training
-            servo_control += 8 # set input bit
-            self._update_servos(servo_address,servo_position,servo_control,0)
-        elif servo_control == 3 : # wide endpos training  
-            servo_control += 8 # set input bit
-            self._update_servos(servo_address,servo_position,servo_control,0)
-        elif servo_control == 4 : # prog max speed
-            servo_control += 8 # set input bit
-            self._update_servos(servo_address,servo_position,servo_control,0x9A)
-        elif servo_control == 5 : # Toggle invers
-            self._update_servos(servo_address,0xE9,4,0x8A)
-            self._update_servos(servo_address,0xE9,12,0x8A)
-        elif servo_control == 6 : # Reset servo
-            self._update_servos(servo_address,0xE9,5,0x8A)
-            self._update_servos(servo_address,0xE9,13,0x8A)
-        elif servo_control == 7 : # reset all factory defaults
-            self._update_servos(servo_address,0x16,5,0x75)
-            self._update_servos(servo_address,0x16,13,0x75)
-        elif servo_control == 8 : # reset last position
-            self._update_servos(servo_address,0x5A,5,0x9E)
-            self._update_servos(servo_address,0x5A,13,0x9E)            
-        #if servo_control in [2, 3]: # add input bit only for pos training
-        #    servo_control += 8 # set input bit
-        #self._update_servos(servo_address,servo_position,servo_control,0)
+        if servo_control == 2 or servo_control == 3: # programming in progress
+            if self.servo_programm_step_1:
+                event.widget.config(text="Enter")
+                self.servo_programm_step_1 = False
+                self.servo_set_mode_normal = True
+                # self.controller.set_macroparam_val(self.tabClassName, "ServoControl", 0)
+            else:
+                event.widget.config(text="2nd Step")
+                self.servo_programm_step_1 = True
         
     def servo_prog_label_released(self,event=None,code=100):
     # send <Enter> released to servo
         event.widget.config(relief="raised")
-        servo_position = self.servo_position
-        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
-        if servo_control == 1: # normal position
-            self._update_servos(servo_address,servo_position,servo_control,0)
-        elif servo_control == 2 : # normal endpos training
-            self._update_servos(servo_address,servo_position,servo_control,0)
-        elif servo_control == 3 : # wide endpos training  
-            self._update_servos(servo_address,servo_position,servo_control,0)             
-        elif servo_control == 4 : # prog max speed
-            self._update_servos(servo_address,servo_position,servo_control,0x9A)
-        elif servo_control == 5 : # Toggle invers
-            self._update_servos(servo_address,0xE9,4,0x8A)
-        elif servo_control == 6 : # Reset servo
-            self._update_servos(servo_address,0xE9,5,0x8A)
-        elif servo_control == 7 : # reset all factory defaults
-            self._update_servos(servo_address,0x16,5,0x75)
-        elif servo_control == 8 : # reset last position
-            self._update_servos(servo_address,0x5A,5,0x9E)
+        self.enter_pressed = False
+        if self.servo_set_mode_normal:
+            self.servo_set_mode_normal = False
+            self.controller.set_macroparam_val(self.tabClassName, "ServoControl", 0)
         
     def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):
         servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
-        if controlValue != 1:
+        if True: #controlValue != 1:
             if servo_use_old_crc:
                 newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow) 
             else:
