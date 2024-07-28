@@ -85,6 +85,9 @@ Servo_Min = 10
 Servo_Stop = 0
 
 Servo_Scale_Max = 255
+
+Servo_delay = 200
+
 # ----------------------------------------------------------------
 # Class ServoTestPage
 # ----------------------------------------------------------------
@@ -185,6 +188,7 @@ class ServoTestPage2(tk.Frame):
         self.servo_programm_step_1 = False
         self.servo_continue_update_status = False
         self.servo_set_mode_normal = False
+        self.servo_refresh_delay = 150
        
         servo_program_frame =ttk.Frame(self.tab_frame,relief="flat", borderwidth=0,width=500)
         
@@ -317,7 +321,7 @@ class ServoTestPage2(tk.Frame):
     def servo_status_loop(self, event=None):
         self.servo_update_status()
         if self.servo_continue_update_status:
-            self.after(100, self.servo_status_loop)
+            self.after(Servo_delay, self.servo_status_loop)
         
     def servo_update_status(self):
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")

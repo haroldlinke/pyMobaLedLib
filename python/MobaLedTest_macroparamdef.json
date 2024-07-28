@@ -792,8 +792,8 @@
         "Min": "0",
         "Max": "255",
         "Default": "1",
-        "Input Text": "Servo Control Betriebsart",
-        "Hint": "Betriebsart des Servos (1=Normal, 2=std training, 3=wide training, 4=max speed, 5=reset)"
+        "Input Text": "Servo Betriebsart",
+        "Hint": "Betriebsart des Servos (1=Normal, 2=std training, 3=wide training, 4=max speed, 5=toogle invers, 6=reset servo, 7=Factory reset, 8=Reset last mem pos)"
     },
     "ServoCRCold": {
         "ParName": "ServoCRCold",
