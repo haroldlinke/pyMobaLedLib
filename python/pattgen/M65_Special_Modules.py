@@ -126,7 +126,13 @@ def Create_Set_Fuses_Cmd_file(ResultName, Mode, DstDir):
         HFuse = '0xD5'
         ClockTxt = '\'16 MHz (PLL)\''
         BODTxt = '\'B.O.D. Enabled (2.7V) Eckhart\''
-        # 04.08.20:        
+        # 01.07.24
+    elif (_select57 == '16MHz, BOD 2.7V, Eckhart-LED'):
+        LFuse = '0xE1'
+        HFuse = '0x55'
+        ClockTxt = '\'16 MHz (PLL)\''
+        BODTxt = '\'B.O.D. Enabled (2.7V) Eckhart-LED\''
+        # 04.08.20:            
     else:
         X02.MsgBox('Undefined Mode ')
         # & Mode & "' in 'Create_Set_Fuses_Cmd_file()'", vbCritical, "Internal Error"
@@ -496,7 +502,7 @@ def Prog_Servo():
         # 04.08.20: Old: " 8MHz, BOD 2.7V", " 8MHz, BOD 2.7V, RstAsIO"
         X02.MsgBox(M09.Get_Language_Str('Das "Betriebssystem" des Servo Moduls wurde erfolgreich programmiert.' + vbCr + 'Dieser Schritt ist nur ein mal pro Platine nötig.' + vbCr + 'Als nächstes sollten die Endpositionen und die Geschwindigkeiten eingestellt werden.' + vbCr + 'Das kann mit zwei verschiednen Programmen gemacht werden:' + vbCr + '- das Arduino Programm "01.Servo_Pos"' + vbCr + '- das "Farbtest" Programm von Harold (\'Prog_Generator\' Menü)"'), vbInformation, M09.Get_Language_Str('Programm erfolgreich zum ATTiny übertragen'))
 
-def Prog_Servo_2():
+def Prog_Servo_2(dm_servo_with_LED=False):
     WorkDir = String()
 
     #----------------------
@@ -544,7 +550,12 @@ def Prog_Servo_2():
     # 05.06.20:
     # 07.08.20: Moved down
     ComPort = Get_COMPortStr(ComPortColumn)
-    if Write_Fuses(ComPort, '16MHz, BOD 2.7V, Eckhart', WorkDir) == False:
+    
+    fusemode = '16MHz, BOD 2.7V, Eckhart'
+    
+    if dm_servo_with_LED:
+        fusemode = '16MHz, BOD 2.7V, Eckhart-LED'
+    if Write_Fuses(ComPort, fusemode, WorkDir) == False:
         return  
     X03.Sleep(1000)
 
