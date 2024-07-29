@@ -804,8 +804,8 @@
         "Max": "255",
         "Persistent": "True",
         "Default": "",
-        "Input Text": "Use Old CRC",
-        "Hint": "Alten CRC verwenden (nur für Experten)"
+        "Input Text": "Use Fast Refresh",
+        "Hint": "Refresh auf 100ms setzen (nur für Experten)"
     },
     
     "SoundAddress": {

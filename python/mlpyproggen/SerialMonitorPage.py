@@ -325,17 +325,17 @@ class ReadLine:
             while not ThreadEvent.is_set() and self.s != None and self.s.is_open:
                 i = max(1, min(2048, self.s.in_waiting)) # any bytes in buffer
                 data = self.s.read(1)                    # read one byte  
-                logging.debug("readline from ARDUINO:"+ str(data)+ "("+str(data.hex())+")")
+                logging.debug("serialread from ARDUINO:"+ str(data)+ "("+str(data.hex())+")")
                 if data >= b"xD0": # binary communication detected, read one binary message
                     chkSum = int.from_bytes(data,byteorder = "big")
                     toReadbyte = self.s.read(1) # read length byte
-                    logging.debug("readline from ARDUINO length:"+ str(toReadbyte)+ "("+str(toReadbyte.hex())+")")
+                    logging.debug("serialread from ARDUINO length:"+ str(toReadbyte)+ "("+str(toReadbyte.hex())+")")
                     msg_length = int.from_bytes(toReadbyte,byteorder = "big")
                     chkSum ^= msg_length
                     result = "JSON:{\"RMBUS\": \""
                     for i in range(msg_length):
                         Readbyte = self.s.read(1)
-                        logging.debug("readline from ARDUINO length:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
+                        logging.debug("serialread from ARDUINO length:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
                         ReadbyteInt = int.from_bytes(Readbyte,byteorder = "big")
                         chkSum ^= ReadbyteInt
                         if i < msg_length-1: # handle data bytes, last byte is for checksum only
