@@ -553,7 +553,7 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, 'REM  5: Baudrate:            "57600" or "115200"', '\n')
         VBFiles.writeText(fp, 'REM  6: Arduino Library path "%USERPROFILE%\\Documents\\Arduino\\libraries"', '\n')
         VBFiles.writeText(fp, 'REM  7: CPU type:            "atmega328p, atmega4809, esp32"', '\n')
-        VBFiles.writeText(fp, 'REM  8: options:             ""noflash|norebuild""', '\n')
+        VBFiles.writeText(fp, 'REM  8: options:             "noflash|norebuild"', '\n')
         # 19.12.21: Jürgen: Added noflash option
         VBFiles.writeText(fp, 'REM  additional argument from caller', '\n')
         VBFiles.writeText(fp, 'REM', '\n')
@@ -622,7 +622,7 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, '   echo Last rebuild failed ;-(', '\n')
         VBFiles.writeText(fp, '   echo Press ENTER to rebuild everything', '\n')
         # If the error is located in the .ino file Ctrl+C could be pressed here
-        VBFiles.writeText(fp, '   if ""%8""=="""" pause', '\n')
+        VBFiles.writeText(fp, '   if "%8"=="" pause', '\n')
         VBFiles.writeText(fp, '   goto :rebuild', '\n')
         VBFiles.writeText(fp, '   )', '\n')
         VBFiles.writeText(fp, '', '\n')
@@ -1742,7 +1742,7 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     else:
         useARDUINO_IDE=False
         
-    if PG.get_global_controller().useARDUINO_IDE==True or M02a.Get_BoardTyp() == 'ESP32':
+    if PG.get_global_controller().useARDUINO_IDE==True or (M02a.Get_BoardTyp() == 'ESP32' and PG.get_global_controller().useESP32WinBat==False):
         useARDUINO_IDE = True
         
     if not useARDUINO_IDE: 
@@ -1820,7 +1820,7 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
             Failed = True
     
     if Failed:
-        P01.MsgBox(M09.Get_Language_Str('Es ist ein Fehler aufgetreten ;-(' + vbCr + vbCr + 'Zur Fehlersuche kann man die letzten Änderungen wieder rückgängig machen und es noch mal versuchen. ' + vbCr + vbCr + 'Kommunikationsprobleme erkennt man an dieser Meldung: ' + vbCr + '   avrdude: ser_open(): can\'t open device "\\\\.\\COM') + P01.Cells(M02.SH_VARS_ROW, ComPortColumn) + '":' + vbCr + M09.Get_Language_Str('   Das System kann die angegebene Datei nicht finden.' + vbCr + 'In diesem Fall müssen die Verbindungen überprüft und der Arduino durch einen neuen ersetzt werden.' + vbCr + vbCr + 'Der Fehler kann auch auftreten wenn der DCC/LNet/Selextrix Arduino noch nicht programmiert wurde.' + vbCr + 'Am besten man steckt den rechten Arduino erst dann ein wenn er benötigt wird.' + vbCr + vbCr + 'Wenn der Fehler nicht zu finden ist und immer wieder auftritt, dann kann ein Screenshot des ' + 'vorangegangenen Bildschirms (Nach oben scrollen so dass die erste Meldung nach dem Arduino Bild zu sehen ist) ' + 'zusammen mit dem Excel Programm und einer ausführlichen Beschreibung an ' + vbCr + '  MobaLedLib@gmx.de' + vbCr + 'geschickt werden.'), vbInformation, M09.Get_Language_Str('Fehler beim Hochladen des Programms'))
+        P01.MsgBox(M09.Get_Language_Str('Es ist ein Fehler aufgetreten ;-(' + vbCr + vbCr + 'Zur Fehlersuche kann man die letzten Änderungen wieder rückgängig machen und es noch mal versuchen. ' + vbCr + vbCr + 'Kommunikationsprobleme erkennt man an dieser Meldung: ' + vbCr + '   avrdude: ser_open(): can\'t open device "\\\\.\\') + P01.Cells(M02.SH_VARS_ROW, ComPortColumn) + '":' + vbCr + M09.Get_Language_Str('   Das System kann die angegebene Datei nicht finden.' + vbCr + 'In diesem Fall müssen die Verbindungen überprüft und der Arduino durch einen neuen ersetzt werden.' + vbCr + vbCr + 'Der Fehler kann auch auftreten wenn der DCC/LNet/Selextrix Arduino noch nicht programmiert wurde.' + vbCr + 'Am besten man steckt den rechten Arduino erst dann ein wenn er benötigt wird.' + vbCr + vbCr + 'Wenn der Fehler nicht zu finden ist und immer wieder auftritt, dann kann ein Screenshot des ' + 'vorangegangenen Bildschirms (Nach oben scrollen so dass die erste Meldung nach dem Arduino Bild zu sehen ist) ' + 'zusammen mit dem Excel Programm und einer ausführlichen Beschreibung an ' + vbCr + '  MobaLedLib@gmx.de' + vbCr + 'geschickt werden.'), vbInformation, M09.Get_Language_Str('Fehler beim Hochladen des Programms'))
         M30.EndProg()
     else:
         Stop_Compile_Time_Display()

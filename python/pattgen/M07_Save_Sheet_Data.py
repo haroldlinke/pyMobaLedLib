@@ -470,7 +470,7 @@ def Save_One_Sheet(Sh, DestName, AppendFile=True, SheetName=""):
     # for better comparison of the copied sheet
     for r in vbForRange(M01.PARAMETER_Ro11, M01.PARAMETER_Ro1N):
         if _with31.Cells(r, M01.PARAMETER_Col + 1).Interior.Color == 65535:
-            GermanName = M09.Get_German_Name(_with31.Cells(r, M01.PARAMETER_Col))
+            GermanName = M09.Get_German_Name(_with31.Cells(r, M01.PARAMETER_Col).Value)
             if GermanName != '':
                 VBFiles.writeText(FileNr, GermanName + Chr(M01.pcfSep) + _with31.Cells(r, M01.PARAMETER_Col + 1), '\n')
     r = Find_Row_with_Txt_in_Col(Sh, M01.LED_Text_Col, 'Dauer')

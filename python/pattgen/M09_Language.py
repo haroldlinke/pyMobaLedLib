@@ -415,18 +415,24 @@ def Test_Find_Cell_Pos_by_Name():
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Desc - ByVal 
 def Get_German_Name(Desc):
-    _fn_return_value = None
+    _fn_return_value = ""
     LSh = X02.Worksheet()
+    Desc_split = Desc.split("§")
+    Desc = Desc_split[0]
 
     Res = Variant()
     #-------------------------------------------------------
     LSh = PG.ThisWorkbook.Sheets(M01.LANGUAGES_SH)
     _with42 = LSh
-    Res = LSh.CellsFind.Find(What= Desc, After= _with42.Range('A1'), LookIn= X01.xlFormulas, LookAt= X01.xlPart, SearchOrder= X01.xlByRows, SearchDirection= X01.xlNext, MatchCase= True, SearchFormat= False)
-    if not Res is None:
-        _fn_return_value = _with42.Cells(Res.Row, FirstLangCol).Value
+    #Res = LSh.CellsFind.Find(What= Desc, After= _with42.Range('A1'), LookIn= X01.xlFormulas, LookAt= X01.xlPart, SearchOrder= X01.xlByRows, SearchDirection= X01.xlNext, MatchCase= True, SearchFormat= False)
+    Row = LSh.find_in_col_ret_row(Desc, FirstLangCol)
+    #if not Res is None:
+    if not Row is None:
+        _fn_return_value = _with42.Cells(Row, FirstLangCol).Value
     else:
-        X02.MsgBox('Error \'' + Desc + '\' not found in \'Get_German_Name\'', vbCritical, 'Error')
+        #X02.MsgBox('Error \'' + Desc + '\' not found in \'Get_German_Name\'', vbCritical, 'Error')
+        logging.debug('Error \'' + Desc + '\' not found in \'Get_German_Name\'')
+        _fn_return_value = Desc
     return _fn_return_value
 
 def Add_Entry_to_Languages_Sheet(GermanTxt):

@@ -373,6 +373,7 @@ class CWorkbook(object):
             act_worksheet.Visible = False
             #self.container.tab(tabframe,state="hidden")
         self.tabid += 1
+        act_worksheet.Redraw_table()
 
     def new_sheet(self,sheetname,tabframe: tk.Frame,from_sheet=None) -> Object:
         if from_sheet==None:
@@ -3153,7 +3154,8 @@ class CRange(str):
         for row in range(self.start[0], self.end[0]+1):
             self._set_rowheight(row,newval)
     def get_RowHeight(self):
-        rowheight = ActiveSheet.tksheet.rowheightlist.get(self.start[0]-1,ActiveSheet.tksheet.default_rowheight)
+        #rowheight = ActiveSheet.tksheet.rowheightlist.get(self.start[0]-1,ActiveSheet.tksheet.default_rowheight)
+        rowheight = ActiveSheet.tksheet.row_height(row=self.start[0]-1, redraw=False)
         rowheight = int(rowheight/xlvp2py_guifactor)
         return rowheight
     RowHeight = property(get_RowHeight, set_RowHeight, doc='CRange RowHeight')
@@ -3754,7 +3756,8 @@ class CRow(object):
             self._set_rowheight(self.Row,newval)
     
     def get_RowHeight(self):
-        rowheight = ActiveSheet.tksheet.rowheightlist.get(self.Row-1,ActiveSheet.tksheet.default_rowheight)
+        #rowheight = ActiveSheet.tksheet.rowheightlist.get(self.Row-1,ActiveSheet.tksheet.default_rowheight)
+        rowheight = ActiveSheet.tksheet.row_height(row=self.Row-1, redraw=False)
         rowheight = int(rowheight/xlvp2py_guifactor)
         return rowheight
         

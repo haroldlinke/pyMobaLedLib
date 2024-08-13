@@ -400,12 +400,14 @@ class ServoTestPage2(tk.Frame):
             self.controller.set_macroparam_val(self.tabClassName, "ServoControl", 0)
         
     def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):
+
         servo_use_old_crc = False #int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
+
         if True: #controlValue != 1:
-            if servo_use_old_crc:
-                newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow) 
-            else:
-                newcontrolValue =  CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow)
+            #if servo_use_old_crc:
+            #    newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow) 
+            #else:
+            newcontrolValue =  CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow)
         else:
             newcontrolValue = 1
         if self.controller.mobaledlib_version == 1:

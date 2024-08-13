@@ -1,6 +1,11 @@
+5.3.1O - 13-08-2024
+Correction:
+- Patternconfigurator: "Neue Seite" crashes Programm
+- New start option --ESP32WINBAT True forces the ESP32 build to use the original WINBatch File of Excel MobaLedLib
+
 5.3.1N - 29-07-2024
 Update
-- Servo2 page use old CRC checkbox chnaged to "fast refresh"
+- Servo2 page use old CRC checkbox changed to "fast refresh"
 - Optimised logging for ESP32 serial interface tests
 
 5.3.1M - 28-07-2024

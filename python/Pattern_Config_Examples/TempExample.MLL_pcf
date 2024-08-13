@@ -1,25 +1,26 @@
-SheetNameÂ¯Main_1
-VersionÂ¯1
-Erste RGB LED: Â¯0
-Startkanal der RGB LED: Â¯0
-Schalter Nummer: Â¯SI_1
-Anzahl der Ausgabe KanÃ¤le: Â¯2
-Bits pro Wert: Â¯1
-Wert Min: Â¯0
-Wert Max: Â¯128
-Wert ausgeschaltet: Â¯0
-Mode: Â¯PM_NORMAL
-Analoges Ãœberblenden: Â¯
-Goto Mode: Â¯
-Goto Aktivierung: Â¯
-Grafische Anzeige: Â¯1
-Spezial Mode: Â¯
-RGB Modul Nummer: Â¯
-Makro Name: Â¯Wechselblinker
-DauerÂ¯1 Sec
-Goto TabelleÂ¯
-LED_TabÂ¯LED1Â¯xÂ¯Â¯x
-LED_TabÂ¯LED2Â¯Â¯xÂ¯Â¯x
-LED_AttrÂ¯7Â¯
-LED_AttrÂ¯7Â¯
-RGB_LED_CheckBoxÂ¯	0
+SheetName¯test_1
+Version¯1
+Erste RGB LED: ¯1
+Startkanal der RGB LED: ¯0
+Schalter Nummer: ¯SI_1
+Anzahl der Ausgabe Kanäle: ¯2
+Bits pro Wert: ¯1
+Wert Min: ¯0
+Wert Max: ¯255
+Wert ausgeschaltet: ¯0
+Mode: ¯0
+Analoges Überblenden: ¯0
+Goto Mode: ¯0
+Goto Aktivierung: ¯
+Grafische Anzeige: ¯
+Spezial Mode: ¯
+Makro Name: ¯test
+Dauer¯1 Sec
+Goto Tabelle¯
+LED_Tab¯LED1¯x¯¯x
+LED_Tab¯LED2
+LED_Tab¯LED3
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+RGB_LED_CheckBox¯	0

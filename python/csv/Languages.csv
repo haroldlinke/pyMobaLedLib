@@ -1163,22 +1163,22 @@ VBA;M08_Aruino 249;"Es ist ein Fehler aufgetreten ;-(|
 Zur Fehlersuche kann man die letzten Änderungen wieder rückgängig machen und es noch mal versuchen. |
 |
 Kommunikationsprobleme erkennt man an dieser Meldung: |
-   avrdude: ser_open(): can't open device ""\\.\COM";"An error has occurred ;-( |
+   avrdude: ser_open(): can't open device ""\\.\";"An error has occurred ;-( |
 |
 For troubleshooting you can undo the last changes and try again. |
 |
 Communication problems can be recognized by this message: |
-   avrdude: ser_open (): can't open device ""\\ . \ COM";"Er is een fout opgetreden ;-( |
+   avrdude: ser_open (): can't open device ""\\ . \ ";"Er is een fout opgetreden ;-( |
 |
 Voor het oplossen van problemen kunt u de laatste wijzigingen ongedaan maken en het opnieuw proberen. |
 |
 Communicatieproblemen zijn te herkennen aan dit bericht: |
-   avrdude: ser_open (): kan apparaat niet openen ""\\ . \ COM";"Une erreur s'est produite ;-( |
+   avrdude: ser_open (): kan apparaat niet openen ""\\ . \ ";"Une erreur s'est produite ;-( |
 |
 Pour le dépannage, vous pouvez annuler les dernières modifications et réessayer. |
 |
 Les problèmes de communication peuvent être reconnus par ce message: |
-avrdude: ser_open (): impossible d'ouvrir le périphérique ""\\ . \ COM";"An error has occurred ;-( For troubleshooting you can undo the last changes and try again. Communication problems can be recognized by this message:    avrdude: ser_open (): can't open device ""\\ . \ COM";"An error has occurred ;-( For troubleshooting you can undo the last changes and try again. Communication problems can be recognized by this message:    avrdude: ser_open (): can't open device ""\\ . \ COM";"Der opstod en fejl ;-( || Ved fejlfinding kan du fortryde de sidste ændringer og prøve igen. || Kommunikationsproblemer kan genkendes af denne meddelelse: | avrdude: ser_open (): kan ikke åbne enheden ""\\. \ COM"
+avrdude: ser_open (): impossible d'ouvrir le périphérique ""\\ . \ ";"An error has occurred ;-( For troubleshooting you can undo the last changes and try again. Communication problems can be recognized by this message:    avrdude: ser_open (): can't open device ""\\ . \ ";"An error has occurred ;-( For troubleshooting you can undo the last changes and try again. Communication problems can be recognized by this message:    avrdude: ser_open (): can't open device ""\\ . \ ";"Der opstod en fejl ;-( || Ved fejlfinding kan du fortryde de sidste ændringer og prøve igen. || Kommunikationsproblemer kan genkendes af denne meddelelse: | avrdude: ser_open (): kan ikke åbne enheden ""\\. \ COM"
 VBA;M08_Aruino 250;"   Das System kann die angegebene Datei nicht finden.|
 In diesem Fall müssen die Verbindungen überprüft und der Arduino durch einen neuen ersetzt werden.|
 |

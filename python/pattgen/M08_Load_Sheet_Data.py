@@ -523,18 +523,22 @@ def Set_Defaults_for_Sheet():
 
 def Set_RGB_LED_CheckBox(Value):
     
-    OldEvents = Boolean()
-
-    Oldupdating = Boolean()
-    # 13.06.20:
-    #------------------------------------------------
-    OldEvents = X02.Application.EnableEvents
-    X02.Application.EnableEvents = False
-    #OldUpdating = Application.ScreenUpdating
-    X02.ActiveSheet.RGB_LED_CheckBox.Enabled = False
-    X02.ActiveSheet.RGB_LED_CheckBox.Value = ( Value > 0 )
-    X02.ActiveSheet.RGB_LED_CheckBox.Enabled = True
-    X02.Application.EnableEvents = OldEvents
+        
+        OldEvents = Boolean()
+    
+        Oldupdating = Boolean()
+        # 13.06.20:
+        #------------------------------------------------
+        OldEvents = X02.Application.EnableEvents
+        X02.Application.EnableEvents = False
+        #OldUpdating = Application.ScreenUpdating
+        try:
+            X02.ActiveSheet.RGB_LED_CheckBox.Enabled = False
+            X02.ActiveSheet.RGB_LED_CheckBox.Value = ( Value > 0 )
+            X02.ActiveSheet.RGB_LED_CheckBox.Enabled = True
+        except:
+            pass
+        X02.Application.EnableEvents = OldEvents
     #Application.ScreenUpdating = OldUpdating
     # Is enabled when the CheckBox is changed
 

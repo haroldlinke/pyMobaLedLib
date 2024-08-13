@@ -44,7 +44,7 @@ REM  4: Build options:       "arduino:avr:nano:cpu=atmega328"
 REM  5: Baudrate:            "57600" or "115200"
 REM  6: Arduino Library path "%USERPROFILE%\Documents\Arduino\libraries"
 REM  7: CPU type:            "atmega328p, atmega4809, esp32"
-REM  8: options:             ""noflash|norebuild""
+REM  8: options:             "noflash|norebuild"
 REM  additional argument from caller
 REM
 REM The program uses the captured and adapted command line from the Arduino IDE
@@ -108,7 +108,7 @@ copy "%srcFile%" "%cppFile%" /Y >nul:
 if exist "%aTemp%\rebuildFailed.txt" (
    echo Last rebuild failed ;-(
    echo Press ENTER to rebuild everything
-   if ""%8""=="""" pause
+   if "%8"=="" pause
    goto :rebuild
    )
 
