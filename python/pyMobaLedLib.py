@@ -199,6 +199,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.loaddatafile = COMMAND_LINE_ARG_DICT["loaddatafile"]!="False"
         self.logfilename =  COMMAND_LINE_ARG_DICT["logfilename"]
         self.useARDUINO_IDE = COMMAND_LINE_ARG_DICT.get("useARDUINO_IDE", False)
+        self.useESP32WinBat = COMMAND_LINE_ARG_DICT.get("useESP32WINBAT", False)
         self.coltab = None
         self.checkcolor_callback = None
         self.ledhighlight = False
@@ -3161,6 +3162,7 @@ def main_entry():
     parser.add_argument('--vb2py',choices=["True","False"],help="if <True> VB2PYpage is shown - for developers only")
     parser.add_argument('--special',choices=["True","False"],help="if <True> special feature are shown - for developers only")
     parser.add_argument('--ARDUINO_IDE',choices=["True", "False"],help="Forces the use of the ARDUINO IDE instead of the Windows batch files")
+    parser.add_argument('--ESP32WINBAT',choices=["True", "False"],help="Forces the use of thethe Windows batch file for ESP32")
     try:
         args = parser.parse_args()
     except argparse.ArgumentError:
@@ -3257,6 +3259,10 @@ def main_entry():
     if args.ARDUINO_IDE:
         if args.ARDUINO_IDE == "True":
             COMMAND_LINE_ARG_DICT["useARDUINO_IDE"] = True
+    
+    if args.ESP32WINBAT:
+        if args.ESP32WINBAT == "True":
+            COMMAND_LINE_ARG_DICT["useESP32WINBAT"] = True    
         
     # check if colortest only is needed
     try: #check if a COLORTESTONLY_FILE is in the main Dir 
