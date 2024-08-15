@@ -805,7 +805,7 @@
         "Persistent": "True",
         "Default": "",
         "Input Text": "Use Fast Refresh",
-        "Hint": "Refresh auf 100ms setzen (nur für Experten)"
+        "Hint": "Refresh auf 40ms setzen (nur für Experten)"
     },
     
     "SoundAddress": {

@@ -329,10 +329,10 @@ class ServoTestPage2(tk.Frame):
         servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
         servo_position = self.servo_position
         servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
-        if servo_use_old_crc:
-            Servo_delay = 100
+        if servo_use_old_crc: # 
+            Servo_delay = 40
         else:
-            Servo_delay = 200
+            Servo_delay = 50
             
         enter_pressed = self.enter_pressed
         #print("Servo status update", self.servo_position, servo_control, enter_pressed)

@@ -554,7 +554,8 @@ def Get_Language_Str_Sub(Desc, GenError, Look_At):
     if GenError:
         X02.MsgBox('Error translation missing in sheet \'Languages\' for:' + vbCr + '  \'' + Desc + '\'', vbCritical, 'Error: Translation missing')
     else:
-        Debug.Print('*** Translation not found for:' + vbCr + Desc)
+        #Debug.Print('*** Translation not found for:' + vbCr + Desc)
+        pass
     if Row > 0:
         return_value = _with45.Cells(Row, FirstLangCol + 1).Value
     # Use the Enlish text if available
