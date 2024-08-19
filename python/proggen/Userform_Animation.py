@@ -215,7 +215,7 @@ class UserForm_Animation:
             t = 0
         while t < duration:
             val = int(round(0.5 * a * t * t, 0)) + start_val
-            curve_points.append((t+start_time, val))
+            curve_points.append([t+start_time, val])
             t += time_distance
         # generate last point at duration.
         val = val = int(round(0.5 * a * duration * duration, 0)) + start_val
@@ -256,28 +256,31 @@ class UserForm_Animation:
         return curve_points
     
     def calculate_curve(self, duration, start_val, end_val, start_time, time_distance, pauseS=None, pauseE=None, skip_first=False):
-        if pauseS != None and pauseS > 0:
-            point_list1 = self.calculate_pause_curve(pauseS, start_val, start_time, time_distance, skip_first=skip_first)
-            start_time += pauseS
+        if duration > 0:
+            if pauseS != None and pauseS > 0:
+                point_list1 = self.calculate_pause_curve(pauseS, start_val, start_time, time_distance, skip_first=skip_first)
+                start_time += pauseS
+            else:
+                point_list1 = []
+            if point_list1 != []:
+                skip_first = True
+            if self.curvetype == curvetype_linear: # linear
+                point_list2 = self.calculate_linear_curve(duration, start_val, end_val, start_time, time_distance, skip_first=skip_first)
+            elif self.curvetype == curvetype_accel: # Beschleunigung
+                point_list2 = self.calculate_accell_curve(duration, start_val, end_val, start_time, time_distance, skip_first=skip_first)
+            else: # individuell, should not happen here
+                point_list2 = []
+            point_list1.extend(point_list2)
+            if point_list1 != []:
+                skip_first = True
+            start_time += duration
+            if pauseE != None and pauseE > 0:
+                point_list3 = self.calculate_pause_curve(pauseE, end_val, start_time, time_distance, skip_first=skip_first)
+            else:
+                point_list3 = []
+            point_list1.extend(point_list3)
         else:
             point_list1 = []
-        if point_list1 != []:
-            skip_first = True
-        if self.curvetype == curvetype_linear: # linear
-            point_list2 = self.calculate_linear_curve(duration, start_val, end_val, start_time, time_distance, skip_first=skip_first)
-        elif self.curvetype == curvetype_accel: # Beschleunigung
-            point_list2 = self.calculate_accell_curve(duration, start_val, end_val, start_time, time_distance, skip_first=skip_first)
-        else: # individuell, should not happen here
-            point_list2 = []
-        point_list1.extend(point_list2)
-        if point_list1 != []:
-            skip_first = True
-        start_time += duration
-        if pauseE != None and pauseE > 0:
-            point_list3 = self.calculate_pause_curve(pauseE, end_val, start_time, time_distance, skip_first=skip_first)
-        else:
-            point_list3 = []
-        point_list1.extend(point_list3)
         return point_list1
     
     def update_timepoints(self, t_from=0, t_to=0, t_shift=0, t_factor=1):
@@ -954,7 +957,7 @@ class UserForm_Animation:
         if self.controller.mobaledlib_version == 1:
             message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
         else:
-            message = "#L " + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:04x}'.format(1) + "\n"
+            message = "#L " + '{:04x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
         self.controller.send_to_ARDUINO(message)
         #time.sleep(0.2)    
 

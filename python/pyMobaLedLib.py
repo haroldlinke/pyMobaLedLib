@@ -252,6 +252,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.lednum_int = 0
         self.ledcount_int = 1
         self.max_ledcnt_list = []
+        self.max_LEDchannel = 1
         self.LED_baseadress = 0
         self.mobaledlib_version = 0
         self.activeworkbook = None

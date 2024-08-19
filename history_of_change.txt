@@ -1,3 +1,8 @@
+5.3.2b - 16-08-2024
+Correction
+- Servo Animation: Crash when duration = 0
+- Servo Animation: Crash when changing duration in individual mode, when the orginal curve was an accelerated curve
+
 5.3.2a - 15-08-2024
 - New Firmware to Improve serial interface behaviour for ESP32
 - New Firmware for Attiny to improve Direct Mode Servo behaviour (DM-TinyServo_20240815.hex)
