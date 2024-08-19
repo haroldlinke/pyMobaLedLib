@@ -84,7 +84,7 @@ def Init():
     # 21.11.21: Juergen
     M09.Update_Language_in_All_Sheets()
     # 04.06.20: Old: Update_Language_in_All_Pattern_Config_Sheets
-    if len(PG.ThisWorkbook.Sheets()) == 7: #6:
+    if len(PG.ThisWorkbook.Sheets()) >= 6:
         # Main, Language, Goto_Activation_Entries, Special_Mode_Dlg, Par_Description
         Clear_Com_Port()
         #*HL ShowSaveMsg = pattgen.M08_Load_Sheet_Data.Load_AllExamples_Sheets()

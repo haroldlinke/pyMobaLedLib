@@ -231,6 +231,7 @@ class SerialMonitorPage(tk.Frame):
                         elif readtext.startswith("#?"):
                             temp_list = readtext.split(",")
                             self.controller.max_ledcnt_list = temp_list[1:]
+                            self.controller.max_LEDchannel = len(self.controller.max_ledcnt_list)
                             ledchannel_str = self.getConfigData("LEDchannel")
                             if ledchannel_str != "":
                                 self.controller.LEDchannel = int(ledchannel_str)
@@ -240,8 +241,11 @@ class SerialMonitorPage(tk.Frame):
                                 self.controller.LEDchannel = 0
                             self.controller.set_maxLEDcnt(int(self.controller.max_ledcnt_list[self.controller.LEDchannel]))
                             self.controller.LED_baseadress = 0
-                            for i in range (0,self.controller.LEDchannel):
-                                self.controller.LED_baseadress+=int(self.controller.max_ledcnt_list[i])
+                            maxLEDcnt = 0
+                            # maxLEDcnt = sum of all maxLEDcnt per channel
+                            for i in range (0,self.controller.max_LEDchannel):
+                                maxLEDcnt+=int(self.controller.max_ledcnt_list[i])
+                            self.controller.set_maxLEDcnt(maxLEDcnt)
                         else:
                             self.controller.set_ARDUINOmessage(textmessage)
                     except IOError:
