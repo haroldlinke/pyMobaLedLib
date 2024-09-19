@@ -134,21 +134,27 @@ Der Steuerkanal und der Positionskanal sind wie folgt strukturiert:
 -------------------------------------------------------------------------------------------
 |     | CRC-4 nach ITU | ENTER-Bit | Command 0..7 | 2. Byte = Position | 3. Byte Pos fine |
 -------------------------------------------------------------------------------------------
-| Bit |        7 6 5 4 |         3 |        2 1 0 |    7 6 5 4 3 2 1 0 |  7 6 5 4 3 2 1 0 |
+| Bit |        7 6 5 4 |         3 |        2 1 0 |    7 6 5 4 3 2 1 0 | 7 6 5 4 3 2 1 0  |
 -------------------------------------------------------------------------------------------
 |     |        0 0 0 0 |         0 |        0 0 0 |             unused |           unused | idle, nothing to do
 -------------------------------------------------------------------------------------------
 |     |        invalid |         X |        X X X |     not applicable |          not app | failure on WS2811 Bus
 -------------------------------------------------------------------------------------------
-|     |     valid (*1) |         X |        0 0 1 |           position |         pos fine | move between progt positions
+|     |     valid (*1) |         X |        0 0 1 |           position | 7 6     pos fine | move between progt positions
 -------------------------------------------------------------------------------------------
-|     |          valid |         0 |        0 1 0 | training positions |       train fine | trainig in standard PWM range 1-2ms (0..255/65535)
+|     |     valid (*1) |         X |        0 0 1 |           position |     5   reserved | must be 0
 -------------------------------------------------------------------------------------------
-|     |          valid |         1 |        0 1 0 |  std prog position |        prog fine | memorize 1st and 2nd position (cycles with ENTER-Bit)
+|     |     valid (*1) |         X |        0 0 1 |           position |  seq 4 3 2 1 tag | sequence tag number (*2)
 -------------------------------------------------------------------------------------------
-|     |          valid |         0 |        0 1 1 | training positions |       train fine | trainig in wide PWM range 0,5-2,5ms (0..255/65525)
+|     |     valid (*1) |         X |        0 0 1 |           position |        seq end 0 | end of sequence (*2)
 -------------------------------------------------------------------------------------------
-|     |          valid |         1 |        0 1 1 | wide prog position |   wide prog fine | memorize 1st and 2nd position (cycles with ENTER-Bit)
+|     |          valid |         0 |        0 1 0 | training positions | 7 6   train fine | trainig in standard PWM range 1-2ms (0..255/65535)
+-------------------------------------------------------------------------------------------
+|     |          valid |         1 |        0 1 0 |  std prog position | 7 6    prog fine | memorize 1st and 2nd position (cycles with ENTER-Bit)
+-------------------------------------------------------------------------------------------
+|     |          valid |         0 |        0 1 1 | training positions | 7 6   train fine | trainig in wide PWM range 0,5-2,5ms (0..255/65525)
+-------------------------------------------------------------------------------------------
+|     |          valid |         1 |        0 1 1 | wide prog position | 7 6 wide pr fine | memorize 1st and 2nd position (cycles with ENTER-Bit)
 -------------------------------------------------------------------------------------------
 |     |          valid |         0 |        1 0 0 |     prog max speed |       MAGIC 0x9A | prerequisite: memorize max speed
 -------------------------------------------------------------------------------------------
@@ -181,6 +187,19 @@ Der Steuerkanal und der Positionskanal sind wie folgt strukturiert:
 
 (*1): Nach fertig programmierten Servo Endlagen darf hier alternativ zu einer validen CRC eine "0" stehen.
 
+(*2): Sequence Tag Regeln:
+
+      - Eine Sequence Tag Number von 0 (Null) ermoeglicht freies Bewegen. Hier gibt es auch kein "End Of Sequence" Flag!
+      - Eine Sequenz wird mit einem "End Of Sequence" Flag abgeschlossen
+      - Auf eine abgeschlossene Sequenz muss eine ANDERE Sequenz folgen. Die selbe Sequenz wird konsekutiv NICHT ausgefuehrt!
+      - Eine offene und noch nicht mit einem "End Of Sequence" Flag abgeschlossene Sequenz kann von einer ANDEREN Sequenz "uebernommen"
+        werden, wenn diese den letzen Wert, der vorhergehenden Sequenz, "ueberstreicht" oder direkt trifft. "ueberstreichen" bedeutet z.B,
+        dass bei einem vorherigen Wert "5" erst der Wert "3" und dann der Wert "7" angefahren wird; also die "5" aus der unabgeschlossenen
+        Sequenz dazwischen liegt.
+      - Eine offene und noch nicht mit einem "End Of Sequence" Flag abgeschlossene Sequenz kann von der SELBEN Sequenz nur so lange
+        fortgefuehrt werden, wie sie noch nicht von einer ANDEREN Sequenz unterbrochen wurde.
+      - Eine offene und noch nicht mit einem "End Of Sequence" Flag abgeschlossene Sequenz kann sich, nach einer Unterbrechung durch eine
+        ANDERE Sequenz, wieder SELBST uebernehmen, wenn sie ihren EIGENEN letzten Wert "ueberstreicht" oder direkt trifft.
 
 Bemerkungen:
 
@@ -320,14 +339,6 @@ uint8_t          recBuffer[2][CONTROL_BIT_NUMBER/8];
 unsigned char    flashStateFlags = IPR_FLASH_STATE_FLAGS_NONE;
 #endif // ifdef USED_TEXT_START
 
-
-#define TINYRAIL_SIGNATURE  "TR1"
-
-#define SERVO_CONFIG_FLAG_INVERT            0x01
-#define SERVO_CONFIG_FLAG_MOVE_WITHOUT_CRC  0x02
-#define SERVO_CONFIG_FLAG_POSITION_STORED   0x04
-#define SERVO_CONFIG_FLAG_LED_OFF           0x08
-
 void TinyRail_InitServoPorts()
 {
     memset( &outPortProcessSets, sizeof( outPortProcessSets), 0);
@@ -364,8 +375,11 @@ void TinyRail_InitServoTimer()
 {
     memset( &compControlSets, sizeof( compControlSets), 0);
 
+    // prescaler to 4096/8192/16384 and normal mode
+    TCCR1 = T1_SLOW_PRESCALER_BITS;
+
     // prescaler to 4096/8192/16384 and PWM A/B without outputs
-    TCCR1 = ( 1 << PWM1A) | ( 1 << PWM1B) | T1_SLOW_PRESCALER_BITS;
+    // TCCR1 = ( 1 << PWM1A) | ( 1 << PWM1B) | T1_SLOW_PRESCALER_BITS;
 
     TCNT1 = 0;
     OCR1C = 0xFF;
@@ -473,12 +487,15 @@ void TinyRail_GetSortedServoPWMList( uint8_t *indexList, uint8_t *usedIndexes)
     }
 }
 
-void TinyRail_StoreLastPosition( uint8_t store, ServoConfigSet *sConf, uint8_t *pFlags, uint8_t posValueHigh)
+void TinyRail_StoreLastPositionAndSequenceTag( uint8_t store, ServoConfigSet *sConf, uint8_t *pFlags, uint8_t posValueHigh, uint8_t sequenceTag)
 {
     if ( store)
     {
         if ( posValueHigh != my_eeprom_read_byte( &sConf->lastPos))
             my_eeprom_write_byte( &sConf->lastPos, posValueHigh);
+
+        if ( sequenceTag != my_eeprom_read_byte( &sConf->lastSequenceTag))
+            my_eeprom_write_byte( &sConf->lastSequenceTag, sequenceTag);
 
         if ( !( *pFlags & SERVO_CONFIG_FLAG_POSITION_STORED))
         {
@@ -506,6 +523,7 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
 #endif // ifndef TINYRAIL_DISABLE_CRC4_CHECK
     {
         uint16_t pwmPulseInTimerResCurrBackup = processSet->pwmPulseInTimerResCurr;
+        uint8_t  sequenceTag                  = posValueLow & SERVO_CONTROL_SEQUENCE_TAG_MASK;
         uint16_t minPos                       = my_eeprom_read_word( &sConf->minPos);
         uint16_t maxPos                       = my_eeprom_read_word( &sConf->maxPos);
         uint8_t  maxSpeed                     = my_eeprom_read_byte( &sConf->maxSpeed);
@@ -545,7 +563,7 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
             if ( ( processSet->controlChannel & SERVO_CONTROL_MODE_MASK)
               && ( ( processSet->controlChannel & SERVO_CONTROL_MODE_MASK) <= SERVO_CONTROL_MODE_PROG_WIDE))
             {
-                TinyRail_StoreLastPosition( 1, sConf, &flags, posValueHigh);
+                TinyRail_StoreLastPositionAndSequenceTag( 1, sConf, &flags, posValueHigh, sequenceTag);
 
                 processSet->countContinous = 0;
 
@@ -649,7 +667,7 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
                             break;
 
                         case SERVO_CONTROL_RESET_MAGIC_POSITION_STORE :
-                            TinyRail_StoreLastPosition( 0, sConf, &flags, posValueHigh);
+                            TinyRail_StoreLastPositionAndSequenceTag( 0, sConf, &flags, posValueHigh, sequenceTag);
                             playLed = blink3;
                             break;
                     }
@@ -678,44 +696,79 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
         }
 
         if ( minPos <= maxPos)
-            processSet->pwmPulseInTimerResCurr = PortCalcPwmPulseInTimerRes( ( ( uint16_t)posValueHigh << 8) | posValueLow, minPos, maxPos-minPos, usePulse);
+            processSet->pwmPulseInTimerResCurr = PortCalcPwmPulseInTimerRes( ( ( uint16_t)posValueHigh << 8) | ( posValueLow & SERVO_CONTROL_POS_VALUE_LOW_BITS_MASK), minPos, maxPos-minPos, usePulse);
         else
-            processSet->pwmPulseInTimerResCurr = PortCalcPwmPulseInTimerRes( ( ( uint16_t)posValueHigh << 8) | posValueLow, maxPos, minPos-maxPos, usePulse);
+            processSet->pwmPulseInTimerResCurr = PortCalcPwmPulseInTimerRes( ( ( uint16_t)posValueHigh << 8) | ( posValueLow & SERVO_CONTROL_POS_VALUE_LOW_BITS_MASK), maxPos, minPos-maxPos, usePulse);
 
         switch ( control & SERVO_CONTROL_MODE_MASK)
         {
             case SERVO_CONTROL_MODE_MOVE :
-                if ( processSet->lastPosPassed < 3)
                 {
-                    if ( !( flags & SERVO_CONFIG_FLAG_POSITION_STORED))
-                        processSet->lastPosPassed = 3;
-                    else
+                    uint8_t sequenceInvalid = 0;
+
+                    if ( ( sequenceTag && processSet->sequenceTag)
+                        // die SELBE Sequenz ist,
+                        // - nach einem vorhergehedem Abschluss mit End Flag, invalid
+                        // - wenn zwischendurch eine ANDERE Sequenz kam, die nicht die letzte Position match-te, invalid, so lange sie auch nicht match-d
+                      && ( ( ( ( sequenceTag & SERVO_CONTROL_SEQUENCE_TAG_NUMBER_MASK) == ( processSet->sequenceTag & SERVO_CONTROL_SEQUENCE_TAG_NUMBER_MASK))
+                          && ( ( !( sequenceTag & SERVO_CONTROL_SEQUENCE_TAG_END) && ( processSet->sequenceTag & SERVO_CONTROL_SEQUENCE_TAG_END))
+                            || ( processSet->lastPosPassed < SERVO_CONTROL_LAST_POS_PASSED)
+                             )
+                           )
+                        // eine ANDRERE Sequenz ist, OHNE einen vorhergehenden Abschluss mit End Flag, invalid
+                        || ( ( ( sequenceTag & SERVO_CONTROL_SEQUENCE_TAG_NUMBER_MASK) != ( processSet->sequenceTag & SERVO_CONTROL_SEQUENCE_TAG_NUMBER_MASK))
+                          && !( processSet->sequenceTag & SERVO_CONTROL_SEQUENCE_TAG_END))
+                         )
+                       )
                     {
-                        if ( posValueHigh == my_eeprom_read_byte( &sConf->lastPos))
-                            processSet->lastPosPassed = 3;
-                        else if ( posValueHigh < my_eeprom_read_byte( &sConf->lastPos))
+                        sequenceInvalid = 1;
+
+                        if ( processSet->sequenceTag & SERVO_CONTROL_SEQUENCE_TAG_END)
+                            // wenn die alte Sequenz abgeschlossen war MUSS eine andere Sequenz ausgefuert werden
+                            processSet->lastPosPassed = SERVO_CONTROL_LAST_POS_IDLE;
+                        else if ( processSet->lastPosPassed >= SERVO_CONTROL_LAST_POS_PASSED)
+                            // wenn die alte Sequenz NICHT abgeschlossen war pruefen ob die neue Sequnz, durch "ueberstreichen",
+                            // in die alte Sequenz "einsteigen" kann
+                            processSet->lastPosPassed = SERVO_CONTROL_LAST_POS_IDLE;
+                    }
+                    else if ( !timeLockPosPassed)
+                    {
+                        processSet->lastPosPassed = SERVO_CONTROL_LAST_POS_PASSED;
+                    }
+
+                    if ( processSet->lastPosPassed < SERVO_CONTROL_LAST_POS_PASSED)
+                    {
+                        if ( !( flags & SERVO_CONFIG_FLAG_POSITION_STORED))
+                            processSet->lastPosPassed = SERVO_CONTROL_LAST_POS_PASSED;
+                        else
                         {
-                            if ( processSet->lastPosPassed == 2)
-                                processSet->lastPosPassed = 3;
-                            else
-                                processSet->lastPosPassed = 1;
-                        }
-                        else if ( posValueHigh > my_eeprom_read_byte( &sConf->lastPos))
-                        {
-                            if ( processSet->lastPosPassed == 1)
-                                processSet->lastPosPassed = 3;
-                            else
-                                processSet->lastPosPassed = 2;
+                            if ( posValueHigh == processSet->positionValue)
+                                processSet->lastPosPassed = SERVO_CONTROL_LAST_POS_PASSED;
+                            else if ( posValueHigh < processSet->positionValue)
+                            {
+                                if ( processSet->lastPosPassed == SERVO_CONTROL_LAST_POS_LOWER)
+                                    processSet->lastPosPassed = SERVO_CONTROL_LAST_POS_PASSED;
+                                else
+                                    processSet->lastPosPassed = SERVO_CONTROL_LAST_POS_HIGHER;
+                            }
+                            else if ( posValueHigh > processSet->positionValue)
+                            {
+                                if ( processSet->lastPosPassed == SERVO_CONTROL_LAST_POS_HIGHER)
+                                    processSet->lastPosPassed = SERVO_CONTROL_LAST_POS_PASSED;
+                                else
+                                    processSet->lastPosPassed = SERVO_CONTROL_LAST_POS_LOWER;
+                            }
                         }
                     }
 
-                    if ( timeLockPosPassed && ( processSet->lastPosPassed < 3))
+                    if ( ( timeLockPosPassed || sequenceInvalid) && ( processSet->lastPosPassed < SERVO_CONTROL_LAST_POS_PASSED))
                     {
                         // last position not passed (and not first move), roll back to prev settings and disable PWM
                         processSet->pwmPulseInTimerResCurr = pwmPulseInTimerResCurrBackup;
                         processSet->needPwm                = 0;
                         posValueHigh                       = processSet->positionValue;
                         posValueLow                        = 0;
+                        sequenceTag                        = processSet->sequenceTag;
                     }
                 }
                 break;
@@ -734,6 +787,7 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
                         processSet->needPwm                = 0;
                         posValueHigh                       = processSet->positionValue;
                         posValueLow                        = 0;
+                        sequenceTag                        = processSet->sequenceTag;
 
                         if ( !ledPlayTime)
                             TinyRail_SetLedPlayer( blinkFast, 8, 0, 10, 100);
@@ -764,7 +818,7 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
                                 my_eeprom_write_byte( &sConf->flags, flags);
 
                                 // clear last position
-                                TinyRail_StoreLastPosition( 0, sConf, &flags, posValueHigh);
+                                TinyRail_StoreLastPositionAndSequenceTag( 0, sConf, &flags, posValueHigh, sequenceTag);
 
                                 TinyRail_SetLedPlayer( blink5, 24, 0, 20, 150);
                             }
@@ -788,7 +842,7 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
 
                 if ( processSet->countContinous == SERVO_STORE_CONTINOUS_POSITION_COUNT)
                 {
-                    TinyRail_StoreLastPosition( 1, sConf, &flags, posValueHigh);
+                    TinyRail_StoreLastPositionAndSequenceTag( 1, sConf, &flags, posValueHigh, sequenceTag);
 
                     processSet->countContinous = 0;
 
@@ -801,8 +855,9 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
                 processSet->countContinous = 0;
         }
 
-        processSet->positionValue  = posValueHigh;
         processSet->controlChannel = control;
+        processSet->positionValue  = posValueHigh;
+        processSet->sequenceTag    = sequenceTag;
     }
 
     if ( !servoIndex)

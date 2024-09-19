@@ -2501,6 +2501,7 @@ class CWorksheet(object):
 
     def Copy(self,SheetName=None,After=None):
         self.Workbook.add_sheet(SheetName,from_sheet=self.Name,After=After)
+        self.Workbook.activate_sheet(SheetName)
     
     def do_bindings(self):
         #print("do bindings")
