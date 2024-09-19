@@ -420,15 +420,33 @@ class UserForm_Animation:
             timepoint_str += "," + str(timepointdelta)
             lasttimepoint = timepoint
         self.Userform_Res = self.Userform_Res + timepoint_str # "," + str(self.LED_Abstand_TextBox.Value)
-        for point in self.curve_points:
-            if anzahl_led == "3":
-                self.Userform_Res = self.Userform_Res + "," + str(point[1]) + ",1,0"
-            else:
-                self.Userform_Res = self.Userform_Res + "," + str(point[1])
+
         
         # goto action
         if gotoaction:
-            dauer_ein = self.Anim_DauerEin_TextBox.Value + self.Anim_PauseS_Ein_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value 
+            dauer_ein = self.Anim_DauerEin_TextBox.Value + self.Anim_PauseS_Ein_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value
+            
+            tag_ein_value = "2"
+            tag_ein_seq_end = "3"
+            tag_aus_value = "4"
+            tag_aus_seq_end = "5"
+            current_tag = tag_ein_value
+            next_tag = current_tag
+            end_time = self.curve_points[-1][0]
+            
+            for point in self.curve_points:
+                if anzahl_led == "3":
+                    if point[0] == dauer_ein:
+                        current_tag = tag_ein_seq_end
+                        next_tag = tag_aus_value
+                    elif point[0] == end_time:
+                        current_tag = tag_aus_seq_end
+                        next_tag = "0"
+                    else:
+                        current_tag = next_tag
+                    self.Userform_Res = self.Userform_Res + "," + str(point[1]) + ",1," + current_tag
+                else:
+                    self.Userform_Res = self.Userform_Res + "," + str(point[1])
             self.Userform_Res = self.Userform_Res + "  "
             for i in range(total_points_count-2):
                 if self.curve_points[i][0] == dauer_ein: 
@@ -436,6 +454,13 @@ class UserForm_Animation:
                 else:
                     self.Userform_Res = self.Userform_Res + ",0"
             self.Userform_Res = self.Userform_Res + ",63"
+            
+        else:
+            for point in self.curve_points:
+                if anzahl_led == "3":
+                    self.Userform_Res = self.Userform_Res + "," + str(point[1]) + ",1,0"
+                else:
+                    self.Userform_Res = self.Userform_Res + "," + str(point[1])
         self.Userform_Res = self.Userform_Res + ')$' + str(self.Anim_Address_Kanal_TextBox.Value)
         self.Hide()
         
