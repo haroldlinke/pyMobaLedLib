@@ -353,10 +353,10 @@ class ServoTestPage2(tk.Frame):
             self._update_servos(servo_address,servo_position,servo_control,0x9A)
         elif servo_control == 5 : # Toggle invers
             if enter_pressed:
-                self._update_servos(servo_address,0xE9,12,0x8A)
+                self._update_servos(servo_address,1,12,0x15)
                 self.servo_set_mode_normal = True
             else:
-                self._update_servos(servo_address,0xE9,4,0x8A)
+                self._update_servos(servo_address,1,4,0x15)
         elif servo_control == 6 : # Reset servo
             if enter_pressed:
                 self._update_servos(servo_address,0xE9,13,0x8A)

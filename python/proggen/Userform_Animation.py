@@ -125,7 +125,8 @@ class UserForm_Animation:
             self.Anim_TimeStepType_ListBox,
             self.Anim_Type_ListBox,
             self.Ueberblendung, 
-            self.Anim_Address_Kanal_TextBox
+            self.Anim_Address_Kanal_TextBox,
+            self.Anim_Address_TextBox
         ]    
     
     def __UserForm_Initialize(self):
