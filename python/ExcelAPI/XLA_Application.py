@@ -63,6 +63,8 @@ from .P01_Worksheetcalc import Calc_Worksheet
 from pathlib import Path
 import subprocess
 import proggen.M09_Translate as M09_Translate
+import proggen.M20_PageEvents_a_Functions as M20
+import proggen.M27_Sheet_Icons as M27
 
 
 try:
@@ -70,7 +72,7 @@ try:
     import keyboard
     keyboard_Module_imported = True
     logging.debug("Keyboard Module imported")
-except:
+except: 
     logging.debug("Keyboard Module not imported")
 
 pyProgfile_dir = "\\LEDs_AutoProg\\pyProg_Generator_MobaLedLib"
@@ -1219,10 +1221,12 @@ class CWorksheet(object):
         self.tksheet.extra_bindings("column_width_resize", func=self.tkEvent_column_width_resize)
         #self.tksheet.extra_bindings ("edit_cell", func=self.Workbook.Synch_Evt_SheetReturnKey)
         self.tksheet.extra_bindings ("sheetmodified", func=self.Evt_SheetChange)
+        #self.tksheet.extra_bindings ("paste", func=self.Evt_Sheet_End_Paste)
                 
                 
         self.tksheet.bind("<<SheetModified>>", self.sheet_was_modified)
         self.tksheet.bind("<Double-Button-1>", self.EventWSdoubleclick)
+        #self.tksheet.bind("<<Paste>>", self.EventWSPaste, add="+")
 
         
         self.tksheet.popup_menu_add_command(
@@ -1303,6 +1307,23 @@ class CWorksheet(object):
             self.Call_EventProc("Change")(target)
             self.Workbook.Call_EventProc("SheetChange")(sheet, target)
             sheet.Redraw_table()
+            
+    def Evt_Sheet_End_Paste(self, tks_event):
+        row = tks_event.selected.row
+        s = tks_event.data[0][1]
+        if s != '':
+            M27.FindMacro_and_Add_Icon_and_Name(s, row, ActiveSheet)        
+        M20.Update_Start_LedNr()
+        
+        
+    def EventWSPaste(self, event):
+        row,col = self.getSelectedCell()
+        s = self.Cells(row, 10) #M25.Config__Col)
+        if s != '':
+            M27.FindMacro_and_Add_Icon_and_Name(s, Row, ActiveSheet)        
+        M20.Update_Start_LedNr()
+        
+        
         
     def Evt_SheetSelectionChange(self,tks_event):
         if Application.EnableEvents:
@@ -2235,6 +2256,13 @@ class CWorksheet(object):
         return
     
     def refreshicons(self):
+        
+        for row in range(0, 10):
+            s = self.Cells(row, 12)
+            if s != '':
+                M27.FindMacro_and_Add_Icon_and_Name(s, row, ActiveSheet)        
+        M20.Update_Start_LedNr()
+        
         self.Workbook.Evt_Redraw_Sheet(self)
         
     def clear_shapelist(self):
