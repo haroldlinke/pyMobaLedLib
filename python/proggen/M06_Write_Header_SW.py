@@ -1336,6 +1336,8 @@ def No_Duplicates_in_two_Lists(Pin2, InpLst1, InpLst2, Set_Funct2='Set_LED_OutpP
     #-----------------------------------------------------------------------------------------------------------------------------------------
     # Retutn True if no duplicates are detected
     InpLst2 = ' ' + InpLst2 + ' '
+    if InpLst1 == "": # **HLI: different behavior as VB for Split when InlLst1 is ""
+        return True
     for Pin in Split(InpLst1, ' '):
         if InStr(InpLst2, ' ' + Pin + ' ') > 0:
             P01.MsgBox(Replace(Replace(Replace(M09.Get_Language_Str('Fehler: Der Pin \'#1#\' in \'#3#\' wird bereits als \'#2#\' Pin benutzt.' + vbCr + 'Der Pin kann nicht mehrfach benutzt werden.'), "#1#", Pin), '#2#', Pin2), '#3#', Set_Funct2), vbCritical, 'Fehler: Doppelte Benutzung eines Pins')

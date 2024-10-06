@@ -51,6 +51,9 @@ class Dictionary():
         self.Count = len(self.data)
         self.Keys = self.data.keys()
         
+    def Get(self, key):
+        return self.data[key]
+        
     #def Count(self):
     #    len(self.data)
         

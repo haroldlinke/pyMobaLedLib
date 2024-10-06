@@ -77,7 +77,7 @@ import proggen.M09_Language as M09
 #import proggen.M60_CheckColors as M60
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Multiplexer as M80
-#*HL import proggen.clsNode
+#import proggen.clsNode as CLSN
 
 import ExcelAPI.XLA_Application as P01
 
@@ -107,31 +107,29 @@ def Add_SoundPin_Entry(Cmd, Channel):
 
     #Typ = String()
 
-    Pin = String()
-
     playerClass = String()
     Parts = Split(Replace(Replace(Replace(Trim(Cmd), M02.SF_SERIAL_SOUND_PIN, ''), ')', ''), ' ', ''), ',')
     if UBound(Parts) - LBound(Parts) != 1:
         # todo
-        return _fn_return_value
+        return _fn_return_value, Cmd
     
-    fret, M02.SF_SERIAL_SOUND_PIN = M06SW.Set_PinNrLst_if_Matching(M02.SF_SERIAL_SOUND_PIN + Parts(0) + ')', M02.SF_SERIAL_SOUND_PIN, Pin, 'O', 1)
+    fret, M02.SF_SERIAL_SOUND_PIN = M06SW.Set_PinNrLst_if_Matching(M02.SF_SERIAL_SOUND_PIN + Parts(0) + ')', M02.SF_SERIAL_SOUND_PIN, "", 'O', 1)
     if fret == False:
-        return _fn_return_value
-    if M06SW.No_Duplicates_in_two_Lists('Sound', Serial_PinLst, Pin, M02.SF_SERIAL_SOUND_PIN) == False:
-        return _fn_return_value
-    Serial_PinLst = Serial_PinLst + Pin + ' '
+        return _fn_return_value, Cmd
+    if M06SW.No_Duplicates_in_two_Lists('Sound', M06SW.Serial_PinLst, M02.SF_SERIAL_SOUND_PIN) == False:
+        return _fn_return_value, Cmd
+    M06SW.Serial_PinLst = M06SW.Serial_PinLst + M02.SF_SERIAL_SOUND_PIN + ' '
     if not Check_Sound_Duplicates():
-        return _fn_return_value
+        return _fn_return_value, Cmd
     playerClass = GetPlayerClass(Parts(1))
     if playerClass == '':
         P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Soundmodul Typ \'#1#\' wird nicht unterstützt.'), "#1#", Parts(1)), vbCritical, 'Fehler: Soundmodul')
-        return _fn_return_value
+        return _fn_return_value, Cmd
     if SoundLines.Exists(Channel):
         P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Sound Kanal \'#1#\' ist schon definiert.'), "#1#", Channel), vbCritical, 'Fehler: Soundmodul')
-        return _fn_return_value
+        return _fn_return_value, Cmd
     #If Parts(1) = "JQ6500_AA" Then UseFullPacketMode = True                 ' 19.10.21: Always use the full packed mode because this mode could be used with both types of JQ6500 modules
-    SoundLines.Add(Channel, Array(Pin, playerClass))
+    SoundLines.Add(Channel, Array(M02.SF_SERIAL_SOUND_PIN, playerClass))
     Cmd = '// ' + Cmd
     _fn_return_value = True
     return _fn_return_value, Cmd
@@ -163,8 +161,8 @@ def Write_Header_File_Sound_Before_Config(fp):
         VBFiles.writeText(fp, '', '\n')
         Index = 0
         for _idx1 in SoundLines.Keys:
-            proggen.clsNode.Key = _idx1
-            VBFiles.writeText(fp, '  #define SOUND_CHANNEL_' + proggen.clsNode.Key + ' ' + Index, '\n')
+            #CLSN.Key = _idx1
+            VBFiles.writeText(fp, '  #define SOUND_CHANNEL_' + str(_idx1) + ' ' + str(Index), '\n')
             Index = Index + 1
         VBFiles.writeText(fp, '', '\n')
     _fn_return_value = True
@@ -172,7 +170,7 @@ def Write_Header_File_Sound_Before_Config(fp):
 
 def Write_Header_File_Sound_After_Config(fp):
     global SoundLines
-    
+    playersArray = ""
     _fn_return_value = False
     #------------------------------------------------------------------
     if SoundLines.Count > 0:
@@ -220,11 +218,12 @@ def Write_Header_File_Sound_After_Config(fp):
         #ChannelToModuleIndex = Scripting.Dictionary()
         Index = 0
         for _idx2 in SoundLines.Keys:
-            proggen.clsNode.Key = _idx2
-            module = 'SoundProcessor::CreateSoftwareSerial(' + SoundLines(proggen.clsNode.Key)(0) + ', 9600)'
+            #CLSN.Key = _idx2
+            dummy = SoundLines.Get(_idx2) # for testing only
+            module = 'SoundProcessor::CreateSoftwareSerial(' + SoundLines.Get(_idx2)(0) + ', 9600)'
             if playersArray != '':
                 playersArray = playersArray + ', '
-            playersArray = playersArray + 'new ' + SoundLines(proggen.clsNode.Key)(1) + '(' + Str(Index) + ', ' + module + ')'
+            playersArray = playersArray + 'new ' + SoundLines.Get(_idx2)(1) + '(' + Str(Index) + ', ' + module + ')'
             Index = Index + 1
         VBFiles.writeText(fp, '  uint8_t serBuffer[_SOUND_SERBUFFER_SIZE];', '\n')
         VBFiles.writeText(fp, '  SoundPlayer* soundPlayers[] {' + playersArray + '};', '\n')
@@ -271,7 +270,7 @@ def CheckSoundChannelDefined(Channel):
     
     _fn_return_value = False
     if not SoundLines.Exists(Channel):
-        P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Sound Kanal \'#1#\' ist nicht definiert.' + vbCr + 'Zur Definition muss das Makro ' + str(M02.SF_SERIAL_SOUND_PIN) + ' vor dieser Zeile verwendet werden'), "#1#", Channel), vbCritical, 'Fehler: Soundmodul')
+        P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Sound Kanal \'#1#\' ist nicht definiert.' + vbCr + 'Zur Definition muss das Makro ' + str(M02.SF_SERIAL_SOUND_PIN) + ' vor dieser Zeile verwendet werden'), "#1#", str(Channel)), vbCritical, 'Fehler: Soundmodul')
         return _fn_return_value
     _fn_return_value = True
     return _fn_return_value

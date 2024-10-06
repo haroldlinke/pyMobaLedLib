@@ -1,3 +1,13 @@
+5.3.2e - 25-09-2024
+New:
+- pyMLL selects now the correct connection mode (Effect-Mode or Direct Mode) according to the needs of the active page.
+- delete page now allows the deletion of a complete tab
+Correction:
+- new-tab crash when current tab is no DCC, Selectrix or LNET tab.
+- crash when using SOUND_CHANNEL_DEFINITON macro
+- new HexFile for DirectMode Servos DM-TinyServo_20240928.hex - correcting error in INVERS-Mode
+
+
 5.3.2d - 25-09-2024
 New:
 - Servo-Anim makro: Servo Adress is saved with the macro
