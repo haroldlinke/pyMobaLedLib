@@ -115,35 +115,7 @@ End Sub
 -----------------------------------------------------------------------
 """
 
-mbExpanded = Boolean()
-mcolChildNodes = Collection()
-moParentNode = clsNode()
-moLastActiveNode = clsNode()
-moTree = clsTreeView()
-msKey = String()
-mvCaption = Variant()
-mvCaption2 = Variant()
-msControlTipText = Variant()
-mlChecked = Long()
-mnIndex = Long()
-mlVisIndex = Long()
-mvIconMainKey = Variant()
-mvIconExpandedKey = Variant()
-mlIconCnt = Long()
-msngTextWidth = Single()
-mlBackColor = Long()
-mbBold = Boolean()
-mlForeColor = Long()
-mvTag = Variant()
-mctlControl = MSForms.Label()
-mctlControl2 = MSForms.Label()
-mctlExpander = MSForms.Label()
-moEditBox = MSForms.TextBox()
-mctlCheckBox = MSForms.Label()
-mctlExpanderBox = MSForms.Label()
-mctlVLine = MSForms.Label()
-mctlHLine = MSForms.Label()
-mctlIcon = MSForms.Image()
+
 # Enumeration 'ndSortOrder'
 ndAscending = 1
 ndDescending = 2

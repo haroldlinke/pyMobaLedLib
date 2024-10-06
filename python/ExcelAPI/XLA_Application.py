@@ -339,8 +339,13 @@ class CWorkbook(object):
         #self.tabframedict[sheetname]=act_worksheet
         logging.debug("Delete sheet:"+sheetname)
         tabframe=self.tabframedict[sheetname]
+        curr_tabid = tabframe.sheet.tabid
         self.sheets.remove(tabframe.sheet)
         del self.tabframedict[sheetname]
+        for sheet in self.sheets:
+            if sheet.tabid > curr_tabid:
+                sheet.tabid -= 1
+        self.tabid -= 1
         self.container.forget(tabframe)
         return
     
@@ -365,6 +370,8 @@ class CWorkbook(object):
                 act_worksheet.tksheet.set_column_widths(column_widths=col_pos, canvas_positions=True)            
             if not nocontrols:
                 sheetname_prop = self.sheetdict.get(copyfrom_sheet.Name)
+                if sheetname_prop == None:
+                    sheetname_prop = copyfrom_sheet.sheet_property_dict
                 controls_dict = sheetname_prop.get("Controls",None)
                 if controls_dict:
                     act_worksheet.add_controls(controls_dict)
@@ -382,7 +389,11 @@ class CWorkbook(object):
             sheet_property_dict = self.sheetdict.get(sheetname)
         else:
             sheet_property_dict = self.sheetdict.get(from_sheet)
-        sheettype = sheet_property_dict.get("SheetType","")
+        if sheet_property_dict != None:
+            sheettype = sheet_property_dict.get("SheetType","")
+        else:
+            sheettype = "DCC"
+            sheet_property_dict = self.sheetdict.get(sheettype)
         self.showws = sheettype in ["Datasheet","Config"]
         filename=sheet_property_dict.get("Filename",None)
         self.fieldnames=sheet_property_dict.get("Fieldnames",None)

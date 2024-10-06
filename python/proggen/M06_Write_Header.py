@@ -451,7 +451,7 @@ def Proc_Special_Functions(Cmd, LEDNr, Channel):
         # 08.10.21: Juergen
         fret, Cmd = M06Sound.Add_SoundPin_Entry(Cmd, LEDNr)
         if not fret:
-            return _fn_return_value
+            return _fn_return_value, Cmd
     _fn_return_value = True
     return _fn_return_value, Cmd
 

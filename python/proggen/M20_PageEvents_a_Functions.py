@@ -306,10 +306,12 @@ def Update_Start_LedNr(FirstRun=True):
                 Clear_LED_Nr_Columns(r, M25.LED_Nr__Col)
                 if LEDs == M02.SerialChannelPrefix:
                     # 07.10.21: Jürgen Serial Channel
-                    NewValue = '\'' + M02.SerialChannelPrefix + str(LEDs_Channel)
+                    #NewValue = '\'' + M02.SerialChannelPrefix + str(LEDs_Channel) **HLI remove "'" 
+                    NewValue = M02.SerialChannelPrefix + str(LEDs_Channel)
                 else:
                     if Max_LEDs_Channel > 0 and display_Type == 1:
-                        NewValue = '\'' + LEDs_Channel + '-' + str(LEDNr(LEDs_Channel))
+                        #NewValue = '\'' + LEDs_Channel + '-' + str(LEDNr(LEDs_Channel)) **HLI remove "'" 
+                        NewValue = LEDs_Channel + '-' + str(LEDNr(LEDs_Channel))
                     else:
                         NewValue = str(LEDNr(LEDs_Channel))
                 if P01.Cells(r, M25.LED_Nr__Col).Value == '' or P01.Cells(r, M25.LED_Nr__Col).Value != NewValue:
@@ -644,8 +646,17 @@ def Option_Dialog(first_page_only=False):
 
 def ClearSheet():
     #----------------------
-    if M30.MsgBoxMov(M09.Get_Language_Str('Wollen Sie alle Einträge dieser Seite löschen?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Seite Löschen?')) == vbYes:
+    # if M30.MsgBoxMov(M09.Get_Language_Str('Wollen Sie alle Einträge dieser Seite löschen?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Seite Löschen?')) == vbYes:
+    res = M30.MsgBoxMov(M09.Get_Language_Str('Wollen Sie  diese Seite komplett löschen?\nja - die Seite wird entfernt\nnein - nur der Inhalt der Seite wird gelöscht\nAbbrechen - es wird nichts gelöscht '), vbQuestion + vbYesNoCancel, M09.Get_Language_Str('Seite Löschen?'))
+    if res == vbYes:
+        # remove sheet
+        P01.ActiveSheet.Delete()
+    
+    elif res == vbNo:
         P01.ActiveSheet.clearSheet()
+        __set_column_width(P01.ActiveSheet)
+    else:
+        pass
         """
         OldUppdating =  P01.Application.ScreenUpdating
         P01.Application.ScreenUpdating = False
@@ -662,7 +673,7 @@ def ClearSheet():
         P01.Application.EnableEvents = OldEvents
         P01.Application.ScreenUpdating = OldUppdating
         """
-        __set_column_width(P01.ActiveSheet)
+        
         
 def __set_column_width(sheet):
     M01.set_columnwidth(sheet)

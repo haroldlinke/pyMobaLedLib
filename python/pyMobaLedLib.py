@@ -256,6 +256,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.LED_baseadress = 0
         self.mobaledlib_version = 0
         self.activeworkbook = None
+        self.direct_mode_active = False
         
         #self.fontdict={}
         #self.fontdict["FontGeneral"] = ("Verdana", int(8 * self.getConfigData("FontGeneral")/100))
@@ -1142,8 +1143,10 @@ class pyMobaLedLibapp(tk.Tk):
                     logging.info(" %s added to Z21 list",port)
                             
                 #self.set_connectstatusmessage("Verbunden mit "+ self.ARDUINO_current_portname + " - Warten auf korrekte Antwort von ARDUINO ...",fg="orange")
-                
-                self.set_connectstatusmessage("Verbunden mit "+ self.ARDUINO_current_portname + " - EFFECT Mode",fg="green")
+                if self.direct_mode_active:
+                    self.ARDUINO_begin_direct_mode()
+                else:    
+                    self.set_connectstatusmessage("Verbunden mit "+ self.ARDUINO_current_portname + " - EFFECT Mode",fg="green")
                 self.connection_startup = False
                 self.connection_startup_answer = True
                 self.ARDUINO_status = "Connected"                
@@ -1356,6 +1359,9 @@ class pyMobaLedLibapp(tk.Tk):
                                 param_default = paramconfig_dict.get("Default","")
                                 maxLEDcnt_int = int(param_default)
                             self.set_maxLEDcnt(maxLEDcnt_int)
+                            if self.direct_mode_active:
+                                # reset directmode
+                                self.ARDUINO_begin_direct_mode()
                             #self.led_off()                                # 02.01.20:  Disabled because it generates sometimes a "Buffer overrun" on the Arduino
                             #self.led_off()                                #            In addition it doesn't work with out a "#begin"
                             break
@@ -1363,6 +1369,9 @@ class pyMobaLedLibapp(tk.Tk):
                             self.set_connectstatusmessage("Verbunden mit "+ self.ARDUINO_current_portname + " - EFFECT Mode",fg="green")
                             self.connection_startup = False
                             self.ARDUINO_status = "Connected"
+                            if self.direct_mode_active:
+                                # reset directmode
+                                self.ARDUINO_begin_direct_mode()                            
                             break
                     except BaseException as e:
                         logging.debug(e, exc_info=True) 
@@ -1370,6 +1379,7 @@ class pyMobaLedLibapp(tk.Tk):
         return textmessage
     
     def ARDUINO_begin_direct_mode(self):
+        self.direct_mode_active = True
         if self.arduino and self.arduino.isOpen():
             self.send_active = False
             logging.debug("ARDUINO_Begin_direct_mode")
@@ -1383,6 +1393,7 @@ class pyMobaLedLibapp(tk.Tk):
             
 
     def ARDUINO_end_direct_mode(self):
+        self.direct_mode_active = False
         if self.arduino and self.arduino.isOpen():
             self.send_active = False
             self.led_off()
