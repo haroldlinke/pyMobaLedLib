@@ -188,8 +188,7 @@ class UserForm_House:
         
         self.RoomCnt_Label = ttk.Label(self.container, text=self.RoomCnt_Label_txt,font=self.default_font)
         self.Used_RGB_LEDs_Label = ttk.Label(self.container, text=self.Used_RGB_LEDs_Label_txt,font=self.default_fontsmall)
-        self.Label7 = ttk.Label(self.container, text="*",font=self.default_font)
-        self.Label8 = ttk.Label(self.container, text="*",font=self.default_font)
+        
        
         self.house_button_frame = ttk.Frame(self.container)
         if MacroName =="House":
@@ -199,6 +198,8 @@ class UserForm_House:
         else:
             button_list =Split(gaslights_button_list_str,",")
         
+        self.Label7 = ttk.Label(self.house_button_frame, text="*",font=self.default_font)
+        self.Label8 = ttk.Label(self.house_button_frame, text="*",font=self.default_font)        
         col = 0
         row = 0
         for button_label in button_list:
@@ -207,6 +208,12 @@ class UserForm_House:
                 tempbutton.grid(row=row, column=col,sticky="e",padx=5,pady=5)
                 col = col + 1
             else: # new line
+                if row == 0:
+                    # add "*"
+                    self.Label7.grid(row=row, column=col, sticky="w",padx=5,pady=5)
+                elif row == 2:
+                    # add "*"
+                    self.Label8.grid(row=row, column=col, sticky="w",padx=5,pady=5)                    
                 row = row+1
                 col = 0
         Txt = ""
