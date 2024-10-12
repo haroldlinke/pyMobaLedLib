@@ -336,7 +336,7 @@ class UserForm_Other():
             else:
                 if self.Check_Time_String(ParNr) == False:
                     return fn_return_value
-            value = Replace(value, ',', '.')
+            #**HLI value = Replace(value, ',', '.') - int cannot be chnaged like a string
         elif (select_1 == 'Var'):
             ShowErr = ( value == '' )
             if not ShowErr:

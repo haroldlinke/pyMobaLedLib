@@ -1,4 +1,9 @@
-5.3.2e - 25-09-2024
+5.3.2f - 07-10-2024
+Correction
+- In house-macro dialog: "*" were missing
+- Crash when using Macro MonoFlop
+
+5.3.2e - 06-10-2024
 New:
 - pyMLL selects now the correct connection mode (Effect-Mode or Direct Mode) according to the needs of the active page.
 - delete page now allows the deletion of a complete tab
