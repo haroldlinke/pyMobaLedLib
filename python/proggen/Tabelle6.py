@@ -45,6 +45,13 @@ def Worksheet_Change(Target):
         M27.Show_Hide_Column_in_all_Sheets(M28.Get_Bool_Config_Var(Target.Name.Name), 'Config__Col')
         Make_Sure_That_One_Macro_Column_is_Visible('Show_Simple_Names', 'LanName_Col')
         #Application.EnableEvents = True
+        
+    elif Target.Name.Name == "Use_PlatformIO": #                       ' 23.09.24: Hardi
+        if Target.Value > 0 and Test_Suffix <> "":
+            P01.MsgBox(M09.Get_Language_Str("Achtung:" + vbCr + 
+                                           "Wenn PlatformIO bei Beta Versionen verwendet wird, dann werden die C++ Quellen der Release Version benutzt. " + vbCr +
+                                           "Das kann zu Problemen führen. Als Abhilfe müssen die C++ Quellen in das '.pio' Verzeichnis kopiert werden."), vbCritical
+            
 
 def Make_Sure_That_One_Macro_Column_is_Visible(Config_Var, Prefered_Column):
     #------------------------------------------------------------------------------------------------------

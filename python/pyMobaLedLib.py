@@ -524,7 +524,7 @@ class pyMobaLedLibapp(tk.Tk):
         
         tabClassList = tabClassList_all #test, always show all pages 
         
-        if COMMAND_LINE_ARG_DICT.get("vb2py","")=="True":
+        if COMMAND_LINE_ARG_DICT.get("vb2py",False)==True:
             self.arg_test = True
             tabClassList += (VB2PYPage, TestPage)
         else:
@@ -3274,8 +3274,13 @@ def main_entry():
     
     if args.ESP32WINBAT:
         if args.ESP32WINBAT == "True":
-            COMMAND_LINE_ARG_DICT["useESP32WINBAT"] = True    
-        
+            COMMAND_LINE_ARG_DICT["useESP32WINBAT"] = True
+            
+    if args.vb2py:
+        if args.vb2py == "True":
+            COMMAND_LINE_ARG_DICT["vb2py"] = True    
+                    
+
     # check if colortest only is needed
     try: #check if a COLORTESTONLY_FILE is in the main Dir 
         filedir = os.path.dirname(os.path.realpath(__file__))

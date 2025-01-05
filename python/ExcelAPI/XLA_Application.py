@@ -1026,6 +1026,11 @@ class CCellsFind(object):
                 
         for cell in cells:
             cell_val=str(cell.Value)
+            if "§" in cell_val:
+                special_char = "§" # remove comments in excel sheet
+                index = cell_val.find(special_char)
+                if index != -1:
+                    cell_val = cell_val[:index]
             if cell_val == What:
                 return cell
         return None
@@ -3323,6 +3328,11 @@ class CRange(str):
         #        self.end=(self.end[0],self._get_LastColumn())  # search in complete row
         for cell in self:
             cell_val=str(cell.Value)
+            if "§" in cell_val:
+                special_char = "§" # remove comments in excel sheet
+                index = cell_val.find(special_char)
+                if index != -1:
+                    cell_val = cell_val[:index]            
             if cell_val == What:
                 return cell
         return None

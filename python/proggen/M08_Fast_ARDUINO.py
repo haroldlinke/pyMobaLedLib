@@ -287,6 +287,7 @@ def Create_Build_Pico(fp):
     VBFiles.writeText(fp, '     -warnings=default ^', '\n')
     VBFiles.writeText(fp, '     -build-cache "%aCache%" ^', '\n')
     VBFiles.writeText(fp, '     -prefs=build.warn_data_percentage=75 ^', '\n')
+    VBFiles.writeText(fp, "     -prefs=runtime.platform.path=""" + M08.GetShortPath(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + "packages\\rp2040\\hardware\\rp2040\\" + Board_Version) + '" ^','\n') # 16.12.24: Juergen
     VBFiles.writeText(fp, '     %2', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '', '\n')
@@ -295,7 +296,7 @@ def Create_Build_Pico(fp):
     VBFiles.writeText(fp, 'if %errorlevel%==0 (', '\n')
     VBFiles.writeText(fp, '   REM *** Flash program ***', '\n')
     VBFiles.writeText(fp, '   :flash', '\n')
-    VBFiles.writeText(fp, '   "%packages%\\rp2040\\tools\\pqt-python3\\1.0.1-base-3a57aed\\python3" "%packages%\\rp2040\\hardware\\rp2040\\' + Board_Version + '\\tools\\uf2conv.py" ^', '\n')
+    VBFiles.writeText(fp, '   "%packages%\\rp2040\\tools\\pqt-python3\\1.0.1-base-3a57aed-1\\python3" "%packages%\\rp2040\\hardware\\rp2040\\' + Board_Version + '\\tools\\uf2conv.py" ^', '\n')
     VBFiles.writeText(fp, '   --serial %3 --family RP2040 --deploy "%aTemp%\\LEDs_AutoProg.ino.uf2"', '\n')
     VBFiles.writeText(fp, ')', '\n')
     VBFiles.writeText(fp, 'goto :eof', '\n')

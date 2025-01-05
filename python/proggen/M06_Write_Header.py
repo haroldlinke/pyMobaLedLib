@@ -101,7 +101,7 @@ LocInChNr = Long()
 CurrentCounterId = Long()
 Ext_AddrTxt = String()
 ConfigTxt = String()
-Err = String()
+ErrorText = String()
 Channel = Long()
 LEDNr = Long()
 includeCount = Long()
@@ -124,7 +124,7 @@ MINLEDs = 20
 #-------------------------------------------------------
 def Init_HeaderFile_Generation():
 #-------------------------------------------------------
-    global LocInChNr, CurrentCounterId, Ext_AddrTxt, Store_ValuesTxt, Store_Val_Written, InChTxt, ConfigTxt, Err, Channel, LEDNr, AddrComment, Start_Values, Undefined_Input_Var, DayAndNightTimer, includeCount, Start_LED_Channel, LEDs_per_Channel, Max_Channels, LEDs_per_ChannelList
+    global LocInChNr, CurrentCounterId, Ext_AddrTxt, Store_ValuesTxt, Store_Val_Written, InChTxt, ConfigTxt, ErrorText, Channel, LEDNr, AddrComment, Start_Values, Undefined_Input_Var, DayAndNightTimer, includeCount, Start_LED_Channel, LEDs_per_Channel, Max_Channels, LEDs_per_ChannelList
     _fn_return_value = False
     
     ReserveLeds = Long()
@@ -142,7 +142,7 @@ def Init_HeaderFile_Generation():
     Store_Val_Written = ''
     InChTxt = ''
     ConfigTxt = ''
-    Err = ''
+    ErrorText = ''
     Channel = 0
     LEDNr = 0
     AddrComment = ''
@@ -607,12 +607,12 @@ def Get_Typ_Const(Inp_Typ):
 #----------------------------------------------------------------
 def Add_to_Err(r, Txt):
 #----------------------------------------------------------------
-    global Err
+    global ErrorText
     
-    if Err == '':
+    if ErrorText == '':
         r.Select()
         # Marc the first error location
-    Err = Err + Txt + vbCr
+    ErrorText = ErrorText + Txt + vbCr
 
 #--------------------------------------------------------------------------------------------
 def Add_Start_Value_Line(r, Mask, Pos, Description):
@@ -1364,7 +1364,7 @@ def Store_ValuesTxt_Used():
     return _fn_return_value
 
 def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
-    global Err, Ext_AddrTxt, Store_ValuesTxt, InChTxt, LocInChNr, Channel, ConfigTxt, LEDs_per_ChannelList, Start_Values
+    global ErrorText, Ext_AddrTxt, Store_ValuesTxt, InChTxt, LocInChNr, Channel, ConfigTxt, LEDs_per_ChannelList, Start_Values
     _fn_return_value = False
     
     NumLeds = Long()
@@ -1389,7 +1389,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     # 20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
     #----------------------------------------------------
     
-    Err=""
+    ErrorText=""
     MaxLed = M30.Get_Current_Platform_Int('MaxLed')
     for Nr in vbForRange(0, M02.LED_CHANNELS - 1):
         NumLeds = NumLeds + P01.val(P01.Cells(M02.SH_VARS_ROW, M20.Get_LED_Nr_Column(Nr)))
@@ -1399,14 +1399,18 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
         # 26.10.20:        
         NumLeds = MINLEDs
     if NumLeds > MaxLed:
-        Err = Err + M09.Get_Language_Str('Maximale LED Anzahl überschritten: ') + str(NumLeds) + vbCr + M09.Get_Language_Str('Es sind maximal #1# RGB LEDs möglich') + vbCr
+        ErrorText = ErrorText + M09.Get_Language_Str('Maximale LED Anzahl überschritten: ') + str(NumLeds) + vbCr + M09.Get_Language_Str('Es sind maximal #1# RGB LEDs möglich') + vbCr
         # Don't check before to be able to temprory add more than 256 LES
-        Err = Replace(Err, "#1#", str(MaxLed))
+        ErrorText = Replace(ErrorText, "#1#", str(MaxLed))
         # 03.04.21 Juergen replace with actual number
-    if Err != '':
-        P01.MsgBox(Err + vbCr + vbCr + M09.Get_Language_Str('Ein neues Header file wurde nicht generiert!'), vbCritical, M09.Get_Language_Str('Es sind Fehler aufgetreten'))
+    if ErrorText != '':
+        P01.MsgBox(ErrorText + vbCr + vbCr + M09.Get_Language_Str('Ein neues Header file wurde nicht generiert!'), vbCritical, M09.Get_Language_Str('Es sind Fehler aufgetreten'))
         return _fn_return_value
-    Name = M08.GetWorkbookPath() + '/' + M02.Ino_Dir_LED + M02.Include_FileName
+    Name =  M02.Ino_Dir_LED + M02.Include_FileName # 26.12.24: Jürgen set the unchanged name - used in messagebox if detection of local onedrive path fails
+    try:
+        Name = M08.GetWorkbookPath() + '/' + M02.Ino_Dir_LED + M02.Include_FileName
+    except:
+        pass
     Debug.Print("Write_Header - Filename:"+Name)
     Ext_AddrTxt=DelTailingEmptyLines(Ext_AddrTxt)
     Store_ValuesTxt=DelTailingEmptyLines(Store_ValuesTxt)
@@ -1453,8 +1457,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     VBFiles.writeText(fp, '', '\n')
     if M25.Page_ID == 'Selectrix':
         VBFiles.writeText(fp, '#define TWO_BUTTONS_PER_ADDRESS 0      // One button is used (Selectrix)', '\n')
-        VBFiles.writeText(fp, '#define USE_SX_INTERFACE               // enable Selectrix protocol on single CPU mainboards', '\n')
-        # 06.12.2021 Juergen add SX for ESP
+        VBFiles.writeText(fp, '#define USE_SX_INTERFACE               // enable Selectrix protocol on single CPU mainboards', '\n') # 22.09.24: Hardi: Added line again  06.12.2021 Juergen add SX for ESP
     else:
         VBFiles.writeText(fp, '#define TWO_BUTTONS_PER_ADDRESS 1      // Two buttons (Red/Green) are used (DCC/LNet/CAN)', '\n')
     VBFiles.writeText(fp, '#ifdef NUM_LEDS', '\n')
@@ -1507,10 +1510,11 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
         # 04.10.20: Added: Page_ID = "CAN"
         if M28.Get_Bool_Config_Var('USE_SPI_Communication'):
             VBFiles.writeText(fp, '#define USE_SPI_COM                    // Use the SPI bus for the communication in addition to the RS232 if J13 is closed. If no DCC commands are configured the A1 pin of the DCC Arduino is disabled', '\n')
-        if M06SW.PIN_A3_Is_Used():
-            VBFiles.writeText(fp, '#define LED_HEARTBEAT_PIN -1           // Disable the heartbeat pin because it\'s used for the SwitchB or SwitchC', '\n')
-        else:
-            VBFiles.writeText(fp, '#define LED_HEARTBEAT_PIN A3           // Don\'t use the internal heartbeat LED because the D13 pins between LED and DCC arduin are connected together', '\n')
+        if M02a.Get_BoardTyp() == "AM328": # ' 23.12.24 Jürgen: A3 is only in use with Nano board
+            if M06SW.PIN_A3_Is_Used():
+                VBFiles.writeText(fp, '#define LED_HEARTBEAT_PIN -1           // Disable the heartbeat pin because it\'s used for the SwitchB or SwitchC', '\n')
+            else:
+                VBFiles.writeText(fp, '#define LED_HEARTBEAT_PIN A3           // Don\'t use the internal heartbeat LED because the D13 pins between LED and DCC arduin are connected together', '\n')
     if M28.Get_Num_Config_Var('GEN_BUTTON_RELEASE_COM') == 0 or M25.Page_ID == 'SX':
         # 09.04.23: GEN BUTTON RELEASE HANDLING if set to 0 (=legacy) or SX as input
         VBFiles.writeText(fp, '#define GEN_BUTTON_RELEASE', '\n')

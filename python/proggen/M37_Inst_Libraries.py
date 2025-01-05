@@ -737,7 +737,10 @@ def Create_Do_Update_Script(Pause_at_End):
         VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache"', '\n')
         VBFiles.writeText(fp, '"' + M08.Find_ArduinoExe() + '"')
         VBFiles.writeText(fp, ' --install-library ' + LibList)
-        VBFiles.writeText(fp, ' 2>&1 | find /v " StatusLogger " | find /v " INFO c.a" | find /v " WARN p.a" | find /v " WARN c.a"', '\n')
+        # 18.12.24 the piped commands remove the errorlevel from arduino builder
+        #VBFiles.writeText(fp, ' 2>&1 | find /v " StatusLogger " | find /v " INFO c.a" | find /v " WARN p.a" | find /v " WARN c.a"', '\n')
+        # // remove find, not needed here
+        VBFiles.writeText(fp, ' 2>&1')
         # Hide debug messages
         VBFiles.writeText(fp, 'ECHO.', '\n')
         VBFiles.writeText(fp, 'ECHO Error %ERRORLEVEL%', '\n')

@@ -102,10 +102,10 @@ def CalcCrc4(crc, v_byte, bitlen):
         c <<= 1
     return crc
 
-def TinyRail_GenerateChecksum( controlValue, positionValueHigh, positionValueLow, compare=False):
+def TinyRail_GenerateChecksum( controlValue, positionValueHigh, positionValueLow, compare=False, start_CRC4=0):
     if controlValue != 0:
         controlNibble = controlValue << 4
-        crc4 = CalcCrc4( 0, controlNibble, 4)
+        crc4 = CalcCrc4( start_CRC4, controlNibble, 4)
     
         crc4 = CalcCrc4( crc4, positionValueHigh, 8)
         crc4 = CalcCrc4( crc4, positionValueLow, 8)
@@ -117,9 +117,9 @@ def TinyRail_GenerateChecksum( controlValue, positionValueHigh, positionValueLow
     else:
         return controlValue
 
-def CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow):
+def CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow, start_CRC4=0):
     
-    crc4 =  TinyRail_GenerateChecksum( controlValue, positionValueHigh, positionValueLow)
+    crc4 =  TinyRail_GenerateChecksum( controlValue, positionValueHigh, positionValueLow, start_CRC4=start_CRC4)
     
     newcontrolvalue = crc4<<4 | (controlValue & 0x0F)
     
