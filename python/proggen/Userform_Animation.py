@@ -514,12 +514,13 @@ class UserForm_Animation:
                 if curr_led_value != self.test_last_led_value:
                     self.get_led_value_and_send_to_ARDUINO(led_value=curr_led_value)
                     self.test_last_led_value = curr_led_value
-                self.curr_time += self.test_deltatime
+                
                 self.canvasframe.after(self.test_deltatime, self.run_test_point)
                 self.Kurve_Zeitanzeige_Label.Value = self.curr_time
                 self.Kurve_Wertanzeige_Label.Value = str(self.test_deltatime) + "(" + str(int(self.controller.used_time * 1000)) + ")"
                 new_x = self.valx2cx(self.curr_time)
                 self.canvas.coords(self.test_cursor_line, new_x, self.ty2cy(0), new_x, self.ty2cy(self.graphHeight))
+                self.curr_time += self.test_deltatime
         else:
             self.stop_test()
         

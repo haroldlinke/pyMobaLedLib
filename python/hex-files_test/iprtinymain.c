@@ -70,8 +70,8 @@ Zu debugging zwecken kann auch der ATTiny 84 verwendet werden.
 /*
 Neues Projekt "from scratch" mit direktem Auslesen des WS2811 Lichtbuses durch den ATTiny85 und Weiterleitung an nachfolgende WS2811 LEDs
 
-ATTiny85 fuses ohne Status-LED: lfuse 0xE1, hfuse 0xD5, efuse 0xFF
-ATTiny85 fuses MIT Status-LED an Pin 1 (PB5/Reset): lfuse 0xE1, hfuse 0x55, efuse 0xFF
+ATTiny85 fuses ohne Status-LED: lfuse 0xE1, hfuse 0xD5, efuse 0xFF (mit bootloader 0xFE)
+ATTiny85 fuses MIT Status-LED an Pin 1 (PB5/Reset): lfuse 0xE1, hfuse 0x55, efuse 0xFF (mit bootloader 0xFE)
 
 !!!ACHTUNG!!! Wenn die Status-LED hardwaremaessig an Pin 1 verdrahtet ist, dann MUSS die hfuse auf 0x55 (Reset Pin als I/O) programmiert werden,
 da der ATTIny85 sonst nicht aus dem Reset rauskommt. Um den ATTIny85 danach nochmal neu programmieren zu koennen braucht man zwingend einen
@@ -148,11 +148,11 @@ Der Steuerkanal und der Positionskanal sind wie folgt strukturiert:
 -------------------------------------------------------------------------------------------
 |     |     valid (*1) |         X |        0 0 1 |           position |        seq end 0 | end of sequence (*2)
 -------------------------------------------------------------------------------------------
-|     |          valid |         0 |        0 1 0 | training positions | 7 6   train fine | trainig in standard PWM range 1-2ms (0..255/65535)
+|     |          valid |         0 |        0 1 0 | training positions | 7 6   train fine | trainig in standard PWM range 1-2ms (0..255/1023)
 -------------------------------------------------------------------------------------------
 |     |          valid |         1 |        0 1 0 |  std prog position | 7 6    prog fine | memorize 1st and 2nd position (cycles with ENTER-Bit)
 -------------------------------------------------------------------------------------------
-|     |          valid |         0 |        0 1 1 | training positions | 7 6   train fine | trainig in wide PWM range 0,5-2,5ms (0..255/65525)
+|     |          valid |         0 |        0 1 1 | training positions | 7 6   train fine | trainig in wide PWM range 0,5-2,5ms (0..255/1023)
 -------------------------------------------------------------------------------------------
 |     |          valid |         1 |        0 1 1 | wide prog position | 7 6 wide pr fine | memorize 1st and 2nd position (cycles with ENTER-Bit)
 -------------------------------------------------------------------------------------------
@@ -168,6 +168,10 @@ Der Steuerkanal und der Positionskanal sind wie folgt strukturiert:
 -------------------------------------------------------------------------------------------
 |     |          valid |         1 |        1 0 0 |                  1 |       MAGIC 0x87 | toggle LED ON/OFF blinking in regular WS2811 receive process
 -------------------------------------------------------------------------------------------
+|     |          valid |         0 |        1 0 0 |   tune clock 0..18 |       MAGIC 0x9C | prerequisite: tune clock deviation (>18 = off)
+-------------------------------------------------------------------------------------------
+|     |          valid |         1 |        1 0 0 |   tune clock 0..18 |       MAGIC 0x9C | memorize clock deviation in percent (*3)
+-------------------------------------------------------------------------------------------
 |     |          valid |         0 |        1 0 1 |         MAGIC 0xE9 |       MAGIC 0x8A | RESET prerequisite: servo factory defaults
 -------------------------------------------------------------------------------------------
 |     |          valid |         1 |        1 0 1 |         MAGIC 0xE9 |       MAGIC 0x8A | RESET: load factory defaults for servo belonged to this channel
@@ -180,9 +184,13 @@ Der Steuerkanal und der Positionskanal sind wie folgt strukturiert:
 -------------------------------------------------------------------------------------------
 |     |          valid |         1 |        1 0 1 |         MAGIC 0x5A |       MAGIC 0x9E | RESET: last position memory to none
 -------------------------------------------------------------------------------------------
-|     |          valid |         X |        1 1 0 |           reserved |              res | reserved
+|     |          valid |         X |        1 1 0 |           reserved |         reserved | reserved
 -------------------------------------------------------------------------------------------
-|     |          valid |         X |        1 1 1 |           reserved |              res | escape (ffs)
+|     |          valid |         0 |        1 1 1 |               0x01 |       MAGIC 0xC9 | ESCAPE prerequisite: enter bootloader
+-------------------------------------------------------------------------------------------
+|     |          valid |         1 |        1 1 1 |               0x01 |       MAGIC 0xC9 | ESCAPE execute: enter bootloader
+-------------------------------------------------------------------------------------------
+|     |          valid |         X |        1 1 1 |           reserved |         reserved | other escapes (ffs)
 -------------------------------------------------------------------------------------------
 
 (*1): Nach fertig programmierten Servo Endlagen darf hier alternativ zu einer validen CRC eine "0" stehen.
@@ -200,6 +208,48 @@ Der Steuerkanal und der Positionskanal sind wie folgt strukturiert:
         fortgefuehrt werden, wie sie noch nicht von einer ANDEREN Sequenz unterbrochen wurde.
       - Eine offene und noch nicht mit einem "End Of Sequence" Flag abgeschlossene Sequenz kann sich, nach einer Unterbrechung durch eine
         ANDERE Sequenz, wieder SELBST uebernehmen, wenn sie ihren EIGENEN letzten Wert "ueberstreicht" oder direkt trifft.
+
+(*3): Tuning der Clock Deviation fuer direkte Aneinanderreihung mehrerer DirectMode-Servo Platinen
+
+      Hintergrund: Die DM-Servo Platine wird mit einem ATTiny85 ohne Quarz, nur mit dem internen Oszilator, betrieben. Dieses ist nur sehr
+      maessig genau! Der Tiny wird zwar von Atmel/Micochip vorkalibriert, aber dennoch wurden bei eingestellten/gefuseten 16 MHz Werte
+      zwischen 15,5 und 17,5 MHz gemessen. Zudem ist die Frequenz temperaturabhaengig. Diese Genauigkeit reicht, um das Signal eines WS2811
+      Chips, oder einer WS2812B GRB-LED, zu dekodieren. Auch reicht sie um am Ausgang ein WS2811 Signal weiterzugeben, das sich innerhalb
+      der zulaessigen Toleranzen bewegt. Sie reicht allerdings nicht um bei mehreren hintereinadergeschalteten ATTiny85 garantiert innerhalb
+      der Toleranzen zu bleiben. Dass liegt daran, dass in diesem Fall der ATTiny85 nicht nur seine eigene Abweichung nicht kennt, sondern
+      auch die des Vorgaengers und/oder Nachfolgers unbekannt ist.
+
+      Loesungsansatz: Es fiel auf, dass eine aufeinanderfolgende Kette von quarzlosen ATTiny85 dann funktionieren kann, wenn man sie nach
+      Geschwindigkeit sortiert! Hierbei muss der schnellste an die erste Position und der langsamste an die letzte. Zudem duerfen zwei
+      aufeinanderfolgende Tinys nicht zu dicht zusammenliegen, so dass sie durch Schwankungen zweitweise die Rollen vertauschen. Dieses
+      Prinzip des strikt absteigenden "Terrassen-Wasserfalls" kann durch die Benutzung einer von Atmel/Microchip vorgesehenen
+      Kalibriermoeglichkeit (AVR053 Application Note 09/2016), auch ohne exakte Kalibrierung an einem externen Messgeraet, kuenstlich
+      hervorgerufen werden.
+
+      Kalibrierprozess fuer mehrere aufeinanderfolgende ATTiny85 bzw. DM-Servo Platinen:
+
+      - Als erstes wird der LETZTE ATTiny85 der LETZTEN DM-Servo Platine auf den Wert 0 (s.o.) eingestellt. Hierzu wird voruebergehend
+        die ERSTE Platine verwendet und der Tiny, noch erfolgreichem Test der Funktion und der WS2811 Weiterleitung, einen Platz
+        weitergesteckt.
+
+      - Als naechstes wird ein weiterer ATTiny85 in den ERSTEN Steckplatz, der nun dem bereits kalibrieten Chip vorhergeht, gesteckt und
+        auch auf 0 eingestellt. Da die "0" des einen Tiny nichts mit der "0" des anderen Tiny zu tun hat und es zudem Schwankungen geben
+        kann, durch die die beiden Tinys ihre Rollen staendig vertauschen, wird der zweite/letzte Tiny nun nicht mehr korrekt funktionieren.
+        Auch die WS2811 Weiterleitung wird fehlerhafte Bits liefern.
+        Nun erhoehen wir die Kalibrierzahl langsam um ca. 2 oder 3. bis der nachfolgende Tiny und auch die WS2811 Weiterleitung wieder
+        korrekt funktionieren. Je nach Schwankungsungenauigkeit kann die Zahl unterschiedlich sein, die dafuer benoetigt wird, dass ganz
+        sicher der Vorgaenger etwas schneller laeuft als sein Nachfolger und die Rollen durch Schwankungen niemals getauscht werden! Ein
+        Wert groesser als 3 ist dafuer fast nie notwendig!
+
+      - Fuer die Integration eines weiteren Tiny werden alle bisherigen Tinys einen Platz weiter gesteckt und der nun erste Tiny
+        mit einem etwas groesseren Wert versehen, als der zweite Tiny in der Kette. Danach wieder Funktion der nachfolgenden Tinys
+        und der WS2811 Weiterleitung preufen. Nach diesem Muster koennen auch weitere Tinys integriert werden!
+
+      - Es ergeben sich Kalibrierwertketten wie z.B. 4-2-0 (drei DM-Servo) oder z.B. 9-6-3-0 (vier DM-Servo)
+
+      - Eine korrekte Funktion aller verketteten Tinys ist nun auch daran zu erkennen, dass sich bei gemeinsamem "power up" eine
+        gleichmaessige Blink-Kaskade der Status-LEDs der DM-Servo Platinen ergibt!
+
 
 Bemerkungen:
 
@@ -258,7 +308,8 @@ Revision History:
            - Unterstuetzung einer Status-LED mit Blinkcodes
  02.08.24: Preempt uncompleted WS2811 receive process after 50ms and replay last valid received data 20 times
  06.08.24: Support LED off while receiving regular WS2811 data
-
+ 30.08.24: Sequence Tagging Bit 0..3 und Bit 4 End in unteren 5 Bit des bisherigen Low-Stellwertes; Bit 6 reserved; Stellwert jetzt nur noch 10 Bit!
+ 31.08.24: Sequence Tagging umgedreht auf 1..4 und Bit 0 End fuer orginale MLL Analog Pattern
 
 */
 
@@ -311,33 +362,41 @@ void     TINYRAIL_SoftWaitPWMs( uint8_t portBit0, uint8_t portBit1, uint8_t port
     #error "TIMER 1 prescaler not defined"
 #endif
 
-#define TIME_ms_2_TICKS( time)              ( ( time * 1000L) / TICK_PERIOD)
-#define TIME_ms_from_TICKS( ticks)          ( ticks * ( TICK_PERIOD / 1000L))
-#define TIME_us_2_T1_RES( time_us)          ( F_CPU / 1000000L * ( time_us) /*/ TINYRAIL_SERVO_PRESCALER*/)
-#define TIME_T1_RES_2_us( t1_res)           ( ( t1_res) / ( F_CPU / 1000000L))
-#define TIME_T1_SLOW_RES_2_us( t1_slow_res) ( ( ( t1_slow_res) * TINYRAIL_SLOW_PRESCALER) / ( F_CPU / 1000000L))
-#define TIME_us_2_T1_SLOW_RES( time_us)     ( F_CPU / 1000000L * ( time_us) / TINYRAIL_SLOW_PRESCALER)
-#define TIME_ms_2_T1_SLOW_RES( time_ms)     ( F_CPU / 1000L * ( time_ms) / TINYRAIL_SLOW_PRESCALER)
-#define TIME_8BIT_TIMER_LEFT( cTime, lTime) ( ( cTime > lTime) ? ( cTime - lTime) : ( ( 0xFF - lTime) + cTime))
+#define TIME_ms_2_TICKS( time)                  ( ( time * 1000L) / TICK_PERIOD)
+#define TIME_ms_from_TICKS( ticks)              ( ticks * ( TICK_PERIOD / 1000L))
+#define TIME_us_2_T1_RES( time_us)              ( F_CPU / 1000000L * ( time_us) /*/ TINYRAIL_SERVO_PRESCALER*/)
+#define TIME_T1_RES_2_us( t1_res)               ( ( t1_res) / ( F_CPU / 1000000L))
+#define TIME_T1_SLOW_RES_2_us( t1_slow_res)     ( ( ( t1_slow_res) * TINYRAIL_SLOW_PRESCALER) / ( F_CPU / 1000000L))
+#define TIME_us_2_T1_SLOW_RES( time_us)         ( F_CPU / 1000000L * ( time_us) / TINYRAIL_SLOW_PRESCALER)
+#define TIME_ms_2_T1_SLOW_RES( time_ms)         ( F_CPU / 1000L * ( time_ms) / TINYRAIL_SLOW_PRESCALER)
 
-#define CONTROL_BIT_NUMBER          (24*TINYRAIL_SERVOS_SUPPORTED)
+#define CONTROL_BIT_NUMBER                      ( 24 * TINYRAIL_SERVOS_SUPPORTED)
+#define WS2811_RESET_TIME_IN_CPU_CYCLES         ( 42 * 19)
 
 struct OutPortProcessSet outPortProcessSets[TINYRAIL_SERVOS_SUPPORTED];
 struct CompControlSet    compControlSets[TINYRAIL_SERVOS_SUPPORTED];
 
-volatile uint8_t servoPwmStep      = 0;
-volatile uint8_t servoPwmRunning   = 0;
-uint8_t          lastPwmTcnt1      = 0;
-uint8_t          lastMainTcnt1     = 0;
-uint16_t         timeLockPosPassed = TIME_ms_2_T1_SLOW_RES( 10000);
-int              ledPeriod         = TIME_ms_2_T1_SLOW_RES( 5000);
-uint8_t          *validRecBuffer   = 0;
-uint8_t          currRecIndex      = 0;
-uint8_t          validReplayCount  = 0;
-uint8_t          recBuffer[2][CONTROL_BIT_NUMBER/8];
+volatile uint8_t servoPwmStep        = 0;
+uint8_t          lastPwmTcnt1        = 0;
+uint8_t          lastMainTcnt1       = 0;
+uint16_t         timeLockPosPassed   = TIME_ms_2_T1_SLOW_RES( 10000);
+int              ledPeriod           = TIME_ms_2_T1_SLOW_RES( 5000);
+uint8_t          *validRecBuffer     = 0;
+uint8_t          currRecIndex        = 0;
+uint8_t          validReplayCount    = 0;
+uint8_t          recBuffer[2][(CONTROL_BIT_NUMBER/8)+2];
 #ifdef USED_TEXT_START
 unsigned char    flashStateFlags = IPR_FLASH_STATE_FLAGS_NONE;
 #endif // ifdef USED_TEXT_START
+#ifndef TINYRAIL_USE_SOFT_WAIT_PWMs
+volatile uint8_t servoPwmRunning     = 0;
+#endif // ifndef TINYRAIL_USE_SOFT_WAIT_PWMs
+#ifdef TINYRAIL_DEBUG
+uint32_t         lastCounter         = 0;
+uint8_t          printCounter        = 0;
+uint16_t         crcErrorCounter     = 0;
+#endif // ifdef TINYRAIL_DEBUG
+
 
 void TinyRail_InitServoPorts()
 {
@@ -367,9 +426,6 @@ void TinyRail_InitServoPorts()
     PORTB &= ~( ( 1 << PB0) | ( 1 << PB1));
 #endif // else // ifndef TINYRAIL_DEBUG
 }
-
-uint32_t lastCounter = 0;
-uint8_t xxxCount = 0;
 
 void TinyRail_InitServoTimer()
 {
@@ -517,6 +573,11 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
 {
     uint8_t flags = my_eeprom_read_byte( &sConf->flags);
 
+#ifdef TINYRAIL_DEBUG
+    if ( TinyRail_GenerateChecksum( control, posValueHigh, posValueLow, 1))
+        crcErrorCounter++;
+#endif // ifdef TINYRAIL_DEBUG
+
 #ifndef TINYRAIL_DISABLE_CRC4_CHECK
     if ( ( ( control == SERVO_CONTROL_MODE_MOVE) && ( flags & SERVO_CONFIG_FLAG_MOVE_WITHOUT_CRC))
       || !TinyRail_GenerateChecksum( control, posValueHigh, posValueLow, 1))
@@ -534,7 +595,7 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
             uint8_t currentTcnt1 = TCNT1;
             uint8_t leftTcnt1    = TIME_8BIT_TIMER_LEFT( currentTcnt1, lastPwmTcnt1);
 
-            /*if ( !( xxxCount % 50))
+            /*if ( !( printCounter % 64))
             {
                 DPRINTF_P( PSTR( "leftTcnt1 %u(%u)\n"), ( unsigned)leftTcnt1, ( unsigned)TIME_T1_SLOW_RES_2_us( leftTcnt1));
             }*/
@@ -563,12 +624,12 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
             if ( ( processSet->controlChannel & SERVO_CONTROL_MODE_MASK)
               && ( ( processSet->controlChannel & SERVO_CONTROL_MODE_MASK) <= SERVO_CONTROL_MODE_PROG_WIDE))
             {
-                TinyRail_StoreLastPositionAndSequenceTag( 1, sConf, &flags, posValueHigh, sequenceTag);
+                TinyRail_StoreLastPositionAndSequenceTag( 1, sConf, &flags, processSet->positionValue, sequenceTag);
 
                 processSet->countContinous = 0;
 
 #ifdef TINYRAIL_DEBUG
-                // DPRINTF_P( PSTR( "%x,%d store pos (off) %u\n"), ( unsigned)control, ( unsigned)posValueHigh, ( unsigned)processSet->positionValue);
+                // DPRINTF_P( PSTR( "%x/%x store pos (off) %u\n"), ( unsigned)control, ( unsigned)processSet->controlChannel, ( unsigned)processSet->positionValue);
 #endif // ifdef TINYRAIL_DEBUG
             }
         }
@@ -577,10 +638,15 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
         {
 #ifdef USED_TEXT_START
             case SERVO_CONTROL_MODE_ESCAPE :
-                if ( ( posValueHigh == ESCAPE_CONTROL2_UPDATE_FUNC) && ( posValueLow == ESCAPI_CONTROL3_UPDATE_ENTER_BOOTLOADER))
+                if ( ( control & SERVO_CONTROL_BIT_ENTER)
+                  && ( ( processSet->controlChannel & SERVO_CONTROL_MODE_MASK) == SERVO_CONTROL_MODE_ESCAPE)
+                  && !( processSet->controlChannel & SERVO_CONTROL_BIT_ENTER))
                 {
-                    flashStateFlags |= IPR_FLASH_STATE_FLAG_UPDATE_REQUEST;
-                    return;
+                    if ( !servoIndex && ( posValueHigh == ESCAPE_CONTROL2_UPDATE_FUNC) && ( posValueLow == ESCAPI_CONTROL3_UPDATE_MAGIC_ENTER_BOOTLOADER))
+                    {
+                        flashStateFlags |= IPR_FLASH_STATE_FLAG_UPDATE_REQUEST;
+                        return;
+                    }
                 }
                 break;
 #endif // ifdef USED_TEXT_START
@@ -637,6 +703,22 @@ void TinyRail_ConvertControlAndValue( uint8_t servoIndex, struct OutPortProcessS
                             my_eeprom_write_byte( &sConf->flags, flags);
                             playLed = 1;
                             break;
+
+#ifdef TINYRAIL_TUNE_CLOCK_SUPPORTED
+                        case SERVO_CONTROL_PROG_AUX_MAGIC_TUNE_CLOCK :
+                            if ( posValueHigh <= DEVIATION_MAX_PERCENT)
+                                my_eeprom_write_byte( &CV.clockConf.clockDeviation, posValueHigh);
+                            else
+                            {
+                                my_eeprom_write_byte( &CV.clockConf.clockDeviation, 0xFF);
+
+                                // reset to standard
+                                OSCCAL = osccalBackup + DEVIATION_STANDARD_OSCCAL_ADD;
+                            }
+                            // restart lock to length
+                            countEqualLength = 0;
+                            break;
+#endif // ifdef TINYRAIL_TUNE_CLOCK_SUPPORTED
                     }
 
                     if ( playLed)
@@ -870,7 +952,7 @@ void TinyRail_ProcessServoPWMsStep1( uint8_t *values)
     TinyRail_ConvertControlAndValue( 1, &outPortProcessSets[1], &CV.servoConf[1], values[3], values[4], values[5]);
     TinyRail_ConvertControlAndValue( 2, &outPortProcessSets[2], &CV.servoConf[2], values[6], values[7], values[8]);
 
-    /*if ( !( xxxCount % 50))
+    /*if ( !( printCounter % 64))
     {
         DPRINTF_P( PSTR( "TCNT1 %u(%u)\n"), ( unsigned)TCNT1, ( unsigned)TIME_T1_SLOW_RES_2_us( TCNT1));
     }*/
@@ -1137,22 +1219,6 @@ void TinyRail_StopServoPWMs()
 #endif // else // ifdef TINYRAIL_DEBUG
 }
 
-void TinyRail_InitStatusLED()
-{
-    // define pin PB5 as output
-    DDRB |= ( 1 << PB5);
-    // set default to low
-    PORTB &= ~( 1 << PB5);
-}
-
-void TinyRail_SetStatusLED( uint8_t set)
-{
-    if ( set)
-        PORTB |= ( 1 << PB5);
-    else
-        PORTB &= ~( 1 << PB5);
-}
-
 void TinyRail_ProcessMainTime()
 {
     uint8_t currentTcnt1  = TCNT1;
@@ -1203,34 +1269,14 @@ void TinyRail_ProcessMainTime()
     lastMainTcnt1  = currentTcnt1;
 }
 
-uint16_t candidateLockLength = 0;
-uint16_t lockedRecLength     = 0;
-uint8_t  countEqualLength    = 0;
-
-uint8_t TinyRail_LockedToReceivedLength( uint16_t recLength)
-{
-    if ( recLength == candidateLockLength)
-    {
-        if ( countEqualLength < 255)
-        {
-            countEqualLength++;
-            if ( countEqualLength >= 10)
-                lockedRecLength = candidateLockLength;
-        }
-    }
-    else
-        countEqualLength = 0;
-
-    if ( ( recLength == lockedRecLength) || !lockedRecLength)
-        return 1;
-
-    return 0;
-}
-
 // uint16_t preemptedAddress = 0;
 
 int main( void)
 {
+#if defined( USED_TEXT_START) || defined( TINYRAIL_TUNE_CLOCK_SUPPORTED)
+    osccalBackup = OSCCAL;
+#endif // if defined( USED_TEXT_START) || defined( TINYRAIL_TUNE_CLOCK_SUPPORTED)
+
 #ifdef TINYRAIL_DEBUG
     TinyRail_SUART_Init();
 #endif // ifdef TINYRAIL_DEBUG
@@ -1240,6 +1286,21 @@ int main( void)
     TinyRail_InitServoPorts();
     TinyRail_InitServoTimer();
     TinyRail_InitConfig();
+
+#ifdef TINYRAIL_TUNE_CLOCK_SUPPORTED
+    // get back the previous calibration if clock deviation compensation is in use
+    if ( my_eeprom_read_byte( &CV.clockConf.clockDeviation) <= DEVIATION_MAX_PERCENT)
+    {
+        uint8_t customOSCCAL = my_eeprom_read_byte( &CV.clockConf.customOSCCAL);
+
+        if ( ( customOSCCAL > osccalBackup) && ( customOSCCAL <= ( osccalBackup + DEVIATION_MAX_OSCCAL_ADD)))
+            OSCCAL = customOSCCAL;
+        else
+            OSCCAL += DEVIATION_STANDARD_OSCCAL_ADD;
+    }
+    else
+#endif // ifdef TINYRAIL_TUNE_CLOCK_SUPPORTED
+        OSCCAL += DEVIATION_STANDARD_OSCCAL_ADD;
 
     // DPRINTF_P( PSTR( "Init %c%c\n"), my_eeprom_read_byte( &CV_PRESET.signature[0]), my_eeprom_read_byte( &CV_PRESET.signature[1]));
     // DPRINTF_P( PSTR( "Init2 %u, %u\n"), my_eeprom_read_word( &CV.servoConf[0].minPos), my_eeprom_read_word( &CV.servoConf[0].maxPos));
@@ -1261,6 +1322,7 @@ int main( void)
     while ( 1)
 #endif // else // ifdef USED_TEXT_START
     {
+#ifdef TINYRAIL_DEBUG
         uint32_t useCounter;
         uint32_t timeDelta;
 
@@ -1271,8 +1333,11 @@ int main( void)
             timeDelta = useCounter - lastCounter;
         else
             timeDelta = useCounter + ( 0xFFFFFFFFL - lastCounter);
+#endif // ifdef TINYRAIL_DEBUG
 
+#ifndef TINYRAIL_USE_SOFT_WAIT_PWMs
         if ( !servoPwmRunning)
+#endif // ifndef TINYRAIL_USE_SOFT_WAIT_PWMs
 #ifdef TINYRAIL_DEBUG
         if ( timeDelta >= ( F_CPU / 500))
 #endif // ifdef TINYRAIL_DEBUG
@@ -1295,8 +1360,28 @@ int main( void)
             TIMSK |= ( 1 << OCIE1A);
 #endif // ifdef TINYRAIL_ALLOW_PREEMPTION
 
+#ifdef TINYRAIL_TUNE_CLOCK_SUPPORTED
+            TinyRail_Timer0SetPrescaler( prescalerChainTime);
+            /*switch ( prescalerChainTime)
+            {
+                case 64 :
+                    TCCR0B |= ( 0 << CS02) | ( 1 << CS01) | ( 1 << CS00);
+                    break;
+
+                case 256 :
+                    TCCR0B |= ( 1 << CS02) | ( 0 << CS01) | ( 0 << CS00);
+                    break;
+
+                default :
+                    TCCR0B |= ( 1 << CS02) | ( 0 << CS01) | ( 1 << CS00);
+                    break;
+            }*/
+#endif // ifdef TINYRAIL_TUNE_CLOCK_SUPPORTED
+
             recLength = TINYRAIL_WS2811ReceiveEnvelop( ( uint8_t *)currRecBuffer, CONTROL_BIT_NUMBER);
 
+            TinyRail_Timer0SetPrescaler( 0);
+            // TCCR0B &= ~( ( 1 << CS02) | ( 1 << CS01) | ( 1 << CS00));
 #ifdef TINYRAIL_ALLOW_PREEMPTION
             TIMSK &= ~( 1 << OCIE1A);
             TinyRail_MainTimer_Resume();
@@ -1307,11 +1392,16 @@ int main( void)
             }*/
 #endif // ifdef TINYRAIL_ALLOW_PREEMPTION
 
-            if ( ( recLength >= CONTROL_BIT_NUMBER) && TinyRail_LockedToReceivedLength( recLength))
+            if ( ( recLength >= CONTROL_BIT_NUMBER)
+#ifdef TINYRAIL_LOCK2LENGTH_SUPPORTED
+              && TinyRail_LockedToReceivedLength( recLength, CONTROL_BIT_NUMBER, currRecBuffer[(CONTROL_BIT_NUMBER/8)], currRecBuffer[(CONTROL_BIT_NUMBER/8)+1])
+#endif // ifdef TINYRAIL_LOCK2LENGTH_SUPPORTED
+               )
             {
                 validRecBuffer = currRecBuffer;
                 currRecIndex = ( currRecIndex + 1) % 2;
-                validReplayCount  = 0;
+                validReplayCount = 0;
+
             }
             else
             {
@@ -1329,25 +1419,34 @@ int main( void)
 #endif // ifdef TINYRAIL_DEBUG
 
 #ifdef TINYRAIL_DEBUG
-            if ( !( xxxCount++ % 50))
+            if ( !( printCounter++ % 64))
             {
-                // DPRINTF_P( PSTR( "Step %x, %x, %x, %x, %x, %x, %x, %x\n"), currRecBuffer[0], currRecBuffer[1], currRecBuffer[2], currRecBuffer[3], currRecBuffer[4], currRecBuffer[5], currRecBuffer[6], currRecBuffer[7]);
+#ifdef TINYRAIL_TUNE_CLOCK_SUPPORTED
+                DPRINTF_P( PSTR( "Chain Time %u, exp %u, dev %u, osc %u/%u\n"), ( unsigned)avgChainTime, ( unsigned)expChainTime, ( unsigned)my_eeprom_read_byte( &CV.clockConf.clockDeviation), ( unsigned)OSCCAL, ( unsigned)osccalBackup);
+#endif // ifdef TINYRAIL_TUNE_CLOCK_SUPPORTED
+
+                // DPRINTF_P( PSTR( "Step crc %u; %x, %x, %x, %x, %x, %x, %x, %x, %x\n"), crcErrorCounter, currRecBuffer[0], currRecBuffer[1], currRecBuffer[2], currRecBuffer[3], currRecBuffer[4], currRecBuffer[5], currRecBuffer[6], currRecBuffer[7], currRecBuffer[8]);
 
                 // DPRINTF_P( PSTR( "Stepbits %u = %x[%x]:%u(%u), %u, %u\n"), recLength, ( unsigned)currRecBuffer[0], ( unsigned)TinyRail_GenerateChecksum( currRecBuffer[0], currRecBuffer[1], 0), ( unsigned)currRecBuffer[1], ( unsigned)TIME_T1_RES_2_us( outPortProcessSets[0].pwmPulseInTimerResCurr), ( unsigned)currRecBuffer[3], ( unsigned)currRecBuffer[5]);
 
-                DPRINTF_P( PSTR( "Stepbits %u = %x[%x]:%u(%u), %u, %u\n"), recLength, ( unsigned)currRecBuffer[0], ( unsigned)TinyRail_GenerateChecksum( currRecBuffer[0], currRecBuffer[1], currRecBuffer[2], 0), ( unsigned)currRecBuffer[1], ( unsigned)TIME_T1_RES_2_us( outPortProcessSets[0].pwmPulseInTimerResCurr), ( unsigned)currRecBuffer[4], ( unsigned)currRecBuffer[7]);
+                // DPRINTF_P( PSTR( "Stepbits %u = %x[%x]:%u(%u), %u, %u\n"), recLength, ( unsigned)currRecBuffer[0], ( unsigned)TinyRail_GenerateChecksum( currRecBuffer[0], currRecBuffer[1], currRecBuffer[2], 0), ( unsigned)currRecBuffer[1], ( unsigned)TIME_T1_RES_2_us( outPortProcessSets[0].pwmPulseInTimerResCurr), ( unsigned)currRecBuffer[4], ( unsigned)currRecBuffer[7]);
+
                 // DPRINTF_P( PSTR( "LED period %u\n"), ledPeriod);
             }
 #endif // ifdef TINYRAIL_DEBUG
 
+#ifdef TINYRAIL_DEBUG
             useCounter = hiresTimerCounter;
-                while ( useCounter != hiresTimerCounter)
-            useCounter = hiresTimerCounter;
+            while ( useCounter != hiresTimerCounter)
+                useCounter = hiresTimerCounter;
             lastCounter = useCounter;
+#endif // ifdef TINYRAIL_DEBUG
         }
     }
 
 #ifdef USED_TEXT_START
+    OSCCAL = osccalBackup;
+
     my_eeprom_write_byte( &BOOT_INFO.flashStateFlags, flashStateFlags);
 
 #ifdef TINYRAIL_DEBUG

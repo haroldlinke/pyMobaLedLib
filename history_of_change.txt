@@ -1,3 +1,15 @@
+5.3.2h - 02-02-2025
+Change
+- update to MLL3.3.2E
+- crash when opening "logic" Macro
+- esptool_py is only available in Windows version. Remove check in Mac and Linux Version
+- esptool: use esptool.py in Mac and Linux version
+
+5.3.2g - 13-10-2024
+Correction
+- Servo-Animation: in Test Servo cursor line runs out of grid.
+
+
 5.3.2f - 07-10-2024
 Correction
 - In house-macro dialog: "*" were missing

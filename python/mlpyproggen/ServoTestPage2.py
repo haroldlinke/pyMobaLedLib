@@ -316,7 +316,8 @@ class ServoTestPage2(tk.Frame):
         
     def servo_program_button(self,event=None,code=0):
     # send code to Servo
-        D00.MainMenu_Form.Show(page1=1, page2=3)
+        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
+        D00.MainMenu_Form.Show(page1=1, page2=3, AttinyAdress=servo_address)
     
     def servo_status_loop(self, event=None):
         self.servo_update_status()

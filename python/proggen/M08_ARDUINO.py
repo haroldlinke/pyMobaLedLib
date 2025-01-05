@@ -246,6 +246,10 @@ def Create_Start_Sub(BoardName, ResultName, ComPort, BuildOptions, InoName, SrcD
         if Board_Version == '':
             P01.MsgBox(M09.Get_Language_Str('Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:') + '  \'' + 'Raspberry Pico Board' + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
             return fn_return_value
+        if Board_Version != M37.Get_Required_Version('rp2040:rp2040'):
+            P01.MsgBox(M09.Get_Language_Str('Fehler: Die notwendige Version der Arduino Erweiterung ist nicht installiert:') + '  \'' + 'Raspberry Pi Pico/RP2040 Board' + Get_Required_Version("rp2040:rp2040") + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
+            return fn_return_value
+        
     CMD_Name = 'Start_' + BoardName + '_Sub.cmd'
     fp = FreeFile()
     Name = SrcDir + CMD_Name
@@ -328,6 +332,8 @@ def Create_Start_Sub(BoardName, ResultName, ComPort, BuildOptions, InoName, SrcD
                         __Environment = 'nano_old'
                     elif InStr(BuildOptions, M02.BOARD_NANO_FULL):
                         __Environment = 'nano_full'
+                    elif InStr(BuildOptions, M02.BOARD_PICO):
+                        __Environment = "pico"                        
             __Create_PIO_Build(fp, __Environment, ResultName, ComPort, SrcDir)            
         # 13.02.22: Juergen
         VBFiles.closeFile(fp)
@@ -361,20 +367,21 @@ def __Create_PIO_Build(fp, Environment, ResultName, ComPort, SrcDir):
     VBFiles.openFile(fp2, SrcDir + '..\\platformio.ini', 'w') 
     #Open Replace(SrcDir, "\LEDs_AutoProg\", "\platformio.inx") For Output As #fp2
     VBFiles.writeText(fp2, '[platformio]', '\n')
+    VBFiles.writeText(fp2, '; Created by '+ PG.ThisWorkbook.Name)
     VBFiles.writeText(fp2, 'src_dir = LEDs_AutoProg', '\n')
     VBFiles.writeText(fp2, '    ', '\n')
     VBFiles.writeText(fp2, '[env]', '\n')
     VBFiles.writeText(fp2, 'framework = arduino', '\n')
-    VBFiles.writeText(fp2, 'src_build_flags =', '\n')
+    VBFiles.writeText(fp2, 'build_src_flags =', '\n')   # ' 24.09.24: Hardi: Old:  "src_build_flags = "
     VBFiles.writeText(fp2, 'lib_deps =', '\n')
-    VBFiles.writeText(fp2, '    FastLED', '\n')
-    VBFiles.writeText(fp2, '    NmraDcc', '\n')
+    VBFiles.writeText(fp2, '    FastLED@>=3.6.0', '\n') # ' 24.09.24: Hardi: Added minimal version because version 3.4.0 generates problems with selectrix
+    VBFiles.writeText(fp2, '    NmraDcc', '\n')         # '                  Ini syntax see: https://docs.platformio.org/en/stable/core/userguide/lib/cmd_uninstall.html
     VBFiles.writeText(fp2, '    MobaLedLib=file://../../libraries/MobaLedLib', '\n')
     VBFiles.writeText(fp2, '', '\n')
     VBFiles.writeText(fp2, '[env:esp32]', '\n')
-    VBFiles.writeText(fp2, 'Platform = espressif32', '\n')
+    VBFiles.writeText(fp2, 'Platform = espressif32 @ 6.9.0', '\n')  # ' 23.12.24: Jürgen upgrade to 6.9.0
     VBFiles.writeText(fp2, 'Board = esp32dev', '\n')
-    VBFiles.writeText(fp2, 'src_filter = ${env.src_filter} -<pyProg_Generator_MobaLedLib/>', '\n')
+    VBFiles.writeText(fp2, 'build_src_filter = ${env.src_filter} -<pyProg_Generator_MobaLedLib/>', '\n')  # ' 24.09.24: Hardi: Added "build_" to this and the following lines because the "src_filter" is deprecated
     VBFiles.writeText(fp2, 'lib_deps = ${env.lib_deps}', '\n')
     VBFiles.writeText(fp2, '    WiFiManager=https://github.com/tzapu/WiFiManager.git', '\n')
     VBFiles.writeText(fp2, '    EspSoftwareSerial@^8.1.0', '\n')
@@ -384,10 +391,23 @@ def __Create_PIO_Build(fp, Environment, ResultName, ComPort, SrcDir):
         return fn_return_value
     VBFiles.writeText(fp2, 'build_unflags = -Wall', '\n')
     VBFiles.writeText(fp2, '', '\n')
+    
+    VBFiles.writeText(fp2, "[env:pico]")
+    VBFiles.writeText(fp2, "platform = https://github.com/maxgerhardt/platform-raspberrypi.git")
+    VBFiles.writeText(fp2, "Board = pico")
+    VBFiles.writeText(fp2, "framework = arduino")
+    VBFiles.writeText(fp2, "board_build.core = earlephilhower")
+    VBFiles.writeText(fp2, "build_src_filter = ${env.src_filter} -<pyProg_Generator_MobaLedLib/>")
+    VBFiles.writeText(fp2, "lib_ignore =")
+    VBFiles.writeText(fp2, "    FastLED")
+    VBFiles.writeText(fp2, "    U8g2")
+    VBFiles.writeText(fp2, "    ArduinoOTA")
+    VBFiles.writeText(fp2, "")
+    
     VBFiles.writeText(fp2, '[env:nano_new]', '\n')
     VBFiles.writeText(fp2, 'Platform = atmelavr', '\n')
     VBFiles.writeText(fp2, 'Board = nanoatmega328new', '\n')
-    VBFiles.writeText(fp2, 'src_filter = ${env.src_filter} -<pyProg_Generator_MobaLedLib/>', '\n')
+    VBFiles.writeText(fp2, 'build_src_filter = ${env.src_filter} -<pyProg_Generator_MobaLedLib/>', '\n')
     VBFiles.writeText(fp2, 'lib_deps = ${env.lib_deps}', '\n')
     VBFiles.writeText(fp2, '    EEProm', '\n')
     VBFiles.writeText(fp2, '    SPI', '\n')
@@ -404,7 +424,7 @@ def __Create_PIO_Build(fp, Environment, ResultName, ComPort, SrcDir):
     VBFiles.writeText(fp2, '[env:nano_old]', '\n')
     VBFiles.writeText(fp2, 'Platform = atmelavr', '\n')
     VBFiles.writeText(fp2, 'Board = nanoatmega328', '\n')
-    VBFiles.writeText(fp2, 'src_filter = ${env.src_filter} -<pyProg_Generator_MobaLedLib/>', '\n')
+    VBFiles.writeText(fp2, 'build_src_filter = ${env.src_filter} -<pyProg_Generator_MobaLedLib/>', '\n')
     VBFiles.writeText(fp2, 'lib_deps = ${env.lib_deps}', '\n')
     VBFiles.writeText(fp2, '    EEProm', '\n')
     VBFiles.writeText(fp2, '    SPI', '\n')
@@ -422,7 +442,7 @@ def __Create_PIO_Build(fp, Environment, ResultName, ComPort, SrcDir):
     VBFiles.writeText(fp2, '[env:nano_full]', '\n')
     VBFiles.writeText(fp2, 'Platform = atmelavr', '\n')
     VBFiles.writeText(fp2, 'Board = nanoatmega328full', '\n')
-    VBFiles.writeText(fp2, 'src_filter = ${env.src_filter} -<pyProg_Generator_MobaLedLib/>', '\n')
+    VBFiles.writeText(fp2, 'build_src_filter = ${env.src_filter} -<pyProg_Generator_MobaLedLib/>', '\n')
     VBFiles.writeText(fp2, 'lib_deps = ${env.lib_deps}', '\n')
     VBFiles.writeText(fp2, '    EEProm', '\n')
     VBFiles.writeText(fp2, '    SPI', '\n')
@@ -1369,7 +1389,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
     # Es war irgend was mit 1.6?
     fn_return_value = "" 
     
-    if M02a.Get_BoardTyp() == 'ESP32':
+    if M02a.Get_BoardTyp() == 'xESP32':
         OptParts = Split(BuildOptions, ' ')
         if UBound(OptParts) >= 1:
             if OptParts(0) == '--board':
@@ -1395,32 +1415,43 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
         #   MsgBox Get_Language_Str("Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:") & "  '" & "WifiManager: Library for ESP32 Wifi access" & "'", vbCritical, Get_Language_Str("Fehlende Erweiterung")
         #   Exit Function
         #End If
+        arduino_packages_dir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/' # 'C:\Users/Harold/AppData/Local/Arduino15/packages/'
+                
         if Board_Version != M37.Get_Required_Version('esp32:esp32'):
             P01.MsgBox(M09.Get_Language_Str('Fehler: Die notwendige Version der Arduino Erweiterung ist nicht installiert: ') + '  \'' + 'ESP32 Board ' + M37.Get_Required_Version('esp32:esp32') + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
             return fn_return_value
         if M30.VersionStr_is_Greater(M37.Get_Required_Version('NmraDcc'), M37.Get_Lib_Version('NmraDcc')):
             P01.MsgBox(M09.Get_Language_Str('Fehler: Die notwendige Version der Arduino Erweiterung ist nicht installiert: ') + '  \'' + 'NmraDcc ' + M37.Get_Required_Version('NmraDcc') + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
             return fn_return_value
-        Tool_Version = M37.Get_Lib_Version('esp32:tools/esptool_py')
-        if Tool_Version == '':
-            P01.MsgBox(M09.Get_Language_Str('Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:') + vbCr + '  \'' + 'esptool_py' + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
-            return fn_return_value    
+        system_platform = platform.platform()
+        arduino_exe_dir = M30.FilePath(Find_ArduinoExe()) # r'C:\Program Files (x86)/Arduino/'
+                
+        if "Windows" in system_platform:
+            arduino_builder_exe = r'"' + arduino_exe_dir + r'arduino-builder"'
+            Tool_Version = M37.Get_Lib_Version('esp32:tools/esptool_py')
+            if Tool_Version == '':
+                P01.MsgBox(M09.Get_Language_Str('Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:') + vbCr + '  \'' + 'esptool_py' + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
+                return fn_return_value
+            arduino_esptool_exe = r'"' + arduino_packages_dir + 'esp32/tools/esptool_py/' + Tool_Version + r'/esptool.exe"' #r'"C:\Users/Harold/AppData/Local/Arduino15/packages/esp32/tools/esptool_py/' + Tool_Version + r'/esptool.exe"'
+        else:
+            arduino_builder_exe = r'"' + arduino_exe_dir + r'Arduino"'
+            arduino_esptool_exe = r'"' + arduino_packages_dir + 'esp32/hardware/esp32/' + Board_Version + r'/tools/esptool.py"' # for Linux and Mac the python file has to be started
+        
         Debug.Print("Create_ARDUINO_IDE_Cmd")
         arduino_exe_dir = M30.FilePath(Find_ArduinoExe()) # r'C:\Program Files (x86)/Arduino/'
         arduino_builder_exe = r'"' + arduino_exe_dir + r'arduino-builder"'
-        arduino_packages_dir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/' # 'C:\Users/Harold/AppData/Local/Arduino15/packages/'
-        arduino_esptool_exe = r'"' + arduino_packages_dir + 'esp32/tools/esptool_py/' + Tool_Version + r'/esptool.exe"' #r'"C:\Users/Harold/AppData/Local/Arduino15/packages/esp32/tools/esptool_py/' + Tool_Version + r'/esptool.exe"'
         arduino_hardware_tools_dir = arduino_packages_dir + 'esp32/hardware/esp32/' + Board_Version + r'/tools/' # r'C:\Users/Harold/AppData/Local/Arduino15/packages/esp32/hardware/esp32/' + Board_Version + r'/tools/'
         arduino_temp_dir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + '../Temp/MobaLedLib_build/' # r'C:\Users/Harold/AppData/Local/Temp/MobaLedLib_build/'
         arduino_user_lib_dir = M02.Sketchbook_Path + "/libraries/" # r'C:\Users\Harold\Documents\Arduino/libraries/'
         arduino_lib_dir = arduino_exe_dir + r'libraries/'
         arduino_avr_tools_dir = arduino_exe_dir + r'hardware/tools/avr/'
         arduino_esp32_tempdir = arduino_temp_dir + 'ESP32'
-        arduino_esp32cache_tempdir = arduino_temp_dir + 'ESP32\cache'
+        arduino_esp32cache_tempdir = arduino_temp_dir + 'ESP32/cache'
         
-        system_platform = platform.platform()
-        if not "Windows" in system_platform:
-            arduino_esptool_exe = r'"' + arduino_packages_dir + 'esp32/tools/esptool_py/' + Tool_Version + r'/esptool.py"' # for Linux and Mac the python file has to be started
+        #if not "Windows" in system_platform:
+            #arduino_esptool_exe = r'"' + arduino_packages_dir + 'esp32/tools/esptool_py/' + Tool_Version + r'/esptool.py"' # for Linux and Mac the python file has to be started
+        #    arduino_esptool_exe = r'"' + arduino_packages_dir + 'esp32/hardware/esp32/' + Board_Version + r'/tools/esptool.py"' # for Linux and Mac the python file has to be started
+
         
         M30.CreateFolder(arduino_esp32_tempdir+"/")
         M30.CreateFolder(arduino_esp32cache_tempdir+"/")
@@ -1434,7 +1465,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
                      r' -fqbn=esp32:esp32:esp32:PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none' + \
                      r' -build-path "' + arduino_temp_dir + 'ESP32"' + \
                      r' -warnings=default' + \
-                     r' -build-cache "' + arduino_temp_dir + 'ESP32\cache"' + \
+                     r' -build-cache "' + arduino_temp_dir + 'ESP32/cache"' + \
                      r' -prefs=build.warn_data_percentage=75' + \
                      r' -prefs=runtime.tools.avrdude.path="' + arduino_avr_tools_dir + '"' + \
                      r' -prefs=runtime.tools.avr-gcc.path="' + arduino_avr_tools_dir + '"' + \

@@ -617,6 +617,18 @@ class Prog_GeneratorPage(tk.Frame):
         except BaseException as e:
             logging.debug("Create_Button Image "+ filepath + " not found")
             logging.debug(e, exc_info=True)
+            button=tk.Button(self.button_frame, text=button_text, command=button_desc["command"]) #,compound="center")
+            shift_command = button_desc.get("shift_command",None)
+            if shift_command:
+                button=tk.Button(self.button_frame, text=button_text) #,compound="center")
+                button.bind("<Button-1>", button_desc["command"])
+                button.bind("<Shift-Button-1>", shift_command)
+            else:
+                button=tk.Button(self.button_frame, text=button_text, command=button_desc["command"]) #,compound="center")
+            
+            button.pack( side="left",padx=button_desc["padx"])
+            
+            self.controller.ToolTip(button, text=_T(button_desc["tooltip"]))            
     
     def get_param_config_dict(self, paramkey):
         paramconfig_dict = self.controller.MacroParamDef.data.get(paramkey,{})

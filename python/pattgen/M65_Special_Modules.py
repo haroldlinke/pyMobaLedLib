@@ -17,6 +17,8 @@ import proggen.M02_Public as M02
 import ExcelAPI.XLWA_WinAPI as X03
 import ExcelAPI.XLC_Excel_Consts as X01
 
+from tools.CRCalgorithms import CalculateControlValuewithChecksum
+
 def Find_File_in_UserDir_with_Version_Dir(UserDir, VersionDir, SearchName):
     _fn_return_value = None
     SeachDir = String()
@@ -102,37 +104,50 @@ def Create_Set_Fuses_Cmd_file(ResultName, Mode, DstDir):
     if (_select57 == '16MHz, BOD 2.7V'):
         LFuse = '0xF1'
         HFuse = '0xD5'
+        EFuse = '0xFF'
         ClockTxt = '\'16 MHz (PLL)\''
         BODTxt = '\'B.O.D. Enabled (2.7V)\''
     elif (_select57 == ' 8MHz, BOD 2.7V'):
         LFuse = '0xE2'
         HFuse = '0xD5'
+        EFuse = '0xFF'
         ClockTxt = '\'8 MHz\''
         BODTxt = '\'B.O.D. Enabled (2.7V)\''
     elif (_select57 == ' 8MHz, BOD 2.7V, RstAsIO'):
         LFuse = '0xE2'
         HFuse = '0x55'
+        EFuse = '0xFF'
         ClockTxt = '\'8 MHz\''
         BODTxt = '\'B.O.D. Enabled (2.7V)\''
         # 05.06.20:
     elif (_select57 == '16MHz, BOD 2.7V, RstAsIO'):
         LFuse = '0xF1'
         HFuse = '0x55'
+        EFuse = '0xFF'
         ClockTxt = '\'16 MHz (PLL)\''
         BODTxt = '\'B.O.D. Enabled (2.7V)\''
         # 04.08.20:
     elif (_select57 == '16MHz, BOD 2.7V, Eckhart'):
         LFuse = '0xE1'
         HFuse = '0xD5'
+        EFuse = '0xFF'
         ClockTxt = '\'16 MHz (PLL)\''
         BODTxt = '\'B.O.D. Enabled (2.7V) Eckhart\''
         # 01.07.24
     elif (_select57 == '16MHz, BOD 2.7V, Eckhart-LED'):
         LFuse = '0xE1'
         HFuse = '0x55'
+        EFuse = '0xFF'
         ClockTxt = '\'16 MHz (PLL)\''
         BODTxt = '\'B.O.D. Enabled (2.7V) Eckhart-LED\''
-        # 04.08.20:            
+        # 04.08.20:
+    elif (_select57 == '16MHz, BOD 2.7V, Eckhart-Boot'):
+        LFuse = '0xE1'
+        HFuse = '0x55'
+        EFuse = '0xFE'
+        ClockTxt = '\'16 MHz (PLL)\''
+        BODTxt = '\'B.O.D. Enabled (2.7V) Eckhart-Boot\''
+        # 04.08.20:             
     else:
         X02.MsgBox('Undefined Mode ')
         # & Mode & "' in 'Create_Set_Fuses_Cmd_file()'", vbCritical, "Internal Error"
@@ -178,7 +193,7 @@ def Create_Set_Fuses_Cmd_file(ResultName, Mode, DstDir):
     # Print #fp, "    -v -pattiny85 -cstk500v1 -P%ComPort% -b19200 -e ^"
     VBFiles.writeText(fp, '    -v -pattiny85 -cstk500v1 -P%ComPort% -b19200 ^', '\n')
     # 24.07.20: Removed chip erase: -e
-    VBFiles.writeText(fp, '    -Uefuse:w:0xFF:m -Uhfuse:w:' + HFuse + ':m -Ulfuse:w:' + LFuse + ':m', '\n')
+    VBFiles.writeText(fp, '    -Uefuse:w:'+EFuse + ':m -Uhfuse:w:' + HFuse + ':m -Ulfuse:w:' + LFuse + ':m', '\n')
     VBFiles.writeText(fp, '', '\n')
     #Print #fp, "ECHO avrdude result: %ERRORLEVEL%"
     #Print #fp, "Pause"
@@ -502,7 +517,7 @@ def Prog_Servo():
         # 04.08.20: Old: " 8MHz, BOD 2.7V", " 8MHz, BOD 2.7V, RstAsIO"
         X02.MsgBox(M09.Get_Language_Str('Das "Betriebssystem" des Servo Moduls wurde erfolgreich programmiert.' + vbCr + 'Dieser Schritt ist nur ein mal pro Platine nötig.' + vbCr + 'Als nächstes sollten die Endpositionen und die Geschwindigkeiten eingestellt werden.' + vbCr + 'Das kann mit zwei verschiednen Programmen gemacht werden:' + vbCr + '- das Arduino Programm "01.Servo_Pos"' + vbCr + '- das "Farbtest" Programm von Harold (\'Prog_Generator\' Menü)"'), vbInformation, M09.Get_Language_Str('Programm erfolgreich zum ATTiny übertragen'))
 
-def Prog_Servo_2(dm_servo_with_LED=False):
+def Prog_Servo_2(dm_servo_with_LED=False, hexfile_name="RailMail-TinyServo.hex", fusemode = '16MHz, BOD 2.7V, Eckhart'):
     WorkDir = String()
 
     #----------------------
@@ -511,7 +526,7 @@ def Prog_Servo_2(dm_servo_with_LED=False):
 
     #WorkDir = Replace(WorkDir, 'extras', 'examples\\80.Modules\\04.ATTiny85_Servo2', Compare= X01.vbTextCompare)
     
-    hexfile_name =  "RailMail-TinyServo.hex"
+    #hexfile_name =  "RailMail-TinyServo.hex"
     
     if Dir(WorkDir + "/"+ hexfile_name) == '':
         # ask for filename - makefile or hexfile_name
@@ -551,7 +566,7 @@ def Prog_Servo_2(dm_servo_with_LED=False):
     # 07.08.20: Moved down
     ComPort = Get_COMPortStr(ComPortColumn)
     
-    fusemode = '16MHz, BOD 2.7V, Eckhart'
+    # fusemode = '16MHz, BOD 2.7V, Eckhart' - new parameter
     
     if dm_servo_with_LED:
         fusemode = '16MHz, BOD 2.7V, Eckhart-LED'
@@ -563,6 +578,93 @@ def Prog_Servo_2(dm_servo_with_LED=False):
         # 05.06.20: Removed: COMPrtT_COL
         # 04.08.20: Old: " 8MHz, BOD 2.7V", " 8MHz, BOD 2.7V, RstAsIO"
         X02.MsgBox(M09.Get_Language_Str('Das "Betriebssystem" des Servo Moduls wurde erfolgreich programmiert.' + vbCr + 'Dieser Schritt ist nur ein mal pro Platine nötig.' + vbCr + 'Als nächstes sollten die Endpositionen und die Geschwindigkeiten eingestellt werden.' + vbCr + 'Das kann mit zwei verschiednen Programmen gemacht werden:' + vbCr + '- das Arduino Programm "01.Servo_Pos"' + vbCr + '- das "Farbtest" Programm von Harold (\'Prog_Generator\' Menü)"'), vbInformation, M09.Get_Language_Str('Programm erfolgreich zum ATTiny übertragen'))
+
+def Upload_firmware_direkt(hexfile_name="RailMail-TinyServo.blthex", AttinyAdress=None):
+    print("Upload Firmware direkt:", hexfile_name, AttinyAdress)
+    PG.ThisWorkbook.Activate()
+    WorkDir = PG.ThisWorkbook.Path + "/hex-files"
+    
+    if Dir(WorkDir + "/"+ hexfile_name) == '':
+        # ask for filename - makefile or hexfile_name
+        
+        filenameandpath = filedialog.askopenfilename(filetypes=[("hex-File","*.hex"), ("makefile","makefile")], initialdir=WorkDir)
+        if not filenameandpath:
+            return
+        if not os.path.exists(filenameandpath):
+            #print ('file does not exist')
+            return        
+        filepath,filename = os.path.split(filenameandpath) 
+        WorkDir = filepath
+        hexfile_name = filename
+
+        if Dir(WorkDir + "/"+ hexfile_name) == '':
+            return
+        
+    X02.ChDrive(WorkDir)
+    ChDir(WorkDir)
+    
+    #Open the binary file in read mode
+    with open(hexfile_name, 'rb') as binary_file:
+        # Read one byte at a time
+        
+        data = binary_file.read()
+            
+        # Print each byte in hexadecimal format
+        modulo = 0
+        block_nr = 0
+        block_delta = 0
+        len_data = len(data)
+        data_ptr = 0
+        while true:
+            # print('{:02x}'.format(data[i]), " ")
+            if block_delta == 0:
+                ledadress = AttinyAdress + 1
+                print("Block-Nr:", block_nr)
+            data_ptr = block_nr * 21 + block_delta
+            byte1 = data[data_ptr]
+            byte2 = data[data_ptr+1]
+            byte3 = data[data_ptr+2]
+            data_ptr += 3
+            send_databytes_to_Arduino(self, ledadress, byte1, byte2, byte3)
+            ledadress += 1
+            block_delta += 3
+            
+            
+               
+                
+        
+        
+        
+    
+
+def send_databytes_to_Arduino(self, ledadress, byte1, byte2, byte3):
+    
+    if self.controller.mobaledlib_version == 1:
+        message = "#L" + '{:02x}'.format(ledadress) + " " + '{:02x}'.format(byte2) + " " + '{:02x}'.format(byte1) + " " + '{:02x}'.format(byte3) + " " + '{:02x}'.format(1) + "\n"
+    else:
+        message = "#L " + '{:02x}'.format(ledadress) + " " + '{:02x}'.format(byte2) + " " + '{:02x}'.format(byte1) + " " + '{:02x}'.format(byte3) + " " + '{:04x}'.format(1) + "\n"
+    self.controller.send_to_ARDUINO(message)
+    #time.sleep(0.2)
+
+
+
+def send_commandbytes_to_Arduino(self, attinyadress, controlbyte, cmd_byte2, cmd_byte3):
+    #servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
+    if True: #controlValue != 1:
+        #if servo_use_old_crc:
+        #    newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow) 
+        #else:
+        newcontrolValue =  CalculateControlValuewithChecksum (controlbyte, cmd_byte2, cmd_byte3)
+    else:
+        newcontrolValue = 1
+    if self.controller.mobaledlib_version == 1:
+        message = "#L" + '{:02x}'.format(attinyadress) + " " + '{:02x}'.format(cmd_byte2) + " " + '{:02x}'.format(newcontrolValue) + " " + '{:02x}'.format(cmd_byte3) + " " + '{:02x}'.format(1) + "\n"
+    else:
+        message = "#L " + '{:02x}'.format(attinyadress) + " " + '{:02x}'.format(cmd_byte2) + " " + '{:02x}'.format(newcontrolValue) + " " + '{:02x}'.format(cmd_byte3) + " " + '{:04x}'.format(1) + "\n"
+    self.controller.send_to_ARDUINO(message)
+    #time.sleep(0.2)
+
+    
 
 def Upload_HEX_to_ATTiny(ComPort, Hexfilename, DstDir):
     _fn_return_value = None

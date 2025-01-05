@@ -756,6 +756,72 @@ from vb2py.vbdebug import *
 # 21.03.23: - if SEND_INPUT is enabled also SwitchA, SwitchD and Variable changes are notified
 # 09.04.23: - GEN_BUTTON_RELASE mode are now setable in config sheet
 # 18.04.23: - Finalize include sheet feature
+# 26.05.23: - fix issue that AVR build fails caused by vbcr in LEDs_Autoprog.h -> replace by vbcrlf
+#           - change release to 3.2.1D
+# 18.05.23: - LNet support for Arduino platform added
+# 13.09.23: - Hardi: Merged Hardis changes for the Word Clock
+#             - M38_Extensions.bas          (17.04.23) Added OutCnt to the MLL Extentions
+#             - clsExtensionMacro.cls       (17.04.23)
+#             - clsExtensionConstructor.cls (17.04.23)
+#             - M06_Write_Header_SW.bas     (19.04.23) Don't generate warning if "Pattern" macro is found
+#             - M06_Write_Header.bas        (23.05.23) Added define COPYLED_OFF and COPYLED_OFF_ONCE
+#             - MobaLedLib.h                (23.05.23)
+#             - MobaLedLib.cpp              (23.05.23)
+#             Version 3.2.1 E
+# 15.09.23: - New Macro Set_LEDNr added
+# 18.09.23: - New Macro CopyNLEDs added
+# 20.10.23: - Juergen: fix #10763
+# 29.11.23: - Hardi:
+#             - Version 3.2.1 H
+#             - New Icons from Michael
+# 30.11.23: - Hardi:
+#             - Version 3.2.1 I
+#             - Added Juergens changes again:
+#               04.11.23: - Juergen: fix #10159 - fastbuild.cmd has wrong Unix line ending
+# 04.12.23: - Juergen ensure that included sheet uses same protocol as the main sheet
+# 09.12.23: - Juergen add experimental support of ATMega328PB
+#           - enable bootloader update without need to set jumpers (Mainboard version >= 1.8.2)
+# 12.12.23: - Juergen change release to 3.3.0
+# 18.12.23: - Juergen fix platform parameters for ESP32
+#             change release to 3.3.1
+# 19.12.23: - Juergen ConvertFastbuild issue (wrong merge)
+#             change release to 3.3.2
+# 29.12.23: - Juergen - keep active sheet on Update_All_Start_LedNr function exit
+# 18.01.24: - Juergen - new function SafeChDriveAndDir with Additional check for network drives (#11425)
+# 19.01.24: - Juergen - improved selection of old prog generator filename when updating to new release/beta
+# 20.01.24: - Juergen - fix LastFilledRowIn_ChkAll
+#                     - fix detection of first RGB_Heartbeat line while import
+#                     - change release to beta 3.3.2A
+# 10.03.24: - Juergen - add SI_LocalVar to predefined system variables
+#                     - add replacement of "$" in macro arguments         https://www.stummiforum.de/t165060f7-MobaLedLib-LEDs-Servos-Sound.html#msg2643729
+#                     - force a rebuild if ALT key is pressed
+#                     - empty compiler cache if last ATMega build failed  https://www.stummiforum.de/t222466f195-MobaLedLib-Arduino-Upload-geht-nicht.html#msg2649211
+#                     - import latest version of GetLocalOneDrivePath script from https://gist.github.com/guwidoe/038398b6be1b16c458365716a921814d
+#                     - change release to beta 3.3.2B
+# 22.09.24: - Hardi:  - Added the "#define USE_SX_INTERFACE" line back to modul M06_Write_Header. For some readins this line
+#                       has been removed from 3.3.2 to 3.3.2C. It is importand to use Selectrix
+#                     - change to beta 3.3.2C
+#                     - LEDs_AutoProg.ino: Changed the selectrix pin definitions:
+#                         #define SX_SIGNAL_PIN 13   // 22.09.24:  Old: 4
+#                         #define SX_CLOCK_PIN  4    // 22.09.24:  Old: 13
+#                       Now they should work with the ESP32 Adapter and the new ESP32 mainboard
+#                     - Attention: With FastLED version 3.4.0 the WS2812 LEDs sometimes flash when quick changes to the
+#                       locomotive speed are made. With version 3.6.0 and higher this no longer occurs.
+# 12.12.24: - Juergen - change source for library ATTinyCore:avr to MobaLedLib github repo
+#                     - fix issue: "ESP32 und Hieroglyphen bei der MLL-Uhrzeit" To-Dos#21
+#                     - change to beta 3.3.2D
+#
+# 16.12.24: - Juergen - fix bug: Unnecessary memory consumption due to extensions  To-Dos#20
+#                     - rp2040 support up to 8 LED channels
+# 18.12.24: - Juergen - errorhandling didn't work when downloading libraries/boards
+# 19.12.24: - Juergen - update rp2040 board version to 4.4.0
+# 20.12.24: - Juergen - support platformio build for rp2040
+# 23.12.24: - Juergen - upgrade platformio to 6.9.0 to fix build problem with DMX512
+# 27.12.24: - Juergen - improve determination of OneDrive local path
+#                     - change to beta 3.3.2E
+
+
+
 # ToDo:
 # ~~~~~
 # - Pattern_Configurator:    27.11.21:

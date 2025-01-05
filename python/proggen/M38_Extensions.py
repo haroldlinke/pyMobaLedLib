@@ -272,6 +272,7 @@ def __CollectExtensions():
                 Extension.Parameters.Add(par)
             Message = Extension.CheckValid
             if Message == '':
+                Extension.Id = Id
                 Extensions.Add(Extension)
                 Id = Id + 1
             else:
