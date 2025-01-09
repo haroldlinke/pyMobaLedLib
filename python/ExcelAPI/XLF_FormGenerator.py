@@ -499,69 +499,72 @@ def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}, defaultfo
     #create main window
     global scrolledcontainer
     dlg.Controls=[]
-    
-    userform_dict = form_dict.get("UserForm",None)
-    if userform_dict:
-        userform_modal = userform_dict.get("Modal",modal)
+    try:
         
-        if orig_window_height == None:
-            orig_window_height = int(userform_dict.get("Height",500)*guifactor)
-        if orig_window_width == None:
-            orig_window_width = int(userform_dict.get("Width",600)*guifactor)
+        userform_dict = form_dict.get("UserForm",None)
+        if userform_dict:
+            userform_modal = userform_dict.get("Modal",modal)
+            
+            if orig_window_height == None:
+                orig_window_height = int(userform_dict.get("Height",500)*guifactor)
+            if orig_window_width == None:
+                orig_window_width = int(userform_dict.get("Width",600)*guifactor)
+            
+            winfo_x = X02.global_controller.winfo_x()
+            winfo_y = X02.global_controller.winfo_y()
+            
+            screen_width = X02.global_controller.winfo_width()
+            screen_height = X02.global_controller.winfo_height()
+            
+            if screen_height < orig_window_height:
+                window_height = screen_height
+            else:
+                window_height = orig_window_height
+            if screen_width < orig_window_width:
+                window_width = screen_width
+            else:
+                window_width = orig_window_width
+            
+            x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
+            y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
         
-        winfo_x = X02.global_controller.winfo_x()
-        winfo_y = X02.global_controller.winfo_y()
-        
-        screen_width = X02.global_controller.winfo_width()
-        screen_height = X02.global_controller.winfo_height()
-        
-        if screen_height < orig_window_height:
-            window_height = screen_height
+            top = tk.Toplevel(parent)
+            top.transient(parent)
+            if userform_modal:
+                top.grab_set()
+            top.resizable(True, True)    
+            top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+            #self.top.geometry("+{}+{}".format(x_cordinate, y_cordinate))
+            
+            window_title = userform_dict.get("Caption","Title")
+            
+            top.title(translate_text(window_title))
+            
+            scrolledcontainer = ScrolledFrame(top)
+            scrolledcontainer.grid(row=0,column=0, rowspan=1,columnspan=2, sticky="nesw")
+            scrolledcontainer.grid_rowconfigure(0, weight=1)
+            scrolledcontainer.grid_columnconfigure(0, weight=1)        
+            top.grid_rowconfigure(0,weight=1)
+            top.grid_columnconfigure(0, weight=1)
+            
+            components = userform_dict.get("Components",None)
+            geo_manager = userform_dict.get("Geo_Manager","place")
+            columnconfigure = userform_dict.get("Columnconfigure",0)
+            rowconfigure = userform_dict.get("Rowconfigure",0)
+            
+            container = tk.Frame(scrolledcontainer.interior, width=orig_window_width-30, height=orig_window_height-30)
+            container.grid(row=0,column=0,columnspan=2,sticky="nesw")
+            
+            container.grid_rowconfigure(columnconfigure, weight=2)
+            container.grid_columnconfigure(rowconfigure, weight=2)
+               
+            
+            generate_controls(components,container,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont, window=top, geo_manager=geo_manager)
+            
+            return top
         else:
-            window_height = orig_window_height
-        if screen_width < orig_window_width:
-            window_width = screen_width
-        else:
-            window_width = orig_window_width
-        
-        x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
-        y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
-    
-        top = tk.Toplevel(parent)
-        top.transient(parent)
-        if userform_modal:
-            top.grab_set()
-        top.resizable(True, True)    
-        top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
-        #self.top.geometry("+{}+{}".format(x_cordinate, y_cordinate))
-        
-        window_title = userform_dict.get("Caption","Title")
-        
-        top.title(translate_text(window_title))
-        
-        scrolledcontainer = ScrolledFrame(top)
-        scrolledcontainer.grid(row=0,column=0, rowspan=1,columnspan=2, sticky="nesw")
-        scrolledcontainer.grid_rowconfigure(0, weight=1)
-        scrolledcontainer.grid_columnconfigure(0, weight=1)        
-        top.grid_rowconfigure(0,weight=1)
-        top.grid_columnconfigure(0, weight=1)
-        
-        components = userform_dict.get("Components",None)
-        geo_manager = userform_dict.get("Geo_Manager","place")
-        columnconfigure = userform_dict.get("Columnconfigure",0)
-        rowconfigure = userform_dict.get("Rowconfigure",0)
-        
-        container = tk.Frame(scrolledcontainer.interior, width=orig_window_width-30, height=orig_window_height-30)
-        container.grid(row=0,column=0,columnspan=2,sticky="nesw")
-        
-        container.grid_rowconfigure(columnconfigure, weight=2)
-        container.grid_columnconfigure(rowconfigure, weight=2)
-           
-        
-        generate_controls(components,container,dlg=dlg, jump_table=jump_table, defaultfont=defaultfont, window=top, geo_manager=geo_manager)
-        
-        return top
-    else:
-        return None
+            return None
+    except BaseException as e:
+        logging.error(e, exc_info=True)
 
 
