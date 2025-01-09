@@ -3114,18 +3114,18 @@ def check_version(exec_update=False):
     if version_str != "":
         version_str_split = version_str.split('"')
         version_str = version_str_split[1]
-    if not exec_update:
-        if version_str != PROG_VERSION:
-            answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
-    else:
-        if version_str != PROG_VERSION:
-            answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
-            if answer == False:
-                return
-            else:
-                pass
+        if not exec_update:
+            if version_str != PROG_VERSION:
+                answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
         else:
-            answer = tk.messagebox.showinfo ('Check pyMLL Version','Es gibt eine keine neue pyMLL Version \n\nAktuelle Version: '+ PROG_VERSION)
+            if version_str != PROG_VERSION:
+                answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
+                if answer == False:
+                    return
+                else:
+                    pass
+            else:
+                answer = tk.messagebox.showinfo ('Check pyMLL Version','Es gibt keine neue pyMLL Version \n\nAktuelle Version: '+ PROG_VERSION)
     return
  
 

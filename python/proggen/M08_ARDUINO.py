@@ -1389,7 +1389,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
     # Es war irgend was mit 1.6?
     fn_return_value = "" 
     
-    if M02a.Get_BoardTyp() == 'xESP32':
+    if M02a.Get_BoardTyp() == 'ESP32' and not P01.checkplatform("Darwin"): # use ESP32 path only when not on MAC
         OptParts = Split(BuildOptions, ' ')
         if UBound(OptParts) >= 1:
             if OptParts(0) == '--board':
@@ -1435,7 +1435,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
             arduino_esptool_exe = r'"' + arduino_packages_dir + 'esp32/tools/esptool_py/' + Tool_Version + r'/esptool.exe"' #r'"C:\Users/Harold/AppData/Local/Arduino15/packages/esp32/tools/esptool_py/' + Tool_Version + r'/esptool.exe"'
         else:
             arduino_builder_exe = r'"' + arduino_exe_dir + r'Arduino"'
-            arduino_esptool_exe = r'"' + arduino_packages_dir + 'esp32/hardware/esp32/' + Board_Version + r'/tools/esptool.py"' # for Linux and Mac the python file has to be started
+            arduino_esptool_exe = r'python3 ' + arduino_packages_dir + 'esp32/hardware/esp32/' + Board_Version + r'/tools/esptool.py' # for Linux and Mac the python file has to be started
         
         Debug.Print("Create_ARDUINO_IDE_Cmd")
         arduino_exe_dir = M30.FilePath(Find_ArduinoExe()) # r'C:\Program Files (x86)/Arduino/'
