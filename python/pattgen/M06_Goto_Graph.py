@@ -291,10 +291,17 @@ def Hide_Show_Special_ModeLines(Hide):
         if WasProtected:
             X02.ActiveSheet.Unprotect()
         X02.Range(X02.Range('RGB_Modul_Nr'), X02.Range('Analog_Inputs')).EntireRow.Hidden = Hide #*HL
-        #X02.ActiveSheet.Send2Module_Button.Visible = not Hide
-        #X02.ActiveSheet.Send2Module_Button.Enabled = not Hide
-        #X02.ActiveSheet.Prog_Generator_Button.Visible = Hide
-        #X02.ActiveSheet.Prog_Generator_Button.Enabled = Hide
+        try:
+            X02.ActiveSheet.Send2Module_Button.Visible = not Hide
+            X02.ActiveSheet.Send2Module_Button.Enabled = not Hide
+        except:
+            pass
+        try:
+            
+            X02.ActiveSheet.Prog_Generator_Button.Visible = Hide
+            X02.ActiveSheet.Prog_Generator_Button.Enabled = Hide
+        except:
+            pass
         if WasProtected:
             M30.Protect_Active_Sheet()
 

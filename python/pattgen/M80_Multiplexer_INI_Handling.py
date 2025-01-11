@@ -2791,7 +2791,7 @@ def Load_New_Picture():
     #------------------------------------
     # VB2PY (UntranslatedCode) On Error GoTo 0
     Res = X02.Application.GetOpenFilename(fileFilter= pattgen.M09_Language.Get_Language_Str('Bilder  (*.png; *.jpg; *.jpeg), *.png;*.jpg;*.jpeg'), Title= pattgen.M09_Language.Get_Language_Str('Auswahl eines Bildes'))
-    if Res != False:
+    if Res != "":
         Ext = LCase(M30.FileExt(Res))
         if Ext == '.jpg' or Ext == '.jpeg' or Ext == '.png':
             DestDir = pattgen.M07_Save_Sheet_Data.Get_MyExampleDir() + '\\'
