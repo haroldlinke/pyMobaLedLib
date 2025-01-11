@@ -906,7 +906,7 @@ def Send_to_ATTiny_Main():
     # Is called if the "Zum Modul schicken" Button is pressed
     Ctrl_Pressed = X03.GetAsyncKeyState(M30.VK_CONTROL) != 0
     # Following function must be declared: Public Declare Function GetAsyncKeyState Lib "user32" (ByVal vKey As Long) As Integer
-    PortId = M07.M07_COM_Port.Get_USB_Port_with_Dialog()
+    PortId = M07_COM_Port.Get_USB_Port_with_Dialog()
     if PortId > 0:
         if X02.Range('RGB_Modul_Nr') == '':
             pattgen.M60_Select_LED.Get_LED_Address_Dialog()

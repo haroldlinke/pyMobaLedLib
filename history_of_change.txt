@@ -1,4 +1,16 @@
-5.3.2h - 02-02-2025
+5.3.3c - 11-01-2025
+Correction
+- in new Version of Prog_Generator_Mobaledlib.xlsm Macronames replaced by formulas, 
+what led to Macros not found in the Python code (e.g. Gaslights Macro was used instead of Housce-Macro). 
+Solution: replaced formulas with values in the xlsm-file.
+
+
+5.3.3b - 09-01.2025
+Correction
+- no new version message, when no access to versioon on server
+- esp32 upload on Linux and Mac corrected
+
+5.3.3a - 02-01-2025
 Change
 - update to MLL3.3.2E
 - crash when opening "logic" Macro
