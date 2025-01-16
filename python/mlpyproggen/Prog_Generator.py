@@ -997,10 +997,10 @@ class Prog_GeneratorPage(tk.Frame):
         except BaseException as e:
             #self.Stop_Compile_Time_Display()
             #P01.Unload(F00.StatusMsg_UserForm)
-            logging.debug("ProgGenerator - execute_shell_cmd:"+e)
+            logging.debug("ProgGenerator - execute_shell_cmd:"+str(e))
             #logging.error("Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
-            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + "\n",highlight="Error")
+            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ str(e) + "-" + "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")            
             return M40.Failure
         return rc
@@ -1012,9 +1012,9 @@ class Prog_GeneratorPage(tk.Frame):
             self.continue_loop=True
             self.write_stdout_to_text_window()
         except BaseException as e:
-            logging.error("ProgGenerator - Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
+            logging.error(e, "ProgGenerator - Exception in start_ARDUINO_program_Popen %s",self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
-            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + self.startfile[0]+ "\n",highlight="Error")
+            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ str(e) + "-" + self.startfile[0]+ "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
     
     def upload_to_ARDUINO(self,_event=None,arduino_type="LED",init_arduino=False):

@@ -198,6 +198,7 @@
         "Ausführliche Beschreibung": "Mit der Servoplatine von Hardi können über die MLL auch Servos angesteuert werden. Eckhart hat eine Variante programmiert, die auf den WS2811 chip verzichtet und eine bessere Kontrolle der Servostellung erlaubt. Auf dieser Seite können Sie den Servo testen und konfigurieren.\nMit dem Schieberegler kann die Position des Servos eingestellt werden.",
         "Params": [
             "ServoAddress",
+            "ServoStatusLEDAddress",
             "ServoControl",
             "ServoCRCold"
         ]

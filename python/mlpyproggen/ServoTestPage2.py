@@ -56,6 +56,10 @@
 # * License: http://creativecommons.org/licenses/by-sa/3.0/
 # ***************************************************************************
 
+from vb2py.vbfunctions import *
+from vb2py.vbdebug import *
+from tkinter import filedialog
+import ExcelAPI.XLA_Application as X02
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from tkcolorpicker.spinbox import Spinbox
@@ -71,6 +75,9 @@ import re
 import time
 import logging
 import pattgen.D00_Forms as D00
+import mlpyproggen.Pattern_Generator as PG
+import ExcelAPI.XLWA_WinAPI as X03
+import tools.CRCalgorithms as CRC
 
 PERCENT_BRIGHTNESS = 1  # 1 = Show the brightnes as percent, 0 = Show the brightnes as ">>>"# 03.12.19:
 
@@ -170,7 +177,11 @@ class ServoTestPage2(tk.Frame):
         
         self.buttonProgramServo=ttk.Button(servo_direct_position_frame, text="Servo Programmieren", command=self.servo_program_button, style='my.TButton')
 
-        self.controller.ToolTip(self.buttonProgramServo, text="Servo Programm auf den Servo hochladen")
+        self.controller.ToolTip(self.buttonProgramServo, text="Servo Programm mit Programmieradapter auf den Servo hochladen")
+        
+        self.buttonProgramServodirect=ttk.Button(servo_direct_position_frame, text="Attiny Direkt Programmieren", command=self.servo_program_direct_button, style='my.TButton')
+
+        self.controller.ToolTip(self.buttonProgramServo, text="Servo Programm mit Programmieradapter auf den Attiny hochladen")        
         #self.buttonEnter.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event,code=0))
         #self.buttonEnter.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=0))                
 
@@ -198,7 +209,9 @@ class ServoTestPage2(tk.Frame):
                 
         self.servo_scale.grid(row=0,column=1,sticky="")
         self.buttonEnter.grid(row=0,column=0,sticky="",padx=20, pady=10)
-        self.buttonProgramServo.grid(row=0,column=2,sticky="",padx=20, pady=10)  
+        self.buttonProgramServo.grid(row=0,column=2,sticky="",padx=20, pady=10)
+        self.buttonProgramServodirect.grid(row=1,column=2,sticky="",padx=20, pady=10)  
+        
 
         # --- placement
         self.frame.grid(row=0,column=0)
@@ -318,6 +331,177 @@ class ServoTestPage2(tk.Frame):
     # send code to Servo
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
         D00.MainMenu_Form.Show(page1=1, page2=3, AttinyAdress=servo_address)
+        
+    def get_high_byte(self, value):
+        # Shift the value 8 bits to the right to get the high byte
+        high_byte = (value >> 8) & 0xFF
+        return high_byte
+    
+    def get_low_byte(self, value):
+        # Mask the value with 0xFF to get the low byte
+        low_byte = value & 0xFF
+        return low_byte
+    
+    # Control commands for Attiny bootloader
+    #--------------------------------------------------------------------------------------------------------------
+    #|     | CRC-4 nach ITU | ENTER-Bit | Command 0..7 | 2. Byte Modulo | 3. Byte reserved | 4.-24. Byte HEX-Data |
+    #--------------------------------------------------------------------------------------------------------------
+    #| Bit |        7 6 5 4 |         3 |        2 1 0 |                |                  |                      |
+    #--------------------------------------------------------------------------------------------------------------
+    #|     |        0 0 0 0 |         0 |        0 0 0 |         unused |           unused |               unused | idle, nothing to do
+    #--------------------------------------------------------------------------------------------------------------
+    #|     |        invalid |         X |        X X X | not applicable |   not applicable |       not applicable | failure on WS2811 Bus
+    #--------------------------------------------------------------------------------------------------------------
+    #|     |          valid |   first 1 |        0 0 1 |    modulo (*1) |                0 |   HEX-File-Data (*2) | TRANSFER Update File first block/line
+    #--------------------------------------------------------------------------------------------------------------
+    #|     |          valid |  follow 0 |        0 0 1 |    modulo (*1) |                0 |   HEX-File-Data (*2) | TRANSFER Update File following blocks/lines
+    #--------------------------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        0 1 1 |  LEDs-zero-low |   LEDs-zero-high |                all 0 | prerequisite: shift WS2811 Status-LED pos
+    #--------------------------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        0 1 1 |  LEDs-zero-low |   LEDs-zero-high |                all 0 | execute: memorize WS2811 Status-LED pos (*3)
+    #--------------------------------------------------------------------------------------------------------------
+        
+    
+    def send_21bytes_to_Attiny(self, servo_address, command, byte2, byte3, bytestring, first_line=False):
+        # changes the 21 bytes following the servo_adress in the MLL-WS2812-stream
+        # servo_address: RGB-LED number of the servo in the MLL-Stream
+        # bytestring: 24 bytes to upload to Attiny
+        # first_line: the first hex-line has to be marked as first=True
+
+        #reset command to 0000 to allow sending of the 21 bytes before flashing them into the Attiny EEPROM
+        self.send_command_to_attiny(servo_address, command=0, byte2=0, byte3=0, enter=False, start_CRC4=0, gen_CRC4=0)
+        
+        crc4 = 0
+        bytenum = 0
+        blen = len(bytestring)
+        curr_address = servo_address + 1 # bytes werden hinter dem Kommando geschrieben.
+        for i in range(21):
+            if bytenum == 0:
+                if i < blen:
+                    dbyte1 = bytestring[i]
+                else:
+                    dbyte1 = 0
+                crc4 =  CRC.CalcCrc4( crc4, dbyte1, 8)
+                bytenum = 1
+            elif bytenum == 1:
+                if i < blen:
+                    dbyte2 = bytestring[i]
+                else:
+                    dbyte2 = 0
+                crc4 =  CRC.CalcCrc4( crc4, dbyte2, 8)
+                bytenum = 2
+            elif bytenum == 2:
+                if i < blen:
+                    dbyte3 = bytestring[i]
+                else:
+                    dbyte3 = 0
+                crc4 =  CRC.CalcCrc4( crc4, dbyte3, 8)
+                bytenum = 0
+                self.send_command_to_attiny(curr_address, command=dbyte1, byte2=dbyte2, byte3=dbyte3, enter=False, gen_CRC4=False)
+                X03.Sleep(100)
+                curr_address += 1
+        
+        # all bytes send, update command for uploading
+        
+        self.send_command_to_attiny(servo_address, command=command, byte2=byte2, byte3=0, enter=first_line, start_CRC4=crc4, gen_CRC4=True)
+        
+    def Upload_firmware_direkt(self, hexfile_name="", AttinyAdress=None):
+        print("Upload Firmware direkt:", hexfile_name, AttinyAdress)
+        logging.debug("Upload Firmware direkt: "+ hexfile_name, AttinyAdress)
+        PG.ThisWorkbook.Activate()
+        WorkDir = PG.ThisWorkbook.Path + "/hex-files"
+        
+        if Dir(WorkDir + "/"+ hexfile_name) == '':
+            # ask for filename - makefile or hexfile_name
+            
+            filenameandpath = filedialog.askopenfilename(filetypes=[("hex-File","*.hex"), ("makefile","makefile")], initialdir=WorkDir)
+            if not filenameandpath:
+                return
+            if not os.path.exists(filenameandpath):
+                #print ('file does not exist')
+                return        
+            filepath,filename = os.path.split(filenameandpath) 
+            WorkDir = filepath
+            hexfile_name = filename
+    
+            if Dir(WorkDir + "/"+ hexfile_name) == '':
+                return
+            
+        X02.ChDrive(WorkDir)
+        ChDir(WorkDir)
+        
+        #Open the binary file in read mode
+        with open(hexfile_name, 'rb') as binary_file:
+            # Read one byte at a time
+            logging.debug("Upload Firmware direkt - file opened: "+ hexfile_name, AttinyAdress)
+            data = binary_file.read()
+                
+            # Print each byte in hexadecimal format
+
+            hexline_nr = 0
+            len_data = len(data)
+            first = True # marks first line
+            modulo = 0
+            while hexline_nr * 21 < len_data:
+                print("Block-Nr:", hexline_nr)
+                logging.debug("Upload Firmware direkt - send hex line: "+ str(hexline_nr))
+                bytestring_start = hexline_nr * 21
+                bytestring_end = bytestring_start + 20 
+                if bytestring_end >= len_data:
+                    bytestring_end = bytestring_start + (len_data - bytestring_start)
+                bytestring = data[bytestring_start:bytestring_end]
+                self.send_21bytes_to_Attiny(AttinyAdress, 1, modulo, 0, bytestring, first_line=first)
+                X03.Sleep(100)
+                first = False
+                hexline_nr += 1
+                modulo += 1
+                modulo = modulo % 256
+            # setze alles wiederr auf 0
+            X03.Sleep(100)
+            self.send_21bytes_to_Attiny(AttinyAdress, 0, 0, 0, b'', first_line=first)
+               
+        
+    
+    def servo_program_direct_button(self,event=None,code=0):
+    # send code to Servo
+        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
+        servo_status_led_address = self.controller.get_macroparam_val(self.tabClassName, "ServoStatusLEDAddress")
+        ok_button = D00.UserForm_Attiny_direct_program.Show_Dialog(AttinyAdress=servo_address, StatusLEDAdress=servo_status_led_address)
+        if ok_button:
+            #set status LED address
+            enter_bootloader = D00.UserForm_Attiny_direct_program.Enter_Bootloader_CheckBox.Value
+            set_status_led = D00.UserForm_Attiny_direct_program.Set_Status_LED_CheckBox.Value
+            upload_hex_file = D00.UserForm_Attiny_direct_program.Upload_Hex_File_CheckBox.Value
+            
+            if enter_bootloader:
+                # enter bootloader
+                self.send_command_to_attiny(servo_address, command=7, byte2=0x01, byte3=0xC9)
+                X03.Sleep(100)
+                self.send_command_to_attiny(servo_address, command=7, byte2=0x01, byte3=0xC9, enter=True)
+                X03.Sleep(100)
+                # bootloader entered
+            
+            if servo_status_led_address:
+            # set status LED pos
+                if servo_status_led_address != 0:
+                    delta_servo_status_led_address = servo_status_led_address - servo_address # only delta is needed
+                    if delta_servo_status_led_address <= 0:
+                        delta_servo_status_led_address = 0
+                else:
+                    delta_servo_status_led_address = 0
+                    
+                delta_servo_status_led_address_high = self.get_high_byte(delta_servo_status_led_address)
+                delta_servo_status_led_address_low = self.get_low_byte(delta_servo_status_led_address)
+                #self.send_command_to_attiny(servo_address, command=5, byte2=delta_servo_status_led_address_low, byte3=delta_servo_status_led_address_high)
+                self.send_21bytes_to_Attiny(servo_address, 3, delta_servo_status_led_address_low, delta_servo_status_led_address_high, b'', first=False)
+                X03.Sleep(100)
+                self.send_21bytes_to_Attiny(servo_address, 3, delta_servo_status_led_address_low, delta_servo_status_led_address_high, b'', first=True)
+                X03.Sleep(100)
+                
+            if upload_hex_file:
+                self.Upload_firmware_direkt(AttinyAdress=servo_address)
+            
+            
     
     def servo_status_loop(self, event=None):
         self.servo_update_status()
@@ -399,24 +583,31 @@ class ServoTestPage2(tk.Frame):
         if self.servo_set_mode_normal:
             self.servo_set_mode_normal = False
             self.controller.set_macroparam_val(self.tabClassName, "ServoControl", 0)
+            
+    def send_command_to_attiny(self, servo_address, command=0, byte2=0, byte3=0, enter=False, start_CRC4=0,gen_CRC4=True ):
+        if enter:
+            command += 8
+        self._update_servos(servo_address,byte2,command,byte3, start_CRC4=start_CRC4, gen_CRC4=gen_CRC4)
+    
         
-    def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):
 
-        servo_use_old_crc = False #int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
+    def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow, start_CRC4=0, gen_CRC4=True):
+        #servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
+        if gen_CRC4:
 
-        if True: #controlValue != 1:
             #if servo_use_old_crc:
             #    newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow) 
             #else:
-            newcontrolValue =  CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow)
+            newcontrolValue =  CalculateControlValuewithChecksum (controlValue, positionValueHigh, positionValueLow, start_CRC4=start_CRC4)
         else:
-            newcontrolValue = 1
+            newcontrolValue = controlValue
         if self.controller.mobaledlib_version == 1:
             message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(newcontrolValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
         else:
             message = "#L " + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(newcontrolValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:04x}'.format(1) + "\n"
         self.controller.send_to_ARDUINO(message)
         #time.sleep(0.2)
+
 
 
             

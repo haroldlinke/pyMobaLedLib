@@ -749,6 +749,18 @@
         "Input Text": "Servo Modul Adresse",
         "Hint": "Moduladresse des Servos (LED-Nummer des Anschlusses)"
     },
+    "ServoStatusLEDAddress": {
+        "ParName": "ServoStatusLEDAddress",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "ServoStatusLEDAddress",
+        "Min": "0",
+        "Max": "9999",
+        "Persistent": "True",
+        "Default": "0",
+        "Input Text": "ServoStatus LED Adresse",
+        "Hint": "Adresse der Status LED beim Programmieren des Attinys (0=blaue LED auf der Platine)"
+    },
     "ServoChannel": {
         "ParName": "ServoChannel",
         "Cnt": "1",
