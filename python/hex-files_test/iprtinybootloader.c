@@ -45,9 +45,13 @@ Der Steuerkanal ist wie folgt strukturiert:
 --------------------------------------------------------------------------------------------------------------
 |     |        invalid |         X |        X X X | not applicable |   not applicable |       not applicable | failure on WS2811 Bus
 --------------------------------------------------------------------------------------------------------------
-|     |          valid |   first 1 |        0 0 1 |    modulo (*1) |                0 |        HEX-File-Data | TRANSFER Update File first block/line
+|     |          valid |   first 1 |        0 0 1 |    modulo (*1) |                0 |   HEX-File-Data (*2) | TRANSFER Update File first block/line
 --------------------------------------------------------------------------------------------------------------
-|     |          valid |  follow 0 |        0 0 1 |    modulo (*1) |                0 |        HEX-File-Data | TRANSFER Update File following blocks/lines
+|     |          valid |  follow 0 |        0 0 1 |    modulo (*1) |                0 |   HEX-File-Data (*2) | TRANSFER Update File following blocks/lines
+--------------------------------------------------------------------------------------------------------------
+|     |          valid |         0 |        0 1 1 |  LEDs-zero-low |   LEDs-zero-high |                all 0 | prerequisite: shift WS2811 Status-LED pos
+--------------------------------------------------------------------------------------------------------------
+|     |          valid |         1 |        0 1 1 |  LEDs-zero-low |   LEDs-zero-high |                all 0 | execute: memorize WS2811 Status-LED pos (*3)
 --------------------------------------------------------------------------------------------------------------
 
 Nur fuer den Bootupdater zusaetzlich:
@@ -57,6 +61,16 @@ Nur fuer den Bootupdater zusaetzlich:
 --------------------------------------------------------------------------------------------------------------
 |     |          valid |         1 |        0 1 0 |              0 |                0 |                all 0 | execute: enter bootloader
 --------------------------------------------------------------------------------------------------------------
+
+(*1): Modulo! Der Modulo beginnt bei 0 und rotiert zyklisch von 0..255 und wieder von vorne. Jede Modulo Nummer markiert einen eideutigen Block
+      bzw. eine eideutige HEX-Zeile innerhalb des Modulo-Zyklusses. Bloecke bzw. HEX-Zeilen können, mit der selben Modulo-Nummer, beliebig oft
+      wiederhot werden. Bei 50Hz bzw. 20ms WS2811 Refesh Rate hat sich eine Dreifach-Wiederholung als foerderlich herausgestellt.
+
+(*2): Die einzelnen Zeilen des HEX-Files werden binaer codiert in den Bytes 4-24 uebertragen. Die erste Zeile wird mit dem ENTER-Bit markiert.
+
+(*3): Die Anzeige einer WS2811 Status-LED via WS2811-Host kann hiermit um 0..65535 (Null) Bits verschoben werden. Damit ist es moeglich, die
+      Bootloader/Bootupdater Zustaende in jeder LED des weitergehende WS2811 Stranges darzustellen. Die Verschiebung wird persistent im
+      EEPROM gespeichert.
 
 */
 
@@ -379,14 +393,12 @@ uint8_t loopCount = 0;
     #define UPDATE_SIGNAL_CHANNEL   0
 #endif // else // ifdef RAILMAIL_TINY_BOOT_UPDATER
 
-uint16_t transmitZeroBits = 0;
-
 void BlinkState( uint8_t state)
 {
     loopCount++;
     if ( ( loopCount & ( 0x80 >> state)))
     {
-        transmitBuffer[UPDATE_SIGNAL_CHANNEL] = 64;
+        transmitBuffer[UPDATE_SIGNAL_CHANNEL] = 65;
         TinyRail_SetStatusLED( 1);
     }
     else
@@ -398,7 +410,9 @@ void BlinkState( uint8_t state)
 
 int main( void)
 {
-    uint8_t osccalBackup = OSCCAL;
+    uint16_t transmitZeroBits;
+
+    osccalBackup = OSCCAL;
 
 #if defined( __AVR_ATtiny85__) && ( F_CPU==20000000UL)
     OSCCAL += 40; // go for 20MHz with internal oscillator
@@ -492,6 +506,8 @@ int main( void)
     }
 #endif // else // ifdef RAILMAIL_TINY_BOOT_UPDATER
 
+    transmitZeroBits = my_eeprom_read_word( &BOOT_INFO.transmitZeroBits) + 1;
+
 #ifdef RAILMAIL_TINY_BOOT_UPDATER
     while ( !( flashStateFlags & ( IPR_FLASH_STATE_FLAG_UPDATE_REQUEST | IPR_FLASH_STATE_FLAG_RESET_REQUEST)))
 #else // ifdef RAILMAIL_TINY_BOOT_UPDATER
@@ -524,6 +540,8 @@ int main( void)
             recLength = TINYRAIL_WS2811ReceiveEnvelop( recBuffer, CONTROL_BIT_NUMBER, transmitZeroBits >> 8, transmitZeroBits & 0xFF, TRANSMIT_BIT_NUMBER, transmitBuffer);
             if ( ( recLength >= CONTROL_BIT_NUMBER) && !Distri_GenerateChecksum( recBuffer, CONTROL_BIT_NUMBER / 8, 1))
             {
+                uint8_t controlEnterInv = ( ( recBuffer[0] ^ lastControl) & ( GENERAL_CONTROL_BIT_ENTER_OR_FIRST | UPDATE_CONTROL_MODE_MASK)) ^ GENERAL_CONTROL_BIT_ENTER_OR_FIRST;
+
                 switch ( recBuffer[0] & UPDATE_CONTROL_MODE_MASK)
                 {
 #if defined( RAILMAIL_TINY_BOOT_UPDATER)
@@ -538,7 +556,11 @@ int main( void)
 #endif // if defined( RAILMAIL_TINY_BOOT_UPDATER)
 
                     case UPDATE_CONTROL_MODE_CONFIG_BOOTLOADER :
-                        transmitZeroBits =  *( ( uint16_t *)&recBuffer[1]);
+                        if ( !controlEnterInv && ( transmitZeroBits != *( ( uint16_t *)&recBuffer[1])))
+                        {
+                            transmitZeroBits = *( ( uint16_t *)&recBuffer[1]);
+                            my_eeprom_write_word( &BOOT_INFO.transmitZeroBits, transmitZeroBits - 1);
+                        }
                         break;
 
                     case UPDATE_CONTROL_MODE_TRANSFER :

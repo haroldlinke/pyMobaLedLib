@@ -182,9 +182,10 @@ def Prog_Attiny_Bootloader_Button_Click():
     #------------------------------------
     pattgen.M65_Special_Modules.Prog_Servo_2(fusemode = '16MHz, BOD 2.7V, Eckhart-Boot', hexfile_name="RailMail-TinyBootloader85.hex")
     
-def Prog_Attiny_Firmware_DM_Servo_Button_Click():
+def Prog_Attiny_Bootloader_no_status_led_Button_Click():
     #------------------------------------
-    pattgen.M65_Special_Modules.Upload_firmware_direkt(hexfile_name="RailMail-TinyServo.blthex", AttinyAdress=global_AttinyAdress)
+    #pattgen.M65_Special_Modules.Upload_firmware_direkt(hexfile_name="RailMail-TinyServo.blthex", AttinyAdress=global_AttinyAdress)
+    pattgen.M65_Special_Modules.Prog_Servo_2(hexfile_name="RailMail-TinyBootloader85.hex")
 
 def Close3Button_Click():
     # 02.06.20: Misha
@@ -356,14 +357,14 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                                                    "Caption":"Attiny DirektProg ",
                                                                                    "Type": "Page","Visible": True,
                                                                                    "Components"    : [{"Name": "Label64","BackColor": "#00000F","BorderColor": "#000006","BorderStyle"   : "fmBorderStyleNone",
-                                                                                                       "Caption": "ACHTUNG - Noch nicht vollständig implementiert. Nur für interen Tests!!!\nDer Attiny DirektProg Modus ermöglicht es, die Firmware des Attinys auszutauschen, während der Attiny im normal im WS2812-Bus hängt.\nEs wird kein Programmieradapter mehr benötigt.\nZuerst muß ein Bootlaoder auf dem Attiny installiert werden. Button <Bootloader>. Der Attiny muß dazu in einem Programmieradapter stecken.\nDanach wird der Attiny in die Zielplatine gesteckt und mit dem WS2812-Bus verbunden. Die Grundadresse des Attinys wird angegeben und danach der Button Upload-FirmwarXX angeklickt\n",
+                                                                                                       "Caption": "ACHTUNG - Noch nicht vollständig implementiert. Nur für interen Tests!!!\nDer Attiny DirektProg Modus ermöglicht es, die Firmware des Attinys auszutauschen, während der Attiny im normal im WS2812-Bus hängt.\nEs wird kein Programmieradapter mehr benötigt.\nZuerst muß ein Bootlaoder auf dem Attiny installiert werden. Button <Bootloader>. Der Attiny muß dazu in einem Programmieradapter stecken.\nDanach wird der Attiny in die Zielplatine gesteckt und mit dem WS2812-Bus verbunden. Die Programmierung erfolgt dann über die Servo2 Seite.\n",
                                                                                                        "ControlTipText": "","ForeColor": "#000012", "Height": 108,"Left": 84,"TextAlign": "fmTextAlignLeft","Top": 12,"Type": "Label","Visible": True,"Width": 364},
                                                                                                       {"Name": "Prog_Attiny_Bootloader_Button","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                                                                                        "Caption": "Prog. Attiny Bootloader",
                                                                                                        "Command": Prog_Attiny_Bootloader_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 12,"Type": "CommandButton","Visible": True,"Width": 72}, 
-                                                                                                      {"Name": "Prog_Attiny_Firmware_DM_Servo","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
-                                                                                                       "Caption": "Direkt-Prog. DM-Servo",
-                                                                                                       "Command": Prog_Attiny_Firmware_DM_Servo_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 50,"Type": "CommandButton","Visible": True,"Width": 72}
+                                                                                                      {"Name": "Prog_Attiny_Bootloader_no_status_led_Button","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
+                                                                                                       "Caption": "Bootloader ohne blaue LED",
+                                                                                                       "Command": Prog_Attiny_Bootloader_no_status_led_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 50,"Type": "CommandButton","Visible": True,"Width": 72}
                                                                                                       ]},                                                                                     
                                                                                   ]}
                                                                ]},

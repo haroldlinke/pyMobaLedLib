@@ -38,6 +38,7 @@ import pattgen.MainMenu_Form
 import pattgen.StatusMsg_UserForm
 import pattgen.Select_from_Sheet_Form
 import pattgen.Examples_UserForm
+import proggen.UserForm_Attiny_direct_program
 
 
 
@@ -53,7 +54,7 @@ Select_from_Sheet_Form = None
 Examples_UserForm = None
 
 def init_UserForms():
-    global StatusMsg_UserForm,  Select_COM_Port_UserForm, Select_GotoNr_Form,MainMenu_Form, Select_from_Sheet_Form, Examples_UserForm
+    global StatusMsg_UserForm,  Select_COM_Port_UserForm, Select_GotoNr_Form,MainMenu_Form, Select_from_Sheet_Form, Examples_UserForm,  UserForm_Attiny_direct_program
     
     #Select_COM_Port_UserForm = D08.CSelect_COM_Port_UserForm()
     #StatusMsg_UserForm = D09.CStatusMsg_UserForm()
@@ -64,3 +65,5 @@ def init_UserForms():
     StatusMsg_UserForm = pattgen.StatusMsg_UserForm.CStatusMsg_UserForm(PG.global_controller)
     Select_from_Sheet_Form = pattgen.Select_from_Sheet_Form.CSelect_from_Sheet_Form(PG.global_controller)
     Examples_UserForm = pattgen.Examples_UserForm.CExamples_UserForm(PG.global_controller)
+    UserForm_Attiny_direct_program = proggen.UserForm_Attiny_direct_program.CAttinyDP_UserForm(PG.global_controller)
+    
