@@ -899,6 +899,7 @@ def End_Test_and_Close(PortId):
     # VB2PY (UntranslatedCode) On Error GoTo 0
 
 def Send_to_ATTiny_Main():
+    return # notimplemented yet
     Ctrl_Pressed = Boolean()
 
     PortId = Integer()
