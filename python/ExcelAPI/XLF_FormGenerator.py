@@ -347,6 +347,20 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     filepath = filedir2 + filename
                     try:
                         comp.iconImage = tk.PhotoImage(file=filepath)
+                        # Get the button dimensions
+                        button_width = int(comp.Width)
+                        button_height = int(comp.Height)
+                        
+                        # Calculate the scaling factors
+                        image_width = comp.iconImage.width()
+                        image_height = comp.iconImage.height()
+                        scale_width = max(1, image_width // button_width)
+                        scale_height = max(1, image_height // button_height)
+                        img_scale = max(scale_width, scale_height) 
+                        
+                        # Resize the image
+                        comp.iconImage = comp.iconImage.subsample(img_scale, img_scale)
+                        
                         button=tk.Button(parent, text=comp.Caption,command=comp.Command,width=comp.Width,height=comp.Height,wraplength = comp.Wraplength,image=comp.iconImage,font=comp.Font)
                     except BaseException as e:
                         logging.debug("Form_Generator - create Command-Button: Image "+filepath+" not found")

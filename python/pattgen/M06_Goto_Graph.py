@@ -297,7 +297,6 @@ def Hide_Show_Special_ModeLines(Hide):
         except:
             pass
         try:
-            
             X02.ActiveSheet.Prog_Generator_Button.Visible = Hide
             X02.ActiveSheet.Prog_Generator_Button.Enabled = Hide
         except:
