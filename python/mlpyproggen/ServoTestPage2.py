@@ -590,9 +590,11 @@ class ServoTestPage2(tk.Frame):
         self._update_servos(servo_address,byte2,command,byte3, start_CRC4=start_CRC4, gen_CRC4=gen_CRC4)
     
         
+
     def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow, start_CRC4=0, gen_CRC4=True):
         #servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
         if gen_CRC4:
+
             #if servo_use_old_crc:
             #    newcontrolValue =  CalculateControlValuewithChecksum_old (controlValue, positionValueHigh, positionValueLow) 
             #else:
