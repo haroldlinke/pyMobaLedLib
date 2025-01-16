@@ -328,7 +328,7 @@ class Pattern_GeneratorPage(tk.Frame):
                                                                     "Caption":"Export zu ProgGen",
                                                                     "Command": "PAT09.Prog_Generator_Button_Click" ,"ControlTipText":"Export zu ProgGen","ForeColor":"#000012","Height":"50","Left":0,"Top":0,"Type":"CommandButton","Visible":True,"Width":"50"},
                                                                   ]},
-                                    "Form4": {  "Name"          : "Send2Attiny",
+                                    "Form11": {  "Name"          : "Send2Attiny",
                                                 "BackColor"     : "#FFFFFF",
                                                 "BorderColor"   : "#000012",
                                                 "Caption"       : "",
