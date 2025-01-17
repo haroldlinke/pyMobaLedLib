@@ -370,7 +370,7 @@ class ServoTestPage2(tk.Frame):
 
         #reset command to 0000 to allow sending of the 21 bytes before flashing them into the Attiny EEPROM
         self.send_command_to_attiny(servo_address, command=0, byte2=0, byte3=0, enter=False, start_CRC4=0, gen_CRC4=0)
-        
+        #X03.Sleep(100)
         crc4 = 0
         bytenum = 0
         blen = len(bytestring)
@@ -398,13 +398,30 @@ class ServoTestPage2(tk.Frame):
                 crc4 =  CRC.CalcCrc4( crc4, dbyte3, 8)
                 bytenum = 0
                 self.send_command_to_attiny(curr_address, command=dbyte1, byte2=dbyte2, byte3=dbyte3, enter=False, gen_CRC4=False)
-                X03.Sleep(100)
                 curr_address += 1
         
         # all bytes send, update command for uploading
         
         self.send_command_to_attiny(servo_address, command=command, byte2=byte2, byte3=0, enter=first_line, start_CRC4=crc4, gen_CRC4=True)
+        self.send_command_to_attiny(servo_address, command=command, byte2=byte2, byte3=0, enter=first_line, start_CRC4=crc4, gen_CRC4=True)
+        self.send_command_to_attiny(servo_address, command=command, byte2=byte2, byte3=0, enter=first_line, start_CRC4=crc4, gen_CRC4=True)
+                        
+    def update_upload_info(self):
         
+        
+        delta = len(self.controller.serial_writebuffer) - self.controller.serial_writebuffer_idx
+        
+        if len(self.controller.serial_writebuffer) > 0:
+            delta_percent = self.controller.serial_writebuffer_idx * 100 / len(self.controller.serial_writebuffer)
+        else:
+            delta_percent = 0
+        self.servo_pos_var.set(delta_percent)
+        if self.controller.serial_writebuffer_idx >= len(self.controller.serial_writebuffer):
+            self.upload_complete = True
+        else:            
+            self.controller.after(1000, self.update_upload_info)            
+
+    
     def Upload_firmware_direkt(self, hexfile_name="", AttinyAdress=None):
         print("Upload Firmware direkt:", hexfile_name, AttinyAdress)
         logging.debug("Upload Firmware direkt: "+ hexfile_name, AttinyAdress)
@@ -414,7 +431,7 @@ class ServoTestPage2(tk.Frame):
         if Dir(WorkDir + "/"+ hexfile_name) == '':
             # ask for filename - makefile or hexfile_name
             
-            filenameandpath = filedialog.askopenfilename(filetypes=[("hex-File","*.hex"), ("makefile","makefile")], initialdir=WorkDir)
+            filenameandpath = filedialog.askopenfilename(filetypes=[("hex-File","*.blthex")], initialdir=WorkDir)
             if not filenameandpath:
                 return
             if not os.path.exists(filenameandpath):
@@ -423,43 +440,46 @@ class ServoTestPage2(tk.Frame):
             filepath,filename = os.path.split(filenameandpath) 
             WorkDir = filepath
             hexfile_name = filename
-    
             if Dir(WorkDir + "/"+ hexfile_name) == '':
                 return
             
         X02.ChDrive(WorkDir)
         ChDir(WorkDir)
         
-        #Open the binary file in read mode
-        with open(hexfile_name, 'rb') as binary_file:
-            # Read one byte at a time
+        # Read the .hex file and convert each line to binary
+        with open(hexfile_name, 'r') as hex_file:
+            lines = hex_file.readlines()
+            
             logging.debug("Upload Firmware direkt - file opened: "+ hexfile_name, AttinyAdress)
-            data = binary_file.read()
-                
-            # Print each byte in hexadecimal format
+            self.controller.send_to_ARDUINO_init_buffer()
+            self.servo_continue_update_status = False
 
             hexline_nr = 0
-            len_data = len(data)
+            len_lines = len(lines)
             first = True # marks first line
             modulo = 0
-            while hexline_nr * 21 < len_data:
+            while hexline_nr < len_lines:
                 print("Block-Nr:", hexline_nr)
                 logging.debug("Upload Firmware direkt - send hex line: "+ str(hexline_nr))
-                bytestring_start = hexline_nr * 21
-                bytestring_end = bytestring_start + 20 
-                if bytestring_end >= len_data:
-                    bytestring_end = bytestring_start + (len_data - bytestring_start)
-                bytestring = data[bytestring_start:bytestring_end]
+                hex_line = lines[hexline_nr]
+                hex_line2 = hex_line[1:len(hex_line)-1]
+                bytestring = bytes.fromhex(hex_line2)
+                bytestring = bytestring.ljust(21, b'\x00')
+                blen = len(bytestring)
+                   
                 self.send_21bytes_to_Attiny(AttinyAdress, 1, modulo, 0, bytestring, first_line=first)
-                X03.Sleep(100)
+                
                 first = False
                 hexline_nr += 1
                 modulo += 1
                 modulo = modulo % 256
             # setze alles wiederr auf 0
-            X03.Sleep(100)
+            
             self.send_21bytes_to_Attiny(AttinyAdress, 0, 0, 0, b'', first_line=first)
-               
+            
+            
+            self.upload_complete = False
+            self.controller.after(1000, self.update_upload_info)
         
     
     def servo_program_direct_button(self,event=None,code=0):

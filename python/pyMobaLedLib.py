@@ -1441,6 +1441,7 @@ class pyMobaLedLibapp(tk.Tk):
         try:
             if self.serial_writebuffer_idx < self.serial_writebuffer_len and self.arduino != None:
                 c = self.serial_writebuffer[self.serial_writebuffer_idx]
+                logging.debug("send_to_ARDUINO_callback - write:"+c)
                 self.serial_writebuffer_idx += 1
                 self.arduino.write(c.encode())
                 #logging.debug("send_to_ARDUINO_callback - write: "+str(c.encode())+"-"+str(self.serial_writebuffer_len))
