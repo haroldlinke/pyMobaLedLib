@@ -646,15 +646,7 @@ def Upload_firmware_direkt(hexfile_name="RailMail-TinyServo.blthex", AttinyAdres
     print("Upload Firmware direkt:", hexfile_name, AttinyAdress)
     
     #Start Bootloader
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     PG.ThisWorkbook.Activate()
     WorkDir = PG.ThisWorkbook.Path + "/hex-files"
     
