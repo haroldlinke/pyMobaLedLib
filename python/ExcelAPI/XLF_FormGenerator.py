@@ -343,11 +343,15 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 if comp.icon != "":
                     filename = r"/images/"+comp.icon
                     filedir = os.path.dirname(os.path.realpath(__file__))
-                    filedir2 = os.path.dirname(filedir)                    
+                    filedir2 = os.path.dirname(filedir)
                     filepath = filedir2 + filename
                     try:
                         comp.iconImage = tk.PhotoImage(file=filepath)
                         # Get the button dimensions
+                        if not comp.Width.isnumeric():
+                            comp.Width = "50"
+                        if not comp.Height.isnumeric():
+                            comp.Height = "50"
                         button_width = int(comp.Width)
                         button_height = int(comp.Height)
                         
