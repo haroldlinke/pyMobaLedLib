@@ -79,7 +79,7 @@ class CAttinyDP_UserForm:
                                 "Visible"       : True,
                                 "Width"         : 229,
                                 "Components"    : [{"Name":"Label1","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"Dirktes Hochladen einer neuen Firmware zum Attiny, wobei der Attiny in der MLL-Kette bleibt.\nACHTUNG: Nur zum Testen, wenn man weiß was man tut!!!!",
+                                                    "Caption":"Direktes Hochladen einer neuen Firmware zum Attiny, wobei der Attiny in der MLL-Kette bleibt.\nACHTUNG: Nur zum Testen, wenn man weiß was man tut!!!!",
                                                     "ControlTipText":"","ForeColor":"#000012","Height":60,"Left":18,"TextAlign":"fmTextAlignLeft","Top":6,"Type":"Label","Visible":True,"Width":192},
 
                                                    {"Name":"Abort_Button","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
@@ -89,21 +89,22 @@ class CAttinyDP_UserForm:
                                                    {"Name":"OK_Button","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                                     "Caption":"Auswahl",
                                                     "Command": self.OK_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":24,"Left":132,"Top":222,"Type":"CommandButton","Visible":True,"Width":72},
-                                                   
-                                                   {"Name":"Enter_Bootloader_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"Enter Boatloader",
-                                                    "ControlTipText":"Wenn das normale Servoprogramm läuft, wird der Bootloader im Attiny gestartet","ForeColor":"#000012","Height":18,"Left":24,"Top":70,"Type":"CheckBox","Visible":True,"Width":185},
-
-                                                   {"Name":"Set_Status_LED_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"Status LED ADresse setzen",
-                                                    "ControlTipText":"Ändert die Adresse der Status-LED","ForeColor":"#000012","Height":18,"Left":24,"Top":100,"Type":"CheckBox","Visible":True,"Width":185},
-
-                                                   {"Name":"Upload_Hex_File_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
-                                                    "Caption":"Hex-Datei Hochladen",
-                                                    "ControlTipText":"Eine Hex-Datei wird zum Attiny hochgeladen","ForeColor":"#000012","Height":18,"Left":24,"Top":130,"Type":"CheckBox","Visible":True,"Width":185},
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                                                                               
                                                    ]}
                                              }
+        
+       # {"Name":"Enter_Bootloader_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+       # "Caption":"Enter Boatloader",
+       #  "ControlTipText":"Wenn das normale Servoprogramm läuft, wird der Bootloader im Attiny gestartet","ForeColor":"#000012","Height":18,"Left":24,"Top":70,"Type":"CheckBox","Visible":False,"Width":185},
+
+       # {"Name":"Set_Status_LED_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+       #  "Caption":"Status LED ADresse setzen",
+       #  "ControlTipText":"Ändert die Adresse der Status-LED","ForeColor":"#000012","Height":18,"Left":24,"Top":100,"Type":"CheckBox","Visible":False,"Width":185},
+
+       # {"Name":"Upload_Hex_File_CheckBox","Accelerator":"","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
+       #  "Caption":"Hex-Datei Hochladen",
+       #  "ControlTipText":"Eine Hex-Datei wird zum Attiny hochgeladen","ForeColor":"#000012","Height":18,"Left":24,"Top":130,"Type":"CheckBox","Visible":False,"Width":185},
+                
         
     def ControlsFind(self,searchname):
         #return control with searchname
@@ -124,6 +125,7 @@ class CAttinyDP_UserForm:
         
         #----------------------------
         self.OK_Pressed = True
+        
         self.Hide()
     
     def UserForm_Initialize(self):

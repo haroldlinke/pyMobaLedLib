@@ -4557,7 +4557,7 @@ class CApplication(object):
         pass
     
     def Run(self,cmd):
-        methodToCall = ActiveWorkbook.jumptable(cmd, None) #D00.globalprocs.get(cmd,None)
+        methodToCall = ActiveWorkbook.jumptable.get(cmd, None) #D00.globalprocs.get(cmd,None)
         if methodToCall:
             methodToCall()
 
