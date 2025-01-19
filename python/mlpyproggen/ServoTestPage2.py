@@ -191,7 +191,7 @@ class ServoTestPage2(tk.Frame):
         self.progress_bar = ttk.Progressbar(servo_direct_position_frame, orient="horizontal", length=440, mode="determinate", variable=self.progress_var)
         
         self.progress_message_var = tk.StringVar()
-        self.progress_message_var.set("Testmessage")
+        self.progress_message_var.set("")
         self.progress_message = tk.Label(servo_direct_position_frame, textvariable=self.progress_message_var, width=80,height=3)
 
         self.servo_pos_var = tk.DoubleVar()
