@@ -119,6 +119,8 @@ class CStatusMsg_UserForm():
     #    self.res = False
     
     def create_form(self):
+        if self.IsActive:
+            return
         self.top = tk.Toplevel(self.controller)
         self.top.transient(self.controller)
     
