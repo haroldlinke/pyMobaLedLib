@@ -551,6 +551,76 @@ class ServoTestPage2(tk.Frame):
         self.servo_update_status()
         if self.servo_continue_update_status:
             self.after(Servo_delay, self.servo_status_loop)
+            
+            
+    # ##################################################################################################
+    # Programming of direct mode servo
+    # Details can be found in the source code hex_files_test/iprtinymain.c
+    #
+    # Controls code:
+    #        
+    # -------------------------------------------------------------------------------------------
+    #|     | CRC-4 nach ITU | ENTER-Bit | Command 0..7 | 2. Byte = Position | 3. Byte Pos fine |
+    #-------------------------------------------------------------------------------------------
+    #| Bit |        7 6 5 4 |         3 |        2 1 0 |    7 6 5 4 3 2 1 0 | 7 6 5 4 3 2 1 0  |
+    #-------------------------------------------------------------------------------------------
+    #|     |        0 0 0 0 |         0 |        0 0 0 |             unused |           unused | idle, nothing to do
+    #-------------------------------------------------------------------------------------------
+    #|     |        invalid |         X |        X X X |     not applicable |          not app | failure on WS2811 Bus
+    #-------------------------------------------------------------------------------------------
+    #|     |     valid (*1) |         X |        0 0 1 |           position | 7 6     pos fine | move between progt positions
+    #-------------------------------------------------------------------------------------------
+    #|     |     valid (*1) |         X |        0 0 1 |           position |     5   reserved | must be 0
+    #-------------------------------------------------------------------------------------------
+    #|     |     valid (*1) |         X |        0 0 1 |           position |  seq 4 3 2 1 tag | sequence tag number (*2)
+    #-------------------------------------------------------------------------------------------
+    #|     |     valid (*1) |         X |        0 0 1 |           position |        seq end 0 | end of sequence (*2)
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        0 1 0 | training positions | 7 6   train fine | trainig in standard PWM range 1-2ms (0..255/1023)
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        0 1 0 |  std prog position | 7 6    prog fine | memorize 1st and 2nd position (cycles with ENTER-Bit)
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        0 1 1 | training positions | 7 6   train fine | trainig in wide PWM range 0,5-2,5ms (0..255/1023)
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        0 1 1 | wide prog position | 7 6 wide pr fine | memorize 1st and 2nd position (cycles with ENTER-Bit)
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        1 0 0 |     prog max speed |       MAGIC 0x9A | prerequisite: memorize max speed
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        1 0 0 |     prog max speed |       MAGIC 0x9A | memorize max speed in max value-step per 20ms ( 0 = off, no limit)
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        1 0 0 |                  1 |       MAGIC 0x15 | prerequisite: toggle inverse
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        1 0 0 |                  1 |       MAGIC 0x15 | toggle inverse usage of 0.255 for position and memorize it
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        1 0 0 |                  1 |       MAGIC 0x87 | prerequisite: toggle LED ON/OFF
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        1 0 0 |                  1 |       MAGIC 0x87 | toggle LED ON/OFF blinking in regular WS2811 receive process
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        1 0 0 |   tune clock 0..18 |       MAGIC 0x9C | prerequisite: tune clock deviation (>18 = off)
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        1 0 0 |   tune clock 0..18 |       MAGIC 0x9C | memorize clock deviation in percent (*3)
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        1 0 1 |         MAGIC 0xE9 |       MAGIC 0x8A | RESET prerequisite: servo factory defaults
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        1 0 1 |         MAGIC 0xE9 |       MAGIC 0x8A | RESET: load factory defaults for servo belonged to this channel
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        1 0 1 |         MAGIC 0x16 |       MAGIC 0x75 | RESET prerequisite: all factory defaults
+    #------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        1 0 1 |         MAGIC 0x16 |       MAGIC 0x75 | RESET: load factory defaults for ALL servos
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        1 0 1 |         MAGIC 0x5A |       MAGIC 0x9E | RESET prerequisite: last position
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        1 0 1 |         MAGIC 0x5A |       MAGIC 0x9E | RESET: last position memory to none
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         X |        1 1 0 |           reserved |         reserved | reserved
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        1 1 1 |               0x01 |       MAGIC 0xC9 | ESCAPE prerequisite: enter bootloader
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        1 1 1 |               0x01 |       MAGIC 0xC9 | ESCAPE execute: enter bootloader
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         X |        1 1 1 |           reserved |         reserved | other escapes (ffs)
+    #-------------------------------------------------------------------------------------------
+
 
     def servo_update_status(self):
         global Servo_delay
@@ -604,6 +674,12 @@ class ServoTestPage2(tk.Frame):
                 self.servo_set_mode_normal = True
             else:
                 self._update_servos(servo_address,0x5A,5,0x9E)
+        elif servo_control == 9 : # tune_clock
+            tune_val = int(servo_position * 18/256.0)
+            if enter_pressed:
+                servo_control += 8 # set input bit
+            self._update_servos(servo_address,tune_val,servo_control,0x9C)
+            
 
     def servo_prog_label_pressed(self,event=None,code=0):
     # send <Enter> to Servo

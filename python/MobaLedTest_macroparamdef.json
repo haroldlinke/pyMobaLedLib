@@ -785,7 +785,8 @@
             "5",
             "6",
             "7",
-            "8"
+            "8",
+            "9"
         ],
         "ValuesText": [
             "Normal Position",
@@ -795,7 +796,8 @@
             "Toggle Invers",
             "Reset Servo",
             "Factory Reset",
-            "Reset last mem pos"
+            "Reset last mem pos",
+            "Tune Clock"
         ],
         "ConfigName": [
             "ServoControlName",
@@ -805,7 +807,7 @@
         "Max": "255",
         "Default": "1",
         "Input Text": "Servo Betriebsart",
-        "Hint": "Betriebsart des Servos (1=Normal, 2=std training, 3=wide training, 4=max speed, 5=toogle invers, 6=reset servo, 7=Factory reset, 8=Reset last mem pos)"
+        "Hint": "Betriebsart des Servos (1=Normal, 2=std training, 3=wide training, 4=max speed, 5=toogle invers, 6=reset servo, 7=Factory reset, 8=Reset last mem pos), 9=trim OSCCAL"
     },
     "ServoCRCold": {
         "ParName": "ServoCRCold",

@@ -3985,7 +3985,10 @@ class CColor(object):
             if shape!=None:
                 shape.Fillcolor=valuestr
                 if shape.rectidx!=0:
-                    shape.Tablecanvas.itemconfig(shape.rectidx,fill=valuestr)
+                    try:
+                        shape.Tablecanvas.itemconfig(shape.rectidx,fill=valuestr)
+                    except:
+                        pass
                 else:
                     shape.updatecontrol = True
                     #shape.Worksheet.drawShape(shape)
@@ -4642,7 +4645,12 @@ class CFont(object):
         
     @Color.setter
     def Color(self, value):
-        self._color_val = value
+        if not value.isnumeric():
+            self._color_val = value
+        else:
+            intvalue = int(value)
+            hex_string = hex(intvalue)[2:].zfill(6).upper()
+            self._color_val = "#" + hex_string
         if self.parent == None:
             return
         else:
