@@ -553,13 +553,13 @@ class ServoTestPage2(tk.Frame):
             self.after(Servo_delay, self.servo_status_loop)
             
             
-    # ##################################################################################################
+    # ################################################################################################
     # Programming of direct mode servo
     # Details can be found in the source code hex_files_test/iprtinymain.c
     #
     # Controls code:
     #        
-    # -------------------------------------------------------------------------------------------
+    #-------------------------------------------------------------------------------------------
     #|     | CRC-4 nach ITU | ENTER-Bit | Command 0..7 | 2. Byte = Position | 3. Byte Pos fine |
     #-------------------------------------------------------------------------------------------
     #| Bit |        7 6 5 4 |         3 |        2 1 0 |    7 6 5 4 3 2 1 0 | 7 6 5 4 3 2 1 0  |
@@ -586,7 +586,11 @@ class ServoTestPage2(tk.Frame):
     #-------------------------------------------------------------------------------------------
     #|     |          valid |         0 |        1 0 0 |     prog max speed |       MAGIC 0x9A | prerequisite: memorize max speed
     #-------------------------------------------------------------------------------------------
-    #|     |          valid |         1 |        1 0 0 |     prog max speed |       MAGIC 0x9A | memorize max speed in max value-step per 20ms ( 0 = off, no limit)
+    #|     |          valid |         1 |        1 0 0 |     prog max speed |       MAGIC 0x9A | memorize max speed in max value-step per 20ms (0 = off, no limit)
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         0 |        1 0 0 |  prog legacy speed |       MAGIC 0x65 | prerequisite: memorize legacy speed
+    #-------------------------------------------------------------------------------------------
+    #|     |          valid |         1 |        1 0 0 |  prog legacy speed |       MAGIC 0x65 | memorize legacy speed in 1/8 us per 20ms (0 = off) (*4)
     #-------------------------------------------------------------------------------------------
     #|     |          valid |         0 |        1 0 0 |                  1 |       MAGIC 0x15 | prerequisite: toggle inverse
     #-------------------------------------------------------------------------------------------
@@ -596,9 +600,9 @@ class ServoTestPage2(tk.Frame):
     #-------------------------------------------------------------------------------------------
     #|     |          valid |         1 |        1 0 0 |                  1 |       MAGIC 0x87 | toggle LED ON/OFF blinking in regular WS2811 receive process
     #-------------------------------------------------------------------------------------------
-    #|     |          valid |         0 |        1 0 0 |   tune clock 0..18 |       MAGIC 0x9C | prerequisite: tune clock deviation (>18 = off)
+    #|     |          valid |         0 |        1 0 0 |  trim OSCCAL 0..18 |       MAGIC 0x9C | prerequisite: trim OSCCAL +0..+35
     #-------------------------------------------------------------------------------------------
-    #|     |          valid |         1 |        1 0 0 |   tune clock 0..18 |       MAGIC 0x9C | memorize clock deviation in percent (*3)
+    #|     |          valid |         1 |        1 0 0 |  trim OSCCAL 0..18 |       MAGIC 0x9C | memorize custom OSCCAL (*3)
     #-------------------------------------------------------------------------------------------
     #|     |          valid |         0 |        1 0 1 |         MAGIC 0xE9 |       MAGIC 0x8A | RESET prerequisite: servo factory defaults
     #-------------------------------------------------------------------------------------------
@@ -679,6 +683,11 @@ class ServoTestPage2(tk.Frame):
             if enter_pressed:
                 servo_control += 8 # set input bit
             self._update_servos(servo_address,tune_val,servo_control,0x9C)
+        elif servo_control == 10 : # prog speed legacy mode
+            if enter_pressed:
+                servo_control += 8 # set input bit
+                self.servo_set_mode_normal = True
+            self._update_servos(servo_address,servo_position,servo_control,0x65)
             
 
     def servo_prog_label_pressed(self,event=None,code=0):
