@@ -468,8 +468,8 @@ def Set_PinNrLst_if_Matching(line, Name, Dest_InpLst, PinTyp, MaxCnt):
                 if InStr(p + 1, ' ' + line + ' ', ' ' + OnePin + ' ') > 0:
                     P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler: Der Pin \'#1#\' wird mehrfach verwendet im' + vbCr + '  \'#2#\' Befehl'), "#1#", OnePin), '#2#', Replace(line, '// ', '')), vbCritical, M09.Get_Language_Str('Mehrfach verwendeter Arduino Pin'))
                     return _fn_return_value, Dest_InpLst
-                if NrStr != '':
-                    NrStr = NrStr + ' '
+            if NrStr != '':
+                NrStr = NrStr + ' '
             # 14.10.21: Juergen
             NrStr = NrStr + M30.AliasToPin(OnePin)
             # build a new list with logical names mapped to physical pins

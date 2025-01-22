@@ -1,8 +1,14 @@
+5.3.5d - 20-01-2025
+- new: tune Attiny legacy speed
+- correction: error with Virtual Pin in Set_LED_OutpPinLst
+
+5.3.5c - 20-01-2025
+- new: tune Attiny Clock
+
 5.3.5b - 19-01-2025
 - status_user_form was not removed correctly
 - mainmenu2.jpg was missing
 - default page content changed
-
 
 5.3.3c - 11-01-2025
 Correction
