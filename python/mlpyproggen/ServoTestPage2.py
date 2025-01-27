@@ -176,7 +176,8 @@ class ServoTestPage2(tk.Frame):
         self.buttonEnter.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=0))
 
         self.buttonProgramServo=ttk.Button(servo_direct_position_frame, text="Servo-Attiny Programmieren", command=self.servo_program_button, style='my.TButton')
-
+        self.buttonServo0=ttk.Button(servo_direct_position_frame, text="Pos 0", command=self.servo_set0_button, style='my.TButton')
+        self.buttonServo255=ttk.Button(servo_direct_position_frame, text="Pos 255", command=self.servo_set255_button, style='my.TButton')
         self.controller.ToolTip(self.buttonProgramServo, text="Servo Programm mit Programmieradapter auf den Servo hochladen")
 
         self.buttonProgramServodirect=ttk.Button(servo_direct_position_frame, text="Attiny Direkt Programmieren", command=self.servo_program_direct_button, style='my.TButton')
@@ -214,14 +215,16 @@ class ServoTestPage2(tk.Frame):
 
         # ------------- SERVO Pos
         s = ttk.Style()
-        s.configure('my.TButton', font=self.fontbutton)
+        s.configure('my.TButton', font=self.fontbutton, padx=0)
 
-        self.servo_scale.grid(row=0,column=1,sticky="")
+        self.servo_scale.grid(row=0,column=2,sticky="", padx=0)
         self.buttonEnter.grid(row=0,column=0,sticky="",padx=20, pady=10)
-        self.buttonProgramServo.grid(row=0,column=2,sticky="",padx=20, pady=10)
-        self.buttonProgramServodirect.grid(row=1,column=2,sticky="",padx=20, pady=10)
-        self.progress_bar.grid(row=1,column=1,sticky="",padx=20, pady=10)
-        self.progress_message.grid(row=2,column=1,sticky="",padx=20, pady=10)
+        self.buttonProgramServo.grid(row=0,column=4,sticky="",padx=20, pady=10)
+        self.buttonProgramServodirect.grid(row=1,column=4,sticky="",padx=20, pady=10)
+        self.progress_bar.grid(row=1,column=2,sticky="", padx=0)
+        self.progress_message.grid(row=2,column=2,sticky="", padx=0)
+        self.buttonServo0.grid(row=0,column=1,sticky="w", padx=0)
+        self.buttonServo255.grid(row=0,column=3,sticky="e", padx=0)
 
 
         # --- placement
@@ -337,6 +340,21 @@ class ServoTestPage2(tk.Frame):
             message = "#L 00 00 00 00 7FFF\n"
         self.controller.send_to_ARDUINO(message)
         #self.controller.ledtable.clear()
+        
+    def servo_set0_button(self,event=None,code=0):
+        self.servo_pos_var.set(1)
+        self._update_servo_position(1)
+        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
+        servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
+        #if servo_control in [1, 2, 3]:        
+        
+    def servo_set255_button(self,event=None,code=0):
+    # send code to Servo
+        self.servo_pos_var.set(255)
+        self._update_servo_position(255)
+        servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
+        servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
+        #if servo_control in [1, 2, 3]:        
 
     def servo_program_button(self,event=None,code=0):
     # send code to Servo
@@ -680,10 +698,12 @@ class ServoTestPage2(tk.Frame):
                 self._update_servos(servo_address,0x5A,5,0x9E)
         elif servo_control == 9 : # tune_clock
             tune_val = int(servo_position * 18/256.0)
+            servo_control = 4
             if enter_pressed:
                 servo_control += 8 # set input bit
             self._update_servos(servo_address,tune_val,servo_control,0x9C)
         elif servo_control == 10 : # prog speed legacy mode
+            servo_control = 4
             if enter_pressed:
                 servo_control += 8 # set input bit
                 self.servo_set_mode_normal = True

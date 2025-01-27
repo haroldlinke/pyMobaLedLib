@@ -1,3 +1,6 @@
+5.3.5e - 27-01-2025
+- correction: ESP32 some times too high sending rate for RS232
+
 5.3.5d - 20-01-2025
 - new: tune Attiny legacy speed
 - correction: error with Virtual Pin in Set_LED_OutpPinLst
