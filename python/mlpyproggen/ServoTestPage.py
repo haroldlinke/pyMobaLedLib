@@ -200,7 +200,7 @@ class ServoTestPage1(tk.Frame):
 
         # ------------- SERVO Pos
         s = ttk.Style()
-        s.configure('my.TButton', font=self.fontbutton)
+        s.configure('my.TButton', font=self.fontbutton, padx=0)
                 
         servo_set_pos_speed_frame = ttk.Frame(servo_program_frame,relief="flat", borderwidth=0)
         ssp_label1 = ttk.Label(servo_set_pos_speed_frame, text='Programmierung von Min/Max Position und Geschwindigkeit',font=self.fontlabel)
