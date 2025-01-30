@@ -93,6 +93,8 @@ import ExcelAPI.XLA_Application as P01
 
 import mlpyproggen.Prog_Generator as PG
 
+import tkinter as tk
+
 """ Die MobaLedLib wird nur dann Installiert wenn sie nicht vorhanden ist
  - Das Excel sheet würde sich selber überschreiben
  Comma separeted list of libraries (Case sensitive => check the library.property file
@@ -1080,7 +1082,11 @@ def Create_Start_ESP32_Sub_Linux(ResultName, ComPort, BuildOptions, InoName, Src
         VBFiles.writeText(fp, ')', '\n')
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, ':download', '\n')
-        VBFiles.writeText(fp, 'if "%8"=="noflash" goto :EOF', '\n')                         #12.02.22: Juergen
+        
+        if PG.global_controller.execute_upload:
+            VBFiles.writeText(fp, 'if "%8"=="noflash" goto :EOF', '\n')                         #12.02.22: Juergen
+        else:
+            VBFiles.writeText(fp, 'goto :EOF', '\n')                         #30.1.2025 Harold no flash 
         VBFiles.writeText(fp, 'if not errorlevel 1 (', '\n')
         VBFiles.writeText(fp, '   set uploadTo=%3', '\n')
         VBFiles.writeText(fp, '   if not "%target%"=="" set uploadTo=%target%', '\n')
@@ -1485,8 +1491,11 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
                        r'  0x1000  "' + arduino_hardware_tools_dir + r'sdk/bin/bootloader_qio_80m.bin"' +\
                        r'  0x10000 "' + arduino_temp_dir + r'ESP32/' + InoName + '.bin"' +\
                        r'  0x8000  "' + arduino_temp_dir + r'ESP32/' + InoName + '.partitions.bin"'
-        CommandStr = (CommandStr1, CommandStr2)
-        pass
+        
+        if PG.global_controller.execute_upload:
+            CommandStr = (CommandStr1, CommandStr2)
+        else:
+            CommandStr = CommandStr1
     else:
         if Dir(SrcDir + ResultName) != '':
             Kill(SrcDir + ResultName)
@@ -1503,7 +1512,11 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
         # Other options:  --verbose-build --verbose-upload"
         #   Boards  see: C:\P<rogram Files (x86)\Arduino\hardware\arduino\avr\boards.txt
         #   New Bootloader: nano.menu.cpu.atmega328=ATmega328P
-        CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + '" --upload --port ' + ComPort + ' ' + BuildOptions
+        if PG.global_controller.execute_upload:
+            CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + '" --upload --port ' + ComPort + ' ' + BuildOptions
+        else:
+            CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + ' ' + BuildOptions
+            
         if BuildDirForScript != '':
             CommandStr = CommandStr + ' --pref build.path="' + BuildDirForScript + '"' + ' --preserve-temp-files'
             
@@ -1583,9 +1596,10 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
         
         Retry = False
         fn_return_value = False
-        if M07.Check_USB_Port_with_Dialog(ComPortColumn) == False:
-            return fn_return_value, BuildOptions, DeviceSignature
-        
+        if PG.global_controller.execute_upload:
+            if M07.Check_USB_Port_with_Dialog(ComPortColumn) == False:
+                return fn_return_value, BuildOptions, DeviceSignature
+            
             # Display Dialog if the COM Port is negativ and ask the user to correct it
         # Now we are sure that the com port is positiv. Check if it could be accesed and get the Baud rate
         BuildOptions = P01.Cells(M02.SH_VARS_ROW, BuildOptColumn)
@@ -1601,6 +1615,8 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
             else:
                 Start_Baudrate = 115200
         ComPortStr = P01.Cells(M02.SH_VARS_ROW, ComPortColumn)
+        if not PG.global_controller.execute_upload:
+            ComPortStr = "Test"
         if IsNumeric(ComPortStr):
             ComPort = "COM"+ComPortStr
         else:
@@ -1609,7 +1625,8 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
         #if ComPort > 255:                                                       # 03.03.22: Juergen avoid overrun error
         #    ComPort = 0
         CheckCOMPort_Txt = M07.Check_If_Port_is_Available_And_Get_Name(ComPort)
-        
+        if not PG.global_controller.execute_upload:
+            CheckCOMPort_Txt = "Test"        
         FirmwareVer = ""
         BaudRate = 0
         if CheckCOMPort_Txt != '':
@@ -1709,6 +1726,13 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     #*HL TextColor = int()
 
     #*HL Res = ShellAndWaitResult()
+    PG.global_controller.execute_upload = True
+    if PG.global_controller.ARDUINOTest:
+        answer = tk.messagebox.askyesnocancel ('ARDUINOTest','Kompilieren und Hochladen (ja)\nNur Kompilieren (Nein)\nAbbrechen',default='yes')
+        if answer == None:
+            return False# cancelation return to "ConfigurationOage"
+        PG.global_controller.execute_upload = answer # True=compile and upload - False = only compile
+            
 
     Start = Variant()
     fn_return_value=False
@@ -1773,6 +1797,12 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     else:
         useARDUINO_IDE=False
         
+    if PG.global_controller.ARDUINOTest:
+        answer = tk.messagebox.askyesnocancel ('ARDUINOTest','Use ARDUINO IDE (ja)\nuse ARDUINO Builder (Nein)\nAbbrechen',default='yes')
+        if answer == None:
+            return False# cancelation return
+        useARDUINO_IDE = answer
+    
     if PG.get_global_controller().useARDUINO_IDE==True or (M02a.Get_BoardTyp() == 'ESP32' and PG.get_global_controller().useESP32WinBat==False):
         useARDUINO_IDE = True
         

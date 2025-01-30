@@ -200,6 +200,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.logfilename =  COMMAND_LINE_ARG_DICT["logfilename"]
         self.useARDUINO_IDE = COMMAND_LINE_ARG_DICT.get("useARDUINO_IDE", False)
         self.useESP32WinBat = COMMAND_LINE_ARG_DICT.get("useESP32WINBAT", False)
+        self.execute_upload = True
         self.coltab = None
         self.checkcolor_callback = None
         self.ledhighlight = False
@@ -294,6 +295,9 @@ class pyMobaLedLibapp(tk.Tk):
         self.show_pyPrgrammGenerator = self.getConfigData("ShowProgramGenerator")
         self.show_pyPatternGenerator = self.getConfigData("ShowPatternGenerator")
         self.show_hiddentables = self.getConfigData("ShowHiddentables")
+        
+
+        self.ARDUINOTest = self.getConfigData("ARDUINOTest")
         
         self.tempLedeffecttableFilname = macrodata.get("TEMP_LEDEFFECTTABLE_FILENAME","StartPage")
         self.tempworkbookFilname = macrodata.get("TEMP_WORKBOOK_FILENAME","StartPage")
