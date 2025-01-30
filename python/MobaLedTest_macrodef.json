@@ -32,6 +32,7 @@
         "Kurzbeschreibung": "Einstellungsparameter",
         "Ausführliche Beschreibung": "Hier können Sie die Einstellungen für die ARDUINO IDE vornehmen. Dies wird für LINUX und Mac benötigt, aberr auch bei Windows, wenn die ARDUINO IDE nicht ins Standardverzeichnis auf C: installiert wurde.",
         "Params": [
+            "ARDUINOTest",
             "!ARDUINOConnected",
             "!ARDUINOMessage",
             "!ARDUINODetect",
@@ -198,7 +199,7 @@
         "Ausführliche Beschreibung": "Mit der Servoplatine von Hardi können über die MLL auch Servos angesteuert werden. Eckhart hat eine Variante programmiert, die auf den WS2811 chip verzichtet und eine bessere Kontrolle der Servostellung erlaubt. Auf dieser Seite können Sie den Servo testen und konfigurieren.\nMit dem Schieberegler kann die Position des Servos eingestellt werden.",
         "Params": [
             "ServoAddress",
-            "ServoStatusLEDAddress",
+            "!ServoStatusLEDAddress",
             "ServoControl",
             "ServoCRCold"
         ]

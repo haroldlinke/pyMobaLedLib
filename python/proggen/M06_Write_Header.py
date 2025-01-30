@@ -85,6 +85,8 @@ import ExcelAPI.XLA_Application as P01
 from ExcelAPI.XLC_Excel_Consts import *
 import ExcelAPI.XLWF_Worksheetfunction as XLWF
 
+import tkinter as tk
+
 """ Todo:
 
  - Wichtig: Die Schalter müssen auch in den Inputs der Macros erkannt werden sonst werden sie nur dann definiert wenn
@@ -1117,6 +1119,12 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
     r = Long()
     
     LED_Offset = vbObjectInitialize((M02.LED_CHANNELS - 1,), Long)
+    
+    if PG.global_controller.ARDUINOTest:
+        answer = tk.messagebox.askyesno ('ARDUINOTest','Erzeugen der Headerdatei wird gestartet',default='yes')
+        if answer == False:
+            P01.set_statusmessage("Headerfileerstellung abgebrochen - Die Headerdatei wurde nicht geschrieben")
+            return False # no continuation          
 
     LEDsInUse = vbObjectInitialize((M02.LED_CHANNELS - 1,), Long)
     # 20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
@@ -1365,6 +1373,12 @@ def Store_ValuesTxt_Used():
 
 def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
     global ErrorText, Ext_AddrTxt, Store_ValuesTxt, InChTxt, LocInChNr, Channel, ConfigTxt, LEDs_per_ChannelList, Start_Values
+    if PG.global_controller.ARDUINOTest:
+        answer = tk.messagebox.askyesno ('ARDUINOTest','Schreiben der Headerdatei wird gestartet',default='yes')
+        if answer == False:
+            P01.set_statusmessage("Headerfileerstellung abgebrochen - Die Headerdatei wurde nicht geschrieben")
+            return False # no continuation      
+    
     _fn_return_value = False
     
     NumLeds = Long()

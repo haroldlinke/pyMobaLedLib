@@ -617,6 +617,7 @@ DEFAULT_CONFIG = {
                     "Autoconnect": 0,
                     "ARDUINOShowAll": True,
                     "ARDUINOTakeOver": True,
+                    "ARDUINOTest": False, 
                     "UseZ21Data": False,
                     "ARDUINOBlink": False,
                     "MLLDigSysName": "None",

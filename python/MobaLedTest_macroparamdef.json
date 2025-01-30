@@ -186,6 +186,18 @@
         "Input Text": "Automatisch übernehmen",
         "Hint": "Daten des ARDUINO werden automatisch übernommen"
     },
+    "ARDUINOTest": {
+        "ParName": "ARDUINOTest",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ARDUINOTest",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Test ARDUINO Programm Creation",
+        "Hint": "After each step of the ARDUINO Program Creation a message is shown and the task can be stopped"
+    },
+    
     "AutoConnect": {
         "ParName": "Autoconnect",
         "Cnt": "1",
