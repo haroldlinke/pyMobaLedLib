@@ -1,3 +1,7 @@
+5.3.5f - 03-02-2025
+- Switch Simulation did not work
+- build tree of pyMLL and Excel Version could interfer and generate unpredictable results
+
 5.3.5e - 27-01-2025
 - correction: ESP32 some times too high sending rate for RS232
 

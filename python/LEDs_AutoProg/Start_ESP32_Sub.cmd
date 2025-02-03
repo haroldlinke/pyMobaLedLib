@@ -56,7 +56,7 @@ SET lib=%~6
 SET ESP32_BOARD_VERSION=1.0.4
 SET ESP32_TOOL_VERSION=2.6.1
 
-call :short aTemp "%USERPROFILE%\AppData\Local\Temp\MobaLedLib_build\ESP32"
+call :short aTemp "%USERPROFILE%\AppData\Local\Temp\pyMobaLedLib_build\ESP32"
 SET aCache=%aTemp%\cache
 call :short packages "%USERPROFILE%\AppData\Local\Arduino15\packages"
 if not exist "%aTemp%\Sketch"  md "%aTemp%\Sketch"

@@ -1445,7 +1445,7 @@ class pyMobaLedLibapp(tk.Tk):
         try:
             if self.serial_writebuffer_idx < self.serial_writebuffer_len and self.arduino != None:
                 c = self.serial_writebuffer[self.serial_writebuffer_idx]
-                #logging.debug("send_to_ARDUINO_callback - write:"+c)
+                logging.debug("send_to_ARDUINO_callback - write:"+c)
                 self.serial_writebuffer_idx += 1
                 self.arduino.write(c.encode())
                 #logging.debug("send_to_ARDUINO_callback - write: "+str(c.encode())+"-"+str(self.serial_writebuffer_len))
@@ -1486,8 +1486,8 @@ class pyMobaLedLibapp(tk.Tk):
                     if waittime < 1.0:
                         waittime = 1.0
                     self.waittime_int = round(waittime)
-                    if self.waittime_int < 20:
-                        self.waitime_int = 20
+                #if self.waittime_int < 20:
+                #    self.waittime_int = 20
                 self.start_time = time.perf_counter()
                 logging.debug("send_to_ARDUINO - %s: %s",str(self.start_time), message)
                 self.serial_writebuffer += message

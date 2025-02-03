@@ -527,7 +527,7 @@ class ServoTestPage2(tk.Frame):
             return
         self.continue_upload = True
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
-        servo_status_led_address = self.controller.get_macroparam_val(self.tabClassName, "ServoStatusLEDAddress")
+        servo_status_led_address = 0 # self.controller.get_macroparam_val(self.tabClassName, "ServoStatusLEDAddress")
         ok_button = D00.UserForm_Attiny_direct_program.Show_Dialog(AttinyAdress=servo_address, StatusLEDAdress=servo_status_led_address)
         if ok_button:
             #set status LED address
@@ -697,7 +697,7 @@ class ServoTestPage2(tk.Frame):
             else:
                 self._update_servos(servo_address,0x5A,5,0x9E)
         elif servo_control == 9 : # tune_clock
-            tune_val = int(servo_position * 18/256.0)
+            tune_val = int(servo_position * 35/255.0)
             servo_control = 4
             if enter_pressed:
                 servo_control += 8 # set input bit
