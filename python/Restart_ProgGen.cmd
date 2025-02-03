@@ -35,6 +35,6 @@ CHCP 65001 > NUL
 C:
 CD "C:\Users\Harold\Documents\Arduino\libraries\MobaLedLib\extras\"
 @ping localhost -n 1 > NUL
-@if exist "%USERPROFILE%\AppData\Local\Temp\MobaLedLib_build\ESP32\includes.cache" del "%USERPROFILE%\AppData\Local\Temp\MobaLedLib_build\ESP32\includes.cache"
+@if exist "%USERPROFILE%\AppData\Local\Temp\pyMobaLedLib_build\ESP32\includes.cache" del "%USERPROFILE%\AppData\Local\Temp\pyMobaLedLib_build\ESP32\includes.cache"
 Start Prog_Generator_MobaLedLib.xlsm
 EXIT

@@ -722,8 +722,8 @@ def Create_Do_Update_Script(Pause_at_End):
         Row = Row + 1
     if ForceReinstall == True:
         # 11.03.21 Juergen: force an ESP32 rebuild
-        if Dir(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache') != '':
-            Kill(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache')
+        if Dir(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/pyMobaLedLib_build/ESP32/includes.cache') != '':
+            Kill(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/pyMobaLedLib_build/ESP32/includes.cache')
     # *** Libraries ***
     if LibList != '':
         LibList = M30.DelLast(LibList)
@@ -734,7 +734,7 @@ def Create_Do_Update_Script(Pause_at_End):
             VBFiles.writeText(fp, 'ECHO   ' + Replace(Lib, '"', ''), '\n')
         VBFiles.writeText(fp, 'ECHO.', '\n')
         # 09.03.21 Juergen: delete cache file to force an ESP32 rebuild, otherwise prebuild library versions would still be used
-        VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache"', '\n')
+        VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache"', '\n')
         VBFiles.writeText(fp, '"' + M08.Find_ArduinoExe() + '"')
         VBFiles.writeText(fp, ' --install-library ' + LibList)
         # 18.12.24 the piped commands remove the errorlevel from arduino builder
@@ -757,7 +757,7 @@ def Create_Do_Update_Script(Pause_at_End):
             VBFiles.writeText(fp, 'ECHO   ' + Brd, '\n')
         VBFiles.writeText(fp, 'ECHO.', '\n')
         # 09.03.21 Juergen: delete cache file to force an ESP32 rebuild, otherwise prebuild library versions would still be used
-        VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache"', '\n')
+        VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache"', '\n')
         for Brd in Split(BrdList, ','):
             # Install each board separately
             # 07.10.21:
@@ -867,8 +867,8 @@ def Create_Do_Update_Script_Linux_part1(Pause_at_End):
                     M30.Del_Folder(BoardDir)
         Row = Row + 1
     if ForceReinstall == True:
-        if Dir(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache') != '':
-            Kill(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache')
+        if Dir(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/pyMobaLedLib_build/ESP32/includes.cache') != '':
+            Kill(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/pyMobaLedLib_build/ESP32/includes.cache')
     return UpdCnt,LibList,BrdList,OthersourceList,URLList
 
 def Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLList):
@@ -886,7 +886,7 @@ def Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLList
             Debug.Print('ECHO   ' + Replace(Lib, '"', ''), '\n')
         Debug.Print('ECHO.', '\n')
         # 09.03.21 Juergen: delete cache file to force an ESP32 rebuild, otherwise prebuild library versions would still be used
-        Debug.Print('@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache"', '\n')
+        Debug.Print('@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache"', '\n')
         
         CommandStr = '"' + M08.Find_ArduinoExe() + '"' + ' --install-library ' + LibList
         Res = PG.get_dialog_parent().execute_shell_cmd(CommandStr,"Install Libraries" + repr(LibList))
@@ -913,7 +913,7 @@ def Create_Do_Update_Script_Linux_part2(LibList, BrdList,OthersourceList,URLList
             Debug.Print('ECHO   ' + Brd, '\n')
         Debug.Print('ECHO.', '\n')
         # 09.03.21 Juergen: delete cache file to force an ESP32 rebuild, otherwise prebuild library versions would still be used
-        #VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache"', '\n')
+        #VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache"', '\n')
         for Brd in Split(BrdList, ','):
             
             #VBFiles.writeText(fp, '"' + M08.Find_ArduinoExe() + '"')
@@ -1392,7 +1392,7 @@ def Create_Restart_Cmd():
         VBFiles.writeText(fp, '@ping localhost -n 1 > NUL', '\n')
     # Wait 1 second to be shure that excel is closed
         # 09.03.21 Juergen: delete cache file to force an ESP32 rebuild, otherwise prebuild library versions would still be used
-        VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32\\includes.cache"', '\n')
+        VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache"', '\n')
         VBFiles.writeText(fp, 'Start Prog_Generator_MobaLedLib.xlsm', '\n')
         VBFiles.writeText(fp, 'EXIT', '\n')
         VBFiles.closeFile(fp)
@@ -1519,8 +1519,8 @@ def Delete_Selected():
                     DidDelete = True
         Row = Row + 1
     if DidDelete == True:
-        if Dir(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache') != '':
-            Kill(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/MobaLedLib_build/ESP32/includes.cache')
+        if Dir(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/pyMobaLedLib_build/ESP32/includes.cache') != '':
+            Kill(Environ(M02.Env_USERPROFILE) + '/AppData/Local/Temp/pyMobaLedLib_build/ESP32/includes.cache')
     Debug.Print('Waiting')
     for i in vbForRange(1, 30):
         P01.DoEvents()

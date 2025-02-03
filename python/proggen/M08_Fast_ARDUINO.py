@@ -154,7 +154,7 @@ def Create_Build_Arduino(fp):
     VBFiles.writeText(fp, 'SET lib=%~6', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '', '\n')
-    VBFiles.writeText(fp, 'SET aTemp=%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ATMega', '\n')
+    VBFiles.writeText(fp, 'SET aTemp=%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ATMega', '\n')
     # 01.12.20: Added: "\ATMega" otherwise the esp32 fastbuild fails if the prog. is conpuled for the Nano
     VBFiles.writeText(fp, 'SET aCache=%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_cache\\ATMega', '\n')
     #    "            "
@@ -267,7 +267,7 @@ def Create_Build_Pico(fp):
     VBFiles.writeText(fp, 'SET lib=%~6', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '', '\n')
-    VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\Pico"', '\n')
+    VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\Pico"', '\n')
     VBFiles.writeText(fp, 'SET aCache=%aTemp%\\cache', '\n')
     VBFiles.writeText(fp, 'call :short packages "%USERPROFILE%' + M02.AppLoc_Ardu + 'packages"', '\n')
     VBFiles.writeText(fp, 'if not exist "%aTemp%"  md "%aTemp%"', '\n')

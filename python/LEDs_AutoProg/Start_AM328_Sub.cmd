@@ -137,7 +137,7 @@ SET fqbn=%~4
 SET lib=%~6
 
 
-SET aTemp=%USERPROFILE%\AppData\Local\Temp\MobaLedLib_build\ATMega
+SET aTemp=%USERPROFILE%\AppData\Local\Temp\pyMobaLedLib_build\ATMega
 SET aCache=%USERPROFILE%\AppData\Local\Temp\MobaLedLib_cache\ATMega
 if not exist "%aTemp%"  md "%aTemp%"
 if not exist "%aCache%" md "%aCache%"

@@ -588,7 +588,7 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, 'SET ESP32_BOARD_VERSION=' + Board_Version, '\n')
         VBFiles.writeText(fp, 'SET ESP32_TOOL_VERSION=' + Tool_Version, '\n')
         VBFiles.writeText(fp, '', '\n')
-        VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32"', '\n')
+        VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32"', '\n')
         VBFiles.writeText(fp, 'SET aCache=%aTemp%\\cache', '\n')
         VBFiles.writeText(fp, 'call :short packages "%USERPROFILE%' + M02.AppLoc_Ardu + 'packages"', '\n')
         VBFiles.writeText(fp, 'if not exist "%aTemp%\\Sketch"  md "%aTemp%\\Sketch"', '\n')
@@ -917,7 +917,7 @@ def Create_Start_ESP32_Sub_Linux(ResultName, ComPort, BuildOptions, InoName, Src
         VBFiles.writeText(fp, 'SET ESP32_BOARD_VERSION=' + Board_Version, '\n')
         VBFiles.writeText(fp, 'SET ESP32_TOOL_VERSION=' + Tool_Version, '\n')
         VBFiles.writeText(fp, '', '\n')
-        VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32"', '\n')
+        VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32"', '\n')
         VBFiles.writeText(fp, 'SET aCache=%aTemp%\\cache', '\n')
         VBFiles.writeText(fp, 'call :short packages "%USERPROFILE%' + M02.AppLoc_Ardu + 'packages"', '\n')
         VBFiles.writeText(fp, 'if not exist "%aTemp%\\Sketch"  md "%aTemp%\\Sketch"', '\n')
@@ -1447,7 +1447,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
         arduino_exe_dir = M30.FilePath(Find_ArduinoExe()) # r'C:\Program Files (x86)/Arduino/'
         arduino_builder_exe = r'"' + arduino_exe_dir + r'arduino-builder"'
         arduino_hardware_tools_dir = arduino_packages_dir + 'esp32/hardware/esp32/' + Board_Version + r'/tools/' # r'C:\Users/Harold/AppData/Local/Arduino15/packages/esp32/hardware/esp32/' + Board_Version + r'/tools/'
-        arduino_temp_dir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + '../Temp/MobaLedLib_build/' # r'C:\Users/Harold/AppData/Local/Temp/MobaLedLib_build/'
+        arduino_temp_dir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + '../Temp/pyMobaLedLib_build/' # r'C:\Users/Harold/AppData/Local/Temp/pyMobaLedLib_build/'
         arduino_user_lib_dir = M02.Sketchbook_Path + "/libraries/" # r'C:\Users\Harold\Documents\Arduino/libraries/'
         arduino_lib_dir = arduino_exe_dir + r'libraries/'
         arduino_avr_tools_dir = arduino_exe_dir + r'hardware/tools/avr/'

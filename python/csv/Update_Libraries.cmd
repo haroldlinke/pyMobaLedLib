@@ -14,7 +14,7 @@ ECHO  Installing the following boards
 ECHO *********************************
 ECHO   ATTinyCore:avr
 ECHO.
-@if exist "%USERPROFILE%\AppData\Local\Temp\MobaLedLib_build\ESP32\includes.cache" del "%USERPROFILE%\AppData\Local\Temp\MobaLedLib_build\ESP32\includes.cache"
+@if exist "%USERPROFILE%\AppData\Local\Temp\pyMobaLedLib_build\ESP32\includes.cache" del "%USERPROFILE%\AppData\Local\Temp\pyMobaLedLib_build\ESP32\includes.cache"
 "C:\Program Files (x86)\Arduino\arduino_debug.exe" --install-boards ATTinyCore:avr --pref "boardsmanager.additional.urls=https://raw.githubusercontent.com/Hardi-St/MobaLedLib_Docu/refs/heads/master/Tools/ATTinyCore/ATTinyCode_index.json" 2>&1
 ECHO.
 ECHO Error %ERRORLEVEL%

@@ -473,8 +473,8 @@ def __ConfigurationToFile():
     i = Integer()
 
     OutputFilename = String()
-    fName = Environ(M02.Env_USERPROFILE) + '\\AppData\\Local\\Temp\\MobaLedLib_build\\ATMega\\LEDs_AutoProg.ino.elf.txt'
-    fName2 = Environ(M02.Env_USERPROFILE) + '\\AppData\\Local\\Temp\\MobaLedLib_build\\ATMega\\LEDs_AutoProg.ino.with_bootloader.bin'
+    fName = Environ(M02.Env_USERPROFILE) + '\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ATMega\\LEDs_AutoProg.ino.elf.txt'
+    fName2 = Environ(M02.Env_USERPROFILE) + '\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ATMega\\LEDs_AutoProg.ino.with_bootloader.bin'
     if Dir(fName) == '':
         return
     if Dir(fName2) == '':
