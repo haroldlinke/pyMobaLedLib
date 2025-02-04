@@ -1,5 +1,9 @@
+
+5.3.5g - 04-02-2025
+- When connecting to Port at startup, DCC-Button asked for reconnect and then did not work. Disconnetc and reconnect was needed.
+
 5.3.5f - 03-02-2025
-- Switch Simulation did not work
+- DCC-Button Simulation did not work
 - build tree of pyMLL and Excel Version could interfer and generate unpredictable results
 
 5.3.5e - 27-01-2025
