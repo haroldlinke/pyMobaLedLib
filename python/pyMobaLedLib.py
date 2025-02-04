@@ -1065,7 +1065,7 @@ class pyMobaLedLibapp(tk.Tk):
             except:
                 logging.debug("Connect: Error Reset ARDUINO!")
             #time.sleep(1)
-            self.send_to_ARDUINO_init_buffer()
+            self.send_to_ARDUINO_init_buffer(immediatly=True)
             self.send_to_ARDUINO("#?\r\n")
             
             logging.debug ("send #?")
@@ -1385,6 +1385,7 @@ class pyMobaLedLibapp(tk.Tk):
     def ARDUINO_begin_direct_mode(self):
         self.direct_mode_active = True
         if self.arduino and self.arduino.isOpen():
+            #self.send_to_ARDUINO_init_buffer()
             self.send_active = False
             logging.debug("ARDUINO_Begin_direct_mode")
             self.set_connectstatusmessage("Verbunden "+ self.ARDUINO_current_portname + " - DIRECT Mode",fg="green")
@@ -1401,6 +1402,7 @@ class pyMobaLedLibapp(tk.Tk):
         if self.arduino and self.arduino.isOpen():
             self.send_active = False
             self.led_off()
+            #self.send_to_ARDUINO_init_buffer()
             logging.debug("ARDUINO_End_direct_mode")
             self.set_connectstatusmessage("Verbunden "+ self.ARDUINO_current_portname + " - EFFECT Mode",fg="green")
             if self.mobaledlib_version == 1:
@@ -1435,11 +1437,15 @@ class pyMobaLedLibapp(tk.Tk):
         else:
             self.send_active = False
             
-    def send_to_ARDUINO_init_buffer(self):
+    def send_to_ARDUINO_init_buffer(self, immediatly=False):
+        if not immediatly and self.send_active:
+            self.after(self.waittime_int*10, self.send_to_ARDUINO_init_buffer)
+            return False
         self.serial_writebuffer = ""
         self.serial_writebuffer_len = 0
         self.send_active = False
         self.serial_writebuffer_idx = 0
+        return True
     
     def send_to_ARDUINO_callback(self):
         try:
@@ -1450,6 +1456,7 @@ class pyMobaLedLibapp(tk.Tk):
                 self.arduino.write(c.encode())
                 #logging.debug("send_to_ARDUINO_callback - write: "+str(c.encode())+"-"+str(self.serial_writebuffer_len))
                 if self.serial_writebuffer_idx < self.serial_writebuffer_len:
+                    self.send_active = True
                     self.after(self.waittime_int, self.send_to_ARDUINO_callback)
                 else:
                     self.send_active = False
@@ -1486,8 +1493,8 @@ class pyMobaLedLibapp(tk.Tk):
                     if waittime < 1.0:
                         waittime = 1.0
                     self.waittime_int = round(waittime)
-                #if self.waittime_int < 20:
-                #    self.waittime_int = 20
+                    #if self.waittime_int < 10:
+                    #    self.waittime_int = 10
                 self.start_time = time.perf_counter()
                 logging.debug("send_to_ARDUINO - %s: %s",str(self.start_time), message)
                 self.serial_writebuffer += message
