@@ -284,10 +284,8 @@ class ServoTestPage2(tk.Frame):
         logging.debug("Tabunselected: %s",self.tabname)
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)
-        self.controller.ARDUINO_end_direct_mode()
-
         self.servo_continue_update_status = False
-
+        self.controller.ARDUINO_end_direct_mode()
         logging.info(self.tabname)
         pass
 
@@ -488,9 +486,8 @@ class ServoTestPage2(tk.Frame):
             lines = hex_file.readlines()
 
             logging.debug("Upload Firmware direkt - file opened: "+ hexfile_name, AttinyAdress)
-            self.controller.send_to_ARDUINO_init_buffer()
             self.servo_continue_update_status = False
-
+            result = self.controller.send_to_ARDUINO_init_buffer(immediatly=True)
             hexline_nr = 0
             len_lines = len(lines)
             first = True # marks first line
@@ -523,7 +520,7 @@ class ServoTestPage2(tk.Frame):
         
         if self.buttonProgramServodirect.cget("text") == "Abbrechen":
             self.continue_upload = False
-            self.controller.send_to_ARDUINO_init_buffer()
+            result = self.controller.send_to_ARDUINO_init_buffer(immediatly=True)
             return
         self.continue_upload = True
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
@@ -566,8 +563,8 @@ class ServoTestPage2(tk.Frame):
 
 
     def servo_status_loop(self, event=None):
-        self.servo_update_status()
         if self.servo_continue_update_status:
+            self.servo_update_status()
             self.after(Servo_delay, self.servo_status_loop)
             
             
