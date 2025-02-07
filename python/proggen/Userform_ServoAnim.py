@@ -514,15 +514,16 @@ class UserForm_ServoAnim(UA.UserForm_Animation):
             new_LED_val = self.value_min
             
         LED_address = self.Anim_Address_TextBox.Value
+        LED_channel = self.Anim_Address_Kanal_TextBox.Value
         self.servotype = self.Anim_Type_ListBox.Selection
         if self.servotype == 0:
-            self._update_servos(LED_address,new_LED_val,1, 0)
+            self._update_servos(LED_address,new_LED_val,1, 0, channel=LED_channel)
         elif self.servotype == 1:
-            self._update_servos(LED_address,new_LED_val, 0, 0)
+            self._update_servos(LED_address,new_LED_val, 0, 0, channel=LED_channel)
         elif self.servotype == 2:
-            self._update_servos(LED_address,0, new_LED_val, 0)
+            self._update_servos(LED_address,0, new_LED_val, 0, channel=LED_channel)
         else:
-            self._update_servos(LED_address,0, 0, new_LED_val)    
+            self._update_servos(LED_address,0, 0, new_LED_val, channel=LED_channel)    
 
 
     

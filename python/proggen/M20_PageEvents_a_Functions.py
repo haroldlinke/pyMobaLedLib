@@ -262,7 +262,7 @@ def Update_Start_LedNr(FirstRun=True):
     #------------------------------
     # Update the Start LedNr in all used rows
     OldEvents =  P01.Application.EnableEvents
-    display_Type = M08.LEDNr_Display_Type
+    display_Type = M08.LEDNr_Display_Type()
     if FirstRun:
         P01.Application.EnableEvents = False
         # Prevent recursive calls ic cells are changed
@@ -311,7 +311,7 @@ def Update_Start_LedNr(FirstRun=True):
                 else:
                     if Max_LEDs_Channel > 0 and display_Type == 1:
                         #NewValue = '\'' + LEDs_Channel + '-' + str(LEDNr(LEDs_Channel)) **HLI remove "'" 
-                        NewValue = LEDs_Channel + '-' + str(LEDNr(LEDs_Channel))
+                        NewValue = str(LEDs_Channel) + '-' + str(LEDNr(LEDs_Channel))
                     else:
                         NewValue = str(LEDNr(LEDs_Channel))
                 if P01.Cells(r, M25.LED_Nr__Col).Value == '' or P01.Cells(r, M25.LED_Nr__Col).Value != NewValue:

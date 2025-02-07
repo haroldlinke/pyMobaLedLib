@@ -1535,6 +1535,16 @@ class pyMobaLedLibapp(tk.Tk):
         else:
             return self.getConfigData("maxLEDcount")
         
+    def get_lednum_offset_for_channel(self, channel):
+        offset = 0
+        try:
+            
+            for i in range(channel):
+                offset += int(self.max_ledcnt_list[i])
+        except BaseException as err:
+            logging.error(err, exc_info=True)            
+        return offset
+        
     def xinit_ledeffecttable(self):
         self.ledeffecttable.init_ledeffecttable()
  

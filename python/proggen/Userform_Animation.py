@@ -562,17 +562,18 @@ class UserForm_Animation:
         elif new_LED_val < self.value_min:
             new_LED_val = self.value_min
         self.Anim_Anfangswert_TextBox.Value = new_LED_val
+        LED_channel = self.Anim_Address_Kanal_TextBox.Value
             
         LED_address = self.Anim_Address_TextBox.Value
         self.servotype = self.Anim_Type_ListBox.Selection
         if self.servotype == 0:
-            self._update_servos(LED_address,new_LED_val,1, 0)
+            self._update_servos(LED_address,new_LED_val,1, 0, channel=LED_channel)
         elif self.servotype == 1:
-            self._update_servos(LED_address,new_LED_val, 0, 0)
+            self._update_servos(LED_address,new_LED_val, 0, 0, channel=LED_channel)
         elif self.servotype == 2:
-            self._update_servos(LED_address,0, new_LED_val, 0)
+            self._update_servos(LED_address,0, new_LED_val, 0, channel=LED_channel)
         else:
-            self._update_servos(LED_address,0, 0, new_LED_val)
+            self._update_servos(LED_address,0, 0, new_LED_val, channel=LED_channel)
             
     def Anim_Endwert_TextBox_Click(self, event=None):
         new_LED_val = self.Anim_Endwert_TextBox.Value
@@ -582,15 +583,16 @@ class UserForm_Animation:
             new_LED_val = self.value_min
         self.Anim_Endwert_TextBox.Value = new_LED_val
         LED_address = self.Anim_Address_TextBox.Value
+        LED_channel = self.Anim_Address_Kanal_TextBox.Value
         self.servotype = self.Anim_Type_ListBox.Selection
         if self.servotype == 0:
-            self._update_servos(LED_address,new_LED_val,1, 0)
+            self._update_servos(LED_address,new_LED_val,1, 0, channel=LED_channel)
         elif self.servotype == 1:
-            self._update_servos(LED_address,new_LED_val, 0, 0)
+            self._update_servos(LED_address,new_LED_val, 0, 0, channel=LED_channel)
         elif self.servotype == 2:
-            self._update_servos(LED_address,0, new_LED_val, 0)
+            self._update_servos(LED_address,0, new_LED_val, 0, channel=LED_channel)
         else:
-            self._update_servos(LED_address,0, 0, new_LED_val)          
+            self._update_servos(LED_address,0, 0, new_LED_val, channel=LED_channel)          
         
     def init_graph(self, frame=None, vertical_params=None, horizontal_params=None, num_vertical=None, num_horizontal=None):
         frame.update()
@@ -953,14 +955,15 @@ class UserForm_Animation:
             
         LED_address = self.Anim_Address_TextBox.Value
         self.servotype = self.Anim_Type_ListBox.Selection
+        LED_channel = self.self.Anim_Address_Kanal_TextBox.Value
         if self.servotype == 0:
-            self._update_servos(LED_address,new_LED_val,1, 0)
+            self._update_servos(LED_address,new_LED_val,1, 0, channel=LED_channel)
         elif self.servotype == 1:
-            self._update_servos(LED_address,new_LED_val, 0, 0)
+            self._update_servos(LED_address,new_LED_val, 0, 0, channel=LED_channel)
         elif self.servotype == 2:
-            self._update_servos(LED_address,0, new_LED_val, 0)
+            self._update_servos(LED_address,0, new_LED_val, 0, channel=LED_channel)
         else:
-            self._update_servos(LED_address,0, 0, new_LED_val)    
+            self._update_servos(LED_address,0, 0, new_LED_val, channel=LED_channel)    
                 
     def on_click(self, event):
         selected = self.canvas.find_overlapping(event.x-10, event.y-10, event.x+10, event.y+10)
@@ -980,7 +983,10 @@ class UserForm_Animation:
             # update last position
             self.startxy = (event.x, event.y)
             
-    def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow):
+    def _update_servos(self, lednum, positionValueHigh, controlValue, positionValueLow, channel=0):
+        if channel != 0:
+            # update lednum according to offset for selected channel number
+            lednum += self.controller.get_lednum_offset_for_channel(channel)
         if self.controller.mobaledlib_version == 1:
             message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
         else:
