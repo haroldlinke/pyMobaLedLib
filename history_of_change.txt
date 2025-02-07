@@ -1,6 +1,10 @@
+5.3.5h - 07-02-2025
+- Channel number is now correctly shown in Table column LED
+- ServoAnim-Makro now support servos connected to other channels than 0
+
 
 5.3.5g - 04-02-2025
-- When connecting to Port at startup, DCC-Button asked for reconnect and then did not work. Disconnetc and reconnect was needed.
+- When connecting to COM-Port at startup, problem with DCC-Buttons - corrected
 
 5.3.5f - 03-02-2025
 - DCC-Button Simulation did not work
