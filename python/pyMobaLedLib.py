@@ -2990,8 +2990,15 @@ class pyMobaLedLibapp(tk.Tk):
             logging.error(why, exc_info=True)
             errors.extend((src, dst, str(why)))
         if errors:
-            raise BaseException(errors) 
-                
+            raise BaseException(errors)
+        
+    def delete_file_tree(self, directory_path):
+        if os.path.exists(directory_path):
+            shutil.rmtree(directory_path)
+            logging.debug(f"Directory {directory_path} has been deleted successfully.")
+        else:
+            logging.debug(f"Directory {directory_path} does not exist.")
+                 
     def show_download_status(self, a,b,c):
         '''''Callback function 
         @a:Downloaded data block 
@@ -3019,17 +3026,25 @@ class pyMobaLedLibapp(tk.Tk):
             urllib.request.urlretrieve(URL, zipfilenamepath,self.show_download_status)
             F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programms")
             logging.debug("Update pyMobaLedLib from Github -unzip file:"+zipfilenamepath+" nach " + workbookpath3)
-            M30.UnzipAFile(zipfilenamepath,workbookpath3)
             srcpath = workbookpath3+"/pyMobaLedLib-master/python"
+            try:
+                self.delete_file_tree(srcpath)
+            except BaseException as e:
+                logging.error(e, exc_info=True)            
+            M30.UnzipAFile(zipfilenamepath,workbookpath3)
+            #srcpath = workbookpath3+"/pyMobaLedLib-master/python"
             dstpath = workbookpath #workbookpath3+"/pyMobaLedLib/python"
             if dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy into development folder
                 dstpath = r"D:\data\doc\pyMobaLedLibcopy"
             F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
             try:
-                logging.debug("Update pyMobaLedLib from Github -delete folder:"+ workbookpath3+"/LEDs_AutoProg")
+                logging.debug("Update pyMobaLedLib from Github -delete folder:"+ workbookpath3+"/LEDs_AutoProg and /hex-files")
                 shutil.rmtree(dstpath+"/LEDs_AutoProg")
+                shutil.rmtree(dstpath+"/hex-files")
             except BaseException as e:
                 logging.error(e, exc_info=True)
+                # Example usage
+            self.delete_file_tree(dstpath)
             self.copytree(srcpath,dstpath)
             logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
             if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:

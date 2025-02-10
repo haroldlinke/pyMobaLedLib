@@ -1,3 +1,6 @@
+5.3.5i - 10-02-2025
+- Platine 512 in 511 geändert
+
 5.3.5h - 07-02-2025
 - Channel number is now correctly shown in Table column LED
 - ServoAnim-Makro now support servos connected to other channels than 0
