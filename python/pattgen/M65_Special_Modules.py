@@ -517,7 +517,7 @@ def Prog_Servo():
         # 04.08.20: Old: " 8MHz, BOD 2.7V", " 8MHz, BOD 2.7V, RstAsIO"
         X02.MsgBox(M09.Get_Language_Str('Das "Betriebssystem" des Servo Moduls wurde erfolgreich programmiert.' + vbCr + 'Dieser Schritt ist nur ein mal pro Platine nötig.' + vbCr + 'Als nächstes sollten die Endpositionen und die Geschwindigkeiten eingestellt werden.' + vbCr + 'Das kann mit zwei verschiednen Programmen gemacht werden:' + vbCr + '- das Arduino Programm "01.Servo_Pos"' + vbCr + '- das "Farbtest" Programm von Harold (\'Prog_Generator\' Menü)"'), vbInformation, M09.Get_Language_Str('Programm erfolgreich zum ATTiny übertragen'))
 
-def Prog_Servo_2(dm_servo_with_LED=False, hexfile_name="RailMail-TinyServo.hex", fusemode = '16MHz, BOD 2.7V, Eckhart'):
+def Prog_Servo_2(dm_servo_with_LED=False, hexfile_name="DM-TinyServo.hex", fusemode = '16MHz, BOD 2.7V, Eckhart'):
     WorkDir = String()
 
     #----------------------

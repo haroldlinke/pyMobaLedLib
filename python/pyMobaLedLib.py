@@ -54,6 +54,8 @@
 import sys
 import os
 import urllib
+import hashlib
+
 module_path = os.path.abspath(__file__)  # Full path to the module file
 module_directory = os.path.dirname(module_path)  # Directory containing the module
 sys.path.append(module_directory)
@@ -258,6 +260,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.mobaledlib_version = 0
         self.activeworkbook = None
         self.direct_mode_active = False
+        self.used_time = 0
         
         #self.fontdict={}
         #self.fontdict["FontGeneral"] = ("Verdana", int(8 * self.getConfigData("FontGeneral")/100))
@@ -887,11 +890,31 @@ class pyMobaLedLibapp(tk.Tk):
             self.cancel_without_save()
             
     # ----------------------------------------------------------------
-    #  restart program
+    #  update program
+    # ----------------------------------------------------------------
+    def exec_update(self, extract_to, target_dir):
+        logging.debug("Restart requested")
+        answer = tk.messagebox.askyesnocancel ('Das Programm wird beendet um den Installationsprozess abzuschliessen','Daten wurden verändert. Sollen die Daten gesichert werden?',default='no')
+        if answer == None:
+            return # no cancelation
+        if answer:
+            self.cancel_with_save() 
+        else:
+            self.cancel_without_save()
+        #restart program
+        logging.debug("Exec Update")
+        subprocess.run(['python', '../update_replacer.py', extract_to, target_dir])
+        #logging.debug("sys.executable: %s, sys.argv: %s", sys.executable, repr(sys.argv))
+        #os.execv(sys.executable, ["python"] + sys.argv)
+        
+        #############################################
+        
+    # ----------------------------------------------------------------
+    #  update program
     # ----------------------------------------------------------------
     def restart(self):
         logging.debug("Restart requested")
-        answer = tk.messagebox.askyesnocancel ('Das Programm wird beendet und neu gestartet','Daten wurden verändert. Sollen die Daten gesichert werden?',default='no')
+        answer = tk.messagebox.askyesnocancel ('Das Programm wird beendet um den Installationsprozess abzuschliessen','Daten wurden verändert. Sollen die Daten gesichert werden?',default='no')
         if answer == None:
             return # no cancelation
         if answer:
@@ -900,10 +923,12 @@ class pyMobaLedLibapp(tk.Tk):
             self.cancel_without_save()
         #restart program
         logging.debug("Restart")
+        #subprocess.run(['python', '../update_replacer.py', extract_to, target_dir])
         logging.debug("sys.executable: %s, sys.argv: %s", sys.executable, repr(sys.argv))
         os.execv(sys.executable, ["python"] + sys.argv)
         
         #############################################
+
 
 
     def close_notification(self):
@@ -2951,7 +2976,7 @@ class pyMobaLedLibapp(tk.Tk):
     def copytree(self, src, dst, symlinks=False, ignore=None):
         names = os.listdir(src)
         if ignore is not None:
-            ignored_names = ignore(src, names)
+            ignored_names = ignore # ignore(src, names)
         else:
             ignored_names = set()
             
@@ -2969,36 +2994,76 @@ class pyMobaLedLibapp(tk.Tk):
                     linkto = os.readlink(srcname)
                     os.symlink(linkto, dstname)
                 elif os.path.isdir(srcname):
+                    filename = os.path.basename(dstname)
+                    F00.StatusMsg_UserForm.Set_Label(f"Kopieren:\n{filename}")
+                    logging.debug(f"Directory copytree: {srcname} - {dstname}")
                     self.copytree(srcname, dstname, symlinks, ignore)
                 else:
                     shutil.copy2(srcname, dstname)
+                    filename = os.path.basename(dstname)
+                    F00.StatusMsg_UserForm.Set_Label(f"Kopieren:\n{filename}")
+                    logging.debug(f"Directory Copy2: {srcname} - {dstname}")
                 # XXX What about devices, sockets etc.?
             except (IOError, os.error) as why:
-                logging.error(why, exc_info=True)
+                logging.debug(why, exc_info=True)
                 errors.append((srcname, dstname, str(why)))
             # catch the Error from the recursive copytree so that we can
             # continue with other files
             except BaseException as err:
-                logging.error(err, exc_info=True)
+                logging.debug(err, exc_info=True)
+                logging.debug(f"Directory Copy: {err}")
                 errors.extend(err.args[0])
         try:
             shutil.copystat(src, dst)
+            #F00.StatusMsg_UserForm.Set_Label(f"Kopieren\n{dst}")
+            logging.debug(f"Directory Copystat: {src} - {dst}")
         except WindowsError:
             # can't copy file access times on Windows
+            logging.debug("Directory Copy Windows Error")
             pass
         except OSError as why:
-            logging.error(why, exc_info=True)
+            logging.debug(why, exc_info=True)
             errors.extend((src, dst, str(why)))
         if errors:
             raise BaseException(errors)
         
+    def is_file_in_use(self, file_path):
+        # Implement a way to check if the file is in use
+        # This is a placeholder function, and you need to define your own logic
+        return False
+    
+    def remove_files_except_in_use(self, directory_path):
+        for root, dirs, files in os.walk(directory_path):
+            for file_name in files:
+                file_path = os.path.join(root, file_name)
+                if not self.is_file_in_use(file_path):
+                    try:
+                        os.remove(file_path)
+                        logging.debug(f"Removed: {file_path}")
+                        F00.StatusMsg_UserForm.Set_Label(f"Löschen des alten Python Programms\n{file_path}")
+                    except Exception as e:
+                        logging.debug(f"Error removing {file_path}: {e}")
+    
+    def remove_empty_directories(self, directory_path):
+        for root, dirs, files in os.walk(directory_path, topdown=False):
+            for dir_name in dirs:
+                dir_path = os.path.join(root, dir_name)
+                try:
+                    os.rmdir(dir_path)
+                    logging.debug(f"Removed empty directory: {dir_path}")
+                    F00.StatusMsg_UserForm.Set_Label(f"Löschen des alten Python Programms\n{dir_path}")
+                except OSError:
+                    pass  # Directory is not empty
+    
     def delete_file_tree(self, directory_path):
         if os.path.exists(directory_path):
-            shutil.rmtree(directory_path)
+            self.remove_files_except_in_use(directory_path)
+            self.remove_empty_directories(directory_path)                
             logging.debug(f"Directory {directory_path} has been deleted successfully.")
         else:
             logging.debug(f"Directory {directory_path} does not exist.")
                  
+    
     def show_download_status(self, a,b,c):
         '''''Callback function 
         @a:Downloaded data block 
@@ -3011,6 +3076,33 @@ class pyMobaLedLibapp(tk.Tk):
         #print '%.2f%%' % per          
     
         F00.StatusMsg_UserForm.Set_ActSheet_Label(P01.Format(int(time.time()) - M37.Update_Time, 'hh:mm:ss')+"\n"+str(a*b))
+        
+        
+        
+    def compute_directory_hash(self, directory_path):
+        # Initialize the SHA256 hash object
+        sha256 = hashlib.sha256()
+    
+        # Walk the directory tree
+        for root, dirs, files in os.walk(directory_path):
+            
+            for file_name in sorted(files):
+                # Create the full file path
+                if not file_name.endswith(".pyc") and not file_name.endswith(".log"):
+                    file_path = os.path.join(root, file_name)
+                    # Read the file content and update the hash
+                    with open(file_path, 'rb') as file:
+                        while chunk := file.read(8192):
+                            sha256.update(chunk)
+    
+        # Return the hexadecimal representation of the hash
+        return sha256.hexdigest()
+        
+        # Example usage
+        #directory_path = 'path/to/your/directory'
+        #directory_hash = compute_directory_hash(directory_path)
+        #print(f"Directory Hash: {directory_hash}")
+    
 
     def Update_pyMobaLedLib(self):
         F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Python MobaLedLib Programm'), '')
@@ -3027,35 +3119,75 @@ class pyMobaLedLibapp(tk.Tk):
             F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programms")
             logging.debug("Update pyMobaLedLib from Github -unzip file:"+zipfilenamepath+" nach " + workbookpath3)
             srcpath = workbookpath3+"/pyMobaLedLib-master/python"
+            i = 1
+            bak_dir = srcpath + "(" + str(i) + ")"
+            
+            while os.path.exists(bak_dir):
+                i += 1
+                bak_dir = srcpath + "(" + str(i) + ")"
+                
             try:
-                self.delete_file_tree(srcpath)
+                os.rename(srcpath, bak_dir)
             except BaseException as e:
                 logging.error(e, exc_info=True)            
             M30.UnzipAFile(zipfilenamepath,workbookpath3)
+            src_directory_hash = self.compute_directory_hash(srcpath)
             #srcpath = workbookpath3+"/pyMobaLedLib-master/python"
             dstpath = workbookpath #workbookpath3+"/pyMobaLedLib/python"
             if dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy into development folder
                 dstpath = r"D:\data\doc\pyMobaLedLibcopy"
-            F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
+            
+            dstpath2 = dstpath #+ "/python"
+            
+            bak_dstdir = dstpath2 + "(" + str(i) + ")"
+            
+            while os.path.exists(bak_dstdir):
+                i += 1
+                bak_dstdir = dstpath2 + "(" + str(i) + ")"
+                
             try:
-                logging.debug("Update pyMobaLedLib from Github -delete folder:"+ workbookpath3+"/LEDs_AutoProg and /hex-files")
+                #os.rename(dstpath2, bak_dstdir)            
+                self.copytree(dstpath2,bak_dstdir, ignore=["__pycache__", "vb2py", "vb2pyconv"])
+                logging.debug("Update pyMobaLedLib from Github -delete folder:"+ dstpath +"/LEDs_AutoProg and /hex-files")
                 shutil.rmtree(dstpath+"/LEDs_AutoProg")
                 shutil.rmtree(dstpath+"/hex-files")
             except BaseException as e:
                 logging.error(e, exc_info=True)
-                # Example usage
-            self.delete_file_tree(dstpath)
-            self.copytree(srcpath,dstpath)
-            logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
-            if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
-                # shutdown and restart
-                self.restart()
+                        
+            #i = 1
+            #bak_dir = dstpath + "(" + str(i) + ")"
+            #
+            #while os.path.exists(bak_dir):
+            #    i += 1
+            #    bak_dir = dstpath + "(" + str(i) + ")"
+            #    
+            #try:
+            #    F00.StatusMsg_UserForm.Set_Label("Löschen des alten Python Programms")
+            #   
+            #    self.delete_file_tree(dstpath)
+            #    #os.rename(dstpath, bak_dir)
+            #except BaseException as e:
+            #    logging.error(e, exc_info=True)
+            F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programms")
+            self.copytree(srcpath,dstpath, ignore=["__pycache__", "vb2py", "vb2pyconv"])
+            dst_directory_hash = self.compute_directory_hash(dstpath)
+            #logging.debug(f"Update pyMobaLedLib from Github: Hash nicht gleich: {src_directory_hash} - {dst_directory_hash}")
+            P01.Unload(F00.StatusMsg_UserForm)
+            if dst_directory_hash != src_directory_hash:
+                P01.MsgBox(M09.Get_Language_Str(' Achtung: Die kopierten Daten stimmen nicht mit den heruntergeladenen Daten überein\nBitte das alte Programm komplett löschen und neu installieren!!'), vbQuestion + vbYesNo, M09.Get_Language_Str('Python MobaLedLib Aktualisierung fehlgeschlagen'))
+            else:
+                #logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
+                if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
+                    # shutdown and restart
+                    #self.exec_update(srcpath, dstpath)
+                    self.restart()
  
         except Exception as e:
             logging.error(e, exc_info=True)
             #Debug.Print("Update_MobaLedLib exception:",e)
             P01.MsgBox(M09.Get_Language_Str('Fehler beim Download oder Installieren!')+"\n\n"+str(e),vbInformation, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib'))
-        P01.Unload(F00.StatusMsg_UserForm)
+
+            
     
     def check_version(self, exec_update=False):
         Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version.py"
@@ -3079,7 +3211,11 @@ class pyMobaLedLibapp(tk.Tk):
                 else:
                     self.Update_pyMobaLedLib()
             else:
-                answer = tk.messagebox.showinfo ('Check pyMLL Version','Es gibt eine keine neue pyMLL Version \n\nAktuelle Version: '+ PROG_VERSION)
+                answer = tk.messagebox.askyesno ('Check pyMLL Version','Es gibt keine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\n\nSoll die aktuelle Version nochmal heruntergeladen werden?")
+                if answer == False:
+                    return
+                else:
+                    self.Update_pyMobaLedLib()                
         return
      
 
@@ -3164,7 +3300,11 @@ def check_version(exec_update=False):
                 else:
                     pass
             else:
-                answer = tk.messagebox.showinfo ('Check pyMLL Version','Es gibt keine neue pyMLL Version \n\nAktuelle Version: '+ PROG_VERSION)
+                answer = tk.messagebox.askyesno ('Check pyMLL Version','Es gibt keine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\n\nSoll die aktuelle Version nochmal heruntergeladen werden?")
+                if answer == False:
+                    return
+                else:
+                    self.Update_pyMobaLedLib()                    
     return
  
 
@@ -3180,6 +3320,12 @@ ScaleFactor = 1
 filedir = ""
 
 def main_entry():
+    
+    if os.path.exists("../python_update"):
+        os.rename("../python", "../python_bak")
+        os.rename("../python_update", "../python")
+
+    
     global DEBUG
     global ScaleFactor
     

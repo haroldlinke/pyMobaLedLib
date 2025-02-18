@@ -1,3 +1,10 @@
+5.3.5k - 18-02.2025
+- update issues
+
+
+5.3.5j - 17-02.2025
+- upload issues
+
 5.3.5i - 10-02-2025
 - Platine 512 in 511 geändert
 
