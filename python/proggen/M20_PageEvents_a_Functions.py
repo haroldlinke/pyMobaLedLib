@@ -312,6 +312,7 @@ def Update_Start_LedNr(FirstRun=True):
                     if Max_LEDs_Channel > 0 and display_Type == 1:
                         #NewValue = '\'' + LEDs_Channel + '-' + str(LEDNr(LEDs_Channel)) **HLI remove "'" 
                         NewValue = str(LEDs_Channel) + '-' + str(LEDNr(LEDs_Channel))
+                        #NewValue = str(LEDNr(LEDs_Channel)) #test#
                     else:
                         NewValue = str(LEDNr(LEDs_Channel))
                 if P01.Cells(r, M25.LED_Nr__Col).Value == '' or P01.Cells(r, M25.LED_Nr__Col).Value != NewValue:
@@ -387,7 +388,7 @@ def Get_LED_Nr(DefaultLedNr, Row, LED_Channel):
                 return fn_return_value
             fn_return_value = int(LEDNr) + M06.Start_LED_Channel(LED_Channel) #*HL
         else:
-            if Left(LEDNr, Pos - 1) == LED_Channel:
+            if Left(LEDNr, Pos - 1) == str(LED_Channel):
                 fn_return_value = int(P01.val(Mid(LEDNr, Pos + 1))) + M06.Start_LED_Channel(LED_Channel) #*HL
             else:
                 # todo

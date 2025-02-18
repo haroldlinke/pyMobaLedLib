@@ -145,7 +145,7 @@ class CStatusMsg_UserForm():
         self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width/2,font=self.default_font,foreground="#0000FF")
         #self.label3 = ttk.Label(self.top, text=self.label3_txt,wraplength=window_width,font=("Tahoma", 11))
         self.label1.grid(row=0,column=0,columnspan=2,sticky="nesw",padx=10,pady=10)
-        self.label2.grid(row=1,column=1,columnspan=2,rowspan=3,sticky="nesw",padx=10,pady=10)
+        self.label2.grid(row=1,column=0,columnspan=2,rowspan=3,sticky="nesw",padx=10,pady=10)
         
         P01.updateWindow()
         #self.label3.grid(row=2,column=0,columnspan=3,sticky="nesw",padx=10,pady=10)

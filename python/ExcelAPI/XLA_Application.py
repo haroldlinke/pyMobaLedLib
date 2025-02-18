@@ -313,6 +313,11 @@ class CWorkbook(object):
         #self.controller.bind("<<SheetChange>>",self.Evt_SheetChange)
         #self.controller.bind("<<SheetSelectionChange>>",self.Evt_SheetSelectionChange)
         #self.controller.bind("<<SheetReturnKey>>",self.Evt_SheetReturnKey)
+        #try:
+        #    del self.wb
+        #except BaseException as e:
+        #    logging.debug(e,  exc_info=True)            
+        #    logging.debug("Workbook: del openpyxl error ")
         set_activeworkbook(self)
         self.activate_sheet(self.start_sheet)
         if self.InitWorkbookFunction:

@@ -86,7 +86,7 @@ INVERT_WHEEL = True
 # filenames
 # all filenames are relativ to the location of the main program pyProg_generator_MobaLedLib.py
 
-LOG_FILENAME = 'logfile.log'
+LOG_FILENAME = '../logfile.log'
 PARAM_FILENAME = 'MobaLedTest_param.json'
 CONFIG_FILENAME = '../../MobaLedTest_config.json'
 MACRODEF_FILENAME = 'MobaLedTest_macrodef.json'
