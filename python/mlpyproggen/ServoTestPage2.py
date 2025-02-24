@@ -523,7 +523,11 @@ class ServoTestPage2(tk.Frame):
             result = self.controller.send_to_ARDUINO_init_buffer(immediatly=True)
             return
         self.continue_upload = True
+        
+        servo_LED_Channel = self.controller.get_macroparam_val(self.tabClassName, "ServoLEDChannel")
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
+        # update servo_address according to offset for selected channel number
+        servo_address += self.controller.get_lednum_offset_for_channel(servo_LED_Channel)
         servo_status_led_address = 0 # self.controller.get_macroparam_val(self.tabClassName, "ServoStatusLEDAddress")
         ok_button = D00.UserForm_Attiny_direct_program.Show_Dialog(AttinyAdress=servo_address, StatusLEDAdress=servo_status_led_address)
         if ok_button:
@@ -643,7 +647,10 @@ class ServoTestPage2(tk.Frame):
 
     def servo_update_status(self):
         global Servo_delay
+        servo_LED_Channel = self.controller.get_macroparam_val(self.tabClassName, "ServoLEDChannel")
         servo_address = self.controller.get_macroparam_val(self.tabClassName, "ServoAddress")
+        # update servo_address according to offset for selected channel number
+        servo_address += self.controller.get_lednum_offset_for_channel(servo_LED_Channel)        
         servo_control = int(self.controller.get_macroparam_val(self.tabClassName, "ServoControl"))
         servo_position = self.servo_position
         servo_use_old_crc = int(self.controller.get_macroparam_val(self.tabClassName, "ServoCRCold"))
