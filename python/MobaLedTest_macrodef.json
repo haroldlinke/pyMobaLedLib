@@ -200,8 +200,9 @@
         "Params": [
             "ServoAddress",
             "!ServoStatusLEDAddress",
-            "ServoControl",
-            "ServoCRCold"
+            "ServoLEDChannel",
+            "ServoCRCold",
+            "ServoControl"
         ]
     },
     "SoundCheckPage": {

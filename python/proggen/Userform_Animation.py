@@ -83,6 +83,7 @@ class UserForm_Animation:
         macro_str_lines = Macro_str.split("\n")
         if len(macro_str_lines) > 1:
             pattern_macro_complete = macro_str_lines[-1]
+            pattern_macro_complete = pattern_macro_complete[:-1]
             pattern_macro_split = pattern_macro_complete.split(" ") # split into macro and gotoact part
             pattern_macro_params = pattern_macro_split[0].split(",")
             pattern_macro_start = pattern_macro_params[0].split("(")
@@ -95,9 +96,13 @@ class UserForm_Animation:
                 param_idx += 1
             curr_time = 0
             time_idx = 0
+            if self.servotype == 0:
+                param_idx_delta = 3
+            else:
+                param_idx_delta = 1
             while param_idx < len(pattern_macro_params):
                 curve_points.append([curr_time, int(pattern_macro_params[param_idx])])
-                param_idx += 3
+                param_idx += param_idx_delta
                 curr_time += timedelta_list[time_idx]
                 if time_idx < number_of_timeslots - 1:
                     time_idx += 1                
@@ -517,7 +522,10 @@ class UserForm_Animation:
                 
                 self.canvasframe.after(self.test_deltatime, self.run_test_point)
                 self.Kurve_Zeitanzeige_Label.Value = self.curr_time
-                self.Kurve_Wertanzeige_Label.Value = str(self.test_deltatime) + "(" + str(int(self.controller.used_time * 1000)) + ")"
+                if self.controller.detailed_debug_on:
+                    self.Kurve_Wertanzeige_Label.Value = str(self.test_deltatime) + "(" + str(int(self.controller.used_time * 1000)) + ")"
+                else:
+                    self.Kurve_Wertanzeige_Label.Value = str(curr_led_value)
                 new_x = self.valx2cx(self.curr_time)
                 self.canvas.coords(self.test_cursor_line, new_x, self.ty2cy(0), new_x, self.ty2cy(self.graphHeight))
                 self.curr_time += self.test_deltatime

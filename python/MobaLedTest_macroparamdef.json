@@ -773,6 +773,19 @@
         "Input Text": "ServoStatus LED Adresse",
         "Hint": "Adresse der Status LED beim Programmieren des Attinys (0=blaue LED auf der Platine)"
     },
+    
+    "ServoLEDChannel": {
+        "ParName": "ServoLEDChannel",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "ServoLEDChannel",
+        "Min": "0",
+        "Max": "99",
+        "Persistent": "True",
+        "Default": "0",
+        "Input Text": "LED Kanal",
+        "Hint": "LED Kanal an dem die Servoplatine angeschlossen ist"
+    },
     "ServoChannel": {
         "ParName": "ServoChannel",
         "Cnt": "1",

@@ -190,6 +190,7 @@ class pyMobaLedLibapp(tk.Tk):
     # LEDColorTest __init__
     # ----------------------------------------------------------------
     def __init__(self, *args, **kwargs):
+        self.detailed_debug_on = False
         self.arduino = None
         self.mainfile_dir = os.path.dirname(os.path.realpath(__file__))
         caller = COMMAND_LINE_ARG_DICT.get("caller","")
@@ -1476,7 +1477,8 @@ class pyMobaLedLibapp(tk.Tk):
         try:
             if self.serial_writebuffer_idx < self.serial_writebuffer_len and self.arduino != None:
                 c = self.serial_writebuffer[self.serial_writebuffer_idx]
-                logging.debug("send_to_ARDUINO_callback - write:"+c)
+                if self.detailed_debug_on:
+                    logging.debug("send_to_ARDUINO_callback - write:"+c)
                 self.serial_writebuffer_idx += 1
                 self.arduino.write(c.encode())
                 #logging.debug("send_to_ARDUINO_callback - write: "+str(c.encode())+"-"+str(self.serial_writebuffer_len))
@@ -1488,8 +1490,9 @@ class pyMobaLedLibapp(tk.Tk):
                     self.serial_writebuffer_idx = 0
                     self.serial_writebuffer = ""
                     self.serial_writebuffer_len = 0
-                    self.end_time = time.perf_counter()
-                    self.used_time = self.end_time - self.start_time
+                    if self.detailed_debug_on:
+                        self.end_time = time.perf_counter()
+                        self.used_time = self.end_time - self.start_time
             else:
                 self.send_active = False
         except BaseException as e:
@@ -3320,11 +3323,6 @@ ScaleFactor = 1
 filedir = ""
 
 def main_entry():
-    
-    if os.path.exists("../python_update"):
-        os.rename("../python", "../python_bak")
-        os.rename("../python_update", "../python")
-
     
     global DEBUG
     global ScaleFactor
