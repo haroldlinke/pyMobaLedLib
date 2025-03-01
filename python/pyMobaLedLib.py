@@ -55,6 +55,7 @@ import sys
 import os
 import urllib
 import hashlib
+from datetime import datetime
 
 module_path = os.path.abspath(__file__)  # Full path to the module file
 module_directory = os.path.dirname(module_path)  # Directory containing the module
@@ -3106,6 +3107,56 @@ class pyMobaLedLibapp(tk.Tk):
         #directory_hash = compute_directory_hash(directory_path)
         #print(f"Directory Hash: {directory_hash}")
     
+        
+    def check_ignored_name_in_dirname(self, dirname, ignored_names):
+        for name in ignored_names:
+            if name in dirname:
+                return True
+        return False    
+        
+    def get_files_with_details(self, directory, ignored_names):
+        files_details = {}
+        for root, directory1, files in os.walk(directory):
+            if self.check_ignored_name_in_dirname(root, ignored_names):
+                continue
+            for file in files:
+                filepath = os.path.join(root, file)
+                filesize = os.path.getsize(filepath)
+                filedate = os.path.getmtime(filepath)
+                files_details[os.path.relpath(filepath, directory)] = (filesize, filedate)
+        return files_details
+    
+    def compare_directories(self, dir1, dir2, ignore=None):
+        if ignore is not None:
+            ignored_names = ignore # ignore(src, names)
+        else:
+            ignored_names = set()
+        
+        files1 = self.get_files_with_details(dir1, ignored_names)
+        files2 = self.get_files_with_details(dir2, ignored_names)
+    
+        only_in_dir1 = files1.keys() - files2.keys()
+        only_in_dir2 = files2.keys() - files1.keys()
+        common_files = files1.keys() & files2.keys()
+    
+        different_files = []
+        for file in common_files:
+            if files1[file] != files2[file]:
+                different_files.append(file)
+    
+        logging.debug("Files only in "+ dir1)
+        for file in only_in_dir1:
+            logging.debug(file)
+    
+        logging.debug("\nFiles only in "+ dir2)
+        for file in only_in_dir2:
+            logging.debug(file)
+    
+        logging.debug("\nFiles with differences in size or date")
+        for file in different_files:
+            size1, date1 = files1[file]
+            size2, date2 = files2[file]
+            logging.debug(f"{file}:\n  {dir1} -> size: {size1}, date: {datetime.fromtimestamp(date1)}\n  {dir2} -> size: {size2}, date: {datetime.fromtimestamp(date2)}\n")
 
     def Update_pyMobaLedLib(self):
         F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Python MobaLedLib Programm'), '')
@@ -3177,7 +3228,9 @@ class pyMobaLedLibapp(tk.Tk):
             #logging.debug(f"Update pyMobaLedLib from Github: Hash nicht gleich: {src_directory_hash} - {dst_directory_hash}")
             P01.Unload(F00.StatusMsg_UserForm)
             if dst_directory_hash != src_directory_hash:
-                P01.MsgBox(M09.Get_Language_Str(' Achtung: Die kopierten Daten stimmen nicht mit den heruntergeladenen Daten überein\nBitte das alte Programm komplett löschen und neu installieren!!'), vbQuestion + vbYesNo, M09.Get_Language_Str('Python MobaLedLib Aktualisierung fehlgeschlagen'))
+                # Beispiel für die Nutzung:
+                self.compare_directories(srcpath, dstpath, ignore=["__pycache__", "vb2py", "vb2pyconv"])
+                P01.MsgBox(M09.Get_Language_Str(' Achtung: Die kopierten Daten stimmen nicht mit den heruntergeladenen Daten überein\nDetails finden Sie in der Logdatei: logfile.log!!'), vbQuestion + vbYesNo, M09.Get_Language_Str('Python MobaLedLib Aktualisierung fehlgeschlagen'))
             else:
                 #logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
                 if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:

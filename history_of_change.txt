@@ -1,6 +1,11 @@
+5.3.5m - 01-03.2025
+- error correction for DM_Servo Firmware
+
+5.3.5l - 25-02.2025
+- new DM-Servo Firmware with legacy mode
+
 5.3.5k - 18-02.2025
 - update issues
-
 
 5.3.5j - 17-02.2025
 - upload issues
