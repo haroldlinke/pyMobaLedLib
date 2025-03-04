@@ -91,6 +91,8 @@
         "Kurzbeschreibung": "Einstellungsparameter",
         "Ausführliche Beschreibung": "pyProgramGenerator Einstellungen\n\r\n\rHier können Sie die Grundeinstellungen für das Programm an Ihre Wünsche anpassen.",
         "Params": [
+            "FontConfig",
+            "FontConfig_PattGen",
             "Farbauswahl",
             "ShowProgramGenerator",
             "ShowPatternGenerator",
@@ -104,9 +106,8 @@
             "LEDColourCorrection",
             "RMbusTimer",
             "UseZ21Data",
-            "Z21Data",
-            "FontConfig",
-            "FontConfig_PattGen"
+            "Z21Data"
+
         ]
     },
     "DCCKeyboardPage": {
