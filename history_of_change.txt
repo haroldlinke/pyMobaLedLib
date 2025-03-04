@@ -1,3 +1,6 @@
+5.3.5n - 04.03.2025
+- error - Comport was not always saved correctly
+
 5.3.5m - 01-03.2025
 - error correction for DM_Servo Firmware
 
