@@ -406,10 +406,10 @@
         "Hint": "ProgGen/PattGen DefaultFont (nur nach Neustart sichtbar)",
         "Implementation comment": "",
         "MultipleParams": [
-            "FontName",
             "FontSmall",
             "FontNormal",
-            "FontLarge"
+            "FontLarge",
+            "FontName"
         ]
     },
     "FontTitle": {

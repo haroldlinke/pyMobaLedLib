@@ -1,3 +1,6 @@
+5.3.5o - 04.03.2025
+- Adaptation of Config-Page for a smal Linux Screen
+
 5.3.5n - 04.03.2025
 - error - Comport was not always saved correctly
 
