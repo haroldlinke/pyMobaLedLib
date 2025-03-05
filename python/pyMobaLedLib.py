@@ -361,6 +361,13 @@ class pyMobaLedLibapp(tk.Tk):
         if screen_height < 1080:
             self.window_height=screen_height
             
+        if screen_width < 1400 or screen_height < 1000:
+            self.smallscreen = True
+        else:
+            self.smallscreen = False
+        
+        
+            
         logging.debug("Windowwidth: %s Windowheight: %s",self.window_width,self.window_height)
         logging.debug("pos_x: %s pos_y: %s",self.pos_x,self.pos_y)
         

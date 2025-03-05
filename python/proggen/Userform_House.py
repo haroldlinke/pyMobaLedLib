@@ -118,14 +118,25 @@ class UserForm_House:
         screen_width = PG.global_controller.winfo_width()
         screen_height = PG.global_controller.winfo_height()
         
-        if screen_height < orig_window_height:
-            window_height = screen_height
+        if screen_height - 50 < orig_window_height:
+            window_height = screen_height - 50
         else:
             window_height = orig_window_height
-        if screen_width < orig_window_width:
-            window_width = screen_width
+        if screen_width - 50 < orig_window_width:
+            window_width = screen_width - 50
         else:
             window_width = orig_window_width
+            
+        pady = 10
+        wraplength = window_width
+        
+        if PG.global_controller.smallscreen:
+            window_height = 700
+            window_width = 1200
+            screen_height = 750
+            screen_width = 1300
+            pady = 5
+            wraplength = window_width - 100
         
         x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
         y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
@@ -142,31 +153,34 @@ class UserForm_House:
         self.top.grid_rowconfigure(0,weight=1)
         self.top.grid_columnconfigure(0, weight=1)
         
-        self.container = tk.Frame(scrolledcontainer.interior, width=orig_window_width-30, height=orig_window_height-30)
+        if PG.global_controller.smallscreen:
+            self.container = tk.Frame(scrolledcontainer.interior, width=window_width-100, height=window_height-100)
+        else:
+            self.container = tk.Frame(scrolledcontainer.interior, width=orig_window_width-30, height=orig_window_height-30)
         self.container.grid(row=0,column=0,columnspan=2,sticky="nesw")
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)        
         
-        self.Description_Label = ttk.Label(self.container, text=self.Description_Label_txt,font=self.default_font,wraplength=window_width,relief=tk.SUNKEN, borderwidth=1)
+        self.Description_Label = ttk.Label(self.container, text=self.Description_Label_txt,font=self.default_font,wraplength=wraplength,relief=tk.SUNKEN, borderwidth=1)
         self.Label_Beleuchtungstypen = ttk.Label(self.container, text=self.Label_Beleuchtungstypen_txt,font=self.default_font)
-        self.Label_NotchangableCol = ttk.Label(self.container, text=self.Label_NotchangableCol_txt,wraplength=window_width,font=self.default_fontsmall)
+        self.Label_NotchangableCol = ttk.Label(self.container, text=self.Label_NotchangableCol_txt,wraplength=wraplength,font=self.default_fontsmall)
         self.Label4_selected_lights = ttk.Label(self.container, text=self.label4_txt,font=self.default_font)
         self.Label5_hint_txt = ttk.Label(self.container, text=self.label5_txt,font=self.default_fontsmall,justify="center")
         
         self.MinCnt_TextBox_svar = tk.StringVar(self.controller)
         self.MinCnt_TextBox_svar.set("1")
         self.MinCnt_TextBox = tk.Entry(self.container,width=4,textvariable=self.MinCnt_TextBox_svar)
-        self.MinCnt_Label = ttk.Label(self.container, text=self.Label1_MinCnt_txt,wraplength=window_width,font=self.default_font)
+        self.MinCnt_Label = ttk.Label(self.container, text=self.Label1_MinCnt_txt,wraplength=wraplength,font=self.default_font)
         
         self.MaxCnt_TextBox_svar = tk.StringVar(self.controller)
         self.MaxCnt_TextBox_svar.set("255")
         self.MaxCnt_TextBox = tk.Entry(self.container,width=4,textvariable=self.MaxCnt_TextBox_svar)
-        self.MaxCnt_Label = ttk.Label(self.container, text=self.Label2_MaxCnt_txt,wraplength=window_width,font=self.default_font)
+        self.MaxCnt_Label = ttk.Label(self.container, text=self.Label2_MaxCnt_txt,wraplength=wraplength,font=self.default_font)
         
         self.LED_Channel_TextBox_svar = tk.StringVar(self.controller)
         self.LED_Channel_TextBox_svar.set("1")
         self.LED_Channel_TextBox = tk.Entry(self.container,width=4,textvariable=self.LED_Channel_TextBox_svar)
-        self.Label9_LED_Channel = ttk.Label(self.container, text=self.Label9_LED_Channel_txt,wraplength=window_width,font=self.default_font)
+        self.Label9_LED_Channel = ttk.Label(self.container, text=self.Label9_LED_Channel_txt,wraplength=wraplength,font=self.default_font)
         
         self.IndividualTimes_CheckBox_svar = tk.StringVar(self.controller)
         self.IndividualTimes_CheckBox_svar.set(0)
@@ -179,12 +193,12 @@ class UserForm_House:
         self.MinTime_TextBox_svar = tk.StringVar(self.controller)
         self.MinTime_TextBox_svar.set("1")
         self.MinTime_TextBox = tk.Entry(self.container,width=4,textvariable=self.MinTime_TextBox_svar)
-        self.MinTime_Label = ttk.Label(self.container, text=self.MinTime_Label_txt,wraplength=window_width,font=self.default_font)
+        self.MinTime_Label = ttk.Label(self.container, text=self.MinTime_Label_txt,wraplength=wraplength,font=self.default_font)
         
         self.MaxTime_TextBox_svar = tk.StringVar(self.controller)
         self.MaxTime_TextBox_svar.set("255")
         self.MaxTime_TextBox = tk.Entry(self.container,width=4,textvariable=self.MaxTime_TextBox_svar)
-        self.MaxTime_Label = ttk.Label(self.container, text=self.MaxTime_Label_txt,wraplength=window_width,font=self.default_font)
+        self.MaxTime_Label = ttk.Label(self.container, text=self.MaxTime_Label_txt,wraplength=wraplength,font=self.default_font)
         
         self.RoomCnt_Label = ttk.Label(self.container, text=self.RoomCnt_Label_txt,font=self.default_font)
         self.Used_RGB_LEDs_Label = ttk.Label(self.container, text=self.Used_RGB_LEDs_Label_txt,font=self.default_fontsmall)
@@ -224,49 +238,49 @@ class UserForm_House:
         
         self.button_delete_room = tk.Button(self.container, text=self.button_delete_room_txt, command=self.delete_room,width=10,font=self.default_font)
 
-        self.Description_Label.grid(row=0,column=0,columnspan=5,sticky="nesw",padx=10,pady=10)
+        self.Description_Label.grid(row=0,column=0,columnspan=5,sticky="nesw",padx=10,pady=pady)
         
-        self.Label_Beleuchtungstypen.grid(row=1,column=0,columnspan=2,sticky="w",padx=10,pady=10)
-        self.Label_NotchangableCol.grid(row=1,column=4,columnspan=1,sticky="w",padx=10,pady=10)
+        self.Label_Beleuchtungstypen.grid(row=1,column=0,columnspan=2,sticky="w",padx=10,pady=pady)
+        self.Label_NotchangableCol.grid(row=1,column=4,columnspan=1,sticky="w",padx=10,pady=pady)
         
-        self.house_button_frame.grid(row=2,column=0,columnspan=5,sticky="nesw",padx=10,pady=10)
+        self.house_button_frame.grid(row=2,column=0,columnspan=5,sticky="nesw",padx=10,pady=pady)
         
-        self.Label4_selected_lights.grid(row=3,column=0,columnspan=2,sticky="w",padx=10,pady=10)
-        self.Label5_hint_txt.grid(row=3,column=1,columnspan=3,sticky="e",padx=10,pady=10)
-        self.RoomCnt_Label.grid(row=3,column=4,columnspan=1,sticky="e",padx=10,pady=10)
+        self.Label4_selected_lights.grid(row=3,column=0,columnspan=2,sticky="w",padx=10,pady=pady)
+        self.Label5_hint_txt.grid(row=3,column=1,columnspan=3,sticky="e",padx=10,pady=pady)
+        self.RoomCnt_Label.grid(row=3,column=4,columnspan=1,sticky="e",padx=10,pady=pady)
         
-        self.SelectedRooms_TextBox.grid(row=4,column=0,columnspan=5,sticky="nesw",padx=10,pady=10)
+        self.SelectedRooms_TextBox.grid(row=4,column=0,columnspan=5,sticky="nesw",padx=10,pady=pady)
         
         #button Lösche Raum
-        self.button_delete_room.grid(row=5,column=0,sticky="e",padx=10,pady=10)
-        self.Used_RGB_LEDs_Label.grid(row=5,column=4,columnspan=1,sticky="e",padx=10,pady=10)
+        self.button_delete_room.grid(row=5,column=0,sticky="e",padx=10,pady=pady)
+        self.Used_RGB_LEDs_Label.grid(row=5,column=4,columnspan=1,sticky="e",padx=10,pady=pady)
         
         if MacroName == "House":
             
-            self.MinCnt_TextBox.grid(row=6,column=0,columnspan=1,sticky="e",padx=10,pady=10)   
-            self.MinCnt_Label.grid(row=6,column=1,columnspan=1,sticky="w",padx=10,pady=10)
-            self.MaxCnt_TextBox.grid(row=7,column=0,columnspan=1,sticky="e",padx=10,pady=10)  
-            self.MaxCnt_Label.grid(row=7,column=1,columnspan=1,sticky="w",padx=10,pady=10)
+            self.MinCnt_TextBox.grid(row=6,column=0,columnspan=1,sticky="e",padx=10,pady=pady)   
+            self.MinCnt_Label.grid(row=6,column=1,columnspan=1,sticky="w",padx=10,pady=pady)
+            self.MaxCnt_TextBox.grid(row=7,column=0,columnspan=1,sticky="e",padx=10,pady=pady)  
+            self.MaxCnt_Label.grid(row=7,column=1,columnspan=1,sticky="w",padx=10,pady=pady)
             
-            self.MinTime_TextBox.grid(row=6,column=3,columnspan=1,sticky="e",padx=10,pady=10)  
-            self.MinTime_Label.grid(row=6,column=4,columnspan=1,sticky="w",padx=10,pady=10)
-            self.MaxTime_TextBox.grid(row=7,column=3,columnspan=1,sticky="e",padx=10,pady=10)  
-            self.MaxTime_Label.grid(row=7,column=4,columnspan=1,sticky="w",padx=10,pady=10)    
+            self.MinTime_TextBox.grid(row=6,column=3,columnspan=1,sticky="e",padx=10,pady=pady)  
+            self.MinTime_Label.grid(row=6,column=4,columnspan=1,sticky="w",padx=10,pady=pady)
+            self.MaxTime_TextBox.grid(row=7,column=3,columnspan=1,sticky="e",padx=10,pady=pady)  
+            self.MaxTime_Label.grid(row=7,column=4,columnspan=1,sticky="w",padx=10,pady=pady)    
     
-            self.IndividualTimes_CheckBox.grid(row=6,column=2,columnspan=1,sticky="e",padx=10,pady=10)
+            self.IndividualTimes_CheckBox.grid(row=6,column=2,columnspan=1,sticky="e",padx=10,pady=pady)
             
-        self.InpInversBox.grid(row=8,column=2,columnspan=1,sticky="e",padx=10,pady=10)
+        self.InpInversBox.grid(row=8,column=2,columnspan=1,sticky="e",padx=10,pady=pady)
          
-        self.LED_Channel_TextBox.grid(row=8,column=0,columnspan=1,sticky="e",padx=10,pady=10)
-        self.Label9_LED_Channel.grid(row=8,column=1,columnspan=1,sticky="w",padx=10,pady=10)
+        self.LED_Channel_TextBox.grid(row=8,column=0,columnspan=1,sticky="e",padx=10,pady=pady)
+        self.Label9_LED_Channel.grid(row=8,column=1,columnspan=1,sticky="w",padx=10,pady=pady)
 
         self.button_frame = ttk.Frame(self.container)
         
         self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
         self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
 
-        self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
-        self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)
+        self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=pady)
+        self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=pady)
         
         self.button_frame.grid(row=8,column=4,sticky="e")
         

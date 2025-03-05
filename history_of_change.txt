@@ -1,3 +1,6 @@
+5.3.5p - 05.03.2025
+- Adaptation of House-Macro Pager and Macro-Selection Page for a small Linux Screen
+
 5.3.5o - 04.03.2025
 - Adaptation of Config-Page for a smal Linux Screen
 
