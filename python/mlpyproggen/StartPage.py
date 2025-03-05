@@ -169,7 +169,7 @@ class StartPage(tk.Frame):
         self.grid_columnconfigure(0,weight=1)
         self.grid_rowconfigure(0,weight=1)                
         # Frame placement => scroll_main_frame
-        self.frame.grid(row=0,column=0,sticky="ns")
+        self.frame.grid(row=0,column=0,sticky="n")
         self.frame.grid_columnconfigure(0,weight=1)
         self.frame.grid_rowconfigure(0,weight=1)              
         # scroll_main_frame => scroll_main_frame.interior => main_frame

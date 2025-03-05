@@ -365,6 +365,12 @@ class pyMobaLedLibapp(tk.Tk):
             self.smallscreen = True
         else:
             self.smallscreen = False
+        self.smallscreen = True
+        if self.smallscreen == True:
+            screen_width = 1300
+            screen_height = 700
+            self.window_width=screen_width - 50
+            self.window_height=screen_height - 50
         
         
             

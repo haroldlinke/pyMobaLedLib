@@ -280,7 +280,7 @@ class ColorCheckPage(tk.Frame):
         
         tk.Frame.__init__(self, parent)
         self.tabClassName = "ColorCheckPage"
-        tk.Frame.__init__(self,parent)
+        #tk.Frame.__init__(self,parent)
         self.controller = controller
         macrodata = self.controller.MacroDef.data.get(self.tabClassName,{})
         self.tabname = macrodata.get("MTabName",self.tabClassName)
@@ -305,15 +305,15 @@ class ColorCheckPage(tk.Frame):
         self.grid_columnconfigure(0,weight=1)
         self.grid_rowconfigure(0,weight=1)
         
-        self.frame=ttk.Frame(self,relief="ridge", borderwidth=1)
+        self.frame=ttk.Frame(self,relief="ridge", borderwidth=1, width=1200, height=1200)
         self.frame.grid_columnconfigure(0,weight=1)
-        self.frame.grid_rowconfigure(0,weight=1)        
+        self.frame.grid_rowconfigure(0,weight=1) 
         
-        self.scroll_main_frame = ScrolledFrame(self.frame)
+        self.scroll_main_frame = ScrolledFrame(self.frame, width=1200, height=1200)
         self.scroll_main_frame.grid_columnconfigure(0,weight=1)
         self.scroll_main_frame.grid_rowconfigure(0,weight=1)        
 
-        self.tab_main_frame = ttk.Frame(self.scroll_main_frame.interior, relief="ridge", borderwidth=2)
+        self.tab_main_frame = ttk.Frame(self.scroll_main_frame.interior, relief="ridge", borderwidth=2, width=1200, height=1200)
         self.tab_main_frame.pack(expand=1,fill="both")
         
         title_frame = ttk.Frame(self.tab_main_frame, relief="ridge", borderwidth=2)
@@ -367,17 +367,17 @@ class ColorCheckPage(tk.Frame):
         
 
         #title=_("MobaLedLib LED Farbentester " + PROG_VERSION)
-        self.tab_frame = ttk.Frame(self.tab_main_frame,borderwidth=1,relief="ridge")
+        self.tab_frame = ttk.Frame(self.tab_main_frame,borderwidth=1,relief="ridge", width=1200, height=1200)
         #self.main_frame.grid(row=0,column=0)
         #self.tab_frame.pack(expand=1,fill="both")
-        self.tab_frame.grid()
+        self.tab_frame.grid(sticky="n")
         self.tab_frame.grid_columnconfigure(0,weight=1)
         self.tab_frame.grid_columnconfigure(1,weight=0)
         self.tab_frame.grid_columnconfigure(2,weight=0)
         self.tab_frame.grid_columnconfigure(3,weight=1)
         self.tab_frame.grid_rowconfigure(3,weight=1)        
 
-        self.main_frame = ttk.Frame(self.tab_frame)
+        self.main_frame = ttk.Frame(self.tab_frame, width=1200, height=1200)
         self.main_frame.columnconfigure(2, weight=1)
         self.main_frame.rowconfigure(1, weight=1)
         
@@ -609,23 +609,23 @@ class ColorCheckPage(tk.Frame):
         self.controller.ToolTip(blinkoff_button, text="Schaltet das Blinken der LED an/aus")
 
         # --- placement
-        bar.grid(row=0, column=1, padx=10, pady=(10, 4), sticky='')
-        square.grid(row=1, column=1, padx=10, pady=(9, 0), sticky='')
-        col_frame.grid(row=0, rowspan=2, column=2, padx=(4, 10), pady=(10, 4), sticky="")
-        self.main_frame.grid(row=2, column=1, columnspan=2, pady=(4, 10), padx=10, sticky="")
-        arduino_frame.grid(row=3, column=1, columnspan=2,pady=(0, 10), padx=10)
+        bar.grid(row=0, column=1, padx=10, pady=(1, 1), sticky='')
+        square.grid(row=1, column=1, padx=10, pady=(1, 0), sticky='')
+        col_frame.grid(row=0, rowspan=2, column=2, padx=(4, 10), pady=(1, 1), sticky="")
+        self.main_frame.grid(row=2, column=1, columnspan=2, pady=(4, 1), padx=10, sticky="n")
+        arduino_frame.grid(row=3, column=1, columnspan=2,pady=(0, 1), padx=10)
 #        button_frame.grid(row=5, column=0, columnspan=2,pady=(0, 10), padx=10)
 
         # locate frames in main_frame
-        title_frame.grid(row=0, column=0, columnspan=2, pady=(4, 10), padx=10)
-        config_frame.grid(row=1, columnspan=2, pady=(20, 30), padx=10)
-        self.tab_frame.grid(row=2, column=0,padx=10, pady=(10, 4))
+        title_frame.grid(row=0, column=0, columnspan=2, pady=(4, 1), padx=10, sticky="n")
+        config_frame.grid(row=1, columnspan=2, pady=(2, 3), padx=1)
+        self.tab_frame.grid(row=2, column=0,padx=10, pady=(1, 4), sticky="n")
         
         self.tab_main_frame.grid_columnconfigure(0,weight=1)
         self.tab_main_frame.grid_rowconfigure(3,weight=1)
         
-        self.frame.grid(row=0,column=0)
-        self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")        
+        self.frame.grid(row=0,column=0, sticky="n")
+        self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
 
         # --- bindings
         self.bar.bind("<ButtonRelease-1>", self._change_color, True)

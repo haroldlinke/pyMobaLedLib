@@ -399,7 +399,7 @@ class Prog_GeneratorPage(tk.Frame):
 
         
         self.workbook_width = self.controller.window_width-120
-        self.workbook_height = self.controller.window_height-420
+        self.workbook_height = self.controller.window_height-320
         
         self.workbookname = "ProgGenerator"
         self.tempworkbookFilname = self.controller.tempworkbookFilname
@@ -440,11 +440,15 @@ class Prog_GeneratorPage(tk.Frame):
         
         infolabel = ttk.Label(self.info_frame, text=self.infotext, font=self.fonttext)
         infolabel.grid(row=0, column=0, sticky="n",pady=(10, 10), padx=10)
-        
-        title_frame.grid(row=0, column=0, sticky="n",pady=(10, 10), padx=10)
-        self.button_frame.grid(row=1, column=0, sticky="nw",pady=(10, 10), padx=10)
-        self.info_frame.grid(row=1,column=1,sticky="nw",pady=(10, 10), padx=10)
-        
+
+        if self.controller.smallscreen:
+            #self.info_frame.grid(row=0,column=1,sticky="nw",pady=(2, 2), padx=2)
+            self.button_frame.grid(row=1, column=0, sticky="nw",pady=(2,2 ), padx=2)
+            title_frame.grid(row=0, column=0, sticky="n",pady=(2, 2), padx=2)
+        else:
+            self.info_frame.grid(row=1,column=1,sticky="nw",pady=(10, 10), padx=10)
+            self.button_frame.grid(row=1, column=0, sticky="nw",pady=(10, 10), padx=10)
+            title_frame.grid(row=0, column=0, sticky="n",pady=(10, 10), padx=10)
     
         #config_frame.grid(row=1, columnspan=2, pady=(20, 30), padx=10)        
         #in_button_frame.grid(row=2, column=0, sticky="n", padx=4, pady=4)
@@ -611,7 +615,12 @@ class Prog_GeneratorPage(tk.Frame):
             else:
                 button=tk.Button(self.button_frame, text=button_text, image=self.icon_dict[button_desc["Icon_name"]], command=button_desc["command"]) #,compound="center")
             
-            button.pack( side="left",padx=button_desc["padx"])
+            if self.controller.smallscreen:
+                padx = button_desc["padx"] /3
+            else:
+                padx = button_desc["padx"]
+            
+            button.pack( side="left",padx=padx)
             
             self.controller.ToolTip(button, text=_T(button_desc["tooltip"]))
         except BaseException as e:

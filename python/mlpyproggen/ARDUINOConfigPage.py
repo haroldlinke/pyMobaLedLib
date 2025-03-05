@@ -170,7 +170,7 @@ class ARDUINOConfigPage(tk.Frame):
 
         # --- placement
         # Tabframe
-        self.frame.grid(row=0,column=0)
+        self.frame.grid(row=0,column=0, sticky="n")
         self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
         # scroll_main_frame
         self.main_frame.grid(row=0,column=0)
