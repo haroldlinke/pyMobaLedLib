@@ -129,15 +129,18 @@ class DCCKeyboardPage(tk.Frame):
         self.grid_columnconfigure(0,weight=1)
         self.grid_rowconfigure(0,weight=1)
         
-        self.frame=ttk.Frame(self,relief="ridge", borderwidth=1)
+        self.frame=ttk.Frame(self,relief="ridge", borderwidth=1, width=1300, height=700)
         self.frame.grid_columnconfigure(0,weight=1)
-        self.frame.grid_rowconfigure(0,weight=1)        
+        self.frame.grid_rowconfigure(0,weight=1)
         
-        self.scroll_main_frame = ScrolledFrame(self.frame)
-        self.scroll_main_frame.grid_columnconfigure(0,weight=1)
-        self.scroll_main_frame.grid_rowconfigure(0,weight=1)
+        #self.scroll_main_frame = ScrolledFrame(self.frame, width=1300, height=700)
+        #self.scroll_main_frame.grid_columnconfigure(0,weight=1)
+        #self.scroll_main_frame.grid_rowconfigure(0,weight=1)
         
-        self.main_frame = ttk.Frame(self.scroll_main_frame.interior, relief="ridge", borderwidth=2)
+        #self.main_frame = ttk.Frame(self.scroll_main_frame.interior, relief="ridge", borderwidth=2, width=1300, height=700)
+        self.main_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2, width=1300, height=700)
+                
+                
         self.main_frame.grid_columnconfigure(0,weight=1)
         self.main_frame.grid_rowconfigure(2,weight=1)         
 
@@ -156,7 +159,7 @@ class DCCKeyboardPage(tk.Frame):
         except:
             base_address = 0
         row = 0
-        in_button_frame =  ttk.Frame(self.main_frame, relief="ridge", borderwidth=1)
+        in_button_frame =  ttk.Frame(self.main_frame, relief="ridge", borderwidth=1, width=1300, height=700)
         self.buttonlist = []
         
         for j in range (0,4):
@@ -167,15 +170,16 @@ class DCCKeyboardPage(tk.Frame):
                 self.create_button(i,j*2+1,address,1," ","green",in_button_frame)
     
         # Tabframe
-        self.frame.grid(row=0,column=0)
-        self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
+        self.frame.grid(row=0,column=0, sticky="n")
+        #self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
+        #self.scroll_main_frame.grid(row=0,column=0)
         # scroll_main_frame
         self.main_frame.grid(row=0,column=0)
         # main_frame                
         
-        title_frame.grid(row=0, column=0, columnspan=2, pady=(4, 10), padx=10)
-        config_frame.grid(row=1, columnspan=2, pady=(20, 30), padx=10)        
-        in_button_frame.grid(row=2, column=0, sticky="n", padx=4, pady=4)
+        title_frame.grid(row=0, column=0, columnspan=2, pady=(2, 2), padx=10)
+        config_frame.grid(row=1, columnspan=2, pady=(2, 3), padx=10)
+        in_button_frame.grid(row=2, column=0, sticky="n", padx=1, pady=1)
         
         # ----------------------------------------------------------------
         # Standardprocedures for every tabpage

@@ -1097,6 +1097,7 @@ class CWorksheet(object):
         
         screen_width = 1920
         screen_height = 1080
+
         self.controller = workbook.controller
         self.controller.set_statusmessage("Erstelle WorkSheet: "+Name)
         #print(workbook.controller.winfo_width(),workbook.controller.winfo_height())

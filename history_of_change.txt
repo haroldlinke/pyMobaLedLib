@@ -1,3 +1,7 @@
+5.3.5q - 05.03.2025
+- Adaptation of main pages Page for a small Linux Screen
+
+
 5.3.5p - 05.03.2025
 - Adaptation of House-Macro Pager and Macro-Selection Page for a small Linux Screen
 
