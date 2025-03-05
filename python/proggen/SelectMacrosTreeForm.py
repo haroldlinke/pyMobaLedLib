@@ -131,6 +131,19 @@ class SelectMacrosTreeform:
         window_height = 700
         window_width = 1400
         
+        pady = 10
+        wraplength = window_width
+        
+        if PG.global_controller.smallscreen:
+            window_height = 700
+            window_width = 1200
+            screen_height = 750
+            screen_width = 1300
+            pady = 5
+            wraplength = window_width - 100
+        
+        
+        
         winfo_x = PG.global_controller.winfo_x()
         winfo_y = PG.global_controller.winfo_y()
         
@@ -143,37 +156,37 @@ class SelectMacrosTreeform:
         self.top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))             
         
         if len(self.title) > 0: self.top.title(self.title)
-        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=window_width,font=self.default_font)
-        self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=window_width,font=self.default_font,foreground="#0000FF")
+        self.label1 = ttk.Label(self.top, text=self.label1_txt,wraplength=wraplength,font=self.default_font)
+        self.label2 = ttk.Label(self.top, text=self.label2_txt,wraplength=wraplength,font=self.default_font,foreground="#0000FF")
         
         
         self.description = tk.StringVar()
         self.description.set("var1")
-        self.label4 = ttk.Label(self.top, text="test1",wraplength=window_width,font=self.default_font,textvariable=self.description,relief=tk.SUNKEN,borderwidth=1)
+        self.label4 = ttk.Label(self.top, text="test1",wraplength=wraplength,font=self.default_font,textvariable=self.description,relief=tk.SUNKEN,borderwidth=1)
         self.detail = tk.StringVar()
         self.detail.set("var2")
-        self.label5 = ttk.Label(self.top, text="Test2",wraplength=window_width,font=self.default_font,textvariable=self.detail,relief=tk.SUNKEN,borderwidth=1)
-        self.label1.grid(row=0,column=0,columnspan=1,sticky="nesw",padx=10,pady=10)
-        self.label2.grid(row=0,column=1,columnspan=1,rowspan=1,sticky="nesw",padx=10,pady=10)
+        self.label5 = ttk.Label(self.top, text="Test2",wraplength=wraplength,font=self.default_font,textvariable=self.detail,relief=tk.SUNKEN,borderwidth=1)
+        self.label1.grid(row=0,column=0,columnspan=1,sticky="nesw",padx=10,pady=pady)
+        self.label2.grid(row=0,column=1,columnspan=1,rowspan=1,sticky="nesw",padx=10,pady=pady)
         #self.label3.grid(row=3,column=0,columnspan=1,sticky="nesw",padx=10,pady=10)
         
         self.macrotree = self.create_treeframe(self.top)
-        self.macrotree.grid(row=1,column=0,columnspan=3,rowspan=1,sticky="nesw",padx=10,pady=10)
+        self.macrotree.grid(row=1,column=0,columnspan=3,rowspan=1,sticky="nesw",padx=10,pady=pady)
         
-        self.label4.grid(row=2,column=0,columnspan=3,rowspan=1,sticky="nesw",padx=10,pady=10)
-        self.label5.grid(row=3,column=0,columnspan=3,rowspan=1,sticky="nesw",padx=10,pady=10)
+        self.label4.grid(row=2,column=0,columnspan=3,rowspan=1,sticky="nesw",padx=10,pady=pady)
+        self.label5.grid(row=3,column=0,columnspan=3,rowspan=1,sticky="nesw",padx=10,pady=pady)
         self.entry1.grid(row=0,column=2)
         self.top.bind("<Return>", self.ok)
-        self.top.bind("<Escape>", self.cancel)            
+        self.top.bind("<Escape>", self.cancel)
         self.button_frame = ttk.Frame(self.top)
         
         self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
         self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
 
-        self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
-        self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)
+        self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=pady)
+        self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=pady)
         
-        self.button_frame.grid(row=4,column=1,sticky="e")
+        self.button_frame.grid(row=4,column=1,sticky="w")
         
         self.IsActive = True
 
@@ -257,11 +270,11 @@ class SelectMacrosTreeform:
     def create_treeframe(self,parent):
         Debug.Print("create_treeframe")
         # Setup Data
-        self.max_value_width = 0
+        self.max_value_width = 700
         self.max_key_width = 0
         
         # Setup the Frames
-        TreeFrame = ttk.Frame(parent, padding="3",borderwidth=3)
+        TreeFrame = ttk.Frame(parent, padding="3",borderwidth=3, width = 1000)
         #TreeFrame.grid(row=0, column=0, sticky=tk.NSEW)
         self.tree = ScrollableTV(TreeFrame, height=20, columns=("description"),show="tree") #ttk.Treeview(TreeFrame, columns=('Values'))
         #style = ttk.Style()
@@ -294,7 +307,7 @@ class SelectMacrosTreeform:
         # Configuring treeview 
         self.tree.configure(xscrollcommand = horscrlbar.set)
         self.tree.column("#0", width=self.max_key_width, stretch=True)
-        self.tree.column("#1",width=1000,stretch=True)
+        self.tree.column("#1",width=self.max_value_width,stretch=True)
         
         self.tree.bind('<<TreeviewSelect>>', self.item_selected)
         
