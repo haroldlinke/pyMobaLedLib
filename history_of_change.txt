@@ -1,3 +1,6 @@
+5.3.5r - 06.03.2025
+- Adaptation of Colorcheck Page for a small Linux Screen
+
 5.3.5q - 05.03.2025
 - Adaptation of main pages Page for a small Linux Screen
 
