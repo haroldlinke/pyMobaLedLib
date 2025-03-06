@@ -305,21 +305,23 @@ class ColorCheckPage(tk.Frame):
         self.grid_columnconfigure(0,weight=1)
         self.grid_rowconfigure(0,weight=1)
         
-        self.frame=ttk.Frame(self,relief="ridge", borderwidth=1, width=1200, height=1200)
+        self.frame=ttk.Frame(self,relief="ridge", borderwidth=1)
         self.frame.grid_columnconfigure(0,weight=1)
         self.frame.grid_rowconfigure(0,weight=1) 
         
-        self.scroll_main_frame = ScrolledFrame(self.frame, width=1200, height=1200)
-        self.scroll_main_frame.grid_columnconfigure(0,weight=1)
-        self.scroll_main_frame.grid_rowconfigure(0,weight=1)        
+        #self.scroll_main_frame = ScrolledFrame(self.frame)
+        #self.scroll_main_frame.grid_columnconfigure(0,weight=1)
+        #self.scroll_main_frame.grid_rowconfigure(0,weight=1)        
 
-        self.tab_main_frame = ttk.Frame(self.scroll_main_frame.interior, relief="ridge", borderwidth=2, width=1200, height=1200)
+        #self.tab_main_frame = ttk.Frame(self.scroll_main_frame.interior, relief="ridge", borderwidth=2)
+        self.tab_main_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2)
         self.tab_main_frame.pack(expand=1,fill="both")
         
         title_frame = ttk.Frame(self.tab_main_frame, relief="ridge", borderwidth=2)
-
-        label = ttk.Label(title_frame, text=self.title, font=self.fonttitle)
-        label.pack(padx=5,pady=(5,5))
+        
+        if not self.controller.smallscreen:
+            label = ttk.Label(title_frame, text=self.title, font=self.fonttitle)
+            label.pack(padx=5,pady=(5,5))
         
         config_frame = self.controller.create_macroparam_frame(self.tab_main_frame,self.tabClassName, maxcolumns=4,startrow =1,style="CONFIGPage",hidecondition=not self.controller.show_setcoltab_save_button)
         
@@ -367,7 +369,7 @@ class ColorCheckPage(tk.Frame):
         
 
         #title=_("MobaLedLib LED Farbentester " + PROG_VERSION)
-        self.tab_frame = ttk.Frame(self.tab_main_frame,borderwidth=1,relief="ridge", width=1200, height=1200)
+        self.tab_frame = ttk.Frame(self.tab_main_frame,borderwidth=1,relief="ridge")
         #self.main_frame.grid(row=0,column=0)
         #self.tab_frame.pack(expand=1,fill="both")
         self.tab_frame.grid(sticky="n")
@@ -625,7 +627,7 @@ class ColorCheckPage(tk.Frame):
         self.tab_main_frame.grid_rowconfigure(3,weight=1)
         
         self.frame.grid(row=0,column=0, sticky="n")
-        self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
+        #self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
 
         # --- bindings
         self.bar.bind("<ButtonRelease-1>", self._change_color, True)

@@ -271,7 +271,7 @@ if __name__ == "__main__":
             self.frame.grid_columnconfigure(0,weight=1)
             self.frame.grid_rowconfigure(0,weight=1)
             self.grid_columnconfigure(0,weight=1)
-            self.grid_rowconfigure(0,weight=1)            
+            self.grid_rowconfigure(0,weight=1)
             
             self.label = Label(text="Shrink the window to activate the scrollbar.")
             self.label.grid(row=1,column=0)

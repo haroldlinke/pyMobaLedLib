@@ -365,7 +365,9 @@ class pyMobaLedLibapp(tk.Tk):
             self.smallscreen = True
         else:
             self.smallscreen = False
-        self.smallscreen = True
+            
+        #self.smallscreen = True
+        
         if self.smallscreen == True:
             screen_width = 1300
             screen_height = 700
@@ -509,18 +511,18 @@ class pyMobaLedLibapp(tk.Tk):
         #    self.scrolledcontainer = VerticalScrolledFrame(self)
         #if use_horizontalscroll:
         #    self.scrolledcontainer = HorizontalScrolledFrame(self)
-        if use_fullscroll:
-            self.scrolledcontainer = ScrolledFrame(self)
             
         if use_verticalscroll or use_fullscroll or use_horizontalscroll:
+            self.scrolledcontainer = ScrolledFrame(self)
             self.scrolledcontainer.grid(row=0,column=0,rowspan=1,columnspan=2,sticky="nesw")
             self.scrolledcontainer.grid_rowconfigure(0, weight=1)
             self.scrolledcontainer.grid_columnconfigure(0, weight=1)
-            maincontainer = tk.Frame(self.scrolledcontainer.interior, width=self.window_width-30, height=self.window_height-30)
+            maincontainer = tk.Frame(self.scrolledcontainer.interior)
+            #maincontainer = tk.Frame(self.scrolledcontainer.interior)
             maincontainer.grid(row=0,column=0,columnspan=2,sticky="nesw")
             maincontainer.grid_rowconfigure(0, weight=1)
             maincontainer.grid_columnconfigure(0, weight=1)
-            self.container = ttk.Notebook(maincontainer)
+            self.container = ttk.Notebook(maincontainer, width=self.window_width-30, height=900)
         else:
             self.container = ttk.Notebook(self)
             
@@ -2644,7 +2646,10 @@ class pyMobaLedLibapp(tk.Tk):
         
         if Macrolongdescription =="":
             Macrolongdescription = Macrodescription
-        macroldlabel = tk.Text(macroparam_frame, wrap='word', bg=self.cget('bg'), borderwidth=2,relief="ridge",width=108,height=5,font=self.fontlabel)
+        if self.smallscreen:
+            macroldlabel = tk.Text(macroparam_frame, wrap='word', bg=self.cget('bg'), borderwidth=2,relief="ridge",width=108,height=1,font=self.fontlabel)
+        else:
+            macroldlabel = tk.Text(macroparam_frame, wrap='word', bg=self.cget('bg'), borderwidth=2,relief="ridge",width=108,height=5,font=self.fontlabel)
         
         macroldlabel.delete("1.0", "end")
         macroldlabel.insert("end", Macrolongdescription)
@@ -2658,7 +2663,7 @@ class pyMobaLedLibapp(tk.Tk):
             macrolabel.key=macro
             self.ToolTip(macrolabel, text=Macrodescription)
         else:
-            macroldlabel.grid(row=0, column=0, columnspan=2,padx=10, pady=10,sticky="we",)
+            macroldlabel.grid(row=0, column=0, columnspan=2,padx=10, pady=2,sticky="we",)
        
         macrotype = macrodata.get("Typ","")
         if macrotype =="ColTab":

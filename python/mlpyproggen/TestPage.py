@@ -115,11 +115,11 @@ class TestPage(tk.Frame):
         self.frame.grid_columnconfigure(0,weight=1)
         self.frame.grid_rowconfigure(0,weight=1)        
         
-        self.scroll_main_frame = ScrolledFrame(self.frame)
-        self.scroll_main_frame.grid_columnconfigure(0,weight=1)
-        self.scroll_main_frame.grid_rowconfigure(0,weight=1)
+        #self.scroll_main_frame = ScrolledFrame(self.frame)
+        #self.scroll_main_frame.grid_columnconfigure(0,weight=1)
+        #self.scroll_main_frame.grid_rowconfigure(0,weight=1)
         
-        self.main_frame = ttk.Frame(self.scroll_main_frame.interior, relief="ridge", borderwidth=2)
+        self.main_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2)
         self.main_frame.grid_columnconfigure(0,weight=1)
         self.main_frame.grid_rowconfigure(2,weight=1) 
                 
@@ -180,7 +180,7 @@ class TestPage(tk.Frame):
         # --- placement
         # Tabframe
         self.frame.grid(row=0,column=0)
-        self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
+        #self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
         # scroll_main_frame
         self.main_frame.grid(row=0,column=0)
         # main_frame        
