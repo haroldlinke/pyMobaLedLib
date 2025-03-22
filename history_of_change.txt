@@ -1,3 +1,6 @@
+5.3.5s - 06.03.2025
+- Adaptation of Tab-Titles for a small Linux-Screen
+
 5.3.5r - 06.03.2025
 - Adaptation of Colorcheck Page for a small Linux Screen
 

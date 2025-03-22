@@ -525,7 +525,11 @@ class pyMobaLedLibapp(tk.Tk):
             self.container = ttk.Notebook(maincontainer, width=self.window_width-30, height=900)
         else:
             self.container = ttk.Notebook(self)
+        style = ttk.Style()
+        style.configure("Centered.TNotebook.Tab", padding=[10, 5])
             
+        # Apply the custom style to the notebook
+        self.container.configure(style="Centered.TNotebook")            
         self.grid_rowconfigure(0,weight=1)
         self.grid_columnconfigure(0, weight=1)
         
