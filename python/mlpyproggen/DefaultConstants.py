@@ -104,7 +104,7 @@ InoName_LED = "LEDs_AutoProg.ino"
 FINISH_FILE = "Finished.txt"                                                 # 03.12.19:
 COLORTESTONLY_FILE = "ColorTestOnly.txt"
 
-SerialIF_teststring1 = "LEDs_AutoProg"
+SerialIF_teststring1 = "#?LEDs_AutoProg"
 SerialIF_teststring2 = "#Color Test LED"
 
 PERCENT_BRIGHTNESS = 1  # 1 = Show the brightnes as percent, 0 = Show the brightnes as ">>>"# 03.12.19:
