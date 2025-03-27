@@ -1110,12 +1110,16 @@ class pyMobaLedLibapp(tk.Tk):
                 pass
             except:
                 logging.debug("Connect: Error Reset ARDUINO!")
-            #time.sleep(1)
+                
+            logging.debug("Connect: Sleep 1 seconds")
+            time.sleep(1)
+            logging.debug("Connect: continue")
             self.send_to_ARDUINO_init_buffer(immediatly=True)
+            self.arduino.flush()
             self.send_to_ARDUINO("#?\r\n")
             
-            logging.debug ("send #?")
-            time.sleep(0.250)
+            logging.debug ("Connect: send #?")
+            time.sleep(1)
             self.update()
             no_of_trails = 25
             emptyline_no = 0
@@ -1138,10 +1142,12 @@ class pyMobaLedLibapp(tk.Tk):
                     
                     if not SerialIF_teststring1 in text_string:
                         read_error = True
-                        logging.debug("Connect Error: %s - trial:%s",text_string,i+1)
+                        logging.debug("Connect Line ignored: %s - trial:%s",text_string,i+1)
                     else:
                         if "MobaLedLib" in text_string:
                             self.mobaledlib_version = 1
+                        elif "Ver 3:" in text_string:
+                            self.mobaledlib_version = 3
                         else:
                             self.mobaledlib_version = 2
                         self.queue.put(text_string)
@@ -1586,9 +1592,9 @@ class pyMobaLedLibapp(tk.Tk):
     def get_lednum_offset_for_channel(self, channel):
         offset = 0
         try:
-            
-            for i in range(channel):
-                offset += int(self.max_ledcnt_list[i])
+            if channel < len(self.max_ledcnt_list):
+                for i in range(channel):
+                    offset += int(self.max_ledcnt_list[i])
         except BaseException as err:
             logging.error(err, exc_info=True)            
         return offset
@@ -2922,14 +2928,18 @@ class pyMobaLedLibapp(tk.Tk):
         #time.sleep(1)
         
         
-    def _send_ledcolor_to_ARDUINO(self, lednum, ledcount, ledcolor):
+    def send_ledcolor_to_ARDUINO(self, lednum, ledcount, ledcolor, ledchannel=0):
         lednum_int = int(lednum)
-        lednum_int += self.LED_baseadress
+        #lednum_int += self.LED_baseadress
+        if ledchannel != 0:
+            lednum_int +=  self.get_lednum_offset_for_channel(ledchannel)
         if self.mobaledlib_version == 1:
             message="#L"
         else:
             message="#L "
-        message = message + '{:02x}'.format(lednum_int) + " " + ledcolor[1:3] + " " + ledcolor[3:5] + " " + ledcolor[5:7] + " " + '{:02x}'.format(ledcount) + "\n"
+        #message = message + '{:02x}'.format(lednum_int) + " " + ledcolor[1:3] + " " + ledcolor[3:5] + " " + ledcolor[5:7] + " " + '{:02x}'.format(ledcount) + "\n" 2025-03-26 Harold
+        message = message + '{:04x}'.format(lednum_int) + " " + ledcolor[1:3] + " " + ledcolor[3:5] + " " + ledcolor[5:7] + " " + '{:03x}'.format(ledcount) + "\n"
+        
         self.send_to_ARDUINO(message)
         time.sleep(ARDUINO_WAITTIME)
         
@@ -2959,8 +2969,8 @@ class pyMobaLedLibapp(tk.Tk):
             #    self._send_ledcolor_to_ARDUINO(lednum_str,1,self.controller.ledtable.get(lednum_str,"#000000"))
             #    time.sleep(ARDUINO_WAITTIME)
             #set the blinking led to highlight
-            self._send_ledcolor_to_ARDUINO(self.on_lednum,self.on_ledcount,"#000000")
-            self._send_ledcolor_to_ARDUINO(lednum, ledcount, "#FFFFFF")
+            self.send_ledcolor_to_ARDUINO(self.on_lednum,self.on_ledcount,"#000000")
+            self.send_ledcolor_to_ARDUINO(lednum, ledcount, "#FFFFFF")
             # save current lednum and led count
             self.on_lednum_seq=lednum
             self.on_lednum = lednum
@@ -2991,11 +3001,11 @@ class pyMobaLedLibapp(tk.Tk):
                         self.on_led_doubleflash=True
                     lednum = self.on_lednum_seq
                     ledcount=1
-                self._send_ledcolor_to_ARDUINO(lednum, ledcount, "#FFFFFF")
+                self.send_ledcolor_to_ARDUINO(lednum, ledcount, "#FFFFFF")
                 self.on_ledon = False
                 self.after(int(500/BLINKFRQ),self.onblink_led)
             else:
-                self._send_ledcolor_to_ARDUINO(lednum, ledcount, "#000000")
+                self.send_ledcolor_to_ARDUINO(lednum, ledcount, "#000000")
                 self.on_ledon = True
                 self.after(int(500/BLINKFRQ),self.onblink_led)
     

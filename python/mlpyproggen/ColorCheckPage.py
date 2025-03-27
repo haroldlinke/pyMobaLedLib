@@ -574,29 +574,38 @@ class ColorCheckPage(tk.Frame):
         led_frame = ttk.Frame(arduino_frame, relief="ridge", borderwidth=2)
         led_frame.columnconfigure(0, weight=1)
 
-        self.lednum = LimitVar(0, 255, self)
-        self.ledcount = LimitVar(1, 256, self)
+        self.lednum = LimitVar(0, 32767, self)
+        self.ledchannel = LimitVar(0, 10, self)
+        self.ledcount = LimitVar(1, 4095, self)
 
         self.lednum.set(self.getConfigData("lastLed"))
         self.ledcount.set(self.getConfigData("lastLedCount"))
+        self.ledchannel.set(self.getConfigData("lastLedChannel"))
         
         #self.ledcount.trace("w",self._update_led_count)
         #self.lednum.trace("w",self._update_led_num)
 
-        self.s_led = Spinbox(led_frame, from_=0, to=255, width=5, name='spinbox',
+        self.s_led = Spinbox(led_frame, from_=0, to=32767, width=5, name='spinbox',
                         textvariable=self.lednum, command=self._update_led_num,font=self.fontspinbox)
-        self.s_ledcount = Spinbox(led_frame, from_=1, to=256, width=5, name='spinbox',
+        self.s_ledchannel = Spinbox(led_frame, from_=0, to=10, width=5, name='spinbox',
+                        textvariable=self.ledchannel, command=self._update_led_channel,font=self.fontspinbox)        
+        self.s_ledcount = Spinbox(led_frame, from_=1, to=4095, width=5, name='spinbox',
                           textvariable=self.ledcount, command=self._update_led_count,font=self.fontspinbox)
         self.s_led.delete(0, 'end')
         self.s_led.insert(0, led)
         self.s_led.grid(row=0, column=1, sticky='e', padx=4, pady=4)
+        self.s_ledchannel.delete(0, 'end')
+        self.s_ledchannel.insert(0, led)
+        self.s_ledchannel.grid(row=0, column=3, sticky='e', padx=4, pady=4)        
         self.s_ledcount.delete(0, 'end')
         self.s_ledcount.insert(1, ledcount)
-        self.s_ledcount.grid(row=0, column=3, sticky='e', padx=4, pady=4)
+        self.s_ledcount.grid(row=0, column=5, sticky='e', padx=4, pady=4)
 
         ttk.Label(led_frame, text=_('LED Adresse'),font=self.fontlabel).grid(row=0, column=0, sticky='e',
                                                  padx=4, pady=4)
-        ttk.Label(led_frame, text=_('Anzahl'),font=self.fontlabel).grid(row=0, column=2, sticky='e',
+        ttk.Label(led_frame, text=_('Led Kanal'),font=self.fontlabel).grid(row=0, column=2, sticky='e',
+                                                 padx=4, pady=4)        
+        ttk.Label(led_frame, text=_('Anzahl'),font=self.fontlabel).grid(row=0, column=4, sticky='e',
                                                  padx=4, pady=4)
 
         led_frame.grid(row=0,column=0,columnspan=2,padx=10,pady=(10, 4),sticky="w")
@@ -683,6 +692,8 @@ class ColorCheckPage(tk.Frame):
         self.controller.bind("<Alt-b>",self.s_blue.invoke_buttondown)
         self.controller.bind("<Control-Right>",self.s_led.invoke_buttonup)
         self.controller.bind("<Control-Left>",self.s_led.invoke_buttondown)
+        self.controller.bind("<Control-Right>",self.s_ledchannel.invoke_buttonup)
+        self.controller.bind("<Control-Left>",self.s_ledchannel.invoke_buttondown)        
         self.controller.bind("<Control-Up>",self.s_ledcount.invoke_buttonup)
         self.controller.bind("<Control-Down>",self.s_ledcount.invoke_buttondown)
         self.controller.bind("<Control-t>",self.s_ct.invoke_buttonup)
@@ -729,6 +740,8 @@ class ColorCheckPage(tk.Frame):
         self.controller.bind("<Alt-b>",self.s_blue.invoke_buttondown)
         self.controller.bind("<Control-Down>",self.s_led.invoke_buttonup)
         self.controller.bind("<Control-Up>",self.s_led.invoke_buttondown)
+        self.controller.bind("<Control-Down>",self.s_ledchannel.invoke_buttonup)
+        self.controller.bind("<Control-Up>",self.s_ledchannel.invoke_buttondown)        
         self.controller.bind("<Control-Right>",self.s_ledcount.invoke_buttonup)
         self.controller.bind("<Control-Left>",self.s_ledcount.invoke_buttondown)
         self.controller.bind("<Control-t>",self.s_ct.invoke_buttonup)
@@ -754,11 +767,13 @@ class ColorCheckPage(tk.Frame):
             pass
         self.setConfigData("lastLed"     , self.lednum.get())
         self.setConfigData("lastLedCount", self.ledcount.get())
+        self.setConfigData("lastLedChannel", self.ledchannel.get())
         self.setConfigData("old_color"   , self.hexa.get())
         self.setConfigData("palette"    , self.palette.copy())
         self.setParamData("color"    , self.hexa.get()) # current color
         self.setParamData("Lednum"   , self.lednum.get())
         self.setParamData("LedCount" , self.ledcount.get())
+        self.setParamData("LedChannel" , self.ledchannel.get())
         self.setParamData("coltab"   , self.palette.copy())
         self.continueCheckDisconnectFile = False # stop thread onCheckDisconnectFile
 
@@ -895,7 +910,7 @@ class ColorCheckPage(tk.Frame):
             ledcount = self.ledcount.get()
             if ledcount >0:
                 lednum = self.lednum.get()
-                self._update_led(lednum, ledcount, red, green, blue, color)
+                self._update_led(lednum, ledcount, red, green, blue, color, self.ledchannel.get())
 
     def _reset_preview(self, event):
         """Respond to user click on old_color item."""
@@ -1188,23 +1203,33 @@ class ColorCheckPage(tk.Frame):
         """Update display after a change in the LED spinboxes."""
         if True: #event is None or event.widget.old_value != event.widget.get():
             led = int(self.lednum.get())
+            ledchannel = int(self.ledchannel.get())
             ledcount = int(self.ledcount.get())
             ledcnt_max = int(self.controller.get_maxLEDcnt())
             if led+ledcount > ledcnt_max:
                 led = ledcnt_max-ledcount
                 self.lednum.set(led)
-            self._highlight_led(led, self.ledcount.get())
+            self._highlight_led(led, self.ledcount.get(), ledchannel)
+            
+    def _update_led_channel(self, event=None,b="",c=""):
+        """Update display after a change in the LED spinboxes."""
+        if True: #event is None or event.widget.old_value != event.widget.get():
+            led = int(self.lednum.get())
+            ledchannel = int(self.ledchannel.get())
+            ledcount = int(self.ledcount.get())
+            self._highlight_led(led, ledcount, ledchannel)    
 
     def _update_led_count(self, event=None,b="",c=""):
         """Update display after a change in the LED count spinboxes."""
         if True: #event is None or event.widget.old_value != event.widget.get():
             led = int(self.lednum.get())
             ledcount = int(self.ledcount.get())
+            ledchannel = int(self.ledchannel.get())
             ledcnt_max = int(self.controller.get_maxLEDcnt())
             if led+ledcount > ledcnt_max:
                 ledcount = ledcnt_max-led
-                self.ledcount.set(ledcount)            
-            self._highlight_led(self.lednum.get(), ledcount)
+                self.ledcount.set(ledcount)
+            self._highlight_led(self.lednum.get(), ledcount, ledchannel)
             
     def _update_ct(self, event=None):
         """Update display after a change in the ct spinboxes."""
@@ -1232,7 +1257,7 @@ class ColorCheckPage(tk.Frame):
         if self.controller.mobaledlib_version == 1:
             message = "#L00 00 00 00 FF\n"
         else:
-            message = "#L 00 00 00 00 7FFF\n"
+            message = "#L 00 00 00 00 FFFF\n"
         self.controller.send_to_ARDUINO(message)
         #self.controller.ledtable.clear()
         
@@ -1243,16 +1268,19 @@ class ColorCheckPage(tk.Frame):
         else:
             lednum = self.lednum.get()
             ledcount = self.ledcount.get()
-            self._highlight_led(lednum, ledcount)
+            ledchannel = int(self.ledchannel.get())
+            self._highlight_led(lednum, ledcount, ledchannel)
         
-    def _update_led(self, lednum, ledcount, red, green, blue, color_hex):
-        lednum += self.controller.LED_baseadress
+    def _update_led(self, lednum, ledcount, red, green, blue, color_hex, ledchannel=0):
+        lednum += self.controller.get_lednum_offset_for_channel(ledchannel)
         self._update_ledtable(lednum, ledcount, color_hex)
         if self.controller.mobaledlib_version == 1:
             message="#L"
         else:
             message="#L "
-        message = message + '{:02x}'.format(lednum) + " " + '{:02x}'.format(red) + " " + '{:02x}'.format(green) + " " + '{:02x}'.format(blue) + " " + '{:02x}'.format(ledcount) + "\n"
+        #message = message + '{:02x}'.format(lednum) + " " + '{:02x}'.format(red) + " " + '{:02x}'.format(green) + " " + '{:02x}'.format(blue) + " " + '{:02x}'.format(ledcount) + "\n" 2025-03-26 Harold
+        message = message + '{:04x}'.format(lednum) + " " + '{:02x}'.format(red) + " " + '{:02x}'.format(green) + " " + '{:02x}'.format(blue) + " " + '{:03x}'.format(ledcount) + "\n"
+                
         self.controller.send_to_ARDUINO(message)
         
     def _update_ledtable(self, lednum, ledcount, rgb_hex):
@@ -1279,49 +1307,48 @@ class ColorCheckPage(tk.Frame):
         keycolor = keydata.get("color","#000000")          
         return keycolor
         
-    def _send_ledcolor_to_ARDUINO(self, lednum, ledcount, ledcolor):
-        lednum_int = int(lednum)
-        lednum_int += self.controller.LED_baseadress
-        if self.controller.mobaledlib_version == 1:
-            message="#L"
-        else:
-            message="#L "
-        message = message + '{:02x}'.format(lednum_int) + " " + ledcolor[1:3] + " " + ledcolor[3:5] + " " + ledcolor[5:7] + " " + '{:02x}'.format(ledcount) + "\n"
-        self.controller.send_to_ARDUINO(message)
-        time.sleep(ARDUINO_WAITTIME)
+    def _send_ledcolor_to_ARDUINO(self, lednum, ledcount, ledcolor, ledchannel=0):
+        #lednum_int = int(lednum)
+        #lednum_int += self.controller.LED_baseadress
+        #if self.controller.mobaledlib_version == 1:
+        #    message="#L"
+        #else:
+        #    message="#L "
+        #message = message + '{:02x}'.format(lednum_int) + " " + ledcolor[1:3] + " " + ledcolor[3:5] + " " + ledcolor[5:7] + " " + '{:02x}'.format(ledcount) + "\n"
+        #self.controller.send_to_ARDUINO(message)
+        #time.sleep(ARDUINO_WAITTIME)
+        self.controller.send_ledcolor_to_ARDUINO(lednum, ledcount, ledcolor, ledchannel=ledchannel)
             
-    def _highlight_led(self,lednum, ledcount):
-        if self.ledhighlight: # onblink is already running, change only lednum and ledcount
-            # reset all blinking led with their colors
-            #for i in range(self.on_ledcount):
-            #    lednum_str = '{:03}'.format(self.on_lednum+i)
-            #    self._send_ledcolor_to_ARDUINO(lednum_str,1,self.controller.ledtable.get(lednum_str,"#000000"))
-            #    time.sleep(ARDUINO_WAITTIME)
-            #set the blinking led to highlight
-            self._send_ledcolor_to_ARDUINO(self.on_lednum,self.on_ledcount,"#000000")
-            self._send_ledcolor_to_ARDUINO(lednum, ledcount, "#FFFFFF")
+    def _highlight_led(self,lednum, ledcount, ledchannel=0):
+        if self.ledhighlight:
+            # switch "old" leds off
+            self._send_ledcolor_to_ARDUINO(self.on_lednum,self.on_ledcount,"#000000", ledchannel=self.on_ledchannel)
+            # switch "new" leds on
+            self._send_ledcolor_to_ARDUINO(lednum, ledcount, "#FFFFFF", ledchannel=ledchannel)
             # save current lednum and led count
             self.on_lednum = lednum
             self.on_ledcount = ledcount
+            self.on_ledchannel = ledchannel
             self.on_ledon = True
         else:
             self.ledhighlight = True
             self.on_lednum = lednum
             self.on_ledcount = ledcount
-            self.on_ledon = True       
+            self.on_ledchannel = ledchannel
+            self.on_ledon = True
             self.onblink_led()
 
          
     def onblink_led(self):
         if self.ledhighlight:
             if self.on_ledon:
-                self._send_ledcolor_to_ARDUINO(self.on_lednum, self.on_ledcount, "#FFFFFF")
+                self._send_ledcolor_to_ARDUINO(self.on_lednum, self.on_ledcount, "#FFFFFF", ledchannel=self.on_ledchannel)
                 self.on_ledon = False
-                self.after(int(500/BLINKFRQ),self.onblink_led)
+                self.after(int(1000/BLINKFRQ),self.onblink_led)
             else:
-                self._send_ledcolor_to_ARDUINO(self.on_lednum, self.on_ledcount, "#000000")
+                self._send_ledcolor_to_ARDUINO(self.on_lednum, self.on_ledcount, "#000000", ledchannel=self.on_ledchannel)
                 self.on_ledon = True
-                self.after(int(500/BLINKFRQ),self.onblink_led)
+                self.after(int(1000/BLINKFRQ),self.onblink_led)
 
     def ButtonColorCheck_OK(self):
         logging.debug("Function called: ButtonColorCheck_OK")

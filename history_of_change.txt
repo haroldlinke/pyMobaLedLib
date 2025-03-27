@@ -1,3 +1,7 @@
+5.3.5t - 27.03.2025
+- Colorcheck supports LED channel
+- serial interface updated to improve handling of debug messages from arduino/ESP32
+
 5.3.5s - 06.03.2025
 - Adaptation of Tab-Titles for a small Linux-Screen
 
