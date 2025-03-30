@@ -55,6 +55,7 @@ import sys
 import os
 import urllib
 import hashlib
+import re
 from datetime import datetime
 
 module_path = os.path.abspath(__file__)  # Full path to the module file
@@ -220,6 +221,10 @@ class pyMobaLedLibapp(tk.Tk):
         self.readConfigData()
         self.ARDUINO_current_portname = ""
         self.ARDUINO_status = ""
+        self.ARDUINO_version = 0
+        self.ARDUINO_boardtype = ""
+        self.ARDUINO_has_readbuffer = False
+        self.cl_arg_startpagename = ""
         #self.ledtable = {"000": "#FFFFFF"}
         #self.init_ledgrouptable = {
         #                        "Gruppenname": {
@@ -517,12 +522,13 @@ class pyMobaLedLibapp(tk.Tk):
             self.scrolledcontainer.grid(row=0,column=0,rowspan=1,columnspan=2,sticky="nesw")
             self.scrolledcontainer.grid_rowconfigure(0, weight=1)
             self.scrolledcontainer.grid_columnconfigure(0, weight=1)
-            maincontainer = tk.Frame(self.scrolledcontainer.interior)
             #maincontainer = tk.Frame(self.scrolledcontainer.interior)
-            maincontainer.grid(row=0,column=0,columnspan=2,sticky="nesw")
-            maincontainer.grid_rowconfigure(0, weight=1)
-            maincontainer.grid_columnconfigure(0, weight=1)
-            self.container = ttk.Notebook(maincontainer, width=self.window_width-30, height=900)
+            #maincontainer = tk.Frame(self.scrolledcontainer.interior)
+            #maincontainer.grid(row=0,column=0,columnspan=2,sticky="nesw")
+            #maincontainer.grid_rowconfigure(0, weight=1)
+            #maincontainer.grid_columnconfigure(0, weight=1)
+            #self.container = ttk.Notebook(maincontainer, width=self.window_width-30) #, height=850)
+            self.container = ttk.Notebook(self.scrolledcontainer.interior)#, width=self.window_width-30, height=850)
         else:
             self.container = ttk.Notebook(self)
         style = ttk.Style()
@@ -1039,6 +1045,64 @@ class pyMobaLedLibapp(tk.Tk):
     # ----------------------------------------------------------------
     # LEDColorTest connect ARDUINO
     # ----------------------------------------------------------------
+    def determine_ARDUINO_Properties_from_Startmessage(self, startmessage):
+        # the start message has following format:
+        # LEDs_AutoProg Ver 4: Type-3.3.2F5 FastLED 3.9.12 25.03.25 11:39
+        
+        self.ARDUINO_version = 0
+        
+        # Your start message
+        #message = "LEDs_AutoProg Ver 4: Type-3.3.2F5 FastLED 3.9.12 25.03.25 11:39"
+        
+        # Extracting the version number
+        version_match = re.search(r"Ver (\d+):", startmessage)
+        version_number = int(version_match.group(1)) if version_match else None
+        
+        if version_number:
+            self.ARDUINO_version = version_number
+        else:
+            self.ARDUINO_version = 2
+        
+        if version_number >= 4:
+            # type string is only availbale with version 4
+            # Extracting the type string
+            type_match = re.search(r": (.+?)-", startmessage)
+            type_string = type_match.group(1) if type_match else None
+            if type_string:
+                self.ARDUINO_boardtype = type_string
+            else:
+                self.ARDUINO_boardtype = ""
+        else :  
+            self.ARDUINO_boardtype = ""
+            
+        # Output results
+        logging.debug("ARDUINO Version Number:"+ str(self.ARDUINO_version))
+        logging.debug("ARDUINO Type String:" + self.ARDUINO_boardtype)
+        
+        self.mobaledlib_version = self.ARDUINO_version
+        
+        self.ARDUINO_boardtype = ""
+        
+        if self.ARDUINO_boardtype in ["ESP32", "Pico"]:
+            self.ARDUINO_has_readbuffer = True
+        else:
+            self.ARDUINO_has_readbuffer = False
+            
+        temp_list = startmessage.split(",")
+        self.max_ledcnt_list = temp_list[1:]
+        self.max_LEDchannel = len(self.max_ledcnt_list)
+        self.LEDchannel = 0
+        maxLEDcnt = 0
+        if self.max_LEDchannel == 0:
+            maxLEDcnt = 20
+        else:
+            # maxLEDcnt = sum of all maxLEDcnt per channel
+            for i in range (0,self.max_LEDchannel):
+                maxLEDcnt+=int(self.max_ledcnt_list[i])
+        self.set_maxLEDcnt(maxLEDcnt)        
+        return
+    
+    
     def connect(self,port=None):
         if port == None:
             port = self.getConfigData("serportname")
@@ -1121,10 +1185,14 @@ class pyMobaLedLibapp(tk.Tk):
             logging.debug ("Connect: send #?")
             time.sleep(1)
             self.update()
-            no_of_trails = 25
+            no_of_trials = 50
             emptyline_no = 0
-            for i in range(no_of_trails):
+            for i in range(no_of_trials):
                 try:
+                    if i == 25:
+                        self.arduino.flush()
+                        self.send_to_ARDUINO("#?\r\n")
+                        logging.debug("Connect: Flush and send #? again")
                     self.update()
                     text=""
                     timeout_error = True
@@ -1146,10 +1214,9 @@ class pyMobaLedLibapp(tk.Tk):
                     else:
                         if "MobaLedLib" in text_string:
                             self.mobaledlib_version = 1
-                        elif "Ver 3:" in text_string:
-                            self.mobaledlib_version = 3
                         else:
-                            self.mobaledlib_version = 2
+                            self.determine_ARDUINO_Properties_from_Startmessage(text_string)
+                            self.mobaledlib_version = self.ARDUINO_version
                         self.queue.put(text_string)
                         logging.debug("Connect message: %s", text_string)
                         read_error = False
@@ -1158,6 +1225,33 @@ class pyMobaLedLibapp(tk.Tk):
                     logging.debug(e)
                     logging.debug("Connect Error:%s",text_string)
                     read_error = True
+                    
+            #start = time.time()
+            #txt = ''
+            #defaultTimeout = self.waittime_int # 0.25;      # should be calculated depending on number of channels/LEDs
+            #while True:
+                #if self.arduino.in_waiting > 0:
+                    ## remove eveyting before \n from txt
+                    #while '\n' in txt:
+                        #txt = txt.split('\n')[-1]
+        
+                    #txt = txt + self.arduino.read(self.arduino.in_waiting).decode(errors='ignore')
+                    #logging.debug("Connect Linesread: %s ",txt)
+                    ## see if txt contains #?LEDs and afterwars a \n is in txt
+                    #pos = txt.find('#?LEDs')
+                    #if pos != -1:
+                        #pos2 = txt.find('\r\n',pos)
+                        #if pos2 != -1:
+                            ## get the text between pos and pos2
+                            #txt = txt[pos+2:pos2]
+                            #break
+        
+                #if (time.time()-start) >= 1:
+                    #start = time.time()
+                    #self.arduino.write(b'#?\n')
+                    
+            #logging.debug("Connect : %s ",txt)
+            
             self.send_to_ARDUINO("#X\r\n")
             if read_error:         
                 messagebox.showerror("Error when reading Arduino answer",
@@ -1188,7 +1282,6 @@ class pyMobaLedLibapp(tk.Tk):
                 
                 for key in self.tabdict:
                     self.tabdict[key].connect(port)
-                    
                     
                 port_dcc_data = self.serial_port_dict.get(str(port),{})
                 if port_dcc_data != {}:
@@ -1509,8 +1602,16 @@ class pyMobaLedLibapp(tk.Tk):
                 self.arduino.write(c.encode())
                 #logging.debug("send_to_ARDUINO_callback - write: "+str(c.encode())+"-"+str(self.serial_writebuffer_len))
                 if self.serial_writebuffer_idx < self.serial_writebuffer_len:
-                    self.send_active = True
-                    self.after(self.waittime_int, self.send_to_ARDUINO_callback)
+                    if self.ARDUINO_has_readbuffer:
+                        # ESP32 and Pico have a readbuffer and the complete command can be sent without a delay between the bytes sent.
+                        if c != "\n":
+                            self.send_to_ARDUINO_callback()
+                        else:
+                            self.send_active = True
+                            self.after(self.waittime_int, self.send_to_ARDUINO_callback)                            
+                    else:
+                        self.send_active = True
+                        self.after(self.waittime_int, self.send_to_ARDUINO_callback)
                 else:
                     self.send_active = False
                     self.serial_writebuffer_idx = 0
@@ -1539,11 +1640,11 @@ class pyMobaLedLibapp(tk.Tk):
                 # The delay is calculated by:
                 # 0.9 + 0.35us + 0.3 us = 1.55us / Bit
                 # 24 Bit / LED
-                # Resttime > 50 us
+                # Resttime > 40 us (One Byte buffer => delay per LED 20us)
                 # Number of LEDs  between 20 and 256 LEDs => Delay 1ms to 12,8ms
                 #              
                 if self.waittime_int == -1:
-                    waittime = self.get_maxLEDcnt() * 0.05 # 50us
+                    waittime = self.get_maxLEDcnt() * 0.02 # 20us
                     if waittime < 1.0:
                         waittime = 1.0
                     self.waittime_int = round(waittime)
@@ -3377,11 +3478,13 @@ def check_version(exec_update=False):
     if version_str != "":
         version_str_split = version_str.split('"')
         version_str = version_str_split[1]
+        if version_str.startswith("*"):
+            return
         if not exec_update:
-            if version_str != PROG_VERSION:
+            if version_str > PROG_VERSION:
                 answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
         else:
-            if version_str != PROG_VERSION:
+            if version_str > PROG_VERSION:
                 answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
                 if answer == False:
                     return
@@ -3433,7 +3536,7 @@ def main_entry():
     parser = argparse.ArgumentParser(description='Generate MLL Programs') #,exit_on_error=False) seems to create a problem in some python versions
     parser.add_argument('--loglevel',choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"],help="Logginglevel to be printed into the logfile")
     parser.add_argument('--logfile',help="Logfilename")
-    parser.add_argument('--loaddatafile',choices=["True","False"],help="if <False> the last saved data will no be loaded")
+    parser.add_argument('--loaddatafile',choices=["True","False"],help="if <False> the last saved data will not be loaded")
     parser.add_argument('--startpage',choices=['StartPage', 'ColorCheckPage', 'Prog_GeneratorPage', 'SoundCheckPage', 'DCCKeyboardPage', 'ServoTestPage', 'Z21MonitorPage', 'SerialMonitorPage', 'ARDUINOMonitorPage', 'ConfigurationPage'],help="Name of the first page shown after start")
     parser.add_argument('--port',help="Name of the port where the ARDUINO is connected to")
     parser.add_argument('--z21simulator',choices=["True","False"],help="if <True> the Z21simulator will be started automatically")
@@ -3564,7 +3667,8 @@ def main_entry():
         COMMAND_LINE_ARG_DICT["colortest_only"]= "True"
         
     logger.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
-    check_version()
+    if not colortest_only:
+        check_version()
     
     try:
         app = pyMobaLedLibapp()

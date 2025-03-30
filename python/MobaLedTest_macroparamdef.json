@@ -676,7 +676,7 @@
         "Type": "",
         "ConfigName": "maxLEDcount",
         "Min": "0",
-        "Max": "255",
+        "Max": "32767",
         "Default": "20",
         "Input Text": "maximale Anzahl LED",
         "Hint": "maximale Anzahl LED"
@@ -755,7 +755,7 @@
         "Type": "",
         "ConfigName": "ServoAddress",
         "Min": "0",
-        "Max": "9999",
+        "Max": "32767",
         "Persistent": "True",
         "Default": "1",
         "Input Text": "Servo Modul Adresse",
@@ -854,13 +854,27 @@
         "Cnt": "",
         "Type": "",
         "Min": "0",
-        "Max": "255",
+        "Max": "32767",
         "Default": "0",
         "Persistent": "True",
         "ValueChangeEvent": "True",
         "Input Text": "Soundmodul-Adresse",
         "Hint": "Adresse des Soundmoduls"
     },
+    
+    "SoundLEDChannel": {
+        "ParName": "SoundLEDChannel",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "SoundLEDChannel",
+        "Min": "0",
+        "Max": "99",
+        "Persistent": "True",
+        "Default": "0",
+        "Input Text": "LED Kanal",
+        "Hint": "LED Kanal an dem die Soundplatine angeschlossen ist"
+    },
+    
     "SoundImpulsLength": {
         "ParName": "Sound_ImpulsLength",
         "Cnt": "",

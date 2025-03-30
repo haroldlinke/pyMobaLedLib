@@ -203,6 +203,7 @@ class SerialMonitorPage(tk.Frame):
     def send(self,event=None):
         message = self.controller.get_macroparam_val(self.tabClassName, "SerialMonitorInput")+"\r\n" #self.input.get() +"\r\n"
         self.controller.send_to_ARDUINO(message)
+        
 
     def process_serial(self):
         #print("Serial MonitorPage - process_serial: Start")
@@ -233,23 +234,24 @@ class SerialMonitorPage(tk.Frame):
                             except:
                                 pass
                         elif readtext.startswith(DF.SerialIF_teststring1): #("#?LEDs_AutoProg"):
-                            temp_list = readtext.split(",")
-                            self.controller.max_ledcnt_list = temp_list[1:]
-                            self.controller.max_LEDchannel = len(self.controller.max_ledcnt_list)
-                            ledchannel_str = self.getConfigData("LEDchannel")
-                            if ledchannel_str != "":
-                                self.controller.LEDchannel = int(ledchannel_str)
-                            else:
-                                self.controller.LEDchannel = 0
-                            if len(self.controller.max_ledcnt_list)<=self.controller.LEDchannel:
-                                self.controller.LEDchannel = 0
-                            self.controller.set_maxLEDcnt(int(self.controller.max_ledcnt_list[self.controller.LEDchannel]))
-                            self.controller.LED_baseadress = 0
-                            maxLEDcnt = 0
-                            # maxLEDcnt = sum of all maxLEDcnt per channel
-                            for i in range (0,self.controller.max_LEDchannel):
-                                maxLEDcnt+=int(self.controller.max_ledcnt_list[i])
-                            self.controller.set_maxLEDcnt(maxLEDcnt)
+                            #temp_list = readtext.split(",")
+                            #self.controller.max_ledcnt_list = temp_list[1:]
+                            #self.controller.max_LEDchannel = len(self.controller.max_ledcnt_list)
+                            #ledchannel_str = self.getConfigData("LEDchannel")
+                            #if ledchannel_str != "":
+                                #self.controller.LEDchannel = int(ledchannel_str)
+                            #else:
+                                #self.controller.LEDchannel = 0
+                            #if len(self.controller.max_ledcnt_list)<=self.controller.LEDchannel:
+                                #self.controller.LEDchannel = 0
+                            #self.controller.set_maxLEDcnt(int(self.controller.max_ledcnt_list[self.controller.LEDchannel]))
+                            #self.controller.LED_baseadress = 0
+                            #maxLEDcnt = 0
+                            ## maxLEDcnt = sum of all maxLEDcnt per channel
+                            #for i in range (0,self.controller.max_LEDchannel):
+                                #maxLEDcnt+=int(self.controller.max_ledcnt_list[i])
+                            #self.controller.set_maxLEDcnt(maxLEDcnt)
+                            self.controller.determine_ARDUINO_Properties_from_Startmessage(readtext)
                         else:
                             self.controller.set_ARDUINOmessage(textmessage)
                     except IOError:

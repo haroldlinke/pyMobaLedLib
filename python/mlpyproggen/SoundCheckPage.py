@@ -200,6 +200,8 @@ class SoundCheckPage(tk.Frame):
         green=self.controller.get_macroparam_val(self.tabClassName, "Sound_GREEN")
         blue=self.controller.get_macroparam_val(self.tabClassName, "Sound_BLUE")
         address = self.controller.get_macroparam_val(self.tabClassName, "SoundAddress")
+        LEDchannel = self.controller.get_macroparam_val(self.tabClassName, "SoundLEDChannel")
+        address += self.controller.get_lednum_offset_for_channel(LEDchannel)
         implength = self.controller.get_macroparam_val(self.tabClassName, "SoundImpulsLength")
         self._send_sound_to_ARDUINO(red,green,blue,address,implength)        
             
@@ -232,27 +234,33 @@ class SoundCheckPage(tk.Frame):
         green=self.controller.get_macroparam_val(self.tabClassName, "Sound_GREEN")
         blue=self.controller.get_macroparam_val(self.tabClassName, "Sound_BLUE")
         address = self.controller.get_macroparam_val(self.tabClassName, "SoundAddress")
+        LEDchannel = self.controller.get_macroparam_val(self.tabClassName, "SoundLEDChannel")
+        address += self.controller.get_lednum_offset_for_channel(LEDchannel)        
         implength = self.controller.get_macroparam_val(self.tabClassName, "SoundImpulsLength")
         self._send_sound_to_ARDUINO(red,green,blue,address,implength)
     
     def _send_sound_to_ARDUINO(self, red, green, blue,address,soundImpulsLength):
-        soundmodul = '{:02x}'.format(address)
         sound1 = '{:02x}'.format(red)
         sound2 = '{:02x}'.format(green)
         sound3 = '{:02x}'.format(blue)
         if self.controller.mobaledlib_version == 1:
+            soundmodul = '{:02x}'.format(address)
             message = "#L" + soundmodul + " " + sound1 + " " + sound2 + " " + sound3 + " " + '{:02x}'.format(1) + "\n"
         else:
+            soundmodul = '{:04x}'.format(address)
             message = "#L " + soundmodul + " " + sound1 + " " + sound2 + " " + sound3 + " " + '{:02x}'.format(1) + "\n"
         self.controller.send_to_ARDUINO(message)
         self.after(soundImpulsLength,self.onstopImpuls)
-        
             
     def onstopImpuls(self):
-        soundmodul = '{:02x}'.format(self.controller.get_macroparam_val(self.tabClassName, "SoundAddress"))
         if self.controller.mobaledlib_version == 1:
+            soundmodul = '{:02x}'.format(self.controller.get_macroparam_val(self.tabClassName, "SoundAddress"))
             message = "#L" + soundmodul + " 00 00 00 01" + "\n"
         else:
+            address = self.controller.get_macroparam_val(self.tabClassName, "SoundAddress")
+            LEDchannel = self.controller.get_macroparam_val(self.tabClassName, "SoundLEDChannel")
+            address += self.controller.get_lednum_offset_for_channel(LEDchannel)                 
+            soundmodul = '{:04x}'.format(address)
             message = "#L " + soundmodul + " 00 00 00 01" + "\n"
         self.controller.send_to_ARDUINO(message)        
 

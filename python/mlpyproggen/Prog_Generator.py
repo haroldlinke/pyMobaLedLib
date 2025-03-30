@@ -398,8 +398,8 @@ class Prog_GeneratorPage(tk.Frame):
         self.workbook_frame.grid(row=2,column=0,columnspan=2,sticky="nesw",pady=(10, 10), padx=10)
 
         
-        self.workbook_width = self.controller.window_width-120
-        self.workbook_height = self.controller.window_height-320
+        self.workbook_width = self.controller.window_width-100
+        self.workbook_height = self.controller.window_height-340
         
         self.workbookname = "ProgGenerator"
         self.tempworkbookFilname = self.controller.tempworkbookFilname

@@ -349,6 +349,7 @@ def __Set_Default_ColTab():
     ColTab[16].g = 50
     ColTab[16].b = 50
     # 16 Single dark LED Room: Fuer einzeln adressierte LEDs wird der individuelle Helligkeitswert verwendet (SINGLE_LED1D: SINGLE_LED2D: SINGLE_LED3D)
+    return ColTab
 
 def __Dec_2_Hex2(d):
     fn_return_value = None

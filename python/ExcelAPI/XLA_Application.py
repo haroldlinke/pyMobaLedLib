@@ -253,7 +253,7 @@ class CWorkbook(object):
             self.wb = None
             style = ttk.Style(frame)
             style.configure('downtab.TNotebook', tabposition='sw')
-            self.container = ttk.Notebook(frame, style="downtab.TNotebook")
+            self.container = ttk.Notebook(frame, style="downtab.TNotebook", width=self.workbook_width, height=self.workbook_height)
             self.container.bind("<Alt-B1-Motion>", self.reorder_tabs)
             self.container.grid_rowconfigure(0,weight=1)
             self.container.grid_columnconfigure(0,weight=1)                 
