@@ -497,8 +497,10 @@ def Generate_Config_Line(LEDNr, Channel_or_define, r, Config_Col, Addr):
         elif CommentStart == 1:
             Comment = line
         else:
-            Cmd = Left(line, CommentStart)
-            Comment = Mid(line, CommentStart + 1, 1000)
+            #Cmd = Left(line, CommentStart)
+            #Comment = Mid(line, CommentStart + 1, 1000)
+            Cmd = Left(line, CommentStart-1) # Comment starts at CommentStart -1
+            Comment = Mid(line, CommentStart, 1000)
         # search for macros having $ Args
         if InStr(Cmd, '(') != 0 and InStr(Cmd, '$') != 0:
             # 28.01.24 Juergen

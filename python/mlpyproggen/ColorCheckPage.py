@@ -703,6 +703,7 @@ class ColorCheckPage(tk.Frame):
         self.controller.bind("<Control-o>",self.led_off)
         self.controller.bind("<Control-z>",self.controller.MenuUndo)
         self.controller.bind("<Control-y>",self.controller.MenuRedo)
+        self.starttime = time.perf_counter()
 
         self._update_color_hsv(_LEDUpdate=False)
 
@@ -909,8 +910,11 @@ class ColorCheckPage(tk.Frame):
         if _LEDupdate:
             ledcount = self.ledcount.get()
             if ledcount >0:
-                lednum = self.lednum.get()
-                self._update_led(lednum, ledcount, red, green, blue, color, self.ledchannel.get())
+                current_time = time.perf_counter()
+                if current_time - self.starttime >= 0.2:
+                    self.starttime = current_time
+                    lednum = self.lednum.get()
+                    self._update_led(lednum, ledcount, red, green, blue, color, self.ledchannel.get())
 
     def _reset_preview(self, event):
         """Respond to user click on old_color item."""
@@ -1298,25 +1302,8 @@ class ColorCheckPage(tk.Frame):
             #    keycolor = self._get_color_from_ledtable(lednum_str) 
             #    self._send_ledcolor_to_ARDUINO(lednum_str,1,keycolor)                
             #    time.sleep(ARDUINO_WAITTIME)    
-                
-    def x_get_color_from_ledtable(self,lednum):
-        lednum_int = int(lednum)
-        lednum_int += self.controller.LED_baseadress
-        lednum_str = '{:03}'.format(lednum_int)
-        keydata = self.controller.ledeffecttable.get(lednum_str,{})
-        keycolor = keydata.get("color","#000000")          
-        return keycolor
         
     def _send_ledcolor_to_ARDUINO(self, lednum, ledcount, ledcolor, ledchannel=0):
-        #lednum_int = int(lednum)
-        #lednum_int += self.controller.LED_baseadress
-        #if self.controller.mobaledlib_version == 1:
-        #    message="#L"
-        #else:
-        #    message="#L "
-        #message = message + '{:02x}'.format(lednum_int) + " " + ledcolor[1:3] + " " + ledcolor[3:5] + " " + ledcolor[5:7] + " " + '{:02x}'.format(ledcount) + "\n"
-        #self.controller.send_to_ARDUINO(message)
-        #time.sleep(ARDUINO_WAITTIME)
         self.controller.send_ledcolor_to_ARDUINO(lednum, ledcount, ledcolor, ledchannel=ledchannel)
             
     def _highlight_led(self,lednum, ledcount, ledchannel=0):

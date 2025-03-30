@@ -185,6 +185,7 @@
         "Ausführliche Beschreibung": "Mit der Servoplatine von Hardi können über die MLL auch Servos angesteuert werden. Auf dieser Seite können Sie den Servo testen und konfigurieren.\nMit dem Schieberegler kann die Position des Servos eingestellt werden. Die Konfiguration des Servos erfolgt mit den Funktionen <Min- und Max-Position programmieren> und <Servo-Geschwindigkeit programmieren>",
         "Params": [
             "ServoAddress",
+            "ServoLEDChannel",
             "ServoChannel"
         ]
     },
@@ -218,6 +219,7 @@
         "Ausführliche Beschreibung": "Auf dieser Seite können Sie die MLL-Sound-Geräte testen. Die MLL-Soundplatine mit dem <MP3-TF-16>-Modul ermöglicht die Erzeugung von verschiedenen selbst erzeugten Geräuschen. Leider kommt es immer wieder vor, dass die wiedergegebenen Sounds nicht richtig stimmen. Es kommt nicht immer die gewünschte Sounde Datei. Das liegt an Bauteiltoleranzen. Auf der Sound-Testseite können die Werte für die verschiedenen Geräusche ausprobiert werden. Einfach die Soundmodul-Adresse angeben und in den Feldern R/G/B die verschiedenen Werte durchprobieren, bis der richtige Sound kommt.",
         "Params": [
             "SoundAddress",
+            "SoundLEDChannel",
             "SoundImpulsLength",
             "Sound_LED"
         ]

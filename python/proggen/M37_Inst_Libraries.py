@@ -100,7 +100,7 @@ import ExcelAPI.XLA_Application as P01
  - Aus irgend einem Grund funktioniert das Installieren der MobaLedLib mit einer "Required Version" nicht.
    Bei der "FastLED" und der "NmraDcc" geht es.
    Es geht auch nicht von Excel aus. Es kommt die Fehlermeldung:
-      "Library MobaLedLib is already installed in: E:\\Test Arduino Lib mit Ã¤\\libraries\\MobaLedLib"
+      "Library MobaLedLib is already installed in: E:\\Test Arduino Lib mit \\libraries\\MobaLedLib"
    => Die Bibliothek muss von Hand gelöscht werden
    Manchmal geht es aber auch ?!?
 ----------------------------------------------------------------------
@@ -132,7 +132,7 @@ import ExcelAPI.XLA_Application as P01
  eingetragen
 
  Wenn ein anderes Board installiert wurde, dann findet man die Version hier:
-  C:\\Users\\Hardi\\AppData\\Local\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.1
+  C:\\Users\\Hardi\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.1
 
  Boards Manager Anzeigen von der Arduino IDE 1.8.12:
  Version 1.8.1:

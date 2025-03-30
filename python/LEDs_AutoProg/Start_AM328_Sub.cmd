@@ -150,7 +150,7 @@ if exist "%aTemp%\buildFailed.txt" (
    md "%aCache%"
 )
 
-xcopy D:\data\doc\GitHub\pyMobaLedLib\python\LEDs_AutoProg\boards.local.txt "C:\Users\Harold\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.5\" /d /y >nul
+xcopy D:\data\doc\GitHub\pyMobaLedLib\python\LEDs_AutoProg\boards.local.txt "C:\Users\Harold\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\" /d /y >nul
 
 REM *** Call the arduino builder ***
 "%aHome%\arduino-builder" -compile -logger=human ^
