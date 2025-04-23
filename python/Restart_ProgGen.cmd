@@ -9,15 +9,15 @@ REM
 ECHO  ~~~~~~~~~~~~~~~~~~
 ECHO  Update is finished
 ECHO  ~~~~~~~~~~~~~~~~~~
-ECHO.
+ECHO/
 ECHO  Going to restarting the new Prog_Generator_MobaLedLib.xlsm
 ECHO.
 ECHO  If the program hangs here the hidden file "~$Prog_Generator_MobaLedLib.xlsm"
 ECHO  is not deleted for some reasons. It has to be deleted manualy.
-ECHO.
+ECHO/
 ECHO  Make sure that all excel instances are closed if it hangs.
 ECHO  In case of problems the installation is continued in one minute.
-ECHO.
+ECHO/
 set /A counter=1
 ::define a variable containing a single backspace character
 for /f %%A in ('"prompt $H &echo on &for %%B in (1) do rem"') do set BS=%%A
@@ -29,12 +29,12 @@ set /A counter=%counter%+1
 if %counter% gtr 20 ( goto :Continue )
 if exist "~$Prog_Generator_MobaLedLib.xlsm" Goto Wait
 :Continue
-ECHO.
+ECHO/
 ECHO  Going to start the Prog_Generator_MobaLedLib again
 CHCP 65001 > NUL
 C:
 CD "C:\Users\Harold\Documents\Arduino\libraries\MobaLedLib\extras\"
 @ping localhost -n 1 > NUL
-@if exist "%USERPROFILE%\AppData\Local\Temp\MobaLedLib_build\ESP32\includes.cache" del "%USERPROFILE%\AppData\Local\Temp\MobaLedLib_build\ESP32\includes.cache"
+@if exist "%USERPROFILE%\AppData\Local\Temp\pyMobaLedLib_build\ESP32\includes.cache" del "%USERPROFILE%\AppData\Local\Temp\pyMobaLedLib_build\ESP32\includes.cache"
 Start Prog_Generator_MobaLedLib.xlsm
 EXIT

@@ -93,6 +93,8 @@ import ExcelAPI.XLA_Application as P01
 
 import mlpyproggen.Prog_Generator as PG
 
+import tkinter as tk
+
 """ Die MobaLedLib wird nur dann Installiert wenn sie nicht vorhanden ist
  - Das Excel sheet würde sich selber überschreiben
  Comma separeted list of libraries (Case sensitive => check the library.property file
@@ -374,7 +376,7 @@ def __Create_PIO_Build(fp, Environment, ResultName, ComPort, SrcDir):
     VBFiles.writeText(fp2, 'framework = arduino', '\n')
     VBFiles.writeText(fp2, 'build_src_flags =', '\n')   # ' 24.09.24: Hardi: Old:  "src_build_flags = "
     VBFiles.writeText(fp2, 'lib_deps =', '\n')
-    VBFiles.writeText(fp2, '    FastLED@>=3.6.0', '\n') # ' 24.09.24: Hardi: Added minimal version because version 3.4.0 generates problems with selectrix
+    VBFiles.writeText(fp2, '    FastLED@>=3.9.9', '\n') # ' 18.01.24: Jürgen: Change minimal version to 3.9.9 - allows revival after FastLED blocks
     VBFiles.writeText(fp2, '    NmraDcc', '\n')         # '                  Ini syntax see: https://docs.platformio.org/en/stable/core/userguide/lib/cmd_uninstall.html
     VBFiles.writeText(fp2, '    MobaLedLib=file://../../libraries/MobaLedLib', '\n')
     VBFiles.writeText(fp2, '', '\n')
@@ -586,7 +588,7 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, 'SET ESP32_BOARD_VERSION=' + Board_Version, '\n')
         VBFiles.writeText(fp, 'SET ESP32_TOOL_VERSION=' + Tool_Version, '\n')
         VBFiles.writeText(fp, '', '\n')
-        VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32"', '\n')
+        VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32"', '\n')
         VBFiles.writeText(fp, 'SET aCache=%aTemp%\\cache', '\n')
         VBFiles.writeText(fp, 'call :short packages "%USERPROFILE%' + M02.AppLoc_Ardu + 'packages"', '\n')
         VBFiles.writeText(fp, 'if not exist "%aTemp%\\Sketch"  md "%aTemp%\\Sketch"', '\n')
@@ -700,7 +702,10 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, ':fastbuild', '\n')
         VBFiles.writeText(fp, 'echo Running fastbuild', '\n')
-        VBFiles.writeText(fp, 'call Fastbuild.cmd %8', '\n')
+        if Board_Version < "2.":
+            VBFiles.writeText(fp, 'call Fastbuild.cmd %8', '\n')
+        else:
+            VBFiles.writeText(fp, 'call Fastbuild2.cmd %8', '\n')
         VBFiles.writeText(fp, 'if errorlevel 1 (', '\n')
         # 28.11.20: Additional check from Jürgen
         VBFiles.writeText(fp, '    rem use argument norebuild to avoid rebuild in this case of build error', '\n')
@@ -720,11 +725,12 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, 'goto download', '\n')
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, ':rebuild', '\n')
-        VBFiles.writeText(fp, 'echo.', '\n')
+        VBFiles.writeText(fp, 'echo/', '\n')
         VBFiles.writeText(fp, 'echo Running rebuild... Be patient, this will take up to 3 minutes ;-(((', '\n')
-        VBFiles.writeText(fp, 'echo.', '\n')
+        VBFiles.writeText(fp, 'echo/', '\n')
         VBFiles.writeText(fp, 'if exist "%aTemp%" del "%aTemp%" /s/q >nul:', '\n')
         VBFiles.writeText(fp, 'if exist "%aTemp%\\link.cmd" del "%aTemp%\\link.cmd"', '\n')
+        VBFiles.writeText(fp, ':build', '\n')
         VBFiles.writeText(fp, 'echo %date% > "%aTemp%\\rebuildFailed.txt"', '\n')
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, 'REM *** Call the arduino builder ***', '\n')
@@ -761,7 +767,11 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, '   if "!uploadTo:~0,3!"=="COM" (', '\n')
         # 17.11.20: Added: 0x8000 ...
         # 11.03.21: Added: 0xE000 and 0x1000
-        VBFiles.writeText(fp, '          "%packages%\\esp32\\tools\\esptool_py\\%ESP32_TOOL_VERSION%/esptool.exe" --chip esp32 --port \\\\.\\!uploadTo! --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect ' + ' 0xE000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/partitions/boot_app0.bin"' + ' 0x1000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/sdk/bin/bootloader_qio_80m.bin"' + ' 0x10000 "%aTemp%\\%srcFile%.bin"' + ' 0x8000  "%aTemp%\\%srcFile%.partitions.bin"', '\n')
+        if Board_Version < "2.":
+            VBFiles.writeText(fp, '          "%packages%\\esp32\\tools\\esptool_py\\%ESP32_TOOL_VERSION%/esptool.exe" --chip esp32 --port \\\\.\\!uploadTo! --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect ' + ' 0xE000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/partitions/boot_app0.bin"' + ' 0x1000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/sdk/bin/bootloader_qio_80m.bin"' + ' 0x10000 "%aTemp%\\%srcFile%.bin"' + ' 0x8000  "%aTemp%\\%srcFile%.partitions.bin"', '\n')
+        else:
+            VBFiles.writeText(fp, '          "%packages%\\esp32\\tools\\esptool_py\\%ESP32_TOOL_VERSION%/esptool.exe" --chip esp32 --port \\\\.\\!uploadTo! --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect ' + ' 0xE000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/partitions/boot_app0.bin"' + ' 0x1000  "%aTemp%\%srcFile%.bootloader.bin"' + ' 0x10000 "%aTemp%\\%srcFile%.bin"' + ' 0x8000  "%aTemp%\\%srcFile%.partitions.bin"', '\n')
+                    
         VBFiles.writeText(fp, '   ) else (', '\n')
         VBFiles.writeText(fp, '          "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/espota.exe" -i !uploadTo! -p 3232 --auth= -f "%aTemp%\\%srcFile%.bin"', '\n')
         VBFiles.writeText(fp, '          )', '\n')
@@ -915,7 +925,7 @@ def Create_Start_ESP32_Sub_Linux(ResultName, ComPort, BuildOptions, InoName, Src
         VBFiles.writeText(fp, 'SET ESP32_BOARD_VERSION=' + Board_Version, '\n')
         VBFiles.writeText(fp, 'SET ESP32_TOOL_VERSION=' + Tool_Version, '\n')
         VBFiles.writeText(fp, '', '\n')
-        VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\MobaLedLib_build\\ESP32"', '\n')
+        VBFiles.writeText(fp, 'call :short aTemp "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32"', '\n')
         VBFiles.writeText(fp, 'SET aCache=%aTemp%\\cache', '\n')
         VBFiles.writeText(fp, 'call :short packages "%USERPROFILE%' + M02.AppLoc_Ardu + 'packages"', '\n')
         VBFiles.writeText(fp, 'if not exist "%aTemp%\\Sketch"  md "%aTemp%\\Sketch"', '\n')
@@ -1080,7 +1090,11 @@ def Create_Start_ESP32_Sub_Linux(ResultName, ComPort, BuildOptions, InoName, Src
         VBFiles.writeText(fp, ')', '\n')
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, ':download', '\n')
-        VBFiles.writeText(fp, 'if "%8"=="noflash" goto :EOF', '\n')                         #12.02.22: Juergen
+        
+        if PG.global_controller.execute_upload:
+            VBFiles.writeText(fp, 'if "%8"=="noflash" goto :EOF', '\n')                         #12.02.22: Juergen
+        else:
+            VBFiles.writeText(fp, 'goto :EOF', '\n')                         #30.1.2025 Harold no flash 
         VBFiles.writeText(fp, 'if not errorlevel 1 (', '\n')
         VBFiles.writeText(fp, '   set uploadTo=%3', '\n')
         VBFiles.writeText(fp, '   if not "%target%"=="" set uploadTo=%target%', '\n')
@@ -1324,18 +1338,19 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
     # Echo without linefeed
     VBFiles.writeText(fp, 'CD', '\n')
     # show the current directory for debugging
-    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO/', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, CommandStr, '\n')
     #Print #fp, "Pause"   ' Debug
-    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO/', '\n')
     VBFiles.writeText(fp, '', '\n')
     if USE_SUBCOMMAND:
         VBFiles.writeText(fp, 'IF EXIST "' + ResultName + '" (', '\n')
     else:
         VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')
         VBFiles.writeText(fp, '   ECHO Start_Arduino_Result: %ERRORLEVEL% > "' + ResultName + '"', '\n')
-    VBFiles.writeText(fp, '   COLOR 4F', '\n')
+    if M28.Get_Bool_Config_Var("Use_PlatformIO") == False:    
+        VBFiles.writeText(fp, '   COLOR 4F', '\n')
     VBFiles.writeText(fp, '   ECHO   ****************************************', '\n')
     VBFiles.writeText(fp, '   ECHO    ' + M09.Get_Language_Str('Da ist was schief gegangen ;-('), '\n')
     VBFiles.writeText(fp, '   ECHO   ****************************************', '\n')
@@ -1441,7 +1456,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
         arduino_exe_dir = M30.FilePath(Find_ArduinoExe()) # r'C:\Program Files (x86)/Arduino/'
         arduino_builder_exe = r'"' + arduino_exe_dir + r'arduino-builder"'
         arduino_hardware_tools_dir = arduino_packages_dir + 'esp32/hardware/esp32/' + Board_Version + r'/tools/' # r'C:\Users/Harold/AppData/Local/Arduino15/packages/esp32/hardware/esp32/' + Board_Version + r'/tools/'
-        arduino_temp_dir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + '../Temp/MobaLedLib_build/' # r'C:\Users/Harold/AppData/Local/Temp/MobaLedLib_build/'
+        arduino_temp_dir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + '../Temp/pyMobaLedLib_build/' # r'C:\Users/Harold/AppData/Local/Temp/pyMobaLedLib_build/'
         arduino_user_lib_dir = M02.Sketchbook_Path + "/libraries/" # r'C:\Users\Harold\Documents\Arduino/libraries/'
         arduino_lib_dir = arduino_exe_dir + r'libraries/'
         arduino_avr_tools_dir = arduino_exe_dir + r'hardware/tools/avr/'
@@ -1485,8 +1500,11 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
                        r'  0x1000  "' + arduino_hardware_tools_dir + r'sdk/bin/bootloader_qio_80m.bin"' +\
                        r'  0x10000 "' + arduino_temp_dir + r'ESP32/' + InoName + '.bin"' +\
                        r'  0x8000  "' + arduino_temp_dir + r'ESP32/' + InoName + '.partitions.bin"'
-        CommandStr = (CommandStr1, CommandStr2)
-        pass
+        
+        if PG.global_controller.execute_upload:
+            CommandStr = (CommandStr1, CommandStr2)
+        else:
+            CommandStr = CommandStr1
     else:
         if Dir(SrcDir + ResultName) != '':
             Kill(SrcDir + ResultName)
@@ -1503,7 +1521,11 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
         # Other options:  --verbose-build --verbose-upload"
         #   Boards  see: C:\P<rogram Files (x86)\Arduino\hardware\arduino\avr\boards.txt
         #   New Bootloader: nano.menu.cpu.atmega328=ATmega328P
-        CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + '" --upload --port ' + ComPort + ' ' + BuildOptions
+        if PG.global_controller.execute_upload:
+            CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + '" --upload --port ' + ComPort + ' ' + BuildOptions
+        else:
+            CommandStr = '"' + Find_ArduinoExe() + '" "' + InoName + ' ' + BuildOptions
+            
         if BuildDirForScript != '':
             CommandStr = CommandStr + ' --pref build.path="' + BuildDirForScript + '"' + ' --preserve-temp-files'
             
@@ -1583,9 +1605,10 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
         
         Retry = False
         fn_return_value = False
-        if M07.Check_USB_Port_with_Dialog(ComPortColumn) == False:
-            return fn_return_value, BuildOptions, DeviceSignature
-        
+        if PG.global_controller.execute_upload:
+            if M07.Check_USB_Port_with_Dialog(ComPortColumn) == False:
+                return fn_return_value, BuildOptions, DeviceSignature
+            
             # Display Dialog if the COM Port is negativ and ask the user to correct it
         # Now we are sure that the com port is positiv. Check if it could be accesed and get the Baud rate
         BuildOptions = P01.Cells(M02.SH_VARS_ROW, BuildOptColumn)
@@ -1601,6 +1624,8 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
             else:
                 Start_Baudrate = 115200
         ComPortStr = P01.Cells(M02.SH_VARS_ROW, ComPortColumn)
+        if not PG.global_controller.execute_upload:
+            ComPortStr = "Test"
         if IsNumeric(ComPortStr):
             ComPort = "COM"+ComPortStr
         else:
@@ -1609,7 +1634,8 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
         #if ComPort > 255:                                                       # 03.03.22: Juergen avoid overrun error
         #    ComPort = 0
         CheckCOMPort_Txt = M07.Check_If_Port_is_Available_And_Get_Name(ComPort)
-        
+        if not PG.global_controller.execute_upload:
+            CheckCOMPort_Txt = "Test"        
         FirmwareVer = ""
         BaudRate = 0
         if CheckCOMPort_Txt != '':
@@ -1709,6 +1735,13 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     #*HL TextColor = int()
 
     #*HL Res = ShellAndWaitResult()
+    PG.global_controller.execute_upload = True
+    if PG.global_controller.ARDUINOTest:
+        answer = tk.messagebox.askyesnocancel ('ARDUINOTest','Kompilieren und Hochladen (ja)\nNur Kompilieren (Nein)\nAbbrechen',default='yes')
+        if answer == None:
+            return False# cancelation return to "ConfigurationOage"
+        PG.global_controller.execute_upload = answer # True=compile and upload - False = only compile
+            
 
     Start = Variant()
     fn_return_value=False
@@ -1773,6 +1806,12 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     else:
         useARDUINO_IDE=False
         
+    if PG.global_controller.ARDUINOTest:
+        answer = tk.messagebox.askyesnocancel ('ARDUINOTest','Use ARDUINO IDE (ja)\nuse ARDUINO Builder (Nein)\nAbbrechen',default='yes')
+        if answer == None:
+            return False# cancelation return
+        useARDUINO_IDE = answer
+    
     if PG.get_global_controller().useARDUINO_IDE==True or (M02a.Get_BoardTyp() == 'ESP32' and PG.get_global_controller().useESP32WinBat==False):
         useARDUINO_IDE = True
         
@@ -2080,10 +2119,10 @@ def Create_InstalLib_Cmd_file(LibNames=""):
     VBFiles.writeText(fp, 'ECHO --------------------------------------------------------------------------', '\n')
     VBFiles.writeText(fp, 'ECHO ' + M09.Get_Language_Str('Aktualisiere die Bibliotheken ') + LibNames + ' ...', '\n')
     VBFiles.writeText(fp, 'ECHO --------------------------------------------------------------------------', '\n')
-    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO/', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, CommandStr, '\n')
-    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO/', '\n')
     VBFiles.writeText(fp, '', '\n')
     #Print #fp, "Pause"
     VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')

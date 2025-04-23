@@ -252,8 +252,8 @@ class CWorkbook(object):
             self.ws_filename = None
             self.wb = None
             style = ttk.Style(frame)
-            style.configure('downtab.TNotebook', tabposition='sw')
-            self.container = ttk.Notebook(frame, style="downtab.TNotebook")
+            style.configure('downtab.TNotebook', tabposition='sw', padding=[5, 5], height=10)
+            self.container = ttk.Notebook(frame, style="downtab.TNotebook", width=self.workbook_width, height=self.workbook_height)
             self.container.bind("<Alt-B1-Motion>", self.reorder_tabs)
             self.container.grid_rowconfigure(0,weight=1)
             self.container.grid_columnconfigure(0,weight=1)                 
@@ -313,6 +313,11 @@ class CWorkbook(object):
         #self.controller.bind("<<SheetChange>>",self.Evt_SheetChange)
         #self.controller.bind("<<SheetSelectionChange>>",self.Evt_SheetSelectionChange)
         #self.controller.bind("<<SheetReturnKey>>",self.Evt_SheetReturnKey)
+        #try:
+        #    del self.wb
+        #except BaseException as e:
+        #    logging.debug(e,  exc_info=True)            
+        #    logging.debug("Workbook: del openpyxl error ")
         set_activeworkbook(self)
         self.activate_sheet(self.start_sheet)
         if self.InitWorkbookFunction:
@@ -543,7 +548,7 @@ class CWorkbook(object):
             return
         if filename:
             if self.ws_filename != filename:
-                self.wb = openpyxl.load_workbook(filename)
+                self.wb = openpyxl.load_workbook(filename, data_only=True)
                 self.ws_filename = filename
             if fieldnames == None:
                 fieldnames = self.fieldnames
@@ -1092,6 +1097,7 @@ class CWorksheet(object):
         
         screen_width = 1920
         screen_height = 1080
+
         self.controller = workbook.controller
         self.controller.set_statusmessage("Erstelle WorkSheet: "+Name)
         #print(workbook.controller.winfo_width(),workbook.controller.winfo_height())
@@ -3985,7 +3991,10 @@ class CColor(object):
             if shape!=None:
                 shape.Fillcolor=valuestr
                 if shape.rectidx!=0:
-                    shape.Tablecanvas.itemconfig(shape.rectidx,fill=valuestr)
+                    try:
+                        shape.Tablecanvas.itemconfig(shape.rectidx,fill=valuestr)
+                    except:
+                        pass
                 else:
                     shape.updatecontrol = True
                     #shape.Worksheet.drawShape(shape)
@@ -4557,7 +4566,7 @@ class CApplication(object):
         pass
     
     def Run(self,cmd):
-        methodToCall = ActiveWorkbook.jumptable(cmd, None) #D00.globalprocs.get(cmd,None)
+        methodToCall = ActiveWorkbook.jumptable.get(cmd, None) #D00.globalprocs.get(cmd,None)
         if methodToCall:
             methodToCall()
 
@@ -4642,7 +4651,12 @@ class CFont(object):
         
     @Color.setter
     def Color(self, value):
-        self._color_val = value
+        if not value.isnumeric():
+            self._color_val = value
+        else:
+            intvalue = int(value)
+            hex_string = hex(intvalue)[2:].zfill(6).upper()
+            self._color_val = "#" + hex_string
         if self.parent == None:
             return
         else:

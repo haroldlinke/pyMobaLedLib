@@ -119,7 +119,7 @@ class ARDUINOMonitorPage(tk.Frame):
         scroll.pack(side=tk.RIGHT,fill=tk.Y)
         
         # Tabframe
-        self.frame.grid(row=0,column=0)
+        self.frame.grid(row=0,column=0, sticky="n")
         self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
         # scroll_main_frame
         self.main_frame.grid(row=0,column=0)        

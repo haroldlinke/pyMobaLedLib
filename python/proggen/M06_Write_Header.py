@@ -85,6 +85,8 @@ import ExcelAPI.XLA_Application as P01
 from ExcelAPI.XLC_Excel_Consts import *
 import ExcelAPI.XLWF_Worksheetfunction as XLWF
 
+import tkinter as tk
+
 """ Todo:
 
  - Wichtig: Die Schalter müssen auch in den Inputs der Macros erkannt werden sonst werden sie nur dann definiert wenn
@@ -495,8 +497,10 @@ def Generate_Config_Line(LEDNr, Channel_or_define, r, Config_Col, Addr):
         elif CommentStart == 1:
             Comment = line
         else:
-            Cmd = Left(line, CommentStart)
-            Comment = Mid(line, CommentStart + 1, 1000)
+            #Cmd = Left(line, CommentStart)
+            #Comment = Mid(line, CommentStart + 1, 1000)
+            Cmd = Left(line, CommentStart-1) # Comment starts at CommentStart -1
+            Comment = Mid(line, CommentStart, 1000)
         # search for macros having $ Args
         if InStr(Cmd, '(') != 0 and InStr(Cmd, '$') != 0:
             # 28.01.24 Juergen
@@ -734,10 +738,13 @@ def Create_Header_Entry(r, AddrStr, IsRM, LEDOffset, LEDsInUse, MaxLEDNrInSheet)
             Addr = - 2
         else:
             Channel_or_define = Channel
-    ## VB2PY (CheckDirective) VB directive took path 1 on True
-    # 26.04.20:
-    # 10.08.21: Juergen add sound channel
-    LEDs_Channel = P01.val(P01.Cells(r, M25.LED_Cha_Col))
+            
+    if Trim(P01.val(P01.Cells(r, M25.LED_Cha_Col))) == "": # Then                                  ' 13.02.2025 Juergen  fix ToDo's #27
+        LEDs_Channel = Previous_LEDChannel
+    else:
+        LEDs_Channel = P01.val(P01.Cells(r, M25.LED_Cha_Col))
+        Previous_LEDChannel = LEDs_Channel
+    
     LEDs = P01.Cells(r, M25.LEDs____Col)
     if Trim(LEDs) == M02.SerialChannelPrefix:
         # 10.08.21: Juergen add sound channel
@@ -1117,6 +1124,12 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
     r = Long()
     
     LED_Offset = vbObjectInitialize((M02.LED_CHANNELS - 1,), Long)
+    
+    if PG.global_controller.ARDUINOTest:
+        answer = tk.messagebox.askyesno ('ARDUINOTest','Erzeugen der Headerdatei wird gestartet',default='yes')
+        if answer == False:
+            P01.set_statusmessage("Headerfileerstellung abgebrochen - Die Headerdatei wurde nicht geschrieben")
+            return False # no continuation          
 
     LEDsInUse = vbObjectInitialize((M02.LED_CHANNELS - 1,), Long)
     # 20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
@@ -1196,6 +1209,8 @@ def ProcessSheet(SheetName, firstSheet, addressOffset, LEDsOffset, LEDsInUse):
     MaxLEDNrInSheet = vbObjectInitialize((M02.LED_CHANNELS - 1,), Integer)
     _fn_return_value = False
     # 20.10.23: Juergen fix #10763
+    
+    M02a.Previous_LEDChannel = 0 # ' 13.02.2025 Juergen  fix ToDo's #27
     for idx in vbForRange(0, M02.LED_CHANNELS - 1):
         MaxLEDNrInSheet[idx] = - 1
     if not M30.WorksheetExists(SheetName):
@@ -1365,6 +1380,12 @@ def Store_ValuesTxt_Used():
 
 def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
     global ErrorText, Ext_AddrTxt, Store_ValuesTxt, InChTxt, LocInChNr, Channel, ConfigTxt, LEDs_per_ChannelList, Start_Values
+    if PG.global_controller.ARDUINOTest:
+        answer = tk.messagebox.askyesno ('ARDUINOTest','Schreiben der Headerdatei wird gestartet',default='yes')
+        if answer == False:
+            P01.set_statusmessage("Headerfileerstellung abgebrochen - Die Headerdatei wurde nicht geschrieben")
+            return False # no continuation      
+    
     _fn_return_value = False
     
     NumLeds = Long()
@@ -1439,7 +1460,9 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     VBFiles.writeText(fp, '#ifndef CONFIG_ONLY', '\n')
     # 04.03.22 Juergen: add Simulator feature
     VBFiles.writeText(fp, '#ifndef ARDUINO_RASPBERRY_PI_PICO', '\n')
+    VBFiles.writeText(fp, "#ifndef FASTLED_ESP32_I2S", '\n')
     VBFiles.writeText(fp, '#define FASTLED_INTERNAL       // Disable version number message in FastLED library (looks like an error)', '\n')
+    VBFiles.writeText(fp, "#endif", '\n')
     # 11.01.20: Added Block
     VBFiles.writeText(fp, '#include <FastLED.h>           // The FastLED library must be installed in addition if you got the error message "..fatal error: FastLED.h: No such file or directory"', '\n')
     VBFiles.writeText(fp, '                               // Arduino IDE: Sketch / Include library / Manage libraries                    Deutsche IDE: Sketch / Bibliothek einbinden / Bibliothek verwalten', '\n')
@@ -1452,7 +1475,8 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '#include <MobaLedLib.h>', '\n')
     VBFiles.writeText(fp, '', '\n')
-    VBFiles.writeText(fp, '#define START_MSG "LEDs_AutoProg Ver 1: ' + ShortPath + P01.Format(P01.Date_str(), 'dd.mm.yy') + ' ' + P01.Format(P01.Time_str(), 'hh:mm') + '"', '\n')
+    # 30.03.25 Juergen/Harold: add board type to version information
+    VBFiles.writeText(fp, '#define START_MSG "LEDs_AutoProg Ver 3: ' + M02a.Get_BoardTyp() + " " + M37.Get_Lib_Version("MobaLedLib") + M02.Test_Suffix + " " + P01.Format(P01.Date_str(), 'dd.mm.yy') + ' ' + P01.Format(P01.Time_str(), 'hh:mm') + '"', '\n')
     # The version could be read out in a future version of this tool
     VBFiles.writeText(fp, '', '\n')
     if M25.Page_ID == 'Selectrix':

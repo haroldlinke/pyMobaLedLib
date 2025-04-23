@@ -85,6 +85,7 @@ import logging
 #import random
 #import webbrowser
 from datetime import datetime
+import mlpyproggen.DefaultConstants as DF
 #import json
 
 VERSION ="V01.17 - 25.12.2019"
@@ -143,7 +144,7 @@ class SerialMonitorPage(tk.Frame):
         scroll.pack(side=tk.RIGHT,fill=tk.Y)
         # locate frames in main_frame
         # Tabframe
-        self.frame.grid(row=0,column=0)
+        self.frame.grid(row=0,column=0, sticky="n")
         self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
         # scroll_main_frame
         self.main_frame.grid(row=0,column=0)
@@ -202,6 +203,7 @@ class SerialMonitorPage(tk.Frame):
     def send(self,event=None):
         message = self.controller.get_macroparam_val(self.tabClassName, "SerialMonitorInput")+"\r\n" #self.input.get() +"\r\n"
         self.controller.send_to_ARDUINO(message)
+        
 
     def process_serial(self):
         #print("Serial MonitorPage - process_serial: Start")
@@ -226,26 +228,30 @@ class SerialMonitorPage(tk.Frame):
                         self.text.yview("end")
                         if readtext.startswith("JSON:"):
                             json_str = readtext[5:]
-                            if self.Z21page:
-                                self.Z21page.notifyZ21_RMBUS_DATA(json_str)
-                        elif readtext.startswith("#?"):
-                            temp_list = readtext.split(",")
-                            self.controller.max_ledcnt_list = temp_list[1:]
-                            self.controller.max_LEDchannel = len(self.controller.max_ledcnt_list)
-                            ledchannel_str = self.getConfigData("LEDchannel")
-                            if ledchannel_str != "":
-                                self.controller.LEDchannel = int(ledchannel_str)
-                            else:
-                                self.controller.LEDchannel = 0
-                            if len(self.controller.max_ledcnt_list)<=self.controller.LEDchannel:
-                                self.controller.LEDchannel = 0
-                            self.controller.set_maxLEDcnt(int(self.controller.max_ledcnt_list[self.controller.LEDchannel]))
-                            self.controller.LED_baseadress = 0
-                            maxLEDcnt = 0
-                            # maxLEDcnt = sum of all maxLEDcnt per channel
-                            for i in range (0,self.controller.max_LEDchannel):
-                                maxLEDcnt+=int(self.controller.max_ledcnt_list[i])
-                            self.controller.set_maxLEDcnt(maxLEDcnt)
+                            try:
+                                if self.check_RMBUS and self.Z21page:
+                                    self.Z21page.notifyZ21_RMBUS_DATA(json_str)
+                            except:
+                                pass
+                        elif readtext.startswith(DF.SerialIF_teststring1): #("#?LEDs_AutoProg"):
+                            #temp_list = readtext.split(",")
+                            #self.controller.max_ledcnt_list = temp_list[1:]
+                            #self.controller.max_LEDchannel = len(self.controller.max_ledcnt_list)
+                            #ledchannel_str = self.getConfigData("LEDchannel")
+                            #if ledchannel_str != "":
+                                #self.controller.LEDchannel = int(ledchannel_str)
+                            #else:
+                                #self.controller.LEDchannel = 0
+                            #if len(self.controller.max_ledcnt_list)<=self.controller.LEDchannel:
+                                #self.controller.LEDchannel = 0
+                            #self.controller.set_maxLEDcnt(int(self.controller.max_ledcnt_list[self.controller.LEDchannel]))
+                            #self.controller.LED_baseadress = 0
+                            #maxLEDcnt = 0
+                            ## maxLEDcnt = sum of all maxLEDcnt per channel
+                            #for i in range (0,self.controller.max_LEDchannel):
+                                #maxLEDcnt+=int(self.controller.max_ledcnt_list[i])
+                            #self.controller.set_maxLEDcnt(maxLEDcnt)
+                            self.controller.determine_ARDUINO_Properties_from_Startmessage(readtext)
                         else:
                             self.controller.set_ARDUINOmessage(textmessage)
                     except IOError:
@@ -261,7 +267,7 @@ class SerialMonitorPage(tk.Frame):
     def set_check_RMBUS(self,value=False):
                 
         if self.RMBUS_request_timer_confvalue>0:
-            self.check_RMBUS = False #value
+            self.check_RMBUS = value
         else:
             self.check_RMBUS = False
         if self.check_RMBUS:
@@ -330,7 +336,7 @@ class ReadLine:
                 i = max(1, min(2048, self.s.in_waiting)) # any bytes in buffer
                 data = self.s.read(1)                    # read one byte  
                 logging.debug("serialread from ARDUINO:"+ str(data)+ "("+str(data.hex())+")")
-                if data >= b"xD0": # binary communication detected, read one binary message
+                if data >= b"\xD0": # binary communication detected, read one binary message
                     chkSum = int.from_bytes(data,byteorder = "big")
                     toReadbyte = self.s.read(1) # read length byte
                     logging.debug("serialread from ARDUINO length:"+ str(toReadbyte)+ "("+str(toReadbyte.hex())+")")
@@ -339,7 +345,7 @@ class ReadLine:
                     result = "JSON:{\"RMBUS\": \""
                     for i in range(msg_length):
                         Readbyte = self.s.read(1)
-                        logging.debug("serialread from ARDUINO length:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
+                        logging.debug("serialread from ARDUINO:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
                         ReadbyteInt = int.from_bytes(Readbyte,byteorder = "big")
                         chkSum ^= ReadbyteInt
                         if i < msg_length-1: # handle data bytes, last byte is for checksum only
@@ -385,10 +391,16 @@ class SerialThread(threading.Thread):
                     if text != None:
                         if len(text)>0:
                             try:
-                                self.queue.put(text.decode('utf-8'))
-                                logging.info("SerialThread (%s) got message: %s", self.serialport_name,str(text.decode('utf-8')))
-                            except:
-                                self.queue.put(text)
+                                text_dec = str(text.decode('utf-8'))
+                                if not text_dec.startswith("****"):
+                                    self.queue.put(text_dec)
+                                    logging.info("SerialThread (%s) got message: %s", self.serialport_name,text_dec)
+                                else:
+                                    logging.info("SerialThread (%s) got debug message: %s", self.serialport_name,str(text.decode('utf-8')))
+                            except BaseException as e:
+                                logging.debug(e, exc_info=True) 
                                 logging.info("SerialThread (%s) got message: %s", self.serialport_name,str(text))
+                                self.queue.put(str(text))
+                                
         logging.info("SerialThread (%s) received event. Exiting", self.serialport_name)
 

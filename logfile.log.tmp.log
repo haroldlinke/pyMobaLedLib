@@ -1,0 +1,1047 @@
+14:52:33 - Python Version: 3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]
+14:52:33 - MLL Proggenerator started V5.3.6a - 19.04.2025
+14:52:33 -  Platform: Windows-10-10.0.19045-SP0
+14:52:33 - Parameters; Namespace(loglevel='DEBUG', logfile=None, loaddatafile=None, startpage=None, port=None, z21simulator=None, caller=None, test=None, vb2py='True', special=None, ARDUINO_IDE=None, ESP32WINBAT='True')
+14:52:33 - Installationfolder D:\data\doc\GitHub\pyMobaLedLib\python
+14:52:33 - Logging Level: DEBUG Logfilename: D:\data\doc\GitHub\pyMobaLedLib\python\../logfile.log
+14:52:33 -  Startpage: StartPage
+14:52:33 - [Errno 2] No such file or directory: 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\ColorTestOnly.txt'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\pyMobaLedLib.py", line 3708, in main_entry
+    open(filepath1, 'r').close()
+    ^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\ColorTestOnly.txt'
+14:52:33 - Commandline args: {'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.log', 'startpagename': 'StartPage', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True}
+14:52:34 - readConfigData
+14:52:34 - Warning: Config File D:\data\doc\GitHub\pyMobaLedLib\python\MobaLedTest_param.json not found
+14:52:34 - Read Paramdata: {}
+14:52:34 - ReadConfig: ../../MobaLedTest_config.json D:\data\doc\GitHub\pyMobaLedLib\python
+{'serportnumber': 0, 'serportname': 'COM8', 'baudrate': 115200, 'maxLEDcount': '20', 'lastLedCount': 1, 'lastLedChannel': 0, 'lastLed': 0, 'pos_x': 1912, 'pos_y': -8, 'win_height': 1377, 'win_width': 2560, 'colorview': 1, 'startpage': 3, 'startpagename': 'StartPage', 'led_correction_r': 255, 'led_correction_g': 175, 'led_correction_b': 239, 'use_led_correction': True, 'old_color': '#FF455B', 'palette': {'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'GAS_LIGHT D': '#323232', 'GAS LIGHT': '#FFFFFF', 'NEON_LIGHT D': '#14141B', 'NEON_LIGHT M': '#464650', 'NEON_LIGHT': '#F5F5FF', 'ROOM_TV0 A': '#323214', 'ROOM_TV0 B': '#46461E', 'ROOM_TV1 A': '#323208', 'ROOM_TV1 B': '#323208', 'SINGLE_LED': '#FFFFFF', 'SINGLE_LED D': '#323232'}, 'effectpalette': {'House': {'ROOM_DARK': '#323232', 'ROOM_BRIGHT': '#FFFFFF', 'ROOM_WARM_W': '#934D08', 'ROOM_RED': '#FF0000', 'ROOM_D_RED': '#320009', 'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'ROOM_COL345': '#271201', 'FIRE': '#000000', 'FIRED': '#000000', 'FIREB': '#000000', 'ROOM_CHIMNEY': '#000000', 'ROOM_CHIMNEYD': '#000000', 'ROOM_CHIMNEYB': '#000000', 'ROOM_TV0': '#323214', 'ROOM_TV0_CHIMNEY': '#323214', 'ROOM_TV0_CHIMNEYD': '#323214', 'ROOM_TV0_CHIMNEYB': '#323214', 'ROOM_TV1': '#323208', 'ROOM_TV1_CHIMNEY': '#323208', 'ROOM_TV1_CHIMNEYD': '#323208', 'ROOM_TV1_CHIMNEYB': '#323208', 'NEON_LIGHT': '#F5F5FF', 'NEON_LIGHT_SGL': '#F5F5FF', 'NEON_LIGHT1': '#F5F5FF', 'NEON_LIGHT2': '#F5F5FF', 'NEON_LIGHT3': '#F5F5FF', 'NEON_LIGHTD': '#14141B', 'NEON_LIGHTD_SGL': '#14141B', 'NEON_LIGHT1D': '#14141B', 'NEON_LIGHT2D': '#14141B', 'NEON_LIGHT3D': '#14141B', 'NEON_LIGHTM': '#464650', 'NEON_LIGHTM_SGL': '#464650', 'NEON_LIGHT1M': '#464650', 'NEON_LIGHT2M': '#464650', 'NEON_LIGHT3M': '#464650', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': '#14141B', 'NEON_DEF_D_SGL': '#14141B', 'NEON_DEF1D': '#14141B', 'NEON_DEF2D': '#14141B', 'NEON_DEF3D': '#14141B', 'LED_SGL': '#FFFFFF', 'SINGLE_LED1': '#FFFFFF', 'SINGLE_LED2': '#FFFFFF', 'SINGLE_LED3': '#FFFFFF', 'LED_D_SGL': '#323232', 'SINGLE_LED1D': '#323232', 'SINGLE_LED2D': '#323232', 'SINGLE_LED3D': '#323232', 'GAS_LIGHT': '#FFFFFF', 'GAS_LIGHT_SGL': '#FFFFFF', 'GAS_LIGHT1': '#FFFFFF', 'GAS_LIGHT2': '#FFFFFF', 'GAS_LIGHT3': '#FFFFFF', 'GAS_LIGHTD': '#323232', 'GAS_LIGHTD_SGL': '#323232', 'GAS_LIGHT1D': '#323232', 'GAS_LIGHT2D': '#323232', 'GAS_LIGHT3D': '#323232', 'SKIP_ROOM': '#000000'}, 'Const': {}, 'GasLights': {'NEON_LIGHT': 'NEON_LIGHT', 'NEON_LIGHT_SGL': 'NEON_LIGHT', 'NEON_LIGHT1': 'NEON_LIGHT', 'NEON_LIGHT2': 'NEON_LIGHT', 'NEON_LIGHT3': 'NEON_LIGHT', 'NEON_LIGHTD': 'NEON_LIGHT D', 'NEON_LIGHTD_SGL': 'NEON_LIGHT D', 'NEON_LIGHT1D': 'NEON_LIGHT D', 'NEON_LIGHT2D': 'NEON_LIGHT D', 'NEON_LIGHT3D': 'NEON_LIGHT D', 'NEON_LIGHTM': 'NEON_LIGHT M', 'NEON_LIGHTM_SGL': 'NEON_LIGHT M', 'NEON_LIGHT1M': 'NEON_LIGHT M', 'NEON_LIGHT2M': 'NEON_LIGHT M', 'NEON_LIGHT3M': 'NEON_LIGHT M', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': 'NEON_LIGHT D', 'NEON_DEF_D_SGL': 'NEON_LIGHT D', 'NEON_DEF1D': 'NEON_LIGHT D', 'NEON_DEF2D': 'NEON_LIGHT D', 'NEON_DEF3D': 'NEON_LIGHT D', 'GAS_LIGHT': 'GAS LIGHT', 'GAS_LIGHT_SGL': 'GAS LIGHT', 'GAS_LIGHT1': 'GAS LIGHT', 'GAS_LIGHT2': 'GAS LIGHT', 'GAS_LIGHT3': 'GAS LIGHT', 'GAS_LIGHTD': 'GAS_LIGHT D', 'GAS_LIGHTD_SGL': 'GAS_LIGHT D', 'GAS_LIGHT1D': 'GAS_LIGHT D', 'GAS_LIGHT2D': 'GAS_LIGHT D', 'GAS_LIGHT3D': 'GAS_LIGHT D'}}, 'old_effect': 'ROOM_DARK', 'group_name': 'Group001', 'autoconnect': False, 'lastSound': 0, 'lastSoundImpuls': 200, 'startcmdcb': False, 'startcmd_filename': '', 'resourcePathcb': False, 'resourcePath_filename': '', 'ArduinoTypeName': 'Nano/Uno (neu)', 'ArduinoTypeNumber': 1, 'Z21Data': {'0': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '1': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '2': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}}, 'lastservo_channel': 1, 'DCC BaseAddress': 100, 'ServoAddress': 0, 'ServoLEDChannel': 0, 'ServoChannel': 0, 'SoundAddress': 0, 'SoundLEDChannel': 0, 'SoundImpulsLength': 200, 'Sound_RED': 8, 'Sound_GREEN': 3, 'Sound_BLUE': 6, 'baudratenumber': 0, 'ARDUINOMessage': 0, 'Autoconnect': 0, 'ARDUINOShowAll': True, 'ARDUINOTakeOver': True, 'ARDUINOTest': False, 'UseZ21Data': False, 'ARDUINOBlink': False, 'MLLDigSysName': 'None', 'MLLDigSysNumber': 0, 'Baudrate': 115200, 'FontTitle': 12, 'FontLabel': 8, 'FontSpinbox': 8, 'FontScale': 8, 'FontName': 'Arial', 'FontNormal': 11, 'FontLarge': 14, 'FontSmall': 8, 'RMbusTimer': 100, 'ShowProgramGenerator': True, 'ShowPatternGenerator': False, 'ShowZ21Simulator': True, 'ShowHiddentables': False, 'PGIconSize': 10, 'AutoLoadWorkbooks': True, 'UseCOM_Port_UserForm': False, 'languagename': 'Auto', 'language': 0, 'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.log', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'LEDchannel': '', 'lastactive_tabname': 'ProgGeneratorPage'}
+14:52:34 - running in a normal Python process
+14:52:34 - ReadConfig: {'serportnumber': 0, 'serportname': 'COM8', 'baudrate': 115200, 'maxLEDcount': '20', 'lastLedCount': 1, 'lastLedChannel': 0, 'lastLed': 0, 'pos_x': 1912, 'pos_y': -8, 'win_height': 1377, 'win_width': 2560, 'colorview': 1, 'startpage': 3, 'startpagename': 'StartPage', 'led_correction_r': 255, 'led_correction_g': 175, 'led_correction_b': 239, 'use_led_correction': True, 'old_color': '#FF455B', 'palette': {'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'GAS_LIGHT D': '#323232', 'GAS LIGHT': '#FFFFFF', 'NEON_LIGHT D': '#14141B', 'NEON_LIGHT M': '#464650', 'NEON_LIGHT': '#F5F5FF', 'ROOM_TV0 A': '#323214', 'ROOM_TV0 B': '#46461E', 'ROOM_TV1 A': '#323208', 'ROOM_TV1 B': '#323208', 'SINGLE_LED': '#FFFFFF', 'SINGLE_LED D': '#323232'}, 'effectpalette': {'House': {'ROOM_DARK': '#323232', 'ROOM_BRIGHT': '#FFFFFF', 'ROOM_WARM_W': '#934D08', 'ROOM_RED': '#FF0000', 'ROOM_D_RED': '#320009', 'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'ROOM_COL345': '#271201', 'FIRE': '#000000', 'FIRED': '#000000', 'FIREB': '#000000', 'ROOM_CHIMNEY': '#000000', 'ROOM_CHIMNEYD': '#000000', 'ROOM_CHIMNEYB': '#000000', 'ROOM_TV0': '#323214', 'ROOM_TV0_CHIMNEY': '#323214', 'ROOM_TV0_CHIMNEYD': '#323214', 'ROOM_TV0_CHIMNEYB': '#323214', 'ROOM_TV1': '#323208', 'ROOM_TV1_CHIMNEY': '#323208', 'ROOM_TV1_CHIMNEYD': '#323208', 'ROOM_TV1_CHIMNEYB': '#323208', 'NEON_LIGHT': '#F5F5FF', 'NEON_LIGHT_SGL': '#F5F5FF', 'NEON_LIGHT1': '#F5F5FF', 'NEON_LIGHT2': '#F5F5FF', 'NEON_LIGHT3': '#F5F5FF', 'NEON_LIGHTD': '#14141B', 'NEON_LIGHTD_SGL': '#14141B', 'NEON_LIGHT1D': '#14141B', 'NEON_LIGHT2D': '#14141B', 'NEON_LIGHT3D': '#14141B', 'NEON_LIGHTM': '#464650', 'NEON_LIGHTM_SGL': '#464650', 'NEON_LIGHT1M': '#464650', 'NEON_LIGHT2M': '#464650', 'NEON_LIGHT3M': '#464650', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': '#14141B', 'NEON_DEF_D_SGL': '#14141B', 'NEON_DEF1D': '#14141B', 'NEON_DEF2D': '#14141B', 'NEON_DEF3D': '#14141B', 'LED_SGL': '#FFFFFF', 'SINGLE_LED1': '#FFFFFF', 'SINGLE_LED2': '#FFFFFF', 'SINGLE_LED3': '#FFFFFF', 'LED_D_SGL': '#323232', 'SINGLE_LED1D': '#323232', 'SINGLE_LED2D': '#323232', 'SINGLE_LED3D': '#323232', 'GAS_LIGHT': '#FFFFFF', 'GAS_LIGHT_SGL': '#FFFFFF', 'GAS_LIGHT1': '#FFFFFF', 'GAS_LIGHT2': '#FFFFFF', 'GAS_LIGHT3': '#FFFFFF', 'GAS_LIGHTD': '#323232', 'GAS_LIGHTD_SGL': '#323232', 'GAS_LIGHT1D': '#323232', 'GAS_LIGHT2D': '#323232', 'GAS_LIGHT3D': '#323232', 'SKIP_ROOM': '#000000'}, 'Const': {}, 'GasLights': {'NEON_LIGHT': 'NEON_LIGHT', 'NEON_LIGHT_SGL': 'NEON_LIGHT', 'NEON_LIGHT1': 'NEON_LIGHT', 'NEON_LIGHT2': 'NEON_LIGHT', 'NEON_LIGHT3': 'NEON_LIGHT', 'NEON_LIGHTD': 'NEON_LIGHT D', 'NEON_LIGHTD_SGL': 'NEON_LIGHT D', 'NEON_LIGHT1D': 'NEON_LIGHT D', 'NEON_LIGHT2D': 'NEON_LIGHT D', 'NEON_LIGHT3D': 'NEON_LIGHT D', 'NEON_LIGHTM': 'NEON_LIGHT M', 'NEON_LIGHTM_SGL': 'NEON_LIGHT M', 'NEON_LIGHT1M': 'NEON_LIGHT M', 'NEON_LIGHT2M': 'NEON_LIGHT M', 'NEON_LIGHT3M': 'NEON_LIGHT M', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': 'NEON_LIGHT D', 'NEON_DEF_D_SGL': 'NEON_LIGHT D', 'NEON_DEF1D': 'NEON_LIGHT D', 'NEON_DEF2D': 'NEON_LIGHT D', 'NEON_DEF3D': 'NEON_LIGHT D', 'GAS_LIGHT': 'GAS LIGHT', 'GAS_LIGHT_SGL': 'GAS LIGHT', 'GAS_LIGHT1': 'GAS LIGHT', 'GAS_LIGHT2': 'GAS LIGHT', 'GAS_LIGHT3': 'GAS LIGHT', 'GAS_LIGHTD': 'GAS_LIGHT D', 'GAS_LIGHTD_SGL': 'GAS_LIGHT D', 'GAS_LIGHT1D': 'GAS_LIGHT D', 'GAS_LIGHT2D': 'GAS_LIGHT D', 'GAS_LIGHT3D': 'GAS_LIGHT D'}}, 'old_effect': 'ROOM_DARK', 'group_name': 'Group001', 'autoconnect': False, 'lastSound': 0, 'lastSoundImpuls': 200, 'startcmdcb': False, 'startcmd_filename': '', 'resourcePathcb': False, 'resourcePath_filename': '', 'ArduinoTypeName': 'Nano/Uno (neu)', 'ArduinoTypeNumber': 1, 'Z21Data': {'0': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '1': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '2': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}}, 'lastservo_channel': 1, 'DCC BaseAddress': 100, 'ServoAddress': 0, 'ServoLEDChannel': 0, 'ServoChannel': 0, 'SoundAddress': 0, 'SoundLEDChannel': 0, 'SoundImpulsLength': 200, 'Sound_RED': 8, 'Sound_GREEN': 3, 'Sound_BLUE': 6, 'baudratenumber': 0, 'ARDUINOMessage': 0, 'Autoconnect': 0, 'ARDUINOShowAll': True, 'ARDUINOTakeOver': True, 'ARDUINOTest': False, 'UseZ21Data': False, 'ARDUINOBlink': False, 'MLLDigSysName': 'None', 'MLLDigSysNumber': 0, 'Baudrate': 115200, 'FontTitle': 12, 'FontLabel': 8, 'FontSpinbox': 8, 'FontScale': 8, 'FontName': 'Arial', 'FontNormal': 11, 'FontLarge': 14, 'FontSmall': 8, 'RMbusTimer': 100, 'ShowProgramGenerator': True, 'ShowPatternGenerator': False, 'ShowZ21Simulator': True, 'ShowHiddentables': False, 'PGIconSize': 10, 'AutoLoadWorkbooks': True, 'UseCOM_Port_UserForm': False, 'languagename': 'Auto', 'language': 0, 'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.log', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'LEDchannel': '', 'lastactive_tabname': 'ProgGeneratorPage'}
+14:52:34 - Font sizenormal: 11 sizelarge: 14 sizesmall: 8
+14:52:35 - Screenwidht: 1920 Screenheight: 1080 ScaleFactor: 1.0
+14:52:35 - Windowwidth: 2560 Windowheight: 1377
+14:52:35 - pos_x: 1912 pos_y: -8
+14:52:35 - set_statusmessage: Erstelle ProgramGenerator Seite ...
+14:52:35 - set_statusmessage: Erstelle Workbook: ProgGenerator
+14:52:35 - set_statusmessage: Erstelle WorkSheet: DCC
+14:52:36 - STREAM b'IHDR' 16 13
+14:52:36 - STREAM b'sRGB' 41 1
+14:52:36 - STREAM b'gAMA' 54 4
+14:52:36 - STREAM b'pHYs' 70 9
+14:52:36 - STREAM b'IDAT' 91 6382
+14:52:36 - STREAM b'IHDR' 16 13
+14:52:36 - STREAM b'sRGB' 41 1
+14:52:36 - STREAM b'gAMA' 54 4
+14:52:36 - STREAM b'pHYs' 70 9
+14:52:36 - STREAM b'IDAT' 91 5037
+14:52:37 - set_statusmessage: Erstelle WorkSheet: Selectrix
+14:52:37 - set_statusmessage: Erstelle WorkSheet: CAN
+14:52:37 - set_statusmessage: Erstelle WorkSheet: LNet
+14:52:37 - set_statusmessage: Erstelle WorkSheet: Examples
+14:52:37 - set_statusmessage: Erstelle WorkSheet: Config
+14:52:37 - set_statusmessage: Erstelle WorkSheet: Languages
+14:52:37 - set_statusmessage: Erstelle WorkSheet: Lib_Macros
+14:52:37 - set_statusmessage: Erstelle WorkSheet: Libraries
+14:52:37 - set_statusmessage: Erstelle WorkSheet: Par_Description
+14:52:37 - set_statusmessage: Erstelle WorkSheet: Platform_Parameters
+14:52:37 - set_statusmessage: Erstelle WorkSheet: Named_Ranges
+14:52:37 - Set_activeworkbook:	ProgGenerator
+14:52:37 - Set_activeworkbook:	ProgGenerator
+14:52:37 - Set_activeworkbook:	ProgGenerator
+14:52:37 - Set_activeworkbook:	ProgGenerator
+14:52:37 - Load Workbook:D:\data\doc\GitHub\pyMobaLedLib\python\../temp_workbook.table_ProgGenerator.json
+14:52:37 - FileVersion:V5.3.6a - 19.04.2025
+14:52:37 - set_statusmessage: Erstelle WorkSheet: DCC_1
+14:52:37 - set_statusmessage: Workbook: ProgGenerator Loading:DCC
+14:52:37 - Set_activeworkbook:	ProgGenerator
+14:52:37 - Set_activeworkbook:	ProgGenerator
+14:52:37 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+14:52:37 - set_statusmessage: Workbook: ProgGenerator Loading:Selectrix
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:CAN
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:LNet
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:Examples
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:Config
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:Languages
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:Lib_Macros
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:Libraries
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:Par_Description
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:Platform_Parameters
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:Named_Ranges
+14:52:38 - set_statusmessage: Workbook: ProgGenerator Loading:DCC_1
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: DCC
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Selectrix
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: CAN
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: LNet
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Examples
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Config
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Languages
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Lib_Macros
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Libraries
+14:52:38 - add_controls
+14:52:38 - add_controls:{'Name': 'Check_Actual_Versions', 'BackColor': '#FFFFFF', 'BorderColor': '#000012', 'Caption': '', 'Height': 24, 'Left': None, 'Col': 2, 'Top': None, 'Row': 2, 'Type': 'FormWindow', 'Visible': True, 'Width': 74, 'Components': [{'Name': 'Check_Actual_Versions', 'Accelerator': '', 'BackColor': '#00000F', 'BorderColor': '#000006', 'BorderStyle': 'fmBorderStyleNone', 'IconName': '', 'Caption': 'Check actual versions', 'Command': 'button_check_actual_versions_cmd', 'ControlTipText': '', 'ForeColor': '#000012', 'Height': 20, 'Left': 2, 'Top': 2, 'Type': 'CommandButton', 'Visible': True, 'Width': 70}]}
+14:52:38 - add_controls:{'Name': 'Install_Selected', 'BackColor': '#FFFFFF', 'BorderColor': '#000012', 'Caption': '', 'Height': 24, 'Left': None, 'Col': 2, 'Top': None, 'Row': 4, 'Type': 'FormWindow', 'Visible': True, 'Width': 74, 'Components': [{'Name': 'Install_Selected', 'Accelerator': '', 'BackColor': '#00000F', 'BorderColor': '#000006', 'BorderStyle': 'fmBorderStyleNone', 'IconName': '', 'Caption': 'Install selected', 'Command': 'button_install_selected_cmd', 'ControlTipText': '', 'ForeColor': '#000012', 'Height': 20, 'Left': 2, 'Top': 2, 'Type': 'CommandButton', 'Visible': True, 'Width': 70}]}
+14:52:38 - add_controls:{'Name': 'Delete_Selected', 'BackColor': '#FFFFFF', 'BorderColor': '#000012', 'Caption': '', 'Height': 24, 'Left': None, 'Col': 2, 'Top': None, 'Row': 6, 'Type': 'FormWindow', 'Visible': True, 'Width': 74, 'Components': [{'Name': 'Delete_Selected', 'Accelerator': '', 'BackColor': '#00000F', 'BorderColor': '#000006', 'BorderStyle': 'fmBorderStyleNone', 'IconName': '', 'Caption': 'Delete selected', 'Command': 'button_delete_selected_cmd', 'ControlTipText': '', 'ForeColor': '#000012', 'Height': 20, 'Left': 2, 'Top': 2, 'Type': 'CommandButton', 'Visible': True, 'Width': 70}]}
+14:52:38 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1092, from_c=0, upto_r=1094, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1092, column=0, type_='row', tags=('selected', '1092_0_1094_9', 'iid_3', '1092_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:52:38 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:52:38 - Evt_SheetBeforeDoubleClick:'Check actual versions'
+14:52:38 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:52:38 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1094, from_c=0, upto_r=1096, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1094, column=0, type_='row', tags=('selected', '1094_0_1096_9', 'iid_6', '1094_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:52:38 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:52:38 - Evt_SheetBeforeDoubleClick:'Install selected'
+14:52:38 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:52:38 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1096, from_c=0, upto_r=1098, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1096, column=0, type_='row', tags=('selected', '1096_0_1098_9', 'iid_9', '1096_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:52:38 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:52:38 - Evt_SheetBeforeDoubleClick:'Delete selected'
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Par_Description
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Platform_Parameters
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Named_Ranges
+14:52:38 - set_statusmessage: Init Workbook: ProgGenerator Sheet: DCC_1
+14:52:38 - Set_activeworkbook:	ProgGenerator
+14:52:38 - Set_activeworkbook:	ProgGenerator
+14:52:38 - set_statusmessage: Init WorkbookFunction: ProgGenerator
+14:52:38 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+14:52:38 - Workbook_init - AppLoc_Ardu:\AppData\Local\Arduino15\
+14:52:38 - Workbook_init - Env_USERPROFILE:USERPROFILE
+14:52:38 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:52:38 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1098, from_c=0, upto_r=1100, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1098, column=0, type_='row', tags=('selected', '1098_0_1100_9', 'iid_12', '1098_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:52:38 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:52:38 - Evt_SheetBeforeDoubleClick:'Simple Input'
+14:52:38 - Workbook_Open() called
+14:52:38 - Workbook_Open() called
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:50 - EventSH_cellselected
+14:52:53 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:52:53 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:52:53 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:52:53 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:52:53 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - Set_activeworkbook:	ProgGenerator
+14:53:05 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+14:53:14 - Update_General_Versions
+14:53:14 - Update_General_Versions
+14:53:20 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:20 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:20 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:53:20 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:53:20 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:26 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:26 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:26 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:53:26 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:53:26 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:26 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/arduino/hardware/avr/*.*
+14:53:26 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/arduino/hardware/avr/*.*
+14:53:26 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/arduino/hardware/avr\\1.8.6']
+14:53:26 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/arduino/hardware/avr\\1.8.6']
+14:53:30 - Get_All_Library_States
+14:53:30 - Get_All_Library_States
+14:53:30 - Read_Sketchbook_Path_from_preference_txt - Name:C:\Users\Harold\AppData\Local\Arduino15\preferences.txt
+14:53:30 - Read_Sketchbook_Path_from_preference_txt - Name:C:\Users\Harold\AppData\Local\Arduino15\preferences.txt
+14:53:30 - Sketchbookpath=C:\Users\Harold\Documents\Arduino
+14:53:30 - Create_Folder:C:\Users\Harold\Documents\Arduino/
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/FastLED/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/FastLED/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/FastLED/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/FastLED/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/NmraDcc/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/NmraDcc/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/NmraDcc/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/NmraDcc/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/AnalogScanner/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/AnalogScanner/library.properties
+14:53:30 - _last_files: None
+14:53:30 - _last_files: None
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/ATtinySerialOut/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/ATtinySerialOut/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/ATtinySerialOut/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/ATtinySerialOut/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/DIO2/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/DIO2/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/DIO2/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/DIO2/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/EWMA/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/EWMA/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/EWMA/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/EWMA/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaTools/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaTools/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaTools/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaTools/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/LocoNet/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/LocoNet/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/LocoNet/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/LocoNet/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/TimerOne/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/TimerOne/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/TimerOne/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/TimerOne/library.properties']
+14:53:30 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/ATTinyCore/hardware/avr/*.*
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/ATTinyCore/hardware/avr/*.*
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/ATTinyCore/hardware/avr\\1.5.2']
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/ATTinyCore/hardware/avr\\1.5.2']
+14:53:30 - _last_files: None
+14:53:30 - _last_files: None
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/ATTinyCore/hardware/avr/1.5.2/libraries/ATTinyCore/src/ATTinyCore.h
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/ATTinyCore/hardware/avr/1.5.2/libraries/ATTinyCore/src/ATTinyCore.h
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/ATTinyCore/hardware/avr/1.5.2/libraries/ATTinyCore/src/ATTinyCore.h']
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/ATTinyCore/hardware/avr/1.5.2/libraries/ATTinyCore/src/ATTinyCore.h']
+14:53:30 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:30 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:30 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:53:30 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:53:30 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/arduino/hardware/avr/*.*
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/arduino/hardware/avr/*.*
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/arduino/hardware/avr\\1.8.6']
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/arduino/hardware/avr\\1.8.6']
+14:53:30 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/hardware/esp32/*.*
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/hardware/esp32/*.*
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/hardware/esp32\\1.0.4']
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/hardware/esp32\\1.0.4']
+14:53:30 - _last_files: None
+14:53:30 - _last_files: None
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/hardware/esp32/1.0.4/libraries/ESP32/src/dummy.h
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/hardware/esp32/1.0.4/libraries/ESP32/src/dummy.h
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/hardware/esp32/1.0.4/libraries/ESP32/src/dummy.h']
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/hardware/esp32/1.0.4/libraries/ESP32/src/dummy.h']
+14:53:30 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/tools\esptool_py/*.*
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/tools\esptool_py/*.*
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/tools\\esptool_py\\2.6.1']
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/tools\\esptool_py\\2.6.1']
+14:53:30 - _last_files: None
+14:53:30 - _last_files: None
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/tools\esptool_py/2.6.1/esptool.exe
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/tools\esptool_py/2.6.1/esptool.exe
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/tools\\esptool_py/2.6.1/esptool.exe']
+14:53:30 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/tools\\esptool_py/2.6.1/esptool.exe']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/WiFiManager/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/WiFiManager/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/WiFiManager/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/WiFiManager/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/U8g2/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/U8g2/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/U8g2/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/U8g2/library.properties']
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/EspSoftwareSerial/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/EspSoftwareSerial/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/EspSoftwareSerial/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/EspSoftwareSerial/library.properties']
+14:53:30 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/rp2040/hardware/rp2040/*.*
+14:53:30 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/rp2040/hardware/rp2040/*.*
+14:53:30 - _last_files: None
+14:53:30 - _last_files: None
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/LocoNet2/library.properties
+14:53:30 - Dir:C:\Users\Harold\Documents\Arduino/libraries/LocoNet2/library.properties
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/LocoNet2/library.properties']
+14:53:30 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/LocoNet2/library.properties']
+14:55:21 - Get_Sketchbook_Path called
+14:55:21 - Get_Sketchbook_Path called
+14:55:21 - Get_Sketchbook_Path=C:\Users\Harold\Documents\Arduino
+14:55:21 - Get_SrcDirInLib=C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/extras/
+14:55:21 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:21 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1100, from_c=0, upto_r=1102, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1100, column=0, type_='row', tags=('selected', '1100_0_1102_9', 'iid_15', '1100_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:21 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:21 - Evt_SheetBeforeDoubleClick:'Alle|\nEinblenden'
+14:55:21 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:21 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1102, from_c=0, upto_r=1104, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1102, column=0, type_='row', tags=('selected', '1102_0_1104_9', 'iid_18', '1102_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:21 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:21 - Evt_SheetBeforeDoubleClick:'Neue|\nTabelle'
+14:55:21 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:21 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1104, from_c=0, upto_r=1106, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1104, column=0, type_='row', tags=('selected', '1104_0_1106_9', 'iid_21', '1104_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:21 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:21 - Evt_SheetBeforeDoubleClick:'Hilfe'
+14:55:21 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:21 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1106, from_c=0, upto_r=1108, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1106, column=0, type_='row', tags=('selected', '1106_0_1108_9', 'iid_24', '1106_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:21 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:21 - Evt_SheetBeforeDoubleClick:'*Grafik'
+14:55:21 - Colorcorrection:1.0
+14:55:21 - SoundCheckPage - Multipleparams
+14:55:21 - ConfigurationPage - Multipleparams
+14:55:21 - ConfigurationPage - Multipleparams
+14:55:21 - ConfigurationPage - Multipleparams
+14:55:21 - Set_activeworkbook:	ProgGenerator
+14:55:21 - Set_activeworkbook:	ProgGenerator
+14:55:21 - Tabselected: Programm
+Generator
+14:55:21 - Set_activeworkbook:	ProgGenerator
+14:55:21 - Set_activeworkbook:	ProgGenerator
+14:55:21 - TabChanged  - .!notebook.!prog_generatorpage
+14:55:21 - TK-Version:8.6.12
+14:55:21 - Portname: COM8
+14:55:21 - Checkplatform: Current platform=Windows- Checked Platform=Darwin
+14:55:21 - connect COM8
+14:55:21 - set_connectstatusmessage: Versuch sich mit dem ARDUINO am Port COM8 zu verbinden ...
+14:55:21 - could not open port 'COM8': FileNotFoundError(2, 'Das System kann die angegebene Datei nicht finden.', None, 2)
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\pyMobaLedLib.py", line 1157, in connect
+    self.arduino = serial.Serial(port,baudrate=baudrate,timeout=2,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\serial\serialwin32.py", line 31, in __init__
+    super(Serial, self).__init__(*args, **kwargs)
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\serial\serialutil.py", line 240, in __init__
+    self.open()
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\serial\serialwin32.py", line 62, in open
+    raise SerialException("could not open port {!r}: {!r}".format(self.portstr, ctypes.WinError()))
+serial.serialutil.SerialException: could not open port 'COM8': FileNotFoundError(2, 'Das System kann die angegebene Datei nicht finden.', None, 2)
+14:55:24 - set_connectstatusmessage: Nicht Verbunden
+14:55:41 - ARDUINO
+Monitor: Textwindow: *******************************************************
+14:55:41 - ARDUINO
+Monitor: Textwindow: Preparation of Program Started
+14:55:41 - ARDUINO
+Monitor: Textwindow: *******************************************************
+14:55:41 - Tabunselected: Programm
+Generator
+14:55:41 - Tabselected: ARDUINO
+Monitor
+14:55:41 - TabChanged .!notebook.!prog_generatorpage - .!notebook.!arduinomonitorpage
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1108, from_c=0, upto_r=1110, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1108, column=0, type_='row', tags=('selected', '1108_0_1110_9', 'iid_27', '1108_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:41 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt'
+14:55:41 - set_statusmessage: Headerfile wird erstellt
+14:55:41 - Shift_pressed: %s	False
+14:55:41 - Shift_pressed: %s	False
+14:55:41 - Set_activeworkbook:	ProgGenerator
+14:55:41 - Set_activeworkbook:	ProgGenerator
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1110, from_c=0, upto_r=1112, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1110, column=0, type_='row', tags=('selected', '1110_0_1112_9', 'iid_30', '1110_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:41 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 3'
+14:55:41 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 3
+14:55:41 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 3
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1112, from_c=0, upto_r=1114, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1112, column=0, type_='row', tags=('selected', '1112_0_1114_9', 'iid_33', '1112_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:41 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 4'
+14:55:41 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 4
+14:55:41 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 4
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1114, from_c=0, upto_r=1116, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1114, column=0, type_='row', tags=('selected', '1114_0_1116_9', 'iid_36', '1114_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:41 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 5'
+14:55:41 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 5
+14:55:41 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 5
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1116, from_c=0, upto_r=1118, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1116, column=0, type_='row', tags=('selected', '1116_0_1118_9', 'iid_39', '1116_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:41 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 6'
+14:55:41 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 6
+14:55:41 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 6
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1118, from_c=0, upto_r=1120, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1118, column=0, type_='row', tags=('selected', '1118_0_1120_9', 'iid_42', '1118_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:41 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 7'
+14:55:41 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 7
+14:55:41 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 7
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1120, from_c=0, upto_r=1122, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1120, column=0, type_='row', tags=('selected', '1120_0_1122_9', 'iid_45', '1120_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:41 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 8'
+14:55:41 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 8
+14:55:41 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 8
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1122, from_c=0, upto_r=1124, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1122, column=0, type_='row', tags=('selected', '1122_0_1124_9', 'iid_48', '1122_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:41 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 9'
+14:55:41 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 9
+14:55:41 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 9
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1124, from_c=0, upto_r=1126, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1124, column=0, type_='row', tags=('selected', '1124_0_1126_9', 'iid_51', '1124_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:41 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:41 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 10'
+14:55:41 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 10
+14:55:41 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 10
+14:55:42 - Attention: Macro '// #LEDColorAnim(0,0,500,0,128,255,100,255,128,2000,2000,200,200,200,200,0,0,1) not found in 'Lib_Macros'
+14:55:42 - Attention: Macro '// #LEDColorAnim(0,0,500,0,128,255,100,255,128,2000,2000,200,200,200,200,0,0,1) not found in 'Lib_Macros'
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1126, from_c=0, upto_r=1128, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1126, column=0, type_='row', tags=('selected', '1126_0_1128_9', 'iid_54', '1126_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:43 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 11'
+14:55:43 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 11
+14:55:43 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 11
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1128, from_c=0, upto_r=1130, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1128, column=0, type_='row', tags=('selected', '1128_0_1130_9', 'iid_57', '1128_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:43 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 12'
+14:55:43 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 12
+14:55:43 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 12
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1130, from_c=0, upto_r=1132, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1130, column=0, type_='row', tags=('selected', '1130_0_1132_9', 'iid_60', '1130_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:43 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 13'
+14:55:43 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 13
+14:55:43 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 13
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1132, from_c=0, upto_r=1134, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1132, column=0, type_='row', tags=('selected', '1132_0_1134_9', 'iid_63', '1132_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:43 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 14'
+14:55:43 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 14
+14:55:43 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 14
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1134, from_c=0, upto_r=1136, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1134, column=0, type_='row', tags=('selected', '1134_0_1136_9', 'iid_66', '1134_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:43 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 15'
+14:55:43 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 15
+14:55:43 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 15
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1136, from_c=0, upto_r=1138, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1136, column=0, type_='row', tags=('selected', '1136_0_1138_9', 'iid_69', '1136_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:43 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:43 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 16'
+14:55:43 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 16
+14:55:43 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 16
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1138, from_c=0, upto_r=1140, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1138, column=0, type_='row', tags=('selected', '1138_0_1140_9', 'iid_72', '1138_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:44 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 17'
+14:55:44 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 17
+14:55:44 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 17
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1140, from_c=0, upto_r=1142, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1140, column=0, type_='row', tags=('selected', '1140_0_1142_9', 'iid_75', '1140_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:44 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 18'
+14:55:44 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 18
+14:55:44 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 18
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1142, from_c=0, upto_r=1144, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1142, column=0, type_='row', tags=('selected', '1142_0_1144_9', 'iid_78', '1142_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:44 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 19'
+14:55:44 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 19
+14:55:44 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 19
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1144, from_c=0, upto_r=1146, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1144, column=0, type_='row', tags=('selected', '1144_0_1146_9', 'iid_81', '1144_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:44 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 20'
+14:55:44 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 20
+14:55:44 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 20
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1146, from_c=0, upto_r=1148, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1146, column=0, type_='row', tags=('selected', '1146_0_1148_9', 'iid_84', '1146_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:44 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 21'
+14:55:44 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 21
+14:55:44 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 21
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1148, from_c=0, upto_r=1150, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1148, column=0, type_='row', tags=('selected', '1148_0_1150_9', 'iid_87', '1148_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:44 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 22'
+14:55:44 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 22
+14:55:44 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 22
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1150, from_c=0, upto_r=1152, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1150, column=0, type_='row', tags=('selected', '1150_0_1152_9', 'iid_90', '1150_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:44 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 1st round - Macrozeile: 23'
+14:55:44 - set_statusmessage: Headerfile wird erstellt. 1st round - Macrozeile: 23
+14:55:44 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 1st round - Macrozeile: 23
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1152, from_c=0, upto_r=1154, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1152, column=0, type_='row', tags=('selected', '1152_0_1154_9', 'iid_93', '1152_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:44 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:44 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 2nd round - Macrozeile: 4'
+14:55:44 - set_statusmessage: Headerfile wird erstellt. 2nd round - Macrozeile: 4
+14:55:44 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 2nd round - Macrozeile: 4
+14:55:46 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:46 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1154, from_c=0, upto_r=1156, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1154, column=0, type_='row', tags=('selected', '1154_0_1156_9', 'iid_96', '1154_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:46 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:46 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 2nd round - Macrozeile: 10'
+14:55:46 - set_statusmessage: Headerfile wird erstellt. 2nd round - Macrozeile: 10
+14:55:46 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 2nd round - Macrozeile: 10
+14:55:50 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:50 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1156, from_c=0, upto_r=1158, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1156, column=0, type_='row', tags=('selected', '1156_0_1158_9', 'iid_99', '1156_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:50 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:50 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 2nd round - Macrozeile: 11'
+14:55:50 - set_statusmessage: Headerfile wird erstellt. 2nd round - Macrozeile: 11
+14:55:50 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 2nd round - Macrozeile: 11
+14:55:50 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:50 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1158, from_c=0, upto_r=1160, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1158, column=0, type_='row', tags=('selected', '1158_0_1160_9', 'iid_102', '1158_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:50 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:50 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 2nd round - Macrozeile: 12'
+14:55:50 - set_statusmessage: Headerfile wird erstellt. 2nd round - Macrozeile: 12
+14:55:50 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 2nd round - Macrozeile: 12
+14:55:50 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:50 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1160, from_c=0, upto_r=1162, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1160, column=0, type_='row', tags=('selected', '1160_0_1162_9', 'iid_105', '1160_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:50 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:50 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 2nd round - Macrozeile: 15'
+14:55:50 - set_statusmessage: Headerfile wird erstellt. 2nd round - Macrozeile: 15
+14:55:50 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 2nd round - Macrozeile: 15
+14:55:50 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:50 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1162, from_c=0, upto_r=1164, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1162, column=0, type_='row', tags=('selected', '1162_0_1164_9', 'iid_108', '1162_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:50 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:50 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 2nd round - Macrozeile: 16'
+14:55:50 - set_statusmessage: Headerfile wird erstellt. 2nd round - Macrozeile: 16
+14:55:50 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 2nd round - Macrozeile: 16
+14:55:51 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:51 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1164, from_c=0, upto_r=1166, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1164, column=0, type_='row', tags=('selected', '1164_0_1166_9', 'iid_111', '1164_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:51 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:51 - Evt_SheetBeforeDoubleClick:'Headerfile wird erstellt. 2nd round - Macrozeile: 17'
+14:55:51 - set_statusmessage: Headerfile wird erstellt. 2nd round - Macrozeile: 17
+14:55:51 - ARDUINO
+Monitor: Textwindow: Headerfile wird erstellt. 2nd round - Macrozeile: 17
+14:55:51 - Read_Sketchbook_Path_from_preference_txt - Name:C:\Users\Harold\AppData\Local\Arduino15\preferences.txt
+14:55:51 - Read_Sketchbook_Path_from_preference_txt - Name:C:\Users\Harold\AppData\Local\Arduino15\preferences.txt
+14:55:51 - Sketchbookpath=C:\Users\Harold\Documents\Arduino
+14:55:51 - Create_Folder:C:\Users\Harold\Documents\Arduino/
+14:55:51 - Dir:C:\Users\Harold\Documents\Arduino
+14:55:51 - Dir:C:\Users\Harold\Documents\Arduino
+14:55:51 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino']
+14:55:51 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino']
+14:55:51 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+14:55:51 - CheckArduinoHomeDir: C:\Users\Harold\Documents\Arduino
+14:55:51 - CheckArduinoHomeDir: C:\Users\Harold\Documents\Arduino
+14:55:51 - Write_Header - Filename:D:\data\doc\GitHub\pyMobaLedLib\python/LEDs_AutoProg/LEDs_AutoProg.h
+14:55:51 - Write_Header - Filename:D:\data\doc\GitHub\pyMobaLedLib\python/LEDs_AutoProg/LEDs_AutoProg.h
+14:55:51 - Get_String_Config_Var: %s	MinTime_House
+14:55:51 - Get_String_Config_Var: %s	MinTime_House
+14:55:51 - Get_String_Config_Var: %s	MaxTime_House
+14:55:51 - Get_String_Config_Var: %s	MaxTime_House
+14:55:51 - Get_String_Config_Var: %s	Color_Test_Mode
+14:55:51 - Get_String_Config_Var: %s	Color_Test_Mode
+14:55:51 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {}, 'selected': (), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:51 - Evt_SheetSelectionChange:{'eventname': 'select', 'sheetname': 'Languages', 'cells': {'table': {}, 'header': {}, 'index': {}}, 'moved': {'rows': {}, 'columns': {}}, 'added': {'rows': {}, 'columns': {}}, 'deleted': {'rows': {}, 'columns': {}, 'header': {}, 'index': {}, 'column_widths': {}, 'row_heights': {}, 'displayed_rows': None, 'displayed_columns': None}, 'named_spans': {}, 'options': {}, 'selection_boxes': {Box_nt(from_r=1166, from_c=0, upto_r=1168, upto_c=9): 'rows'}, 'selected': CurrentlySelectedClass(row=1166, column=0, type_='row', tags=('selected', '1166_0_1168_9', 'iid_114', '1166_0', 'type_rows')), 'being_selected': (), 'data': [], 'key': '', 'value': None, 'loc': (), 'resized': {'rows': {}, 'columns': {}}}
+14:55:51 - Synch_Evt_SheetChange:<tksheet.sheet.Sheet object .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame7.!sheet>
+14:55:51 - Evt_SheetBeforeDoubleClick:"' wurde erzeugt"
+14:55:51 - Check_Required_Libs_and_Install_missing
+14:55:51 - Check_Required_Libs_and_Install_missing
+14:55:51 - <function Check_Required_Libs at 0x000001381C0DF240>
+14:55:51 - <function Check_Required_Libs at 0x000001381C0DF240>
+14:55:51 - Check_If_Port_is_Available_And_Get_Name:COM8
+14:55:51 - Check_If_Port_is_Available_And_Get_Name:COM8
+14:55:51 - EnumComPorts:[<serial.tools.list_ports_common.ListPortInfo object at 0x0000013824310350>]
+14:55:51 - EnumComPorts:[<serial.tools.list_ports_common.ListPortInfo object at 0x0000013824310350>]
+14:55:51 - EnumComPorts:'Kommunikationsanschluss (COM1)' 'COM1'
+14:55:51 - EnumComPorts:'Kommunikationsanschluss (COM1)' 'COM1'
+14:55:51 - Check_If_Port_is_Available:COM8
+14:55:51 - Check_If_Port_is_Available:COM8
+14:55:51 - EnumComPorts:[<serial.tools.list_ports_common.ListPortInfo object at 0x0000013824310F50>]
+14:55:51 - EnumComPorts:[<serial.tools.list_ports_common.ListPortInfo object at 0x0000013824310F50>]
+14:55:51 - EnumComPorts:'Kommunikationsanschluss (COM1)' 'COM1'
+14:55:51 - EnumComPorts:'Kommunikationsanschluss (COM1)' 'COM1'
+14:56:10 - Create_Cmd_file
+14:56:10 - Create_Cmd_file
+14:56:10 - Dir:D:\data\doc\GitHub\pyMobaLedLib\python/LEDs_AutoProg/Start_Arduino_Result.txt
+14:56:10 - Dir:D:\data\doc\GitHub\pyMobaLedLib\python/LEDs_AutoProg/Start_Arduino_Result.txt
+14:56:10 - _last_files: None
+14:56:10 - _last_files: None
+14:56:10 - Dir:C:\Users\Harold\AppData\Arduino_Build_LEDs_AutoProg/.
+14:56:10 - Dir:C:\Users\Harold\AppData\Arduino_Build_LEDs_AutoProg/.
+14:56:10 - _last_files:['C:\\Users\\Harold\\AppData\\Arduino_Build_LEDs_AutoProg/.']
+14:56:10 - _last_files:['C:\\Users\\Harold\\AppData\\Arduino_Build_LEDs_AutoProg/.']
+14:56:10 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:56:10 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+14:56:10 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:56:10 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+14:56:10 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+15:01:20 - Get_OperatingSystem: Windows-10-10.0.19045-SP0
+15:01:20 - Dir:D:\data\doc\GitHub\pyMobaLedLib\python/LEDs_AutoProg/LEDs_AutoProg.ino
+15:01:20 - Dir:D:\data\doc\GitHub\pyMobaLedLib\python/LEDs_AutoProg/LEDs_AutoProg.ino
+15:01:20 - _last_files:['D:\\data\\doc\\GitHub\\pyMobaLedLib\\python/LEDs_AutoProg/LEDs_AutoProg.ino']
+15:01:20 - _last_files:['D:\\data\\doc\\GitHub\\pyMobaLedLib\\python/LEDs_AutoProg/LEDs_AutoProg.ino']
+15:01:20 - UpdateSimulatorIfNeeded
+15:01:20 - UpdateSimulatorIfNeeded
+15:01:20 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+15:01:20 - IsSimulatorAvailable:D:\data\doc\GitHub\pyMobaLedLib\python/Configuration/x64/MobaLedLibWrapper.dll
+15:01:20 - IsSimulatorAvailable:D:\data\doc\GitHub\pyMobaLedLib\python/Configuration/x64/MobaLedLibWrapper.dll
+15:01:20 - Dir:D:\data\doc\GitHub\pyMobaLedLib\python/Configuration/x64/MobaLedLibWrapper.dll
+15:01:20 - Dir:D:\data\doc\GitHub\pyMobaLedLib\python/Configuration/x64/MobaLedLibWrapper.dll
+15:01:20 - _last_files:['D:\\data\\doc\\GitHub\\pyMobaLedLib\\python/Configuration/x64/MobaLedLibWrapper.dll']
+15:01:20 - _last_files:['D:\\data\\doc\\GitHub\\pyMobaLedLib\\python/Configuration/x64/MobaLedLibWrapper.dll']
+15:01:20 - LoadDll:D:\data\doc\GitHub\pyMobaLedLib\python/Configuration/x64/MobaLedLibWrapper.dll
+15:01:20 - LoadDll:D:\data\doc\GitHub\pyMobaLedLib\python/Configuration/x64/MobaLedLibWrapper.dll
+15:01:20 - Succesfully loaded the MLL_DLLD:\data\doc\GitHub\pyMobaLedLib\python/Configuration/x64/MobaLedLibWrapper.dll
+15:01:20 - Succesfully loaded the MLL_DLLD:\data\doc\GitHub\pyMobaLedLib\python/Configuration/x64/MobaLedLibWrapper.dll
+15:01:20 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+15:01:20 - disconnect start
+15:01:20 - set_connectstatusmessage: Nicht Verbunden
+15:01:20 - '"D:\\data\\doc\\GitHub\\pyMobaLedLib\\python/LEDs_AutoProg/Start_Arduino.cmd"'
+15:01:20 - ARDUINO
+Monitor: Textwindow: *******************************************************
+15:01:20 - ARDUINO
+Monitor: Textwindow: Kompilieren und Hochladen gestartet. Dies kann einige Minuten dauern. Holen Sie sich einen Kaffee :)
+15:01:20 - ARDUINO
+Monitor: Textwindow: *******************************************************
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "        Zum                                                              "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "         PC                Prog_Generator Ver. 3.3.2G         by Juergen "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "          \\                                                   and Hardi "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "           \\                                                            "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "    ________\\_______________                                            "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |    | # [_] # |  [oo]   _|  Achtung: Es wird nur ein ESP32           "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |    |         |  DCC   |C|           Modul verwendet.                "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |    | ::::::: |        |A|                                           "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |    |  _____  |        |N|                                           "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |    | |     | |         ~|  Wenn alles gut geht, dann wird das       "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |    | |ESP32| |          |  Fenster ohne eine weitere Meldung        "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |    | |_____| |          |  geschlossen (Liest ja eh keiner).        "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |    |_________|   [O]    |                                           "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |    [@] [@] [@]          |  Falls Probleme auftreten, dann wird      "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "   |__________________[:::]__|  das angezeigt.                           "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    "                                                                         "
+15:01:20 - ARDUINO
+Monitor: Textwindow: ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "
+15:01:20 - execute_shell_cmd:"D:\data\doc\GitHub\pyMobaLedLib\python/LEDs_AutoProg/Start_Arduino.cmd"
+15:01:20 - ARDUINO
+Monitor: Textwindow: *******************************************************
+15:01:20 - ARDUINO
+Monitor: Textwindow: *******************************************************
+15:01:20 - ARDUINO
+Monitor: Textwindow:    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "
+15:01:20 - ARDUINO
+Monitor: Textwindow:    "        Zum                                                              "
+15:01:20 - ARDUINO
+Monitor: Textwindow:    "         PC                Prog_Generator Ver. 3.3.2G         by Juergen "
+15:01:20 - ARDUINO
+Monitor: Textwindow:    "          \\                                                   and Hardi "
+15:01:20 - ARDUINO
+Monitor: Textwindow:    "           \\                                                            "
+15:01:20 - ARDUINO
+Monitor: Textwindow:    "    ________\\_______________                                            "
+15:01:20 - ARDUINO
+Monitor: Textwindow:    "   |    | # [_] # |  [oo]   _|  Achtung: Es wird nur ein ESP32           "
+15:01:20 - shell ended
+15:01:20 - ARDUINO
+Monitor: Textwindow: *****************************************************
+15:01:20 - Dir:Start_Arduino_Result.txt
+15:01:20 - Dir:Start_Arduino_Result.txt
+15:01:20 - _last_files: None
+15:01:20 - _last_files: None
+15:01:20 - Compile and upload duration: 00:00:00
+15:01:20 - Compile and upload duration: 00:00:00
+15:01:20 - set_statusmessage: Programm erfolgreich hochgeladen. Kompilieren und Hochladen dauerte 00:00:00
+15:01:20 - Update_TestButtons(3)
+15:01:20 - Update_TestButtons(3)
+15:01:20 - Update_TestButtons(4)
+15:01:20 - Update_TestButtons(4)
+15:01:20 - Update_TestButtons(5)
+15:01:20 - Update_TestButtons(5)
+15:01:20 - Update_TestButtons(6)
+15:01:20 - Update_TestButtons(6)
+15:01:20 - Update_TestButtons(7)
+15:01:20 - Update_TestButtons(7)
+15:01:20 - Update_TestButtons(8)
+15:01:20 - Update_TestButtons(8)
+15:01:20 - Update_TestButtons(9)
+15:01:20 - Update_TestButtons(9)
+15:01:20 - Update_TestButtons(10)
+15:01:20 - Update_TestButtons(10)
+15:01:20 - Update_TestButtons(11)
+15:01:20 - Update_TestButtons(11)
+15:01:20 - Update_TestButtons(12)
+15:01:20 - Update_TestButtons(12)
+15:01:20 - Update_TestButtons(13)
+15:01:20 - Update_TestButtons(13)
+15:01:20 - Update_TestButtons(14)
+15:01:20 - Update_TestButtons(14)
+15:01:20 - Update_TestButtons(15)
+15:01:20 - Update_TestButtons(15)
+15:01:20 - Update_TestButtons(16)
+15:01:20 - Update_TestButtons(16)
+15:01:20 - Update_TestButtons(17)
+15:01:20 - Update_TestButtons(17)
+15:01:20 - Update_TestButtons(18)
+15:01:20 - Update_TestButtons(18)
+15:01:20 - Update_TestButtons(19)
+15:01:20 - Update_TestButtons(19)
+15:01:20 - Update_TestButtons(20)
+15:01:20 - Update_TestButtons(20)
+15:01:20 - Update_TestButtons(21)
+15:01:20 - Update_TestButtons(21)
+15:01:20 - Update_TestButtons(22)
+15:01:20 - Update_TestButtons(22)
+15:01:20 - Update_TestButtons(23)
+15:01:20 - Update_TestButtons(23)
+15:01:20 - Tabunselected: ARDUINO
+Monitor
+15:01:20 - Tabselected: Programm
+Generator
+15:01:20 - Set_activeworkbook:	ProgGenerator
+15:01:20 - Set_activeworkbook:	ProgGenerator
+15:01:20 - TabChanged .!notebook.!arduinomonitorpage - .!notebook.!prog_generatorpage
+15:01:23 - Tabunselected: Programm
+Generator
+15:01:23 - Tabselected: Z21
+Simulator
+15:01:23 - Z21
+Simulator
+15:01:23 - TabChanged .!notebook.!prog_generatorpage - .!notebook.!z21monitorpage
+15:01:25 - Socket created: HostDESKTOP-Harold2017 IP-adress 192.168.178.68
+15:01:25 - Z21MonitorPage: Connect ARDUINO
+15:01:25 - connect COM8
+15:01:25 - set_connectstatusmessage: Versuch sich mit dem ARDUINO am Port COM8 zu verbinden ...
+15:01:25 - connected to: COM8 Baudrate: 115200
+15:01:25 - Connect: Sleep 1 seconds
+15:01:26 - Connect: continue
+15:01:26 - send_to_ARDUINO - 7885.994817: #?
+
+15:01:26 - Connect: send #?
+15:01:26 - Connect Linesread: ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:1
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1216
+ho 0 tail 12 room 4
+load:0x40078000,len:9720
+ho 0 tail 12 room 4
+load:0x40080400,len:6352
+entry 0x400806b8
+EDs_AutoProg Ver 3: ESP32 3.3.2G 22.04.25 15:00
+@m 
+15:01:27 - Connect Linesread: @m#?LEDs_ 
+15:01:27 - Connect Linesread: @m#?LEDs_AutoPr 
+15:01:27 - Connect Linesread: @m#?LEDs_AutoProg Ver 3: 
+15:01:27 - Connect Linesread: @m#?LEDs_AutoProg Ver 3: ESP32  
+15:01:27 - Connect Linesread: @m#?LEDs_AutoProg Ver 3: ESP32 3.3.2G 2 
+15:01:27 - Connect Linesread: @m#?LEDs_AutoProg Ver 3: ESP32 3.3.2G 22.04.25 15 
+15:01:27 - Connect Linesread: @m#?LEDs_AutoProg Ver 3: ESP32 3.3.2G 22.04.25 15:00,2 
+15:01:27 - Connect Linesread: @m#?LEDs_AutoProg Ver 3: ESP32 3.3.2G 22.04.25 15:00,20
+ 
+15:01:27 - ARDUINO Version Number:3
+15:01:27 - ARDUINO Type String:ESP32
+15:01:27 - ARDUINO LED-Channel: 0 Leds: 20
+15:01:27 - Connect : LEDs_AutoProg Ver 3: ESP32 3.3.2G 22.04.25 15:00,20 
+15:01:27 - send_to_ARDUINO - 7887.0165419: #X
+
+15:01:27 - SerialMonitorPage: start_process_serial
+15:01:29 - SerialThread started:
+15:01:29 - set_connectstatusmessage: Verbunden mit COM8 - EFFECT Mode
+15:01:29 - set_ARDUINOmessage 15:01:29  LEDs_AutoProg Ver 3: ESP32 3.3.2G 22.04.25 15:00,20
+
+15:01:29 -  COM8 added to Z21 list
+15:01:29 - set_connectstatusmessage: Verbunden mit COM8 - EFFECT Mode
+15:01:31 - Z21Thread started
+15:01:31 - Socket bind complete
+15:01:31 - serialread from ARDUINO:b'#'(23)
+15:01:31 - serialread from ARDUINO:b'?'(3f)
+15:01:31 - serialread from ARDUINO:b'L'(4c)
+15:01:31 - serialread from ARDUINO:b'E'(45)
+15:01:31 - serialread from ARDUINO:b'D'(44)
+15:01:31 - serialread from ARDUINO:b's'(73)
+15:01:31 - serialread from ARDUINO:b'_'(5f)
+15:01:31 - serialread from ARDUINO:b'A'(41)
+15:01:31 - serialread from ARDUINO:b'u'(75)
+15:01:31 - serialread from ARDUINO:b't'(74)
+15:01:31 - serialread from ARDUINO:b'o'(6f)
+15:01:31 - serialread from ARDUINO:b'P'(50)
+15:01:31 - serialread from ARDUINO:b'r'(72)
+15:01:31 - serialread from ARDUINO:b'o'(6f)
+15:01:31 - serialread from ARDUINO:b'g'(67)
+15:01:31 - serialread from ARDUINO:b' '(20)
+15:01:31 - serialread from ARDUINO:b'V'(56)
+15:01:31 - serialread from ARDUINO:b'e'(65)
+15:01:31 - serialread from ARDUINO:b'r'(72)
+15:01:31 - serialread from ARDUINO:b' '(20)
+15:01:31 - serialread from ARDUINO:b'3'(33)
+15:01:31 - serialread from ARDUINO:b':'(3a)
+15:01:31 - serialread from ARDUINO:b' '(20)
+15:01:31 - serialread from ARDUINO:b'E'(45)
+15:01:31 - serialread from ARDUINO:b'S'(53)
+15:01:31 - serialread from ARDUINO:b'P'(50)
+15:01:31 - serialread from ARDUINO:b'3'(33)
+15:01:31 - serialread from ARDUINO:b'2'(32)
+15:01:31 - serialread from ARDUINO:b' '(20)
+15:01:31 - serialread from ARDUINO:b'3'(33)
+15:01:31 - serialread from ARDUINO:b'.'(2e)
+15:01:31 - serialread from ARDUINO:b'3'(33)
+15:01:31 - serialread from ARDUINO:b'.'(2e)
+15:01:31 - serialread from ARDUINO:b'2'(32)
+15:01:31 - serialread from ARDUINO:b'G'(47)
+15:01:31 - serialread from ARDUINO:b' '(20)
+15:01:31 - serialread from ARDUINO:b'2'(32)
+15:01:31 - serialread from ARDUINO:b'2'(32)
+15:01:31 - serialread from ARDUINO:b'.'(2e)
+15:01:31 - serialread from ARDUINO:b'0'(30)
+15:01:31 - serialread from ARDUINO:b'4'(34)
+15:01:31 - serialread from ARDUINO:b'.'(2e)
+15:01:31 - serialread from ARDUINO:b'2'(32)
+15:01:31 - serialread from ARDUINO:b'5'(35)
+15:01:31 - serialread from ARDUINO:b' '(20)
+15:01:31 - serialread from ARDUINO:b'1'(31)
+15:01:31 - serialread from ARDUINO:b'5'(35)
+15:01:31 - serialread from ARDUINO:b':'(3a)
+15:01:31 - serialread from ARDUINO:b'0'(30)
+15:01:31 - serialread from ARDUINO:b'0'(30)
+15:01:31 - serialread from ARDUINO:b','(2c)
+15:01:31 - serialread from ARDUINO:b'2'(32)
+15:01:31 - serialread from ARDUINO:b'0'(30)
+15:01:31 - serialread from ARDUINO:b'\r'(0d)
+15:01:31 - serialread from ARDUINO:b'\n'(0a)
+15:01:31 - SerialThread () got message: #?LEDs_AutoProg Ver 3: ESP32 3.3.2G 22.04.25 15:00,20
+
+15:01:31 - ARDUINO Version Number:3
+15:01:31 - ARDUINO Type String:ESP32
+15:01:31 - ARDUINO LED-Channel: 0 Leds: 20
+
+15:01:31 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:31 - serialread from ARDUINO length:b'\x02'(02)
+15:01:31 - serialread from ARDUINO:b'\x00'(00)
+15:01:31 - serialread from ARDUINO:b'-'(2d)
+15:01:31 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:31 - SerialThread () got message: JSON:{"RMBUS": "00"}
+15:01:33 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:33 - serialread from ARDUINO length:b'\x02'(02)
+15:01:33 - serialread from ARDUINO:b'@'(40)
+15:01:33 - serialread from ARDUINO:b'm'(6d)
+15:01:33 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:33 - SerialThread () got message: JSON:{"RMBUS": "40"}
+15:01:33 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:33 - serialread from ARDUINO length:b'\x02'(02)
+15:01:33 - serialread from ARDUINO:b'\x00'(00)
+15:01:33 - serialread from ARDUINO:b'-'(2d)
+15:01:33 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:33 - SerialThread () got message: JSON:{"RMBUS": "00"}
+15:01:35 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:35 - serialread from ARDUINO length:b'\x02'(02)
+15:01:35 - serialread from ARDUINO:b'@'(40)
+15:01:35 - serialread from ARDUINO:b'm'(6d)
+15:01:35 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:35 - SerialThread () got message: JSON:{"RMBUS": "40"}
+15:01:35 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:35 - serialread from ARDUINO length:b'\x02'(02)
+15:01:35 - serialread from ARDUINO:b'\x00'(00)
+15:01:35 - serialread from ARDUINO:b'-'(2d)
+15:01:35 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:35 - SerialThread () got message: JSON:{"RMBUS": "00"}
+15:01:35 - set_statusmessage: 
+15:01:37 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:37 - serialread from ARDUINO length:b'\x02'(02)
+15:01:37 - serialread from ARDUINO:b'@'(40)
+15:01:37 - serialread from ARDUINO:b'm'(6d)
+15:01:37 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:37 - SerialThread () got message: JSON:{"RMBUS": "40"}
+15:01:37 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:37 - serialread from ARDUINO length:b'\x02'(02)
+15:01:37 - serialread from ARDUINO:b'\x00'(00)
+15:01:37 - serialread from ARDUINO:b'-'(2d)
+15:01:37 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:37 - SerialThread () got message: JSON:{"RMBUS": "00"}
+15:01:39 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:39 - serialread from ARDUINO length:b'\x02'(02)
+15:01:39 - serialread from ARDUINO:b'@'(40)
+15:01:39 - serialread from ARDUINO:b'm'(6d)
+15:01:39 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:39 - SerialThread () got message: JSON:{"RMBUS": "40"}
+15:01:39 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:39 - serialread from ARDUINO length:b'\x02'(02)
+15:01:39 - serialread from ARDUINO:b'\x00'(00)
+15:01:39 - serialread from ARDUINO:b'-'(2d)
+15:01:39 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:39 - SerialThread () got message: JSON:{"RMBUS": "00"}
+15:01:41 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:41 - serialread from ARDUINO length:b'\x02'(02)
+15:01:41 - serialread from ARDUINO:b'@'(40)
+15:01:41 - serialread from ARDUINO:b'm'(6d)
+15:01:41 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:41 - SerialThread () got message: JSON:{"RMBUS": "40"}
+15:01:41 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:41 - serialread from ARDUINO length:b'\x02'(02)
+15:01:41 - serialread from ARDUINO:b'\x00'(00)
+15:01:41 - serialread from ARDUINO:b'-'(2d)
+15:01:41 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:41 - SerialThread () got message: JSON:{"RMBUS": "00"}
+15:01:43 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:43 - serialread from ARDUINO length:b'\x02'(02)
+15:01:43 - serialread from ARDUINO:b'@'(40)
+15:01:43 - serialread from ARDUINO:b'm'(6d)
+15:01:43 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:43 - SerialThread () got message: JSON:{"RMBUS": "40"}
+15:01:43 - serialread from ARDUINO:b'\xd0'(d0)
+15:01:43 - serialread from ARDUINO length:b'\x02'(02)
+15:01:43 - serialread from ARDUINO:b'\x00'(00)
+15:01:43 - serialread from ARDUINO:b'-'(2d)
+15:01:43 - 'str' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\mlpyproggen\SerialMonitorPage.py", line 394, in run
+    text_dec = str(text.decode('utf-8'))
+                   ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'
+15:01:43 - SerialThread () got message: JSON:{"RMBUS": "00"}
+15:01:45 - serialread from ARDUINO:b''()
+15:01:47 - LAN_SET_BROADCASTFLAGS
+15:01:47 - X_SET_TRACK_POWER_ON
+15:01:47 - serialread from ARDUINO:b''()
+15:01:47 - RMBUS_GETDATA
+15:01:47 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+15:01:47 - send_to_ARDUINO - 7907.2330564: ?*
+
+15:01:47 - RMBUS_GETDATA
+15:01:47 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0100000000000000000000
+15:01:47 - send_to_ARDUINO - 7907.4565056: ?*
+
+15:01:48 - X_GET_FIRMWARE_VERSION
+15:01:48 - X_GET_VERSION
+15:01:48 - GET_SERIAL_NUMBER
+15:01:48 - X_GET_TURNOUT_INFO 
+15:01:48 - RMBUS_GETDATA
+15:01:48 - Z21-Simu: LAN_RMBUS_DATACHANGED: 0000000000000000000000
+15:01:48 - send_to_ARDUINO - 7908.2360683: ?*
+
+15:01:49 - serialread from ARDUINO:b''()
+15:01:51 - serialread from ARDUINO:b''()
+15:01:53 - serialread from ARDUINO:b''()
+15:01:55 - serialread from ARDUINO:b''()
+15:01:57 - serialread from ARDUINO:b''()
+15:01:57 - send_to_ARDUINO - 7917.5147771: ?*
+
+15:01:59 - serialread from ARDUINO:b''()
+15:02:01 - serialread from ARDUINO:b''()
+15:02:03 - serialread from ARDUINO:b''()
+15:02:05 - serialread from ARDUINO:b''()
+15:02:07 - serialread from ARDUINO:b''()
+15:02:09 - serialread from ARDUINO:b''()
+15:02:09 - send_to_ARDUINO - 7929.4559103: ?*
+
+15:02:11 - serialread from ARDUINO:b''()
+15:02:11 - Open logfile: D:\data\doc\GitHub\pyMobaLedLib\python\../logfile.log

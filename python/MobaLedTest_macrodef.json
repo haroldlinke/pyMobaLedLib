@@ -22,7 +22,7 @@
     "ARDUINOConfigPage": {
         "Typ": "ARDUINOConfigPage",
         "Name": "ARDUINOConfigPage",
-        "MTabName": "ARDUINO Einstellungen",
+        "MTabName": "ARDUINO\nEinstellungen",
         "Title": "ARDUINO Einstellungen",
         "Button_1": "Geänderte Einstellungen übernehmen",
         "Button_2": "Individuellen Pfad zur ARDUINO IDE verwenden",
@@ -32,6 +32,7 @@
         "Kurzbeschreibung": "Einstellungsparameter",
         "Ausführliche Beschreibung": "Hier können Sie die Einstellungen für die ARDUINO IDE vornehmen. Dies wird für LINUX und Mac benötigt, aberr auch bei Windows, wenn die ARDUINO IDE nicht ins Standardverzeichnis auf C: installiert wurde.",
         "Params": [
+            "ARDUINOTest",
             "!ARDUINOConnected",
             "!ARDUINOMessage",
             "!ARDUINODetect",
@@ -42,7 +43,7 @@
     "ARDUINOMonitorPage": {
         "Typ": "ARDUINOMonitorPage",
         "Name": "ARDUINOMonitorPage",
-        "MTabName": "ARDUINO Monitor",
+        "MTabName": "ARDUINO\nMonitor",
         "Title": "ARDUINO Monitor",
         "Button_1": "",
         "Button_2": "",
@@ -68,7 +69,7 @@
     "ColorCheckPage": {
         "Typ": "ColorCheckPage",
         "Name": "ColorCheckPage",
-        "MTabName": "Farb Test",
+        "MTabName": "Farb\nTest",
         "Title": "Farben Test",
         "Button_1": "",
         "Button_2": "",
@@ -82,7 +83,7 @@
     "ConfigurationPage": {
         "Typ": "ConfigurationPage",
         "Name": "ConfigurationPage",
-        "MTabName": "Einstellungen",
+        "MTabName": "Programm\nEinstellungen",
         "Title": "Einstellungen",
         "Button_1": "Geänderte Einstellungen übernehmen",
         "Button_2": "n",
@@ -90,28 +91,31 @@
         "Kurzbeschreibung": "Einstellungsparameter",
         "Ausführliche Beschreibung": "pyProgramGenerator Einstellungen\n\r\n\rHier können Sie die Grundeinstellungen für das Programm an Ihre Wünsche anpassen.",
         "Params": [
+            "FontConfig",
+            "FontConfig_PattGen",
             "Farbauswahl",
             "ShowProgramGenerator",
-            "ShowPatternGenerator",
             "ShowHiddentables",
-            "AutoLoadWorkbooks",
-            "UseCOM_Port_UserForm",
-            "Startseite",
+            "PGIconSize",
+            "ShowPatternGenerator",
+            "ShowZ21Simulator",
+            "!AutoLoadWorkbooks",
+            "!UseCOM_Port_UserForm",
+            "!Startseite",
             "Language",
-            "LEDchannel",
-            "MaxLEDcnt",
+            "!LEDchannel",
+            "!MaxLEDcnt",
             "LEDColourCorrection",
             "RMbusTimer",
-            "UseZ21Data",
-            "Z21Data",
-            "FontConfig",
-            "FontConfig_PattGen"
+            "!UseZ21Data",
+            "!Z21Data"
+
         ]
     },
     "DCCKeyboardPage": {
         "Typ": "DCCKeyboardPage",
         "Name": "DCCKeyboardPage",
-        "MTabName": "DCC Keyboard",
+        "MTabName": "DCC\nKeyboard",
         "Title": "DCC-Keyboard",
         "Button_1": "",
         "Button_2": "",
@@ -129,12 +133,14 @@
         "Title": "Hilfe-Seite",
         "Kurzbeschreibung": "Hilfe-Seite",
         "Ausführliche Beschreibung": "Hilfe-Seite",
-        "HelpPageURL": "https://wiki.mobaledlib.de/anleitungen/spezial/testseite"
+        "HelpPageURL_old": "https://wiki.mobaledlib.de/anleitungen/spezial/testseite",
+        "HelpPageURL": "https://wiki.mobaledlib.de/anleitungen/spezial/pyprogramgenerator",
+        "pyStwHelpPageURL": "https://wiki.mobaledlib.de/anleitungen/spezial/pyprogramgenerator/stellwerk"
     },
     "PatternConfiguratorPage": {
         "Typ": "PatternConfiguratorPage",
         "Name": "PatternConfiguratorPage",
-        "MTabName": "Pattern Configurator",
+        "MTabName": "Pattern\nConfigurator",
         "Title": "Pattern Configurator",
         "Button_1": "",
         "Button_2": "",
@@ -147,7 +153,7 @@
     "ProgGeneratorPage": {
         "Typ": "ProgGeneratorPage",
         "Name": "ProgGeneratorPage",
-        "MTabName": "Programm Generator",
+        "MTabName": "Programm\nGenerator",
         "Title": "Programm Generator",
         "Button_1": "",
         "Button_2": "",
@@ -160,7 +166,7 @@
     "SerialMonitorPage": {
         "Typ": "SerialMonitorPage",
         "Name": "SerialMonitorPage",
-        "MTabName": "Serial Monitor",
+        "MTabName": "Serial\nMonitor",
         "Title": "Serial Monitor",
         "Button_1": "Senden",
         "Button_2": "",
@@ -174,7 +180,7 @@
     "ServoTestPage1": {
         "Typ": "ServoTestPage1",
         "Name": "ServoTestPage1",
-        "MTabName": "Servo Test 1",
+        "MTabName": "Servo\nTest 1",
         "Title": "MobaLedLib LED-Servotester",
         "Button_1": "",
         "Button_2": "",
@@ -183,13 +189,14 @@
         "Ausführliche Beschreibung": "Mit der Servoplatine von Hardi können über die MLL auch Servos angesteuert werden. Auf dieser Seite können Sie den Servo testen und konfigurieren.\nMit dem Schieberegler kann die Position des Servos eingestellt werden. Die Konfiguration des Servos erfolgt mit den Funktionen <Min- und Max-Position programmieren> und <Servo-Geschwindigkeit programmieren>",
         "Params": [
             "ServoAddress",
+            "ServoLEDChannel",
             "ServoChannel"
         ]
     },
     "ServoTestPage2": {
         "Typ": "ServoTestPage2",
         "Name": "ServoTestPage2",
-        "MTabName": "Servo Test 2",
+        "MTabName": "Servo\nTest 2",
         "Title": "MobaLedLib LED-Servotester für Direct Mode Servos",
         "Button_1": "",
         "Button_2": "",
@@ -198,14 +205,16 @@
         "Ausführliche Beschreibung": "Mit der Servoplatine von Hardi können über die MLL auch Servos angesteuert werden. Eckhart hat eine Variante programmiert, die auf den WS2811 chip verzichtet und eine bessere Kontrolle der Servostellung erlaubt. Auf dieser Seite können Sie den Servo testen und konfigurieren.\nMit dem Schieberegler kann die Position des Servos eingestellt werden.",
         "Params": [
             "ServoAddress",
-            "ServoControl",
-            "ServoCRCold"
+            "!ServoStatusLEDAddress",
+            "ServoLEDChannel",
+            "ServoCRCold",
+            "ServoControl"
         ]
     },
     "SoundCheckPage": {
         "Typ": "SoundCheckPage",
         "Name": "SoundCheckPage",
-        "MTabName": "Sound Test",
+        "MTabName": "Sound\nTest",
         "Title": "Sound-Test",
         "Button_1": "Sound an ARDUINO\nschicken",
         "Button_2": "",
@@ -214,6 +223,7 @@
         "Ausführliche Beschreibung": "Auf dieser Seite können Sie die MLL-Sound-Geräte testen. Die MLL-Soundplatine mit dem <MP3-TF-16>-Modul ermöglicht die Erzeugung von verschiedenen selbst erzeugten Geräuschen. Leider kommt es immer wieder vor, dass die wiedergegebenen Sounds nicht richtig stimmen. Es kommt nicht immer die gewünschte Sounde Datei. Das liegt an Bauteiltoleranzen. Auf der Sound-Testseite können die Werte für die verschiedenen Geräusche ausprobiert werden. Einfach die Soundmodul-Adresse angeben und in den Feldern R/G/B die verschiedenen Werte durchprobieren, bis der richtige Sound kommt.",
         "Params": [
             "SoundAddress",
+            "SoundLEDChannel",
             "SoundImpulsLength",
             "Sound_LED"
         ]
@@ -221,7 +231,7 @@
     "StartPage": {
         "Typ": "StartPage",
         "Name": "StartPage",
-        "MTabName": "Start",
+        "MTabName": "Start\n ",
         "DISCONNECT_FILENAME": "MobaLedTest_disconnect.txt",
         "CLOSE_FILENAME": "MobaLedTest_close.txt",
         "TEMP_LEDEFFECTTABLE_FILENAME": "../temp_ledeffect_table.json",
@@ -246,7 +256,7 @@
     "VB2PYPage": {
         "Typ": "VB2PYPage",
         "Name": "VB2PYPage",
-        "MTabName": "VB2PY",
+        "MTabName": "VB2PY\n ",
         "Title": "VB2PY",
         "Button_1": "Geänderte Einstellungen übernehmen",
         "Button_2": "Individuellen Pfad zum Excel ProgrammGenerator verwenden",
@@ -261,7 +271,7 @@
     "TestPage": {
         "Typ": "TestPage",
         "Name": "TestPage",
-        "MTabName": "Test",
+        "MTabName": "Test\n ",
         "Title": "Test",
         "Button_1": "Geänderte Einstellungen übernehmen",
         "Button_2": "",
@@ -273,10 +283,30 @@
         "Params": [
                   ]
     },
+    "StellwerkPage": {
+        "Typ": "StellwerkPage",
+        "Name": "StellwerkPage",
+        "MTabName": "Stellwerk\n ",
+        "Title": "Stellwerk",
+        "Kurzbeschreibung": "Stellwerk",
+        "Ausführliche Beschreibung": "Stellwerk",
+        "Params": [
+                  ]
+    },
+    "StellwerkEditPage": {
+        "Typ": "StellwerkEditPage",
+        "Name": "StellwerkEditPage",
+        "MTabName": "Stellwerk\nEditor",
+        "Title": "Stellwerk-Editor",
+        "Kurzbeschreibung": "Stellwerk-Editor",
+        "Ausführliche Beschreibung": "Stellwerk-Editor",
+        "Params": [
+                  ]
+    },
     "Z21MonitorPage": {
         "Typ": "Z21MonitorPage",
         "Name": "Z21MonitorPage",
-        "MTabName": "Z21 Simulator",
+        "MTabName": "Z21\nSimulator",
         "Title": "Z21 Simulator",
         "Button_1": "Start Simulator",
         "Button_2": "Stop Simulator",

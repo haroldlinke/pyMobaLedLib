@@ -76,6 +76,7 @@ from vb2py.vbconstants import *
 import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLA_Application as P01
 import proggen.Userform_Testgrafik as D15
+import mlpyproggen.Z21MonitorPage as Z21MonitorPage
 
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, DEFAULT_PALETTE, LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION
 
@@ -115,11 +116,11 @@ class TestPage(tk.Frame):
         self.frame.grid_columnconfigure(0,weight=1)
         self.frame.grid_rowconfigure(0,weight=1)        
         
-        self.scroll_main_frame = ScrolledFrame(self.frame)
-        self.scroll_main_frame.grid_columnconfigure(0,weight=1)
-        self.scroll_main_frame.grid_rowconfigure(0,weight=1)
+        #self.scroll_main_frame = ScrolledFrame(self.frame)
+        #self.scroll_main_frame.grid_columnconfigure(0,weight=1)
+        #self.scroll_main_frame.grid_rowconfigure(0,weight=1)
         
-        self.main_frame = ttk.Frame(self.scroll_main_frame.interior, relief="ridge", borderwidth=2)
+        self.main_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2)
         self.main_frame.grid_columnconfigure(0,weight=1)
         self.main_frame.grid_rowconfigure(2,weight=1) 
                 
@@ -176,11 +177,15 @@ class TestPage(tk.Frame):
         startConvPath_frame = ttk.Frame(self.main_frame, relief="ridge", borderwidth=2)
         self.startConvbutton = ttk.Button(startConvPath_frame, text=button5_text,width=30, command=self.startGrafik)
         self.startConvbutton.grid(row=0,column=0, padx=4, pady=4,sticky="w")
+        
+        startTest_frame = ttk.Frame(self.main_frame, relief="ridge", borderwidth=2)
+        self.startTestbutton = ttk.Button(startTest_frame, text="Starte Prozedurentest" ,width=30, command=self.startProcTest)
+        self.startTestbutton.grid(row=0,column=0, padx=4, pady=4,sticky="w")        
 
         # --- placement
         # Tabframe
         self.frame.grid(row=0,column=0)
-        self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
+        #self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
         # scroll_main_frame
         self.main_frame.grid(row=0,column=0)
         # main_frame        
@@ -190,6 +195,7 @@ class TestPage(tk.Frame):
         startcmd_frame.grid(row=3, column=0, pady=10, padx=10, stick="ew")
         #resourcePath_frame.grid(row=4, column=0, pady=10, padx=10, stick="ew")
         startConvPath_frame.grid(row=5, column=0, pady=10, padx=10, stick="ew")
+        startTest_frame.grid(row=6, column=0, pady=10, padx=10, stick="ew")
 
         macroparams = macrodata.get("Params",[])
         
@@ -290,6 +296,9 @@ class TestPage(tk.Frame):
         background_image = self.ProgGen_Excel_filename
         UserForm_TestGrafik = D15.UserForm_TestGrafik(PG.global_controller, background_image=background_image)
         UserForm_TestGrafik.Show_With_Existing_Data("")
+        
+    def startProcTest(self):
+        Z21MonitorPage.pageInstance.test_convert_7bit_to_8bit()
         
         
 

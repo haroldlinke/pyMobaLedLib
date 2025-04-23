@@ -1085,7 +1085,7 @@ class UserForm_Other():
                 if ParVal == '':
                     ParVal = Def
                     validListEntry = True
-                if (Typ == 'List'):
+                if (Typ == 'List' or Typ == "Mode"): # 12.02.25: Juergen fix bug if mode contains invalid value
                     #self.Controls['Par' + UsedParNr + 'Select'].Style = 2
                     #self.Controls['Par' + UsedParNr].Enabled = False
                     if not validListEntry:

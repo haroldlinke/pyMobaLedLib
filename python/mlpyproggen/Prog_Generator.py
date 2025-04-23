@@ -76,6 +76,8 @@ import proggen.Userform_Testgrafik as D15
 
 import proggen.M09_Translate as M09_Translate
 
+#from PIL import Image, ImageTk
+
 def _T(text):
     """Translate text."""
     tr_text = text # M09.Get_Language_Str(text)
@@ -126,6 +128,7 @@ class Prog_GeneratorPage(tk.Frame):
         self.default_font        = self.controller.defaultfontnormal
         self.default_boldfont    = (self.default_font[0],self.default_font[1],"bold")
         self.default_smallfont   = self.controller.defaultfontsmall
+        #self.bind("<Configure>", self.on_resize)
         
         globalprocs= {"button_check_actual_versions_cmd"       : button_check_actual_versions_cmd,
                       "button_install_selected_cmd"            : button_install_selected_cmd,
@@ -374,17 +377,31 @@ class Prog_GeneratorPage(tk.Frame):
 
         self.fonttitle = self.controller.get_font("FontTitle")
         
-        self.frame=ttk.Frame(self,relief="ridge", borderwidth=2)
+        self.PGIconSize = self.getConfigData("PGIconSize")
+        
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)        
+        
+        
+        self.frame=ttk.Frame(self,relief="flat", borderwidth=5)
         self.frame.grid_columnconfigure(0,weight=1)
-        self.frame.grid_rowconfigure(0,weight=1)
+        self.frame.grid_rowconfigure(2,weight=1)
         # Tabframe
         self.frame.grid(row=0,column=0,sticky="nesw")
 
         self.parent = parent
-        self.parent.grid_columnconfigure(0,weight=1)
-        self.parent.grid_rowconfigure(0,weight=1)        
-        
-        title_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2)
+        #self.parent.grid_columnconfigure(0,weight=1)
+        #self.parent.grid_rowconfigure(1,weight=1)
+        #self.parent.rowconfigure(1, weight=1)
+        showtitle = False
+        if showtitle:
+            title_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2)
+            label = ttk.Label(title_frame, text=self.title, font=self.fonttitle)
+            label.pack(padx=5,pady=(5,5))            
+        else:
+            title_frame = ttk.Frame(self.frame)
         self.info_frame  = ttk.Frame(self.frame, borderwidth=0)
         self.button_frame = ttk.Frame(self.frame, borderwidth=0)
         self.workbook_frame = ttk.Frame(self.frame, relief="ridge", borderwidth=2)
@@ -398,9 +415,12 @@ class Prog_GeneratorPage(tk.Frame):
         self.workbook_frame.grid(row=2,column=0,columnspan=2,sticky="nesw",pady=(10, 10), padx=10)
 
         
-        self.workbook_width = self.controller.window_width-120
-        self.workbook_height = self.controller.window_height-420
+        #self.workbook_width = self.controller.window_width-100
         
+        #header_size = 260 + 110 * self.PGIconSize
+        #self.workbook_height = self.controller.window_height-300
+        #self.workbook_height = self.controller.window_height-header_size
+                
         self.workbookname = "ProgGenerator"
         self.tempworkbookFilname = self.controller.tempworkbookFilname
         temp_workbook_filename = os.path.join(filedir2,self.tempworkbookFilname+"_"+self.workbookname+".json")
@@ -418,9 +438,9 @@ class Prog_GeneratorPage(tk.Frame):
             InitWorkBookFunction=F00.workbook_init,
             workbookdict=workbook_dict,
             start_sheet=start_sheet,
-            controller=global_controller,
-            width=self.workbook_width,
-            height=self.workbook_height)
+            controller=global_controller)
+            #width=self.workbook_width,
+            #height=self.workbook_height)
         
         for sheet in self.workbook.sheets:
             sheet.SetChangedCallback(wschangedcallback)
@@ -429,9 +449,6 @@ class Prog_GeneratorPage(tk.Frame):
             sheet.SetInitDataFunction(F00.worksheet_init)
            
         self.workbook.SetInitWorkbookFunction(F00.workbook_init)
-                
-        label = ttk.Label(title_frame, text=self.title, font=self.fonttitle)
-        label.pack(padx=5,pady=(5,5))
         
         # create buttonlist
         self.create_button_list()
@@ -440,11 +457,15 @@ class Prog_GeneratorPage(tk.Frame):
         
         infolabel = ttk.Label(self.info_frame, text=self.infotext, font=self.fonttext)
         infolabel.grid(row=0, column=0, sticky="n",pady=(10, 10), padx=10)
-        
-        title_frame.grid(row=0, column=0, sticky="n",pady=(10, 10), padx=10)
-        self.button_frame.grid(row=1, column=0, sticky="nw",pady=(10, 10), padx=10)
-        self.info_frame.grid(row=1,column=1,sticky="nw",pady=(10, 10), padx=10)
-        
+
+        if self.controller.smallscreen:
+            #self.info_frame.grid(row=0,column=1,sticky="nw",pady=(2, 2), padx=2)
+            self.button_frame.grid(row=1, column=0, sticky="nw",pady=(2,2 ), padx=2)
+            title_frame.grid(row=0, column=0, sticky="n",pady=(2, 2), padx=2)
+        else:
+            self.info_frame.grid(row=1,column=1,sticky="nw",pady=(5, 5), padx=10)
+            self.button_frame.grid(row=1, column=0, sticky="nw",pady=(5, 5), padx=10)
+            title_frame.grid(row=0, column=0, sticky="n",pady=(5,5), padx=10)
     
         #config_frame.grid(row=1, columnspan=2, pady=(20, 30), padx=10)        
         #in_button_frame.grid(row=2, column=0, sticky="n", padx=4, pady=4)
@@ -480,6 +501,12 @@ class Prog_GeneratorPage(tk.Frame):
     
     def TabChanged(self,_event=None):
         logging.debug("Tabchanged: %s",self.tabname)
+        pass
+        
+    def on_resize(self, event):
+        # Dynamically update the frame size
+        #self.config(width=event.width, height=event.height)
+        #self.frame.config(width=event.width, height=event.height)
         pass
     
     def cancel(self,_event=None):
@@ -594,37 +621,59 @@ class Prog_GeneratorPage(tk.Frame):
             self.create_button(button_desc)
             
     def create_button(self, button_desc):
-        filename = r"/images/"+button_desc["Icon_name"]
-        filepath = self.filedir2 + filename
-        self.icon_dict[button_desc["Icon_name"]] = tk.PhotoImage(file=filepath)
+        if self.PGIconSize == 0:
+            return
+        if self.PGIconSize > 20:
+            filename = r"/images/"+button_desc["Icon_name"]
+            filepath = self.filedir2 + filename
+            #original_image = Image.open(filepath)
+            #new_width = int(original_image.width * self.PGIconSize / 100.0)
+            #new_height = int(original_image.height * self.PGIconSize / 100.0)
+            #resized_image = original_image.resize((new_width, new_height))  # Set desired dimensions
+            #icon_image = ImageTk.PhotoImage(resized_image)        
+            #self.icon_dict[button_desc["Icon_name"]] = tk.PhotoImage(file=filepath)
+            icon_image = tk.PhotoImage(file=filepath)
+            height = None
+        else:
+            filepath = "---"
+            icon_image = None
+            height = 2
+        self.icon_dict[button_desc["Icon_name"]] = icon_image
         button_text = M09.Get_Language_Str(button_desc["text"])
         if button_text[0] == "*":
             if not self.controller.showspecialfeatures:
                 return
         try:
-            button=tk.Button(self.button_frame, text=button_text, image=self.icon_dict[button_desc["Icon_name"]], command=button_desc["command"]) #,compound="center")
+            #button=tk.Button(self.button_frame, text=button_text, font=("Arial", str(self.PGIconSize)), image=self.icon_dict[button_desc["Icon_name"]], command=button_desc["command"]) #,compound="center")
             shift_command = button_desc.get("shift_command",None)
             if shift_command:
-                button=tk.Button(self.button_frame, text=button_text, image=self.icon_dict[button_desc["Icon_name"]]) #,compound="center")
+                button=tk.Button(self.button_frame, text=button_text, font=("Arial", str(self.PGIconSize)), height=height, image=self.icon_dict[button_desc["Icon_name"]]) #,compound="center")
                 button.bind("<Button-1>", button_desc["command"])
                 button.bind("<Shift-Button-1>", shift_command)
             else:
-                button=tk.Button(self.button_frame, text=button_text, image=self.icon_dict[button_desc["Icon_name"]], command=button_desc["command"]) #,compound="center")
-            
-            button.pack( side="left",padx=button_desc["padx"])
-            
+                button=tk.Button(self.button_frame, text=button_text, font=("Arial", str(self.PGIconSize)), height=height, image=self.icon_dict[button_desc["Icon_name"]], command=button_desc["command"]) #,compound="center")
+
+            if self.controller.smallscreen:
+                padx = button_desc["padx"] /3 * self.PGIconSize / 100.0
+            else:
+                padx = button_desc["padx"] * self.PGIconSize / 100.0
+            if self.PGIconSize <= 20:
+                padx = button_desc["padx"] * self.PGIconSize / 20.0
+            button.pack( side="left",padx=padx)
             self.controller.ToolTip(button, text=_T(button_desc["tooltip"]))
+            self.controller.pgmenu.add_command(label=button_text, command=button_desc["command"])
+            
         except BaseException as e:
             logging.debug("Create_Button Image "+ filepath + " not found")
             logging.debug(e, exc_info=True)
-            button=tk.Button(self.button_frame, text=button_text, command=button_desc["command"]) #,compound="center")
+            button=tk.Button(self.button_frame, text=button_text, height=2, command=button_desc["command"]) #,compound="center")
             shift_command = button_desc.get("shift_command",None)
             if shift_command:
-                button=tk.Button(self.button_frame, text=button_text) #,compound="center")
+                button=tk.Button(self.button_frame, text=button_text, height=2) #,compound="center")
                 button.bind("<Button-1>", button_desc["command"])
                 button.bind("<Shift-Button-1>", shift_command)
             else:
-                button=tk.Button(self.button_frame, text=button_text, command=button_desc["command"]) #,compound="center")
+                button=tk.Button(self.button_frame, text=button_text, command=button_desc["command"], height=2) #,compound="center")
             
             button.pack( side="left",padx=button_desc["padx"])
             
@@ -997,10 +1046,10 @@ class Prog_GeneratorPage(tk.Frame):
         except BaseException as e:
             #self.Stop_Compile_Time_Display()
             #P01.Unload(F00.StatusMsg_UserForm)
-            logging.debug("ProgGenerator - execute_shell_cmd:"+e)
+            logging.debug("ProgGenerator - execute_shell_cmd:"+str(e))
             #logging.error("Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
-            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + "\n",highlight="Error")
+            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ str(e) + "-" + "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")            
             return M40.Failure
         return rc
@@ -1012,9 +1061,9 @@ class Prog_GeneratorPage(tk.Frame):
             self.continue_loop=True
             self.write_stdout_to_text_window()
         except BaseException as e:
-            logging.error("ProgGenerator - Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
+            logging.error(e, "ProgGenerator - Exception in start_ARDUINO_program_Popen %s",self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
-            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + self.startfile[0]+ "\n",highlight="Error")
+            self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ str(e) + "-" + self.startfile[0]+ "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
     
     def upload_to_ARDUINO(self,_event=None,arduino_type="LED",init_arduino=False):

@@ -182,9 +182,10 @@ def Prog_Attiny_Bootloader_Button_Click():
     #------------------------------------
     pattgen.M65_Special_Modules.Prog_Servo_2(fusemode = '16MHz, BOD 2.7V, Eckhart-Boot', hexfile_name="RailMail-TinyBootloader85.hex")
     
-def Prog_Attiny_Firmware_DM_Servo_Button_Click():
+def Prog_Attiny_Bootloader_no_status_led_Button_Click():
     #------------------------------------
-    pattgen.M65_Special_Modules.Upload_firmware_direkt(hexfile_name="RailMail-TinyServo.blthex", AttinyAdress=global_AttinyAdress)
+    #pattgen.M65_Special_Modules.Upload_firmware_direkt(hexfile_name="RailMail-TinyServo.blthex", AttinyAdress=global_AttinyAdress)
+    pattgen.M65_Special_Modules.Prog_Servo_2(hexfile_name="RailMail-TinyBootloader85.hex")
 
 def Close3Button_Click():
     # 02.06.20: Misha
@@ -298,10 +299,10 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                                 "Caption"       : "Programmieradapter",
                                                                 "ControlTipText": "","ForeColor": "#000012","Height": 114,"Left": 6,"Top": 42,"Type": "Frame","Visible": True,"Width": 454,
                                                                 "Components"    : [{"Name": "Label11","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
-                                                                                    "Caption": "Ein ATTiny hat keinen USB Anschluss. Darum benötigt man zur Programmierung einen Programmieradapter (In Circuit Programmer). Das kann ein Arduino mit besonderen Programm sein. Mit dem Knopf Links wird das Programm zu Arduino übertragen.",
-                                                                                    "ControlTipText": "","ForeColor": "#000012","Height": 48,"Left": 84,"TextAlign": "fmTextAlignLeft","Top": 6,"Type": "Label","Visible": True,"Width": 264},
+                                                                                    "Caption": "Ein ATTiny hat keinen USB Anschluss. Darum benötigt man zur Programmierung einen Programmieradapter. Das kann ein Arduino mit besonderem Programm sein. Mit dem <Prog. ISP> Button wird das Programm zum Arduino übertragen.",
+                                                                                    "ControlTipText": "","ForeColor": "#000012","Height": 48,"Left": 84,"TextAlign": "fmTextAlignLeft","Top": 6,"Type": "Label","Visible": True,"Width": 344},
                                                                                    {"Name": "Label13","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
-                                                                                    "Caption": "Dieses Programm kann auf dem Tiny_UniProg und auf einen 'Nackten' Arduino in einem Steckbrett eingesetzt werden.\nDer 'HV Reset' ist allerdings nur mit der 'Tiny_UniProg' Platine möglich. Er wird für das Programmieren des Servo Programms benötigt.",
+                                                                                    "Caption": "Dieses Programm kann auf dem Tiny_UniProg(Platine 400) und auf einem 'Nackten' Arduino in einem Steckbrett eingesetzt werden.\nDer 'HV Reset' ist allerdings nur mit der 'Tiny_UniProg' Platine möglich. Er wird für das Programmieren des Servo Programms benötigt.",
                                                                                     "ControlTipText": "","ForeColor": "#000012","Height": 60,"Left": 6,"TextAlign": "fmTextAlignLeft","Top": 54,"Type": "Label","Visible": True,"Width": 442},
                                                                                    {"Name": "Prog_ISP_Button","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                                                                     "Caption": "Prog. ISP",
@@ -340,30 +341,30 @@ Main_Menu_Form_RSC = {"UserForm":{
                                                                                                        "Command": Prog_ServoMP3_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 12,"Type": "CommandButton","Visible": True,"Width": 72},
                                                                                                       ]},
                                                                                   {"Name": "page7",
-                                                                                   "Caption":"Servo DM(512)",
+                                                                                   "Caption":"Servo DM(511)",
                                                                                    "Type": "Page","Visible": True,
                                                                                    "Components"    : [{"Name": "Label64","BackColor": "#00000F","BorderColor": "#000006","BorderStyle"   : "fmBorderStyleNone",
-                                                                                                       "Caption": "Direct Mode Servo Platine von Eckhart (Platine 512 oder modifzierte Servoplatine 510)\nDas Servo Modul kann bis zu 3 Servos ansteuern.\nZur Programmierung des ATTiny85 wird ein Programmieradapter benötigt (siehe oben) in der der ATTiny eingesteckt wird.\nAchtung: Bei der LED Version wird der Reset-Pin des Attiny als Ausgang für eine LED umkonfiguriert. Danach kann der Attiny nur mit dem Programmieradapter Tiny-Uniprog (Platine 400) programmiert werden.",
-                                                                                                       "ControlTipText": "","ForeColor": "#000012", "Height": 108,"Left": 84,"TextAlign": "fmTextAlignLeft","Top": 12,"Type": "Label","Visible": True,"Width": 264},
+                                                                                                       "Caption": "Direct Mode Servo Platine von Eckhart (Platine 511 oder modifzierte Servoplatine 510)\nDas Servo Modul kann bis zu 3 Servos ansteuern.\nZur Programmierung des ATTiny85 wird ein Programmieradapter benötigt (siehe oben) in der der ATTiny eingesteckt wird.\nAchtung: Bei der Version mit LED kann der Attiny NUR mit dem Programmieradapter Tiny-Uniprog (Platine 400) programmiert werden.",
+                                                                                                       "ControlTipText": "","ForeColor": "#000012", "Height": 108,"Left": 84,"TextAlign": "fmTextAlignLeft","Top": 12,"Type": "Label","Visible": True,"Width": 344},
                                                                                                       {"Name": "Prog_Servo2_Button","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
-                                                                                                       "Caption": "Prog. DM-Servo 2",
+                                                                                                       "Caption": "Prog. DM-Servo ohne LED",
                                                                                                        "Command": Prog_Servo_2_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 12,"Type": "CommandButton","Visible": True,"Width": 72}, 
                                                                                                       {"Name": "Prog_Servo2_LED_Button","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
-                                                                                                       "Caption": "Prog. DM-Servo 2-LED",
+                                                                                                       "Caption": "Prog. DM-Servo mit LED",
                                                                                                        "Command": Prog_Servo_2_LED_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 50,"Type": "CommandButton","Visible": True,"Width": 72}
                                                                                                       ]},
                                                                                   {"Name": "page8",
                                                                                    "Caption":"Attiny DirektProg ",
                                                                                    "Type": "Page","Visible": True,
                                                                                    "Components"    : [{"Name": "Label64","BackColor": "#00000F","BorderColor": "#000006","BorderStyle"   : "fmBorderStyleNone",
-                                                                                                       "Caption": "ACHTUNG - Noch nicht vollständig implementiert. Nur für interen Tests!!!\nDer Attiny DirektProg Modus ermöglicht es, die Firmware des Attinys auszutauschen, während der Attiny im normal im WS2812-Bus hängt.\nEs wird kein Programmieradapter mehr benötigt.\nZuerst muß ein Bootlaoder auf dem Attiny installiert werden. Button <Bootloader>. Der Attiny muß dazu in einem Programmieradapter stecken.\nDanach wird der Attiny in die Zielplatine gesteckt und mit dem WS2812-Bus verbunden. Die Grundadresse des Attinys wird angegeben und danach der Button Upload-FirmwarXX angeklickt\n",
+                                                                                                       "Caption": "ACHTUNG - Noch nicht vollständig implementiert. Nur für interen Tests!!!\nDer Attiny DirektProg Modus ermöglicht es, die Firmware des Attinys auszutauschen, während der Attiny im normal im WS2812-Bus hängt.\nEs wird kein Programmieradapter mehr benötigt.\nZuerst muß ein Bootlaoder auf dem Attiny installiert werden. Button <Bootloader>. Der Attiny muß dazu in einem Programmieradapter stecken.\nDanach wird der Attiny in die Zielplatine gesteckt und mit dem WS2812-Bus verbunden. Die Programmierung erfolgt dann über die Servo2 Seite.\n",
                                                                                                        "ControlTipText": "","ForeColor": "#000012", "Height": 108,"Left": 84,"TextAlign": "fmTextAlignLeft","Top": 12,"Type": "Label","Visible": True,"Width": 364},
                                                                                                       {"Name": "Prog_Attiny_Bootloader_Button","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                                                                                        "Caption": "Prog. Attiny Bootloader",
                                                                                                        "Command": Prog_Attiny_Bootloader_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 12,"Type": "CommandButton","Visible": True,"Width": 72}, 
-                                                                                                      {"Name": "Prog_Attiny_Firmware_DM_Servo","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
-                                                                                                       "Caption": "Direkt-Prog. DM-Servo",
-                                                                                                       "Command": Prog_Attiny_Firmware_DM_Servo_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 50,"Type": "CommandButton","Visible": True,"Width": 72}
+                                                                                                      {"Name": "Prog_Attiny_Bootloader_no_status_led_Button","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
+                                                                                                       "Caption": "Bootloader ohne blaue LED",
+                                                                                                       "Command": Prog_Attiny_Bootloader_no_status_led_Button_Click,"ControlTipText": "","ForeColor" : "#000012","Height": 25,"Left": 6,"Top": 50,"Type": "CommandButton","Visible": True,"Width": 72}
                                                                                                       ]},                                                                                     
                                                                                   ]}
                                                                ]},

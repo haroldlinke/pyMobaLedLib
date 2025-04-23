@@ -468,8 +468,8 @@ def Set_PinNrLst_if_Matching(line, Name, Dest_InpLst, PinTyp, MaxCnt):
                 if InStr(p + 1, ' ' + line + ' ', ' ' + OnePin + ' ') > 0:
                     P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler: Der Pin \'#1#\' wird mehrfach verwendet im' + vbCr + '  \'#2#\' Befehl'), "#1#", OnePin), '#2#', Replace(line, '// ', '')), vbCritical, M09.Get_Language_Str('Mehrfach verwendeter Arduino Pin'))
                     return _fn_return_value, Dest_InpLst
-                if NrStr != '':
-                    NrStr = NrStr + ' '
+            if NrStr != '':
+                NrStr = NrStr + ' '
             # 14.10.21: Juergen
             NrStr = NrStr + M30.AliasToPin(OnePin)
             # build a new list with logical names mapped to physical pins
@@ -944,18 +944,26 @@ def Create_Loc_InCh_Defines(Dest, Channel, LocInChNr):
     return Dest, Channel
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Nr - ByRef 
-def Print_Keyboard_Defines_for_Type(fp, Name, InpCnt, Nr, Skip_11_16=False, Suppress_Fill=False):
+def Print_Keyboard_Defines_for_Type(fp, Name, InpCnt, Nr, Min_Channel, Skip_11_16=False, Suppress_Fill=False):
     i = Long()
 
     ResCnt = Long()
+    
+    start_channel = Nr
+    
+    rm_number = start_channel - Min_Channel #+List_Lenght(DstVar_List)-1    
     #-------------------------------------------------------------------------------------------------------------------------------------------
     for i in vbForRange(1, InpCnt):
-        VBFiles.writeText(fp, M30.AddSpaceToLen('#define ' + Name + str(i), 32) + str(Nr), '\n')
+        VBFiles.writeText(fp, M30.AddSpaceToLen('#define ' + Name + str(i), 32) + M30.AddSpaceToLen(str(Nr), 41) + '// Z21-RM-Rückmelder: Adresse:' + str(int(rm_number/8)+1) + " Eingang:" + str(int(rm_number%8)+1) , '\n')
+        # VBFiles.writeText(fp, M30.AddSpaceToLen('#define ' + Name + str(i), 32) + str(Nr), '\n')
         if Skip_11_16:
             if ( i - 1 % 16 )  == 9:
                 Nr = Nr + 6
+                rm_number += 6
+                
             # Skip the IONr 11 and 16 because they are not used for the analog switches, but have to be reserved for MobaLedLib_Copy_to_InpStruct()
         Nr = Nr + 1
+        rm_number += 1
     # Es werden immer vielfache von 8 Inp Channels belegt
     if not Suppress_Fill:
         # 21.03.23: Juergen - don't reserve space for SwitchD
@@ -1085,7 +1093,7 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
         Start_AButtons = Channel
         TmpChannel = Channel
         Min_Channel = WorksheetFunction.Min(Min_Channel, Channel)
-        TmpChannel = Print_Keyboard_Defines_for_Type(fp, 'SwitchA', SwitchA_InpCnt, TmpChannel, Skip_11_16=True)
+        TmpChannel = Print_Keyboard_Defines_for_Type(fp, 'SwitchA', SwitchA_InpCnt, TmpChannel, Min_Channel, Skip_11_16=True)
         VBFiles.writeText(fp, '#define START_SWITCHES_A  ' + M30.AddSpaceToLen(str(Channel), 41) + '// Define the start number for the first analog switch', '\n')# 21.03.23 Juergen
         Channel = Channel + Used_AButton_Channels * 16
         # multiply by 16 because the Copy_Bits_to_InpStructArray() always fills bytes
@@ -1099,12 +1107,12 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
         StartSwitches1 = Channel
         Min_Channel = WorksheetFunction.Min(Min_Channel, Channel)
         if Channel1InpCnt > 0:
-            Channel = Print_Keyboard_Defines_for_Type(fp, CTR_Cha_Name_1, Channel1InpCnt, Channel)
+            Channel = Print_Keyboard_Defines_for_Type(fp, CTR_Cha_Name_1, Channel1InpCnt, Channel, Min_Channel)
         Channel=Make_sure_that_Channel_is_divisible_by_4(Channel)
         StartSwitches2 = Channel
         Min_Channel = WorksheetFunction.Min(Min_Channel, Channel)
         if Channel2InpCnt > 0:
-            Channel = Print_Keyboard_Defines_for_Type(fp, CTR_Cha_Name_2, Channel2InpCnt, Channel)
+            Channel = Print_Keyboard_Defines_for_Type(fp, CTR_Cha_Name_2, Channel2InpCnt, Channel, Min_Channel)
         VBFiles.writeText(fp, '', '\n')
     if SwitchD_InpCnt >  ( UBound(Split(SwitchD_InpLst, ' ')) + 1 ) :
         # 04.11.20: Moved out of the following if because SwitchD_InpCnt should also be checked if USE_SWITCH_AND_LED_ARRAY is enabled
@@ -1117,7 +1125,7 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
         Min_Channel = WorksheetFunction.Min(Min_Channel, Channel)
         VBFiles.writeText(fp, '#define START_SWITCHES_D  ' + M30.AddSpaceToLen(str(Channel), 41) + '// Define the start number for the first mainboard switch', '\n') 
         # 21.03.23 Juergen
-        Channel = Print_Keyboard_Defines_for_Type(fp, 'SwitchD', SwitchD_InpCnt, Channel, Suppress_Fill=True)
+        Channel = Print_Keyboard_Defines_for_Type(fp, 'SwitchD', SwitchD_InpCnt, Channel, Min_Channel, Suppress_Fill=True)
         VBFiles.writeText(fp, '', '\n')
     if DstVar_List != ' ':
         # #defines for the Output variables

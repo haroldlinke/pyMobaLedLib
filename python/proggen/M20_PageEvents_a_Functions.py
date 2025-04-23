@@ -218,7 +218,7 @@ def Update_All_Start_LedNr():
     OldScreenupdating = P01.Application.ScreenUpdating
     P01.Application.ScreenUpdating = False
     for Sh in PG.ThisWorkbook.Sheets():
-        if M28.Is_Data_Sheet(Sh):
+        if M28.Is_Data_Sheet(Sh) and Sh.Visible == xlSheetVisible:  # 07.01.2025: Juergen - changes on invisible sheets are not allowed and must be ommitted
             Sh.Select()
             Update_Start_LedNr()
     # 29.12.2023: Juergen - keep active sheet on function exit
@@ -262,7 +262,7 @@ def Update_Start_LedNr(FirstRun=True):
     #------------------------------
     # Update the Start LedNr in all used rows
     OldEvents =  P01.Application.EnableEvents
-    display_Type = M08.LEDNr_Display_Type
+    display_Type = M08.LEDNr_Display_Type()
     if FirstRun:
         P01.Application.EnableEvents = False
         # Prevent recursive calls ic cells are changed
@@ -311,7 +311,8 @@ def Update_Start_LedNr(FirstRun=True):
                 else:
                     if Max_LEDs_Channel > 0 and display_Type == 1:
                         #NewValue = '\'' + LEDs_Channel + '-' + str(LEDNr(LEDs_Channel)) **HLI remove "'" 
-                        NewValue = LEDs_Channel + '-' + str(LEDNr(LEDs_Channel))
+                        NewValue = str(LEDs_Channel) + '-' + str(LEDNr(LEDs_Channel))
+                        #NewValue = str(LEDNr(LEDs_Channel)) #test#
                     else:
                         NewValue = str(LEDNr(LEDs_Channel))
                 if P01.Cells(r, M25.LED_Nr__Col).Value == '' or P01.Cells(r, M25.LED_Nr__Col).Value != NewValue:
@@ -387,7 +388,7 @@ def Get_LED_Nr(DefaultLedNr, Row, LED_Channel):
                 return fn_return_value
             fn_return_value = int(LEDNr) + M06.Start_LED_Channel(LED_Channel) #*HL
         else:
-            if Left(LEDNr, Pos - 1) == LED_Channel:
+            if Left(LEDNr, Pos - 1) == str(LED_Channel):
                 fn_return_value = int(P01.val(Mid(LEDNr, Pos + 1))) + M06.Start_LED_Channel(LED_Channel) #*HL
             else:
                 # todo

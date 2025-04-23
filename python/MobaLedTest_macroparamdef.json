@@ -186,6 +186,18 @@
         "Input Text": "Automatisch übernehmen",
         "Hint": "Daten des ARDUINO werden automatisch übernommen"
     },
+    "ARDUINOTest": {
+        "ParName": "ARDUINOTest",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ARDUINOTest",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Test ARDUINO Programm Creation",
+        "Hint": "After each step of the ARDUINO Program Creation a message is shown and the task can be stopped"
+    },
+    
     "AutoConnect": {
         "ParName": "Autoconnect",
         "Cnt": "1",
@@ -394,10 +406,10 @@
         "Hint": "ProgGen/PattGen DefaultFont (nur nach Neustart sichtbar)",
         "Implementation comment": "",
         "MultipleParams": [
-            "FontName",
             "FontSmall",
             "FontNormal",
-            "FontLarge"
+            "FontLarge",
+            "FontName"
         ]
     },
     "FontTitle": {
@@ -664,7 +676,7 @@
         "Type": "",
         "ConfigName": "maxLEDcount",
         "Min": "0",
-        "Max": "255",
+        "Max": "32767",
         "Default": "20",
         "Input Text": "maximale Anzahl LED",
         "Hint": "maximale Anzahl LED"
@@ -711,8 +723,19 @@
         "Min": "0",
         "Max": "255",
         "Default": "",
-        "Input Text": "Patterngenerator anzeigen (Test)",
-        "Hint": "Die Patterngenerator-Seite wird nach Neustart angezeigt (nur zum Testen)"
+        "Input Text": "Patterngenerator anzeigen",
+        "Hint": "Die Patterngenerator-Seite wird nach Neustart angezeigt"
+    },
+    "ShowZ21Simulator": {
+        "ParName": "ShowZ21Simulator",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ShowZ21Simulator",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Z21 Simulator anzeigen (Test)",
+        "Hint": "Die Z21-Simulator-Seite wird nach Neustart angezeigt"
     },
     "ShowHiddentables": {
         "ParName": "ShowHiddentables",
@@ -725,6 +748,19 @@
         "Input Text": "Programmgenerator versteckte Tabellen anzeigen",
         "Hint": "Die versteckten Tabellen werden im ProgrammGenerator angezeigt"
     },
+    "PGIconSize": {
+        "ParName": "PGIconSize",
+        "Cnt": "1",
+        "Type": "",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Hide": "True",
+        "Input Text": "Icon Größe (%)",
+        "Hint": "Defintion der Icomgröße im PG in % (100% = Normal)",
+        "Implementation comment": ""
+    },
+    
     "SerialMonitorInput": {
         "ParName": "SerialMonitorInput",
         "Cnt": "1",
@@ -743,11 +779,36 @@
         "Type": "",
         "ConfigName": "ServoAddress",
         "Min": "0",
-        "Max": "9999",
+        "Max": "32767",
         "Persistent": "True",
         "Default": "1",
         "Input Text": "Servo Modul Adresse",
         "Hint": "Moduladresse des Servos (LED-Nummer des Anschlusses)"
+    },
+    "ServoStatusLEDAddress": {
+        "ParName": "ServoStatusLEDAddress",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "ServoStatusLEDAddress",
+        "Min": "0",
+        "Max": "9999",
+        "Persistent": "True",
+        "Default": "0",
+        "Input Text": "ServoStatus LED Adresse",
+        "Hint": "Adresse der Status LED beim Programmieren des Attinys (0=blaue LED auf der Platine)"
+    },
+    
+    "ServoLEDChannel": {
+        "ParName": "ServoLEDChannel",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "ServoLEDChannel",
+        "Min": "0",
+        "Max": "99",
+        "Persistent": "True",
+        "Default": "0",
+        "Input Text": "LED Kanal",
+        "Hint": "LED Kanal an dem die Servoplatine angeschlossen ist"
     },
     "ServoChannel": {
         "ParName": "ServoChannel",
@@ -773,7 +834,9 @@
             "5",
             "6",
             "7",
-            "8"
+            "8",
+            "9",
+            "10"
         ],
         "ValuesText": [
             "Normal Position",
@@ -783,7 +846,9 @@
             "Toggle Invers",
             "Reset Servo",
             "Factory Reset",
-            "Reset last mem pos"
+            "Reset last mem pos",
+            "Tune Clock",
+            "Einstellen Legacy Speed"
         ],
         "ConfigName": [
             "ServoControlName",
@@ -793,7 +858,7 @@
         "Max": "255",
         "Default": "1",
         "Input Text": "Servo Betriebsart",
-        "Hint": "Betriebsart des Servos (1=Normal, 2=std training, 3=wide training, 4=max speed, 5=toogle invers, 6=reset servo, 7=Factory reset, 8=Reset last mem pos)"
+        "Hint": "Betriebsart des Servos (1=Normal, 2=std training, 3=wide training, 4=max speed, 5=toogle invers, 6=reset servo, 7=Factory reset, 8=Reset last mem pos), 9=trim OSCCAL"
     },
     "ServoCRCold": {
         "ParName": "ServoCRCold",
@@ -813,13 +878,27 @@
         "Cnt": "",
         "Type": "",
         "Min": "0",
-        "Max": "255",
+        "Max": "32767",
         "Default": "0",
         "Persistent": "True",
         "ValueChangeEvent": "True",
         "Input Text": "Soundmodul-Adresse",
         "Hint": "Adresse des Soundmoduls"
     },
+    
+    "SoundLEDChannel": {
+        "ParName": "SoundLEDChannel",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "SoundLEDChannel",
+        "Min": "0",
+        "Max": "99",
+        "Persistent": "True",
+        "Default": "0",
+        "Input Text": "LED Kanal",
+        "Hint": "LED Kanal an dem die Soundplatine angeschlossen ist"
+    },
+    
     "SoundImpulsLength": {
         "ParName": "Sound_ImpulsLength",
         "Cnt": "",

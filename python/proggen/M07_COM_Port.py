@@ -269,9 +269,12 @@ def Check_USB_Port_with_Dialog(ComPortColumn):
     fn_return_value = False
     #---------------------------------------------------------------------------
     #if P01.val(ComPortPage().Cells(M02.SH_VARS_ROW, ComPortColumn)) <= 0:
-    if not F00.port_is_available(ComPortPage().Cells(M02.SH_VARS_ROW, ComPortColumn)):
-        fn_return_value = M07New.USB_Port_Dialog(ComPortColumn)
-        # 04.05.20: Prior Check_USB_Port_with_Dialog ends the program in case of an error
+    if not PG.global_controller.arduino or not PG.global_controller.arduino.isOpen():
+        if not F00.port_is_available(ComPortPage().Cells(M02.SH_VARS_ROW, ComPortColumn)):
+            fn_return_value = M07New.USB_Port_Dialog(ComPortColumn)
+            # 04.05.20: Prior Check_USB_Port_with_Dialog ends the program in case of an error
+        else:
+            fn_return_value = True
     else:
         fn_return_value = True
     return fn_return_value

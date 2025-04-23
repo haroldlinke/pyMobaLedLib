@@ -59,7 +59,7 @@ from ExcelAPI.XLC_Excel_Consts import *
 # ##################################################### Public Const
 
 Lib_Version_Nr = '3.3.2'                                   # If changed check also "Exp_Prog_Gen_Version" in Pattern_Configurator
-Test_Suffix = 'E'                                            # The Excel programs use the same version number than the library to avoid confusion
+Test_Suffix = 'G'                                            # The Excel programs use the same version number than the library to avoid confusion
 Prog_Version = 'Ver. ' + Lib_Version_Nr + Test_Suffix       # A sufix could be used for beta version
 Prog_Version_Nr = Lib_Version_Nr + Test_Suffix              # Call Gen_Release_Version() to update all sheets
 DEBUG_CHANGEEVENT = False
@@ -198,6 +198,7 @@ DialogGuideRes = Long()
 
 Last_SelectedNr_Valid = Boolean()
 Last_SelectedNr = Long()
+Previous_LEDChannel = Long() #     ' 13.02.25 Juergen store latest LEDChannel to have it avaiable for lines with empty StartLedNr cell, fix for ToDo's #27
 
 ComPortfromOnePage = ''
 

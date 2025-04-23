@@ -86,7 +86,7 @@ INVERT_WHEEL = True
 # filenames
 # all filenames are relativ to the location of the main program pyProg_generator_MobaLedLib.py
 
-LOG_FILENAME = 'logfile.log'
+LOG_FILENAME = '../logfile.log'
 PARAM_FILENAME = 'MobaLedTest_param.json'
 CONFIG_FILENAME = '../../MobaLedTest_config.json'
 MACRODEF_FILENAME = 'MobaLedTest_macrodef.json'
@@ -104,7 +104,7 @@ InoName_LED = "LEDs_AutoProg.ino"
 FINISH_FILE = "Finished.txt"                                                 # 03.12.19:
 COLORTESTONLY_FILE = "ColorTestOnly.txt"
 
-SerialIF_teststring1 = "LEDs_AutoProg"
+SerialIF_teststring1 = "#?LEDs_AutoProg"
 SerialIF_teststring2 = "#Color Test LED"
 
 PERCENT_BRIGHTNESS = 1  # 1 = Show the brightnes as percent, 0 = Show the brightnes as ">>>"# 03.12.19:
@@ -560,6 +560,7 @@ DEFAULT_CONFIG = {
                     "baudrate": 115200,         # baudrate, possible values: 50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200
                     "maxLEDcount": 255,
                     "lastLedCount": 1,
+                    "lastLedChannel": 0, 
                     "lastLed": 0,
                     "pos_x": 10,
                     "pos_y": 10,
@@ -606,8 +607,10 @@ DEFAULT_CONFIG = {
                     "lastservo_channel": 1,
                     "DCC BaseAddress": 100,
                     "ServoAddress": 0,
+                    "ServoLEDChannel": 0,
                     "ServoChannel": 0,
                     "SoundAddress": 0,
+                    "SoundLEDChannel": 0,
                     "SoundImpulsLength": 200,
                     "Sound_RED": 8,
                     "Sound_GREEN": 3,
@@ -617,6 +620,7 @@ DEFAULT_CONFIG = {
                     "Autoconnect": 0,
                     "ARDUINOShowAll": True,
                     "ARDUINOTakeOver": True,
+                    "ARDUINOTest": False, 
                     "UseZ21Data": False,
                     "ARDUINOBlink": False,
                     "MLLDigSysName": "None",
@@ -633,7 +637,9 @@ DEFAULT_CONFIG = {
                     "RMbusTimer": "0",
                     "ShowProgramGenerator": 1,
                     "ShowPatternGenerator": 0,
+                    "ShowZ21Simulator": 0,
                     "ShowHiddentables": 0,
+                    "PGIconSize": 100, 
                     "AutoLoadWorkbooks":1,
                     "UseCOM_Port_UserForm":0,
                     "languagename": "Auto",

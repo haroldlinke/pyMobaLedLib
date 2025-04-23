@@ -150,7 +150,7 @@ def Make_sure_that_Col_Variables_match(Sh=None, Switch_back_Target=None):
     # Fills the global variables which contain the column numbers
     if Sh is None:
         Sh = P01.ActiveSheet
-    if Sh.Name == Col_from_Sheet:
+    if Page_ID != "" and Sh.Name == Col_from_Sheet:
         return
         # Already read in => exit
     #Debug.Print "Updating the Col_Variables"

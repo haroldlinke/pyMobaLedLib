@@ -200,7 +200,7 @@ class ServoTestPage1(tk.Frame):
 
         # ------------- SERVO Pos
         s = ttk.Style()
-        s.configure('my.TButton', font=self.fontbutton)
+        s.configure('my.TButton', font=self.fontbutton, padx=0)
                 
         servo_set_pos_speed_frame = ttk.Frame(servo_program_frame,relief="flat", borderwidth=0)
         ssp_label1 = ttk.Label(servo_set_pos_speed_frame, text='Programmierung von Min/Max Position und Geschwindigkeit',font=self.fontlabel)
@@ -335,7 +335,7 @@ class ServoTestPage1(tk.Frame):
 
 
         # --- placement
-        self.frame.grid(row=0,column=0)
+        self.frame.grid(row=0,column=0, sticky="n")
         self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
         # scroll_main_frame
         self.main_frame.grid(row=0,column=0)
@@ -623,10 +623,13 @@ class ServoTestPage1(tk.Frame):
         self._update_servos(servo_address,code,0,0)        
         
     def _update_servos(self, lednum, servo_0, servo_1, servo_2):
+        servo_LED_Channel = self.controller.get_macroparam_val(self.tabClassName, "ServoLEDChannel")
+        # update servo_address according to offset for selected channel number
+        lednum += self.controller.get_lednum_offset_for_channel(servo_LED_Channel)                
         if self.controller.mobaledlib_version == 1:
             message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(servo_0) + " " + '{:02x}'.format(servo_1) + " " + '{:02x}'.format(servo_2) + " " + '{:02x}'.format(1) + "\n"
         else:
-            message = "#L " + '{:02x}'.format(lednum) + " " + '{:02x}'.format(servo_0) + " " + '{:02x}'.format(servo_1) + " " + '{:02x}'.format(servo_2) + " " + '{:02x}'.format(1) + "\n"
+            message = "#L " + '{:04x}'.format(lednum) + " " + '{:02x}'.format(servo_0) + " " + '{:02x}'.format(servo_1) + " " + '{:02x}'.format(servo_2) + " " + '{:02x}'.format(1) + "\n"
         self.controller.send_to_ARDUINO(message)
         #time.sleep(0.2)
 

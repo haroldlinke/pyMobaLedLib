@@ -1,26 +1,206 @@
-SheetName¯test_1
+SheetName¯Main_2
 Version¯1
-Erste RGB LED: ¯1
+Erste RGB LED: ¯0
 Startkanal der RGB LED: ¯0
 Schalter Nummer: ¯SI_1
-Anzahl der Ausgabe Kanäle: ¯2
-Bits pro Wert: ¯1
+Anzahl der Ausgabe Kanäle: ¯3
+Bits pro Wert: ¯8
 Wert Min: ¯0
-Wert Max: ¯255
+Wert Max: ¯128
 Wert ausgeschaltet: ¯0
-Mode: ¯0
-Analoges Überblenden: ¯0
-Goto Mode: ¯0
+Mode: ¯PM_NORMAL
+Analoges Überblenden: ¯
+Goto Mode: ¯
 Goto Aktivierung: ¯
-Grafische Anzeige: ¯
+Grafische Anzeige: ¯1
 Spezial Mode: ¯
-Makro Name: ¯test
+Makro Name: ¯Wechselblinker
 Dauer¯1 Sec
 Goto Tabelle¯
 LED_Tab¯LED1¯x¯¯x
-LED_Tab¯LED2
-LED_Tab¯LED3
+LED_Tab¯LED2¯¯x¯¯x
+LED_Tab¯LED3¯x¯x¯x¯x
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Tab¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
+LED_Attr¯12¯
 LED_Attr¯12¯
 LED_Attr¯12¯
 LED_Attr¯12¯
 RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+RGB_LED_CheckBox¯	0
+msoShapeOval¯476.1290322580645;156.7741935483871;12.258064516129032;12.258064516129032¯LED_M99O01L1
+msoShapeOval¯495.4838709677419;156.7741935483871;12.258064516129032;12.258064516129032¯LED_M99O01L2
+msoShapeOval¯514.8387096774194;156.7741935483871;12.258064516129032;12.258064516129032¯LED_M99O01L3

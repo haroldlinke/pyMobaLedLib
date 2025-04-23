@@ -170,7 +170,7 @@ class ARDUINOConfigPage(tk.Frame):
 
         # --- placement
         # Tabframe
-        self.frame.grid(row=0,column=0)
+        self.frame.grid(row=0,column=0, sticky="n")
         self.scroll_main_frame.grid(row=0,column=0,sticky="nesw")
         # scroll_main_frame
         self.main_frame.grid(row=0,column=0)
@@ -641,7 +641,7 @@ class ARDUINOConfigPage(tk.Frame):
         self.setConfigData("startcmd_filename", self.startcmd_filename)
         self.setConfigData("resourcePath_filename", self.resourcePath_filename)
         param_values_dict = self.get_macroparam_var_values(self.tabClassName)
-        #self.setConfigDataDict(param_values_dict)
+        self.setConfigDataDict(param_values_dict)
         
         self.store_old_config()
         self.controller.SaveConfigData()

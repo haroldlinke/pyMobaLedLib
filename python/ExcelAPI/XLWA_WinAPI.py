@@ -31,7 +31,7 @@
 # *
 # *
 # ***************************************************************************
-
+import time
 
 def SetCommState(hCommDev,lpDCB):
     pass
@@ -70,7 +70,7 @@ def ReadFile(hFile,Buffer,nNumberOfBytesToRead,lpNumberOfBytesRead,lpOverlapped)
     pass
 
 def Sleep(dwMilliseconds):
-    pass
+    time.sleep(dwMilliseconds/1000.0)
 
 def GetAsyncKeyState(vKey):
     pass

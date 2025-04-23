@@ -49,6 +49,7 @@ import proggen.M02_Public as M02
 import proggen.M09_Language as M09
 import proggen.M30_Tools as M30
 import mlpyproggen.Prog_Generator as PG
+import proggen.F00_mainbuttons as F00
 
 
 """--------------------------------------------------------------
@@ -113,7 +114,9 @@ def __Clear_COM_Port_Check(r, ReleaseMode):
     if not ReleaseMode and IsNumeric(_with0.Value):
         _with0.Value = - Abs(P01.val(_with0.Value))
     else:
-        _with0.Value = 'COM?'
+        #_with0.Value = 'COM?'
+        #_with0.Value = F00.port_set_busy(_with0.Value)
+        pass
 
 def Clear_COM_Port_Check_and_Set_Cursor_in_all_Sheets(ReleaseMode):
     

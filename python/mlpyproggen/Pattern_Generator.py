@@ -328,7 +328,7 @@ class Pattern_GeneratorPage(tk.Frame):
                                                                     "Caption":"Export zu ProgGen",
                                                                     "Command": "PAT09.Prog_Generator_Button_Click" ,"ControlTipText":"Export zu ProgGen","ForeColor":"#000012","Height":"50","Left":0,"Top":0,"Type":"CommandButton","Visible":True,"Width":"50"},
                                                                   ]},
-                                    "Form4": {  "Name"          : "Send2Attiny",
+                                    "Form11": {  "Name"          : "Send2Attiny",
                                                 "BackColor"     : "#FFFFFF",
                                                 "BorderColor"   : "#000012",
                                                 "Caption"       : "",
@@ -636,9 +636,14 @@ class Pattern_GeneratorPage(tk.Frame):
         #self.grid_columnconfigure(0,weight=1)
         #self.grid_rowconfigure(0,weight=1)
         
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)        
+        
         self.frame=ttk.Frame(self,relief="ridge", borderwidth=2)
         self.frame.grid_columnconfigure(0,weight=1)
-        self.frame.grid_rowconfigure(0,weight=1)        
+        self.frame.grid_rowconfigure(1,weight=1)        
         
         #self.scroll_main_frame = ScrolledFrame(self.frame)
         #self.scroll_main_frame.grid_columnconfigure(0,weight=1)

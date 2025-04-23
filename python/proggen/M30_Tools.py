@@ -709,7 +709,7 @@ def Read_File_to_String(FileName):
     # VB2PY (UntranslatedCode) On Error GoTo ReadError
     try:
         #open text file in read mode
-        text_file = open(FileName, "r")
+        text_file = open(FileName, "r", encoding="UTF-8")
         fn_return_value = text_file.read()
         text_file.close()
         return fn_return_value
