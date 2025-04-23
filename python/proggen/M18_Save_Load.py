@@ -95,10 +95,12 @@ from vb2py.vbdebug import *
 """
 
 PGF_Identification = 'Program_Generator configuration file'
-PGF_Version_String = 'V1.0'
+PGF_Version_String_1 = 'V1.0'
+PGF_Version_String_2 = 'V2.0'  # 11.02.2025 Juergen add export of board type
 __Head_ID = 'Head:'
 __SheetID = 'Sheet:'
 __Line_ID = 'Line:'
+__Board_ID = 'Board' # 11.02.2025 Juergen add export of board type
 __Import_Page_ID = String()
 __First_Line = Boolean()
 __AddedToFilterColumn = Long()
@@ -110,15 +112,18 @@ __Changed2SaveDir = Boolean()
 __Copy_S2S_SrcSheet = String()
 __ImportFollowingSheets = Boolean()
 
-def __Create_pgf_File(Name):
+def __Create_pgf_File(Name, AddBoardInfo):
     fn_return_value = None
     fp = Integer()
     #----------------------------------------------------------
     fp = FreeFile()
     try:
         # VB2PY (UntranslatedCode) On Error GoTo WriteError
-        VBFiles.openFile(fp, Name, 'w') 
-        VBFiles.writeText(fp, __Head_ID + vbTab + PGF_Identification + vbTab + PGF_Version_String, '\n')
+        VBFiles.openFile(fp, Name, 'w')
+        if AddBoardInfo:                              # 11.02.25 Juergen new export file format which also contains the board information
+            VBFiles.writeText(fp, __Head_ID + vbTab + PGF_Identification + vbTab + PGF_Version_String_2, '\n')
+        else:
+            VBFiles.writeText(fp, __Head_ID + vbTab + PGF_Identification + vbTab + PGF_Version_String_1, '\n')
         fn_return_value = fp
         # VB2PY (UntranslatedCode) On Error GoTo 0
         return fn_return_value
@@ -127,7 +132,7 @@ def __Create_pgf_File(Name):
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
-def __Save_Sheet_to_pgf(fp, Sh):
+def __Save_Sheet_to_pgf(fp, Sh, AddBoardInfo):
     fn_return_value = None
     #OldSh = String()
 
@@ -167,6 +172,9 @@ def __Save_Sheet_to_pgf(fp, Sh):
                         # Use two lines to be able to enable both new columns separately                             '
                     VBFiles.writeText(fp, vbTab + Replace(P01.Cells(r.Row, Col), vbLf, '{NewLine}'))
                 VBFiles.writeText(fp, '', '\n')
+        if AddBoardInfo:  # 11.02.25: Juergen also write board type to export file
+            VBFiles.writeText(fp, __Board_ID + vbTab + P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL))
+            
         # VB2PY (UntranslatedCode) On Error GoTo 0
         PG.ThisWorkbook.Sheets(OldSh).Select()
         fn_return_value = True
@@ -177,29 +185,29 @@ def __Save_Sheet_to_pgf(fp, Sh):
     return fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
-def __Save_SingleSheet_to_pgf(Name, Sh):
+def __Save_SingleSheet_to_pgf(Name, Sh, AddBoardInfo):
     fn_return_value = None
     fp = Integer()
     #-----------------------------------------------------------------------------------------
     if not M28.Is_Data_Sheet(Sh):
         P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Die Seite \'#1#\' ist keine gültige Datenseite'), '#1#', Sh.Name), vbCritical, M09.Get_Language_Str('Ungültige Daten Seite ausgewählt'))
         return fn_return_value
-    fp = __Create_pgf_File(Name)
+    fp = __Create_pgf_File(Name, AddBoardInfo)
     if fp > 0:
-        fn_return_value = __Save_Sheet_to_pgf(fp, Sh)
+        fn_return_value = __Save_Sheet_to_pgf(fp, Sh, AddBoardInfo)
         VBFiles.closeFile(fp)
     return fn_return_value
 
 def __Test_Save_SingleSheet_to_pgf():
     #-----------------------------------------
-    Debug.Print('Save_SingleSheet_to_pgf: ' + __Save_SingleSheet_to_pgf(M08.GetWorkbookPath() + '\\Test.MLL_pgf', P01.ActiveSheet))
+    Debug.Print('Save_SingleSheet_to_pgf: ' + __Save_SingleSheet_to_pgf(M08.GetWorkbookPath() + '\\Test.MLL_pgf', P01.ActiveSheet, True))
 
-def Save_Sheets_to_pgf(Name, FromAllSheets):
+def Save_Sheets_to_pgf(Name, FromAllSheets, AddBoardInfo):
     fn_return_value = None
     Res = Boolean()
     #--------------------------------------------------------------------------------------
     if FromAllSheets == False and P01.ActiveWindow.SelectedSheets["Count"] == 1:
-        Res = __Save_SingleSheet_to_pgf(Name, P01.ActiveSheet)
+        Res = __Save_SingleSheet_to_pgf(Name, P01.ActiveSheet, AddBoardInfo)
     else:
         Res = True
         fp = __Create_pgf_File(Name)
@@ -207,13 +215,13 @@ def Save_Sheets_to_pgf(Name, FromAllSheets):
             if P01.ActiveWindow.SelectedSheets["Count"] > 1:
                 for Sh in P01.ActiveWorkbook.sheets:
                     if M28.Is_Data_Sheet(Sh):
-                        Res = __Save_Sheet_to_pgf(fp, Sh)
+                        Res = __Save_Sheet_to_pgf(fp, Sh, AddBoardInfo)
                         if Res == False:
                             break
             else:
                 for Sh in P01.ActiveWorkbook.sheets:
                     if M28.Is_Data_Sheet(Sh) and Sh.Visible == xlSheetVisible and Sh.Name != 'Examples':
-                        Res = __Save_Sheet_to_pgf(fp, Sh)
+                        Res = __Save_Sheet_to_pgf(fp, Sh, AddBoardInfo)
                         if Res == False:
                             break
             VBFiles.closeFile(fp)
@@ -450,7 +458,7 @@ def __Check_Hidden_Lines():
             #Application.ScreenUpdating = False
             P01.Cells(__Start_Row, M25.Descrip_Col).Select()
 
-def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
+def __Read_PGF_from_String_V1and2(lines, Name, ToActiveSheet):
     global __AddedToFilterColumn, __HiddenRows, __Start_Row, __ImportFollowingSheets
     fn_return_value = False
     LNr = 0 #Long()
@@ -475,15 +483,15 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
     #Unload(UserForm_Options)
     for LNr in vbForRange(1, UBound(lines) - 1):
         if Trim(Replace(lines(LNr), vbLf, '')) != '':
-            Parts = Split(Replace(lines(LNr), vbLf, ''), vbTab)
-            select_0 = Parts(0)
+            parts = Split(Replace(lines(LNr), vbLf, ''), vbTab)
+            select_0 = parts(0)
             if (select_0 == __SheetID):
                 __Check_Hidden_Lines()
                 if M28.Is_Data_Sheet(P01.ActiveSheet):
                     M20.Format_Cells_to_Row(P01.ActiveSheet.get_LastUsedRow() + M02.SPARE_ROWS)
                     #M20.Update_Start_LedNr() 17.04.23 removed - do it after import of all sheets is done (include feature)
-                Inp_Page_ID = Parts(1)
-                SheetName = Parts(2)
+                Inp_Page_ID = parts(1)
+                SheetName = parts(2)
                 __AddedToFilterColumn = 0
                 __HiddenRows = 0
                 __Start_Row = 0
@@ -526,6 +534,9 @@ def __Read_PGF_from_String_V1_0(lines, Name, ToActiveSheet):
                         return fn_return_value
                     F00.StatusMsg_UserForm.Set_ActSheet_Label('Line: ' + str(LineNrInSheet))
                     LineNrInSheet = LineNrInSheet + 1
+            elif (select_0 == __Board_ID):
+                if not SkipSheet:
+                    P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL).Value = parts[1]
             else:
                 P01.MsgBox(M09.Get_Language_Str('Fehler: Unbekannter Zeilentyp in Zeile:') + ' ' + LNr + vbCr + M09.Get_Language_Str('in der PGF Datei:') + vbCr + '  \'' + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler in PGF Datei'))
                 M20.Update_All_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
@@ -572,8 +583,8 @@ def Read_PGF(Name, ToActiveSheet=False):
         ScrUpd = P01.Application.ScreenUpdating
         P01.Application.ScreenUpdating = False
         VerStr = parts(2)
-        if (VerStr == PGF_Version_String):
-            fn_return_value = __Read_PGF_from_String_V1_0(Lines, Name, ToActiveSheet)
+        if (VerStr == PGF_Version_String_1 or VerStr == PGF_Version_String_2):
+            fn_return_value = __Read_PGF_from_String_V1and2(Lines, Name, ToActiveSheet)
             #*HL StatusMsg_UserForm.Hide()
         else:
             Err = True
@@ -604,7 +615,7 @@ def __Save_Data_to_File_CallBack(Do_Import, Import_FromAllSheets):
     #--------------------------------------------------------------------------------------------
     Debug.Print('Save_Data_to_File_CallBack(' + str(Do_Import) + ', ' + str(Import_FromAllSheets) + ')')
     if Do_Import:
-        if Save_Sheets_to_pgf(__Save_Data_FileName, Import_FromAllSheets):
+        if Save_Sheets_to_pgf(__Save_Data_FileName, Import_FromAllSheets, False):
             P01.MsgBox(M09.Get_Language_Str('Die Datei wurde erfolgreich geschrieben:') + vbCr + '  \'' + __Save_Data_FileName + '\'', vbInformation, 'Datei wurde geschrieben')
 
 def __Achtivate_MyExampleDir_if_called_the_first_time():
@@ -663,7 +674,7 @@ def __Save_Data_from_active_Sheet_to_File_CallBack(Do_Import, Import_FromAllShee
     if Do_Import:
         P01.ActiveSheet.Select()
         __Copy_S2S_SrcSheet = P01.ActiveSheet.Name
-        if Save_Sheets_to_pgf(__Save_Data_FileName, False):
+        if Save_Sheets_to_pgf(__Save_Data_FileName, True):
             __Copy_to_Selected_Sheet_Callback() #*HLSelect_Dest_Sheet.Start('Copy_to_Selected_Sheet_Callback')
 
 def Copy_from_Sheet_to_Sheet():

@@ -59,6 +59,13 @@
 #define DEBUG Serial
 
 #ifdef USE_UI
+#ifndef OLED_TYP
+  #define OLED_TYP 2
+#endif
+#ifndef UI_MLLTime					// Peter
+  #define UI_MLLTime 0				// Peter   0 = keine Anzeige, 1 = MLL-Zeit, 2 = LDR-Wert, 3 = Zeit und LDR-Wert
+#endif								// Peter
+#include "U8G2UserInterface.h"
 UserInterface ui(getUserInterface);
 #endif
 
@@ -216,6 +223,9 @@ void loopESP32Extensions() {
 #endif	
 
 #ifdef USE_UI
+  #ifdef DISPLAY_FASTLED_FAULTS
+    ui.setCounters(delayCount, reviveCount);
+  #endif
 	ui.loop();
 #endif	
 }

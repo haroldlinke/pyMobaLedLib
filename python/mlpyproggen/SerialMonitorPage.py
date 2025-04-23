@@ -267,7 +267,7 @@ class SerialMonitorPage(tk.Frame):
     def set_check_RMBUS(self,value=False):
                 
         if self.RMBUS_request_timer_confvalue>0:
-            self.check_RMBUS = False #value
+            self.check_RMBUS = value
         else:
             self.check_RMBUS = False
         if self.check_RMBUS:
@@ -345,7 +345,7 @@ class ReadLine:
                     result = "JSON:{\"RMBUS\": \""
                     for i in range(msg_length):
                         Readbyte = self.s.read(1)
-                        logging.debug("serialread from ARDUINO length:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
+                        logging.debug("serialread from ARDUINO:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
                         ReadbyteInt = int.from_bytes(Readbyte,byteorder = "big")
                         chkSum ^= ReadbyteInt
                         if i < msg_length-1: # handle data bytes, last byte is for checksum only

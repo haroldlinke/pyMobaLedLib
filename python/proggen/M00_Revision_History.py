@@ -819,7 +819,24 @@ from vb2py.vbdebug import *
 # 23.12.24: - Juergen - upgrade platformio to 6.9.0 to fix build problem with DMX512
 # 27.12.24: - Juergen - improve determination of OneDrive local path
 #                     - change to beta 3.3.2E
-
+# 07.01.25: - Juergen - add MobaLedLib color ring macro
+#                     - fix problem with StartLedNumber update on invisible sheets
+# 18.01.25: - Juergen - change FastLED version to 3.9.9
+#                     - remove wrong platformIO beta warning
+#                     - change to beta 3.3.2F
+# 23.01.25: - Juergen - change FastLED version to 3.9.12 coming from private github repository
+#                     - update minimum library versions
+#                     - experimental support of ESP32 board version 2.0.17
+#                     - change to beta 3.3.2F3
+# 11.02.25: - Juergen - fix problem with wrong MP3_Command value MP3_STOP which should be MP3_ADVERT_STOP
+#                     - when using platformio don't turn compile window to red in case of build errors to keep colored error output
+#                     - change to beta 3.3.2F4
+# 12.02.25: - Juergen - fix problem reported in ToDo's #27
+#                     - fix bug when loading MLL_pgf files with version 1.0
+#                     - change to beta 3.3.2F5
+# 29.03.25: - Harold  - change download URL and path for farbtest
+# 30.03.25: - Juergen - change version string schema to include platform
+#'                     - change to beta 3.3.2G
 
 
 # ToDo:

@@ -252,7 +252,7 @@ class CWorkbook(object):
             self.ws_filename = None
             self.wb = None
             style = ttk.Style(frame)
-            style.configure('downtab.TNotebook', tabposition='sw')
+            style.configure('downtab.TNotebook', tabposition='sw', padding=[5, 5], height=10)
             self.container = ttk.Notebook(frame, style="downtab.TNotebook", width=self.workbook_width, height=self.workbook_height)
             self.container.bind("<Alt-B1-Motion>", self.reorder_tabs)
             self.container.grid_rowconfigure(0,weight=1)
@@ -548,7 +548,7 @@ class CWorkbook(object):
             return
         if filename:
             if self.ws_filename != filename:
-                self.wb = openpyxl.load_workbook(filename)
+                self.wb = openpyxl.load_workbook(filename, data_only=True)
                 self.ws_filename = filename
             if fieldnames == None:
                 fieldnames = self.fieldnames

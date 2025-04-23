@@ -179,6 +179,7 @@ def ConvertFastbuild():
     # 04.11.23: Juergen:
     return #*HL
     ConvertToCrLf(M08.GetWorkbookPath() + '\\' + M02.Ino_Dir_LED + 'fastbuild.cmd')
+    ConvertToCrLf(M08.GetWorkbookPath() + '\\' + M02.Ino_Dir_LED + 'fastbuild2.cmd') # 23.01.25: Juergen:
 
 def ConvertToCrLf(fileName):
     fso = Variant()

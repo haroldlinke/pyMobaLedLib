@@ -94,7 +94,7 @@ UT-------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
 """
 
-__USE_pyPROGGEN = 2
+__USE_pyPROGGEN = 3
 __CHECKCOL_EXE_DIR = "" #M02.Ino_Dir_LED + 'pyProg_Generator_MobaLedLib\\'
 __CHECKCOL_DAT_DIR = "" #M02.Ino_Dir_LED
 __CHECKCOL_ZIP_DIR = "" #M02.Ino_Dir_LED

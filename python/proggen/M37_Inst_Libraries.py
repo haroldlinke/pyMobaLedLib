@@ -453,7 +453,7 @@ def Add_Update_from_Other_Source(fp, row):
     VBFiles.writeText(fp, '   ECHO For some reasons the directory could not be deleted ;-(', '\n')
     VBFiles.writeText(fp, '   ECHO Check if an other program is active which prevents the deleting', '\n')
     VBFiles.writeText(fp, '   ECHO of the directory', '\n')
-    VBFiles.writeText(fp, '   ECHO.', '\n')
+    VBFiles.writeText(fp, '   ECHO/', '\n')
     VBFiles.writeText(fp, '   ECHO Going to try a second time', '\n')
     VBFiles.writeText(fp, '   PAUSE', '\n')
     VBFiles.writeText(fp, '   rmdir ' + LibName + '\\ /s /q', '\n')
@@ -486,7 +486,7 @@ def Add_Update_from_Other_Source(fp, row):
         VBFiles.writeText(fp, 'ECHO ren  result: %ERRORLEVEL%', '\n')
         VBFiles.writeText(fp, 'IF ERRORLEVEL 1 GOTO ErrorMsg', '\n')
         VBFiles.writeText(fp, 'if EXIST ' + LibName + '.zip del ' + LibName + '.zip', '\n')
-    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO/', '\n')
     #  Print #fp, "PAUSE"
     # Debug
     VBFiles.writeText(fp, '', '\n')
@@ -742,7 +742,7 @@ def Create_Do_Update_Script(Pause_at_End):
         # // remove find, not needed here
         VBFiles.writeText(fp, ' 2>&1')
         # Hide debug messages
-        VBFiles.writeText(fp, 'ECHO.', '\n')
+        VBFiles.writeText(fp, 'ECHO/', '\n')
         VBFiles.writeText(fp, 'ECHO Error %ERRORLEVEL%', '\n')
         VBFiles.writeText(fp, 'IF ERRORLEVEL 1 Goto ErrorMsg', '\n')
         VBFiles.writeText(fp, '', '\n')
@@ -755,7 +755,7 @@ def Create_Do_Update_Script(Pause_at_End):
         VBFiles.writeText(fp, 'ECHO *********************************', '\n')
         for Brd in Split(BrdList, ','):
             VBFiles.writeText(fp, 'ECHO   ' + Brd, '\n')
-        VBFiles.writeText(fp, 'ECHO.', '\n')
+        VBFiles.writeText(fp, 'ECHO/', '\n')
         # 09.03.21 Juergen: delete cache file to force an ESP32 rebuild, otherwise prebuild library versions would still be used
         VBFiles.writeText(fp, '@if exist "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache" del "%USERPROFILE%\\AppData\\Local\\Temp\\pyMobaLedLib_build\\ESP32\\includes.cache"', '\n')
         for Brd in Split(BrdList, ','):
@@ -767,7 +767,7 @@ def Create_Do_Update_Script(Pause_at_End):
                 VBFiles.writeText(fp, ' --pref "boardsmanager.additional.urls=' + URLList + '"')
             VBFiles.writeText(fp, ' 2>&1 | find /v " StatusLogger " | find /v " INFO c.a" | find /v " WARN p.a" | find /v " WARN c.a"', '\n')
             # Hide debug messages
-            VBFiles.writeText(fp, 'ECHO.', '\n')
+            VBFiles.writeText(fp, 'ECHO/', '\n')
             VBFiles.writeText(fp, 'ECHO Error %ERRORLEVEL%', '\n')
             VBFiles.writeText(fp, 'IF ERRORLEVEL 1 Goto ErrorMsg', '\n')
             VBFiles.writeText(fp, '', '\n')
@@ -1354,15 +1354,15 @@ def Create_Restart_Cmd():
         VBFiles.writeText(fp, 'ECHO  ~~~~~~~~~~~~~~~~~~', '\n')
         VBFiles.writeText(fp, 'ECHO  Update is finished', '\n')
         VBFiles.writeText(fp, 'ECHO  ~~~~~~~~~~~~~~~~~~', '\n')
-        VBFiles.writeText(fp, 'ECHO.', '\n')
+        VBFiles.writeText(fp, 'ECHO/', '\n')
         VBFiles.writeText(fp, 'ECHO  Going to restarting the new Prog_Generator_MobaLedLib.xlsm', '\n')
         VBFiles.writeText(fp, 'ECHO.', '\n')
         VBFiles.writeText(fp, 'ECHO  If the program hangs here the hidden file "~$Prog_Generator_MobaLedLib.xlsm"', '\n')
         VBFiles.writeText(fp, 'ECHO  is not deleted for some reasons. It has to be deleted manualy.', '\n')
-        VBFiles.writeText(fp, 'ECHO.', '\n')
+        VBFiles.writeText(fp, 'ECHO/', '\n')
         VBFiles.writeText(fp, 'ECHO  Make sure that all excel instances are closed if it hangs.', '\n')
         VBFiles.writeText(fp, 'ECHO  In case of problems the installation is continued in one minute.', '\n')
-        VBFiles.writeText(fp, 'ECHO.', '\n')
+        VBFiles.writeText(fp, 'ECHO/', '\n')
         VBFiles.writeText(fp, 'set /A counter=1', '\n')
     # 08.10.20: New Block
         VBFiles.writeText(fp, '::define a variable containing a single backspace character', '\n')
@@ -1380,7 +1380,7 @@ def Create_Restart_Cmd():
         VBFiles.writeText(fp, 'if exist "~$Prog_Generator_MobaLedLib.xlsm" Goto Wait', '\n')
         VBFiles.writeText(fp, ':Continue', '\n')
     # 08.10.20:
-        VBFiles.writeText(fp, 'ECHO.', '\n')
+        VBFiles.writeText(fp, 'ECHO/', '\n')
         VBFiles.writeText(fp, 'ECHO  Going to start the Prog_Generator_MobaLedLib again', '\n')
         VBFiles.writeText(fp, 'CHCP 65001 > NUL', '\n')
     # Change the code Page to be able to use special characters like "ä" in the path

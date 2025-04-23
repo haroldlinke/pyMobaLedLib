@@ -636,9 +636,14 @@ class Pattern_GeneratorPage(tk.Frame):
         #self.grid_columnconfigure(0,weight=1)
         #self.grid_rowconfigure(0,weight=1)
         
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)        
+        
         self.frame=ttk.Frame(self,relief="ridge", borderwidth=2)
         self.frame.grid_columnconfigure(0,weight=1)
-        self.frame.grid_rowconfigure(0,weight=1)        
+        self.frame.grid_rowconfigure(1,weight=1)        
         
         #self.scroll_main_frame = ScrolledFrame(self.frame)
         #self.scroll_main_frame.grid_columnconfigure(0,weight=1)

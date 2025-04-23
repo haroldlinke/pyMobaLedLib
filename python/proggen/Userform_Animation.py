@@ -23,6 +23,7 @@ import pgcommon.CanvasFrame as CF
 
 runtype_pingpong = 1
 runtype_on_off = 2
+runtype_hsv = 3
 runtype_repeat = 0
 
 curvetype_linear = 0
@@ -35,7 +36,7 @@ timesteptype_individuell = 2
 
 class UserForm_Animation:
     
-    def __init__(self,controller):
+    def __init__(self,controller, no_of_curves=1):
         self.controller    = controller
         self.IsActive      = False
         self.Form          = None
@@ -48,35 +49,87 @@ class UserForm_Animation:
         self.test_pause = False
         self.value_max = 254
         self.value_min = 1
+        self.no_of_curves = no_of_curves
+        self.active_curve = 0
+        self.graph_colors = ["#FF0000", "#00FF00", "#0000FF"]
+        self.Anim_Anfangswert_TextBox = None
+        self.Anim_AnfangsGwert_TextBox  = None
+        self.Anim_AnfangsBwert_TextBox  = None
+        self.Anim_Endwert_TextBox  = None
+        self.Anim_EndGwert_TextBox  = None
+        self.Anim_EndBwert_TextBox = None
+        self.Anim_Type_ListBox = None
+        self.Active_Curve_ListBox = None
         #*HL Center_Form(Me)
-        
         self.Main_Menu_Form_RSC = {}
         
     def get_params_from_param_list(self, param_list):
         i = 0
         for param in param_list:
-            if self.UI_paramlist[i].Type == "ListBox":
-                self.UI_paramlist[i].Selection = param
-            else:
-                self.UI_paramlist[i].Value = param
-            i += 1
+            if i < len(self.UI_paramlist):
+                if self.UI_paramlist[i].Type == "ListBox":
+                    self.UI_paramlist[i].Selection = param
+                else:
+                    self.UI_paramlist[i].Value = param
+                i += 1
+            
 
     def create_paramstring_from_param_list(self, param_list):
         i = 0
         result_string = ""
         for param in param_list:
-            if self.UI_paramlist[i].Type == "ListBox":
-                result_string = result_string + str(self.UI_paramlist[i].Selection)
+            #if self.UI_paramlist[i].Type == "ListBox":
+                #result_string = result_string + str(self.UI_paramlist[i].Selection)
+            #else:
+                #result_string = result_string + str(self.UI_paramlist[i].Value)
+            #if i < len(param_list) - 1:
+                #result_string = result_string + ","
+            #i += 1
+            if param.Type == "ListBox":
+                result_string = result_string + str(param.Selection)
             else:
-                result_string = result_string + str(self.UI_paramlist[i].Value)
+                result_string = result_string + str(param.Value)
             if i < len(param_list) - 1:
                 result_string = result_string + ","
-            i += 1
+            i += 1            
         return result_string
     
     def calculate_on_off_line(self):
         time_val =  self.Anim_DauerEin_TextBox.Value + self.Anim_PauseS_Ein_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value
         return time_val
+    
+    def determine_curve_points_ary_from_Macro(self, Macro_str):
+        curve_points_ary = [[], [], []] # separete curves for R,G,B
+        macro_str_lines = Macro_str.split("\n")
+        if len(macro_str_lines) > 1:
+            pattern_macro_complete = macro_str_lines[-1]
+            pattern_macro_complete = pattern_macro_complete[:-1]
+            pattern_macro_split = pattern_macro_complete.split(" ") # split into macro and gotoact part
+            pattern_macro_params = pattern_macro_split[0].split(",")
+            pattern_macro_start = pattern_macro_params[0].split("(")
+            pattern_macro_start_parts =  pattern_macro_start[0].split("T")
+            number_of_timeslots = int(pattern_macro_start_parts[1])
+            param_idx = 8
+            timedelta_list = []
+            for i in range(0, number_of_timeslots):
+                timedelta_list.append(int(pattern_macro_params[param_idx]))
+                param_idx += 1
+            curr_time = 0
+            time_idx = 0
+            if self.servotype == 0:
+                param_idx_delta = 3
+            else:
+                param_idx_delta = 1
+            while param_idx < len(pattern_macro_params):
+                curve_points_ary[0].append([curr_time, int(pattern_macro_params[param_idx])])
+                if param_idx_delta == 3 and self.no_of_curves > 1:
+                    curve_points_ary[1].append([curr_time, int(pattern_macro_params[param_idx+1])])
+                    curve_points_ary[2].append([curr_time, int(pattern_macro_params[param_idx+2])])
+                param_idx += param_idx_delta
+                curr_time += timedelta_list[time_idx]
+                if time_idx < number_of_timeslots - 1:
+                    time_idx += 1
+        return curve_points_ary
     
     def determine_curve_points_from_Macro(self, Macro_str):
         curve_points = []
@@ -112,15 +165,22 @@ class UserForm_Animation:
         self.get_params_from_param_list(self.param_list)
         self.patterntype = self.Anim_RunType_ListBox.Selection
         self.curvetype = self.Anim_CurveType_ListBox.Selection
-        self.servotype = self.Anim_Type_ListBox.Selection
+        if self.Anim_Type_ListBox:
+            self.servotype = self.Anim_Type_ListBox.Selection
+        else:
+            self.servotype = 0
         
     def create_UI_Paramlist(self):
         self.UI_paramlist = [
             self.Anim_RunType_ListBox, 
             self.Anim_CurveType_ListBox,
             self.Anim_Abstand_TextBox, 
-            self.Anim_Anfangswert_TextBox, 
-            self.Anim_Endwert_TextBox, 
+            self.Anim_Anfangswert_TextBox,
+            self.Anim_AnfangsGwert_TextBox,
+            self.Anim_AnfangsBwert_TextBox,
+            self.Anim_Endwert_TextBox,
+            self.Anim_EndGwert_TextBox,
+            self.Anim_EndBwert_TextBox,
             self.Anim_DauerEin_TextBox,
             self.Anim_DauerAus_TextBox, 
             self.Anim_PauseS_Ein_TextBox, 
@@ -132,22 +192,27 @@ class UserForm_Animation:
             self.Ueberblendung, 
             self.Anim_Address_Kanal_TextBox,
             self.Anim_Address_TextBox
-        ]    
+        ]
     
     def __UserForm_Initialize(self):
         #--------------------------------
         # Is called once to initialice the form
         self.Userform_Res = ""
-        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont)
+        self.Anim_PauseS_Aus_TextBox = None
+        DefaultFont =  ("Calibri",9)
+        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable, defaultfont=DefaultFont)
         self.patterntype = 0
         self.curvetype = curvetype_linear
         self.curve_points = []
+        self.curve_points_ary = [[], [], []]
+        self.active_curve = 0
+        self.curve_points_ary[self.active_curve] = self.curve_points
         self.current_curve_point = None
         self.start_value = ()
         self.create_UI_Paramlist()
         if self.Macro_str != "":
             # read parameters from Macrostring
-            if self.Macro_str.find("#ServoAnim") != -1:
+            if self.Macro_str.find("#"+self.MacroName) != -1 :
                 macro_parts = self.Macro_str.split("(")
                 if len(macro_parts) >= 2:
                     param1_string = macro_parts[1]
@@ -165,13 +230,21 @@ class UserForm_Animation:
         #if self.Anim_TimeStepType_ListBox.Selection == 0: # automatic
         #    self.Anim_Abstand_TextBox.Value = int(self.Anim_DauerEin_TextBox.Value / 4)
         if self.curvetype == curvetype_individuell: # individuel
-            self.curve_points = self.determine_curve_points_from_Macro(self.Macro_str)
-            
+            #self.curve_points = self.determine_curve_points_from_Macro(self.Macro_str)
+            self.curve_points_ary = self.determine_curve_points_ary_from_Macro(self.Macro_str)
+
         self.canvas = self.init_graph(frame=self.Frame2.TKWidget)
-        self.curve_points = self.calculate_complete_curve()
-        anzahl_werte = len(self.curve_points) - 1
-        on_off_line =  self.calculate_on_off_line()
-        self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, on_off_line=on_off_line)
+        graph_only = False
+        for i in range(0, self.no_of_curves):
+            self.curve_points = self.curve_points_ary[i]
+            self.curve_points = self.calculate_complete_curve(curve_no=i)
+            self.curve_points_ary[i] = self.curve_points
+            anzahl_werte = len(self.curve_points) - 1
+            on_off_line =  self.calculate_on_off_line()
+            graph_active = (i == self.active_curve)
+            self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, on_off_line=on_off_line, graphcolor=self.graph_colors[i], graph_only=graph_only, graph_active=graph_active)
+            graph_only = True
+        self.curve_points = self.curve_points_ary[self.active_curve]
         self.controller.connect_if_not_connected()
         self.controller.ARDUINO_begin_direct_mode()
         
@@ -205,6 +278,8 @@ class UserForm_Animation:
     def Show_With_Existing_Data(self, MacroName, ConfigLine, LED_Channel, Def_Channel, use_NButtons=False):
         Txt = String()
         #----------------------------------------------------------------------------------------------------------------------
+        
+        self.MacroName = MacroName
         self.use_NButtons = use_NButtons
         self.__LED_CntList = ''
         self.Macro_str = ConfigLine
@@ -299,16 +374,25 @@ class UserForm_Animation:
                     else:
                         break
     
-    def calculate_complete_curve(self):
+    def calculate_complete_curve(self, curve_no=0):
         self.curvetype = self.Anim_CurveType_ListBox.Selection
         self.patterntype = self.Anim_RunType_ListBox.Selection
         t_ein = self.Anim_PauseS_Ein_TextBox.Value + self.Anim_DauerEin_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value
-        t_aus = self.Anim_PauseS_Aus_TextBox.Value + self.Anim_DauerAus_TextBox.Value + self.Anim_PauseE_Aus_TextBox.Value        
+        if self.Anim_PauseS_Aus_TextBox != None:
+            t_aus = self.Anim_PauseS_Aus_TextBox.Value + self.Anim_DauerAus_TextBox.Value + self.Anim_PauseE_Aus_TextBox.Value
+        else:
+            t_aus = 0
         if self.curvetype != curvetype_individuell: # individuel
-            curve_points = self.calculate_curve(self.Anim_DauerEin_TextBox.Value, self.Anim_Anfangswert_TextBox.Value, self.Anim_Endwert_TextBox.Value, 0 , self.Anim_Abstand_TextBox.Value, pauseS=self.Anim_PauseS_Ein_TextBox.Value, pauseE=self.Anim_PauseE_Ein_TextBox.Value)
-            if self.patterntype != 1:
+            Anfangoffset =  self.UI_paramlist.index(self.Anim_Anfangswert_TextBox)
+            Anfangswert_TextBox = self.UI_paramlist[curve_no+Anfangoffset]
+            Anfangswert = Anfangswert_TextBox.Value
+            Endoffset =  self.UI_paramlist.index(self.Anim_Endwert_TextBox)
+            Endwert_TextBox = self.UI_paramlist[curve_no+Endoffset]            
+            Endwert = Endwert_TextBox.Value 
+            curve_points = self.calculate_curve(self.Anim_DauerEin_TextBox.Value, Anfangswert, Endwert, 0 , self.Anim_Abstand_TextBox.Value, pauseS=self.Anim_PauseS_Ein_TextBox.Value, pauseE=self.Anim_PauseE_Ein_TextBox.Value)
+            if self.patterntype != 1 and self.Anim_PauseS_Aus_TextBox != None:
                 t = self.Anim_PauseS_Ein_TextBox.Value + self.Anim_DauerEin_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value
-                curve_points_Aus = self.calculate_curve(self.Anim_DauerAus_TextBox.Value, self.Anim_Endwert_TextBox.Value, self.Anim_Anfangswert_TextBox.Value, t, self.Anim_Abstand_TextBox.Value, pauseS=self.Anim_PauseS_Aus_TextBox.Value, pauseE=self.Anim_PauseE_Aus_TextBox.Value, skip_first=True) 
+                curve_points_Aus = self.calculate_curve(self.Anim_DauerAus_TextBox.Value, Endwert, Anfangswert, t, self.Anim_Abstand_TextBox.Value, pauseS=self.Anim_PauseS_Aus_TextBox.Value, pauseE=self.Anim_PauseE_Aus_TextBox.Value, skip_first=True) 
                 curve_points.extend(curve_points_Aus)
         else:
             # check if curve points are in range 0 .. 255:
@@ -357,6 +441,10 @@ class UserForm_Animation:
                     break
         return delta_timepoints_count
     
+    def determine_patterntype_str(self, patterntype_str):
+        return patterntype_str
+        
+    
     def OK_Button_Click(self, event=None):
         #------------------------------
         runtype = self.Anim_RunType_ListBox.Selection
@@ -367,11 +455,22 @@ class UserForm_Animation:
         elif runtype == runtype_pingpong: #"PingPong":
             gotoaction = False
             self.patterntype_str = "PM_PINGPONG"
+        elif runtype == runtype_hsv:
+            gotoaction = False
+            self.patterntype_str = "PM_HSV"
         else:
             gotoaction = False
             self.patterntype_str = "PM_NORMAL"
-        self.curve_points = self.calculate_complete_curve()
-        self.servotype = self.Anim_Type_ListBox.Selection
+        self.patterntype_str = self.determine_patterntype_str(self.patterntype_str)
+        for i in range(0, self.no_of_curves):
+            self.curve_points = self.curve_points_ary[i]
+            self.curve_points = self.calculate_complete_curve(curve_no=i)
+            self.curve_points_ary[i] = self.curve_points        
+        self.curve_points = self.curve_points_ary[self.active_curve]
+        if self.Anim_Type_ListBox:
+            self.servotype = self.Anim_Type_ListBox.Selection
+        else:
+            self.servotype = 0
         if self.servotype == 0:
             LED = "1"
         else:
@@ -383,17 +482,19 @@ class UserForm_Animation:
         delta_timepoints_count = self.determine_delta_timepoints_count()
         
         if gotoaction:
-            
             if self.use_NButtons:
-                self.Userform_Res = LED + "$// Activation: N_Buttons #ServoAnim2B("
+                #self.Userform_Res = LED + "$// Activation: N_Buttons #ServoAnim2B("
+                self.Userform_Res = LED + "$// Activation: N_Buttons #" + self.MacroName + "("
                 self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
                 self.Userform_Res = self.Userform_Res + ")\n" + "InCh_to_TmpVar(#InCh, 2) \n#define ENABLE_STORE_STATUS()\n"                
             else:
-                self.Userform_Res = LED + "$// Activation: Binary #ServoAnim("
+                #self.Userform_Res = LED + "$// Activation: Binary #ServoAnim("
+                self.Userform_Res = LED + "$// Activation: Binary #" + self.MacroName + "("
                 self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
                 self.Userform_Res = self.Userform_Res + ")\n" + "Bin_InCh_to_TmpVar(#InCh, 1) \n#define ENABLE_STORE_STATUS()\n"
         else:
-            self.Userform_Res = LED + "$// #ServoAnim("
+            #self.Userform_Res = LED + "$// #ServoAnim("
+            self.Userform_Res = LED + "$// #" + self.MacroName + "("
             self.Userform_Res = self.Userform_Res + self.create_paramstring_from_param_list (self.UI_paramlist)
             self.Userform_Res = self.Userform_Res + ")\n"            
         
@@ -428,6 +529,50 @@ class UserForm_Animation:
         self.Userform_Res = self.Userform_Res + timepoint_str # "," + str(self.LED_Abstand_TextBox.Value)
 
         
+        # goto action
+        #if gotoaction:
+            #dauer_ein = self.Anim_DauerEin_TextBox.Value + self.Anim_PauseS_Ein_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value
+            
+            #tag_ein_value = "2"
+            #tag_ein_seq_end = "3"
+            #tag_aus_value = "4"
+            #tag_aus_seq_end = "5"
+            #current_tag = tag_ein_value
+            #next_tag = current_tag
+            #end_time = self.curve_points[-1][0]
+            
+            #for point in self.curve_points:
+                #if anzahl_led == "3":
+                    #if point[0] == dauer_ein:
+                        #current_tag = tag_ein_seq_end
+                        #next_tag = tag_aus_value
+                    #elif point[0] == end_time:
+                        #current_tag = tag_aus_seq_end
+                        #next_tag = "0"
+                    #else:
+                        #current_tag = next_tag
+                    #self.Userform_Res = self.Userform_Res + "," + str(point[1]) + ",1," + current_tag
+                #else:
+                    #self.Userform_Res = self.Userform_Res + "," + str(point[1])
+            #self.Userform_Res = self.Userform_Res + "  "
+            #for i in range(total_points_count-2):
+                #if self.curve_points[i][0] == dauer_ein: 
+                    #self.Userform_Res = self.Userform_Res + ",63,128"
+                #else:
+                    #self.Userform_Res = self.Userform_Res + ",0"
+            #self.Userform_Res = self.Userform_Res + ",63"
+            
+        #else:
+            #for point in self.curve_points:
+                #if anzahl_led == "3":
+                    #self.Userform_Res = self.Userform_Res + "," + str(point[1]) + ",1,0"
+                #else:
+                    #self.Userform_Res = self.Userform_Res + "," + str(point[1])
+        #self.Userform_Res = self.Userform_Res + ')$' + str(self.Anim_Address_Kanal_TextBox.Value)
+        self.generate_pattern_data(anzahl_led, total_points_count, gotoaction)
+        self.Hide()
+        
+    def generate_pattern_data(self, anzahl_led, total_points_count, gotoaction):
         # goto action
         if gotoaction:
             dauer_ein = self.Anim_DauerEin_TextBox.Value + self.Anim_PauseS_Ein_TextBox.Value + self.Anim_PauseE_Ein_TextBox.Value
@@ -468,7 +613,6 @@ class UserForm_Animation:
                 else:
                     self.Userform_Res = self.Userform_Res + "," + str(point[1])
         self.Userform_Res = self.Userform_Res + ')$' + str(self.Anim_Address_Kanal_TextBox.Value)
-        self.Hide()
         
     def Abort_Button_Click(self, event=None):
         #-----------------------------
@@ -495,6 +639,29 @@ class UserForm_Animation:
         self.test_pause = True
         self.test_started = False
         
+    def test_calculate_current_curve_points(self, curr_time):
+        result_ary = [None, None, None]
+        for i in range(0, self.no_of_curves):
+            last_point = (i + 1 == self.no_of_curves)
+            result = self.test_calculate_current_curve_point2(curr_time, self.curve_points_ary[i], last_point=last_point)
+            result_ary[i] = result
+        return result_ary
+    
+    def test_calculate_current_curve_point2(self, curr_time, curve_points, last_point=True):
+        curr_point_time = curve_points[self.curr_idx][0]
+        next_point_time = curve_points[self.curr_idx+1][0]
+        if curr_time == curr_point_time:
+            return curve_points[self.curr_idx][1]
+        if curr_time > curr_point_time and curr_time < next_point_time:
+            curr_value = curve_points[self.curr_idx][1]
+            next_value = curve_points[self.curr_idx+1][1]
+            return round(curr_value + (next_value - curr_value) * (curr_time - curr_point_time) / (next_point_time -curr_point_time)) # calculate intermediate curve point
+        if (curr_time + self.test_deltatime >= next_point_time) and last_point:
+            self.curr_idx += 1
+            return curve_points[self.curr_idx][1]
+        else:
+            return curve_points[self.curr_idx+1][1]
+        
     def test_calculate_current_curve_point(self, curr_time):
         curr_point_time = self.curve_points[self.curr_idx][0]
         next_point_time = self.curve_points[self.curr_idx+1][0]
@@ -515,10 +682,13 @@ class UserForm_Animation:
                 self.curr_time = 0
                 self.curr_idx = 0
             if self.curr_time <= self.test_maxtime and self.test_continue:
-                curr_led_value = self.test_calculate_current_curve_point(self.curr_time)
-                if curr_led_value != self.test_last_led_value:
-                    self.get_led_value_and_send_to_ARDUINO(led_value=curr_led_value)
-                    self.test_last_led_value = curr_led_value
+                #curr_led_value = self.test_calculate_current_curve_point(self.curr_time)
+                #if curr_led_value != self.test_last_led_value:
+                    #self.get_led_value_and_send_to_ARDUINO(led_value=curr_led_value)
+                    #self.test_last_led_value = curr_led_value
+                curr_led_value_ary = self.test_calculate_current_curve_points(self.curr_time)
+                curr_led_value = curr_led_value_ary[self.active_curve]
+                self.get_led_value_and_send_to_ARDUINO(led_value=curr_led_value_ary[0], led_g_value=curr_led_value_ary[1], led_b_value=curr_led_value_ary[2])
                 
                 self.canvasframe.after(self.test_deltatime, self.run_test_point)
                 self.Kurve_Zeitanzeige_Label.Value = self.curr_time
@@ -550,7 +720,7 @@ class UserForm_Animation:
                     self.test_maxtime = self.curve_points[-1][0]
                     self.curr_time =0
                     self.test_continue = True
-                self.run_test_point()
+                    self.run_test_point()
         else:
             print("Error_message-start test")
         
@@ -561,6 +731,7 @@ class UserForm_Animation:
             self.test_started = False
         else:
             self.test_started = True
+            self.curve_points = self.curve_points_ary[0]
             self.start_test()
 
     def Anim_Anfangswert_TextBox_Click(self, event=None):
@@ -573,7 +744,10 @@ class UserForm_Animation:
         LED_channel = self.Anim_Address_Kanal_TextBox.Value
             
         LED_address = self.Anim_Address_TextBox.Value
-        self.servotype = self.Anim_Type_ListBox.Selection
+        if self.Anim_Type_ListBox:
+            self.servotype = self.Anim_Type_ListBox.Selection
+        else:
+            self.servotype = 0
         if self.servotype == 0:
             self._update_servos(LED_address,new_LED_val,1, 0, channel=LED_channel)
         elif self.servotype == 1:
@@ -592,7 +766,10 @@ class UserForm_Animation:
         self.Anim_Endwert_TextBox.Value = new_LED_val
         LED_address = self.Anim_Address_TextBox.Value
         LED_channel = self.Anim_Address_Kanal_TextBox.Value
-        self.servotype = self.Anim_Type_ListBox.Selection
+        if self.Anim_Type_ListBox:
+            self.servotype = self.Anim_Type_ListBox.Selection
+        else:
+            self.servotype = 0        
         if self.servotype == 0:
             self._update_servos(LED_address,new_LED_val,1, 0, channel=LED_channel)
         elif self.servotype == 1:
@@ -675,17 +852,14 @@ class UserForm_Animation:
         y1 = round(((self.graphTop + self.graphHeight) - ty) * self.canvasframe.total_scalefactor)
         return y1
     
-    def draw_graph(self, line_params=None,  vertical_params=None, horizontal_params=None, num_vertical=8, num_horizontal=10, graph=None, vertical_range=(0, 256), horizontal_range=(0, 20000), on_off_line = 0):
-        self.canvasframe.resize(1.0/self.canvasframe.total_scalefactor)
-        self.canvas.delete("all")
-        # Print the grid lines
+    def draw_graph(self, line_params=None,  vertical_params=None, horizontal_params=None, num_vertical=8, num_horizontal=10, graph=None, vertical_range=(0, 256), horizontal_range=(0, 20000), on_off_line = 0, graphcolor="#FF0000", graph_only = False,graph_active=True):
         s_color="#000000"
         s_width=1
         s_linedashed=""
         th_color="#000000"
         th_width=6
         gr_linedashed=""
-        gr_color="#FF0000"
+        gr_color=graphcolor # "#FF0000"
         gr_width=2
         th_linedashed=""        
         vertical_max = vertical_range[1] - vertical_range[0]
@@ -693,29 +867,33 @@ class UserForm_Animation:
             num_horizontal = 10
         #vertical_line_dist = int(self.graphHeight / num_vertical)
         horizontal_line_dist = int(self.graphWidth / num_horizontal)
+        self.vertical_value_factor = self.graphHeight / vertical_max
+        vertical_line_dist = int(self.graphHeight  / num_vertical)
+        
+        horizontal_text_pos = self.graphHeight + 10        
         
         if graph != []:
             horizontal_max = graph[-1][0]
             self.horizontal_value_factor = self.graphWidth / horizontal_max
         else:
-            self.horizontal_value_factor = 1
+            self.horizontal_value_factor = 1                
         
-        self.vertical_value_factor = self.graphHeight / vertical_max
-        vertical_line_dist = int(self.graphHeight  / num_vertical)
-        
-        horizontal_text_pos = self.graphHeight + 10
-        
-        self.canvas.create_rectangle(self.tx2cx(0), self.ty2cy(0), self.tx2cx(self.graphWidth), self.ty2cy(self.graphHeight), width=4)
-        
-        cur_value = 0
-        value_dist = int(vertical_max / num_vertical)
-        for i in range (num_vertical+1):
-            cur_y = cur_value * self.vertical_value_factor
-            objid = self.canvas.create_line(self.tx2cx(0), self.ty2cy(cur_y), self.tx2cx(self.graphWidth), self.ty2cy(cur_y), width=s_width, fill=s_color,dash=s_linedashed,tag="Grid")
-            text_objid = self.canvas.create_text(20, self.ty2cy(cur_y), text = cur_value, width=30, fill=s_color,tag="Grid", font=X02.DefaultFont)
-            cur_value += value_dist
+        if not graph_only:
+            self.canvasframe.resize(1.0/self.canvasframe.total_scalefactor)
+            self.canvas.delete("all")
+            # Print the grid lines
             
-        objid = -1
+            self.canvas.create_rectangle(self.tx2cx(0), self.ty2cy(0), self.tx2cx(self.graphWidth), self.ty2cy(self.graphHeight), width=4)
+            
+            cur_value = 0
+            value_dist = int(vertical_max / num_vertical)
+            for i in range (num_vertical+1):
+                cur_y = cur_value * self.vertical_value_factor
+                objid = self.canvas.create_line(self.tx2cx(0), self.ty2cy(cur_y), self.tx2cx(self.graphWidth), self.ty2cy(cur_y), width=s_width, fill=s_color,dash=s_linedashed,tag="Grid")
+                text_objid = self.canvas.create_text(20, self.ty2cy(cur_y), text = cur_value, width=30, fill=s_color,tag="Grid", font=X02.DefaultFont)
+                cur_value += value_dist
+                
+            objid = -1
 
         if graph != []:
             self.graph_points = []
@@ -728,19 +906,25 @@ class UserForm_Animation:
                 cur_x = int(graph[i][0] * self.horizontal_value_factor)
                 self.graph_points.extend([self.tx2cx(cur_x), self.ty2cy(cur_y)])
                 # draw_vertical line
-                objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=s_width, fill=s_color,dash=s_linedashed,tag="TimeGrid", activewidth=s_width*2)
-                self.canvas.tag_bind(objid,"<Button-1>" ,lambda e,Object=objid:self.MouseButton1(e,Object))
-                self.canvas.tag_bind(objid,"<ButtonRelease 1>",lambda e,Object=objid:self.MouseRelease1())
-                # Event für Mausbewegung
-                self.canvas.tag_bind(objid,"<B1-Motion>",lambda e,Object=objid:self.MouseMove(e,Object))                
+                if not graph_only:
+                    objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=s_width, fill=s_color,dash=s_linedashed,tag="TimeGrid", activewidth=s_width*2)
+                    #self.canvas.tag_bind(objid,"<Button-1>" ,lambda e,Object=objid:self.MouseButton1(e,Object))
+                    #self.canvas.tag_bind(objid,"<ButtonRelease 1>",lambda e,Object=objid:self.MouseRelease1())
+                    # Event für Mausbewegung
+                    #self.canvas.tag_bind(objid,"<B1-Motion>",lambda e,Object=objid:self.MouseMove(e,Object))                
+                    
+                    if cur_x - last_text_x >= 40:
+                        text_objid = self.canvas.create_text(self.tx2cx(cur_x), self.ty2cy(horizontal_text_pos), text = timestr, width=40, fill=s_color,tag="Grid", font = X02.DefaultFont)
+                        last_text_x = cur_x
+                if graph_active:
+                    point_id = self.draw_point(self.tx2cx(cur_x), self.ty2cy(cur_y), timepoint, value, i)
                 
-                if cur_x - last_text_x >= 40:
-                    text_objid = self.canvas.create_text(self.tx2cx(cur_x), self.ty2cy(horizontal_text_pos), text = timestr, width=40, fill=s_color,tag="Grid", font = X02.DefaultFont)
-                    last_text_x = cur_x
-                point_id = self.draw_point(self.tx2cx(cur_x), self.ty2cy(cur_y), timepoint, value, i)
-                
-            self.line_objid = self.canvas.create_line(self.graph_points, width=gr_width, fill=gr_color,dash=gr_linedashed,tag="Line")
+            if graph_active:
+                self.line_objid = self.canvas.create_line(self.graph_points, width=gr_width, fill=gr_color,dash=gr_linedashed,tag="Line")
+            else:
+                line_objid = self.canvas.create_line(self.graph_points, width=gr_width, fill=gr_color,dash=gr_linedashed,tag="Line")
             # create EIN/AUS Line
+            
             if on_off_line > 0:
                 cur_x = on_off_line * self.horizontal_value_factor
                 objid = self.canvas.create_line(self.tx2cx(cur_x), self.ty2cy(0), self.tx2cx(cur_x), self.ty2cy(self.graphHeight), width=th_width, fill=th_color,dash=th_linedashed,tag="TimeGrid", activewidth=th_width*2)
@@ -751,13 +935,36 @@ class UserForm_Animation:
     def round2interval(self, val, interval=20):
         val_new = round(val / interval) * interval
         return val_new
+    
+    def synch_timepoints_between_curves(self):
+        if self.no_of_curves <= 1:
+            return
+        graph = self.curve_points_ary[self.active_curve]
+        for i in range(len(graph)):
+            timepoint = graph[i][0]
+            for j in range(0, self.no_of_curves):
+                if j != self.active_curve:
+                    self.curve_points_ary[j][i][0] = timepoint
         
     def redraw_canvas(self):
+        if self.Active_Curve_ListBox:
+            self.active_curve = self.Active_Curve_ListBox.Selection
+        else:
+            self.active_curve = 0
         self.canvas = self.init_graph(frame=self.Frame2.TKWidget)
-        self.curve_points = self.calculate_complete_curve()
-        anzahl_werte = len(self.curve_points) - 1
-        on_off_line =  self.calculate_on_off_line()
-        self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, on_off_line=on_off_line)        
+        self.canvas.delete("all")
+        graph_only = False
+        self.synch_timepoints_between_curves()
+        for i in range(0, self.no_of_curves):
+            self.curve_points = self.curve_points_ary[i]
+            self.curve_points = self.calculate_complete_curve(curve_no=i)
+            self.curve_points_ary[i] = self.curve_points
+            anzahl_werte = len(self.curve_points) - 1
+            on_off_line =  self.calculate_on_off_line()
+            graph_active = (i == self.active_curve)
+            self.draw_graph(num_horizontal=anzahl_werte, graph=self.curve_points, on_off_line=on_off_line, graphcolor=self.graph_colors[i], graph_only=graph_only, graph_active=graph_active)
+            graph_only = True
+        self.curve_points = self.curve_points_ary[self.active_curve]
         
     def MouseButton1(self,event,cvobject):
         self.startxy = None
@@ -828,7 +1035,7 @@ class UserForm_Animation:
             self.Kurve_Zeitanzeige_Label.Value = self.current_curve_point[0]
             self.Kurve_Wertanzeige_Label.Value = self.current_curve_point[1]
             if self.startxy != None and dval_y != 0 and not self.test_continue:
-                self.get_led_value_and_send_to_ARDUINO()            
+                self.get_led_value_and_send_to_ARDUINO(point_idx=self.point_idx)
             
             
     def MouseRelease1(self):
@@ -836,7 +1043,7 @@ class UserForm_Animation:
         # update graphpoints
         # update graph
         if self.startxy != None:
-            self.get_led_value_and_send_to_ARDUINO()
+            self.get_led_value_and_send_to_ARDUINO(point_idx=self.point_idx)
         self.startxy = None
         
     def move_point(self, objid, dvalx, dvaly):
@@ -886,7 +1093,7 @@ class UserForm_Animation:
                     self.Kurve_Zeitanzeige_Label.Value = self.current_curve_point[0]
                     self.Kurve_Wertanzeige_Label.Value = self.current_curve_point[1]
                     if dvaly != 0 and not self.test_continue:
-                        self.get_led_value_and_send_to_ARDUINO()
+                        self.get_led_value_and_send_to_ARDUINO(point_idx=self.point_idx)
                         
                         
     def delete_point(self, objid):
@@ -898,10 +1105,25 @@ class UserForm_Animation:
                 if point_idx_str[0] == "idx":
                     self.point_idx = int(point_idx_str[1])
                     if self.point_idx != 0 and self.point_idx != len(self.curve_points) - 1:
-                        del self.curve_points[self.point_idx]
+                        #del self.curve_points[self.point_idx]
+                        for i in range(0, self.no_of_curves):
+                            del self.curve_points_ary[i][self.point_idx]
                         del self.mm_canvas_coord_list[self.point_idx]
                         self.current_objid = -1
                         self.redraw_canvas()
+                        
+    def insert_new_curvepoint(self):
+        for i in range(0, self.no_of_curves):
+            self.curve_points = self.curve_points_ary[i]
+            curve_point1 =  self.curve_points[self.point_idx]
+            curve_point2 =  self.curve_points[self.point_idx+1]
+            newx = curve_point1[0] + (curve_point2[0] - curve_point1[0]) / 2
+            newx = self.round2interval(newx, 20)
+            newy = curve_point1[1] + (curve_point2[1] - curve_point1[1]) / 2
+            newy = self.round2interval(newy, 1)
+            new_curve_point = [newx, newy]
+            self.curve_points.insert(self.point_idx+1, new_curve_point)
+            self.curve_points_ary[i] = self.curve_points 
                     
     def insert_point(self, objid):
         if objid != -1:
@@ -912,14 +1134,15 @@ class UserForm_Animation:
                 if point_idx_str[0] == "idx":
                     self.point_idx = int(point_idx_str[1])
                     if self.point_idx != len(self.curve_points) - 1:
-                        curve_point1 =  self.curve_points[self.point_idx]
-                        curve_point2 =  self.curve_points[self.point_idx+1]
-                        newx = curve_point1[0] + (curve_point2[0] - curve_point1[0]) / 2
-                        newx = self.round2interval(newx, 20)
-                        newy = curve_point1[1] + (curve_point2[1] - curve_point1[1]) / 2
-                        newy = self.round2interval(newy, 1)
-                        new_curve_point = [newx, newy]
-                        self.curve_points.insert(self.point_idx+1, new_curve_point)
+                        self.insert_new_curvepoint()
+                        #curve_point1 =  self.curve_points[self.point_idx]
+                        #curve_point2 =  self.curve_points[self.point_idx+1]
+                        #newx = curve_point1[0] + (curve_point2[0] - curve_point1[0]) / 2
+                        #newx = self.round2interval(newx, 20)
+                        #newy = curve_point1[1] + (curve_point2[1] - curve_point1[1]) / 2
+                        #newy = self.round2interval(newy, 1)
+                        #new_curve_point = [newx, newy]
+                        #self.curve_points.insert(self.point_idx+1, new_curve_point)
                         self.redraw_canvas()
                     
 
@@ -948,12 +1171,18 @@ class UserForm_Animation:
         if self.current_objid != -1:
             self.move_point(self.current_objid, -20, 0)
         
-    def get_led_value_and_send_to_ARDUINO(self, led_value=None):
+    def get_led_value_and_send_to_ARDUINO(self, led_value=None, led_g_value=None, led_b_value=None, point_idx=None):
         if led_value == None:
-            if self.current_curve_point != None:
-                new_LED_val = int(self.current_curve_point[1])
+            if point_idx != None:
+                new_LED_val = self.curve_points_ary[0][point_idx]
+                if len(self.curve_points_ary) == 3:
+                    led_g_value = self.curve_points_ary[1][point_idx]
+                    led_b_value = self.curve_points_ary[2][point_idx] 
             else:
-                return
+                if self.current_curve_point != None:
+                    new_LED_val = int(self.current_curve_point[1])
+                else:
+                    return
         else:
             new_LED_val = led_value
         if new_LED_val > self.value_max:
@@ -962,7 +1191,10 @@ class UserForm_Animation:
             new_LED_val = self.value_min
             
         LED_address = self.Anim_Address_TextBox.Value
-        self.servotype = self.Anim_Type_ListBox.Selection
+        if self.Anim_Type_ListBox:
+            self.servotype = self.Anim_Type_ListBox.Selection
+        else:
+            self.servotype = 0        
         LED_channel = self.self.Anim_Address_Kanal_TextBox.Value
         if self.servotype == 0:
             self._update_servos(LED_address,new_LED_val,1, 0, channel=LED_channel)
@@ -1000,7 +1232,18 @@ class UserForm_Animation:
         else:
             message = "#L " + '{:04x}'.format(lednum) + " " + '{:02x}'.format(positionValueHigh) + " " + '{:02x}'.format(controlValue) + " " + '{:02x}'.format(positionValueLow) + " " + '{:02x}'.format(1) + "\n"
         self.controller.send_to_ARDUINO(message)
-        #time.sleep(0.2)    
+        #time.sleep(0.2)
+        
+    def _update_LEDs(self, lednum, red, green, blue, channel=0):
+        if channel != 0:
+            # update lednum according to offset for selected channel number
+            lednum += self.controller.get_lednum_offset_for_channel(channel)
+        if self.controller.mobaledlib_version == 1:
+            message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(red) + " " + '{:02x}'.format(green) + " " + '{:02x}'.format(blue) + " " + '{:02x}'.format(1) + "\n"
+        else:
+            message = "#L " + '{:04x}'.format(lednum) + " " + '{:02x}'.format(red) + " " + '{:02x}'.format(green) + " " + '{:02x}'.format(blue) + " " + '{:02x}'.format(1) + "\n"
+        self.controller.send_to_ARDUINO(message)
+        #time.sleep(0.2)            
 
     
 
