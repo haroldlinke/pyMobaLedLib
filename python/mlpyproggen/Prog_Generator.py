@@ -76,7 +76,7 @@ import proggen.Userform_Testgrafik as D15
 
 import proggen.M09_Translate as M09_Translate
 
-from PIL import Image, ImageTk
+#from PIL import Image, ImageTk
 
 def _T(text):
     """Translate text."""
@@ -626,12 +626,13 @@ class Prog_GeneratorPage(tk.Frame):
         if self.PGIconSize > 20:
             filename = r"/images/"+button_desc["Icon_name"]
             filepath = self.filedir2 + filename
-            original_image = Image.open(filepath)
-            new_width = int(original_image.width * self.PGIconSize / 100.0)
-            new_height = int(original_image.height * self.PGIconSize / 100.0)
-            resized_image = original_image.resize((new_width, new_height))  # Set desired dimensions
-            icon_image = ImageTk.PhotoImage(resized_image)        
+            #original_image = Image.open(filepath)
+            #new_width = int(original_image.width * self.PGIconSize / 100.0)
+            #new_height = int(original_image.height * self.PGIconSize / 100.0)
+            #resized_image = original_image.resize((new_width, new_height))  # Set desired dimensions
+            #icon_image = ImageTk.PhotoImage(resized_image)        
             #self.icon_dict[button_desc["Icon_name"]] = tk.PhotoImage(file=filepath)
+            icon_image = tk.PhotoImage(file=filepath)
             height = None
         else:
             filepath = "---"
