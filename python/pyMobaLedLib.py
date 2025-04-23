@@ -79,6 +79,8 @@ from mlpyproggen.ServoTestPage import ServoTestPage1
 from mlpyproggen.ServoTestPage2 import ServoTestPage2
 from mlpyproggen.VB2PyPage import VB2PYPage
 from mlpyproggen.TestPage import TestPage
+from mlpyproggen.StellwerkPage import StellwerkPage
+from mlpyproggen.StellwerkEditPage import StellwerkEditPage
 from mlpyproggen.Z21MonitorPage import Z21MonitorPage
 from mlpyproggen.ARDUINOMonitorPage import ARDUINOMonitorPage
 from mlpyproggen.StartPage import StartPage
@@ -209,7 +211,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.coltab = None
         self.checkcolor_callback = None
         self.ledhighlight = False
-        
+        #self.bind("<Configure>", self.on_resize)
         self.oldTabName = ""
         
         self.show_colorcheckpage_only = caller_setcoltab
@@ -304,9 +306,9 @@ class pyMobaLedLibapp(tk.Tk):
         
         self.show_pyPrgrammGenerator = self.getConfigData("ShowProgramGenerator")
         self.show_pyPatternGenerator = self.getConfigData("ShowPatternGenerator")
+        self.show_pyZ21Page = self.getConfigData("ShowZ21Simulator")
         self.show_hiddentables = self.getConfigData("ShowHiddentables")
         
-
         self.ARDUINOTest = self.getConfigData("ARDUINOTest")
         
         self.tempLedeffecttableFilname = macrodata.get("TEMP_LEDEFFECTTABLE_FILENAME","StartPage")
@@ -410,19 +412,21 @@ class pyMobaLedLibapp(tk.Tk):
         self.config(menu=menu)
         filemenu = tk.Menu(menu)
         menu.add_cascade(label="Datei", menu=filemenu)
-#        filemenu.add_command(label="Farbpalette von Datei lesen", command=self.OpenFile)
-#        filemenu.add_command(label="Farbpalette speichern als ...", command=self.SaveFileas)
-#        filemenu.add_separator()
-        filemenu.add_command(label="MacroWorkbook von Datei lesen", command=self.OpenFileWorkbook)
-        filemenu.add_command(label="MacroWorkbook speichern als", command=self.SaveFileWorkbook)
-        filemenu.add_separator()
-        filemenu.add_command(label="ProgramGenerator: PGF-Datei lesen", command=self.OpenFilePGF)
-        filemenu.add_command(label="ProgramGenerator: PGF-Datei speichern", command=self.SaveFilePGF)
-        filemenu.add_separator()
-        filemenu.add_command(label="PatternGenerator: PCF-Datei lesen", command=self.OpenFilePCF)
-        filemenu.add_command(label="PatternGenerator: Alle Seiten als PCF-Datei speichern", command=self.SaveAllFilePCF)
-        filemenu.add_command(label="PatternGenerator: Aktuelle Seite als PCF-Datei speichern", command=self.SaveCurSheetFilePCF)
-        filemenu.add_separator()                
+        #        filemenu.add_command(label="Farbpalette von Datei lesen", command=self.OpenFile)
+        #        filemenu.add_command(label="Farbpalette speichern als ...", command=self.SaveFileas)
+        #        filemenu.add_separator()
+        if self.show_pyPrgrammGenerator:
+            filemenu.add_command(label="ProgrammGenerator-Workbook von Datei lesen", command=self.OpenFileWorkbook)
+            filemenu.add_command(label="ProgrammGenerator-Workbook speichern als", command=self.SaveFileWorkbook)
+            filemenu.add_separator()
+            filemenu.add_command(label="ProgramGenerator: PGF-Datei lesen", command=self.OpenFilePGF)
+            filemenu.add_command(label="ProgramGenerator: PGF-Datei speichern", command=self.SaveFilePGF)
+            filemenu.add_separator()
+        if self.show_pyPatternGenerator:
+            filemenu.add_command(label="PatternGenerator: PCF-Datei lesen", command=self.OpenFilePCF)
+            filemenu.add_command(label="PatternGenerator: Alle Seiten als PCF-Datei speichern", command=self.SaveAllFilePCF)
+            filemenu.add_command(label="PatternGenerator: Aktuelle Seite als PCF-Datei speichern", command=self.SaveCurSheetFilePCF)
+            filemenu.add_separator()                
         filemenu.add_command(label="Beenden und Konfig-Daten speichern", command=self.ExitProg_with_save)
         filemenu.add_command(label="Beenden ohne Konfig-Daten zu speichern", command=self.ExitProg)
 
@@ -457,6 +461,16 @@ class pyMobaLedLibapp(tk.Tk):
         #patternconfmenu.add_command(label="Starte Pattern Cofigurator", command=self.start_patternconf)
         #patternconfmenu.add_command(label="Daten an Pattern Conf senden", command=self.send_to_patternconf)
         #patternconfmenu.add_command(label="Daten von Pattern Conf empfangen", command=self.receiver_from_patternconf)
+        self.pgmenu = tk.Menu(menu)
+        if self.show_pyPrgrammGenerator:
+            self.pgmenu = tk.Menu(menu)
+            menu.add_cascade(label="ProgrammGenerator", menu=self.pgmenu)
+            self.pgmenu.add_command(label="Workbook von Datei lesen", command=self.OpenFileWorkbook)
+            self.pgmenu.add_command(label="Workbook speichern als", command=self.SaveFileWorkbook)
+            self.pgmenu.add_separator()
+            self.pgmenu.add_command(label="PGF-Datei lesen", command=self.OpenFilePGF)
+            self.pgmenu.add_command(label="PGF-Datei speichern", command=self.SaveFilePGF)
+            self.pgmenu.add_separator()                
         
         helpmenu = tk.Menu(menu)
         menu.add_cascade(label="Hilfe", menu=helpmenu)
@@ -464,6 +478,8 @@ class pyMobaLedLibapp(tk.Tk):
         helpmenu.add_command(label="Logfile öffnen", command=self.OpenLogFile)
         helpmenu.add_command(label="Update pyMobaLedLib", command=self.UpdatePyMLL)
         helpmenu.add_command(label="Über...", command=self.About)
+        
+        
         
         testmenu = tk.Menu(menu)
         #menu.add_cascade(label="Test", menu=testmenu)
@@ -509,13 +525,10 @@ class pyMobaLedLibapp(tk.Tk):
         #************************************
         self.ExcelApplication = P01.CApplication(caption="pyMobaLedLib", Path=self.mainfile_dir, p_global_controller=self)
         
-        use_horizontalscroll=True
-        use_fullscroll=True
-        use_verticalscroll = True
-        #if use_verticalscroll:
-        #    self.scrolledcontainer = VerticalScrolledFrame(self)
-        #if use_horizontalscroll:
-        #    self.scrolledcontainer = HorizontalScrolledFrame(self)
+        # do not use scrollcontainer any more
+        use_horizontalscroll=False
+        use_fullscroll=False
+        use_verticalscroll = False
             
         if use_verticalscroll or use_fullscroll or use_horizontalscroll:
             self.scrolledcontainer = ScrolledFrame(self)
@@ -532,10 +545,10 @@ class pyMobaLedLibapp(tk.Tk):
         else:
             self.container = ttk.Notebook(self)
         style = ttk.Style()
-        style.configure("Centered.TNotebook.Tab", padding=[10, 5])
+        style.configure("Centered.TNotebook.Tab", padding=[5, 5])
             
         # Apply the custom style to the notebook
-        self.container.configure(style="Centered.TNotebook")            
+        self.container.configure(style="Centered.TNotebook")
         self.grid_rowconfigure(0,weight=1)
         self.grid_columnconfigure(0, weight=1)
         
@@ -547,22 +560,24 @@ class pyMobaLedLibapp(tk.Tk):
         self.tabdict_frames = dict()
         
         if self.show_colorcheckpage_only:
-            tabClassList = tabClassList_SetColTab
+            tabClassList = list(tabClassList_SetColTab)
         else:
-            if self.show_pyPrgrammGenerator:
-                tabClassList = tabClassList_all_proggen #all Pages except PatternGenerator
-                if self.show_pyPatternGenerator:
-                    tabClassList = tabClassList_all # all Pages
-            else:
-                tabClassList = tabClassList_mll_only #no ProgGen and no PattGen
-        
-        tabClassList = tabClassList_all #test, always show all pages 
+            tabClassList = list(tabClassList_all)
+            if not self.show_pyPrgrammGenerator:
+                tabClassList.remove(Prog_GeneratorPage)
+            if not self.show_pyPatternGenerator:
+                tabClassList.remove(Pattern_GeneratorPage)
+            if not self.show_pyZ21Page:
+                tabClassList.remove(Z21MonitorPage)
         
         if COMMAND_LINE_ARG_DICT.get("vb2py",False)==True:
             self.arg_test = True
-            tabClassList += (VB2PYPage, TestPage)
+            tabClassList += (VB2PYPage, TestPage, StellwerkPage, StellwerkEditPage)
         else:
             self.arg_test = False
+            
+        # Create a style for the notebook style = ttk.Style()
+        style.configure('TNotebook.Tab', padding=[20, 10])
         
         for tabClass in tabClassList:
             frame = tabClass(self.container,self)
@@ -631,6 +646,14 @@ class pyMobaLedLibapp(tk.Tk):
 
         self.lift()
         self.grab_set()
+        
+    def on_resize(self, event):
+        # Dynamically update the frame size
+        self.container.config(width=event.width, height=event.height)
+        
+    def on_resize_container(self, event):
+        # Dynamically update the frame size
+        self.container.config(width=event.width, height=event.height)            
         
     def show_tkinter_exception(self, exc,val,tb):
         err = traceback.format_exception(exc,val,tb)
@@ -1052,7 +1075,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.ARDUINO_version = 0
         
         # Your start message
-        #message = "LEDs_AutoProg Ver 4: Type-3.3.2F5 FastLED 3.9.12 25.03.25 11:39"
+        #message = "LEDs_AutoProg Ver 3: Type 3.3.2F5 FastLED 3.9.12 25.03.25 11:39"
         
         # Extracting the version number
         version_match = re.search(r"Ver (\d+):", startmessage)
@@ -1063,10 +1086,10 @@ class pyMobaLedLibapp(tk.Tk):
         else:
             self.ARDUINO_version = 2
         
-        if version_number >= 4:
-            # type string is only availbale with version 4
+        if version_number >= 3:
+            # type string is only availbale with version 3
             # Extracting the type string
-            type_match = re.search(r": (.+?)-", startmessage)
+            type_match = re.search(r": (.+?) ", startmessage)
             type_string = type_match.group(1) if type_match else None
             if type_string:
                 self.ARDUINO_boardtype = type_string
@@ -1099,6 +1122,7 @@ class pyMobaLedLibapp(tk.Tk):
             # maxLEDcnt = sum of all maxLEDcnt per channel
             for i in range (0,self.max_LEDchannel):
                 maxLEDcnt+=int(self.max_ledcnt_list[i])
+                logging.debug("ARDUINO LED-Channel: %s Leds: %s", i, self.max_ledcnt_list[i])
         self.set_maxLEDcnt(maxLEDcnt)        
         return
     
@@ -1183,74 +1207,86 @@ class pyMobaLedLibapp(tk.Tk):
             self.send_to_ARDUINO("#?\r\n")
             
             logging.debug ("Connect: send #?")
-            time.sleep(1)
             self.update()
-            no_of_trials = 50
+            no_of_trials = 3
             emptyline_no = 0
-            for i in range(no_of_trials):
-                try:
-                    if i == 25:
-                        self.arduino.flush()
-                        self.send_to_ARDUINO("#?\r\n")
-                        logging.debug("Connect: Flush and send #? again")
-                    self.update()
-                    text=""
-                    timeout_error = True
-                    text = self.arduino.readline()
-                    logging.debug (text)
-                    timeout_error = False
-                    # check if feedback is from MobaLedLib
-                    text_string = str(text.decode('utf-8'))
-                    if text_string == "":
-                        emptyline_no +=1
-                        if emptyline_no>2:
-                            read_error = True
-                            logging.debug("Connect Error: %s - trial:%s",text_string,i+1)                            
-                            break
-                    
-                    if not SerialIF_teststring1 in text_string:
-                        read_error = True
-                        logging.debug("Connect Line ignored: %s - trial:%s",text_string,i+1)
-                    else:
-                        if "MobaLedLib" in text_string:
-                            self.mobaledlib_version = 1
-                        else:
-                            self.determine_ARDUINO_Properties_from_Startmessage(text_string)
-                            self.mobaledlib_version = self.ARDUINO_version
-                        self.queue.put(text_string)
-                        logging.debug("Connect message: %s", text_string)
-                        read_error = False
-                        break
-                except (IOError,UnicodeDecodeError) as e:
-                    logging.debug(e)
-                    logging.debug("Connect Error:%s",text_string)
-                    read_error = True
-                    
-            #start = time.time()
-            #txt = ''
-            #defaultTimeout = self.waittime_int # 0.25;      # should be calculated depending on number of channels/LEDs
-            #while True:
-                #if self.arduino.in_waiting > 0:
-                    ## remove eveyting before \n from txt
-                    #while '\n' in txt:
-                        #txt = txt.split('\n')[-1]
-        
-                    #txt = txt + self.arduino.read(self.arduino.in_waiting).decode(errors='ignore')
-                    #logging.debug("Connect Linesread: %s ",txt)
-                    ## see if txt contains #?LEDs and afterwars a \n is in txt
-                    #pos = txt.find('#?LEDs')
-                    #if pos != -1:
-                        #pos2 = txt.find('\r\n',pos)
-                        #if pos2 != -1:
-                            ## get the text between pos and pos2
-                            #txt = txt[pos+2:pos2]
+            #remember the start milliseconds
+            start = time.time()
+            i = 0
+            #while i <= no_of_trials:
+                #try:
+                    #if (time.time()-start) >= 1:
+                        #start = time.time()
+                        #self.arduino.flush()
+                        #self.send_to_ARDUINO("#?\r\n")
+                        #i = i + 1
+                        #logging.debug("Connect: Flush and send #? again - Trial %s:", i)
+                    #self.update()
+                    #text=""
+                    #timeout_error = True
+                    #text = self.arduino.readline()
+                    #logging.debug (text)
+                    #timeout_error = False
+                    ## check if feedback is from MobaLedLib
+                    #text_string = str(text.decode('utf-8'))
+                    #if text_string == "":
+                        #emptyline_no +=1
+                        #if emptyline_no>2:
+                            #read_error = True
+                            #logging.debug("Connect Error: %s",text_string)                            
                             #break
-        
-                #if (time.time()-start) >= 1:
-                    #start = time.time()
-                    #self.arduino.write(b'#?\n')
                     
-            #logging.debug("Connect : %s ",txt)
+                    #if not SerialIF_teststring1 in text_string:
+                        #read_error = True
+                        #logging.debug("Connect Line ignored: %s",text_string)
+                    #else:
+                        #if "MobaLedLib" in text_string:
+                            #self.mobaledlib_version = 1
+                        #else:
+                            #self.determine_ARDUINO_Properties_from_Startmessage(text_string)
+                            #self.mobaledlib_version = self.ARDUINO_version
+                        #self.queue.put(text_string)
+                        #logging.debug("Connect message: %s", text_string)
+                        #read_error = False
+                        #break
+                #except (IOError,UnicodeDecodeError) as e:
+                    #logging.debug(e)
+                    #logging.debug("Connect Error:%s",text_string)
+                    #read_error = True
+            i = 0
+            start = time.time()
+            txt = ''
+            read_error = False
+            defaultTimeout = self.waittime_int # 0.25;      # should be calculated depending on number of channels/LEDs
+            while True:
+                if self.arduino.in_waiting > 0:
+                    # remove eveyting before \n from txt
+                    while '\n' in txt:
+                        txt = txt.split('\n')[-1]
+        
+                    txt = txt + self.arduino.read(self.arduino.in_waiting).decode(errors='ignore')
+                    logging.debug("Connect Linesread: %s ",txt)
+                    # see if txt contains #?LEDs and afterwars a \n is in txt
+                    pos = txt.find(SerialIF_teststring1)
+                    if pos != -1:
+                        pos2 = txt.find('\r\n',pos)
+                        if pos2 != -1:
+                            # get the text between pos and pos2
+                            txt = txt[pos+2:pos2]
+                            self.queue.put(txt)
+                            self.determine_ARDUINO_Properties_from_Startmessage(txt)
+                            break
+        
+                if (time.time()-start) >= 1:
+                    i = i + 1
+                    if i > 3:
+                        logging.debug("Connect: Search string not found" )
+                        read_error = True
+                        break
+                    start = time.time()
+                    self.arduino.write(b'#?\n')
+                    
+            logging.debug("Connect : %s ",txt)
             
             self.send_to_ARDUINO("#X\r\n")
             if read_error:         
@@ -1629,6 +1665,14 @@ class pyMobaLedLibapp(tk.Tk):
             self.close_arduino_connection_after_write_error()
             self.send_active = False
             self.send_error = True
+            
+    def send_command_to_ARDUINO(self,command):
+        self.controller.connect_if_not_connected()
+        for c in command:
+            self.controller.send_to_ARDUINO(c)
+            #time.sleep(0.01)
+        c = chr(10)
+        self.send_to_ARDUINO(c)
 
     def send_to_ARDUINO(self, message,arduino=None,comport=None):
         if arduino == None:
@@ -1685,10 +1729,10 @@ class pyMobaLedLibapp(tk.Tk):
         self.set_macroparam_val("ConfigurationPage","MaxLEDcnt",maxLEDcnt)
         
     def get_maxLEDcnt(self):
-        if self.maxLEDcnt:            
-            return self.maxLEDcnt
+        if self.maxLEDcnt:
+            return int(self.maxLEDcnt)
         else:
-            return self.getConfigData("maxLEDcount")
+            return int(self.getConfigData("maxLEDcount"))
         
     def get_lednum_offset_for_channel(self, channel):
         offset = 0
@@ -1771,6 +1815,11 @@ class pyMobaLedLibapp(tk.Tk):
         macrodata = self.MacroDef.data.get("HelpPage",{})
         helppageurl = macrodata.get("HelpPageURL",)
         webbrowser.open_new_tab(helppageurl)
+        
+    def call_pyStwhelppage(self,event=None):
+        macrodata = self.MacroDef.data.get("HelpPage",{})
+        helppageurl = macrodata.get("pyStwHelpPageURL",)
+        webbrowser.open_new_tab(helppageurl)    
 
     def getConfigData(self, key):
         newkey = CONFIG2PARAMKEYS.get(key,key) # translate configdata key into paramdata key

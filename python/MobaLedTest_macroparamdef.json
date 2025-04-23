@@ -723,8 +723,19 @@
         "Min": "0",
         "Max": "255",
         "Default": "",
-        "Input Text": "Patterngenerator anzeigen (Test)",
-        "Hint": "Die Patterngenerator-Seite wird nach Neustart angezeigt (nur zum Testen)"
+        "Input Text": "Patterngenerator anzeigen",
+        "Hint": "Die Patterngenerator-Seite wird nach Neustart angezeigt"
+    },
+    "ShowZ21Simulator": {
+        "ParName": "ShowZ21Simulator",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "ShowZ21Simulator",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Z21 Simulator anzeigen (Test)",
+        "Hint": "Die Z21-Simulator-Seite wird nach Neustart angezeigt"
     },
     "ShowHiddentables": {
         "ParName": "ShowHiddentables",
@@ -737,6 +748,19 @@
         "Input Text": "Programmgenerator versteckte Tabellen anzeigen",
         "Hint": "Die versteckten Tabellen werden im ProgrammGenerator angezeigt"
     },
+    "PGIconSize": {
+        "ParName": "PGIconSize",
+        "Cnt": "1",
+        "Type": "",
+        "Min": "0",
+        "Max": "255",
+        "Default": "1",
+        "Hide": "True",
+        "Input Text": "Icon Größe (%)",
+        "Hint": "Defintion der Icomgröße im PG in % (100% = Normal)",
+        "Implementation comment": ""
+    },
+    
     "SerialMonitorInput": {
         "ParName": "SerialMonitorInput",
         "Cnt": "1",

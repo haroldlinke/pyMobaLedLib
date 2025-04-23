@@ -1,3 +1,14 @@
+5.3.6a - 23.04.2025
+- fix bug with wrong send buffer size for SEND_INPUTS
+
+- config page cleaned up - removed unneeded parameters
+- ProgGen - size of Proggen table automatically adapts to window size
+- ProgGen - size of Icons in Buttons can be changed in Config-Page - size is in % if size is > 20, else icons are replaced by text, size = font size
+- ProgGen - new Macro: LED-Farb-Animation
+- Z21-simulator error in feedback routine corrected
+- Z21-Simulator: Sending feedback from ARDUINO (key presses and variable status) improved - Adresses of Switches and Variables are shown in Z21-Monitor
+- Adaptation to MLL V3.3.2G
+
 5.3.5v - 30.03.2025
 - error in reading preferences.txt with Umlaut
 - Led Kanal support in Servo Test Page und Sound Check Page

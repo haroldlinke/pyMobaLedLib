@@ -95,18 +95,20 @@
             "FontConfig_PattGen",
             "Farbauswahl",
             "ShowProgramGenerator",
-            "ShowPatternGenerator",
             "ShowHiddentables",
-            "AutoLoadWorkbooks",
-            "UseCOM_Port_UserForm",
-            "Startseite",
+            "PGIconSize",
+            "ShowPatternGenerator",
+            "ShowZ21Simulator",
+            "!AutoLoadWorkbooks",
+            "!UseCOM_Port_UserForm",
+            "!Startseite",
             "Language",
-            "LEDchannel",
-            "MaxLEDcnt",
+            "!LEDchannel",
+            "!MaxLEDcnt",
             "LEDColourCorrection",
             "RMbusTimer",
-            "UseZ21Data",
-            "Z21Data"
+            "!UseZ21Data",
+            "!Z21Data"
 
         ]
     },
@@ -131,7 +133,9 @@
         "Title": "Hilfe-Seite",
         "Kurzbeschreibung": "Hilfe-Seite",
         "Ausführliche Beschreibung": "Hilfe-Seite",
-        "HelpPageURL": "https://wiki.mobaledlib.de/anleitungen/spezial/testseite"
+        "HelpPageURL_old": "https://wiki.mobaledlib.de/anleitungen/spezial/testseite",
+        "HelpPageURL": "https://wiki.mobaledlib.de/anleitungen/spezial/pyprogramgenerator",
+        "pyStwHelpPageURL": "https://wiki.mobaledlib.de/anleitungen/spezial/pyprogramgenerator/stellwerk"
     },
     "PatternConfiguratorPage": {
         "Typ": "PatternConfiguratorPage",
@@ -276,6 +280,26 @@
         "Button_5": "Test Grafik aufrufen",
         "Kurzbeschreibung": "Einstellungsparameter",
         "Ausführliche Beschreibung": "Test",
+        "Params": [
+                  ]
+    },
+    "StellwerkPage": {
+        "Typ": "StellwerkPage",
+        "Name": "StellwerkPage",
+        "MTabName": "Stellwerk\n ",
+        "Title": "Stellwerk",
+        "Kurzbeschreibung": "Stellwerk",
+        "Ausführliche Beschreibung": "Stellwerk",
+        "Params": [
+                  ]
+    },
+    "StellwerkEditPage": {
+        "Typ": "StellwerkEditPage",
+        "Name": "StellwerkEditPage",
+        "MTabName": "Stellwerk\nEditor",
+        "Title": "Stellwerk-Editor",
+        "Kurzbeschreibung": "Stellwerk-Editor",
+        "Ausführliche Beschreibung": "Stellwerk-Editor",
         "Params": [
                   ]
     },

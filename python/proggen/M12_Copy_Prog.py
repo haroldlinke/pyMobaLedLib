@@ -233,6 +233,10 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
     # 29.12.23: remove some more files caused by LNet changes
     Remove_File_If_Exists(FullDestDir + 'LEDs_AutoProg\\LocoNetInterface.cpp')
     Remove_File_If_Exists(FullDestDir + 'LEDs_AutoProg\\LocoNetInterface.h')
+    # 11.02.25: improve ESP32 userinterface
+    Remove_File_If_Exists(FullDestDir + "LEDs_AutoProg\SSD1306UI.cpp")    
+    
+    
     if not FileCopy_with_Check(FullDestDir, 'Prog_Generator_Examples'):
         return fn_return_value
         # 05.10.20:

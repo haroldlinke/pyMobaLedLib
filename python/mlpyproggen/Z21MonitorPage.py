@@ -92,6 +92,7 @@ import socket
 import sys
 import binascii
 
+PageInstance = None
 
 VERSION ="V01.17 - 25.12.2019"
 LARGE_FONT= ("Verdana", 12)
@@ -263,8 +264,10 @@ ThreadEvent_Z21 = None
 class Z21MonitorPage(tk.Frame):
     
     def __init__(self, parent, controller):
+        global pageInstance
         if controller.executetests:
             self.test_convert_7bit_to_8bit()
+        pageInstance = self
         self.tabClassName = "Z21MonitorPage"
         tk.Frame.__init__(self,parent)
         self.controller = controller
@@ -433,23 +436,25 @@ class Z21MonitorPage(tk.Frame):
             self.add_text_to_textwindow("Datei: "+filepath + " nicht gefunden")
             return
             
-        searchstring1 = "//*** Output Channels ***\n"
-        searchstring2 = "#define START_SEND_INPUTS"
+        searchstring1 = "// Input channel defines for local inputs and expert users\n"
+        searchstring2 = "/*********************/"
         
         varlist_found=False
         
         for line in self.file_data:
             if line==searchstring1:
                 varlist_found=True
+                self.add_text_to_textwindow("\n")
+                self.add_text_to_textwindow("\n")
+                self.add_text_to_textwindow("**************************************************************\n")
             if varlist_found:
                 if line.startswith(searchstring2):
+                    self.add_text_to_textwindow("**************************************************************\n")  
+                    self.add_text_to_textwindow("\n")
+                    self.add_text_to_textwindow("\n")
                     break
                 else:
                     self.add_text_to_textwindow(line)
-            
-            
-
-
         
     def add_text_to_textwindow(self,text):
         self.text.insert("end", text)
@@ -583,19 +588,32 @@ class Z21MonitorPage(tk.Frame):
         return output
     
     def test_convert_7bit_to_8bit(self):
+        bytestring = b'\x40'
+        print("test_convert_7bit_to_8bit:", bytestring, self.convert_7bit_to_8bit(bytestring))        
         bytestring = b'\x40\x00'
-        #print(self.convert_7bit_to_8bit(bytestring))
+        print("test_convert_7bit_to_8bit:", bytestring, self.convert_7bit_to_8bit(bytestring))
         bytestring = b'\x00\x40'
-        #print(self.convert_7bit_to_8bit(bytestring))        
+        print("test_convert_7bit_to_8bit:", bytestring, self.convert_7bit_to_8bit(bytestring))        
         data_7bit_str=b"\x7F\x7F"
         v8bit_str=self.convert_7bit_to_8bit(data_7bit_str)
-        #print("test_convert_7bit_to_8bit:",data_7bit_str,v8bit_str)
+        print("test_convert_7bit_to_8bit:",data_7bit_str,v8bit_str)
         
+    def convert_7bit_to_8bit_2(self, bytestring):
+        # Convert the bytestring to a binary string
+        bitstring = ''.join(f"{byte:07b}" for byte in bytestring)
+        
+        # Pad the binary string so its length is a multiple of 8
+        bitstring = bitstring.ljust((len(bitstring) + 7) // 8 * 8, '0')
+        
+        # Convert the binary string back to a bytestring with 8-bit encoding
+        return bytes(int(bitstring[i:i+8], 2) for i in range(0, len(bitstring), 8))    
+    
     def convert_7bit_to_8bit(self,bytestring):
-        
         result = bytearray()
         countbits = 7
         byte = 0
+        if len(bytestring) == 1:
+            bytestring += b'\x00'
         for i in range(0, len(bytestring)):
             testbyte = bytestring[i]
             for j in range(7,0,-1):
@@ -610,13 +628,13 @@ class Z21MonitorPage(tk.Frame):
                         countbits-=1
         if countbits != 0:
             result.append(byte)
-        #print("convert_7bit_to_8bit: Input:")
+        print("convert_7bit_to_8bit: \nInput:")
         for my_byte in bytestring:
             print(f'{my_byte:0>8b}', end=' ')
-        #print(" Output:")    
+        print(" \nOutput:")    
         for my_byte in result:
             print(f'{my_byte:0>8b}', end=' ')
-        #print("\n")
+        print("\n")
         return bytes(result)
 
     

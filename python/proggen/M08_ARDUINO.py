@@ -376,7 +376,7 @@ def __Create_PIO_Build(fp, Environment, ResultName, ComPort, SrcDir):
     VBFiles.writeText(fp2, 'framework = arduino', '\n')
     VBFiles.writeText(fp2, 'build_src_flags =', '\n')   # ' 24.09.24: Hardi: Old:  "src_build_flags = "
     VBFiles.writeText(fp2, 'lib_deps =', '\n')
-    VBFiles.writeText(fp2, '    FastLED@>=3.6.0', '\n') # ' 24.09.24: Hardi: Added minimal version because version 3.4.0 generates problems with selectrix
+    VBFiles.writeText(fp2, '    FastLED@>=3.9.9', '\n') # ' 18.01.24: Jürgen: Change minimal version to 3.9.9 - allows revival after FastLED blocks
     VBFiles.writeText(fp2, '    NmraDcc', '\n')         # '                  Ini syntax see: https://docs.platformio.org/en/stable/core/userguide/lib/cmd_uninstall.html
     VBFiles.writeText(fp2, '    MobaLedLib=file://../../libraries/MobaLedLib', '\n')
     VBFiles.writeText(fp2, '', '\n')
@@ -702,7 +702,10 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, ':fastbuild', '\n')
         VBFiles.writeText(fp, 'echo Running fastbuild', '\n')
-        VBFiles.writeText(fp, 'call Fastbuild.cmd %8', '\n')
+        if Board_Version < "2.":
+            VBFiles.writeText(fp, 'call Fastbuild.cmd %8', '\n')
+        else:
+            VBFiles.writeText(fp, 'call Fastbuild2.cmd %8', '\n')
         VBFiles.writeText(fp, 'if errorlevel 1 (', '\n')
         # 28.11.20: Additional check from Jürgen
         VBFiles.writeText(fp, '    rem use argument norebuild to avoid rebuild in this case of build error', '\n')
@@ -722,11 +725,12 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, 'goto download', '\n')
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, ':rebuild', '\n')
-        VBFiles.writeText(fp, 'echo.', '\n')
+        VBFiles.writeText(fp, 'echo/', '\n')
         VBFiles.writeText(fp, 'echo Running rebuild... Be patient, this will take up to 3 minutes ;-(((', '\n')
-        VBFiles.writeText(fp, 'echo.', '\n')
+        VBFiles.writeText(fp, 'echo/', '\n')
         VBFiles.writeText(fp, 'if exist "%aTemp%" del "%aTemp%" /s/q >nul:', '\n')
         VBFiles.writeText(fp, 'if exist "%aTemp%\\link.cmd" del "%aTemp%\\link.cmd"', '\n')
+        VBFiles.writeText(fp, ':build', '\n')
         VBFiles.writeText(fp, 'echo %date% > "%aTemp%\\rebuildFailed.txt"', '\n')
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, 'REM *** Call the arduino builder ***', '\n')
@@ -763,7 +767,11 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, '   if "!uploadTo:~0,3!"=="COM" (', '\n')
         # 17.11.20: Added: 0x8000 ...
         # 11.03.21: Added: 0xE000 and 0x1000
-        VBFiles.writeText(fp, '          "%packages%\\esp32\\tools\\esptool_py\\%ESP32_TOOL_VERSION%/esptool.exe" --chip esp32 --port \\\\.\\!uploadTo! --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect ' + ' 0xE000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/partitions/boot_app0.bin"' + ' 0x1000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/sdk/bin/bootloader_qio_80m.bin"' + ' 0x10000 "%aTemp%\\%srcFile%.bin"' + ' 0x8000  "%aTemp%\\%srcFile%.partitions.bin"', '\n')
+        if Board_Version < "2.":
+            VBFiles.writeText(fp, '          "%packages%\\esp32\\tools\\esptool_py\\%ESP32_TOOL_VERSION%/esptool.exe" --chip esp32 --port \\\\.\\!uploadTo! --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect ' + ' 0xE000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/partitions/boot_app0.bin"' + ' 0x1000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/sdk/bin/bootloader_qio_80m.bin"' + ' 0x10000 "%aTemp%\\%srcFile%.bin"' + ' 0x8000  "%aTemp%\\%srcFile%.partitions.bin"', '\n')
+        else:
+            VBFiles.writeText(fp, '          "%packages%\\esp32\\tools\\esptool_py\\%ESP32_TOOL_VERSION%/esptool.exe" --chip esp32 --port \\\\.\\!uploadTo! --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect ' + ' 0xE000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/partitions/boot_app0.bin"' + ' 0x1000  "%aTemp%\%srcFile%.bootloader.bin"' + ' 0x10000 "%aTemp%\\%srcFile%.bin"' + ' 0x8000  "%aTemp%\\%srcFile%.partitions.bin"', '\n')
+                    
         VBFiles.writeText(fp, '   ) else (', '\n')
         VBFiles.writeText(fp, '          "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/espota.exe" -i !uploadTo! -p 3232 --auth= -f "%aTemp%\\%srcFile%.bin"', '\n')
         VBFiles.writeText(fp, '          )', '\n')
@@ -1330,18 +1338,19 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
     # Echo without linefeed
     VBFiles.writeText(fp, 'CD', '\n')
     # show the current directory for debugging
-    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO/', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, CommandStr, '\n')
     #Print #fp, "Pause"   ' Debug
-    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO/', '\n')
     VBFiles.writeText(fp, '', '\n')
     if USE_SUBCOMMAND:
         VBFiles.writeText(fp, 'IF EXIST "' + ResultName + '" (', '\n')
     else:
         VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')
         VBFiles.writeText(fp, '   ECHO Start_Arduino_Result: %ERRORLEVEL% > "' + ResultName + '"', '\n')
-    VBFiles.writeText(fp, '   COLOR 4F', '\n')
+    if M28.Get_Bool_Config_Var("Use_PlatformIO") == False:    
+        VBFiles.writeText(fp, '   COLOR 4F', '\n')
     VBFiles.writeText(fp, '   ECHO   ****************************************', '\n')
     VBFiles.writeText(fp, '   ECHO    ' + M09.Get_Language_Str('Da ist was schief gegangen ;-('), '\n')
     VBFiles.writeText(fp, '   ECHO   ****************************************', '\n')
@@ -2110,10 +2119,10 @@ def Create_InstalLib_Cmd_file(LibNames=""):
     VBFiles.writeText(fp, 'ECHO --------------------------------------------------------------------------', '\n')
     VBFiles.writeText(fp, 'ECHO ' + M09.Get_Language_Str('Aktualisiere die Bibliotheken ') + LibNames + ' ...', '\n')
     VBFiles.writeText(fp, 'ECHO --------------------------------------------------------------------------', '\n')
-    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO/', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, CommandStr, '\n')
-    VBFiles.writeText(fp, 'ECHO.', '\n')
+    VBFiles.writeText(fp, 'ECHO/', '\n')
     VBFiles.writeText(fp, '', '\n')
     #Print #fp, "Pause"
     VBFiles.writeText(fp, 'IF ERRORLEVEL 1 (', '\n')

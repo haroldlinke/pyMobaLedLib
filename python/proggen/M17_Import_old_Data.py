@@ -157,7 +157,7 @@ def Import_from_Old_Version_CallBack(Do_Import, Import_FromAllSheets):
     Debug.Print('Import_from_Old_Version_CallBack(' + Do_Import + ', ' + Import_FromAllSheets + ')')
     if Do_Import:
         PGF_Name = M08.GetWorkbookPath() + '\\Import_From_old_Prog.MLL_pgf'
-        Res = proggen.M18_Save_Load.Save_Sheets_to_pgf(PGF_Name, Import_FromAllSheets)
+        Res = proggen.M18_Save_Load.Save_Sheets_to_pgf(PGF_Name, Import_FromAllSheets, True)
         ImportWB.Close(Savechanges=False)
         P01.ThisWorkbook.Activate()
         if Res:

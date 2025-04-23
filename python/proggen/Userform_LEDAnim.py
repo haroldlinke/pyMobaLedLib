@@ -49,7 +49,14 @@ class UserForm_LEDAnim:
         self.Userform_Res  = ""
         self.Controls      = []
         self.Controls_Dict = {}
-        self.Macro_str = "" 
+        self.Macro_str = ""
+        self.test_started = False
+        self.test_continue = False
+        self.test_pause = False
+        self.value_max = 254
+        self.value_min = 1
+        self.no_of_curves = 1
+        self.active_curve = 0 
         #*HL Center_Form(Me)
         
         self.Main_Menu_Form_RSC = {"UserForm":{

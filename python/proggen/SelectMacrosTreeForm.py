@@ -394,8 +394,12 @@ class SelectMacrosTreeform:
             iconfilename = PG.ThisWorkbook.pyProgPath + '/' + "icons/"+Trim(iconimagename)+".png"
             #pic1 = Image.open(iconfilename)           # Open the image like this first
             Debug.Print("MacroTree-addNode - iconFilename:"+iconfilename)
-            self.pic2 = tk.PhotoImage(file=iconfilename)      # Then with PhotoImage. NOTE: self.root_pic2 =     and not     root_pic2 =
-            Debug.Print("MacroTree-addNode - iconFilename:"+iconfilename+" -OK-")
+            try:
+                self.pic2 = tk.PhotoImage(file=iconfilename)      # Then with PhotoImage. NOTE: self.root_pic2 =     and not     root_pic2 =
+                Debug.Print("MacroTree-addNode - iconFilename:"+iconfilename+" -OK-")
+            except BaseException as e:
+                Debug.Print("ERROR: MacroTree-addNode - iconFilename:"+iconfilename+":")
+                logging.debug(e, exc_info=True) 
         else:
             self.pic2=None
         
