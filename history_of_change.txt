@@ -1,3 +1,87 @@
+5.3.6a - 23.04.2025
+- fix bug with wrong send buffer size for SEND_INPUTS
+
+- config page cleaned up - removed unneeded parameters
+- ProgGen - size of Proggen table automatically adapts to window size
+- ProgGen - size of Icons in Buttons can be changed in Config-Page - size is in % if size is > 20, else icons are replaced by text, size = font size
+- ProgGen - new Macro: LED-Farb-Animation
+- Z21-simulator error in feedback routine corrected
+- Z21-Simulator: Sending feedback from ARDUINO (key presses and variable status) improved - Adresses of Switches and Variables are shown in Z21-Monitor
+- Adaptation to MLL V3.3.2G
+
+5.3.5v - 30.03.2025
+- error in reading preferences.txt with Umlaut
+- Led Kanal support in Servo Test Page und Sound Check Page
+
+5.3.5u - 29.03.2025
+- Detection of boardtype from Arduino Startmessage
+- error in handling of setcoltab macro corrected
+
+5.3.5t - 27.03.2025
+- Colorcheck supports LED channel
+- serial interface updated to improve handling of debug messages from arduino/ESP32
+
+5.3.5s - 06.03.2025
+- Adaptation of Tab-Titles for a small Linux-Screen
+
+5.3.5r - 06.03.2025
+- Adaptation of Colorcheck Page for a small Linux Screen
+
+5.3.5q - 05.03.2025
+- Adaptation of main pages Page for a small Linux Screen
+
+
+5.3.5p - 05.03.2025
+- Adaptation of House-Macro Pager and Macro-Selection Page for a small Linux Screen
+
+5.3.5o - 04.03.2025
+- Adaptation of Config-Page for a smal Linux Screen
+
+5.3.5n - 04.03.2025
+- error - Comport was not always saved correctly
+
+5.3.5m - 01-03.2025
+- error correction for DM_Servo Firmware
+
+5.3.5l - 25-02.2025
+- new DM-Servo Firmware with legacy mode
+
+5.3.5k - 18-02.2025
+- update issues
+
+5.3.5j - 17-02.2025
+- upload issues
+
+5.3.5i - 10-02-2025
+- Platine 512 in 511 geändert
+
+5.3.5h - 07-02-2025
+- Channel number is now correctly shown in Table column LED
+- ServoAnim-Makro now support servos connected to other channels than 0
+
+
+5.3.5g - 04-02-2025
+- When connecting to COM-Port at startup, problem with DCC-Buttons - corrected
+
+5.3.5f - 03-02-2025
+- DCC-Button Simulation did not work
+- build tree of pyMLL and Excel Version could interfer and generate unpredictable results
+
+5.3.5e - 27-01-2025
+- correction: ESP32 some times too high sending rate for RS232
+
+5.3.5d - 20-01-2025
+- new: tune Attiny legacy speed
+- correction: error with Virtual Pin in Set_LED_OutpPinLst
+
+5.3.5c - 20-01-2025
+- new: tune Attiny Clock
+
+5.3.5b - 19-01-2025
+- status_user_form was not removed correctly
+- mainmenu2.jpg was missing
+- default page content changed
+
 5.3.3c - 11-01-2025
 Correction
 - in new Version of Prog_Generator_Mobaledlib.xlsm Macronames replaced by formulas, 
