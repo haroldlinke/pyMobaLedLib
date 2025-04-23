@@ -50,7 +50,7 @@
 # CHANGELOG:
 # 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
 # 2021-01-07 v4.02 HL: - Else:, ByRef check done - first PoC release
-# 2021-01-08 V4.03 HL: - added Workbook Save and Load
+# 2021-01-08 V4.03 HL: - added Workbook Save and Load 
 import sys
 import os
 import urllib
@@ -3412,7 +3412,7 @@ class pyMobaLedLibapp(tk.Tk):
             if dst_directory_hash != src_directory_hash:
                 # Beispiel für die Nutzung:
                 self.compare_directories(srcpath, dstpath, ignore=["__pycache__", "vb2py", "vb2pyconv"])
-                P01.MsgBox(M09.Get_Language_Str(' Achtung: Die kopierten Daten stimmen nicht mit den heruntergeladenen Daten überein\nDetails finden Sie in der Logdatei: logfile.log!!'), vbQuestion + vbYesNo, M09.Get_Language_Str('Python MobaLedLib Aktualisierung fehlgeschlagen'))
+                P01.MsgBox(M09.Get_Language_Str(' Achtung: Die kopierten Daten stimmen nicht mit den heruntergeladenen Daten überein\nDetails finden Sie in der Logdatei: logfile.log!!'), vbInformation, M09.Get_Language_Str('Python MobaLedLib Aktualisierung'))
             else:
                 #logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
                 if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
