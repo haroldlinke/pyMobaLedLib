@@ -132,7 +132,7 @@ def Workbook_SheetBeforeDoubleClick(Sh, Target, Cancel):
     #--------------------------------------------------------------------------------------------------------------
     if M02.DEBUG_CHANGEEVENT:
         Debug.Print('DieserArbeitsmappe: Workbook_SheetBeforeDoubleClick:' + Target.Row + ' Cancel=' + Cancel)
-    M20.Proc_DoubleCkick(Sh, Target, Cancel)
+    M20.Proc_DoubleClick(Sh, Target, Cancel)
     #Cancel = True
 
 # VB2PY (UntranslatedCode) Option Explicit

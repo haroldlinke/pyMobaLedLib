@@ -99,7 +99,7 @@ def Init_HeaderFile_Generation_Sound(firstSheet):
     return _fn_return_value
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Cmd - ByRef 
-def Add_SoundPin_Entry(Cmd, Channel):
+def Add_SoundPin_Entry(Row, Cmd, Channel):
     global SoundLines
     
     _fn_return_value = False
@@ -111,25 +111,28 @@ def Add_SoundPin_Entry(Cmd, Channel):
     Parts = Split(Replace(Replace(Replace(Trim(Cmd), M02.SF_SERIAL_SOUND_PIN, ''), ')', ''), ' ', ''), ',')
     if UBound(Parts) - LBound(Parts) != 1:
         # todo
+        P01.MsgBox(Replace(Replace(M09.Get_Language_Str("Fehler Zeile #2#: Ungültiges Kommando '#1#'.") , "#1#", Cmd), "#2#", Row), vbCritical, "Fehler: Soundmodul")        
         return _fn_return_value, Cmd
-    
-    fret, M02.SF_SERIAL_SOUND_PIN = M06SW.Set_PinNrLst_if_Matching(M02.SF_SERIAL_SOUND_PIN + Parts(0) + ')', M02.SF_SERIAL_SOUND_PIN, "", 'O', 1)
+    Pin = ""
+    fret, Pin = M06SW.Set_PinNrLst_if_Matching(M02.SF_SERIAL_SOUND_PIN + Parts(0) + ')', M02.SF_SERIAL_SOUND_PIN, Pin, 'O', 1)
     if fret == False:
         return _fn_return_value, Cmd
-    if M06SW.No_Duplicates_in_two_Lists('Sound', M06SW.Serial_PinLst, M02.SF_SERIAL_SOUND_PIN) == False:
+    if M06SW.No_Duplicates_in_two_Lists('Sound', M06SW.Serial_PinLst, Pin, M02.SF_SERIAL_SOUND_PIN) == False:
         return _fn_return_value, Cmd
-    M06SW.Serial_PinLst = M06SW.Serial_PinLst + M02.SF_SERIAL_SOUND_PIN + ' '
+    M06SW.Serial_PinLst = M06SW.Serial_PinLst + Pin + ' '
     if not Check_Sound_Duplicates():
         return _fn_return_value, Cmd
     playerClass = GetPlayerClass(Parts(1))
     if playerClass == '':
-        P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Soundmodul Typ \'#1#\' wird nicht unterstützt.'), "#1#", Parts(1)), vbCritical, 'Fehler: Soundmodul')
+        #P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Soundmodul Typ \'#1#\' wird nicht unterstützt.'), "#1#", Parts(1)), vbCritical, 'Fehler: Soundmodul')
+        P01.MsgBox(Replace(Replace(M09.Get_Language_Str("Fehler Zeile #2#: Der Soundmodul Typ '#1#' wird nicht unterstützt."), "#1#", Parts(1)), "#2#", Row), vbCritical, "Fehler: Soundmodul")
+                
         return _fn_return_value, Cmd
     if SoundLines.Exists(Channel):
-        P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Der Sound Kanal \'#1#\' ist schon definiert.'), "#1#", Channel), vbCritical, 'Fehler: Soundmodul')
+        P01.MsgBox(Replace(Replace(M09.Get_Language_Str("Fehler Zeile #2#: Der Sound Kanal '#1#' ist schon definiert."), "#1#", Channel), "#2#", Row), vbCritical, "Fehler: Soundmodul")
         return _fn_return_value, Cmd
     #If Parts(1) = "JQ6500_AA" Then UseFullPacketMode = True                 ' 19.10.21: Always use the full packed mode because this mode could be used with both types of JQ6500 modules
-    SoundLines.Add(Channel, Array(M02.SF_SERIAL_SOUND_PIN, playerClass))
+    SoundLines.Add(Channel, Array(Pin, playerClass))
     Cmd = '// ' + Cmd
     _fn_return_value = True
     return _fn_return_value, Cmd

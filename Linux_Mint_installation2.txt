@@ -1,0 +1,46 @@
+Installation python modules in Linux-Mint:
+
+Virtuelles environment für pyMLL erstellen:
+
+sudo apt install python3-venv python3-pip
+
+python3 -m venv ~/pyMLL-env
+
+source ~/pyMLL-env/bin/activate
+
+RP2400 Boardlibrary installieren
+
+AnalogScannerPico.h
+AnalogScannerPico.cpp kopieren
+
+sudo apt install python3-serial
+
+https://chriswarrick.com/blog/2018/09/04/python-virtual-environments/
+
+
+Es muß ein eigenes virtuelles Python Environment für die pyMLL erstellt werden.
+
+Dazu benötigt man das Tool venv.
+
+Installation unter Mint:
+[code]sudo apt install python3-venv python3-pip[/code]
+Achtung: Rootpasswort wird abgefragt.
+
+Danach erstellen des virtuellen environments:
+
+[code]python3 -m venv ~/pyMLL-env[/code]
+
+Es wird ein sogenanntes virtuelle Umgebung für die pyMLL geschaffen, mit eigenem Python3 programm und eigener Modulbibliothek.
+
+
+Vor jedem Start der pyMLL muß die virtuelle Umgebung aktiviert werden:
+
+[code]source ~/pyMLL-env/bin/activate[/code]
+Das active Verzeichnis ist jetzt ~/pyMLL-env
+Diese Verzeichnis NICHT verlassen, sondern sofort danach pyMLL starten mit:
+
+[code]python3 pfad_zur_py_MLL/pyMobaLedLib.py[/code]
+
+Da ich kein Linux-Experte bin, ist mi rnoch nocht klar, wie man das am einfachsten automatisieren kann, da die pyMobaLedLib.py in irgendeinem Verzeichnis liegen kann.
+
+Nach dem Start installiert das Programm erst einmal alle fehlenden Module nach. Danach sollte hoffentlich alles funktionieren ...

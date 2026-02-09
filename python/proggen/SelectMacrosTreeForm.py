@@ -193,7 +193,7 @@ class SelectMacrosTreeform:
         return
     
     def CreateMacroTree(self, Tree, Parent, Filter, Dictionary):
-        Debug.Print("CreateMacroTree")
+        #Debug.Print("CreateMacroTree")
         #self.__InitializeTreeFrom_Lib_Macros_Sheet(Parent,Filter)  #Filter)
         #return
     
@@ -367,7 +367,7 @@ class SelectMacrosTreeform:
         self.ClassCounts()   
     
     def __Add_Node(self,c):
-        Debug.Print("__Add_Node")
+        #Debug.Print("__Add_Node")
 
         #-------------------------------
         Sh = c.Parent
@@ -393,12 +393,12 @@ class SelectMacrosTreeform:
         if iconimagename !="":
             iconfilename = PG.ThisWorkbook.pyProgPath + '/' + "icons/"+Trim(iconimagename)+".png"
             #pic1 = Image.open(iconfilename)           # Open the image like this first
-            Debug.Print("MacroTree-addNode - iconFilename:"+iconfilename)
+            #Debug.Print("MacroTree-addNode - iconFilename:"+iconfilename)
             try:
                 self.pic2 = tk.PhotoImage(file=iconfilename)      # Then with PhotoImage. NOTE: self.root_pic2 =     and not     root_pic2 =
-                Debug.Print("MacroTree-addNode - iconFilename:"+iconfilename+" -OK-")
+                #Debug.Print("MacroTree-addNode - iconFilename:"+iconfilename+" -OK-")
             except BaseException as e:
-                Debug.Print("ERROR: MacroTree-addNode - iconFilename:"+iconfilename+":")
+                #Debug.Print("ERROR: MacroTree-addNode - iconFilename:"+iconfilename+":")
                 logging.debug(e, exc_info=True) 
         else:
             self.pic2=None
@@ -688,7 +688,7 @@ class SelectMacrosTreeform:
         Row = int()
         #---------------------------------
         # Return the name and the row number in the ListDataSheet
-        if self.ActKey != '' and IsNumeric(self.ActKey):
+        if self.ActKey != '' and IsNumeric(self.ActKey) and self.ActKey != 0: #actkey == 0 when no macro is selected
             Row = P01.val(self.ActKey)
             with_9 = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
             Res = with_9.Cells(Row, M02.SM_Name__COL) + ',' + str(Row)

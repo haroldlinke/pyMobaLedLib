@@ -99,6 +99,9 @@
             "PGIconSize",
             "ShowPatternGenerator",
             "ShowZ21Simulator",
+            "IPUploadTimeout",
+            "!UseHostAdapter",
+            "CheckVersion",
             "!AutoLoadWorkbooks",
             "!UseCOM_Port_UserForm",
             "!Startseite",
@@ -162,6 +165,20 @@
         "Ausführliche Beschreibung": "Erzeugen von MLL Programme",
         "Params": [
          ]
+    },
+    "ProgGenConfigPage": {
+        "Typ": "ProgGenConfigPage",
+        "Name": "ProgGenConfigPage",
+        "MTabName": "ProgGenerator\nEinstellungen",
+        "Title": "ProgGenerator Einstellungen",
+        "Button_1": "Geänderte Einstellungen übernehmen",
+        "Button_2": "Abbrechen",
+        "Button_3": "",
+        "Kurzbeschreibung": "ProgGeneratoreinstellungen",
+        "Ausführliche Beschreibung": "ProgGenerator konfigurieren\nBedingungen für Zeilenfarben können hier definiert werden.",
+        "Params": [
+            "RowFormatInput"
+        ]
     },
     "SerialMonitorPage": {
         "Typ": "SerialMonitorPage",

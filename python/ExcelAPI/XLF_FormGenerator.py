@@ -52,6 +52,65 @@ from scrolledFrame.ScrolledFrame import ScrolledFrame
 guifactor  = 1.55
 scrolledcontainer = None
 
+import tkinter as tk
+
+class ListboxWithScrollbar(tk.Frame):
+    def __init__(self, master=None, items=None, **kwargs):
+        super().__init__(master)
+        
+        self.listbox = tk.Listbox(self, **kwargs)
+        self.scrollbar = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.listbox.yview)
+        self.listbox.config(yscrollcommand=self.scrollbar.set)
+
+        self.listbox.grid(row=0, column=0, sticky="nsew")
+        self.scrollbar.grid(row=0, column=1, sticky="ns")
+
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        if items:
+            for item in items:
+                self.listbox.insert(tk.END, item)
+
+    def get_selected(self):
+        selection = self.listbox.curselection()
+        return [self.listbox.get(i) for i in selection]
+
+    def insert(self, index, item):
+        self.listbox.insert(index, item)
+
+    def bind_select(self, callback):
+        self.listbox.bind('<<ListboxSelect>>', callback)
+
+
+class RadioGroup(tk.Frame):
+    def __init__(self, master=None, options=None, variable=None, command=None, **kwargs):
+        super().__init__(master, **kwargs)
+
+        # Use provided variable or create a new one
+        self.variable = variable or tk.StringVar()
+        self.command = command
+
+        # Create radio buttons
+        self.buttons = []
+        for option in options or []:
+            rb = tk.Radiobutton(self, text=option, value=option,
+                                variable=self.variable, command=self._on_select)
+            rb.pack(anchor="w", padx=5, pady=2)
+            self.buttons.append(rb)
+
+    def _on_select(self):
+        if self.command:
+            self.command(self.variable.get())
+
+    def get(self):
+        return self.variable.get()
+
+    def set(self, value):
+        self.variable.set(value)
+
+
+
 class CControl_Template(object):
     
     def __init__(self,TK_widget=None,Dlg=None,Name="",Accelerator="",BackColor="#00000F",BorderColor="#000006",
@@ -96,6 +155,19 @@ class CControl_Template(object):
                 self.TKWidget.activate(value)
     
     Selection = property(get_selection, set_selection, doc='Selected Entry of Listbox')
+    
+    def get_selection_str(self):
+        sel_list = self.TKWidget.curselection()
+        if sel_list == ():
+            return 0
+        
+        selected_value_str = self.TKWidget.get(sel_list[0])
+        return selected_value_str
+    
+    def set_selection_str(self,value):
+        pass
+    
+    Selection_Str = property(get_selection_str, set_selection_str, doc='Selected Entry of Listbox as String')    
 
     def get_value(self):
         if self.TKVar != None:
@@ -130,6 +202,7 @@ class CControl_Template(object):
     def set_ListCount(self,value):
         pass
     ListCount = property(get_ListCount, set_ListCount, doc='value of Form')
+    
     def Clear(self):
         #print("Clear ListBox")
         self.list_choices=[]
@@ -143,6 +216,12 @@ class CControl_Template(object):
         pass
     def Selected(self,nr):
         return self.TKWidget.selection_includes(nr)
+    
+    # Function to replace an item
+    def ReplaceItem(self,index, new_value):
+        if index < len(self.list_choices):
+            self.list_choices[index] = new_value 
+        self.TKVar.set(self.list_choices)        
 
     def List(self,nr,col):
         res_line = self.list_choices[nr]
@@ -181,6 +260,20 @@ def translate_text(text):
     trans = M09.Get_Language_Str(text)
     return trans
 
+def choosecolor(button):
+    
+    old_color = button.Color
+
+    color = tk.colorchooser.askcolor(color=old_color)
+    if color:
+        colorhex = color[1]    
+    
+    button.Color = colorhex
+    button.config(bg=colorhex, text=colorhex)
+
+    return
+
+
 def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={},defaultfont=("Calibri",10), jump_table={}, window=None, geo_manager="place"):
     gui_factor_label_width = guifactor
     gui_factor_label_height = guifactor
@@ -193,6 +286,9 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             #dlg.Controls.append(comp)
             comp.Name = component_dict.get("Name","")
             comp.Type = component_dict.get("Type","")
+            comp.geo_manager = component_dict.get("Geo_Manager","")
+            if comp.geo_manager != "":
+                geo_manager = comp.geo_manager
             comp.parent = parent
             comp.Default = component_dict.get("Default",None)
             comp.Persistent = component_dict.get("Persistent",comp.Default)
@@ -226,11 +322,18 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 comp.Top = int(component_dict.get("Top",0))
                 comp.Left = int(component_dict.get("Left",0))
                 comp.grid_sticky = component_dict.get("sticky","w")
-                comp.grid_padx = component_dict.get("padx",10)
-                comp.grid_pady = component_dict.get("pady",10)
-                comp.Width = int(width)
-                comp.Height = int(height)
-                comp.Wraplength = comp.Width * 8
+                comp.grid_padx = component_dict.get("padx",5)
+                comp.grid_pady = component_dict.get("pady",5)
+                if width:
+                    comp.Width = int(width * gui_factor_label_width)
+                    comp.Wraplength = comp.Width * 8
+                else:
+                    comp.Width = None
+                    comp.Wraplength = None
+                if height:
+                    comp.Height = int(height * gui_factor_label_height)
+                else:
+                    comp.Height = None
                 
             #comp_font = self.fontlabel
             comp.ControlTipText = component_dict.get("ControlTipText","")
@@ -395,7 +498,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 comp.Accelerator = component_dict.get("Accelerator","")
                 #if comp.Accelerator!="":
                 #    parent.bind(comp.Accelerator, Command)                    
-                checkbutton=tk.Checkbutton(parent, text=comp.Caption,width=comp.Width,wraplength = comp.Wraplength,anchor="w",variable=comp.TKVar,onvalue = 1, offvalue = 0,font=comp.Font)
+                checkbutton=tk.Checkbutton(parent, text=comp.Caption,width=comp.Width,wraplength = comp.Wraplength,command=comp.Command, anchor="w",variable=comp.TKVar,onvalue = 1, offvalue = 0,font=comp.Font)
                 if geo_manager == "place":
                     checkbutton.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 else:
@@ -434,6 +537,8 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                                 if charformat.ForeGround:
                                     textbox.tag_config(tagname, foreground=charformat.ForeGround)
                 #textbox.config(state=tk.DISABLED)
+                if comp.Command:
+                    textbox.bind("<<Modified>>", comp.Command)
                 if geo_manager == "place":
                     textbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 else:
@@ -456,6 +561,8 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 numbox=ttk.Spinbox(parent, from_=0,to=65535,textvariable=comp.TKVar, command=comp.Command, width=comp.Width ,font=comp.Font)
                 #if comp.Caption != None and comp.Caption != "":
                 #    textbox.insert("1.0",comp.Caption)
+                if comp.Command:
+                    numbox.bind("<<Modified>>", comp.Command)                
                 if geo_manager == "place":
                     numbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
                 else:
@@ -476,7 +583,7 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                 #comp.Command = component_dict.get("Command",None)
                 #comp.Accelerator = component_dict.get("Accelerator","")
                 #if comp.Accelerator!="":
-                #    parent.bind(comp.Accelerator, Command)                    
+                #    parent.bind(comp.Accelerator, Command)
                 listbox=tk.Listbox(parent, height=comp.Height, width=comp.Width,listvariable=comp.TKVar,font=comp.Font,relief=comp.relief, exportselection = 0, selectmode=tk.SINGLE)
                 if geo_manager == "place":
                     listbox.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
@@ -484,8 +591,62 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
                     listbox.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
                 comp.TKWidget=listbox
                 comp.Selection = component_dict.get("Selection",None)
+                comp.Scrollbar = component_dict.get("Scrollbar",None)
                 if comp.ControlTipText!="":
                     ToolTip(listbox, text=comp.ControlTipText)
+                if comp.Command != None:
+                    comp.TKWidget.bind('<<ListboxSelect>>', comp.Command)
+                comp.TKWidget.bind('<Up>', listbox_on_arrow_key)
+                comp.TKWidget.bind('<Down>', listbox_on_arrow_key)
+                
+                if comp.Scrollbar != None:
+                    comp.TKWidget_scrollbar = tk.Scrollbar(parent, orient=tk.VERTICAL, command=listbox.yview)
+                    listbox.config(yscrollcommand=comp.TKWidget_scrollbar.set)
+                    if geo_manager == "place":
+                        comp.TKWidget_scrollbar.place(x=comp.Left+comp.Width, y=comp.Top,width=20,height=comp.Height)
+                    else:
+                        comp.TKWidget_scrollbar.grid(column=comp.Left+1, row=comp.Top, sticky="ns", padx=0, pady=0)
+
+                             
+            #****************************************************
+            #* ChooseColor
+            #****************************************************
+            elif comp.Type == "ColorBox":
+                if comp.Accelerator!="":
+                    if window:
+                        window.bind(comp.Accelerator, comp.Command)
+                
+                button=tk.Button(parent, text=comp.Caption,command=lambda: choosecolor(button),width=comp.Width,height=comp.Height,wraplength = comp.Wraplength, fg=comp.Caption, font=comp.Font)
+                if geo_manager == "place":
+                    button.place(x=comp.Left, y=comp.Top,width=comp.Width,height=comp.Height)
+                else:
+                    button.grid(column=comp.Left, row=comp.Top, sticky=comp.grid_sticky, padx=comp.grid_padx, pady=comp.grid_pady)                    
+                comp.TKWidget=button
+                button.Color = comp.Caption
+                setattr(dlg,comp.Name,comp)
+                if comp.ControlTipText!="":
+                    ToolTip(button, text=comp.ControlTipText)
+                pass                
+                
+                """
+                self.colorlabel = tk.Button(parent_frame, text=param_title, width=PARAMLABELWIDTH, height=2, wraplength=PARAMLABELWRAPL,relief="raised", background=param_default,borderwidth=1,command=self.choosecolor,font=self.fontbutton)
+                #label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,bg=param_default,borderwidth=1)
+                self.colorlabel.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                self.ToolTip(self.colorlabel, text=param_tooltip)
+                
+                paramvar = tk.Entry(parent_frame,width=PARAMENTRWIDTH,font=self.fontentry)
+                paramvar.delete(0, 'end')
+                paramvar.insert(0, param_default)
+                paramvar.grid(row=row+valuerow, column=column+valuecolumn, sticky=STICKY, padx=2, pady=2)
+                paramvar.key = paramkey
+            
+                self.set_macroparam_var(macro, paramkey, paramvar)
+    
+                column = column + deltacolumn
+                if column > maxcolumns:
+                    column = 0
+                        row=row+deltarow
+                """
             #****************************************************
             #* Frame
             #****************************************************                   
@@ -512,58 +673,79 @@ def generate_controls(comp_list,parent,dlg,persistent_controls={},format_dict={}
             else:
                 pass
             comp.TKWidget.bind("<Tab>", comp.focus_next_widget)
+
+def listbox_on_arrow_key(event):
+    listbox = event.widget
+    current = listbox.curselection()
+    if current:
+        index = current[0]
+        if event.keysym == 'Up' and index > 0:
+            index -= 1
+        elif event.keysym == 'Down' and index < listbox.size() - 1:
+            index += 1
+        listbox.selection_clear(0, tk.END)
+        listbox.selection_set(index)
+        listbox.activate(index)
+        listbox.event_generate('<<ListboxSelect>>')
+
             
-def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}, defaultfont=("Calibri",10), orig_window_height=None, orig_window_width=None):
+def generate_form(form_dict,parent,dlg=None,modal=True, jump_table={}, defaultfont=("Calibri",10), orig_window_height=None, orig_window_width=None, childwindow=False):
     #create main window
     global scrolledcontainer
     dlg.Controls=[]
     try:
-        
         userform_dict = form_dict.get("UserForm",None)
         if userform_dict:
             userform_modal = userform_dict.get("Modal",modal)
+            if not childwindow:
+                if orig_window_height == None:
+                    orig_window_height = int(userform_dict.get("Height",500)*guifactor)
+                if orig_window_width == None:
+                    orig_window_width = int(userform_dict.get("Width",600)*guifactor)
+                
+                winfo_x = X02.global_controller.winfo_x()
+                winfo_y = X02.global_controller.winfo_y()
+                
+                screen_width = X02.global_controller.winfo_width()
+                screen_height = X02.global_controller.winfo_height()
+                
+                if screen_height < orig_window_height:
+                    window_height = screen_height
+                else:
+                    window_height = orig_window_height
+                if screen_width < orig_window_width:
+                    window_width = screen_width
+                else:
+                    window_width = orig_window_width
+                
+                x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
+                y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
             
-            if orig_window_height == None:
-                orig_window_height = int(userform_dict.get("Height",500)*guifactor)
-            if orig_window_width == None:
-                orig_window_width = int(userform_dict.get("Width",600)*guifactor)
-            
-            winfo_x = X02.global_controller.winfo_x()
-            winfo_y = X02.global_controller.winfo_y()
-            
-            screen_width = X02.global_controller.winfo_width()
-            screen_height = X02.global_controller.winfo_height()
-            
-            if screen_height < orig_window_height:
-                window_height = screen_height
+                top = tk.Toplevel(parent)
+                top.transient(parent)
+                if userform_modal:
+                    top.grab_set()
+                top.resizable(True, True)    
+                top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
+                #self.top.geometry("+{}+{}".format(x_cordinate, y_cordinate))
+                
+                window_title = userform_dict.get("Caption","Title")
+                
+                top.title(translate_text(window_title))
             else:
-                window_height = orig_window_height
-            if screen_width < orig_window_width:
-                window_width = screen_width
-            else:
-                window_width = orig_window_width
-            
-            x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
-            y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
-        
-            top = tk.Toplevel(parent)
-            top.transient(parent)
-            if userform_modal:
-                top.grab_set()
-            top.resizable(True, True)    
-            top.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
-            #self.top.geometry("+{}+{}".format(x_cordinate, y_cordinate))
-            
-            window_title = userform_dict.get("Caption","Title")
-            
-            top.title(translate_text(window_title))
-            
-            scrolledcontainer = ScrolledFrame(top)
+                if orig_window_height == None:
+                    orig_window_height = int(userform_dict.get("Height",500)*guifactor)
+                if orig_window_width == None:
+                    orig_window_width = int(userform_dict.get("Width",600)*guifactor)                
+                top = parent
+            top.grid_rowconfigure(0,weight=1)
+            top.grid_columnconfigure(0, weight=1)                
+
+            scrolledcontainer = ScrolledFrame(top)            
             scrolledcontainer.grid(row=0,column=0, rowspan=1,columnspan=2, sticky="nesw")
             scrolledcontainer.grid_rowconfigure(0, weight=1)
             scrolledcontainer.grid_columnconfigure(0, weight=1)        
-            top.grid_rowconfigure(0,weight=1)
-            top.grid_columnconfigure(0, weight=1)
+            
             
             components = userform_dict.get("Components",None)
             geo_manager = userform_dict.get("Geo_Manager","place")

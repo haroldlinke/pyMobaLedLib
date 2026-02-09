@@ -34,7 +34,7 @@ SETLOCAL EnableDelayedExpansion
 set home=%~d0%~p0
 
 call :short espbase "%USERPROFILE%\AppData\Local\Arduino15\packages\esp32\"
-call :short aTemp "%USERPROFILE%\AppData\Local\Temp\pyMobaLedLib_build\ESP32"
+call :short aTemp "%USERPROFILE%\AppData\Local\Temp\MobaLedLib_build\ESP32"
 call :short aCache "%USERPROFILE%\AppData\Local\Temp\MobaLedLib_cache\ESP32"
 if not exist "%aTemp%"  md "%aTemp%"
 if not exist "%aCache%" md "%aCache%"

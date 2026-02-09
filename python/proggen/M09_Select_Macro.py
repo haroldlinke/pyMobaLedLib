@@ -83,6 +83,7 @@ import proggen.Userform_Other as D07
 import proggen.Userform_LEDAnim as D14
 import proggen.Userform_ServoAnim as D15
 import proggen.Userform_LEDColorAnim as D16
+import proggen.Userform_Multiple_LEDColorAnim as D17
 import pattgen.M17_Import_a_Dec_Macro as PA17
 
 import mlpyproggen.Prog_Generator as PG
@@ -169,7 +170,7 @@ def __Test_Special_ConstrWarnLight():
     Debug.Print(Res + 'LEDs:' + LEDs)
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Macro - ByVal 
-def __Proc_General_With_Other_Par(Macro, Description, LedChannels, Show_Channel, LED_Channel, Def_Channel):
+def __Proc_General_With_Other_Par(Macro, Description, LedChannels, Show_Channel, LED_Channel, Def_Channel, CV_Adress=None, CV_used=None):
     _ret = ""
     Parts = Variant()
 
@@ -184,10 +185,10 @@ def __Proc_General_With_Other_Par(Macro, Description, LedChannels, Show_Channel,
     # IF statement added by Misha 18-4-2020                                   ' 14.06.20: Added from Mishas version
     if Left(Macro, Len('Multiplexer')) == 'Multiplexer':
         UserForm_Create_Multiplexer = D07.UserForm_Other() #*HL dummy - multiplexer not implemented
-        UserForm_Create_Multiplexer.Show_UserForm_Other(Parts(1), Parts(0), Description, LedChannels)
+        UserForm_Create_Multiplexer.Show_UserForm_Other(Parts(1), Parts(0), Description, LedChannels,LED_Channel) # Added LED_Channel by Misha 30-01-2025)
     else:
         UserForm_Other = D07.UserForm_Other()
-        UserForm_Other.Show_UserForm_Other(Parts(1), Parts(0), Description, LedChannels, Show_Channel, LED_Channel, Def_Channel)
+        UserForm_Other.Show_UserForm_Other(Parts(1), Parts(0), Description, LedChannels, Show_Channel, LED_Channel, Def_Channel, CV_Adress=CV_Adress, CV_used=CV_used)
     # End IF statement added by Misha 18-4-2020
     _ret = UserForm_Other.UserForm_Res
     return _ret
@@ -227,7 +228,7 @@ def __Cx_to_LED_Channel(Cx, LedChannels):
     return _ret
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Macro - ByVal 
-def __Proc_General(LEDs, Macro, Description, LedChannels, LED_Channel, Def_Channel):
+def __Proc_General(LEDs, Macro, Description, LedChannels, LED_Channel, Def_Channel, CV_Adress=None, CV_used=None):
     _ret = ""
     Parts = Variant()
 
@@ -271,7 +272,7 @@ def __Proc_General(LEDs, Macro, Description, LedChannels, LED_Channel, Def_Chann
                 Show_Channel = M10.CHAN_TYPE_LED
         Res = Res + ')'
         if Other > 0 or Show_Channel != M10.CHAN_TYPE_NONE:
-            Res = __Proc_General_With_Other_Par(Res, Description, LedChannels, Show_Channel, LED_Channel, Def_Channel)
+            Res = __Proc_General_With_Other_Par(Res, Description, LedChannels, Show_Channel, LED_Channel, Def_Channel, CV_Adress=CV_Adress, CV_used=CV_used)
             if Res == '' or Res =="<Abort>":
                 return _ret
             if Parts(0) == 'ConstrWarnLight':
@@ -369,9 +370,9 @@ def __Get_Number_of_used_InCh_in_Par(Statement, Mode):
         Statement = Trim(M30.DelLast(Statement))
     _select3 = Mode
     if (_select3 == 'Logic'):
-        Arglist = M30.SplitEx(Statement, True, 'OR', 'AND', 'NOT')
+        Arglist = M30.SplitEx(Statement, True, False, 'OR', 'AND', 'NOT')
     elif (_select3 == 'Comma'):
-        Arglist = M30.SplitEx(Statement, True, ',')
+        Arglist = M30.SplitEx(Statement, True, False, ',')
     else:
         P01.MsgBox('Internal Error: Unknown Mode \'' + Mode + '\' in \'Get_Number_of_used_InCh_in_Par()\'', vbCritical, 'Internal Error')
         return _ret
@@ -461,11 +462,11 @@ def _call_patternconfigurator(ConfigLine, Row):
     
     #PG.global_controller.showFramebyName("PatternConfiguratorPage")
     ConfigLine = cleanConfigLine(ConfigLine)
-        
-    PA.ThisWorkbook.Activate()
-    P01.Sheets("PG-Temp").Select()
-    PA17.Import_From_Prog_Gen_Callback(True, "", ConfigLine, Row, overwrite_sheet=True)
-    PG.global_controller.showFramebyName("PatternConfiguratorPage")
+    if PA.ThisWorkbook != None:
+        PA.ThisWorkbook.Activate()
+        P01.Sheets("PG-Temp").Select()
+        PA17.Import_From_Prog_Gen_Callback(True, "", ConfigLine, Row, overwrite_sheet=True)
+        PG.global_controller.showFramebyName("PatternConfiguratorPage")
 
 def __SelectMacros_Sub():
     _ret = False
@@ -497,7 +498,7 @@ def __SelectMacros_Sub():
         # Hab noch keine Idee wie ich das beheben kann. Die folgenden Zeilen helfen nicht
         #  Sleep 1500 ' Wait until the mouse is released
         #  mouse_event MOUSEEVENTF_LEFTUP, 0, 0, 0, 0
-        #  cancel = True in Proc_DoubleCkick()
+        #  cancel = True in Proc_DoubleClick()
         pass
         
         #*HL Sort_for_List_based_Makro()
@@ -514,6 +515,8 @@ def __SelectMacros_Sub():
         LedChannels = P01.val(_with2.Cells(SelRow, M02.SM_SngLEDCOL))
         Def_Channel = P01.val(_with2.Cells(SelRow, M02.SM_DefCh_COL))
         Act_Channel = P01.val(P01.Cells(P01.ActiveCell().Row, M25.LED_Cha_Col))
+        CV_Adress = P01.val(P01.Cells(P01.ActiveCell().Row, M25.Config__Col+6))
+        CV_used = P01.val(P01.Cells(P01.ActiveCell().Row, M25.Config__Col+7))
         Description = Replace(Get_Language_Text(SelRow, M02.SM_DetailCOL, ActLanguage), '|', vbLf)
         if Description == '':
             Description = Get_Language_Text(SelRow, M02.SM_ShrtD_COL, ActLanguage)
@@ -521,11 +524,11 @@ def __SelectMacros_Sub():
         _select4 = DlgTyp
         if (_select4 == 'House'):
             UserForm_House = D06.UserForm_House(MacroName=MacroName)
-            UserForm_House.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
+            UserForm_House.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel, CV_Adress=CV_Adress, CV_used=CV_used)
             Res = UserForm_House.Userform_Res
         elif (_select4 == 'ColTab'):
             #Calculate
-            M60.Open_MobaLedCheckColors_and_Insert_Set_ColTab_Macro()
+            M60.Open_MobaLedCheckColors_and_Insert_Set_ColTab_Macro(libmacro_row=SelRow)
             return _ret
         elif (_select4 in ("EX.Constructor", "EX.Macro")):   # 31.01.22: Juergen add extensions
             Res = __Proc_General(LEDs, Macro, Description, LedChannels, Act_Channel, Def_Channel) # Empty typ
@@ -549,17 +552,31 @@ def __SelectMacros_Sub():
                 UserForm_LEDColorAnim = D16.UserForm_LEDColorAnim(PG.global_controller)
                 UserForm_LEDColorAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
                 Res = UserForm_LEDColorAnim.Userform_Res
+            elif MacroName == "MultiLEDColorAnim":
+                UserForm_Multiple_LEDColorAnim = D17.UserForm_Multiple_LEDColorAnim(PG.global_controller)
+                UserForm_Multiple_LEDColorAnim.Show_With_Existing_Data(MacroName, P01.Cells(P01.ActiveCell().Row, M25.Config__Col), Act_Channel, Def_Channel)
+                Res = UserForm_Multiple_LEDColorAnim.Userform_Res            
         elif (_select4 == ''):
-            Res = __Proc_General(LEDs, Macro, Description, LedChannels, Act_Channel, Def_Channel)
+            Res = __Proc_General(LEDs, Macro, Description, LedChannels, Act_Channel, Def_Channel, CV_Adress=CV_Adress, CV_used=CV_used)
         else:
             P01.MsgBox('Unknown Dialog Typ \'' + DlgTyp + '\'', vbCritical, 'Program Error: SelectMacros_Sub')
+            if Left(DlgTyp, 9) == "EX.Macro.": #                                      ' 21.11.25: Juergen support of Macro only extensions
+                Res = __Proc_General(LEDs, Macro, Description, LedChannels, Act_Channel, Def_Channel) #' Empty typ
+            else:
+                P01.MsgBox("Unknown Dialog Typ " + DlgTyp + "'", vbCritical, "Program Error: SelectMacros_Sub")
+                                   
+            
         if Res != '':
             # If Left(Res, Len("$#define")) = "$#define" Then Res = Replace(Replace(Res, "(", "   "), ")", "") ' Remove the brackets     ' 14.01.20: ' 04.11.21: Commented because the bracets are necessary to parse the argument if the macro should be changed
             Parts = Split(Res, '$')
             DstRow = P01.ActiveCell().Row
             LEDs = Parts(0)
             if UBound(Parts) >= 2:
-                LED_Channel = Parts(2)
+                if Left(Parts(2), Len("Multiplexer")) == "Multiplexer": #        'Changed by Misha 30-01-2025
+                    LED_Channel = Parts(1)                              #        'Changed by Misha 30-01-2025
+                    Parts[1] = Parts(2)                                 #        'Changed by Misha 30-01-2025
+                else:                
+                    LED_Channel = Parts(2)
             else:
                 LED_Channel = ''
             if M20.Check_IsSingleChannelCmd(LEDs):
@@ -626,7 +643,9 @@ def __SelectMacros_Sub():
             # End Changed by Misha 18-4-2020
             P01.CellDict[DstRow, M02.Enable_Col] = ChrW(M02.Hook_CHAR)
             M20.Update_TestButtons(DstRow)
+            
             M20.Update_Start_LedNr()
+            
             _ret = True
     if Res != '':
         NextRow = P01.ActiveCell().Row + 1

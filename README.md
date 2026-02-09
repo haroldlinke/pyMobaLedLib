@@ -19,11 +19,10 @@ Requirements:
 7. start the Python file: pyMobaLedLib.py with the command python3 pyMobaLedLib.py or python Home/Arduino/pyMobaLedLib/python/pyMobaLedLib.py
 
 # Installation for Windows
-1. Download the release package for windows.
-2. The programm can be installed in any location. It only needs write access to this folder and the folder above.
-3. I use the ARDUINO folder as an example here. Locate the ARDUINO folder - normally it should be Dokumente\ARDUINO.
-4. Create a new folder pyMobaLedLib. Copy the downloaded package into this folder and unzip the package.
-5. pyMobaLedLib.bat starts the program pyMoabLedLib. With right click "Send to Desktop" create an icon on the desktop.
+1. Download the release package for windows. 
+2. Locate the ARDUINO folder - normally it should be Dokumente\ARDUINO. This folder contains the MobaLedLib folder.
+3. Create a new folder pyMobaLedLib. Copy the downloaded package into this folder and unzip the package.
+4. pyMobaLedLib.bat starts the program pyMoabLedLib. With right click "Send to Desktop" create an icon on the desktop.
 
 # Attention LINUX and Mac Users: 
 It is not possible to detect the location of the ARDUINO IDE executable automatically, as it can be installed in any directory
@@ -42,94 +41,8 @@ The VBA Code of the PatternGenerator was translated by an enhanced version of th
 - Pattern Configurator: Icons and other objects on the page may to stay at the corect positon. To refresh select the Menu-Command: Tabelle->Refresh Icons
 - ARDUINO connected to USB is not recognized correctly in LINUX and MAC OS automatically. Please select the correct type in the Options Menu and select the correct USB-Port manually.
   
-# History of Change
-5.3.1C - 29-05.2024
-- libraries can now be updated via the library page and via options -> update -> status of libraries
-- problem with esptools_py solved
-  - replaced "\" with "/" in libname
-  - for Linux and Mac check for esptool.py instead of esptool.exe
-  - check for esptool_py only for ESP boards
-- support for ESP32 boards for Linux and Mac
-- ServoAnim - Individual timepoints: changes of Ein-/Aus-durations update all timepoints proportionally
-- use of On/Off switch instead of 2 Buttons (Red/Green) (Undo of change in V5.3.1B - no improvement, more issues)
 
-5.3.1B - 22.05.2024
-- ProgramGenerator: New pages generation is possible
-- Servo Animation improvements:
-  - use of 2 Buttons (Red/Green) instead of On/Off switch
-  - new: timestep individuell - allows to move the points in time right and left by mouse
-  - active point can be moved by cursor-keys
-  - zoom into graph with Ctrl-Mousewheel (and crtl-up/down-key - when a point is active)
-  - drag of canvas with shift-left-mousebutton or shift cursor-keys
-
-5.3.1A - 17.05.2024
-correction:
-- Linux/Mac - Upload to ARDUINO was not working
-- Macro Flash - incorrect error message that input value is too large
-
-5.3.1- 17.05.2024
-correction:
-- crash when using mousewheel in macro tree and some other forms
-new
-- servoanimation: servo follows values of Afnagswert und Endwert
-- first part of support for translation into other languages added (not final yet)
-
-5.3.0J - 15.05.2024
-new:
-- check for new Version on Github
-correction :
-- error: crash when selecting on a Cell outside the available rows
-
-5.3.0I - 14.05.2024
-new:
-- last tab saved and will be opened at reopening
-correction :
-- error: testbutton  inactive after after Send-to-ARDUINO
-
-5.3.0H - 13.05.2024
-correction
-- error when reading individuell servo animation data for single servos.
-- error in DCC button handling after reconnection after Send_to_ARDUINO
-- error in saving workbook when closing workbook. Use filename of last load instead of standard filename.
-
-5.3.0G - 12.05.2024
-correction
-- crash when deleting rows and no row selected
-
-5.3.0F - 12.05.2024
-correction
-- delete LEDs_AutoProg before copying new version
-
-5.3.0D - 11.5.2024
-correction
-- save and load PGF file errors
-
-5.3.0C - 11.5.2024
-corrected
-- update of pyMLL program for Farbtest call from Excel
-
-5.3.0B - 11.05.2024
-Improved:
-- LED Color Animation
-Corrected:
-- view on small monitors, added scrollbars
-- about message open failed
-- logfile open is blocking the program
-
-5.3.0 - 08.05.2024
-- update to MLL3.3.2B
-- corrected issues in servo and led animation
-- reorganisation of windows version
-
-5.2.6.001 - 27.04.2024
-- corrected ESP32 compatibility for Win
-- program generator and patter configurator pages are active as default
-- better error handling when images are missing or wrong spelled
-
-5.2.5.001 - 23.4.2024
-- crash when installed in a complete new environment when updating libraries
-- improved error reporting
-
+History of Change
 5.2.4.001 - 21.4.2024
 - restructuring of event handling
 - corrected: Config page was inoperable, because named-ranges pointed to the wrong table entries

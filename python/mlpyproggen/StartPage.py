@@ -69,6 +69,8 @@ import os
 #import queue
 import time
 import logging
+logger=logging.getLogger(__name__)
+
 import urllib
 #import concurrent.futures
 #import random
@@ -147,7 +149,7 @@ class StartPage(tk.Frame):
                 text1.insert(tk.END,'\n')
                 text1.image_create(tk.END, image=self.photo)
         except BaseException as e:
-            logging.debug("Startpage: Image "+self.photofilepath+" not found")
+            logger.debug("Startpage: Image "+self.photofilepath+" not found")
             self.photo = None
         
         content = macrodata.get("Content",{})
@@ -209,13 +211,13 @@ class StartPage(tk.Frame):
         pass
         
     def tabselected(self):
-        logging.debug("Tabselected: %s",self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
         #self.controller.currentTabClass = self.tabClassName
-        logging.info(self.tabname)
+        logger.info(self.tabname)
         pass
     
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
         pass
     
     def TabChanged(self,_event=None):
@@ -240,7 +242,7 @@ class StartPage(tk.Frame):
         pass
     
     def dummy(self,event):
-        logging.info("dummy")
+        logger.info("dummy")
 
     def send_command_to_ARDUINO(self,command):
         pass

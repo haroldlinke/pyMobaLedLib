@@ -61,6 +61,7 @@ import proggen.M02a_Public as M02a
 import proggen.M06_Write_Header_LED2Var as M06LED
 import proggen.M06_Write_Header_Sound as M06Sound
 import proggen.M06_Write_Header_SW as M06SW
+import proggen.M06_Write_MLLConfig as M06cfg
 #import proggen.M07_COM_Port as M07
 import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
@@ -86,7 +87,13 @@ from ExcelAPI.XLC_Excel_Consts import *
 import ExcelAPI.XLWF_Worksheetfunction as XLWF
 
 import tkinter as tk
-
+import urllib.request
+try:
+    import requests
+    requests_imported = True
+except:
+    requests_imported = False
+    
 """ Todo:
 
  - Wichtig: Die Schalter müssen auch in den Inputs der Macros erkannt werden sonst werden sie nur dann definiert wenn
@@ -387,7 +394,7 @@ def Activate_DayAndNightTimer(Cmd):
     #--------------------------------------------------------
     args = Split(Trim(Replace(Replace(Cmd, 'DayAndNightTimer(', ''), ')', '')), ',')
     Period = P01.val(Trim(args(1)))
-    DayAndNightTimer = vbCrLf + '#define DayAndNightTimer_Period    ' + Round(Period * 60 * 1000 / 512, 0) + vbCrLf
+    DayAndNightTimer = vbCrLf + '#define DayAndNightTimer_Period    ' + str(Round(Period * 60 * 1000 / 512, 0)) + vbCrLf
     # 21.12.22 replace vbcr with vbcrlf
     if Trim(args(0)) != 'SI_1':
         DayAndNightTimer = DayAndNightTimer + '#define DayAndNightTimer_InCh      ' + Trim(args(0)) + vbCrLf
@@ -421,7 +428,7 @@ def Do_Replace_Sym_Pin_Name(Cmd, PinStr):
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Cmd - ByRef 
 #----------------------------------------------------
-def Proc_Special_Functions(Cmd, LEDNr, Channel):
+def Proc_Special_Functions(Row, Cmd, LEDNr, Channel):
 #----------------------------------------------------
     _fn_return_value = False
     Replace_Sym_Pin_Name = False
@@ -451,7 +458,7 @@ def Proc_Special_Functions(Cmd, LEDNr, Channel):
             return _fn_return_value, Cmd
     if InStr(Cmd, M02.SF_SERIAL_SOUND_PIN) > 0:
         # 08.10.21: Juergen
-        fret, Cmd = M06Sound.Add_SoundPin_Entry(Cmd, LEDNr)
+        fret, Cmd = M06Sound.Add_SoundPin_Entry(Row, Cmd, LEDNr)
         if not fret:
             return _fn_return_value, Cmd
     _fn_return_value = True
@@ -529,7 +536,7 @@ def Generate_Config_Line(LEDNr, Channel_or_define, r, Config_Col, Addr):
             Inc_LocInChNr = True
             # 18.11.19:
             
-        fret,Cmd = Proc_Special_Functions(Cmd, LEDNr, Channel_or_define) #*HL
+        fret,Cmd = Proc_Special_Functions(r, Cmd, LEDNr, Channel_or_define) #*HL
         if fret == False:
             _fn_return_value = '#ERROR#'
             P01.Cells(r, M25.Config__Col).Select()
@@ -704,6 +711,7 @@ def Create_Header_Entry(r, AddrStr, IsRM, LEDOffset, LEDsInUse, MaxLEDNrInSheet)
     # - "InChTxt":      defines like "#defines INCH_DCC_1_ONOFF " for expert user
     # Calculate "Channel" = the next input channel number
     Comment = Get_Description(r)
+    Excel_row = r
     InCnt = P01.val(P01.Cells(r, M25.InCnt___Col))
     # 08.10.21: avoid error is cell is empty
     if IsNumeric(AddrStr):
@@ -868,6 +876,7 @@ def Create_Header_Entry(r, AddrStr, IsRM, LEDOffset, LEDsInUse, MaxLEDNrInSheet)
         if LEDNr > MaxLEDNrInSheet(LEDs_Channel):
             LEDsInUse[LEDs_Channel] = LEDsInUse(LEDs_Channel) +  ( LEDNr - Start_LED_Channel(LEDs_Channel) - MaxLEDNrInSheet(LEDs_Channel) )  + LEDCnt - 1
             MaxLEDNrInSheet[LEDs_Channel] = LEDNr - Start_LED_Channel(LEDs_Channel) + LEDCnt - 1
+        M06cfg.set_config_structure_orig(LEDNr, Res , Excel_row)
     return _fn_return_value
 
 #--------------------------------------------------------------------------------------------
@@ -1135,15 +1144,22 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
     # 20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
     #-----------------------------
     # Is called if the "Z. Arduino schicken" button is pressed
-    P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt"))
+    P01.set_statusmessage(M09.Get_Language_Str("Analyse der Programmzeilen"))
     _fn_return_value = False
      # 20.12.21: Jürgen
     M30.Check_Version()
     # 21.11.21: Juergen
     M20.Update_Start_LedNr()
     # 11.10.20: To prevent problems if the calculation was not called before for some reasons
-    M30.Clear_Platform_Parameter_Cache()
-    # 14.10.2021: Juergen force reload of Platofmr Paramters every time a new header is created
+    M30.Clear_Platform_Parameter_Cache()  # 14.10.2021: Juergen force reload of Platofmr Paramters every time a new header is created
+    
+    ##HLI needs to be added as Python code
+    #if Not Get_Current_Platform_Bool("Supports" & Page_ID) Then                               ' 18.05.23: check if Protocol is supported
+    #    MsgBox Replace(Get_Language_Str("Das Protokoll #1# wird auf dieser Plattform nicht unterstützt."), "#1#", Page_ID), vbOK, Get_Language_Str("Steuerung über ") & Page_ID
+    #    Exit Function
+    #  End If    
+    
+    
     #removed by HaLi 9.12.2021
     #Ctrl_Pressed = GetAsyncKeyState(VK_CONTROL) != 0
     #if Ctrl_Pressed:
@@ -1165,7 +1181,7 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
     if not SimulatorOnly:
         SimulatorOnly = M28.Get_Num_Config_Var_Range("SimAutostart", 0, 3, 0) != 3 and shift_pressed
        
-    if SimulatorOnly and CreateFilesOnly == False and M02a.Get_BoardTyp() == 'AM328':
+    if SimulatorOnly and CreateFilesOnly == False and M02a.Get_BoardTyp() == M02.HT_AM328:
         Debug.Print(" go to UploadToSimulator")
         _fn_return_value = M39.UploadToSimulator(True)
         return _fn_return_value
@@ -1177,8 +1193,7 @@ def Create_HeaderFile(CreateFilesOnly = False): #20.12.21: Jürgen add CreateFil
         return _fn_return_value
     if M37.CheckArduinoHomeDir() == False:
         return _fn_return_value
-    # 02.12.21: Juergen see forum post #7085
-    _fn_return_value = Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly)
+    _fn_return_value = Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly, LEDsInUse=LEDs_per_Channel)
     # 20.12.21: Jürgen return result of called function
     return _fn_return_value
 
@@ -1217,6 +1232,9 @@ def ProcessSheet(SheetName, firstSheet, addressOffset, LEDsOffset, LEDsInUse):
         return _fn_return_value
     PG.ThisWorkbook.Worksheets(SheetName).Activate()
     M25.Make_sure_that_Col_Variables_match()
+    if M38.Init_HeaderFile_Generation_Extension(firstSheet) == False:
+        return _fn_return_value
+    # 31.01.22: Juergen     
     if M06SW.Init_HeaderFile_Generation_SW(firstSheet) == False:
         return _fn_return_value
     if M06LED.Init_HeaderFile_Generation_LED2Var(firstSheet) == False:
@@ -1225,10 +1243,9 @@ def ProcessSheet(SheetName, firstSheet, addressOffset, LEDsOffset, LEDsInUse):
     if M06Sound.Init_HeaderFile_Generation_Sound(firstSheet) == False:
         return _fn_return_value
     # 08.10.21: Juergen
-    if M38.Init_HeaderFile_Generation_Extension(firstSheet) == False:
-        return _fn_return_value
-    # 31.01.22: Juergen    
+       
     sx = M25.Page_ID == 'Selectrix'
+    M06cfg.init_config_structure_orig()
     for r in vbForRange(M02.FirstDat_Row, M30.LastUsedRow()): #*HL
         if not ProcessLine(r, sx, addressOffset, LEDsOffset, LEDsInUse, MaxLEDNrInSheet):
             return _fn_return_value
@@ -1272,7 +1289,7 @@ def ProcessLine(r, sx, addressOffset, LEDsOffset, LEDsInUse, MaxLEDNrInSheet):
     Offset = 0
     _fn_return_value = False        
     if not P01.Rows(r).EntireRow.Hidden and P01.Cells(r, M02.Enable_Col) != '':
-        P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. 2nd round - Macrozeile: "+str(r)), monitor_message=True)
+        P01.set_statusmessage(M09.Get_Language_Str("Programmzeilen werden verarbeitet. 2nd round - Macrozeile: "+str(r)), monitor_message=True)
         
         Cmd = Trim(P01.Cells(r, M25.Config__Col))
         if IsIncludeMacro(Cmd):
@@ -1378,7 +1395,7 @@ def Store_ValuesTxt_Used():
     _fn_return_value = ( Store_ValuesTxt != '' )
     return _fn_return_value
 
-def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
+def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False, LEDsInUse=None): #20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
     global ErrorText, Ext_AddrTxt, Store_ValuesTxt, InChTxt, LocInChNr, Channel, ConfigTxt, LEDs_per_ChannelList, Start_Values
     if PG.global_controller.ARDUINOTest:
         answer = tk.messagebox.askyesno ('ARDUINOTest','Schreiben der Headerdatei wird gestartet',default='yes')
@@ -1393,6 +1410,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     Nr = Long()
 
     MaxLed = Long()
+    MaxInput = Long()
 
     Name = String()
 
@@ -1412,6 +1430,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     
     ErrorText=""
     MaxLed = M30.Get_Current_Platform_Int('MaxLed')
+    MaxInput = M30.Get_Current_Platform_Int("MaxInput")            #26.11.25: Juergen, max Inputs depends on board type
     for Nr in vbForRange(0, M02.LED_CHANNELS - 1):
         NumLeds = NumLeds + P01.val(P01.Cells(M02.SH_VARS_ROW, M20.Get_LED_Nr_Column(Nr)))
         # 26.04.20: Old: NumLeds = Cells(SH_VARS_ROW, LED_Nr__Col)
@@ -1534,7 +1553,7 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
         # 04.10.20: Added: Page_ID = "CAN"
         if M28.Get_Bool_Config_Var('USE_SPI_Communication'):
             VBFiles.writeText(fp, '#define USE_SPI_COM                    // Use the SPI bus for the communication in addition to the RS232 if J13 is closed. If no DCC commands are configured the A1 pin of the DCC Arduino is disabled', '\n')
-        if M02a.Get_BoardTyp() == "AM328": # ' 23.12.24 Jürgen: A3 is only in use with Nano board
+        if M02a.Get_BoardTyp() == M02.HT_AM328: # ' 23.12.24 Jürgen: A3 is only in use with Nano board
             if M06SW.PIN_A3_Is_Used():
                 VBFiles.writeText(fp, '#define LED_HEARTBEAT_PIN -1           // Disable the heartbeat pin because it\'s used for the SwitchB or SwitchC', '\n')
             else:
@@ -1712,8 +1731,9 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     VBFiles.writeText(fp, '#endif // __LEDS_AUTOPROG_H__', '\n')
     VBFiles.closeFile(fp)
     # VB2PY (UntranslatedCode) On Error GoTo 0
-    if Channel - 1 > 250:
-        P01.MsgBox(M09.Get_Language_Str('Fehler: Die Anzahl der verwendeten Eingangskanäle ist zu groß!' + vbCr + 'Es sind maximal 250 verfügbar. Die Konfiguration enthält aber ') + str(Channel - 1) + '.' + vbCr + vbCr + M09.Get_Language_Str('Die Eingangskanäle werden zum einlesen von DCC, LNet, Selectrix und CAN Daten benutzt. ' + vbCr + 'Außerdem werden sie als interne Zwischenspeicher benötigt.'), vbCritical, M09.Get_Language_Str('Anzahl der InCh Variablen überschritten'))
+    if Channel - 1 > MaxInput:
+        #P01.MsgBox(M09.Get_Language_Str('Fehler: Die Anzahl der verwendeten Eingangskanäle ist zu groß!' + vbCr + 'Es sind maximal 250 verfügbar. Die Konfiguration enthält aber ') + str(Channel - 1) + '.' + vbCr + vbCr + M09.Get_Language_Str('Die Eingangskanäle werden zum einlesen von DCC, LNet, Selectrix und CAN Daten benutzt. ' + vbCr + 'Außerdem werden sie als interne Zwischenspeicher benötigt.'), vbCritical, M09.Get_Language_Str('Anzahl der InCh Variablen überschritten'))
+        P01.MsgBox(Replace(M09.Get_Language_Str("Fehler: Die Anzahl der verwendeten Eingangskanäle ist zu groß!" + vbCr + "Es sind maximal #1# verfügbar. Die Konfiguration enthält aber "), "#1#", MaxInput)) + Channel + "." + vbCr + vbCr + M09.Get_Language_Str("Die Eingangskanäle werden zum einlesen von DCC, LNet, Selectrix und CAN Daten benutzt. " + vbCr + "Außerdem werden sie als interne Zwischenspeicher benötigt."), vbCritical, M09.Get_Language_Str("Anzahl der InCh Variablen überschritten")        
         M30.EndProg()
         
     if ConfigTxt == "": #*HL and M38.ExtensionsActiveCount == 0:                       # 17.04.22: Juergen improve empty configuration warning
@@ -1725,13 +1745,20 @@ def Write_Header_File_and_Upload_to_Arduino(CreateFilesOnly=False): #20.12.21: J
     #*HL if CreateFilesOnly == False and UserForm_Header_Created.DontShowAgain == False:
     #*HL    UserForm_Header_Created.FileName = Name
     #*HL    UserForm_Header_Created.Show()
-    M08.Compile_and_Upload_LED_Prog_to_Arduino(CreateFilesOnly)
+    
+    # 02.12.21: Juergen see forum post #7085
+    comport = P01.Cells(M02.SH_VARS_ROW, M25.COMPort_COL).Value
+    
+    if False: #type(comport) == str and InStr(comport, 'IP:') > 0:
+        M06cfg.create_MLLconfig_and_upload_to_PICO(P01.Cells(M02.SH_VARS_ROW, M25.COMPort_COL), ConfigTxt, LEDsInUse)
+    else:    
+        M08.Compile_and_Upload_LED_Prog_to_Arduino(CreateFilesOnly, LEDsInUse=LEDsInUse)
     M20.ResetTestButtons(M06SW.Store_Status_Enabled)
     _fn_return_value = True
     return _fn_return_value
     #except:
     #    # Attention: This could also be an error some where else in the code
-    P01.MsgBox(M09.Get_Language_Str('Fehler beim schreiben der Datei \'') + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler beim erzeugen der Arduino Header Datei'))
+    P01.MsgBox(M09.Get_Language_Str('Fehler beim schreiben der Datei \'') + Name + '\'', vbCritical, M09.Get_Language_Str('Fehler beim erzeugen der MobaLedLib Header Datei'))
     VBFiles.closeFile(fp)
 
 # VB2PY (UntranslatedCode) Option Explicit

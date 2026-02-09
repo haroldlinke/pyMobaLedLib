@@ -152,7 +152,7 @@ class _DebugClass:
         if self._logger:
             self._logger.debug("\t".join([str(arg) for arg in args]))
         #print("Logging.Debug")
-        logging.debug("\t".join([str(arg) for arg in args]))
+        #logging.debug("\t".join([str(arg) for arg in args]))
 
 
 Debug = _DebugClass()
@@ -384,8 +384,8 @@ class _VBFiles:
             else:
                 old_file.close()
             #
-            #self._channels[channelid] = open(filename, mode,newline="\r\n", encoding="utf-8")
-            self._channels[channelid] = open(filename, mode,newline="\r\n", encoding="latin-1")
+            self._channels[channelid] = open(filename, mode,newline="\r\n", encoding="utf-8")
+            #self._channels[channelid] = open(filename, mode,newline="\r\n", encoding="latin-1")
             
         finally:
             self._lock.release()

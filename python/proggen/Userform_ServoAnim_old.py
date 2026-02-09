@@ -644,7 +644,7 @@ class UserForm_ServoAnim:
         self.redraw_canvas()
         
     def stop_test(self):
-        print("Stop Test")
+        #print("Stop Test")
         self.Test_Button.TKWidget.configure(text="Fortsetzen Test")
         self.test_continue = False
         self.test_pause = True
@@ -686,7 +686,7 @@ class UserForm_ServoAnim:
             self.test_continue = True
             self.run_test_point()
         else:
-            print("Start Test")
+            Debug.Print("Start Test")
             self.Test_Button.TKWidget.configure(text="Stop Test")
             self.max_idx = len(self.curve_points)
             self.test_deltatime = 40 # 20 # 20ms steps
@@ -914,7 +914,7 @@ class UserForm_ServoAnim:
                     valx = self.curve_points[self.point_idx][0]
                     valy = self.curve_points[self.point_idx][1]
                     self.startxy = (self.valx2cx(valx),self.valy2cy(valy))
-                    print("MouseButton,1:", valx, valy, self.startxy)
+                    #print("MouseButton,1:", valx, valy, self.startxy)
                     self.current_curve_point = self.curve_points[self.point_idx]
                 else:
                     self.point_idx = -1

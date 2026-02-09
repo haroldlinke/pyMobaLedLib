@@ -1,0 +1,8 @@
+#start
+#RailMail-WS2811
+#Firmware-Version=2.0.9
+#Serial-Number=Pico1-000400000003
+#Ethernet-MAC-Adresse=28:CD:C1:04:A5:C5
+#IP-Adress=192.168.188.45
+#Section=MLL-Configuration
+#finish

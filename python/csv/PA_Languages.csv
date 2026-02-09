@@ -1131,27 +1131,27 @@ Wenn die Taste länger als 3 Sekunden gehalten wird, dann wird der Pin zum Ein/A
 Das erkennt man an der blauen LED. Dieser Modus wird z.B. bei der Servo Platine benötigt.|
 |
 Wenn der Fehler immer wieder auftritt, dann kann ein Screenshot des vorangegangenen Bildschirms zusammen mit einer ausführlichen Beschreibung an |
-  MobaLedLib@gmx.de|
+  https://forum.mobaledlib.de|
 geschickt werden.";"An error occurred while setting the fuses ;-( |
 |
 If the blue 'Reset as IOPin' LED on the Tiny_UniProg lights up, then the right button ('Cng Reset Pin') on the Tiny_UniProc must be pressed for one second. This will reactivate the reset pin.|
 If the button is held longer than 3 seconds, the pin is reprogrammed as 'input / output'.|
 The blue LED is indicating that. This mode is e.g. required for the servo board.|
 If the error occurs again and again, then a screenshot of the previous screen together with a detailed description can be sent to|
-   MobaLedLib@gmx.de";"Er is een fout opgetreden bij het instellen van de zekeringen!   ;-(  |
+   https://forum.mobaledlib.de";"Er is een fout opgetreden bij het instellen van de zekeringen!   ;-(  |
 |
 Als de blauwe 'Reset as IOPin' LED op de Tiny_UniProg oplicht, moet de rechterknop (' Cng Reset Pin ') op de Tiny_UniProc gedurende een seconde worden ingedrukt. Hierdoor wordt de resetpin opnieuw geactiveerd. |
 Als de knop langer dan 3 seconden wordt ingedrukt, wordt de pin opnieuw geprogrammeerd als 'invoer / uitvoer'. |
 De blauwe LED geeft dat aan. Deze modus is b.v. vereist voor het servobord. |
 Als de fout zich steeds opnieuw voordoet, kan een screenshot van het vorige scherm met een gedetailleerde beschrijving worden verzonden naar : |
-MobaLedLib@gmx.de.";"Une erreur s'est produite lors du réglage des fusibles.  ;-( | 
+https://forum.mobaledlib.de.";"Une erreur s'est produite lors du réglage des fusibles.  ;-( | 
 | 
 Si la LED bleue 'Reset as IOPin' du Tiny_UniProg s'allume, alors le bouton droit ('Cng Reset Pin') du Tiny_UniProc doit être enfoncé pendant une seconde Réinitialisation de la broche réactivée. | 
 Si le bouton est maintenu enfoncé pendant plus de 3 secondes, la broche est reprogrammée en entrée / sortie. | 
 Cela peut être vu à partir de la LED bleue. Ce mode est requis pour la carte servo, par exemple. | 
 | 
 Si l'erreur se produit encore et encore, puis une capture d'écran de l'écran précédent avec une description détaillée peut être envoyée à: | 
-MobaLedLib@gmx.de.";;;
+https://forum.mobaledlib.de.";;;
 VBA;M65_Special_Modules 188;Fehler schreiben der Fuses;Error writing the fuses;Fout bij het schrijven van de zekeringen;Erreur lors de l'écriture des fusibles;;;
 VBA;M65_Special_Modules 209;Fehler das Program ;Error in the program;Fout in het programma;Erreur dans le programme;;;
 VBA;M65_Special_Modules 209; ist nicht vorhanden in:; is not available in:;is niet beschikbaar in: ; n'est pas disponible en:;;;
@@ -1173,7 +1173,7 @@ VBA;M65_Special_Modules 234;"   Das System kann die angegebene Datei nicht finde
 In diesem Fall müssen die Verbindungen überprüft und der Arduino durch einen neuen ersetzt werden.|
 |
 Wenn der Fehler nicht immer wieder auftritt, dann kann ein Screenshot des vorangegangenen Bildschirms zusammen mit einer ausführlichen Beschreibung an |
-  MobaLedLib@gmx.de|
+  https://forum.mobaledlib.de|
 geschickt werden.";"   The system cannot find the specified file.|
 In this case, the connections must be checked and the Arduino replaced with a new one.|
 |
@@ -1182,11 +1182,11 @@ If the error does not occur again and again, then a screenshot of the previous s
 In dit geval moeten de verbindingen worden gecontroleerd en moet de Arduino worden vervangen door een nieuwe. |
 |
 Als de fout niet steeds opnieuw optreedt, kan een screenshot van het vorige scherm met een gedetailleerde beschrijving worden verzonden naar : |
-MobaLedLib@gmx.de.";"   Le système ne trouve pas le fichier spécifié. | 
+https://forum.mobaledlib.de.";"   Le système ne trouve pas le fichier spécifié. | 
 Dans ce cas, les connexions doivent être vérifiées et l'Arduino remplacé par un nouveau. | 
 | 
 Si l'erreur ne se reproduit pas, une capture d'écran de l'écran précédent avec une description détaillée peut être envoyée à | 
-MobaLedLib@gmx.de | 
+https://forum.mobaledlib.de | 
 peut être envoyé.";;;
 VBA;M65_Special_Modules 234;Fehler beim Hochladen des Programms;Program upload failed;Programma-upload mislukt;Échec du téléchargement du programme;;;
 VBA;M65_Special_Modules 238;Programm erfolgreich hochgeladen. Kompilieren und Hochladen dauerte ;Program successfully uploaded. Compiling and uploading took ;Programma succesvol geüpload. Compileren en uploaden heeft plaatsgevonden;Programme téléchargé avec succès. La compilation et le téléchargement ont pris;;;

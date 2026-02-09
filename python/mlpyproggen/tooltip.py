@@ -287,6 +287,8 @@ class Tooltip_Canvas:
         x, y = tip_pos_calculator(widget, label)
 
         self.tw.wm_geometry("+%d+%d" % (x, y))
+        # Wichtig für macOS, damit das Tooltip nicht hängen bleibt
+        self.tw.grab_release()
 
     def hide(self):
         tw = self.tw

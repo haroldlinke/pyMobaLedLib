@@ -56,7 +56,7 @@
 # * License: http://creativecommons.org/licenses/by-sa/3.0/
 # ***************************************************************************
 
-from version import Version
+from version2 import Version
 
 PROG_VERSION = Version
 
@@ -86,7 +86,7 @@ INVERT_WHEEL = True
 # filenames
 # all filenames are relativ to the location of the main program pyProg_generator_MobaLedLib.py
 
-LOG_FILENAME = '../logfile.log'
+LOG_FILENAME = 'logfile.log'
 PARAM_FILENAME = 'MobaLedTest_param.json'
 CONFIG_FILENAME = '../../MobaLedTest_config.json'
 MACRODEF_FILENAME = 'MobaLedTest_macrodef.json'
@@ -105,6 +105,7 @@ FINISH_FILE = "Finished.txt"                                                 # 0
 COLORTESTONLY_FILE = "ColorTestOnly.txt"
 
 SerialIF_teststring1 = "#?LEDs_AutoProg"
+SerialIF_teststring3 = "LEDs_AutoProg"
 SerialIF_teststring2 = "#Color Test LED"
 
 PERCENT_BRIGHTNESS = 1  # 1 = Show the brightnes as percent, 0 = Show the brightnes as ">>>"# 03.12.19:
@@ -643,7 +644,10 @@ DEFAULT_CONFIG = {
                     "AutoLoadWorkbooks":1,
                     "UseCOM_Port_UserForm":0,
                     "languagename": "Auto",
-                    "language": 0
+                    "language": 0,
+                    "IPUploadTimeout": 10,
+                    "UseHostAdapter": True,
+                    "CheckVersion": False,
                 }
 
 DEFAULT_PARAM = {}

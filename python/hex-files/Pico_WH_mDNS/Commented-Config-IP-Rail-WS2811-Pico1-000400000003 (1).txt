@@ -1,0 +1,67 @@
+#start
+#RailMail-WS2811
+#Firmware-Version=2.0.9
+#Serial-Number=Pico1-000400000003
+#Ethernet-MAC-Adresse=28:CD:C1:04:A5:C5
+#IP-Adress=192.168.188.45
+#Section=MLL-Configuration
+cv0001=2B // low Gesamtlänge (immer ohne die 16 Bit der Länge selber)
+cv0002=00 // high ...
+
+// Allgemeine Parameter, die nur EINMAL vorkommen
+cv0003=14 // low Anzahl LEDs (im Sinne der MobaLedLib.cpp NICHT FastLED)
+cv0004=00 // high ...
+cv0005=0F // low RAM Bedarf in Bytes
+cv0006=00 // high ...
+
+// Konfiguration der FastLED Controller
+// (ein Controller besteht jeweils aus zwei 16Bit words)
+cv0007=04 // low Länge der Strukturinformationen für FastLED Controller
+cv0008=00 // high ...
+cv0009=00 // low FastLED Controller 0 Start-LED Nummer
+cv0010=00 // high ...
+cv0011=14 // low FastLED Controller 0 Number of LEDs
+cv0012=00 // high ...
+
+// Ext_Addr für DCC Address Mappings
+// (ein Mapping besteht jeweils aus zwei 16Bit words)
+cv0013=04 // low Länge der Ext_Addr Strukturinformationen
+cv0014=00 // high ...
+cv0015=FF // low DCC AddrAndTyp (0xFF is a default-dummy)
+cv0016=FF // high ...           (0xFF is a default-dummy)
+cv0017=FF // InCnt (low ffs)    (0xFF is 1 default-dummy)
+cv0018=00 // high ffs
+
+// LED2Var für Eingangsvariablen
+// (ein Mapping besteht jeweils aus zwei 16Bit words und zwei bytes, also
+// insgesamt 6 byte)
+cv0019=06 // low Länge der LED2Var_tab Strukturinformationen
+cv0020=00 // high ...
+cv0021=FF // Var_Nr (InCnt) (low ffs) (0xFF is a default-dummy)
+cv0022=FF // high ffs                 (0xFF is a default-dummy)
+cv0023=FF // LED_Nr (low ffs)         (0xFF is a default-dummy)
+cv0024=FF // high ffs                 (0xFF is a default-dummy)
+cv0025=FF // Offset_And_Typ           (0xFF is a default-dummy)
+cv0026=FF // Value (to compare)       (0xFF is a default-dummy)
+
+// ab hier kommt die eingentliche MLL Konfiguration
+cv0027=11 // low Länge des MLL Config[] Chunks
+cv0028=00 // high
+cv0029=8A // HOUSE_T
+cv0030=00 // low first LED (ESP32 Notation)
+cv0031=00 // high ...      (ESP32 Notation)
+cv0032=FF // input channel (not used / allways enabled)
+cv0033=02 // min rooms on
+cv0034=05 // max rooms on
+cv0035=05 // min time to change
+cv0036=0F // max time to change
+cv0037=07 // sieben Räume sind konfiguriert
+cv0038=00 // ROOM_DARK
+cv0039=02 // ROOM_WARM_W
+cv0040=23 // NEON_LIGHT
+cv0041=27 // NEON_LIGHTD
+cv0042=1D // GAS_LIGHT2
+cv0043=3E // CANDLE
+cv0044=03 // ROOM_RED
+cv0045=00 // END_T Ende der Konfiguration
+#finish

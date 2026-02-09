@@ -63,7 +63,7 @@ import proggen.M02_Public as M02
 #import proggen.M07_COM_Port as M07
 #import proggen.M08_ARDUINO as M08
 #import proggen.M09_Language as M09
-#import proggen.M09_Translate_Examples as M09TE
+import proggen.M09_Translate_Examples as M09TE
 #import proggen.M09_Select_Macro as M09SM
 #import proggen.M09_SelectMacro_Treeview as M09SMT
 #import proggen.M10_Par_Description as M10
@@ -434,11 +434,12 @@ def __Update_Language_in_All_Sheets():
             ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
             if M28.Is_Data_Sheet(Sh):
                 if __Update_Language_in_Sheet(Sh, DestLang):
-                    Translate_Example_Texts_in_Sheet(Sh)
+                    M09TE.Translate_Example_Texts_in_Sheet(Sh)
+                    M27.Update_Language_Name_Column_in_Sheet(Sh)
             __Activate_Language_in_Example_Sheet(Sh)
     ## VB2PY (CheckDirective) VB directive took path 1 on PROG_GENERATOR_PROG
     __Update_Language_in_Config_Sheet(DestLang)
-    M27.Update_Language_Name_Column_in_all_Sheets()
+    #M27.Update_Language_Name_Column_in_all_Sheets()
     #*HL U01.Unload(StatusMsg_UserForm)
     if not OldSheet is None:
         OldSheet.Activate()

@@ -52,6 +52,7 @@ import proggen.M06_Write_Header as M06
 import proggen.M06_Write_Header_LED2Var as M06LED
 import proggen.M06_Write_Header_Sound as M06Sound
 import proggen.M06_Write_Header_SW as M06SW
+import proggen.M06_Write_MLLConfig as M06WC
 import proggen.M07_COM_Port as M07
 import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
@@ -72,6 +73,12 @@ import proggen.M80_Create_Multiplexer as M80
 from ExcelAPI.XLC_Excel_Consts import *
 import ExcelAPI.XLA_Application as P01
 
+try:
+    import requests
+    requests_imported = True
+except:
+    requests_imported = False
+
 import logging
 
 class UserForm_Other():
@@ -81,6 +88,7 @@ class UserForm_Other():
         self.IsActive = False
         self.button1_txt = M09.Get_Language_Str("Abbrechen")
         self.button2_txt = M09.Get_Language_Str("Ok")
+        self.button_patch_txt = M09.Get_Language_Str("Patch")
         self.res = False
         self.UserForm_Res = ""
         
@@ -113,6 +121,7 @@ class UserForm_Other():
         #self.Userform_res = value
         self.top.destroy()
         P01.ActiveSheet.Redraw_table()
+        self.controller.update() # test
         self.res = True
  
     def cancel(self, event=None):
@@ -807,7 +816,7 @@ class UserForm_Other():
     
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Par - ByVal 
     # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Name - ByVal 
-    def Show_UserForm_Other(self, Par, Name, Description, LedChannels, Show_Channel, LED_Channel, Def_Channel):
+    def Show_UserForm_Other(self, Par, Name, Description, LedChannels, Show_Channel, LED_Channel, Def_Channel, CV_Adress=None, CV_used=None):
         
         MLLtype2widgettype = {"Mode" : "String",
                               "SheetName" : "String",
@@ -1158,15 +1167,37 @@ class UserForm_Other():
         
         self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
         self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
+        self.b_patch = tk.Button(self.button_frame, text=self.button_patch_txt, command=self.patch_cmd,width=10,font=self.default_font)
 
         self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=10)
         self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=10)
+        self.b_patch.grid(row=0,column=2,sticky="e",padx=10,pady=10)
         
         self.button_frame.grid(row=5,column=2,sticky="e",padx=10,pady=10)
         
         self.top.bind("<Return>", self.ok)
-        self.top.bind("<Escape>", self.cancel)                   
+        self.top.bind("<Escape>", self.cancel)
+        self.CV_Adress = CV_Adress
+        self.CV_Used = CV_used
+        if CV_Adress != None and CV_Adress != 0:
+            self.b_patch.grid(row=0,column=2,sticky="e",padx=10,pady=10)
+        else:
+            self.b_patch.grid_forget()        
         self.show()
+        
+    def patch_cmd(self, event=None):
+        pico_ip = P01.Cells(M02.SH_VARS_ROW, M25.COMPort_COL)[3:]
+        self.url = f'http://{pico_ip}/'  # Replace with your Pico's IP
+        self.UserForm_Res = self.Create_Result()
+        res = self.UserForm_Res
+        patchfile = M06WC.generate_patch_file(res, CV_adress=self.CV_Adress, CV_used=self.CV_Used)
+        files = {'file': open(patchfile, 'rb')}
+        uploadurl = self.url + "extensionbackup"
+        response = requests.post(uploadurl, files=files, timeout=PG.IPUploadTimeout)
+        if response.status_code == 200:
+            time.sleep(1)
+            activate_url = self.url + "extensionuse"
+            response = requests.get(activate_url, timeout=5)            
 
    
     def Get_OptionButton_Res(self):

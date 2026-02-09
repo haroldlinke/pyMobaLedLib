@@ -234,7 +234,7 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
     Remove_File_If_Exists(FullDestDir + 'LEDs_AutoProg\\LocoNetInterface.cpp')
     Remove_File_If_Exists(FullDestDir + 'LEDs_AutoProg\\LocoNetInterface.h')
     # 11.02.25: improve ESP32 userinterface
-    Remove_File_If_Exists(FullDestDir + "LEDs_AutoProg\SSD1306UI.cpp")    
+    Remove_File_If_Exists(FullDestDir + "LEDs_AutoProg\\SSD1306UI.cpp")    
     
     
     if not FileCopy_with_Check(FullDestDir, 'Prog_Generator_Examples'):
@@ -286,7 +286,10 @@ def Copy_Prog_If_in_LibDir_WithResult(DidCopy):
         P01.MsgBox(CopyMsg + M09.Get_Language_Str('In Zukunft kann das Programm über den Link') + vbCr + '   ' + Split(M02.DSKLINKNAME, ' ')(0) + vbCr + '   ' + Split(M02.DSKLINKNAME, ' ')(1) + vbCr + M09.Get_Language_Str('auf dem Desktop gestartet werden'), vbInformation, M09.Get_Language_Str('Programm kopiert und Link auf Desktop erzeugt'))
     else:
         P01.MsgBox(CopyMsg + M09.Get_Language_Str('Beim Anlegen des Links gab es Probleme ;-(' + vbCr + 'Das Programm kann trotzdem von der oben angegebenen Position aus gestartet werden.'), vbInformation, M09.Get_Language_Str('Programm kopiert'))
-    CreateDesktopShortcut('Wiki MobaLedLib', M02.WikiPg_Link, M02.WikiPg_Icon)
+    CreateDesktopShortcut('Wiki MobaLedLib', M02.WikiPg_Link, M02.WIKIPG_ICON1)
+    CreateDesktopShortcut( "Shop MobaLedLib", M02.MLLSHOP_LINK, M02.MLLSHOP_ICON) # Create Link to the MLL Shop' 
+    CreateDesktopShortcut( "MobaLedLib Suche", M02.SUCHE_LINK, M02.SUCHE_ICON) #' Create Link to the MLL Suche')
+         
     return fn_return_value
     P01.Application.DisplayAlerts = True
     P01.MsgBox(M09.Get_Language_Str('Fehler beim Speichern des Programms im Verzeichnis:') + vbCr + '  \'' + M30.FilePath(ProgName) + '\'', vbCritical, M09.Get_Language_Str('Fehler beim Speichen des Excel Programms'))

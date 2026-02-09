@@ -157,16 +157,19 @@ def __Load_Extensions():
                 MacroStr = MacroStr + Argument
             if MacroStr == '':
                 MacroStr = Macro.Name
+                FindName = Macro.Name
             else:
                 MacroStr = Macro.Name + '(' + MacroStr + ')'
-            MacroSheet.CellDict[MacroRow, M02.SM_Typ___COL] = 'EX.Macro'
+                FindName = Macro.Name + "("
+                
+            MacroSheet.CellDict[MacroRow, M02.SM_Typ___COL] = 'EX.Macro.' + Extension.Id
             MacroSheet.CellDict[MacroRow, M02.SM_Pic_N_COL] = 'Puzzle | IDE'
             MacroSheet.CellDict[MacroRow, M02.SM_LEDS__COL] = Macro.LEDs
             MacroSheet.CellDict[MacroRow, M02.SM_InCnt_COL] = Macro.InCnt
             MacroSheet.CellDict[MacroRow, M02.SM_Macro_COL] = MacroStr
             MacroSheet.CellDict[MacroRow, M02.SM_FindN_COL] = MacroStr
-            if Macro.Arguments.Count != 0:
-                MacroSheet.CellDict[MacroRow, M02.SM_FindN_COL] = MacroSheet.Cells(MacroRow, SM_FindN_COL) + '('
+            MacroSheet.CellDict[MacroRow, M02.SM_FindN_COL] = FindName
+            
             MacroSheet.CellDict[MacroRow, M02.SM_Name__COL] = Macro.Name
             MacroSheet.CellDict[MacroRow, M02.SM_Group_COL] = 'Erweiterungen'
             MacroSheet.CellDict[MacroRow, M02.SM_LName_COL] = Macro.Texts.GetText(DE, 'DisplayName')
@@ -367,6 +370,34 @@ def Init_HeaderFile_Generation_Extension(firstSheet):
         __CollectExtensions()
     fn_return_value = True
     return fn_return_value
+
+def Add_Macro_Extension_Entry(cmd: str) -> bool:
+    global __ExtensionsActive
+    # Default return value
+    result = False
+
+    # Must start with "EX.Macro."
+    if not cmd.startswith("EX.Macro."):
+        return result
+
+    # Extract numeric ID after prefix
+    extension_id_text = cmd[9:]   # Mid(Cmd, 10) in VBA (1‑based → 0‑based)
+    if not extension_id_text.isdigit():
+        return result
+
+    extension_id = int(extension_id_text)
+    extension = GetExtension(extension_id)
+
+    if extension is not None:
+        # Equivalent to: If Not ExtensionsActive.Exists(Extension.Id)
+        if extension.Id not in __ExtensionsActive:
+            __ExtensionsActive[extension.Id] = extension
+
+        result = True
+
+    return result
+
+    
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Cmd - ByRef 
 def Add_Extension_Entry(Cmd):

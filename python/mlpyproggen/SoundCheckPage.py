@@ -74,6 +74,7 @@ from locale import getdefaultlocale
 import re
 import time
 import logging
+logger=logging.getLogger(__name__)
 
 VERSION ="V01.17 - 25.12.2019"
 LARGE_FONT= ("Verdana", 12)
@@ -146,7 +147,7 @@ class SoundCheckPage(tk.Frame):
             pass
 
     def tabselected(self):
-        logging.debug("Tabselected: %s",self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
         #self.controller.currentTabClass = self.tabClassName
         #self.controller.send_to_ARDUINO("#BEGIN")
         #time.sleep(ARDUINO_WAITTIME)
@@ -162,7 +163,7 @@ class SoundCheckPage(tk.Frame):
                     self.controller.bind(paramvar.key_down,paramvar.invoke_buttondown)
         
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)
         self.controller.ARDUINO_end_direct_mode()
@@ -195,7 +196,7 @@ class SoundCheckPage(tk.Frame):
         pass
     
     def _update_value(self,paramkey):
-        logging.info("SoundCheckPage - update_value: %s",paramkey)
+        logger.info("SoundCheckPage - update_value: %s",paramkey)
         red=self.controller.get_macroparam_val(self.tabClassName, "Sound_RED")
         green=self.controller.get_macroparam_val(self.tabClassName, "Sound_GREEN")
         blue=self.controller.get_macroparam_val(self.tabClassName, "Sound_BLUE")

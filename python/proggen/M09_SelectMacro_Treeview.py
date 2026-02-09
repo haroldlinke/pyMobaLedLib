@@ -101,7 +101,7 @@ Build 026.4
  - Generate result
  - Scroll wheel support
  > Send to Michael
- - DoubleCkick opens/closes child
+ - DoubleClick opens/closes child
  - Horizontal scroll bar corrected
  - TreeView settings are keeped when the dialog is closed to get the same view when it's opened again
  - Show HourGlassCursor when building/updating the TreeView

@@ -23,7 +23,7 @@ from tkinter import ttk
 try:
     from PIL import Image, ImageTk, EpsImagePlugin
 except BaseException as e:
-    print(e)
+    #print(e)
     pass
 
 import logging
@@ -43,7 +43,7 @@ timesteptype_individuell = 2
 
 class UserForm_TestGrafik:
     
-    def __init__(self,controller, background_image=None):
+    def __init__(self,controller, background_image=None, parent=None, childwindow=False):
         self.controller    = controller
         self.IsActive      = False
         self.Form          = None
@@ -54,6 +54,8 @@ class UserForm_TestGrafik:
         self.test_started = False
         self.test_continue = False
         self.test_pause = False
+        self.childwindow = childwindow
+        self.imageframe = parent
         self.Background_Image = background_image
         #*HL Center_Form(Me)
         self.bg_width, self.bg_height = (400, 300)
@@ -77,30 +79,30 @@ class UserForm_TestGrafik:
                         "Modal" : True,
                         "Components": [{"Name": "TopFrame","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                          "Caption"       : "",
-                                         "ControlTipText": "","ForeColor": "#000012","Height": 3,"Left": 1,"Top": 1,"Type": "Frame","Visible": True,"Width": 100,
+                                         "ControlTipText": "","ForeColor": "#000012","Height": 50,"Left": 1,"Top": 1,"Type": "Frame","Visible": True,"Width": 200,
                                          "Components"    :
                                             [
                                             {"Name":"Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                             "Caption":"Test Grafik",
-                                             "ControlTipText":"Tooltip1","ForeColor":"#000012","Height":3,"Left":1,"SpecialEffect": "fmSpecialEffectSunken","TextAlign":"fmTextAlignLeft","Top":1,"Type":"Label","Visible":True,"Width":100},
+                                             "ControlTipText":"Tooltip1","ForeColor":"#000012","Height":30,"Left":1,"SpecialEffect": "fmSpecialEffectSunken","TextAlign":"fmTextAlignLeft","Top":1,"Type":"Label","Visible":True,"Width":100},
                                             {"Name":"Label2","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                             "Caption":"by Harold Linke",
-                                            "ControlTipText":"","ForeColor":"#FF0000","Height":1,"Left":3,"TextAlign":"fmTextAlignLeft","Top":1,"Type":"Label","Visible":True,"Width":20},
+                                            "ControlTipText":"","ForeColor":"#FF0000","Height":10,"Left":3,"TextAlign":"fmTextAlignLeft","Top":40,"Type":"Label","Visible":True,"Width":20},
                                         ]},
                                        {"Name": "TopFrame2","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                         "Caption"       : "",
-                                        "ControlTipText": "","ForeColor": "#000012","Height": 3,"Left": 1,"Top": 100,"Type": "Frame","Visible": True,"Width": 100,
+                                        "ControlTipText": "","ForeColor": "#000012","Height": 30,"Left": 1,"Top": 100,"Type": "Frame","Visible": True,"Width": 100,
                                         "Components"    :
                                            [                                       
                                            {"Name":"Bck_Image_Label","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                             "Caption":"Hintergrund Bild",
-                                            "ControlTipText":"Hintergrundbild","ForeColor":"#FF0000","Height":1,"Left":1,"TextAlign":"fmTextAlignLeft","Top":2,"Type":"Label","Visible":True,"Width":20},
+                                            "ControlTipText":"Hintergrundbild","ForeColor":"#FF0000","Height":10,"Left":1,"TextAlign":"fmTextAlignLeft","Top":2,"Type":"Label","Visible":True,"Width":20},
                                            {"Name":"Bck_Image_TextBox","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                             "Caption":"",
-                                            "ControlTipText":"Hintergrund Bild","ForeColor":"#FF0000","Height":1,"Left":2,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":2,"Type":"TextBox","Value": 1 ,"Visible":True,"Width":10},
+                                            "ControlTipText":"Hintergrund Bild","ForeColor":"#FF0000","Height":10,"Left":2,"TextAlign":"fmTextAlignLeft","SpecialEffect": "fmSpecialEffectSunken","Top":2,"Type":"TextBox","Value": 1 ,"Visible":True,"Width":10},
                                            {"Name":"Select_Button","Accelerator":"<Return>","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
                                             "Caption":"Auswählen",
-                                            "Command":self.Select_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":2,"Left":3,"Top":2,"Type":"CommandButton","Visible":True,"Width":10},
+                                            "Command":self.Select_Button_Click,"ControlTipText":"","ForeColor":"#000012","Height":20,"Left":3,"Top":2,"Type":"CommandButton","Visible":True,"Width":10},
                                         ]},                                    
 
                                       {"Name": "Frame2","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
@@ -111,7 +113,7 @@ class UserForm_TestGrafik:
                                                 ]},
                                       {"Name": "LowerFrame","BackColor": "#00000F","BorderColor": "#000006","BorderStyle": "fmBorderStyleNone",
                                        "Caption"       : "",
-                                       "ControlTipText": "","ForeColor": "#000012","Height": 50,"Left": 1,"Top": 150,"Type": "Frame","Visible": True,"Width": 300, "Geo_Manager" : "grid",
+                                       "ControlTipText": "","ForeColor": "#000012","Height": 50,"Left": 1,"Top": 10,"Type": "Frame","Visible": True,"Width": 300, "Geo_Manager" : "grid",
                                        "Components"    :
                                             [
                                         {"Name":"OK_Button","Accelerator":"<Return>","BackColor":"#00000F","BorderColor":"#000006","BorderStyle":"fmBorderStyleNone",
@@ -182,7 +184,7 @@ class UserForm_TestGrafik:
         #--------------------------------
         # Is called once to initialice the form
         self.Userform_Res = ""
-        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,self.controller,dlg=self, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont, modal=False)
+        self.Form=XLF.generate_form(self.Main_Menu_Form_RSC,parent=self.imageframe,dlg=self, jump_table=PG.ThisWorkbook.jumptable, defaultfont=X02.DefaultFont, modal=False, childwindow=self.childwindow)
         self.patterntype = 0
         self.curvetype = curvetype_linear
         self.curve_points = []
@@ -423,7 +425,6 @@ class UserForm_TestGrafik:
             self.save_value_to_current_sheet(row, col, newval)
         bg_image_filename = self.Bck_Image_TextBox.Value
         self.save_value_to_current_sheet(2, col, bg_image_filename)
-        self.Hide()
         return
     
         #------------------------------
@@ -528,7 +529,7 @@ class UserForm_TestGrafik:
         self.redraw_canvas()
         
     def stop_test(self):
-        print("Stop Test")
+        #print("Stop Test")
         self.Test_Button.TKWidget.configure(text="Fortsetzen Test")
         self.test_continue = False
         self.test_pause = True
@@ -570,7 +571,7 @@ class UserForm_TestGrafik:
             self.test_continue = True
             self.run_test_point()
         else:
-            print("Start Test")
+            #print("Start Test")
             self.Test_Button.TKWidget.configure(text="Stop Test")
             self.max_idx = len(self.curve_points)
             self.test_deltatime = 40 # 20 # 20ms steps
@@ -636,10 +637,12 @@ class UserForm_TestGrafik:
         self.graphWidth = self.framewidth - self.graphLeft - 40
         self.graphHeight = self.frameheight - self.graphTop - 40
         self.Background_Image = self.Bck_Image_TextBox.Value
+        if self.Background_Image == "":
+            self.Background_Image = "D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\images\\BW_Gleisplan.jpg"
         self.background_pil_image= Image.open(self.Background_Image)
         self.background_TK = ImageTk.PhotoImage(self.background_pil_image)
         self.bg_width, self.bg_height = self.background_pil_image.size
-        self.Frame2.parent.configure(width=self.bg_width, height=self.bg_height)
+        #frame.parent.configure(width=self.bg_width, height=self.bg_height)
         #self.frameheight = self.bg_height
         #self.framewidth = self.bg_width
         #frame.config(width=self.framewidth, height=self.frameheight)
@@ -841,7 +844,7 @@ class UserForm_TestGrafik:
                     target = curr_sheet.Cells(row, col)
                     target.Select()
                     self.startxy = (self.valx2cx(valx),self.valy2cy(valy))
-                    print("MouseButton,1:", valx, valy, self.startxy)
+                    #print("MouseButton,1:", valx, valy, self.startxy)
                     self.current_curve_point = self.curve_points[self.point_idx]
                 else:
                     self.point_idx = -1

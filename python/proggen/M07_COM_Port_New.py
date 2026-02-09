@@ -68,6 +68,8 @@ import proggen.M30_Tools as M30
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Multiplexer as M80
 
+import mlpyproggen.Prog_Generator as PG
+
 import ExcelAPI.XLA_Application as P01
 
 import proggen.M07_COM_Port as M07
@@ -166,9 +168,11 @@ __PRINT_DEBUG = False
 #CheckCOMPort = Long()
 #CheckCOMPort_Txt = String()
 __CheckCOMPort_Res = Long()
+on_ledon = False
+PicoWL = False
 
 def __Blink_Arduino_LED():
-    global __CheckCOMPort_Res
+    global __CheckCOMPort_Res, on_ledon
     
     SWMajorVersion = Byte()
 
@@ -182,7 +186,7 @@ def __Blink_Arduino_LED():
     #------------------------------
     # Is called by OnTime and flashes the LEDs of the Arduino connected to
     # the port stored in the global variable "CheckCOMPort"
-    # It's aborted if CheckCOMPort = " " - 0
+    # It's aborted if CheckCOMPort = "-1 "
     # Attention: This function doesn't check if the connected device is an Arduino
     # because this would be to slow. In addition the blinking frequence is more visible if
     # A baudrate of 50 is used.
@@ -194,27 +198,51 @@ def __Blink_Arduino_LED():
         Debug.Print("Blink_LED start")
         F00.Select_COM_Port_UserForm.Update_SpinButton(0)
         # Rescan COM Ports
-        if M07.CheckCOMPort != "999":
-            __CheckCOMPort_Res, DeviceSignatur = M07.DetectArduino(M07.CheckCOMPort, BaudRate, HWVersion, SWMajorVersion, SWMinorVersion, DeviceSignatur, 1, PrintDebug= __PRINT_DEBUG)
-        else:
-            __CheckCOMPort_Res = - 9
-        #*HLApplication.Cursor = xlNorthwestArrow
-        #Debug.Print "CheckCOMPort_Res=" & CheckCOMPort_Res & "  CheckCOMPort=" & CheckCOMPort
-        if __CheckCOMPort_Res < 0:
-            if M07.CheckCOMPort == "999": #999:
-                F00.Select_COM_Port_UserForm.Show_Status(True, M09.Get_Language_Str('Kein COM Port erkannt.' + vbCr + 'Bitte Arduino an einen USB Anschluss des Computers anschließen'))
+        if not M07.CheckCOMPort.startswith("IP:"):
+            if M07.CheckCOMPort != "999":
+                __CheckCOMPort_Res, DeviceSignatur = M07.DetectArduino(M07.CheckCOMPort, BaudRate, HWVersion, SWMajorVersion, SWMinorVersion, DeviceSignatur, 1, PrintDebug= __PRINT_DEBUG)
             else:
-                F00.Select_COM_Port_UserForm.Show_Status(True, M09.Get_Language_Str('Achtung: Der Arduino wird von einem anderen Programm benutzt.' + vbCr + '(Serieller Monitor?)' + vbCr + 'Das Programm muss geschlossen werden! '))
+                __CheckCOMPort_Res = - 9
+            #*HLApplication.Cursor = xlNorthwestArrow
+            #Debug.Print "CheckCOMPort_Res=" & CheckCOMPort_Res & "  CheckCOMPort=" & CheckCOMPort
+            if __CheckCOMPort_Res < 0:
+                if M07.CheckCOMPort == "999": #999:
+                    if PicoWL:
+                        F00.Select_COM_Port_UserForm.Show_Status(True, M09.Get_Language_Str('Kein PICO WL (mDNS Gerät) erkannt.' + vbCr + 'Bitte PICO WL einschalten'))
+
+                    else:
+                        F00.Select_COM_Port_UserForm.Show_Status(True, Replace(M09.Get_Language_Str("Kein COM Port erkannt." + vbCr + "Bitte #1 an einen USB Anschluss des Computers anschließen"), "#1", M08.GetArduName()))
+                else:
+                    F00.Select_COM_Port_UserForm.Show_Status(True, Replace(M09.Get_Language_Str("Achtung: Der #1 wird von einem anderen Programm benutzt." + vbCr + "(Serieller Monitor?)" + vbCr + "Das Programm muss geschlossen werden! "), "#1", M08.GetArduName()))
+            else:
+                F00.Select_COM_Port_UserForm.Show_Status(False, M07.CheckCOMPort_Txt)
         else:
-            F00.Select_COM_Port_UserForm.Show_Status(False, M07.CheckCOMPort_Txt)
+            F00.Select_COM_Port_UserForm.Show_Status(False, M07.CheckCOMPort_Txt)        
+        Test_IsPicoInBootMode()
         #*HL Sleep(10)
         P01.DoEvents()
-        P01.Application.OnTime(1000, __Blink_Arduino_LED)
+        if M07.CheckCOMPort.startswith("IP:"):
+            # try to connet to device
+            #try to switch on LED
+            try:
+                PG.global_controller.connectIP(IPAdresse=M07.CheckCOMPort[3:])
+
+                if on_ledon:
+                    PG.global_controller.send_ledcolor_to_ARDUINO(1, 1, "#FFFFFF")
+                    on_ledon = False
+                else:
+                    PG.global_controller.send_ledcolor_to_ARDUINO(1, 1, "#000000")
+                    on_ledon = True
+            except BaseException as e:
+                print (e)
+                
+        if M07.CheckCOMPort != -1:  
+            P01.Application.OnTime(1000, __Blink_Arduino_LED)
         Debug.Print("Blink_LED end")
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ComPort_IO - ByRef 
 def Select_Arduino_w_Blinking_LEDs_Dialog(Caption, Title, Text, Picture, IsArduino, Buttons, ComPort_IO):
-    global __CheckCOMPort_Res
+    global __CheckCOMPort_Res, PicoWL
     fn_return_value = None
     Res = Long()
     hint = String()
@@ -242,13 +270,20 @@ def Select_Arduino_w_Blinking_LEDs_Dialog(Caption, Title, Text, Picture, IsArdui
     # The variable "CheckCOMPort_Res" is >= 0 if the Port is available
     if IsArduino:
         hint = M09.Get_Language_Str(( 'Tipp: Der ausgewählte Arduino blinkt schnell' )) #VBA Error?
+        PicoWL = False
     else:
-        hint = ''    
+        hint = ''
+        PicoWL = False # True
     fn_return_value, ComPort_IO = F00.Select_COM_Port_UserForm.ShowDialog(Caption, Title, Text, Picture, Buttons, '', True, hint, ComPort_IO, __PRINT_DEBUG)
     if __CheckCOMPort_Res < 0:
         ComPort_IO = F00.port_set_busy(ComPort_IO)
         # Port is buzy
     P01.Application.Cursor = 0 #*HL xlDefault
+    try:
+        
+        PG.global_controller.send_ledcolor_to_ARDUINO(1, 1, "#000000")
+    except:
+        pass
     return fn_return_value, ComPort_IO
 
 def __Test_Select_Arduino_w_Blinking_LEDs_Dialog():
@@ -277,22 +312,37 @@ def Show_USB_Port_Dialog(ComPortColumn, ComPort):
     #if ComPort > 255:                       # 03.03.22: Juergen avoid overrun error
     #    ComPort = 0
     if (ComPortColumn == M25.COMPort_COL):
-        if M02a.Get_BoardTyp() == 'ESP32':
+        if M02a.Get_BoardTyp() == M02.HT_ESP32:
             Picture = 'ESP32_Image'
-            ArduName = 'ESP32'
+            M08.SetArduName()
+            IsArduino = False
+        elif M02a.Get_BoardTyp() == M02.HT_PICO:
+            Picture = "PICO_Image"
+            M08.SetArduName()
+            IsArduino = False            
+        elif  InStr(P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL), 'WLAN') > 0:
+            Picture = "PICOWL_Image"
+            M08.SetArduName("PICOWL")
+            IsArduino = False
         else:
             Picture = 'LED_Image'
-            ArduName = 'LED Arduino'
+            M08.SetArduName('LED Arduino')
     elif (ComPortColumn == M25.COMPrtR_COL):
         Picture = 'DCC_image'
-        ArduName = M25.Page_ID + ' Arduino'
+        M08.SetArduName(M25.Page_ID)
     elif (ComPortColumn == M25.COMPrtT_COL):
         Picture = 'Tiny_image'
-        ArduName = 'ISP Arduino'
+        M08.SetArduName('ISP')
     else:
         P01.MsgBox('Internal Error: Unsupported  ComPortColumn=' + str(ComPortColumn) + ' in \'USB_Port_Dialog()\'', vbCritical, 'Internal Error')
         M30.EndProg()
-    Res, ComPort = Select_Arduino_w_Blinking_LEDs_Dialog(M09.Get_Language_Str('Überprüfung des USB Ports'), M09.Get_Language_Str('Auswahl des Arduino COM Ports'), Replace(M09.Get_Language_Str('Es wird der COM Port überprüft ' + 'bzw. ausgewählt an den der #1# Arduino angeschlossen ist.' + vbCr + vbCr + 'OK, wenn die LEDs am richtigen Arduino schnell blinken.'), '#1#', ArduName), Picture, IsArduino, M09.Get_Language_Str(' ; A Abbruch; O Ok'), ComPort)
+        
+    Text = Replace(M09.Get_Language_Str("Es wird der COM Port überprüft " + "bzw. ausgewählt, an den der #1# angeschlossen ist."), "#1#", M08.GetArduName())
+               
+    if IsArduino:
+        Text = Text + vbCr + vbCr + M09. Get_Language_Str("OK, wenn die LEDs am richtigen Arduino schnell blinken.")
+      
+    Res, ComPort = Select_Arduino_w_Blinking_LEDs_Dialog(M09.Get_Language_Str("Überprüfung des USB Ports"), M09.Get_Language_Str("Auswahl des COM Ports"), Text, Picture, IsArduino, M09.Get_Language_Str(' ; A Abbruch; O Ok'), ComPort)
     fn_return_value = ( Res == 3 )
     return fn_return_value, ComPort
 
@@ -348,6 +398,65 @@ def __Test_Check_If_Arduino_could_be_programmed_and_set_Board_type():
     if with_0.Value == '':
         with_0.Value = 115200
     Debug.Print(M08.Check_If_Arduino_could_be_programmed_and_set_Board_type(M25.COMPrtT_COL, M08.BuildOT_COL, BuildOptions, DeviceSignature) + ' BuildOptions: ' + BuildOptions)
+    
+def Test_IsPicoInBootMode():                                                          # 28.11.2025 Juergen
+    if not M08.AskBootPico:
+        return
+def test_is_pico_in_boot_mode():
+    # Early exit
+    if not M08.AskBootPico:
+        return
+
+    # Enumerate USB drives
+    drive_letters, drive_names = EnumDiskDrives(include_usb=True)
+    cnt = len(drive_letters)
+
+    Debug.Print(f"Anzahl gefundener USB-Laufwerke: {cnt}")
+
+    for i in range(cnt):
+        Debug.Print(f"Laufwerk {drive_letters[i]} - {drive_names[i]}")
+
+        # Ask user for confirmation
+        message = (
+            M09.Get_Language_Str("PICO im Bootmodus gefunden\n"
+                             "Soll der PICO mit einer Start-Firmware initialisiert werden?")
+        )
+        title = M09.Get_Language_Str("Aktualisieren der MobaLedLib")
+
+        # Replace MsgBox with your GUI or console prompt
+        user_answer = P01.MsgBox(message, "question_yesno", title)
+
+        if user_answer != "yes":
+            M08.AskBootPico = False
+            return
+
+        # Copy UF2 file
+        M12.FileCopy_with_Check(
+            drive_letters[i] + "/",
+            "Heartbeat.uf2",
+            M08.GetWorkbookPath() + "/Boards/Heartbeat.uf2"
+        )
+
+        # Wait for CPU reset
+        time.sleep(3)
+      
+      # Dim DriveLetters() As String, DriveNames() As String
+      # Dim cnt As Long, i As Long
+      # cnt = EnumDiskDrives(DriveLetters, DriveNames, True)
+      # Debug.Print "Anzahl gefundener USB-Laufwerke: " & cnt
+      # For i = 0 To cnt - 1
+        # Debug.Print "Laufwerk " & DriveLetters(i) & " - " & DriveNames(i)
+        # If MsgBox(Get_Language_Str("PICO im Bootmodus gefunden" & vbCr & _
+                                 # "Soll der PICO mit einer Start-Firmware initialisiert werden?"), _
+                                 # vbQuestion + vbYesNo, Get_Language_Str("Aktualisieren der MobaLedLib")) <> vbYes Then
+          # AskBootPico = False
+          # Exit Sub
+       # End If
+       # FileCopy_with_Check DriveLetters(i) & "\", "Heartbeat.uf2", GetWorkbookPath() & "\Boards\Heartbeat.uf2"
+       # ' wait until CPU resets
+       # Sleep (3000)
+      # Next
+    # End Sub
 
 # VB2PY (UntranslatedCode) Option Explicit
 

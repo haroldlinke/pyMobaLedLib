@@ -389,7 +389,8 @@ def port_is_available(port):
         strport=str(port)
         port_available = not (strport.startswith("*") or strport=="COM?" or strport==" " or strport=="NO DEVICE" or strport=="")
         if port_available:
-            pass
+            if strport.startswith("IP:"):
+                pass
         return port_available
     return False
     
@@ -409,7 +410,7 @@ def port_check_format(port):
     
 def port_set_busy(port):
     strport=str(port)
-    if strport.startswith("*"):
+    if strport.startswith("*") or strport.startswith("IP:"):
         return(strport)
     else:
         return "*"+port

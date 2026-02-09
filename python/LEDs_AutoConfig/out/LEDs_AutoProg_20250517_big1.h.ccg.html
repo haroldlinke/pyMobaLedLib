@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link href="cpip.css" rel="stylesheet" type="text/css" />
+    <title>Conditional Compilation Graph</title>
+  </head>
+  <body>
+    <h1>Preprocessing Conditional Compilation Graph: LEDs_AutoProg_20250517_big1.h</h1>
+    <p>The conditional compilation statements as green (i.e. evaluates as True)
+and red (evaluates as False). Each statement is linked to the source code it came from.
+</p>
+    <p>Return to <a href="index_LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html">Index</a></p>
+    <pre><span class="CcgNodeTrue">#ifndef __LEDS_AUTOPROG_H__</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#7">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#ifndef CONFIG_ONLY</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#10">LEDs_AutoProg_20250517_big1.h</a> */
+    <span class="CcgNodeTrue">#ifndef ARDUINO_RASPBERRY_PI_PICO</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#11">LEDs_AutoProg_20250517_big1.h</a> */
+      <span class="CcgNodeTrue">#ifndef FASTLED_ESP32_I2S</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#12">LEDs_AutoProg_20250517_big1.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#14">LEDs_AutoProg_20250517_big1.h</a> */
+    <span class="CcgNodeFalse">#else</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#19">LEDs_AutoProg_20250517_big1.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#21">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#endif</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#22">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#ifndef _MOBALEDLIB_H_</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#30">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#ifndef CONFIG_ONLY</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#37">MobaLedLib.h</a> */
+      <span class="CcgNodeFalse">#ifdef ARDUINO_RASPBERRY_PI_PICO</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#38">MobaLedLib.h</a> */
+      <span class="CcgNodeTrue">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#40">MobaLedLib.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#47">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#48">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#ifndef __LIB_CONFIG_H__</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#28">Lib_Config.h</a> */
+      <span class="CcgNodeFalse">#ifdef _FAST_TIMES</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#99">Lib_Config.h</a> */
+        <span class="CcgNodeFalse">#ifndef HOUSE_MIN_T</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#100">Lib_Config.h</a> */
+        <span class="CcgNodeFalse">#endif</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#102">Lib_Config.h</a> */
+        <span class="CcgNodeFalse">#ifndef HOUSE_MAX_T</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#103">Lib_Config.h</a> */
+        <span class="CcgNodeFalse">#endif</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#105">Lib_Config.h</a> */
+      <span class="CcgNodeTrue">#else</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#106">Lib_Config.h</a> */
+        <span class="CcgNodeTrue">#ifndef HOUSE_MIN_T</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#107">Lib_Config.h</a> */
+        <span class="CcgNodeTrue">#endif</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#109">Lib_Config.h</a> */
+        <span class="CcgNodeTrue">#ifndef HOUSE_MAX_T</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#110">Lib_Config.h</a> */
+        <span class="CcgNodeTrue">#endif</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#112">Lib_Config.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#113">Lib_Config.h</a> */
+      <span class="CcgNodeFalse">#ifdef _HOUSE_STATISTIC</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#115">Lib_Config.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#120">Lib_Config.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="Lib_Config.h_9600e52cc2875da714bf5b1844e1025c.html#125">Lib_Config.h</a> */
+    <span class="CcgNodeTrue">#ifndef __MACROS_H__</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#1">Macros.h</a> */
+      <span class="CcgNodeTrue">#ifdef LONG_LED_ADDR</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#5">Macros.h</a> */
+      <span class="CcgNodeFalse">#else</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#8">Macros.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#11">Macros.h</a> */
+      <span class="CcgNodeFalse">#if GCC_VERSION &gt;= 70300L</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#38">Macros.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#40">Macros.h</a> */
+      <span class="CcgNodeTrue">#ifdef LONG_LED_ADDR</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#55">Macros.h</a> */
+      <span class="CcgNodeFalse">#else</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#57">Macros.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#59">Macros.h</a> */
+      <span class="CcgNodeTrue">#ifdef USE_XFADE</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#243">Macros.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#310">Macros.h</a> */
+      <span class="CcgNodeTrue">#ifdef USE_XFADE</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#444">Macros.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#511">Macros.h</a> */
+      <span class="CcgNodeTrue">#if _USE_INCH_TRIGGER</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#664">Macros.h</a> */
+      <span class="CcgNodeFalse">#else</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#667">Macros.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#672">Macros.h</a> */
+      <span class="CcgNodeTrue">#if _USE_SET_TVTAB</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#677">Macros.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#679">Macros.h</a> */
+      <span class="CcgNodeTrue">#if _USE_DEF_NEON</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#681">Macros.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#683">Macros.h</a> */
+      <span class="CcgNodeTrue">#if _USE_CANDLE</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#685">Macros.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#687">Macros.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="Macros.h_13559b030b5c7521ff75642c0b1f7c52.html#1222">Macros.h</a> */
+    <span class="CcgNodeFalse">#ifdef _HOUSE_STATISTIC</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#59">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#61">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#63">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#ifdef _USE_SEP_CONST</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#77">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#79">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#81">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_CANDLE</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#97">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#99">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_SET_TVTAB</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#101">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#106">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_DEF_NEON</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#108">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#110">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_COPY_N_LEDS</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#124">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#127">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#129">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_INCH_TRIGGER</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#134">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#143">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#148">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if 1</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#643">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#661">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#677">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#ifdef CONFIG_ONLY</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#915">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#917">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#919">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_STORE_STATUS &amp;&amp; _USE_EXT_PROC</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#924">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#elif _USE_STORE_STATUS</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#931">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#elif _USE_EXT_PROC</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#938">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#945">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#951">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_USE_GLOBALVAR</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#953">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#955">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if ((FIRE              &amp; 0x03) != 0) || ((FIRED             &amp; 0x03) != 1) || ((FIREB             &amp; 0x03) != 2) ||       ((ROOM_CHIMNEY      &amp; 0x03) != 0) || ((ROOM_CHIMNEYD     &amp; 0x03) != 1) || ((ROOM_CHIMNEYB     &amp; 0x03) != 2) ||       ((ROOM_TV0_CHIMNEY  &amp; 0x03) != 0) || ((ROOM_TV0_CHIMNEYD &amp; 0x03) != 1) || ((ROOM_TV0_CHIMNEYB &amp; 0x03) != 2) ||       ((ROOM_TV1_CHIMNEY  &amp; 0x03) != 0) || ((ROOM_TV1_CHIMNEYD &amp; 0x03) != 1) || ((ROOM_TV1_CHIMNEYB &amp; 0x03) != 2)</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1147">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1152">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#ifdef _USE_LOCAL_TX</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1249">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1253">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1257">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_STORE_STATUS</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1293">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1295">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_EXT_PROC</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1296">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1298">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_STORE_STATUS</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1306">MobaLedLib.h</a> */
+      <span class="CcgNodeTrue">#if _USE_EXT_PROC</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1307">MobaLedLib.h</a> */
+      <span class="CcgNodeFalse">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1309">MobaLedLib.h</a> */
+      <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1311">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1312">MobaLedLib.h</a> */
+      <span class="CcgNodeFalse">#if _USE_EXT_PROC</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1313">MobaLedLib.h</a> */
+      <span class="CcgNodeFalse">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1315">MobaLedLib.h</a> */
+      <span class="CcgNodeFalse">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1317">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1318">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_USE_GLOBALVAR</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1319">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1321">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#ifndef _USE_LOCAL_TX</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1342">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1345">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_USE_GLOBALVAR</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1350">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1352">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_STORE_STATUS</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1356">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1359">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_EXT_PROC</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1360">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1362">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_DEF_NEON</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1367">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1371">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#ifdef _NEW_ROOM_COL</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1416">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1418">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_INCH_TRIGGER</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1425">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#else</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1428">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1431">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#ifdef _NEW_ROOM_COL</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1442">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1448">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_CANDLE</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1449">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1451">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_STORE_STATUS</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1470">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1472">MobaLedLib.h</a> */
+    <span class="CcgNodeFalse">#ifdef _NEW_ROOM_COL</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1474">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1476">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_CANDLE</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1478">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1480">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#if _USE_SET_TVTAB</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1482">MobaLedLib.h</a> */
+    <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1484">MobaLedLib.h</a> */
+  <span class="CcgNodeTrue">#endif</span>  /* <a href="MobaLedLib.h_fb358117f744d3eccf409dda1cd8a43c.html#1491">MobaLedLib.h</a> */
+  <span class="CcgNodeFalse">#ifdef NUM_LEDS</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#29">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#endif</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#32">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeFalse">#ifdef CONFIG_ONLY</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#64">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#else</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#66">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#endif</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#68">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#ifndef COPYLED_OFF</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#561">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#endif</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#563">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#ifndef COPYLED_OFF_ONCE</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#565">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#endif</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#567">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#ifndef CONFIG_ONLY</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#616">LEDs_AutoProg_20250517_big1.h</a> */
+  <span class="CcgNodeTrue">#endif</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#617">LEDs_AutoProg_20250517_big1.h</a> */
+<span class="CcgNodeTrue">#endif</span>  /* <a href="LEDs_AutoProg_20250517_big1.h_a55ee6117e90833393616f117e6b9d5d.html#623">LEDs_AutoProg_20250517_big1.h</a> */
+</pre>
+  </body>
+</html>

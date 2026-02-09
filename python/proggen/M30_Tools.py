@@ -765,8 +765,8 @@ def DeleteElementAt(Index, prLst):
     for i in vbForRange(Index + 1, UBound(prLst)):
         prLst[i - 1] = prLst(i)
     # Shrink the array by one, removing the last one
-    #prLst = vbObjectInitialize((UBound(prLst) - 1,), Variant, prLst)
-    prLst.delete()
+    prLst = vbObjectInitialize((UBound(prLst) - 1,), Variant, prLst)
+    #prLst.delete()
 
 def Test_DeleteElementAt():
     Arr = vbObjectInitialize(objtype=String)
@@ -950,9 +950,9 @@ def Test_SplitMultiDelims():
     Debug.Print(r'---')
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: InString - ByVal 
-def SplitEx(InString, IgnoreDoubleDelmiters, *Delims):
+def SplitEx(InString, IgnoreDoubleDelmiters, KeepDelimiters, *Delims):
     Delims = VBArray.createFromData(Delims)
-    Arr = vbObjectInitialize(objtype=String)
+    arr = vbObjectInitialize(objtype=String)
 
     Ndx = int()
 
@@ -969,11 +969,68 @@ def SplitEx(InString, IgnoreDoubleDelmiters, *Delims):
                 InString = Replace(InString, Delims(Ndx) + Delims(Ndx), Delims(Ndx))
                 N = InStr(1, InString, Delims(Ndx) + Delims(Ndx), vbTextCompare)
     Arr = vbObjectInitialize(((1, Len(InString)),), Variant)
+
     for Ndx in vbForRange(LBound(Delims), UBound(Delims)):
-        InString = Replace(InString, Delims(Ndx), Chr(1))
-    Arr = Split(InString, Chr(1))
+        if not KeepDelimiters:
+            if Delims(Ndx) == ",":
+                InString = Replace(InString, Delims(Ndx), Chr(1))
+            else:
+                InString = ReplaceExact(InString, CStr(Delims(Ndx)), Chr(1))
+        else:
+            if Delims(Ndx) == ",":
+                InString = Replace(InString, Delims(Ndx), Chr(1) + Delims(Ndx))
+            else:
+                InString = ReplaceExact(InString, CStr(Delims(Ndx)), Chr(1) + CStr(Delims(Ndx)) + Chr(1))
+                            
+    arr = Split(InString, Chr(1))
+    
+    if Delims(0) !=  ",":
+        for Ndx in vbForRange( LBound(arr), UBound(arr)):
+            arr[Ndx] = Trim(CStr(arr(Ndx)))
+        
+        
+        # Juergen 04.12.2025 remove empty values
+        n = LBound(arr)
+        for Ndx in vbForRange(LBound(arr), UBound(arr)):
+            if CStr(arr(Ndx)) != "":
+                arr[n] = arr(Ndx)
+                n = n + 1
+          
+        
+        #ReDim Preserve arr(n - 1)
+      
     fn_return_value = Arr
     return fn_return_value
+
+def ReplaceExact(text: str, find_token: str, replace_token: str) -> str:
+    start_pos = 0  # Python uses 0‑based indexing
+
+    while True:
+        # Case 1: token at start of text
+        if start_pos == 0 and text.startswith(find_token):
+            pos1 = 0
+        else:
+            # Look for " find_token" (with leading space)
+            search_str = " " + find_token
+            pos1 = text.find(search_str, start_pos)
+            if pos1 >= 0:
+                pos1 += 1  # move to start of token
+
+        if pos1 < 0:
+            break  # no more matches
+
+        end_pos = pos1 + len(find_token)
+
+        # Check if token is followed by a space (same as VBA Mid(...)= " ")
+        if end_pos < len(text) and text[end_pos] == " ":
+            # Replace the token
+            text = text[:pos1] + replace_token + text[end_pos:]
+            start_pos = pos1 + len(replace_token) + 1
+        else:
+            # Skip this occurrence
+            start_pos = pos1 + len(find_token) + 1
+
+    return text
 
 def Test_SplitEx():
     s = String()
@@ -1193,6 +1250,36 @@ def Get_First_SubDir(DirName):
         Res = Dir()
     return fn_return_value
 
+#--------------------------------------------------------------------------------------------------------------------
+def VersionStr_is_Equal(Ver1, Ver2 , Delimmiter = "."):
+#--------------------------------------------------------------------------------------------------------------------
+# Compares two version strings like
+#  "1.0.7"
+# If one string is shorter than the other the missing digits are replaced by 0
+# "1.0" => "1.0.0"
+    _fn_return_value = False
+    Ver1A = Split(Ver1, Delimmiter)
+    Ver2A = Split(Ver2, Delimmiter)
+    EndNr = max(UBound(Ver1A), UBound(Ver2A))
+    for Nr in vbForRange(0, EndNr):
+     
+        if UBound(Ver1A) >= Nr:
+            v1 = P01.val(Ver1A(Nr))
+        else:
+            v1 = 0
+        
+        if UBound(Ver2A) >= Nr:
+            v2 = P01.val(Ver2A(Nr))
+        else:
+            v2 = 0
+
+        if v1 != v2:
+            _fn_return_value = False
+            return _fn_return_value
+  
+        _fn_return_value = True
+    return _fn_return_value
+
 def VersionStr_is_Greater(Ver1, Ver2, Delimmiter=r'.'):
     Ver1A = vbObjectInitialize(objtype=String)
 
@@ -1230,6 +1317,21 @@ def Test_VersionStr_is_Greater():
     #Debug.Print VersionStr_is_Greater("1.0.7", "1.0.8")
     #Debug.Print VersionStr_is_Greater("2.0.7", "")
     Debug.Print(VersionStr_is_Greater(r'1.0.8', r'1.0.7b'))
+
+#UT-------------------------------------
+def Test_VersionStr_is_Equal():
+#UT-------------------------------------
+    Debug.Print(VersionStr_is_Equal("1.0.7", "1.03.1"))
+    #Debug.Print VersionStr_is_Equal("1.0.7", "1.0.1")
+    #Debug.Print VersionStr_is_Equal("1.0.7", "1.0.8")
+    #Debug.Print VersionStr_is_Equal("2.0.7", "")
+    #Debug.Print VersionStr_is_Equal("1.0.8", "1.0.9")
+    #Debug.Print VersionStr_is_Equal("1.0.8", "1.0.9b")
+    #Debug.Print VersionStr_is_Equal("1.0.8", "0.9.9")
+    #Debug.Print VersionStr_is_Equal("1.9.9", "2.0.0")
+    #Debug.Print VersionStr_is_Equal("1.0.8", "1.0.8b")
+    Debug.Print(VersionStr_is_Equal("1.0.8", "1.0.8"))
+
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: DirName - ByVal 
 def Del_Folder(DirName, ShowError=True):
@@ -1440,14 +1542,14 @@ def Test_Get_Platform_String():
     #   false       false
     #   intGood         -22
     #   intBad          a44
-    Get_Platform_String(r'ESP32', r'SPI_Pins')
-    Get_Platform_Bool(r'AM328', r'TRUE')
-    Get_Platform_Bool(r'AM328', r'TRue')
-    Get_Platform_Bool(r'AM328', r'false')
-    Get_Platform_Bool(r'AM328', r'0')
-    Get_Platform_Bool(r'AM328', r'1')
-    Get_Platform_Int(r'PICO', r'intGood')
-    Get_Platform_Int(r'PICO', r'intBad')
+    Get_Platform_String(rM02.HT_ESP32, r'SPI_Pins')
+    Get_Platform_Bool(rM02.HT_AM328, r'TRUE')
+    Get_Platform_Bool(rM02.HT_AM328, r'TRue')
+    Get_Platform_Bool(rM02.HT_AM328, r'false')
+    Get_Platform_Bool(rM02.HT_AM328, r'0')
+    Get_Platform_Bool(rM02.HT_AM328, r'1')
+    Get_Platform_Int(rM02.HT_PICO, r'intGood')
+    Get_Platform_Int(rM02.HT_PICO, r'intBad')
 
 def Get_Act_ms():
     
@@ -1481,11 +1583,11 @@ def CreateHeaderFile(Platform, SheetName):
     PG.ThisWorkbook.Sheets(SheetName).Select()
     M25.Make_sure_that_Col_Variables_match()
     OriginalPlatform = P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL)
-    if (Platform == 'ESP32'):
+    if (Platform == M02.HT_ESP32):
         P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_ESP32
-    elif (Platform == 'AM328'):
+    elif (Platform == M02.HT_AM328):
         P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_NANO_NEW
-    elif (Platform == 'PICO'):
+    elif (Platform == M02.HT_PICO):
         P01.CellDict[M02.SH_VARS_ROW, M25.BUILDOP_COL] = M02.BOARD_PICO
     else:
         P01.MsgBox('The platform ' + Platform + ' is not supported')
@@ -1515,13 +1617,13 @@ def CreateAllHeaderFiles():
    
     for Sh in P01.ActiveWorkbook.Sheets:
         if __IsValidPageId(Sh.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)):
-            CreateHeaderFile('ESP32', Sh.Name)
+            CreateHeaderFile(M02.HT_ESP32, Sh.Name)
     for Sh in P01.ActiveWorkbook.Sheets:
         if __IsValidPageId(Sh.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)):
-            CreateHeaderFile('AM328', Sh.Name)
+            CreateHeaderFile(M02.HT_AM328, Sh.Name)
     for Sh in P01.ActiveWorkbook.Sheets:
         if __IsValidPageId(Sh.Cells(M02.SH_VARS_ROW, M02.PAGE_ID_COL)):
-            CreateHeaderFile('PICO', Sh.Name)
+            CreateHeaderFile(M02.HT_PICO, Sh.Name)
 
 """ 31.01.22: Juergen
 ---------------------------------------------------------------------------------------------------------------------------------
@@ -1592,4 +1694,100 @@ def WorksheetExists(SheetName):
             return _fn_return_value
     _fn_return_value = False
     return _fn_return_value
+
+
+
+# def enum_disk_drives(print_debug=True):
+    # drive_letters = []
+    # drive_names = []
+
+    # try:
+        # c = wmi.WMI(namespace="root\\CIMV2")
+
+        # # Equivalent WMI query:
+        # # Win32_LogicalDisk WHERE DriveType=2 AND VolumeName='RPI-RP2'
+        # disks = c.Win32_LogicalDisk(DriveType=2, VolumeName="RPI-RP2")
+
+        # for d in disks:
+            # drive_letters.append(d.DeviceID)   # e.g. "E:"
+            # drive_names.append(d.VolumeName)   # e.g. "RPI-RP2"
+
+            # if print_debug:
+                # print(f"Found USB drive: {d.DeviceID} - {d.VolumeName}")
+
+    # except Exception as e:
+        # if print_debug:
+            # print("EnumDiskDrives error:", e)
+
+    # return drive_letters, drive_names, len(drive_letters)
+
+import os
+import platform
+import subprocess
+from pathlib import Path
+
+import os
+import platform
+from pathlib import Path
+import subprocess
+
+
+def enum_disk_drives(print_debug=True):
+    drive_letters = []
+    drive_names = []
+
+    system = platform.system()
+
+    # -------------------------
+    # WINDOWS
+    # -------------------------
+    if system == "Windows":
+        for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+            root = Path(f"{letter}:/")
+            if root.exists():
+                try:
+                    result = subprocess.check_output(["cmd", "/c", f"vol {letter}:"])
+                    result = result.decode(errors="ignore")
+
+                    if "RPI-RP2" in result:
+                        drive_letters.append(str(root))
+                        drive_names.append("RPI-RP2")
+                        if print_debug:
+                            print(f"Found Pico: {root} - RPI-RP2")
+                except Exception:
+                    pass
+
+    # -------------------------
+    # LINUX
+    # -------------------------
+    elif system == "Linux":
+        media_root = Path("/media") / os.getenv("USER", "")
+        if media_root.exists():
+            for entry in media_root.iterdir():   # entry is a Path
+                if entry.is_dir() and entry.name == "RPI-RP2":
+                    drive_letters.append(str(entry))
+                    drive_names.append("RPI-RP2")
+                    if print_debug:
+                        print(f"Found Pico: {entry}")
+
+    # -------------------------
+    # MACOS
+    # -------------------------
+    elif system == "Darwin":
+        volumes = Path("/Volumes")
+        for entry in volumes.iterdir():          # entry is a Path
+            if entry.is_dir() and entry.name == "RPI-RP2":
+                drive_letters.append(str(entry))
+                drive_names.append("RPI-RP2")
+                if print_debug:
+                    print(f"Found Pico: {entry}")
+
+    else:
+        if print_debug:
+            print("Unsupported OS")
+
+    return drive_letters, drive_names, len(drive_letters)
+
+
+
 

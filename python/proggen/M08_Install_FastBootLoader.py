@@ -286,7 +286,7 @@ def Install_FastBootloader():
     if M25.Page_ID != 'DCC' and M25.Page_ID != 'Selectrix'  and M25.Page_ID != 'LNet':
         P01.MsgBox(M09.Get_Language_Str('Die schnelle Bootloader kann nur von einer DCC, LNet oder Selectrix Seite aus installiert werden.'), vbInformation, M09.Get_Language_Str('Falsche Seite zum aktualisieren des Bootloaders ausgewählt'))
         return
-    if M02.Get_BoardTyp() != 'AM328':
+    if M02.Get_BoardTyp() != M02.HT_AM328:
         # 08.12.23: Juergen
         P01.MsgBox(M09.Get_Language_Str('Der schnelle Bootloader kann nur für Arduino installiert werden.'), vbInformation, M09.Get_Language_Str('Falsche Plattform zum Aktualisieren des Bootloaders ausgewählt'))
         return

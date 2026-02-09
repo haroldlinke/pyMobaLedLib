@@ -41,7 +41,7 @@ from vb2py.vbdebug import *
 #****************************************
 #*                                      *
 #*       PyProgramGenerator             *
-#*       RevisionHistory_ToDo           *
+#*       RevisionHistory                *
 #*                                      *
 #****************************************
 # 23.12.2021 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
@@ -52,13 +52,13 @@ from vb2py.vbdebug import *
 #****************************************
 #*                                      *
 #*       MobaLedLib                     *
-#*       M00_RevisionHistory_ToDo       *
+#*       M00_RevisionHistory            *
 #*                                      *
 #****************************************
 #  MobaLedLib: LED library for model railways
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#  Copyright (C) 2018, 2019, 2020, 2021, 2022  Hardi Stengelin: MobaLedLib@gmx.de
+#  Copyright (C) 2018, 2019, 2020, 2021, 2022  Hardi Stengelin: https://forum.mobaledlib.de
 #  Copyright (C) 2020, 2021, 2022  Jürgen Winkler: MobaLedLib@gmx.at
 #  Python-Version: Copyright (C) 2022, 2023  Harold Linke: harold.linke@t-online.de
 #
@@ -837,7 +837,65 @@ from vb2py.vbdebug import *
 # 29.03.25: - Harold  - change download URL and path for farbtest
 # 30.03.25: - Juergen - change version string schema to include platform
 #'                     - change to beta 3.3.2G
+#' 24.04.25: - Juergen - change FastLED version to 3.9.13 in PlatformIO builds
+#' 24.04.25: - Juergen - change to 3.4.0
+#' 26.04.25: - Juergen - fix export to file issue "Error... when saving an MLL file (.pgf)" see https://forum.mobaledlib.de/viewtopic.php?t=134
+#' 21.05.25: - Juergen - add some checks for Pico platform
+#' 22.05.25: - Juergen - fix various bugs reported in Forum "Bugs und offene Punkte"
+#'                       Last rebuild failed - Tastendruck erforderlich see https://forum.mobaledlib.de/viewtopic.php?t=182
+#'                       Fehlermeldung beim Erstellen einer Pushbuttonfunktion see https://forum.mobaledlib.de/viewtopic.php?t=193
+#'                       Fehlermeldung bei Random-Befehlen see https://forum.mobaledlib.de/viewtopic.php?t=161
+#'           - Juergen - merge Misha's changes from 30.01.25 to allow led channel selection with multiplexer
+#' 24.05.25  - Peter   - fix bug when copying hidden sheets
+#' 25.05.25: - Juergen - experimental analog support for Pico platform (LDR)
+#' 27.05.25: - Juergen - fix Copy_from_Sheet_to_Sheet bug
+#'                     - change to beta 3.4.0A
+#' 07.06.25: - Juergen - Added "Serielles USB-Gerät" for "Nano" = german for "USB Serial Port"
+#' 12.06.25: - Juergen - fix issue that simulator is not starting
+# ' 27.06.25: - Juergen -  translate Macros only if language has changed
+# ' 23.07.25: - PeterVT11 - Mailadresse auf Forum umgestellt.
+# ' 25.07.25: - Juergen - now LED2Var uses long adresses on ESP32/PICO platform
+# ' 02.11.25: - Juergen - set pico to release status, remove experimental, download libraries automatically
+# ' 07.11.25: - Juergen - change to release 3.5.0
+# ' 09.11.25: - Peter   - rename Beta to Korrekturversion
+# ' 15.11.25: - Juergen - support usb signature of PICO in boot mode
+# '                     - improve com port select, showing available ports of other device types
+# '                     - change images in com port selection dialog
+# '                     - add desktop link to search page
+# ' 20.11.25: - Juergen - improve serial port detection handling
+# '             Micha   - update ESP32 image and Suche icon
+# ' 21.11.25: - Juergen - improve processing of macros only extensions
+# '             Juergen - Options tab DCC/SX Arduino hidden for non Nano platforms
+# ' 26.11.25: - Juergen - Platform dependent check of maximum number of inputs
+# ' 28.11.25: - Juergen - detect PICO in boot mode and install starter image
+# ' 04.12.25: - Juergen - fix Logic() token detection
 
+#************************
+#*                      *
+#*       M00_ToDo       *
+#*                      *
+#************************
+#Attribute VB_Name = "M00_ToDo"
+#'  MobaLedLib: LED library for model railways
+#'  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#'
+#'  Copyright (C) 2018, 2019, 2020, 2021, 2022  Hardi Stengelin: https://forum.mobaledlib.de
+#'  Copyright (C) 2020-2025 Jürgen Winkler: MobaLedLib@gmx.at
+#'
+#'  This library is free software; you can redistribute it and/or
+#'  modify it under the terms of the GNU Lesser General Public
+#'  License as published by the Free Software Foundation; either
+#'  version 2.1 of the License, or (at your option) any later version.
+#'
+#'  This library is distributed in the hope that it will be useful,
+#'  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#'  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#'  Lesser General Public License for more details.
+#'
+#'  You should have received a copy of the GNU Lesser General Public
+#'  License along with this library; if not, write to the Free Software
+#'  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
+#'  -------------------------------------------------------------------------------------------------------------
 
 # ToDo:
 # ~~~~~
@@ -858,7 +916,7 @@ from vb2py.vbdebug import *
 #   - Beim löschen von Zeilen sollten die Buttons auch gelöscht werden
 #   - Die Buttons sollen nur erscheien wenn eine Address Nummer und Ein Typ angegeben wird
 # - Wenn der "Lösche Tabelle" Button gedrückt wird sollten wieder ein paar leere Zeilen Entstehen
-# - Das automatische Hinzufüggrn neuer Zeilen funktioniert nicht in der ersten Zeile
+# - Das automatische Hinzufügen neuer Zeilen funktioniert nicht in der ersten Zeile
 # - FastLED Version und Compiler Version prüfen
 # - Schalter einlesen
 # - Das Einlesen des LDRs braucht relativ viel Speicher 1404 FLASH (5%), 123 RAM  (06.04.20)

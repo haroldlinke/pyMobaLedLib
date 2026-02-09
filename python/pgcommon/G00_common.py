@@ -37,7 +37,7 @@ from vb2py.vbfunctions import *
 import sys
 import ExcelAPI.XLA_Application as X02
 #import mlpyproggen.Pattern_Generator as PG
-import pattgen.M09_Language as M09
+import proggen.M09_Language as M09
 import pattgen.M30_Tools as M30
 import proggen.M20_PageEvents_a_Functions as M20
 import proggen.F00_mainbuttons as F00
@@ -97,7 +97,7 @@ def Create_New_Sheet(SheetName, Add_to_Duplicate_Name='_Copy_', AfterSheetName="
     #    AfterSheet = X02.Sheets(AfterSheetName) #*HL
     
     AfterSheet=AfterSheetName #*HL
-    X02.Sheets(AfterSheetName).Copy(SheetName=SheetName,After=AfterSheet)
+    X02.Sheets(AfterSheetName).Copy(SheetName=SheetName,After=AfterSheet, copydata=True, copyspan="A1:Q1")
     #PG.ThisWorkbook.Activate()
     #X02.ActiveSheet.Name = SheetName
     X02.Sheets(SheetName).Select()

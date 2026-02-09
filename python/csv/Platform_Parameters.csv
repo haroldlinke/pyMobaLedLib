@@ -128,6 +128,7 @@ PIN_ALIAS_MLL_EXT_OUT_P8;;;=PIN_ALIAS_LED5;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 PIN_ALIAS_MLL_EXT_OUT_P9;;;=PIN_ALIAS_LED6;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 PIN_ALIAS_MLL_EXT_OUT_P10;;;=PIN_ALIAS_LED7;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-MaxLed;The maximum numer of Leds in the configuration;256;16384;256;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+MaxLed;The maximum number of LEDs in the configuration;256;16384;256;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+MaxInput;The maximum number of inputs (variables) in the configuration;250;250;250;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 NeedLedArduino;do we need a seperate Arduino for DCC?;true;false;false;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 UseHardwareHandshake;Enable hardware handshake for serial communication;false;true;true;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

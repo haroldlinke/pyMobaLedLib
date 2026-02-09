@@ -15,13 +15,13 @@ REM   download    Send the hex file to the ESP
 
 CHCP 65001 >NUL
 
-set ArduinoLib=C:\Users\Harold\Documents\Arduino/libraries
+set ArduinoLib=C:\Users\harol\Documents\Arduino/libraries
 if not exist MyPrivateBuildScript.cmd (
        REM embedded Fast Build and Upload
-       call :build "C:\Program Files (x86)\Arduino\" "LEDs_AutoProg.ino" COM8 "esp32:esp32:esp32:PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none" 115200  "%ArduinoLib%" esp32 %*
+       call :build "C:\Program Files (x86)\Arduino\" "LEDs_AutoProg.ino" COM7 "esp32:esp32:esp32:PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none" 115200  "%ArduinoLib%" esp32 %*
 ) else (
        REM user defined Build and Upload
-       call MyPrivateBuildScript.cmd "C:\Program Files (x86)\Arduino\" "LEDs_AutoProg.ino" COM8 "--board esp32:esp32:esp32:PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none --pref programmer=arduino:arduinoisp" 115200  "%ArduinoLib%" esp32 %*
+       call MyPrivateBuildScript.cmd "C:\Program Files (x86)\Arduino\" "LEDs_AutoProg.ino" COM7 "--board esp32:esp32:esp32:PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none" 115200  "%ArduinoLib%" esp32 %*
        )
 IF ERRORLEVEL 1 ECHO Start_Arduino_Result: %ERRORLEVEL% > "Start_Arduino_Result.txt"
 goto :eof
@@ -107,8 +107,6 @@ copy "%srcFile%" "%cppFile%" /Y >nul:
 
 if exist "%aTemp%\rebuildFailed.txt" (
    echo Last rebuild failed ;-(
-   echo Press ENTER to rebuild everything
-   if "%8"=="" pause
    goto :rebuild
    )
 
