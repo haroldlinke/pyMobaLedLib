@@ -43,6 +43,341 @@ The VBA Code of the PatternGenerator was translated by an enhanced version of th
   
 
 History of Change
+
+7.1.3 - 4.2.2026
+correction:
+- Nano with new bootloader not flashed
+- conditional colorisation for Adress and Connector column did not work
+- Z21 Simulator: IP Adress of Host wrong on Linux systems - use new algorithm
+- an empty logfile.log was created  on ..\python level
+- reduced startup messages in cmd window
+
+7.1.2 - 2.2.2026
+correction:
+- several typos corrected
+
+7.1.1 - 1.2.2026
+correction:
+- macro selection: macro Farbanimation was openend, when no macro was selected
+- ColorTestMode: Last page was openend, when colortestmode was active - now always the colortestpage is opened first
+new:
+- conditional color selection for ProgramGenerator
+
+7.1.0 - 30.1.2026
+correction
+- servotestpage1, programming servo often did not work correctly
+new:
+- update to MLL 3.5.0C1
+
+7.0.2-A4 - 3.9.2025
+- Error in handling dutch special letters
+
+7.0.2-A3 - 2.9.2025
+- Error in loading pgf-sheets - sheet name could be overwritten
+
+7.0.2-A2 - 1.9.2025
+- error in ADD_SOUND_Definition preventing generating code for Pico Zero
+
+7.0.2-A1 - 30.8.2025
+- update to MLL V3.4.0B3
+- 27.06.25: - Juergen -  translate Macros only if language has changed
+- 23.07.25: - PeterVT11 - Mailadresse auf Forum umgestellt.
+- 25.07.25: - Juergen - now LED2Var uses long adresses on ESP32/PICO platform
+
+
+7.0.2-A0 - 30.8.2025
+- support for Pico Zero
+- Patch PicoFastLed.cpp
+
+7.0.1-A0 - 28.8.2025
+- correction: Programming of servos was not working anymore
+
+7.0.0-A2 - 2.8.2025
+- corrected error preventing the loading of the configuration when a new page created by loading a PGF file was existing
+- update to V2.0.38 of RailMail3-WS2811.ipr
+
+7.0.0-A1 - 28.7.2025
+- removed update of tksheet to Version 7.5.12 - unfortunately some events are now generated in a different order and create issues in the MLL dialog
+- corrected issues in the loading of PGF-Files for Selectrix - loading worked only for "DCC" correctly
+- implemented a proprietary solution to show tooltips in pattern configurator
+- update to V2.0.36 of RailMail3-WS2811.ipr
+
+7.0.0-A0 - 25.7.2025
+- update of tksheet to Version 7.5.12- use TK-Sheet tooltips in sheet
+- context menue (right-mouse button) for ProgGenerator tabs
+  - copy tab - creates a copy of the current tab, asks for new name
+  - rename tab - asks for new name of tab
+- new sheet now copies all data from the first row of the current sheet (e.g. Type, boardtype port etc.)
+- logfile handling reworked
+- start values for DCC adresses work now correctly (up to 5 buttons)
+- first version of S88 interface
+- update check needs to be switched on explicitly in the config page
+- handling of version check chnaged to allow development version without notification to the users.
+
+6.1.1 - 6.7.2025
+- redesign of mDNS device search - Host adapter switch not needed anymore.
+- error assigning LEDs to Channels corrected
+- better error handling, wenn no or wrong boardtype is assigned
+- added comments to PatternGenerator Sheet
+
+6.1.0 - 25.6.2025
+- update to MLL 3.4.0B2
+- mDNS corrected:
+  - crash if hostadapterIP is not found
+  - switch use of Host adapter use for mDNS in Config-Page
+- support for LED2Var in read IP Configuration
+- updated variable handling in read IP Configuration
+- Patch for HouseT and Const Macro possible
+- LED 1 flashes, when WLAN-Pico is selected in Post-Selection-Dialog
+
+5.5.3 - 17.05.2025
+Correction:
+- Initalisation of Led2Var Table to FF,FF,FF,FF
+- Updated Telnet Connection Thread
+
+5.5.2 - 16-05-2025
+Correction:
+- evaluation of config table formulas (support for &&)
+
+
+5.5.1 - 13-05-2025
+Updated:
+- new Macro MultiLEDAnimation - change of curve parameters (name, color, width)
+- experimental support for WLAN Pico - DCC-Commands and Direct-Mode via Telnet
+
+5.5.0 - 07-05-2025
+New:
+- new Macro MultiLEDAnimation (first implementation)
+- experimental support for WLAN Pico (first implementation)
+
+5.3.3c - 11-01-2025
+Correction
+- in new Version of Prog_Generator_Mobaledlib.xlsm Macronames replaced by formulas, 
+what led to Macros not found in the Python code (e.g. Gaslights Macro was used instead of Housce-Macro). 
+Solution: replaced formulas with values in the xlsm-file.
+
+
+5.3.3b - 09-01.2025
+Correction
+- no new version message, when no access to versioon on server
+- esp32 upload on Linux and Mac corrected
+
+5.3.3a - 02-01-2025
+Change
+- update to MLL3.3.2E
+- crash when opening "logic" Macro
+- esptool_py is only available in Windows version. Remove check in Mac and Linux Version
+- esptool: use esptool.py in Mac and Linux version
+
+5.3.2g - 13-10-2024
+Correction
+- Servo-Animation: in Test Servo cursor line runs out of grid.
+
+
+5.3.2f - 07-10-2024
+Correction
+- In house-macro dialog: "*" were missing
+- Crash when using Macro MonoFlop
+
+5.3.2e - 06-10-2024
+New:
+- pyMLL selects now the correct connection mode (Effect-Mode or Direct Mode) according to the needs of the active page.
+- delete page now allows the deletion of a complete tab
+Correction:
+- new-tab crash when current tab is no DCC, Selectrix or LNET tab.
+- crash when using SOUND_CHANNEL_DEFINITON macro
+- new HexFile for DirectMode Servos DM-TinyServo_20240928.hex - correcting error in INVERS-Mode
+
+
+5.3.2d - 25-09-2024
+New:
+- Servo-Anim makro: Servo Adress is saved with the macro
+Corrected:
+- ServoPage2 - Toggle Invers wrong Parameters used
+
+5.3.2c - 17-09-2024
+Correction
+- load pgf-file: Lines are copied into the wrong table
+- ESP32: Updated firmware, improves direct mode interface handling
+New:
+- Servo-Anim marks on/off sequences. In combination with new Attiny Firmware DM-TinyServo_20240831.hex this should reduce the unmotivated movements of servos
+
+5.3.2b - 19-08-2024
+Correction
+- Servo Animation: Crash when duration = 0
+- Servo Animation: Crash when changing duration in individual mode, when the orginal curve was an accelerated curve
+
+5.3.2a - 15-08-2024
+- New Firmware to Improve serial interface behaviour for ESP32
+- New Firmware for Attiny to improve Direct Mode Servo behaviour (DM-TinyServo_20240815.hex)
+
+5.3.1O - 13-08-2024
+Correction:
+- Patternconfigurator: "Neue Seite" crashes Programm
+- New start option --ESP32WINBAT True forces the ESP32 build to use the original WINBatch File of Excel MobaLedLib
+
+5.3.1N - 29-07-2024
+Update
+- Servo2 page use old CRC checkbox changed to "fast refresh"
+- Optimised logging for ESP32 serial interface tests
+
+5.3.1M - 28-07-2024
+Update
+- Servo2 page update improved for ESP32 - continuous sending of position information to Attiny (every 200ms)
+- DM-Mode Servo programming with LED support added
+
+5.3.1L - 27-07-2024
+Update
+- Servo2 page update improved for new Firmware - continuous sending of position information to Attiny (every 100ms)
+
+5.3.1K - 26-07-2024
+New
+- Servo2 page updates for new Firmware - not completely tested yet - chnages are compatible with current firmware
+
+5.3.1J - 26-07-2024
+Corrections:
+- double click in table now behaves as expected and opens dialog - changes in dialog are now saved correctly
+- Compilererror in Servo Anim: Bin_InCh_to_TmpVar(#InCh, 1.0) should be Bin_InCh_to_TmpVar(#InCh, 1)
+- Error for ESP32 under Win: esptools_py not found
+- Sometimes connection errors with ESP32
+
+5.3.1I - 08-07-2024
+Corrections:
+- crash when the last icon in shapelist  was deleted
+
+5.3.1H - 06-07-2024
+Corrections:
+- ServoAnimation: After pressing the "Fortsetzen test"-Button - the Button is not updated to "Stop Test"
+- Macros for Color and LED animation hidden - they need to be updated to the Servo Animation functionality and do not work anymore correctly
+- added a hidden feature for testing
+- Servo Animation: servo values limited to 1..254 to avoid 0 and 255 as values to reduce unintended movement
+- Servo Animation: new Help-Button opens directly MLL-wiki page: Servo Animation
+- Servo Animation: Channel selection added
+- Serial Interface: Connection interruption were sometimes not correctly detected
+
+5.3.1G - 18.6.2024
+Corrections
+- Servoanimation: crash when entry field is empty or has no valid numerical value in the field
+Improved
+- Servoanimation: Servotest - adapted delay between steps to PC performance - better realtime behaviour of servos
+- Servoanimation: Servotest - red line cursor showing current timepoint
+New
+- Servoanimation: new Macro ServoAnim2B - ServoAnimation with 2 Buttons for testing
+- Servoanimation: automatically Enable_Store_Status is set by the Macro to enable the storing of the servo status
+Known Issues:
+- PatternConfigurator: Loading and saving PCF files does not work
+- When restarting ARDUINO, Servos execute the first pattern and go fast to the first position
+
+5.3.1F - 14.6.2024
+Correction:
+- optimised communication via serial interface with ARDUINO
+New:
+- the optimised communication with ARDUINO allows the implementation of a test function  in the Servo Animation Window
+  after starting the test by clicking the test button, the servo is following the curve continously
+  during the test run, the values in the curve can be changed and are followed immediatly
+
+5.3.1E - 1.6.2024
+Corrections
+- LNet Adress-Input creates an Error Message
+- Crash when uploading Macro Mainboard_LED
+New:
+- Fonts used for most of the Forms can be adapted to screen size on Einstellungen-Page
+
+5.3.1D - 31.05.2024
+- Correction
+  - Crash at Macro Mainboard_LED corrected
+- New
+  - Servo Animation: Delete and Add points to animation curve
+
+5.3.1C - 29-05.2024
+- libraries can now be updated via the library page and via options -> update -> status of libraries
+- problem with esptools_py solved
+  - replaced "\" with "/" in libname
+  - for Linux and Mac check for esptool.py instead of esptool.exe
+  - check for esptool_py only for ESP boards
+- support for ESP32 boards for Linux and Mac
+- ServoAnim - Individual timepoints: changes of Ein-/Aus-durations update all timepoints proportionally
+- use of On/Off switch instead of 2 Buttons (Red/Green) (Undo of change in V5.3.1B - no improvement, more issues)
+
+5.3.1B - 22.05.2024
+- ProgramGenerator: New pages generation is possible
+- Servo Animation improvements:
+  - use of 2 Buttons (Red/Green) instead of On/Off switch
+  - new: timestep individuell - allows to move the points in time right and left by mouse
+  - active point can be moved by cursor-keys
+  - zoom into graph with Ctrl-Mousewheel (and crtl-up/down-key - when a point is active)
+  - drag of canvas with shift-left-mousebutton or shift cursor-keys
+
+
+5.3.1A - 17.05.2024
+correction:
+- Linux/Mac - Upload to ARDUINO was not working
+- Macro Flash - incorrect error message that input value is too large
+
+5.3.1- 17.05.2024
+correction:
+- crash when using mousewheel in macro tree and some other forms
+new
+- servoanimation: servo follows values of Afnagswert und Endwert
+- first part of support for translation into other languages added (not final yet)
+
+5.3.0J - 15.05.2024
+new:
+- check for new Version on Github
+correction :
+- error: crash when selecting on a Cell outside the available rows
+
+5.3.0I - 14.05.2024
+new:
+- last tab saved and will be opened at reopening
+correction :
+- error: testbutton  inactive after after Send-to-ARDUINO
+
+5.3.0H - 13.05.2024
+correction
+- error when reading individuell servo animation data for single servos.
+- error in DCC button handling after reconnection after Send_to_ARDUINO
+- error in saving workbook when closing workbook. Use filename of last load instead of standard filename.
+
+5.3.0G - 12.05.2024
+correction
+- crash when deleting rows and no row selected
+
+5.3.0F - 12.05.2024
+correction
+- delete LEDs_AutoProg before copying new version
+
+5.3.0D - 11.5.2024
+correction
+- save and load PGF file errors
+
+5.3.0C - 11.5.2024
+corrected
+- update of pyMLL program for Farbtest call from Excel
+
+5.3.0B - 11.05.2024
+Improved:
+- LED Color Animation
+Corrected:
+- view on small monitors, added scrollbars
+- about message open failed
+- logfile open is blocking the program
+
+5.3.0 - 08.05.2024
+- update to MLL3.3.2B
+- corrected issues in servo and led animation
+- reorganisation of windows version
+
+5.2.6.001 - 27.04.2024
+- corrected ESP32 compatibility for Win
+- program generator and patter configurator pages are active as default
+- better error handling when images are missing or wrong spelled
+
+5.2.5.001 - 23.4.2024
+- crash when installed in a complete new environment when updating libraries
+- improved error reporting
+
+
 5.2.4.001 - 21.4.2024
 - restructuring of event handling
 - corrected: Config page was inoperable, because named-ranges pointed to the wrong table entries
