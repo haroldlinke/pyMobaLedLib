@@ -634,6 +634,7 @@ class UserForm_Animation:
         
     def stop_test(self):
         print("Stop Test")
+        Debug.Print("Stop Test")
         self.Test_Button.TKWidget.configure(text="Fortsetzen Test")
         self.test_continue = False
         self.test_pause = True
@@ -710,7 +711,7 @@ class UserForm_Animation:
                 self.test_continue = True
                 self.run_test_point()
             else:
-                print("Start Test")
+                Debug.Print("Start Test")
                 self.Test_Button.TKWidget.configure(text="Stop Test")
                 self.max_idx = len(self.curve_points)
                 self.test_deltatime = 40 # 20 # 20ms steps
@@ -722,7 +723,7 @@ class UserForm_Animation:
                     self.test_continue = True
                     self.run_test_point()
         else:
-            print("Error_message-start test")
+            Debug.Print("Error_message-start test")
         
         
     def Test_Button_Click(self, event=None):

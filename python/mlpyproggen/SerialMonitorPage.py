@@ -81,6 +81,8 @@ import threading
 import queue
 import time
 import logging
+logger=logging.getLogger(__name__)
+
 #import concurrent.futures
 #import random
 #import webbrowser
@@ -95,9 +97,12 @@ SMALL_FONT= ("Verdana", 8)
 
 
 ThreadEvent = None
+PageInstance = None
             
 class SerialMonitorPage(tk.Frame):
     def __init__(self, parent, controller):
+        global PageInstance
+        PageInstance = self
         self.tabClassName = "SerialMonitorPage"
         tk.Frame.__init__(self,parent)
         self.controller = controller
@@ -168,14 +173,14 @@ class SerialMonitorPage(tk.Frame):
             self.RMBUS_request_timer = self.RMBUS_request_timer_confvalue
 
     def tabselected(self):
-        logging.debug("Tabselected: %s",self.tabname)
-        logging.info(self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
+        logger.info(self.tabname)
     
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
     
     def _update_value(self,paramkey):
-        logging.info("SerialMonitorPage - update_value: %s",paramkey)
+        logger.info("SerialMonitorPage - update_value: %s",paramkey)
         message = self.controller.get_macroparam_val(self.tabClassName, "SerialMonitorInput")+"\r\n" #self.input.get() +"\r\n"
         self.controller.send_to_ARDUINO(message)        
 
@@ -198,7 +203,7 @@ class SerialMonitorPage(tk.Frame):
         pass
     
     def dummy(self,event):
-        logging.info("dummy")
+        logger.info("dummy")
 
     def send(self,event=None):
         message = self.controller.get_macroparam_val(self.tabClassName, "SerialMonitorInput")+"\r\n" #self.input.get() +"\r\n"
@@ -233,7 +238,7 @@ class SerialMonitorPage(tk.Frame):
                                     self.Z21page.notifyZ21_RMBUS_DATA(json_str)
                             except:
                                 pass
-                        elif readtext.startswith(DF.SerialIF_teststring1): #("#?LEDs_AutoProg"):
+                        elif readtext.startswith(DF.SerialIF_teststring1) or readtext.startswith(DF.SerialIF_teststring3): #("#?LEDs_AutoProg"):
                             #temp_list = readtext.split(",")
                             #self.controller.max_ledcnt_list = temp_list[1:]
                             #self.controller.max_LEDchannel = len(self.controller.max_ledcnt_list)
@@ -282,7 +287,7 @@ class SerialMonitorPage(tk.Frame):
     
     def start_process_serial(self):
         global ThreadEvent
-        logging.debug("SerialMonitorPage: start_process_serial")
+        logger.debug("SerialMonitorPage: start_process_serial")
         ThreadEvent = threading.Event()
         ThreadEvent.set()
         time.sleep(2)
@@ -298,14 +303,33 @@ class SerialMonitorPage(tk.Frame):
             self.RMBUS_request_timer_confvalue = int(self.RMBUS_request_timer_confvalue_str)
         self.RMBUS_request_timer = self.RMBUS_request_timer_confvalue        
         self.RMBUS_request_timer = self.RMBUS_request_timer_confvalue
+        
+    def start_process_IP(self):
+        global ThreadEvent
+        logger.debug("SerialMonitorPage: start_process_IP")
+        ThreadEvent = threading.Event()
+        ThreadEvent.set()
+        time.sleep(2)
+        ThreadEvent.clear()
+        self.monitor_serial = True
+        self.thread = TelnetThread(self.controller.queue,self.controller.arduino)
+        self.thread.start()
+        self.process_serial()
+        self.RMBUS_request_timer_confvalue_str = self.controller.getConfigData("RMbusTimer")
+        if self.RMBUS_request_timer_confvalue_str == "":
+            self.RMBUS_request_timer_confvalue = 1
+        else:
+            self.RMBUS_request_timer_confvalue = int(self.RMBUS_request_timer_confvalue_str)
+        self.RMBUS_request_timer = self.RMBUS_request_timer_confvalue        
+        self.RMBUS_request_timer = self.RMBUS_request_timer_confvalue    
 
     def stop_process_serial(self):
-        logging.debug("stop_process_serial")
+        logger.debug("stop_process_serial")
         #print("SerialMonitorPage: stop_process_serial")
         global ThreadEvent
         self.monitor_serial = False
         if ThreadEvent:
-            logging.debug("Set ThreadEvent")
+            logger.debug("Set ThreadEvent")
             ThreadEvent.set()
         #time.sleep(1)
         
@@ -313,7 +337,10 @@ class SerialMonitorPage(tk.Frame):
         self.stop_process_serial()
         
     def connect (self,port):
-        self.start_process_serial()
+        if self.controller.ARDUINO_IP:
+            self.start_process_IP()
+        else:
+            self.start_process_serial()
     
     def disconnect (self):
         self.stop_process_serial()
@@ -335,17 +362,17 @@ class ReadLine:
             while not ThreadEvent.is_set() and self.s != None and self.s.is_open:
                 i = max(1, min(2048, self.s.in_waiting)) # any bytes in buffer
                 data = self.s.read(1)                    # read one byte  
-                logging.debug("serialread from ARDUINO:"+ str(data)+ "("+str(data.hex())+")")
+                logger.debug("serialread from ARDUINO:"+ str(data)+ "("+str(data.hex())+")")
                 if data >= b"\xD0": # binary communication detected, read one binary message
                     chkSum = int.from_bytes(data,byteorder = "big")
                     toReadbyte = self.s.read(1) # read length byte
-                    logging.debug("serialread from ARDUINO length:"+ str(toReadbyte)+ "("+str(toReadbyte.hex())+")")
+                    logger.debug("serialread from ARDUINO length:"+ str(toReadbyte)+ "("+str(toReadbyte.hex())+")")
                     msg_length = int.from_bytes(toReadbyte,byteorder = "big")
                     chkSum ^= msg_length
                     result = "JSON:{\"RMBUS\": \""
                     for i in range(msg_length):
                         Readbyte = self.s.read(1)
-                        logging.debug("serialread from ARDUINO:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
+                        logger.debug("serialread from ARDUINO:"+ str(Readbyte)+ "("+str(Readbyte.hex())+")")
                         ReadbyteInt = int.from_bytes(Readbyte,byteorder = "big")
                         chkSum ^= ReadbyteInt
                         if i < msg_length-1: # handle data bytes, last byte is for checksum only
@@ -353,7 +380,7 @@ class ReadLine:
                             result += result_str
                     result += "\"}"
                     if chkSum != 255:
-                        logging.debug("Checksum error in Feedback-String:"+ result)
+                        logger.debug("Checksum error in Feedback-String:"+ result)
                     return result
                 else:
                     i = data.find(b"\n")
@@ -363,15 +390,15 @@ class ReadLine:
                         return r
                 self.buf.extend(data)
         except BaseException as e:
-            logging.debug("SerialMonitorPage: Readline exception")
-            logging.debug(e, exc_info=True) 
+            logger.debug("SerialMonitorPage: Readline exception")
+            logger.debug(e, exc_info=True) 
             traceback.print_exc()
-            logging.debug("------------------")
+            logger.debug("------------------")
             result = ""
-            logging.debug("Set ThreadEvent, Readline error")
+            logger.debug("Set ThreadEvent, Readline error")
             ThreadEvent.set() 
             return result
-
+                
 class SerialThread(threading.Thread):
     def __init__(self, p_queue, p_serialport,p_serialportname=""):
         #global serialport
@@ -383,7 +410,7 @@ class SerialThread(threading.Thread):
 
     def run(self):
         #global serialport
-        logging.info("SerialThread started:"+self.serialport_name)
+        logger.info("SerialThread started:"+self.serialport_name)
         if self.serialport:
             while not ThreadEvent.is_set() and self.serialport.is_open:
                 if self.serialport and self.serialport.is_open:
@@ -394,13 +421,50 @@ class SerialThread(threading.Thread):
                                 text_dec = str(text.decode('utf-8'))
                                 if not text_dec.startswith("****"):
                                     self.queue.put(text_dec)
-                                    logging.info("SerialThread (%s) got message: %s", self.serialport_name,text_dec)
+                                    logger.info("SerialThread (%s) got message: %s", self.serialport_name,text_dec)
                                 else:
-                                    logging.info("SerialThread (%s) got debug message: %s", self.serialport_name,str(text.decode('utf-8')))
+                                    logger.info("SerialThread (%s) got debug message: %s", self.serialport_name,str(text.decode('utf-8')))
                             except BaseException as e:
-                                logging.debug(e, exc_info=True) 
-                                logging.info("SerialThread (%s) got message: %s", self.serialport_name,str(text))
+                                #logger.debug(e, exc_info=True) 
+                                logger.info("SerialThread (%s) got message: %s", self.serialport_name,str(text))
                                 self.queue.put(str(text))
                                 
-        logging.info("SerialThread (%s) received event. Exiting", self.serialport_name)
+        logger.info("SerialThread (%s) received event. Exiting", self.serialport_name)
+        
+class TelnetThread(threading.Thread):
+    def __init__(self, p_queue, p_telnetip,p_telnetportname=""):
+        #global serialport
+        threading.Thread.__init__(self)
+        self.queue = p_queue
+        self.telnetport = p_telnetip
+        self.telnetport_name = p_telnetportname
+        
+    def run(self):
+        #global serialport
+        logger.info("TelnetThread started:"+self.telnetport_name)
+        if self.telnetport:
+            while not ThreadEvent.is_set() and self.telnetport != None:
+                if self.telnetport:
+                    #text = self.rl.readline()
+                    try:
+                        text = self.telnetport.read_until(b"\n", timeout=20)
+                    except:
+                        text = None
+                        time.sleep(0.5)
+                    if text != None:
+                        if len(text)>0:
+                            try:
+                                text_dec = str(text.decode('utf-8'))
+                                if not text_dec.startswith("****"):
+                                    self.queue.put(text_dec)
+                                    logger.info("TelnetThread (%s) got message: %s", self.telnetport_name,text_dec)
+                                else:
+                                    logger.info("TelnetThread (%s) got debug message: %s", self.telnetport_name,str(text.decode('utf-8')))
+                            except BaseException as e:
+                                #logger.debug(e, exc_info=True) 
+                                logger.info("TelnetThread (%s) got message: %s", self.telnetport_name,str(text))
+                                self.queue.put(str(text))
+                                
+        logger.info("TelnetThread (%s) received event. Exiting", self.telnetport_name)
+
 

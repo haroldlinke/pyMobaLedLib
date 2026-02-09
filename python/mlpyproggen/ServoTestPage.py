@@ -69,6 +69,7 @@ from locale import getdefaultlocale
 import re
 import time
 import logging
+logger=logging.getLogger(__name__)
 
 PERCENT_BRIGHTNESS = 1  # 1 = Show the brightnes as percent, 0 = Show the brightnes as ">>>"# 03.12.19:
 
@@ -329,7 +330,7 @@ class ServoTestPage1(tk.Frame):
         
         button8a=tk.Label(set_button_frame, text="Inc >>",width=15,fg="black",relief="raised",font=self.fontbutton)
         button8a.grid(row=4, column=4, padx=10, pady=(10, 4), sticky='w')
-        self.controller.ToolTip(button8a, text="T140 Dec <<")
+        self.controller.ToolTip(button8a, text="T140 Inc >>")
         button8a.bind("<ButtonRelease-1>",lambda event: self.servo_prog_label_released(event=event))
         button8a.bind("<Button-1>",lambda event: self.servo_prog_label_pressed(event=event,code=140))               
 
@@ -381,7 +382,7 @@ class ServoTestPage1(tk.Frame):
         #self.setParamData("servo_channel" , self.v_servo_channel.get())
         
     def tabselected(self):
-        logging.debug("Tabselected: %s",self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
         #self.controller.currentTabClass = self.tabClassName
         #self.controller.send_to_ARDUINO("#BEGIN")
         #time.sleep(ARDUINO_WAITTIME)
@@ -396,13 +397,13 @@ class ServoTestPage1(tk.Frame):
         self.controller.bind("<Alt-F4>",self.cancel)
         
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)
         self.controller.ARDUINO_end_direct_mode()
         pass
         
-        logging.info(self.tabname)
+        logger.info(self.tabname)
         pass        
 
     def getConfigData(self, key):
@@ -630,8 +631,8 @@ class ServoTestPage1(tk.Frame):
             message = "#L" + '{:02x}'.format(lednum) + " " + '{:02x}'.format(servo_0) + " " + '{:02x}'.format(servo_1) + " " + '{:02x}'.format(servo_2) + " " + '{:02x}'.format(1) + "\n"
         else:
             message = "#L " + '{:04x}'.format(lednum) + " " + '{:02x}'.format(servo_0) + " " + '{:02x}'.format(servo_1) + " " + '{:02x}'.format(servo_2) + " " + '{:02x}'.format(1) + "\n"
-        self.controller.send_to_ARDUINO(message)
-        #time.sleep(0.2)
+        #self.controller.send_to_ARDUINO(message, slowmode=True)
+        self.controller.send_to_ARDUINO_servo(message)
 
 
             

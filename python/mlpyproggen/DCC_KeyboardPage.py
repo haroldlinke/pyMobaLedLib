@@ -70,6 +70,8 @@ import threading
 import queue
 import time
 import logging
+logger=logging.getLogger(__name__)
+
 from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
 
 from datetime import datetime
@@ -187,19 +189,19 @@ class DCCKeyboardPage(tk.Frame):
 
     def tabselected(self):
         #self.controller.currentTabClass = self.tabClassName
-        logging.debug("Tabselected: %s",self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)        
         pass
     
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
         #self.controller.send_to_ARDUINO("#BEGIN")
         #time.sleep(ARDUINO_WAITTIME)            
         pass
     
     def TabChanged(self,_event=None):
-        logging.debug("Tabchanged: %s",self.tabname)
+        logger.debug("Tabchanged: %s",self.tabname)
         pass
     
     def cancel(self,_event=None):
@@ -253,7 +255,7 @@ class DCCKeyboardPage(tk.Frame):
         self.update()
         address = self.controller.get_macroparam_val(self.tabClassName, "DCC BaseAddress")   #self.input.get()
         address_int=address+label.button
-        logging.debug ("_button_cmd: %s - %s",address_int,label.channel)
+        logger.debug ("_button_cmd: %s - %s",address_int,label.channel)
         command = "@ {:03} {:02} 01".format(address_int,label.channel)
         self.send_command_to_ARDUINO(command)
         for button in self.buttonlist:
@@ -272,6 +274,6 @@ class DCCKeyboardPage(tk.Frame):
         """Respond to user click on a Button"""
         address = self.controller.get_macroparam_val(self.tabClassName, "DCC BaseAddress")   #self.input.get()
         address_int=address+button
-        logging.debug ("_button_cmd: %s - %s",address_int,channel)
+        logger.debug ("_button_cmd: %s - %s",address_int,channel)
         command = "@ {:03} {:02} 01".format(address_int,channel)
         self.send_command_to_ARDUINO(command)

@@ -1,0 +1,10 @@
+
+PattConf;;n;1;0;0;0;;0;;455;455;;LightBulb | Pattern;Pattern(         LED,InCh, ...);Pattern(;Pattern;PatternConfig;Individuelle Pattern;Mit dieser Funktion kann ein individuelles Pattern erzeugt werden;Mit dieser Funktion wird der Patternkonfigurator genutzt, um individelle Pattern zu erzeugen;;;;;;;;;;;;;;;;;;;;;;;;
+PattConf;;1;1;0;0;0;;0;;456;456;;LightBulb | Pattern;SeroAnim(         LED,InCh, ...);#ServoAnim(;ServoAnim;PatternConfig;Servo Animation;Mit dieser Funktion kann eine Servo Animation erzeugt werden;Mit dieser Funktion kann mit einem grafischen Tool eine Servo Animation erzeugt werden;;;;;;;;;;;;;;;;;;;;;;;;
+PattConf;;1;2;0;0;0;;0;;457;457;;LightBulb | Pattern;SeroAnim2B(         LED,InCh, ...);#ServoAnim2B(;ServoAnim2B;*PatternConfig;Servo Animation mit 2 Button;Mit dieser Funktion kann eine Servo Animation mit 2 Buttons erzeugt werden;Mit dieser Funktion kann mit einem grafischen Tool eine Servo Animation erzeugt werden;;;;;;;;;;;;;;;;;;;;;;;;
+PattConf;;1;1;0;0;0;;0;;458;458;;LightBulb | Pattern;LEDColorAnim(         LED,InCh, ...);#LEDColorAnim(;LEDColorAnim;PatternConfig;LED Farb-Animation;Mit dieser Funktion kann eine LED Farb-Animation erzeugt werden;Mit dieser Funktion kann mit einem grafischen Tool eine LED Farb-Animation erzeugt werden;;;;;;;;;;;;;;;;;;;;;;;;
+PattConf;;1;1;0;0;0;;0;;459;459;;LightBulb | Pattern;MultiLEDColorAnim(         LED,InCh, ...);#MultiLEDColorAnim(;MultiLEDColorAnim;PatternConfig;MultiLED Farb-Animation;Mit dieser Funktion kann eine LED Farb-Animation mit beliebig vielen LEDs erzeugt werden;Mit dieser Funktion kann mit einem grafischen Tool eine LED Farb-Animation mit beliebig vielen Leds erzeugt werden;;;;;;;;;;;;;;;;;;;;;;;;
+PattConf;;1;1;0;0;0;;0;;459;459;;LightBulb | Pattern;MultiLEDColorAnim(         LED,InCh, ...);#MultiLEDColorAnim(;MultiLEDColorAnim;PatternConfig;MultiLED Farb-Animation;Mit dieser Funktion kann eine LED Farb-Animation mit beliebig vielen LEDs erzeugt werden;Mit dieser Funktion kann mit einem grafischen Tool eine LED Farb-Animation mit beliebig vielen Leds erzeugt werden;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+

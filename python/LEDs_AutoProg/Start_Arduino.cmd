@@ -5,7 +5,7 @@ if exist "Start_Arduino_Result.txt" del "Start_Arduino_Result.txt"
 COLOR 1F
 ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "
 ECHO    "    Zum                                                                  "
-ECHO    "     PC                    Prog_Generator Ver. 3.3.2G          by Hardi  "
+ECHO    "     PC                    Prog_Generator Ver. 3.5.0C1         by Hardi  "
 ECHO    "      \\                                                                 "
 ECHO    "       \\                                                                "
 ECHO    "    ____\\___________________                                            "
@@ -27,7 +27,7 @@ ECHO|SET /p="Verzeichnis: "
 CD
 ECHO/
 
-Call Start_AM328_Sub.cmd  2>&1 | find /v "Set log4j store directory" | find /v " StatusLogger " | find /v "serial.SerialDiscovery"
+Call Start_AM328_Sub.cmd 
 ECHO/
 
 IF EXIST "Start_Arduino_Result.txt" (

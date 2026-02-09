@@ -76,6 +76,7 @@ from locale import getdefaultlocale
 import re
 import time
 import logging
+logger=logging.getLogger(__name__)
 
 PERCENT_BRIGHTNESS = 1  # 1 = Show the brightnes as percent, 0 = Show the brightnes as ">>>"# 03.12.19:
 
@@ -163,7 +164,11 @@ class RightClickMenu(tk.Frame):
         self.mainpage._update_preview()        
     
     def popup_text(self, event):
-        self.right_click_menu.post(event.x_root, event.y_root)
+        try:
+            self.right_click_menu.post(event.x_root, event.y_root)
+        finally:
+            # Wichtig für macOS, damit das Menü nicht hängen bleibt
+            self.right_click_menu.grab_release()
 
     def set_act_color(self):
         label = self.colorlabel #event.widget
@@ -365,7 +370,7 @@ class ColorCheckPage(tk.Frame):
         self.cor_red = int(self.cor_red*factor)
         self.cor_green =int(self.cor_green*factor)
         self.cor_blue =int(self.cor_blue*factor)
-        logging.debug("Colorcorrection:"+str(factor))
+        logger.debug("Colorcorrection:"+str(factor))
         
 
         #title=_("MobaLedLib LED Farbentester " + PROG_VERSION)
@@ -728,7 +733,7 @@ class ColorCheckPage(tk.Frame):
         # ----------------------------------------------------------------
  
     def tabselected(self):
-        logging.debug("Tabselected: %s",self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
         if "configurationpage" in self.controller.oldTabName:
             self._update_cor_rgb()
         if "prog_generator" in self.controller.oldTabName:
@@ -770,7 +775,7 @@ class ColorCheckPage(tk.Frame):
         self.controller.bind("<Control-y>",self.controller.MenuRedo)
         
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
         self.ledhighlight = False
         self.controller.ARDUINO_end_direct_mode()
         #self.controller.send_to_ARDUINO("#END")
@@ -825,25 +830,35 @@ class ColorCheckPage(tk.Frame):
     # ----------------------------------------------------------------
     # End of Standardprocedures for every tabpage
     # ----------------------------------------------------------------    
+    def Debug_print_coltab(self, title, ColTab):
+        logger.debug(title)
+        for index in range(0,len(ColTab)):
+            logger.debug("ColTab: %s, %s, %s", ColTab[index].r, ColTab[index].g,ColTab[index].b)         
+    
     def update_palette_from_coltab(self,Colortable):
+        self.Debug_print_coltab("update_palette_from_coltab:",Colortable)
+
         #print("Palette:",self.palette)
         if Colortable:
-        
             for index in range(0,len(Colortable)):
-                print("ColTab:", Colortable(index).r,Colortable(index).g,Colortable(index).b)
+                logger.info("ColTab: %s,%s,%s", Colortable[index].r, Colortable[index].g,Colortable[index].b)
            
             index = 0
             for key in self.palette.keys():
-                self.palette[key] = rgb_to_hexa(Colortable(index).r,Colortable(index).g,Colortable(index).b)
+                self.palette[key] = rgb_to_hexa(Colortable[index].r,Colortable[index].g,Colortable[index].b)
                 index = index+1
             #print("Palette:",self.palette)
+        self._palette_redraw_colors()
         self._update_preview()
         return
     
 
     def bind_right_click_menu_to_palettelabel(self, palettelabel):
-        self.popup = RightClickMenu(self.master, palettelabel,self)        
+        self.popup = RightClickMenu(self.master, palettelabel,self)
+        # Rechtsklick-Event binden
+        # Unter macOS ist <Button-2> oft Mittelklick, daher <Button-2> und <Button-3> testen
         palettelabel.bind("<Button-3>", self.popup.popup_text)
+        palettelabel.bind("<Button-2>", self.popup.popup_text)
 
     def cb(self):
         self._update_cor_rgb()
@@ -1038,7 +1053,7 @@ class ColorCheckPage(tk.Frame):
         
         
     def send_palette_to_set_col_tab(self):
-        logging.debug("send_palette_to_set_col_tab")
+        logger.debug("send_palette_to_set_col_tab")
         
         # check if Colorcheck page is standardpage, in this case the program was called from the Excel Program Generator
         if self.controller.cl_arg_startpagename == "ColorCheckPage":
@@ -1113,7 +1128,7 @@ class ColorCheckPage(tk.Frame):
         palette = dictFile.readDictFromFile(filepath)
         if palette:
             if self.palette.keys() != palette.keys(): # check if the read palette has the corect keys
-                logging.debug("Error in palette file %s - %s",filepath,palette.keys())
+                logger.debug("Error in palette file %s - %s",filepath,palette.keys())
                 messagebox.showerror("Palettefile incorrect format","Palette file could not be opened, incorrect format")
                 #print("error in palette")
                 #print(repr(self.palette.keys()))
@@ -1378,6 +1393,6 @@ class ColorCheckPage(tk.Frame):
                 self.after(int(1000/BLINKFRQ),self.onblink_led)
 
     def ButtonColorCheck_OK(self):
-        logging.debug("Function called: ButtonColorCheck_OK")
+        logger.debug("Function called: ButtonColorCheck_OK")
         self.send_palette_to_set_col_tab()
 

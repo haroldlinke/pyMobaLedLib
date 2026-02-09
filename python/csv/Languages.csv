@@ -1186,7 +1186,7 @@ Der Fehler kann auch auftreten wenn der DCC/Selextrix Arduino noch nicht program
 Am besten man steckt den rechten Arduino erst dann ein wenn er benötigt wird.|
 |
 Wenn der Fehler nicht zu finden ist und immer wieder auftritt, dann kann ein Screenshot des vorangegangenen Bildschirms (Nach oben scrollen so dass die erste Meldung nach dem Arduino Bild zu sehen ist) zusammen mit dem Excel Programm und einer ausführlichen Beschreibung an |
-  MobaLedLib@gmx.de|
+  https://forum.mobaledlib.de|
 geschickt werden.";"   The system cannot find the file specified. | 
  In this case, the connections must be checked and the Arduino replaced with a new one. | 
  | 
@@ -1194,7 +1194,7 @@ geschickt werden.";"   The system cannot find the file specified. |
  It is best to only plug in the right Arduino when it is needed. | 
  | 
  If the error cannot be found and occurs again and again, a screenshot of the previous screen (scroll up so that the first message can be seen after the Arduino picture) can be sent to | 
- MobaLedLib@gmx.de | 
+ https://forum.mobaledlib.de | 
  will be sent.";"   Het systeem kan het gespecificeerde bestand niet vinden. | 
  In dit geval moeten de verbindingen worden gecontroleerd en moet de Arduino worden vervangen door een nieuwe. | 
  | 
@@ -1202,7 +1202,7 @@ geschickt werden.";"   The system cannot find the file specified. |
  U kunt het beste alleen de juiste Arduino aansluiten als dat nodig is. | 
  | 
  Als de fout niet kan worden gevonden en keer op keer optreedt, kan een screenshot van het vorige scherm (scroll omhoog zodat het eerste bericht na de Arduino-afbeelding te zien is) naar | 
- MobaLedLib@gmx.de | 
+ https://forum.mobaledlib.de | 
  wordt verzonden.";"   Le système ne peut pas trouver le fichier spécifié. | 
  Dans ce cas, les connexions doivent être vérifiées et l'Arduino remplacé par un nouveau. | 
  | 
@@ -1210,7 +1210,7 @@ geschickt werden.";"   The system cannot find the file specified. |
  Il est préférable de ne brancher le bon Arduino que lorsque cela est nécessaire. | 
  | 
  Si l'erreur ne peut pas être trouvée et se reproduit encore et encore, une capture d'écran de l'écran précédent (faites défiler vers le haut pour que le premier message puisse être vu après l'image Arduino) peut être envoyée à | 
- MobaLedLib@gmx.de | 
+ https://forum.mobaledlib.de | 
  sera envoyé.";"   Il sistema non trova il file specificato. | 
  In questo caso è necessario controllare i collegamenti e sostituire l'Arduino con uno nuovo. | 
  | 
@@ -1218,7 +1218,7 @@ geschickt werden.";"   The system cannot find the file specified. |
  È meglio collegare l'Arduino giusto solo quando è necessario. | 
  | 
  Se l'errore non può essere trovato e si verifica ancora e ancora, è possibile inviare uno screenshot della schermata precedente (scorrere verso l'alto in modo che il primo messaggio possa essere visto dopo l'immagine di Arduino) può essere inviato a | 
- MobaLedLib@gmx.de | 
+ https://forum.mobaledlib.de | 
  verrà inviato.";"   El sistema no puede encontrar el archivo especificado. | 
  En este caso, las conexiones deben ser verificadas y el Arduino reemplazado por uno nuevo. | 
  | 
@@ -1226,7 +1226,7 @@ geschickt werden.";"   The system cannot find the file specified. |
  Es mejor conectar solo el Arduino correcto cuando sea necesario. | 
  | 
  Si no se puede encontrar el error y se repite una y otra vez, se puede enviar una captura de pantalla de la pantalla anterior (desplácese hacia arriba para que se pueda ver el primer mensaje después de la imagen de Arduino) a | 
- MobaLedLib@gmx.de | Se enviará 
+ https://forum.mobaledlib.de | Se enviará 
 .";"   Systemet kan ikke finde den angivne fil. | 
  I dette tilfælde skal forbindelserne kontrolleres, og Arduino udskiftes med en ny. | 
  | 
@@ -1234,7 +1234,7 @@ geschickt werden.";"   The system cannot find the file specified. |
  Det er bedst kun at tilslutte den rigtige Arduino, når det er nødvendigt. | 
  | 
  Hvis fejlen ikke kan findes og opstår igen og igen, kan et screenshot af det forrige skærmbillede (rul op, så den første besked kan ses efter Arduino-billedet) sendes til | 
- MobaLedLib@gmx.de | 
+ https://forum.mobaledlib.de | 
  vil blive sendt."
 VBA;M08_Aruino 259;Fehler beim Hochladen des Programms;Program upload failed;Programma-upload mislukt;Échec du téléchargement du programme;Program upload failed;Program upload failed;Programoverføringen mislykkedes
 VBA;M08_Aruino 267;Programm erfolgreich hochgeladen. Kompilieren und Hochladen dauerte ;Program successfully uploaded. Compiling and uploading took ;Programma succesvol geüpload. Compileren en uploaden heeft plaatsgevonden ;Programme téléchargé avec succès. La compilation et le téléchargement sont corrects ;Program successfully uploaded. Compiling and uploading took ;Program successfully uploaded. Compiling and uploading took ;Programmet er uploadet. Kompilering og upload tog
@@ -1310,23 +1310,23 @@ VBA;M08_Aruino 355;Aktualisiere die Bibliotheken ;Update the libraries;Update de
 VBA;M08_Aruino 355;"Es ist ein Fehler aufgetreten ;-(|
 |
 Wenn der Fehler immer wieder auftritt, dann kann ein Screenshot des vorangegangenen Bildschirms und einer ausführlichen Beschreibung an |
-  MobaLedLib@gmx.de|
+  https://forum.mobaledlib.de|
 geschickt werden.";"An error has occurred ;-( |
 |
 If the error occurs again and again, then a screenshot of the previous screen and a detailed description can be sent to |
-  MobaLedLib@gmx.de.";"Er is een fout opgetreden ;-( |
+  https://forum.mobaledlib.de.";"Er is een fout opgetreden ;-( |
 |
 Als de fout zich steeds opnieuw voordoet, kunt u een screenshot van het vorige scherm en een gedetailleerde beschrijving sturen naar |
-MobaLedLib@gmx.de.";"Une erreur s'est produite ;-( |
+https://forum.mobaledlib.de.";"Une erreur s'est produite ;-( |
 |
 Si l'erreur se reproduit continuellement, une capture d'écran de l'écran précédent et une description détaillée peuvent être envoyées à |
-  MobaLedLib@gmx.de.";"Si è verificato un errore ;-( |
+  https://forum.mobaledlib.de.";"Si è verificato un errore ;-( |
 |
 Se l'errore si verifica ancora e ancora, è possibile inviare uno screenshot della schermata precedente e una descrizione dettagliata a |
-  MobaLedLib@gmx.de.";"Ha ocurrido un error ;-( |
+  https://forum.mobaledlib.de.";"Ha ocurrido un error ;-( |
 El |
 Si el error ocurre una y otra vez, se puede enviar una captura de pantalla de la pantalla anterior y una descripción detallada a |
-  MobaLedLib@gmx.de.";"Der er opstået en fejl ;-( || Hvis fejlen opstår igen og igen, kan et skærmbillede af den forrige skærm og en detaljeret beskrivelse sendes til | MobaLedLib@gmx.de."
+  https://forum.mobaledlib.de.";"Der er opstået en fejl ;-( || Hvis fejlen opstår igen og igen, kan et skærmbillede af den forrige skærm og en detaljeret beskrivelse sendes til | https://forum.mobaledlib.de."
 VBA;M08_Aruino 425;Fehler beim Installieren der Bibliotheken;Failed to install libraries;Kan bibliotheken niet installeren;Échec de l'installation des bibliothèques;Failed to install libraries;Failed to install libraries;Kunne ikke installere biblioteker
 VBA;M08_Aruino 480;Bibliotheken erfolgreich installiert. (Dauer: ;Libraries successfully installed. (Duration: ;Bibliotheken met succes geïnstalleerd. (Duur: ;Les bibliothèques ont été installées avec succès. (Durée: ;Libraries successfully installed. (Duration: ;Libraries successfully installed. (Duration: ;Biblioteker er installeret. (Varighed:
 VBA;M08_Aruino 480;Fehler: Das Arduino Bibliotheksverzeichnis wurde nicht gefunden:;Error: The Arduino library directory was not found:;Fout: De Arduino-bibliotheekmap is niet gevonden:;Erreur: le répertoire de la bibliothèque Arduino est introuvable:;Error: The Arduino library directory was not found:;Error: The Arduino library directory was not found:;Fejl: Arduino-bibliotekets bibliotek blev ikke fundet:
@@ -1654,18 +1654,18 @@ VBA;UserForm_House 635;"Öffnet das Profil von Hardi im Stummi Forum.|
 |
 Dort findet man, wenn man im Forum angemeldet ist, einen Link zur Email Adresse des Autors zum senden einer E-Mail oder PN.|
 |
-Alternativ kann auch eine Mail an 'MobaLedlib@gmx.de' geschickt werden wenn es Fragen oder Anregungen zu dem Programm oder zur MobaLedLib gibt.";"Opens the profile of Hardi in the Stummi forum. |
+Alternativ kann auch eine Mail an 'https://forum.mobaledlib.de' geschickt werden wenn es Fragen oder Anregungen zu dem Programm oder zur MobaLedLib gibt.";"Opens the profile of Hardi in the Stummi forum. |
 |
 There you can find a link to the email address of the author if you are logged in to the forum to send him an email or PM. |
 |
-Alternatively you can also send an email to 'MobaLedlib@gmx.de' if there are any questions or suggestions about the program or the MobaLedLib.";"Opent het profiel van Hardi in het Stummi-forum. |
+Alternatively you can also send an email to 'https://forum.mobaledlib.de' if there are any questions or suggestions about the program or the MobaLedLib.";"Opent het profiel van Hardi in het Stummi-forum. |
 |
 Daar vindt u een link naar het e-mailadres van de auteur als u bent ingelogd op het forum of u kunt hem een ​​e-mail of PM sturen. |
 |
-Als alternatief kunt u ook een e-mail sturen naar 'MobaLedlib@gmx.de' als er vragen of suggesties zijn over het programma of MobaLedLib.";"Ouvre le profil de Hardi dans le forum Stummi. |
+Als alternatief kunt u ook een e-mail sturen naar 'https://forum.mobaledlib.de' als er vragen of suggesties zijn over het programma of MobaLedLib.";"Ouvre le profil de Hardi dans le forum Stummi. |
 |
 Vous pouvez y trouver un lien vers l'adresse e-mail de l'auteur si vous êtes connecté au forum ou vous pouvez lui envoyer un e-mail ou un MP. |
-|Sinon, vous pouvez également envoyer un e-mail à 'MobaLedlib@gmx.de' pour toute question ou suggestion concernant le programme ou le MobaLedLib.";"Opens the profile of Hardi in the Stummi forum. There you can find a link to the email address of the author if you are logged in to the forum to send him an email or PM. Alternatively you can also send an email to 'MobaLedlib@gmx.de' if there are any questions or suggestions about the program or the MobaLedLib.";"Opens the profile of Hardi in the Stummi forum. There you can find a link to the email address of the author if you are logged in to the forum to send him an email or PM. Alternatively you can also send an email to 'MobaLedlib@gmx.de' if there are any questions or suggestions about the program or the MobaLedLib.";Åbner profilen af ​​Hardi i Stummi-forummet. || Der kan du finde et link til forfatterens e-mail-adresse, hvis du er logget ind på forummet for at sende ham en e-mail eller PM. || Alternativt kan du også sende en e-mail til 'MobaLedlib@gmx.de', hvis der er spørgsmål eller forslag til programmet eller MobaLedLib.
+|Sinon, vous pouvez également envoyer un e-mail à 'https://forum.mobaledlib.de' pour toute question ou suggestion concernant le programme ou le MobaLedLib.";"Opens the profile of Hardi in the Stummi forum. There you can find a link to the email address of the author if you are logged in to the forum to send him an email or PM. Alternatively you can also send an email to 'https://forum.mobaledlib.de' if there are any questions or suggestions about the program or the MobaLedLib.";"Opens the profile of Hardi in the Stummi forum. There you can find a link to the email address of the author if you are logged in to the forum to send him an email or PM. Alternatively you can also send an email to 'https://forum.mobaledlib.de' if there are any questions or suggestions about the program or the MobaLedLib.";Åbner profilen af ​​Hardi i Stummi-forummet. || Der kan du finde et link til forfatterens e-mail-adresse, hvis du er logget ind på forummet for at sende ham en e-mail eller PM. || Alternativt kan du også sende en e-mail til 'https://forum.mobaledlib.de', hvis der er spørgsmål eller forslag til programmet eller MobaLedLib.
 VBA;UserForm_House 637;Profil des Autors öffnen;Open the author's profile;Open het profiel van de auteur;Ouvrez le profil de l'auteur;Open the author's profile;Open the author's profile;Åbn forfatterens profil
 VBA;UserForm_Options 50;Unbekannte Board Option: ;Unknown board option:;Onbekende bordoptie:;Option de carte inconnue:;Unknown board option:;Unknown board option:;Ukendt tavlemulighed:
 VBA;UserForm_Options 51;Unbekanntes Board;Unknown board;Onbekend bord;Tableau inconnu;Unknown board;Unknown board;Ukendt tavle
@@ -2556,7 +2556,7 @@ Treeview by JKP Application Development Services, info@jkp-ads.com, http://www.j
  (Dette kan ændres senere på siden 'Konfig')"
 ;;Welcher Makro Auswahl Dialog soll verwendet werden?;Which macro selection dialog should be used?;Welk dialoogvenster voor macroselectie moet worden gebruikt?;Quelle boîte de dialogue de sélection de macro doit être utilisée ?;Quale finestra di dialogo per la selezione delle macro dovrebbe essere utilizzata?;¿Qué cuadro de diálogo de selección de macros debería utilizarse?;Hvilken makrovalgdialog skal bruges?
 ;;ESP32 Wroom;ESP32 Wroom;ESP32 Wroom;ESP32 Wroom;ESP32 Wroom;ESP32 Wroom;ESP32 Wroom
-;;Raspberry Pico (Experimental);Raspberry Pico (Experimental);Frambozen Pico (Experimenteel);Framboise Pico (Expérimental);Pico al lampone (sperimentale);Pico de frambuesa (experimental);Hindbær Pico (eksperimentel)
+;;Raspberry Pico;Raspberry Pico;Frambozen Pico;Framboise Pico;Pico al lampone;Pico de frambuesa;Hindbær Pico
 ;;"Achtung: Es wird nur ein Raspberry PICO  """;"Attention: Only one Raspberry PICO """;"Let op: slechts één Raspberry PICO """;"Attention : Un seul Framboise PICO""";"Attenzione: solo un Raspberry PICO """;"Atención: sólo una frambuesa PICO """;"Bemærk: Kun en hindbær PICO """
 ;;Zum Arduino schicken;Send to the Arduino;Stuur naar de Arduino;Envoyer à l'Arduino;Invia ad Arduino;Enviar al Arduino;Send til Arduino
 ;;Filename;Filename;Bestandsnaam;Nom de fichier;Nome del file;Nombre del archivo;Filnavn

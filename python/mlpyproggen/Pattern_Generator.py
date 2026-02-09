@@ -68,6 +68,8 @@ import subprocess
 #import queue
 #import time
 import logging
+logger=logging.getLogger(__name__)
+
 import platform
 # fromx scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolledFrame,ScrolledFrame
 # fromx proggen.M06_Write_Header import Create_HeaderFile
@@ -729,20 +731,20 @@ class Pattern_GeneratorPage(tk.Frame):
 
     def tabselected(self):
         #self.controller.currentTabClass = self.tabClassName
-        logging.debug("Tabselected: %s",self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
         X02.Application.setActiveWorkbook(self.workbook.Name)
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)        
         pass
     
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
         #self.controller.send_to_ARDUINO("#BEGIN")
         #time.sleep(ARDUINO_WAITTIME)            
         pass
     
     def TabChanged(self,_event=None):
-        logging.debug("Tabchanged: %s",self.tabname)
+        logger.debug("Tabchanged: %s",self.tabname)
         pass
     
     def cancel(self,_event=None):
@@ -847,8 +849,8 @@ class Pattern_GeneratorPage(tk.Frame):
                 try:
                     self.arduinoMonitorPage.add_text_to_textwindow(output.decode('utf-8').strip())
                 except BaseException as e:
-                    logging.debug(e, exc_info=True) 
-                    logging.debug("ERROR: PatternConfiguratorPage - Write_stdout_to_text_window: %s",output)
+                    logger.debug(e, exc_info=True) 
+                    logger.debug("ERROR: PatternConfiguratorPage - Write_stdout_to_text_window: %s",output)
                     pass            
             
             if self.process.poll() is not None:
@@ -869,7 +871,7 @@ class Pattern_GeneratorPage(tk.Frame):
             self.continue_loop=True
             self.write_stdout_to_text_window()
         except BaseException as e:
-            logging.error("PatternConfiguratorPage - Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
+            logger.error("PatternConfiguratorPage - Exception in start_ARDUINO_program_Popen %s - %s",e,self.startfile[0])
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n* Exception in start_ARDUINO_program_Popen "+ e + "-" + self.startfile[0]+ "\n",highlight="Error")
             self.arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
@@ -903,15 +905,15 @@ class Pattern_GeneratorPage(tk.Frame):
         
         if private_startfile == True:
             filename = self.getConfigData("startcmd_filename")
-            logging.debug("upload_to_ARDUINO - Individual Filename: %s",filename)
+            logger.debug("upload_to_ARDUINO - Individual Filename: %s",filename)
             if filename == " " or filename == "":
                 filename = "No Filename provided"
-            logging.debug("send to ARDUINO - Platform: %s",platform.platform())
+            logger.debug("send to ARDUINO - Platform: %s",platform.platform())
             
             macos = "macOS" in system_platform
             macos_fileending = "/Contents/MacOS/Arduino" 
             if macos:
-                logging.debug("This is a MAC")
+                logger.debug("This is a MAC")
                 if not filename.endswith(macos_fileending):
                     filename = filename + "/Contents/MacOS/Arduino"
                 file_not_found = False
@@ -933,7 +935,7 @@ class Pattern_GeneratorPage(tk.Frame):
                     break
             if file_not_found:
                 self.ARDUINO_message4 = macrodata.get("Message_4","") + repr(Win_ARDUINO_searchlist)
-        logging.debug("upload_to_ARDUINO - Filename: %s",filename)
+        logger.debug("upload_to_ARDUINO - Filename: %s",filename)
         self.controller.showFramebyName("ARDUINOMonitorPage")
         self.controller.set_connectstatusmessage("Kompilieren und Hochladen ...",fg="green")
         self.update()
@@ -960,7 +962,7 @@ class Pattern_GeneratorPage(tk.Frame):
             
             #filedirname = os.path.join(h_filedir, filename)
             #if platform.platform == "darwin":
-            #    logging.debug("This is a MAC")
+            #    logger.debug("This is a MAC")
             #    filedirname = filename + "/Contents/MacOS/Arduino"
             #else:
             filedirname = filename
@@ -977,7 +979,7 @@ class Pattern_GeneratorPage(tk.Frame):
             else:
                 self.startfile = [filedirname,ino_filename,"--upload","--port",serport,"--board",ArduinoType,"--pref","programmer=arduino:arduinoisp","--pref","build.path=../Arduino_Build_LEDs_AutoProg","--preserve-temp-files"]
             
-            logging.debug(repr(self.startfile))
+            logger.debug(repr(self.startfile))
             
             self.arduinoMonitorPage.add_text_to_textwindow("\n\n*******************************************************\n"+self.ARDUINO_message1+"\n*******************************************************\n\n")
             

@@ -4606,6 +4606,12 @@ class Sheet(tk.Frame):
             return {k: v["highlight"] for k, v in self.RI.cell_options.items() if "highlight" in v}
         elif canvas == "header":
             return {k: v["highlight"] for k, v in self.CH.cell_options.items() if "highlight" in v}
+        
+    def get_highlighted_rows(self, canvas: str = "table") -> dict | None:
+        if canvas == "table":
+            return {k: v["highlight"] for k, v in self.MT.row_options.items() if "highlight" in v}
+        elif canvas == "row_index":
+            return {k: v["highlight"] for k, v in self.RI.row_options.items() if "highlight" in v}
 
     def align_cells(
         self,

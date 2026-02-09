@@ -69,10 +69,13 @@ import logging
 
 from datetime import datetime
 
+PageInstance = None
             
 class ARDUINOMonitorPage(tk.Frame):
     
     def __init__(self, parent, controller):
+        global PageInstance
+        PageInstance = self
         self.tabClassName = "ARDUINOMonitorPage"
         tk.Frame.__init__(self,parent)
         self.controller = controller

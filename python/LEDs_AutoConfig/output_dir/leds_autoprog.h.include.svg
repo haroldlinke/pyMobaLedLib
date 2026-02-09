@@ -1,0 +1,523 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg height="276.0mm" version="1.1" width="292.0mm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <style type="text/css">
+<![CDATA[
+rect.invis {
+fill : red;
+opacity : 0;
+stroke : black;
+stroke-width : 1;
+}
+text.C10 {
+font-family : Courier;
+font-size : 10;
+font-weight : 10;
+}
+text.V12 {
+dominant-baseline : middle;
+font-family : Verdana;
+font-size : 12;
+text-anchor : middle;
+text-decoration : underline;
+}
+text.V9 {
+dominant-baseline : middle;
+font-family : Verdana;
+font-size : 9;
+}
+text.scale {
+dominant-baseline : middle;
+font-family : Verdana;
+font-size : 12;
+text-anchor : left;
+}
+tspan {
+white-space : pre;
+}
+]]>
+</style>
+  </defs>
+  <script type="text/ecmascript">
+<![CDATA[
+
+function swapOpacity(idFrom, idTo) {
+    var svgFrom = document.getElementById(idFrom);
+    var svgTo = document.getElementById(idTo);
+    var attrFrom = svgFrom.getAttribute("opacity");
+    var attrTo = svgTo.getAttribute("opacity");
+    svgTo.setAttributeNS(null, "opacity", attrFrom);
+    svgFrom.setAttributeNS(null, "opacity", attrTo);
+}
+
+function setOpacity(id, value) {
+    var svgElem = document.getElementById(id);
+    svgElem.setAttributeNS(null, "opacity", value);
+}
+
+
+function showHistogram(x, y) {
+    var histElem = document.getElementById("HistogramLegend");
+    // Use the ID to compute the y offset. The x offset is 8.0mm for text,
+    // 2.0mm or 0mm for rect
+    for (var i = 0; i < 38; i += 2) {
+        var elem = histElem.children[i / 2]
+        if (i == 0) {
+            var xOffset = 0;
+        } else if (elem.nodeName == "text") {
+            var xOffset = 8;
+        } else {
+            var xOffset = 2;
+        }
+        elem.setAttributeNS(null, "x", x + xOffset + "mm");
+        elem.setAttributeNS(null, "y", y + i + "mm");
+    }
+    histElem.setAttributeNS(null, "opacity", 1.0);
+}
+ 
+function hideHistogram() {
+    setOpacity("HistogramLegend", 0.0)
+}
+ 
+
+function scaleGraphic(scale, theId) {
+    var graphicGroup = document.getElementById("graphic");
+    graphicGroup.setAttributeNS(null, "transform", "scale(" + scale + ")");
+    // Un-bold all then bold the txtId.
+    var scaleGroup = document.getElementById("scaleGroup");
+    for (var i = 0; i < scaleGroup.children.length; ++i) {
+        var elem = scaleGroup.children[i];
+        if (elem.id == theId) {
+            elem.setAttributeNS(null, "font-weight", "bold");
+        } else {
+            elem.setAttributeNS(null, "font-weight", "normal");
+        }
+    }
+}
+
+]]>
+</script>
+  <g id="scaleGroup">
+    <text class="scale" x="8.0mm" y="4.0mm">Select scale (bold selected):</text>
+    <text class="scale" font-weight="normal" id="0.05" onclick="scaleGraphic(0.05, &apos;0.05&apos;)" text-decoration="underline" x="72.0mm" y="4.0mm">5%</text>
+    <text class="scale" font-weight="normal" id="0.1" onclick="scaleGraphic(0.1, &apos;0.1&apos;)" text-decoration="underline" x="82.0mm" y="4.0mm">10%</text>
+    <text class="scale" font-weight="normal" id="0.25" onclick="scaleGraphic(0.25, &apos;0.25&apos;)" text-decoration="underline" x="97.0mm" y="4.0mm">25%</text>
+    <text class="scale" font-weight="normal" id="0.5" onclick="scaleGraphic(0.5, &apos;0.5&apos;)" text-decoration="underline" x="112.0mm" y="4.0mm">50%</text>
+    <text class="scale" font-weight="bold" id="1.0" onclick="scaleGraphic(1.0, &apos;1.0&apos;)" text-decoration="underline" x="127.0mm" y="4.0mm">100%</text>
+    <text class="scale" font-weight="normal" id="1.5" onclick="scaleGraphic(1.5, &apos;1.5&apos;)" text-decoration="underline" x="147.0mm" y="4.0mm">150%</text>
+    <text class="scale" font-weight="normal" id="2.0" onclick="scaleGraphic(2.0, &apos;2.0&apos;)" text-decoration="underline" x="167.0mm" y="4.0mm">200%</text>
+  </g>
+  <!-- Root position: left, Sweep direction: + canvas=Box(width=Dim(232mm), depth=Dim(208mm)) datum=Pt(x=Dim(-6.0mm), y=Dim(4.0mm))-->
+  <g transform="translate(0, 24)">
+    <g id="graphic" transform="scale(1.0)">
+      <rect fill="none" height="208.0mm" stroke="grey" stroke-width="2" width="232.0mm" x="0px" y="28px" />
+      <line stroke="lightgrey" stroke-width="8" x1="36.0mm" x2="36.0mm" y1="21.1mm" y2="43.6mm" />
+      <line stroke="black" stroke-width="2" x1="100.0mm" x2="84.0mm" y1="43.8mm" y2="43.8mm" />
+      <line stroke="black" stroke-width="2" x1="84.0mm" x2="68.0mm" y1="43.8mm" y2="118.6mm" />
+      <line stroke="black" stroke-width="2" x1="68.0mm" x2="52.0mm" y1="118.6mm" y2="118.6mm" />
+      <line stroke="black" stroke-width="0.5" x1="52.0mm" x2="68.0mm" y1="118.6mm" y2="118.6mm" />
+      <line stroke="black" stroke-width="0.5" x1="68.0mm" x2="84.0mm" y1="118.6mm" y2="193.3mm" />
+      <line stroke="black" stroke-width="0.5" x1="84.0mm" x2="100.0mm" y1="193.3mm" y2="193.3mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="180.0mm" x2="164.0mm" y1="27.1mm" y2="27.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="164.0mm" x2="148.0mm" y1="27.1mm" y2="56.3mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="148.0mm" x2="132.0mm" y1="56.3mm" y2="56.3mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="132.0mm" x2="148.0mm" y1="56.3mm" y2="56.3mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="148.0mm" x2="164.0mm" y1="56.3mm" y2="32.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="164.0mm" x2="180.0mm" y1="32.1mm" y2="32.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="180.0mm" x2="164.0mm" y1="38.1mm" y2="38.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="164.0mm" x2="148.0mm" y1="38.1mm" y2="81.2mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="148.0mm" x2="132.0mm" y1="81.2mm" y2="81.2mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="132.0mm" x2="148.0mm" y1="81.2mm" y2="81.2mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="148.0mm" x2="164.0mm" y1="81.2mm" y2="43.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="164.0mm" x2="180.0mm" y1="43.1mm" y2="43.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="180.0mm" x2="164.0mm" y1="49.1mm" y2="49.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="164.0mm" x2="148.0mm" y1="49.1mm" y2="106.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="148.0mm" x2="132.0mm" y1="106.1mm" y2="106.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="132.0mm" x2="148.0mm" y1="106.1mm" y2="106.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="148.0mm" x2="164.0mm" y1="106.1mm" y2="54.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="164.0mm" x2="180.0mm" y1="54.1mm" y2="54.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="180.0mm" x2="164.0mm" y1="60.1mm" y2="60.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="164.0mm" x2="148.0mm" y1="60.1mm" y2="131.0mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="148.0mm" x2="132.0mm" y1="131.0mm" y2="131.0mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="132.0mm" x2="148.0mm" y1="131.0mm" y2="131.0mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="148.0mm" x2="164.0mm" y1="131.0mm" y2="65.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="164.0mm" x2="180.0mm" y1="65.1mm" y2="65.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="180.0mm" x2="164.0mm" y1="71.1mm" y2="71.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="164.0mm" x2="148.0mm" y1="71.1mm" y2="155.9mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="2" x1="148.0mm" x2="132.0mm" y1="155.9mm" y2="155.9mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="132.0mm" x2="148.0mm" y1="155.9mm" y2="155.9mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="148.0mm" x2="164.0mm" y1="155.9mm" y2="76.1mm" />
+      <line stroke="aqua" stroke-dasharray="8,8" stroke-width="0.5" x1="164.0mm" x2="180.0mm" y1="76.1mm" y2="76.1mm" />
+      <line stroke="black" stroke-width="2" x1="180.0mm" x2="164.0mm" y1="82.1mm" y2="82.1mm" />
+      <line stroke="black" stroke-width="2" x1="164.0mm" x2="148.0mm" y1="82.1mm" y2="180.8mm" />
+      <line stroke="black" stroke-width="2" x1="148.0mm" x2="132.0mm" y1="180.8mm" y2="180.8mm" />
+      <line stroke="black" stroke-width="0.5" x1="132.0mm" x2="148.0mm" y1="180.8mm" y2="180.8mm" />
+      <line stroke="black" stroke-width="0.5" x1="148.0mm" x2="164.0mm" y1="180.8mm" y2="210.0mm" />
+      <line stroke="black" stroke-width="0.5" x1="164.0mm" x2="180.0mm" y1="210.0mm" y2="210.0mm" />
+      <rect fill="mistyrose" height="127.9mm" stroke="black" stroke-width="1" width="32.0mm" x="180.0mm" y="82.1mm" />
+      <rect fill="blue" height="50.7mm" stroke="black" stroke-width=".5" width="4.0mm" x="180.0mm" y="159.3mm" />
+      <rect fill="green" height="2.5mm" stroke="black" stroke-width=".5" width="4.0mm" x="180.0mm" y="156.8mm" />
+      <rect fill="red" height="68.3mm" stroke="black" stroke-width=".5" width="4.0mm" x="180.0mm" y="88.5mm" />
+      <rect fill="white" height="6.3mm" stroke="black" stroke-width=".5" width="4.0mm" x="180.0mm" y="82.1mm" />
+      <line stroke="black" stroke-width="2" x1="184.0mm" x2="212.0mm" y1="210.0mm" y2="146.1mm" />
+      <line stroke="black" stroke-width="2" x1="212.0mm" x2="184.0mm" y1="146.1mm" y2="82.1mm" />
+      <text class="V12" opacity="1.0" x="196.0mm" y="80.1mm">Macros.h</text>
+      <rect fill="aqua" height="5.0mm" stroke="black" stroke-width="1" width="32.0mm" x="180.0mm" y="71.1mm" />
+      <text class="V12" opacity="1.0" x="196.0mm" y="69.1mm">LED_HeartBeat.h</text>
+      <rect fill="aqua" height="5.0mm" stroke="black" stroke-width="1" width="32.0mm" x="180.0mm" y="60.1mm" />
+      <text class="V12" opacity="1.0" x="196.0mm" y="58.1mm">IntDefs.h</text>
+      <rect fill="aqua" height="5.0mm" stroke="black" stroke-width="1" width="32.0mm" x="180.0mm" y="49.1mm" />
+      <text class="V12" opacity="1.0" x="196.0mm" y="47.1mm">Lib_Config.h</text>
+      <rect fill="aqua" height="5.0mm" stroke="black" stroke-width="1" width="32.0mm" x="180.0mm" y="38.1mm" />
+      <text class="V12" opacity="1.0" x="196.0mm" y="36.1mm">Dprintf.h</text>
+      <rect fill="aqua" height="5.0mm" stroke="black" stroke-width="1" width="32.0mm" x="180.0mm" y="27.1mm" />
+      <text class="V12" opacity="1.0" x="196.0mm" y="25.1mm">FastLED.h</text>
+      <rect fill="mistyrose" height="149.5mm" stroke="black" stroke-width="1" width="32.0mm" x="100.0mm" y="43.8mm" />
+      <rect fill="blue" height="36.2mm" stroke="black" stroke-width=".5" width="4.0mm" x="100.0mm" y="157.1mm" />
+      <rect fill="green" height="24.5mm" stroke="black" stroke-width=".5" width="4.0mm" x="100.0mm" y="132.6mm" />
+      <rect fill="red" height="58.8mm" stroke="black" stroke-width=".5" width="4.0mm" x="100.0mm" y="73.7mm" />
+      <rect fill="white" height="29.9mm" stroke="black" stroke-width=".5" width="4.0mm" x="100.0mm" y="43.8mm" />
+      <rect fill="blue" height="59.3mm" stroke="black" stroke-width=".5" width="4.0mm" x="104.0mm" y="134.0mm" />
+      <rect fill="green" height="3.0mm" stroke="black" stroke-width=".5" width="4.0mm" x="104.0mm" y="131.1mm" />
+      <rect fill="red" height="79.8mm" stroke="black" stroke-width=".5" width="4.0mm" x="104.0mm" y="51.2mm" />
+      <rect fill="white" height="7.4mm" stroke="black" stroke-width=".5" width="4.0mm" x="104.0mm" y="43.8mm" />
+      <line stroke="black" stroke-width="2" x1="108.0mm" x2="132.0mm" y1="129.7mm" y2="118.6mm" />
+      <line stroke="black" stroke-width="2" x1="132.0mm" x2="108.0mm" y1="118.6mm" y2="107.4mm" />
+      <text class="V12" opacity="1.0" x="116.0mm" y="41.8mm">MobaLedLib.h</text>
+      <rect fill="mistyrose" height="149.9mm" stroke="black" stroke-width="1" width="32.0mm" x="20.0mm" y="43.6mm" />
+      <rect fill="blue" height="36.3mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="157.2mm" />
+      <rect fill="cyan" height="0.4mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="156.8mm" />
+      <rect fill="green" height="8.6mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="148.2mm" />
+      <rect fill="red" height="34.5mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="113.7mm" />
+      <rect fill="white" height="70.0mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="43.6mm" />
+      <rect fill="blue" height="55.4mm" stroke="black" stroke-width=".5" width="4.0mm" x="24.0mm" y="138.1mm" />
+      <rect fill="green" height="6.7mm" stroke="black" stroke-width=".5" width="4.0mm" x="24.0mm" y="131.4mm" />
+      <rect fill="red" height="76.4mm" stroke="black" stroke-width=".5" width="4.0mm" x="24.0mm" y="55.0mm" />
+      <rect fill="white" height="11.3mm" stroke="black" stroke-width=".5" width="4.0mm" x="24.0mm" y="43.6mm" />
+      <line stroke="black" stroke-width="2" x1="28.0mm" x2="52.0mm" y1="118.8mm" y2="118.6mm" />
+      <line stroke="black" stroke-width="2" x1="52.0mm" x2="28.0mm" y1="118.6mm" y2="118.4mm" />
+      <text class="V12" opacity="1.0" x="36.0mm" y="41.6mm">leds_autoprog.h</text>
+      <rect fill="aqua" height="5.0mm" stroke="black" stroke-width="1" width="32.0mm" x="20.0mm" y="16.1mm" />
+      <text class="V12" opacity="1.0" x="36.0mm" y="14.1mm">Unnamed Pre-include</text>
+      <rect class="invis" height="127.9mm" onmouseout="hideHistogram()" onmouseover="showHistogram(185.0, 148.0675)" width="4.0mm" x="180.0mm" y="82.1mm" />
+      <g id="t0.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="210pt" x="184.0mm" y="82.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="186.6mm" y="86.4mm">
+          <tspan>                    Type      Me [     Me] </tspan>
+          <tspan dy="1.5em" x="186.6mm">             header-name       0 [      0] </tspan>
+          <tspan dy="1.5em" x="186.6mm">              identifier   51248 [  51248] </tspan>
+          <tspan dy="1.5em" x="186.6mm">          string-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="186.6mm">               pp-number    2557 [   2557] </tspan>
+          <tspan dy="1.5em" x="186.6mm">       character-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="186.6mm">preprocessing-op-or-punc   69060 [  69060] </tspan>
+          <tspan dy="1.5em" x="186.6mm">          non-whitespace       0 [      0] </tspan>
+          <tspan dy="1.5em" x="186.6mm">                  concat       0 [      0] </tspan>
+          <tspan dy="1.5em" x="186.6mm">              whitespace    6395 [   6395] </tspan>
+          <tspan dy="1.5em" x="186.6mm">                   Total  129260 [ 129260] </tspan>
+        </text>
+      </g>
+      <g id="t1.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="90pt" x="196.0mm" y="80.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="198.6mm" y="84.4mm">
+          <tspan>leds_autoprog.h#11 </tspan>
+          <tspan dy="1.5em" x="198.6mm">MobaLedLib.h#58 </tspan>
+          <tspan dy="1.5em" x="198.6mm">Macros.h </tspan>
+        </text>
+      </g>
+      <g id="t2.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="210pt" x="180.0mm" y="71.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="182.6mm" y="75.4mm">
+          <tspan>                    Type      Me [     Me] </tspan>
+          <tspan dy="1.5em" x="182.6mm">             header-name       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              identifier       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          string-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">               pp-number       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">       character-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">preprocessing-op-or-punc       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          non-whitespace       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                  concat       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              whitespace       2 [      2] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                   Total       2 [      2] </tspan>
+        </text>
+      </g>
+      <g id="t3.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="135pt" x="196.0mm" y="69.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="198.6mm" y="73.4mm">
+          <tspan>leds_autoprog.h#11 </tspan>
+          <tspan dy="1.5em" x="198.6mm">MobaLedLib.h#55 </tspan>
+          <tspan dy="1.5em" x="198.6mm">include_dir\LED_HeartBeat.h </tspan>
+        </text>
+      </g>
+      <g id="t4.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="210pt" x="180.0mm" y="60.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="182.6mm" y="64.4mm">
+          <tspan>                    Type      Me [     Me] </tspan>
+          <tspan dy="1.5em" x="182.6mm">             header-name       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              identifier       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          string-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">               pp-number       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">       character-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">preprocessing-op-or-punc       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          non-whitespace       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                  concat       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              whitespace       2 [      2] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                   Total       2 [      2] </tspan>
+        </text>
+      </g>
+      <g id="t5.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="105pt" x="196.0mm" y="58.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="198.6mm" y="62.4mm">
+          <tspan>leds_autoprog.h#11 </tspan>
+          <tspan dy="1.5em" x="198.6mm">MobaLedLib.h#53 </tspan>
+          <tspan dy="1.5em" x="198.6mm">include_dir\IntDefs.h </tspan>
+        </text>
+      </g>
+      <g id="t6.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="210pt" x="180.0mm" y="49.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="182.6mm" y="53.4mm">
+          <tspan>                    Type      Me [     Me] </tspan>
+          <tspan dy="1.5em" x="182.6mm">             header-name       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              identifier       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          string-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">               pp-number       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">       character-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">preprocessing-op-or-punc       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          non-whitespace       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                  concat       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              whitespace       2 [      2] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                   Total       2 [      2] </tspan>
+        </text>
+      </g>
+      <g id="t7.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="120pt" x="196.0mm" y="47.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="198.6mm" y="51.4mm">
+          <tspan>leds_autoprog.h#11 </tspan>
+          <tspan dy="1.5em" x="198.6mm">MobaLedLib.h#51 </tspan>
+          <tspan dy="1.5em" x="198.6mm">include_dir\Lib_Config.h </tspan>
+        </text>
+      </g>
+      <g id="t8.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="210pt" x="180.0mm" y="38.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="182.6mm" y="42.4mm">
+          <tspan>                    Type      Me [     Me] </tspan>
+          <tspan dy="1.5em" x="182.6mm">             header-name       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              identifier       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          string-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">               pp-number       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">       character-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">preprocessing-op-or-punc       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          non-whitespace       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                  concat       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              whitespace       2 [      2] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                   Total       2 [      2] </tspan>
+        </text>
+      </g>
+      <g id="t9.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="105pt" x="196.0mm" y="36.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="198.6mm" y="40.4mm">
+          <tspan>leds_autoprog.h#11 </tspan>
+          <tspan dy="1.5em" x="198.6mm">MobaLedLib.h#50 </tspan>
+          <tspan dy="1.5em" x="198.6mm">include_dir\Dprintf.h </tspan>
+        </text>
+      </g>
+      <g id="t10.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="210pt" x="180.0mm" y="27.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="182.6mm" y="31.4mm">
+          <tspan>                    Type      Me [     Me] </tspan>
+          <tspan dy="1.5em" x="182.6mm">             header-name       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              identifier       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          string-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">               pp-number       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">       character-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">preprocessing-op-or-punc       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">          non-whitespace       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                  concat       0 [      0] </tspan>
+          <tspan dy="1.5em" x="182.6mm">              whitespace       2 [      2] </tspan>
+          <tspan dy="1.5em" x="182.6mm">                   Total       2 [      2] </tspan>
+        </text>
+      </g>
+      <g id="t11.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="105pt" x="196.0mm" y="25.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="198.6mm" y="29.4mm">
+          <tspan>leds_autoprog.h#11 </tspan>
+          <tspan dy="1.5em" x="198.6mm">MobaLedLib.h#41 </tspan>
+          <tspan dy="1.5em" x="198.6mm">include_dir\FastLED.h </tspan>
+        </text>
+      </g>
+      <g id="t12.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="555pt" x="172.0mm" y="29.6mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="174.6mm" y="33.9mm">
+          <tspan>Where: MobaLedLib.h#41  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  Why: !def __LEDS_AUTOPROG_H__ &amp;&amp; !def _MOBALEDLIB_H_ &amp;&amp; !def CONFIG_ONLY &amp;&amp; !(def ARDUINO_RASPBERRY_PI_PICO)  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  How: #include &quot;FastLED.h&quot;, CP=None, usr=include_dir </tspan>
+        </text>
+      </g>
+      <g id="t13.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="275pt" x="172.0mm" y="40.6mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="174.6mm" y="44.9mm">
+          <tspan>Where: MobaLedLib.h#50  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  Why: !def __LEDS_AUTOPROG_H__ &amp;&amp; !def _MOBALEDLIB_H_  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  How: #include &quot;Dprintf.h&quot;, CP=None, usr=include_dir </tspan>
+        </text>
+      </g>
+      <g id="t14.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="280pt" x="172.0mm" y="51.6mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="174.6mm" y="55.9mm">
+          <tspan>Where: MobaLedLib.h#51  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  Why: !def __LEDS_AUTOPROG_H__ &amp;&amp; !def _MOBALEDLIB_H_  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  How: #include &quot;Lib_Config.h&quot;, CP=None, usr=include_dir </tspan>
+        </text>
+      </g>
+      <g id="t15.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="275pt" x="172.0mm" y="62.6mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="174.6mm" y="66.9mm">
+          <tspan>Where: MobaLedLib.h#53  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  Why: !def __LEDS_AUTOPROG_H__ &amp;&amp; !def _MOBALEDLIB_H_  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  How: #include &quot;IntDefs.h&quot;, CP=None, usr=include_dir </tspan>
+        </text>
+      </g>
+      <g id="t16.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="295pt" x="172.0mm" y="73.6mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="174.6mm" y="77.9mm">
+          <tspan>Where: MobaLedLib.h#55  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  Why: !def __LEDS_AUTOPROG_H__ &amp;&amp; !def _MOBALEDLIB_H_  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  How: #include &quot;LED_HeartBeat.h&quot;, CP=None, usr=include_dir </tspan>
+        </text>
+      </g>
+      <g id="t17.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="275pt" x="172.0mm" y="146.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="174.6mm" y="150.3mm">
+          <tspan>Where: MobaLedLib.h#58  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  Why: !def __LEDS_AUTOPROG_H__ &amp;&amp; !def _MOBALEDLIB_H_  </tspan>
+          <tspan dy="1.5em" x="174.6mm">  How: #include &quot;Macros.h&quot;, CP= </tspan>
+        </text>
+      </g>
+      <rect class="invis" height="149.5mm" onmouseout="hideHistogram()" onmouseover="showHistogram(105.0, 120.5675)" width="4.0mm" x="100.0mm" y="43.8mm" />
+      <rect class="invis" height="149.5mm" onmouseout="hideHistogram()" onmouseover="showHistogram(109.0, 120.5675)" width="4.0mm" x="104.0mm" y="43.8mm" />
+      <g id="t18.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="390pt" x="108.0mm" y="43.8mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="110.6mm" y="48.1mm">
+          <tspan>                    Type      Me [     Me]   Child [  Child]     All [    All] </tspan>
+          <tspan dy="1.5em" x="110.6mm">             header-name       0 [      0]       0 [      0]       0 [      0] </tspan>
+          <tspan dy="1.5em" x="110.6mm">              identifier    6688 [   6539]   51248 [  51248]   57936 [  57787] </tspan>
+          <tspan dy="1.5em" x="110.6mm">          string-literal       0 [      0]       0 [      0]       0 [      0] </tspan>
+          <tspan dy="1.5em" x="110.6mm">               pp-number    4434 [   4433]    2557 [   2557]    6991 [   6990] </tspan>
+          <tspan dy="1.5em" x="110.6mm">       character-literal       0 [      0]       0 [      0]       0 [      0] </tspan>
+          <tspan dy="1.5em" x="110.6mm">preprocessing-op-or-punc   10760 [  10629]   69060 [  69060]   79820 [  79689] </tspan>
+          <tspan dy="1.5em" x="110.6mm">          non-whitespace       0 [      0]       0 [      0]       0 [      0] </tspan>
+          <tspan dy="1.5em" x="110.6mm">                  concat       0 [      0]       0 [      0]       0 [      0] </tspan>
+          <tspan dy="1.5em" x="110.6mm">              whitespace    5574 [   5404]    6405 [   6405]   11979 [  11809] </tspan>
+          <tspan dy="1.5em" x="110.6mm">                   Total   27456 [  27005]  129270 [ 129270]  156726 [ 156275] </tspan>
+        </text>
+      </g>
+      <g id="t19.alt" opacity="0.0">
+        <rect fill="khaki" height="24pt" width="90pt" x="116.0mm" y="41.8mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="118.6mm" y="46.1mm">
+          <tspan>leds_autoprog.h#11 </tspan>
+          <tspan dy="1.5em" x="118.6mm">MobaLedLib.h </tspan>
+        </text>
+      </g>
+      <g id="t20.alt" opacity="0.0">
+        <rect fill="khaki" height="36pt" width="175pt" x="92.0mm" y="118.6mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="94.6mm" y="122.8mm">
+          <tspan>Where: leds_autoprog.h#11  </tspan>
+          <tspan dy="1.5em" x="94.6mm">  Why: !def __LEDS_AUTOPROG_H__  </tspan>
+          <tspan dy="1.5em" x="94.6mm">  How: #include &quot;MobaLedLib.h&quot;, CP= </tspan>
+        </text>
+      </g>
+      <rect class="invis" height="149.9mm" onmouseout="hideHistogram()" onmouseover="showHistogram(25.0, 120.5675)" width="4.0mm" x="20.0mm" y="43.6mm" />
+      <rect class="invis" height="149.9mm" onmouseout="hideHistogram()" onmouseover="showHistogram(29.0, 120.5675)" width="4.0mm" x="24.0mm" y="43.6mm" />
+      <g id="t21.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="390pt" x="28.0mm" y="43.6mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="30.6mm" y="47.9mm">
+          <tspan>                    Type      Me [     Me]   Child [  Child]     All [    All] </tspan>
+          <tspan dy="1.5em" x="30.6mm">             header-name       0 [      0]       0 [      0]       0 [      0] </tspan>
+          <tspan dy="1.5em" x="30.6mm">              identifier     195 [    185]   57936 [  57787]   58131 [  57972] </tspan>
+          <tspan dy="1.5em" x="30.6mm">          string-literal       4 [      2]       0 [      0]       4 [      2] </tspan>
+          <tspan dy="1.5em" x="30.6mm">               pp-number      44 [     44]    6991 [   6990]    7035 [   7034] </tspan>
+          <tspan dy="1.5em" x="30.6mm">       character-literal       0 [      0]       0 [      0]       0 [      0] </tspan>
+          <tspan dy="1.5em" x="30.6mm">preprocessing-op-or-punc     194 [    176]   79820 [  79689]   80014 [  79865] </tspan>
+          <tspan dy="1.5em" x="30.6mm">          non-whitespace       0 [      0]       0 [      0]       0 [      0] </tspan>
+          <tspan dy="1.5em" x="30.6mm">                  concat       0 [      0]       0 [      0]       0 [      0] </tspan>
+          <tspan dy="1.5em" x="30.6mm">              whitespace     371 [    357]   11979 [  11809]   12350 [  12166] </tspan>
+          <tspan dy="1.5em" x="30.6mm">                   Total     808 [    764]  156726 [ 156275]  157534 [ 157039] </tspan>
+        </text>
+      </g>
+      <g id="t22.alt" opacity="0.0">
+        <rect fill="khaki" height="20pt" width="75pt" x="36.0mm" y="41.6mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="38.6mm" y="45.9mm">
+          <tspan>leds_autoprog.h </tspan>
+        </text>
+      </g>
+      <g id="t23.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="210pt" x="20.0mm" y="16.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="22.6mm" y="20.4mm">
+          <tspan>                    Type      Me [     Me] </tspan>
+          <tspan dy="1.5em" x="22.6mm">             header-name       0 [      0] </tspan>
+          <tspan dy="1.5em" x="22.6mm">              identifier       0 [      0] </tspan>
+          <tspan dy="1.5em" x="22.6mm">          string-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="22.6mm">               pp-number       0 [      0] </tspan>
+          <tspan dy="1.5em" x="22.6mm">       character-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="22.6mm">preprocessing-op-or-punc       0 [      0] </tspan>
+          <tspan dy="1.5em" x="22.6mm">          non-whitespace       0 [      0] </tspan>
+          <tspan dy="1.5em" x="22.6mm">                  concat       0 [      0] </tspan>
+          <tspan dy="1.5em" x="22.6mm">              whitespace       0 [      0] </tspan>
+          <tspan dy="1.5em" x="22.6mm">                   Total       0 [      0] </tspan>
+        </text>
+      </g>
+      <g id="t24.alt" opacity="0.0">
+        <rect fill="khaki" height="20pt" width="95pt" x="36.0mm" y="14.1mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="38.6mm" y="18.4mm">
+          <tspan>Unnamed Pre-include </tspan>
+        </text>
+      </g>
+      <g id="HistogramLegend" opacity="0.0">
+        <rect fill="khaki" height="40.0mm" id="0" width="48.0mm" x="0.0mm" y="0.0mm" />
+        <rect fill="white" height="4.0mm" id="2" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="2.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="4" x="8.0mm" y="4.0mm">whitespace</text>
+        <rect fill="yellow" height="4.0mm" id="6" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="6.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="8" x="8.0mm" y="8.0mm">concat</text>
+        <rect fill="black" height="4.0mm" id="10" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="10.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="12" x="8.0mm" y="12.0mm">non-whitespace</text>
+        <rect fill="red" height="4.0mm" id="14" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="14.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="16" x="8.0mm" y="16.0mm">preprocessing-op-or-punc</text>
+        <rect fill="magenta" height="4.0mm" id="18" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="18.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="20" x="8.0mm" y="20.0mm">character-literal</text>
+        <rect fill="green" height="4.0mm" id="22" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="22.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="24" x="8.0mm" y="24.0mm">pp-number</text>
+        <rect fill="cyan" height="4.0mm" id="26" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="26.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="28" x="8.0mm" y="28.0mm">string-literal</text>
+        <rect fill="blue" height="4.0mm" id="30" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="30.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="32" x="8.0mm" y="32.0mm">identifier</text>
+        <rect fill="orange" height="4.0mm" id="34" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="34.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="36" x="8.0mm" y="36.0mm">header-name</text>
+      </g>
+      <rect class="invis" height="5.0mm" id="t23" onmouseout="swapOpacity(&apos;t23&apos;, &apos;t23.alt&apos;)" onmouseover="swapOpacity(&apos;t23&apos;, &apos;t23.alt&apos;)" width="32.0mm" x="20.0mm" y="16.1mm" />
+      <rect class="invis" height="14px" id="t24" onmouseout="swapOpacity(&apos;t24&apos;, &apos;t24.alt&apos;)" onmouseover="swapOpacity(&apos;t24&apos;, &apos;t24.alt&apos;)" width="228px" x="-4.2mm" y="11.7mm" />
+      <rect class="invis" height="5.0mm" id="t10" onmouseout="swapOpacity(&apos;t10&apos;, &apos;t10.alt&apos;)" onmouseover="swapOpacity(&apos;t10&apos;, &apos;t10.alt&apos;)" width="32.0mm" x="180.0mm" y="27.1mm" />
+      <rect class="invis" height="14px" id="t11" onmouseout="swapOpacity(&apos;t11&apos;, &apos;t11.alt&apos;)" onmouseover="swapOpacity(&apos;t11&apos;, &apos;t11.alt&apos;)" width="108px" x="176.9mm" y="22.7mm" />
+      <rect class="invis" height="5.0mm" id="t8" onmouseout="swapOpacity(&apos;t8&apos;, &apos;t8.alt&apos;)" onmouseover="swapOpacity(&apos;t8&apos;, &apos;t8.alt&apos;)" width="32.0mm" x="180.0mm" y="38.1mm" />
+      <rect class="invis" height="14px" id="t9" onmouseout="swapOpacity(&apos;t9&apos;, &apos;t9.alt&apos;)" onmouseover="swapOpacity(&apos;t9&apos;, &apos;t9.alt&apos;)" width="108px" x="176.9mm" y="33.7mm" />
+      <rect class="invis" height="5.0mm" id="t6" onmouseout="swapOpacity(&apos;t6&apos;, &apos;t6.alt&apos;)" onmouseover="swapOpacity(&apos;t6&apos;, &apos;t6.alt&apos;)" width="32.0mm" x="180.0mm" y="49.1mm" />
+      <rect class="invis" height="14px" id="t7" onmouseout="swapOpacity(&apos;t7&apos;, &apos;t7.alt&apos;)" onmouseover="swapOpacity(&apos;t7&apos;, &apos;t7.alt&apos;)" width="144px" x="170.6mm" y="44.7mm" />
+      <rect class="invis" height="5.0mm" id="t4" onmouseout="swapOpacity(&apos;t4&apos;, &apos;t4.alt&apos;)" onmouseover="swapOpacity(&apos;t4&apos;, &apos;t4.alt&apos;)" width="32.0mm" x="180.0mm" y="60.1mm" />
+      <rect class="invis" height="14px" id="t5" onmouseout="swapOpacity(&apos;t5&apos;, &apos;t5.alt&apos;)" onmouseover="swapOpacity(&apos;t5&apos;, &apos;t5.alt&apos;)" width="108px" x="176.9mm" y="55.7mm" />
+      <rect class="invis" height="5.0mm" id="t2" onmouseout="swapOpacity(&apos;t2&apos;, &apos;t2.alt&apos;)" onmouseover="swapOpacity(&apos;t2&apos;, &apos;t2.alt&apos;)" width="32.0mm" x="180.0mm" y="71.1mm" />
+      <rect class="invis" height="14px" id="t3" onmouseout="swapOpacity(&apos;t3&apos;, &apos;t3.alt&apos;)" onmouseover="swapOpacity(&apos;t3&apos;, &apos;t3.alt&apos;)" width="180px" x="164.2mm" y="66.7mm" />
+      <rect class="invis" height="127.9mm" id="t0" onmouseout="swapOpacity(&apos;t0&apos;, &apos;t0.alt&apos;)" onmouseover="swapOpacity(&apos;t0&apos;, &apos;t0.alt&apos;)" width="28.0mm" x="184.0mm" y="82.1mm" />
+      <rect class="invis" height="14px" id="t1" onmouseout="swapOpacity(&apos;t1&apos;, &apos;t1.alt&apos;)" onmouseover="swapOpacity(&apos;t1&apos;, &apos;t1.alt&apos;)" width="96px" x="179.1mm" y="77.7mm" />
+      <rect class="invis" height="5.0mm" id="t12" onmouseout="swapOpacity(&apos;t12&apos;, &apos;t12.alt&apos;)" onmouseover="swapOpacity(&apos;t12&apos;, &apos;t12.alt&apos;)" width="16.0mm" x="164.0mm" y="27.1mm" />
+      <rect class="invis" height="5.0mm" id="t13" onmouseout="swapOpacity(&apos;t13&apos;, &apos;t13.alt&apos;)" onmouseover="swapOpacity(&apos;t13&apos;, &apos;t13.alt&apos;)" width="16.0mm" x="164.0mm" y="38.1mm" />
+      <rect class="invis" height="5.0mm" id="t14" onmouseout="swapOpacity(&apos;t14&apos;, &apos;t14.alt&apos;)" onmouseover="swapOpacity(&apos;t14&apos;, &apos;t14.alt&apos;)" width="16.0mm" x="164.0mm" y="49.1mm" />
+      <rect class="invis" height="5.0mm" id="t15" onmouseout="swapOpacity(&apos;t15&apos;, &apos;t15.alt&apos;)" onmouseover="swapOpacity(&apos;t15&apos;, &apos;t15.alt&apos;)" width="16.0mm" x="164.0mm" y="60.1mm" />
+      <rect class="invis" height="5.0mm" id="t16" onmouseout="swapOpacity(&apos;t16&apos;, &apos;t16.alt&apos;)" onmouseover="swapOpacity(&apos;t16&apos;, &apos;t16.alt&apos;)" width="16.0mm" x="164.0mm" y="71.1mm" />
+      <rect class="invis" height="127.9mm" id="t17" onmouseout="swapOpacity(&apos;t17&apos;, &apos;t17.alt&apos;)" onmouseover="swapOpacity(&apos;t17&apos;, &apos;t17.alt&apos;)" width="16.0mm" x="164.0mm" y="82.1mm" />
+      <rect class="invis" height="149.5mm" id="t18" onmouseout="swapOpacity(&apos;t18&apos;, &apos;t18.alt&apos;)" onmouseover="swapOpacity(&apos;t18&apos;, &apos;t18.alt&apos;)" width="24.0mm" x="108.0mm" y="43.8mm" />
+      <rect class="invis" height="14px" id="t19" onmouseout="swapOpacity(&apos;t19&apos;, &apos;t19.alt&apos;)" onmouseover="swapOpacity(&apos;t19&apos;, &apos;t19.alt&apos;)" width="144px" x="90.6mm" y="39.4mm" />
+      <rect class="invis" height="149.5mm" id="t20" onmouseout="swapOpacity(&apos;t20&apos;, &apos;t20.alt&apos;)" onmouseover="swapOpacity(&apos;t20&apos;, &apos;t20.alt&apos;)" width="16.0mm" x="84.0mm" y="43.8mm" />
+      <rect class="invis" height="149.9mm" id="t21" onmouseout="swapOpacity(&apos;t21&apos;, &apos;t21.alt&apos;)" onmouseover="swapOpacity(&apos;t21&apos;, &apos;t21.alt&apos;)" width="24.0mm" x="28.0mm" y="43.6mm" />
+      <rect class="invis" height="14px" id="t22" onmouseout="swapOpacity(&apos;t22&apos;, &apos;t22.alt&apos;)" onmouseover="swapOpacity(&apos;t22&apos;, &apos;t22.alt&apos;)" width="180px" x="4.3mm" y="39.2mm" />
+    </g>
+  </g>
+</svg>

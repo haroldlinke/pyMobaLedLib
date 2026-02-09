@@ -47,7 +47,7 @@ from tkcolorpicker.limitvar import LimitVar
 
 
 
-#import proggen.M02_Public as M02
+import proggen.M02_Public as M02
 #import proggen.M03_Dialog as M03
 #import proggen.M06_Write_Header as M06
 #import proggen.M06_Write_Header_LED2Var as M06LED
@@ -60,7 +60,7 @@ import proggen.M07_COM_Port as M07
 #import proggen.M09_SelectMacro_Treeview as M09SMT
 #import proggen.M10_Par_Description as M10
 #import proggen.M20_PageEvents_a_Functions as M20
-#import proggen.M25_Columns as M25
+import proggen.M25_Columns as M25
 #import proggen.M27_Sheet_Icons as M27
 #import proggen.M28_Diverse as M28
 import proggen.M30_Tools as M30
@@ -76,7 +76,7 @@ import ExcelAPI.XLA_Application as P01
 import mlpyproggen.Prog_Generator as PG
 import proggen.M09_Language as M09
 
-import logging
+#import logging
 
 LocalComPorts = [] #vbObjectInitialize(objtype=Byte)
 OldL_ComPorts = [] #vbObjectInitialize(objtype=Byte)
@@ -208,8 +208,15 @@ class CSelect_COM_Port_UserForm:
             return
             
         SpinButton=int(self.Com_Port_Label.current())
+        #if type(DefaultPort) == str and DefaultPort.startswith("IP:"):
+        #    M07.CheckCOMPort = DefaultPort
+        #    self.Com_Port_Label["value"] = [DefaultPort]
+        #    self.AvailPorts_Label.configure(text=DefaultPort)
+        #    COM_Port_Label = ' -'
+        #    return
         
         LocalComPorts,PortNames = M07.EnumComPorts(Show_Unknown_CheckBox_flag, PortNames, PrintDebug= LocalPrintDebug)
+            
         if M30.isInitialised(LocalComPorts):
             SpinButton_Max = len(LocalComPorts)-1
             if DefaultPort != " ":# > 0:
@@ -257,7 +264,10 @@ class CSelect_COM_Port_UserForm:
             PortsStr=""
             for Port in LocalComPorts:
                 PortsStr = PortsStr + Port + ' '
-            self.AvailPorts_Label.configure(text=M30.DelLast(PortsStr))
+            try:
+                self.AvailPorts_Label.configure(text=M30.DelLast(PortsStr))
+            except:
+                pass
             OldL_ComPorts = LocalComPorts
         else:
             M07.CheckCOMPort = "999"#999
@@ -302,7 +312,16 @@ class CSelect_COM_Port_UserForm:
         #        serportname=int(serportname[3:])
         #    
         #    return fn_return_value,serportname
-        # 
+        #
+        
+        WLAN_device =  InStr(P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL), 'WLAN') > 0
+        
+        if WLAN_device:
+            Caption = M09.Get_Language_Str("Überprüfung des mDNS-Gerät")
+            Title =  M09.Get_Language_Str("Auswahl der mDNS-IP Adresse")
+            Text =  M09.Get_Language_Str("Es werden alle mDNS-IP Adressen gesucht mit denen sich ein MLL-Gerät meldet.")
+            Red_Hint = ""
+            Picture = "PICOWL_Image"
             
         c = Variant()
     
@@ -387,6 +406,9 @@ class CSelect_COM_Port_UserForm:
         
         self.Red_Hint_Label = ttk.Label(self.top, text=Red_Hint,font=self.default_font,foreground="#FF0000",width=20,wraplength=125,relief=tk.FLAT, borderwidth=1)
         self.Red_Hint_Label.grid(row=0,column=2,columnspan=1,rowspan=2,sticky="ne",padx=10,pady=10)
+        
+        #if ComPort_IO.startswith("IP:"):
+            #Show_ComPort = False
         if Show_ComPort: 
             self.Com_Port_Label = ttk.Combobox(self.top, width=30,font=self.default_font)
             self.Com_Port_Label.grid(row=3,column=0,sticky="nesw",padx=10,pady=10)
@@ -404,9 +426,16 @@ class CSelect_COM_Port_UserForm:
             self.Show_Unknown_CheckBox.grid(row=4, column=0, columnspan=2,sticky="nesw", padx=2, pady=2)
             
             if P01.checkplatform("Windows") != True:
-                self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("ACHTUNG: Beim LINUX/MAC funktioniert die automatische ARDUINO Erkennung nicht. Bitte unbedingt den richtigen ARDUINO Typ in den Optionen einstellen!\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=self.default_font,width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+                self.Hint_Label_text=M09.Get_Language_Str("ACHTUNG: Beim LINUX/MAC funktioniert die automatische ARDUINO Erkennung nicht. Bitte unbedingt den richtigen ARDUINO Typ in den Optionen einstellen!\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden.")
             else:           
-                self.Hint_Label = ttk.Label(self.top, text=M09.Get_Language_Str("Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden."),font=self.default_font,width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+                self.Hint_Label_text=M09.Get_Language_Str("Zur Identifikation des Arduinos blinken die LEDs des ausgewählten Arduinos schnell.\nEin anderer COM Port kann über die Pfeiltasten ausgewählt werden.\nDer Arduino kann auch nachträglich angesteckt werden.")
+            
+            if WLAN_device:
+                self.Hint_Label_text = M09.Get_Language_Str("Der gewünschte WLAN-Pico kann ausgewählt werden. Der Pico kann auch nachträglich angesteckt werden.")
+            
+            
+            self.Hint_Label = ttk.Label(self.top, text=self.Hint_Label_text,font=self.default_font,width=40,wraplength=350,relief=tk.FLAT, borderwidth=1)
+                             
             self.Hint_Label.grid(row=7,column=0,columnspan=2,rowspan=2,sticky="nesw",padx=10,pady=10)
             
             self.AvailPorts_Label = ttk.Label(self.top, text="",font=self.default_font,width=30, wraplength=350,relief=tk.FLAT, borderwidth=1)
@@ -421,7 +450,7 @@ class CSelect_COM_Port_UserForm:
         self.Button_Setup(self.buttonlist[0], self.Check_Button_Click,Column=1)
         self.Button_Setup(self.buttonlist[1], self.Abort_Button_Click,Column=2)
         self.Button_Setup(self.buttonlist[2], self.Default_Button_Click,Column=3)
-        self.Button_Setup("O Options", self.Options_Button_Click,Column=0)
+        #self.Button_Setup("O Options", self.Options_Button_Click,Column=0)
         
         self.button_frame.grid(row=8,column=2,sticky="e",padx=10,pady=10)
         
@@ -479,7 +508,7 @@ class CSelect_COM_Port_UserForm:
         #Red_Hint_Label = Red_Hint
         self.show() #Me.Show()
         # Store the results
-        if Show_ComPort:
+        if Show_ComPort: #and not ComPort_IO.startswith("IP:"):
             if M30.isInitialised(LocalComPorts):
                 ComPort_IO = LocalComPorts[self.Com_Port_No]
         fn_return_value = Pressed_Button

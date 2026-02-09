@@ -58,8 +58,8 @@ from ExcelAPI.XLC_Excel_Consts import *
 #
 # ##################################################### Public Const
 
-Lib_Version_Nr = '3.3.2'                                   # If changed check also "Exp_Prog_Gen_Version" in Pattern_Configurator
-Test_Suffix = 'G'                                            # The Excel programs use the same version number than the library to avoid confusion
+Lib_Version_Nr = '3.5.0'                                   # If changed check also "Exp_Prog_Gen_Version" in Pattern_Configurator
+Test_Suffix = 'C1'                                          # The Excel programs use the same version number than the library to avoid confusion
 Prog_Version = 'Ver. ' + Lib_Version_Nr + Test_Suffix       # A sufix could be used for beta version
 Prog_Version_Nr = Lib_Version_Nr + Test_Suffix              # Call Gen_Release_Version() to update all sheets
 DEBUG_CHANGEEVENT = False
@@ -99,6 +99,10 @@ SECOND_ICON2 = 'Icons/06_Michael_Patt.ico'
 WIKIPG_ICON1 = 'Icons/WikiMLL_v5.ico'
 WIKIPG_ICON2 = 'Icons/06_Michael_Wiki.ico'
 WikiPg_Link = 'https://wiki.mobaledlib.de/'
+
+SUCHE_ICON = "Icons/06_Michael_Suche.ico"
+SUCHE_LINK = "https://suche.mobaledlib.de"
+
 MLLSHOP_ICON = 'Icons/06_Michael_Shop.ico'
 MLLSHOP_LINK = 'https://eberwein.shop/'
 Env_USERPROFILE = 'USERPROFILE'
@@ -178,6 +182,12 @@ Hook_CHAR = xlhookchar # 252 #61692 # replace hook with "*"
 
 SPARE_ROWS = 3                                  # Number of spare rows which are generated if data are entered in a new line
 
+#' Hardware types:
+HT_AM328 = "AM328"
+HT_ESP32 = "ESP32"
+HT_PICO = "PICO"
+
+
 # Sheet names:
 LANGUAGES_SH = 'Languages'
 LIBMACROS_SH = 'Lib_Macros'
@@ -211,6 +221,7 @@ BOARD_NANO_EVERY = '--board arduino:megaavr:nona4809:mode=off'
 BOARD_UNO_NORM = '--board arduino:avr:uno'
 BOARD_ESP32 = '--board esp32:esp32:esp32:PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none'
 BOARD_PICO = '--board rp2040:rp2040:rpipico:flash=2097152_0,freq=125,dbgport=Disabled,dbglvl=None'
+BOARD_PICO_WL = '--board rp2040:rp2040:rpipico:flash=2097152_0,freq=125,dbgport=Disabled,dbglvl=None,WLAN=Yes'
 AUTODETECT_STR = 'AutoDet'
 DEFARDPROG_STR = '--pref programmer=arduino:arduinoisp'
 
@@ -316,13 +327,13 @@ def Get_SrcDirExamp():
 def Get_BoardTyp():
     #---------------------------------------
     # The build options for the ESP32 are something like "esp32:esp32:esp32..."
-    fn_return_value = 'AM328'
+    fn_return_value = M02.HT_AM328
     if InStr(P01.Cells(SH_VARS_ROW, M25.BUILDOP_COL), 'esp32') > 0:
-        fn_return_value = 'ESP32'
+        fn_return_value = M02.HT_ESP32
     elif InStr(P01.Cells(SH_VARS_ROW, M25.BUILDOP_COL), 'rp2040') > 0:
-        fn_return_value = 'PICO'
+        fn_return_value = M02.HT_PICO
     else:
-        fn_return_value = 'AM328'
+        fn_return_value = M02.HT_AM328
     # Other types:
     # "Every"           ' Nano Every
     return fn_return_value

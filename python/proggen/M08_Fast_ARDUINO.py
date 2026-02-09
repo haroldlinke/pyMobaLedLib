@@ -107,10 +107,10 @@ def Create_Packages_Dir_if_not_Available():
 def Create_Build(BoardName, fp):
     # 28.10.20: Jürgen (Old name: Create_PrivateBuild_cmd_if_missing)
     #-------------------------------------
-    if BoardName == 'AM328':
+    if BoardName == M02.HT_AM328:
         Create_Build_Arduino(( fp ))
         return
-    if BoardName == 'PICO':
+    if BoardName == M02.HT_PICO:
         # 17.04.21: Jürgen
         Create_Build_Pico(( fp ))
         return
@@ -207,8 +207,8 @@ def Create_Build_Arduino(fp):
     VBFiles.writeText(fp, 'set mainType=%subType:~0,9%', '\n')
     #           ---- " ---
     VBFiles.writeText(fp, '', '\n')
-    VBFiles.writeText(fp, 'if ""%8""==""noflash"" goto :EOF', '\n')  # 19.12.21: Jürgen: add noflash option
-    VBFiles.writeText(fp, 'if %errorlevel%==0 (', '\n')
+    VBFiles.writeText(fp, 'if "%8"=="noflash" goto :EOF', '\n')  # 19.12.21: Jürgen: add noflash option
+    #VBFiles.writeText(fp, 'if errorlevel 0 (', '\n')
     VBFiles.writeText(fp, '   REM *** Flash program ***', '\n')
     VBFiles.writeText(fp, '   REM -v = Verbose output. -v -v for more.', '\n')
     VBFiles.writeText(fp, '   REM -V = Do not verify.                      => Saves 3 sec', '\n')
@@ -256,7 +256,7 @@ def Create_Build_Pico(fp):
     VBFiles.writeText(fp, 'REM  5: Baudrate:            "115200"', '\n')
     VBFiles.writeText(fp, 'REM  6: Arduino Library path "%USERPROFILE%\\Documents\\Arduino\\libraries"', '\n')
     VBFiles.writeText(fp, 'REM  7: CPU type:            "rp2040', '\n')
-    VBFiles.writeText(fp, 'REM  8: options:             ""noflash""', '\n')   # 19.12.21: Jürgen: Added noflash option
+    VBFiles.writeText(fp, 'REM  8: options:             "noflash"', '\n')   # 19.12.21: Jürgen: Added noflash option
     # 19.12.21: Jürgen: Added noflash option
     VBFiles.writeText(fp, 'REM', '\n')
     VBFiles.writeText(fp, 'REM The program uses the captured and adapted command line from the Arduino IDE', '\n')
@@ -287,18 +287,18 @@ def Create_Build_Pico(fp):
     VBFiles.writeText(fp, '     -warnings=default ^', '\n')
     VBFiles.writeText(fp, '     -build-cache "%aCache%" ^', '\n')
     VBFiles.writeText(fp, '     -prefs=build.warn_data_percentage=75 ^', '\n')
-    VBFiles.writeText(fp, "     -prefs=runtime.platform.path=""" + M08.GetShortPath(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + "packages\\rp2040\\hardware\\rp2040\\" + Board_Version) + '" ^','\n') # 16.12.24: Juergen
+    VBFiles.writeText(fp, '     -prefs=runtime.platform.path="' + M08.GetShortPath(Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + "packages\\rp2040\\hardware\\rp2040\\" + Board_Version) + '" ^','\n') # 16.12.24: Juergen
     VBFiles.writeText(fp, '     %2', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, '', '\n')
-    VBFiles.writeText(fp, 'if ""%8""==""noflash"" goto :EOF', '\n')   # 19.12.21: Jürgen: add noflash option   
+    VBFiles.writeText(fp, 'if "%8"=="noflash" goto :EOF', '\n')   # 19.12.21: Jürgen: add noflash option   
     # 19.12.21: Jürgen: add noflash option
-    VBFiles.writeText(fp, 'if %errorlevel%==0 (', '\n')
+    #VBFiles.writeText(fp, 'if errorlevel 0 (', '\n')
     VBFiles.writeText(fp, '   REM *** Flash program ***', '\n')
     VBFiles.writeText(fp, '   :flash', '\n')
     VBFiles.writeText(fp, '   "%packages%\\rp2040\\tools\\pqt-python3\\1.0.1-base-3a57aed-1\\python3" "%packages%\\rp2040\\hardware\\rp2040\\' + Board_Version + '\\tools\\uf2conv.py" ^', '\n')
     VBFiles.writeText(fp, '   --serial %3 --family RP2040 --deploy "%aTemp%\\LEDs_AutoProg.ino.uf2"', '\n')
-    VBFiles.writeText(fp, ')', '\n')
+    #VBFiles.writeText(fp, ')', '\n')
     VBFiles.writeText(fp, 'goto :eof', '\n')
     VBFiles.writeText(fp, '', '\n')
     VBFiles.writeText(fp, ':short', '\n')

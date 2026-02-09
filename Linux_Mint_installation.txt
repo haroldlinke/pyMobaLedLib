@@ -1,0 +1,32 @@
+Installation python modules in Linux-Mint:
+
+Es muß ein eigenes virtuelles Python Environment für die pyMLL erstellt werden.
+
+Dazu benötigt man das Tool venv.
+
+Installation unter Mint:
+sudo apt install python3-venv python3-pip
+
+Achtung: Rootpasswort wird abgefragt.
+
+Danach erstellen des virtuellen environments:
+
+python3 -m venv ~/pyMLL-env
+
+Es wird ein sogenanntes virtuelle Umgebung für die pyMLL geschaffen, mit eigenem Python3 programm und eigener Modulbibliothek.
+
+
+Vor jedem Start der pyMLL muß die virtuelle Umgebung aktiviert werden:
+
+source ~/pyMLL-env/bin/activate
+Das active Verzeichnis ist jetzt ~/pyMLL-env
+Diese Verzeichnis NICHT verlassen, sondern sofort danach pyMLL starten mit:
+
+python3 pfad_zur_py_MLL/pyMobaLedLib.py
+
+Nach dem Start installiert das Programm erst einmal alle fehlenden Module nach. Danach sollte hoffentlich alles funktionieren ...
+
+install avrdude
+
+sudo apt update
+sudo apt install avrdude

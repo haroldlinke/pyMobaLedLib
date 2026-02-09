@@ -273,6 +273,7 @@ def Update_Start_LedNr(FirstRun=True):
         M06.Clear_MaxLEDNr()    
     M25.Make_sure_that_Col_Variables_match()
     # 03.04.21 Juergen - try to find out if only the main LED Channel is in use
+    
     for row in P01.ActiveSheet.UsedRange_Rows():
         # ToDo: Hier könnte man einen Eigenen Range definieren der erst ab der FirstDat_Row beginnt. Dann könnte die abfrage "If r >= FirstDat_Row Then" entfallen
         r = row.Row
@@ -281,6 +282,7 @@ def Update_Start_LedNr(FirstRun=True):
             if Row_is_Achtive(r):
                 if P01.val(P01.Cells(r, M25.LED_Cha_Col)) > Max_LEDs_Channel:
                     Max_LEDs_Channel = P01.val(P01.Cells(r, M25.LED_Cha_Col))
+    
     for row in P01.ActiveSheet.UsedRange_Rows():
         # ToDo: Hier könnte man einen Eigenen Range definieren der erst ab der FirstDat_Row beginnt. Dann könnte die abfrage "If r >= FirstDat_Row Then" entfallen
         r = row.Row
@@ -365,6 +367,7 @@ def Update_Start_LedNr(FirstRun=True):
             M06.MaxLEDNr[LEDs_Channel] = LEDNr(LEDs_Channel)
             # 19.01.21:
     # Write the Last LED number to row 1 (SH_VARS_ROW)
+    
     for Nr in vbForRange(0, M02.LED_CHANNELS - 1):
         Col = Get_LED_Nr_Column(Nr)
         M06.MaxLEDNr[Nr] = M06.MaxLEDNr(Nr) + UsedModules(LastusedChannel(Nr))
@@ -372,6 +375,7 @@ def Update_Start_LedNr(FirstRun=True):
     P01.Application.EnableEvents = OldEvents
     _fn_return_value = M06.MaxLEDNr
     Clear_Formula_Errors()
+    PG.global_controller.update()
     return _fn_return_value
 
 def Get_LED_Nr(DefaultLedNr, Row, LED_Channel):
@@ -414,8 +418,9 @@ def Clear_LED_Nr_Columns(r, ExceptCol=-1):
                     P01.Cells(r, Col).Formula = '=""'
                     # 30.04.20: Using the formula ="" to prevent overlapping texts from the left cell
             else:
-                if P01.Cells(r, Col).Value != '':
-                    P01.Cells(r, Col).Value = ''
+                pass
+                #f P01.Cells(r, Col).Value != '':
+                #    P01.Cells(r, Col).Value = ''
 
 def FirstNotFormatedRow(StartRow):
     Row = int()
@@ -690,7 +695,7 @@ def Show_Help():
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Target - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Cancel - ByRef 
-def Proc_DoubleCkick(Sh, Target, Cancel):
+def Proc_DoubleClick(Sh, Target, Cancel):
     #----------------------------------------------------------------------------------------------
     M25.Make_sure_that_Col_Variables_match(Sh)
     if M28.Is_Data_Sheet(P01.ActiveSheet):
@@ -763,6 +768,7 @@ def Global_Worksheet_SelectionChange(Target):
                 pass
                 # Debug
             if (Target.Column == M02.Enable_Col):
+                P01.Application.EnableEvents = True
                 if Target.Value == '':
                     Target.Value = ChrW(M02.Hook_CHAR)
                 else:
@@ -790,6 +796,63 @@ def Global_Worksheet_SelectionChange(Target):
                 Target.Comment.Shape.Top = P01.ActiveWindow.Visible.Range.Top
                 Target.Comment.Shape.Left = P01.ActiveCell().Left
                 #.Visible = True
+
+def check_conditionalformating(Target, allcolumns=False):
+    row = Target.currentcell[0]
+    columnlist = [Target.currentcell[1]]
+    controller = Target.Worksheet.Workbook.controller
+    RowFormatInput = controller.getConfigData("RowFormatInput")
+    colorchanged = False
+    
+    if allcolumns:
+        columnlist = [2,3,4,7,8,9,11,12,13,14]
+    for column in columnlist:
+        result = False
+        for format_data_idx in RowFormatInput:
+            format_data = RowFormatInput.get(format_data_idx)
+            compCol = format_data.get("RFCompCol", None)
+            if compCol != None and compCol != "0":
+                if int(compCol) == int(column):
+                    compValue = format_data.get("RFCompValue", None)
+                    compOperator = format_data.get("RFCompOperator", None)
+                    compColor = format_data.get("RFColor", None)
+                    if allcolumns:
+                        changedValue = Target.Worksheet.tksheet.get_cell_data(row-1, column-1)
+                    else:
+                        changedValue = Target.Value
+                    changedValue_str = str(changedValue)
+                    if compValue != None and compOperator != None and compColor != None:
+                        if compOperator == "Gleich":
+                            result = changedValue_str == compValue
+                        elif compOperator == "Ungleich":
+                            result = changedValue_str != compValue
+                        elif compOperator == "Beginnt mit":
+                            result = changedValue_str.startswith(compValue)
+                        elif compOperator == "Endet mit":
+                            result = changedValue_str.endswith(compValue)
+                        elif compOperator == "Enthält":
+                            result = compValue in changedValue_str
+                        
+                        if result == True:
+                            colorrow = format_data.get("RFColorRow", None)
+                            if colorrow:
+                                Target.Worksheet.tksheet[row-1].bg = compColor
+                                colorchanged = True
+                            else:
+                                Target.Worksheet.tksheet[row-1, column-1].bg = compColor
+                                colorchanged = True
+                            break
+        # if result == True:
+            # break
+    if colorchanged == False:
+        Target.Worksheet.tksheet.dehighlight(row-1)
+        if allcolumns == False:
+            check_conditionalformating(Target, allcolumns=True)
+    return
+
+def Global_Worksheet_ConditionalFormating(Target):
+    check_conditionalformating(Target)
+    return
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Target - ByVal 
 def Global_Worksheet_Change(Target):
@@ -1124,66 +1187,70 @@ def Update_TestButtons(Row, onValue=0, First_Call=True, redraw=False):
     else:
         ButtonPrefix = 'S'
     # 25.04.23: Juergen button or switch
-    for i in vbForRange(1, ButtonCount):
-        if Used_OldRect < OldRect_Cnt:
-            objButton = P01.ActiveSheet.Shapes.getlist()[OldRect_List(Used_OldRect)-1]
-            Used_OldRect = Used_OldRect + 1
-        else:
-            #*HLobjButton = P01.ActiveSheet.Shapes.AddShape(msoShapeRectangle, Row, TargetColumn, 0, 0, 0, 0)
-            NewCreated = True
-        # 19.01.21: Jürgen
-        isSetToOn = False
-        # 26.03.21: Jürgen, otherwise lines with more than one toggle button are displayed wrong
-        if toggle:
-            if ( onValue &  ( 2 **  ( i - 1 ) ) )  != 0:
-                isSetToOn = True
-        objButton_Name = ButtonPrefix + P01.Format(Addr, '0000') + '-' + P01.Format(Direction, '00') + '-' + P01.Format(ColorOffset, '00') + '-' + str(TextOffset)
-        if NewCreated:
-            objButton_Left = P01.Cells(Row, TargetColumn).Left + PixelOffset +  ( i - 1 )  * Height
-            objButton_Top = P01.Cells(Row, TargetColumn).Top + 1
-            objButton_Height = Height - 2
-            objButton_Width = Height - 2
-            objButton = P01.ActiveSheet.Shapes.AddShape(msoShapeRectangle, objButton_Left, objButton_Top, objButton_Height, objButton_Width, Fill="#FF0000", name=objButton_Name)
-        
-        if P01.Cells(Row, M25.Inp_Typ_Col).Text == M09.OnOff_T:
-            if objButton.TextFrame2.TextRange.Text != str(TextOffset):
-                objButton.TextFrame2.TextRange.Text = str(TextOffset)
-        else:
-            if objButton.TextFrame2.TextRange.Text != ' ':
-                objButton.TextFrame2.TextRange.Text = ' '
-                # No text because it's confusing if 0/1 is used for OnOff switches
-        if NewCreated:
-            objButton.OnAction = 'DCCSend'
-            #objButton.DrawingObject.Border.Color = rgb(0, 0, 0)
-            #objButton.TextFrame2.Text.Range.ParagraphFormat.Alignment = msoAlignCenter
-        objButton.Fill.ForeColor.rgb = GetButtonColor(ColorOffset)
-        if toggle:
-            altText = ButtonPrefix + P01.Format(Addr, '0000') + '-' + P01.Format(1 - Direction, '00') + '-' + P01.Format(ColorOffset + 1, '00') + '-' + str(AltTextOffset)
-            if isSetToOn:
-                objButton.AlternativeText = objButton.Name
-                objButton.Name = altText
-                #*HLobjButton.TextFrame2.Text.Range.Text = Mid(objButton.Name, 13, 1)
-                objButton.TextFrame2.TextRange.Text = Mid(objButton.Name, 13, 1)
-                #*HLobjButton.Fill.ForeColor.rgb = GetButtonColor(P01.val(Mid(objButton.Name, 10, 2)))
-                objButton.Fill.ForeColor.rgb = GetButtonColor(P01.val(Mid(objButton.Name, 10, 2)))
+    try: 
+        for i in vbForRange(1, ButtonCount):
+            if Used_OldRect < OldRect_Cnt:
+                objButton = P01.ActiveSheet.Shapes.getlist()[OldRect_List(Used_OldRect)-1]
+                Used_OldRect = Used_OldRect + 1
             else:
-                objButton.AlternativeText = altText
-        else:
-            objButton.AlternativeText = ''
-        TextOffset = TextOffset + TextInc
-        AltTextOffset = AltTextOffset + TextInc
-        if incAddress:
-            Addr = Addr + 1
-        else:
-            if ( Direction == 1 ) :
+                #*HLobjButton = P01.ActiveSheet.Shapes.AddShape(msoShapeRectangle, Row, TargetColumn, 0, 0, 0, 0)
+                NewCreated = True
+            # 19.01.21: Jürgen
+            isSetToOn = False
+            # 26.03.21: Jürgen, otherwise lines with more than one toggle button are displayed wrong
+            if toggle:
+                if ( onValue &  ( 2 **  ( i - 1 ) ) )  != 0:
+                    isSetToOn = True
+            objButton_Name = ButtonPrefix + P01.Format(Addr, '0000') + '-' + P01.Format(Direction, '00') + '-' + P01.Format(ColorOffset, '00') + '-' + str(TextOffset)
+            if NewCreated:
+                objButton_Left = P01.Cells(Row, TargetColumn).Left + PixelOffset +  ( i - 1 )  * Height
+                objButton_Top = P01.Cells(Row, TargetColumn).Top + 1
+                objButton_Height = Height - 2
+                objButton_Width = Height - 2
+                objButton = P01.ActiveSheet.Shapes.AddShape(msoShapeRectangle, objButton_Left, objButton_Top, objButton_Height, objButton_Width, Fill="#FF0000", name=objButton_Name)
+            
+            if P01.Cells(Row, M25.Inp_Typ_Col).Text == M09.OnOff_T:
+                if objButton.TextFrame2.TextRange.Text != str(TextOffset):
+                    objButton.TextFrame2.TextRange.Text = str(TextOffset)
+            else:
+                if objButton.TextFrame2.TextRange.Text != ' ':
+                    objButton.TextFrame2.TextRange.Text = ' '
+                    # No text because it's confusing if 0/1 is used for OnOff switches
+            if NewCreated:
+                objButton.OnAction = 'DCCSend'
+                #objButton.DrawingObject.Border.Color = rgb(0, 0, 0)
+                #objButton.TextFrame2.Text.Range.ParagraphFormat.Alignment = msoAlignCenter
+            objButton.Fill.ForeColor.rgb = GetButtonColor(ColorOffset)
+            if toggle:
+                altText = ButtonPrefix + P01.Format(Addr, '0000') + '-' + P01.Format(1 - Direction, '00') + '-' + P01.Format(ColorOffset + 1, '00') + '-' + str(AltTextOffset)
+                if isSetToOn:
+                    objButton.AlternativeText = objButton.Name
+                    objButton.Name = altText
+                    #*HLobjButton.TextFrame2.Text.Range.Text = Mid(objButton.Name, 13, 1)
+                    objButton.TextFrame2.TextRange.Text = Mid(objButton.Name, 13, 1)
+                    #*HLobjButton.Fill.ForeColor.rgb = GetButtonColor(P01.val(Mid(objButton.Name, 10, 2)))
+                    objButton.Fill.ForeColor.rgb = GetButtonColor(P01.val(Mid(objButton.Name, 10, 2)))
+                else:
+                    objButton.AlternativeText = altText
+            else:
+                objButton.AlternativeText = ''
+            TextOffset = TextOffset + TextInc
+            AltTextOffset = AltTextOffset + TextInc
+            if incAddress:
                 Addr = Addr + 1
-                Direction = 0
             else:
-                Direction = 1
-        ColorOffset = ValidateColorIndex(ColorOffset + ColorInc)
-        objButton.updateShape()
-    for i in vbForRange(Used_OldRect, OldRect_Cnt - 1):
-        P01.ActiveSheet.Shapes.Delete(OldRect_List(i))
+                if ( Direction == 1 ) :
+                    Addr = Addr + 1
+                    Direction = 0
+                else:
+                    Direction = 1
+            ColorOffset = ValidateColorIndex(ColorOffset + ColorInc)
+            objButton.updateShape()
+        for i in vbForRange(Used_OldRect, OldRect_Cnt - 1):
+            P01.ActiveSheet.Shapes.Delete(OldRect_List(i))
+    except BaseException as e:
+        #print(e)
+        Debug.Print(e)
 
 def ResetTestButtons(keepStatus):
     

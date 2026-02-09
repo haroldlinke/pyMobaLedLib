@@ -78,6 +78,7 @@ import threading
 import queue
 import time
 import logging
+logger=logging.getLogger(__name__)
 
 #import concurrent.futures
 #import random
@@ -341,13 +342,13 @@ class Z21MonitorPage(tk.Frame):
         #self.start_process_serial()
 
     def tabselected(self):
-        logging.debug("Tabselected: %s",self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
         #self.controller.currentTabClass = self.tabClassName
-        logging.debug(self.tabname)
+        logger.debug(self.tabname)
         pass
     
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
         pass    
 
     def getConfigData(self, key):
@@ -369,13 +370,13 @@ class Z21MonitorPage(tk.Frame):
         pass
     
     def dummy(self,event):
-        logging.debug("dummy")
+        logger.debug("dummy")
         
     def addTexttoQueue(self,text):
         self.controller.queue.put(text)    
     
     def _update_value(self,paramkey):
-        logging.info("Z21MonitorPage - update_value: %s",paramkey)
+        logger.info("Z21MonitorPage - update_value: %s",paramkey)
         message = self.controller.get_macroparam_val(self.tabClassName, "Z21KeyTestInput")+"\r\n" #self.input.get() +"\r\n"
         #self.controller.send_to_ARDUINO(message)
         if message.startswith("JSON:"):
@@ -393,10 +394,10 @@ class Z21MonitorPage(tk.Frame):
         self.client_broadcast_flag_dict = {}
         self.client_RMBUS_GETDATA_dict = {}
         self.RMBUS_DATA_bytearray = {0: bytearray(10)}
-        logging.debug("reset_z21_data-end")
+        logger.debug("reset_z21_data-end")
         
     def send_command_to_ARDUINO(self,dccaddress,channel,activate):
-        logging.debug("send_command_to_ARDUINO entry: %s - %s",dccaddress,channel)
+        logger.debug("send_command_to_ARDUINO entry: %s - %s",dccaddress,channel)
         #self.controller.connect_if_not_connected()
         #select the ARDUINO to send the commands to
         for port in self.controller.serial_port_dict:
@@ -404,7 +405,7 @@ class Z21MonitorPage(tk.Frame):
             if dccaddress in range(dcc_address_range[0],dcc_address_range[1]):
                 #address_int=int(dccaddress)
                 command = "@ {:03} {:02} {:02}".format(dccaddress,channel,activate)
-                logging.debug ("send_com_to_ARDUINO(%s): %s - %s - %s",port,dccaddress,channel,command)
+                logger.debug ("send_com_to_ARDUINO(%s): %s - %s - %s",port,dccaddress,channel,command)
                 
                 arduino = self.controller.serial_port_dict[port]["ARDUINO"]
                 #arduino=self.controller.arduino
@@ -419,7 +420,7 @@ class Z21MonitorPage(tk.Frame):
         self.start_process_Z21()
         
     def stop(self,event=None):
-        logging.debug ("Z21_Stop")
+        logger.debug ("Z21_Stop")
         self.stop_process_Z21()
         
     def show_key_adress_for_variables(self,text):
@@ -465,7 +466,7 @@ class Z21MonitorPage(tk.Frame):
         if self.queue_z21:
 
             while self.queue_z21.qsize():
-                #logging.debug("process_serial: While loop")
+                #logger.debug("process_serial: While loop")
                 try:
                     #readtext = self.queue.get()
                     d = self.queue_z21.get()
@@ -475,10 +476,10 @@ class Z21MonitorPage(tk.Frame):
                     date_time = datetime.now()
                     d = date_time.strftime("%H:%M:%S")
                     readtext_str = binascii.hexlify(readtext)
-                    textmessage = d + "  " + str(readtext_str)
-                    #self.add_text_to_textwindow(textmessage)
+                    textmessage = d + "  process_Z21_loop:" + str(readtext_str)
+                    self.add_text_to_textwindow(textmessage)
                     self.slicePacket(client,readtext)
-                    #self.add_text_to_textwindow("\n")
+                    self.add_text_to_textwindow("\n")
                 except IOError:
                     pass
             
@@ -506,7 +507,7 @@ class Z21MonitorPage(tk.Frame):
                     dcc_adress_range = (1,9999)
                 self.controller.connect_Z21(port,dcc_adress_range)
         else:
-            logging.debug("Z21MonitorPage: Connect ARDUINO")
+            logger.debug("Z21MonitorPage: Connect ARDUINO")
             self.controller.connect()
         self.controller.start_process_serial_all()
             
@@ -538,7 +539,7 @@ class Z21MonitorPage(tk.Frame):
     def send_RMBUS_DATA(self,send_data,groupidx=0):
         empty_bytearray = bytearray(12)
         data = bytearray(1)
-        #logging.debug("send_RMBUS_DATA")
+        #logger.debug("send_RMBUS_DATA")
         data[0] = groupidx
         data.extend(send_data)
         if len(data)<10:
@@ -546,7 +547,7 @@ class Z21MonitorPage(tk.Frame):
         for info_client in self.client_RMBUS_GETDATA_dict.keys():
             self.EthSend (0x0F, LAN_RMBUS_DATACHANGED, data[0:12], False, client=info_client)
             self.add_text_to_textwindow(" - LAN_RMBUS_DATACHANGED: " + data.hex())
-            logging.debug("Z21-Simu: LAN_RMBUS_DATACHANGED: " + data.hex());             
+            logger.debug("Z21-Simu: LAN_RMBUS_DATACHANGED: " + data.hex());             
         
     def set_RMBUS_DATA(self,data,groupidx=0):
         data_changed = False
@@ -589,14 +590,14 @@ class Z21MonitorPage(tk.Frame):
     
     def test_convert_7bit_to_8bit(self):
         bytestring = b'\x40'
-        print("test_convert_7bit_to_8bit:", bytestring, self.convert_7bit_to_8bit(bytestring))        
+        #print("test_convert_7bit_to_8bit:", bytestring, self.convert_7bit_to_8bit(bytestring))        
         bytestring = b'\x40\x00'
-        print("test_convert_7bit_to_8bit:", bytestring, self.convert_7bit_to_8bit(bytestring))
+        #print("test_convert_7bit_to_8bit:", bytestring, self.convert_7bit_to_8bit(bytestring))
         bytestring = b'\x00\x40'
-        print("test_convert_7bit_to_8bit:", bytestring, self.convert_7bit_to_8bit(bytestring))        
+        #print("test_convert_7bit_to_8bit:", bytestring, self.convert_7bit_to_8bit(bytestring))        
         data_7bit_str=b"\x7F\x7F"
         v8bit_str=self.convert_7bit_to_8bit(data_7bit_str)
-        print("test_convert_7bit_to_8bit:",data_7bit_str,v8bit_str)
+        #print("test_convert_7bit_to_8bit:",data_7bit_str,v8bit_str)
         
     def convert_7bit_to_8bit_2(self, bytestring):
         # Convert the bytestring to a binary string
@@ -628,26 +629,26 @@ class Z21MonitorPage(tk.Frame):
                         countbits-=1
         if countbits != 0:
             result.append(byte)
-        print("convert_7bit_to_8bit: \nInput:")
-        for my_byte in bytestring:
-            print(f'{my_byte:0>8b}', end=' ')
-        print(" \nOutput:")    
-        for my_byte in result:
-            print(f'{my_byte:0>8b}', end=' ')
-        print("\n")
+        #print("convert_7bit_to_8bit: \nInput:")
+        #for my_byte in bytestring:
+        #    print(f'{my_byte:0>8b}', end=' ')
+        #print(" \nOutput:")    
+        #for my_byte in result:
+        #    print(f'{my_byte:0>8b}', end=' ')
+        #print("\n")
         return bytes(result)
 
     
     def notifyZ21_RMBUS_DATA(self, json_data_str):
-        logging.debug("notifyZ21_RMBUS_DATA: %s",json_data_str)
+        logger.debug("notifyZ21_RMBUS_DATA: %s",json_data_str)
         RMBUS_DATA_dict = json.loads(json_data_str)
         rmbus_7bit_data_str = RMBUS_DATA_dict.get("RMBUS","")
-        logging.debug("notifyZ21_RMBUS_DATA 7bit: %s",rmbus_7bit_data_str)
+        logger.debug("notifyZ21_RMBUS_DATA 7bit: %s",rmbus_7bit_data_str)
         if len(rmbus_7bit_data_str)==2 and rmbus_7bit_data_str[0]=="?":
             return
         rmbus_data_bytearray = self.convert_7bit_to_8bit(bytearray.fromhex(rmbus_7bit_data_str))
         rmbus_data_str = rmbus_data_bytearray.hex()
-        logging.debug("notifyZ21_RMBUS_DATA data_str: %s",rmbus_data_str)
+        logger.debug("notifyZ21_RMBUS_DATA data_str: %s",rmbus_data_str)
         
         if rmbus_data_str != "":
             group_idx = 0
@@ -663,7 +664,13 @@ class Z21MonitorPage(tk.Frame):
                 rmbus_data_bytearray = bytearray.fromhex(rmbus_data_z21_str)
                 self.set_RMBUS_DATA(rmbus_data_bytearray,groupidx=group_idx)
                 group_idx += 1
-        
+
+    def get_local_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try: # Ziel muss nicht erreichbar sein – es wird nichts gesendet 
+            s.connect(("192.0.0.1", 80)) 
+            return s.getsockname()[0]
+        finally: s.close()
 
     def start_process_Z21(self):
         global ThreadEvent_Z21
@@ -674,19 +681,19 @@ class Z21MonitorPage(tk.Frame):
             #self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             hostname = socket.gethostname()
             
-            ip_address = socket.gethostbyname(hostname)
+            ip_address = self.get_local_ip() #socket.gethostbyname(hostname)
                       
             self.add_text_to_textwindow("Socket opened: Host " + hostname + " IP-adress " + ip_address + "\n")
-            logging.debug ('Socket created: Host' + hostname + " IP-adress " + ip_address)
+            logger.debug ('Socket created: Host' + hostname + " IP-adress " + ip_address)
         except (socket.error, msg) :
-            logging.debug ('Failed to create socket. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+            logger.debug ('Failed to create socket. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
             return
         
         # Bind socket to local host and port
         try:
             self.socket.bind((HOST, z21Port))
         except:
-            logging.debug ('Bind failed. Error Code : ') #  + str(msg[0]) + ' Message ' + msg[1])
+            logger.debug ('Bind failed. Error Code : ') #  + str(msg[0]) + ' Message ' + msg[1])
             return
 
         self.connect_all_serial_interfaces()
@@ -700,24 +707,24 @@ class Z21MonitorPage(tk.Frame):
         self.thread.start()
         self.process_Z21()
 
-        logging.debug ('Socket bind complete')        
+        logger.debug ('Socket bind complete')        
         
         textmessage = "Z21 Simulator started\n"
         self.add_text_to_textwindow(textmessage)            
 
     def stop_process_Z21(self):
-        logging.debug ("Stop_process_Z21")
+        logger.debug ("Stop_process_Z21")
         global ThreadEvent_Z21
         self.monitor_serial = False
         if ThreadEvent_Z21:
             ThreadEvent_Z21.set()
-        logging.debug ("Stop_process_Z21 - disconnect_all_serial_interfaces")
+        logger.debug ("Stop_process_Z21 - disconnect_all_serial_interfaces")
         self.disconnect_all_serial_interfaces()
-        logging.debug ("Stop_process_Z21 - reset_z21_data")
+        logger.debug ("Stop_process_Z21 - reset_z21_data")
         self.reset_z21_data()
         time.sleep(1)
         try:
-            logging.debug ("Stop_process_Z21 - socket.close")
+            logger.debug ("Stop_process_Z21 - socket.close")
             self.socket.close()
         except:
             pass
@@ -759,7 +766,7 @@ class Z21MonitorPage(tk.Frame):
     
     def receive_message(self, client, packet): 
         if len(packet) <4:
-            logging.debug("ERROR: Packet length")
+            logger.debug("ERROR: Packet length")
             return
         
         p3=packet[3]
@@ -769,12 +776,12 @@ class Z21MonitorPage(tk.Frame):
         header = p3s+p2
         header_int=int(header)
     
-        #logging.debug("Header: %s %s",header_int,self.z21_code2text_dict.get(header_int,"xx"))     
+        logger.debug("Header: %s %s",header_int,self.z21_code2text_dict.get(header_int,"xx"))     
         data = bytearray(b"                ")
     
         if header == LAN_GET_SERIAL_NUMBER:
             self.add_text_to_textwindow(" - LAN_GET_SERIAL_NUMBER")
-            logging.debug("GET_SERIAL_NUMBER");  
+            logger.debug("GET_SERIAL_NUMBER");  
             data[0] = z21SnLSB;
             data[1] = z21SnMSB;
             data[2] = 0x00; 
@@ -782,7 +789,7 @@ class Z21MonitorPage(tk.Frame):
             self.EthSend(0x08, LAN_GET_SERIAL_NUMBER, data, False, client=client) #Seriennummer 32 Bit (little endian)
         elif header == LAN_GET_HWINFO:
             self.add_text_to_textwindow(" - LAN_GET_HWINFO")
-            logging.debug("GET_HWINFO"); 
+            logger.debug("GET_HWINFO"); 
             data[0] = z21HWTypeLSB #HwType 32 Bit
             data[1] = z21HWTypeMSB
             data[2] = 0x00 
@@ -794,7 +801,7 @@ class Z21MonitorPage(tk.Frame):
             self.EthSend (0x0C, LAN_GET_HWINFO, data, False, client=client)
         elif header == LAN_LOGOFF:
             self.add_text_to_textwindow(" - LAN_LOGOFF")
-            logging.debug("LOGOFF");
+            logger.debug("LOGOFF");
         elif header == LAN_GET_CODE: #SW Feature-Umfang der Z21   
             self.add_text_to_textwindow(" - LAN_GET_CODE")
             data[0] = 0x00; #keine Features gesperrt
@@ -805,7 +812,7 @@ class Z21MonitorPage(tk.Frame):
                 x_get_setting_type = packet[5]
                 if x_get_setting_type == 0x21:
                     self.add_text_to_textwindow(" - LAN_X_Header - LAN_X_GET_SETTING - X_GET_VERSION")
-                    logging.debug("X_GET_VERSION"); 
+                    logger.debug("X_GET_VERSION"); 
                     data[0] = LAN_X_GET_VERSION #;	#X-Header: 0x63
                     data[1] = 0x21 #;	#DB0
                     data[2] = 0x30 #;   #X-Bus Version
@@ -813,18 +820,18 @@ class Z21MonitorPage(tk.Frame):
                     self.EthSend (0x09, LAN_X_Header, data, True, client=client)
                 elif x_get_setting_type == 0x24:
                     #self.add_text_to_textwindow(" - LAN_X_Header - LAN_X_GET_SETTING - LAN_X_GET_STATUS")
-                    #logging.debug("LAN_X_GET_STATUS"); 
+                    #logger.debug("LAN_X_GET_STATUS"); 
                     data[0] = LAN_X_STATUS_CHANGED #	#X-Header: 0x62
                     data[1] = 0x22 #;			#DB0
                     data[2] = 0 #Railpower #;		#DB1: Status
                     self.EthSend (0x08, LAN_X_Header, data, True, client=client)
                 elif x_get_setting_type == 0x80:
                     self.add_text_to_textwindow(" - LAN_X_Header - LAN_X_GET_SETTING - X_SET_TRACK_POWER_OFF")
-                    logging.debug("X_SET_TRACK_POWER_OFF")
+                    logger.debug("X_SET_TRACK_POWER_OFF")
                     self.EthSend (0x07, LAN_X_Header, data, True, client=client)     
                 elif x_get_setting_type == 0x81:
                     self.add_text_to_textwindow(" - LAN_X_Header - LAN_X_GET_SETTING - X_SET_TRACK_POWER_ON")
-                    logging.debug("X_SET_TRACK_POWER_ON")
+                    logger.debug("X_SET_TRACK_POWER_ON")
                     data[0] = 0x61 #;	#X-Header: 0x63
                     data[1] = 0x01 #;	#DB0
                     self.EthSend (0x07, LAN_X_Header, data, True, client=client)                  
@@ -832,17 +839,17 @@ class Z21MonitorPage(tk.Frame):
             elif x_header == LAN_X_CV_READ:
                 if (packet[5] == 0x11):
                     self.add_text_to_textwindow(" - LAN_X_Header - X_CV_READ")
-                    logging.debug("X_CV_READ")           
+                    logger.debug("X_CV_READ")           
             elif x_header == LAN_X_CV_WRITE: 
                 if (packet[5] == 0x12):
                     self.add_text_to_textwindow(" - LAN_X_Header - X_CV_WRITE")
-                    logging.debug("X_CV_WRITE") 
+                    logger.debug("X_CV_WRITE") 
             elif x_header == LAN_X_CV_POM: 
                 self.add_text_to_textwindow(" - LAN_X_Header - LAN_X_CV_POM")
-                logging.debug("LAN_X_CV_POM")
+                logger.debug("LAN_X_CV_POM")
             elif x_header == LAN_X_GET_TURNOUT_INFO:
                 self.add_text_to_textwindow(" - LAN_X_Header - X_GET_TURNOUT_INFO")
-                logging.debug("X_GET_TURNOUT_INFO ")
+                logger.debug("X_GET_TURNOUT_INFO ")
                 data[0] = 0x43  #X-HEADER
                 data[1] = packet[5] #High
                 data[2] = packet[6] #Low
@@ -875,7 +882,7 @@ class Z21MonitorPage(tk.Frame):
                 
                 dccaddress = p5s+p6+1 #Z21 adress start with 0, MobaLEDLib with 1
                 
-                logging.debug("X_SET_TURNOUT Adr.%s : %s %s-%s",dccaddress, packet[7], status_str,active_str)
+                logger.debug("X_SET_TURNOUT Adr.%s : %s %s-%s",dccaddress, packet[7], status_str,active_str)
                 self.add_text_to_textwindow(" - LAN_X_Header - X_SET_TURNOUT Addr:"+ str(dccaddress)+ "-"+ status_str+"-"+active_str)
 
                 data[0] = 0x43  #X-HEADER
@@ -901,11 +908,11 @@ class Z21MonitorPage(tk.Frame):
                     #Addresse  	Links/Rechts		Spule EIN/AUS
             elif x_header == LAN_X_SET_STOP:
                 self.add_text_to_textwindow(" - LAN_X_Header - X_SET_STOP")
-                logging.debug("X_SET_STOP")
+                logger.debug("X_SET_STOP")
             elif x_header == LAN_X_GET_LOCO_INFO:
                 if (packet[5] == 0xF0):
                     self.add_text_to_textwindow(" - LAN_X_Header - LAN_X_GET_LOCO_INFO")
-                    logging.debug("LAN_X_GET_LOCO_INFO: ")
+                    logger.debug("LAN_X_GET_LOCO_INFO: ")
                     Adr_MSB = packet[6] & 0x3F
                     Adr_LSB = packet[7]
                     data[0] = LAN_X_LOCO_INFO
@@ -922,35 +929,39 @@ class Z21MonitorPage(tk.Frame):
             elif x_header == LAN_X_SET_LOCO:
                 if (packet[5] == LAN_X_SET_LOCO_FUNCTION):
                     self.add_text_to_textwindow(" - LAN_X_Header - LAN_X_SET_LOCO_FUNCTION")
-                    logging.debug("LAN_X_SET_LOCO_FUNCTION")
+                    logger.debug("LAN_X_SET_LOCO_FUNCTION")
                     Adr_MSB = packet[6] & 0x3F
                     Adr_LSB = packet[7]
-                    data[0] = Adr_MSB
-                    data[1] = Adr_LSB
-                    data[2] = 0
-                    data[3] = 0
-                    data[4] = 0
+                    data[0] = LAN_X_LOCO_INFO
+                    data[1] = Adr_MSB
+                    data[2] = Adr_LSB
+                    data[3] = 2
+                    data[4] = packet[8]
                     data[5] = 0
                     data[6] = 0
-                    data[7] = 0                    
-                    self.EthSend (0x0D, LAN_X_Header, data, True, client=client);                        
+                    data[7] = 0
+                    data[8] = 0
+                    self.EthSend (0x0C, LAN_X_Header, data, True, client=client);   # send Loco_Info
+                    #self.EthSend (0x0D, LAN_X_Header, data, True, client=client);                        
                 else:
                     self.add_text_to_textwindow(" - LAN_X_Header - X_SET_LOCO_DRIVE")
-                    logging.debug("X_SET_LOCO_DRIVE ")
+                    logger.debug("X_SET_LOCO_DRIVE ")
                     Adr_MSB = packet[6] & 0x3F
                     Adr_LSB = packet[7]
-                    data[0] = Adr_MSB
-                    data[1] = Adr_LSB
-                    data[2] = 0
-                    data[3] = 0
-                    data[4] = 0
+                    data[0] = LAN_X_LOCO_INFO
+                    data[1] = Adr_MSB
+                    data[2] = Adr_LSB
+                    data[3] = 2
+                    data[4] = packet[8]
                     data[5] = 0
                     data[6] = 0
-                    data[7] = 0                            
-                    self.EthSend (0x0D, LAN_X_Header, data, True, client=client);                        
+                    data[7] = 0
+                    data[8] = 0
+                    self.EthSend (0x0C, LAN_X_Header, data, True, client=client);  # send Loco_Info
+                    #self.EthSend (0x0D, LAN_X_Header, data, True, client=client);                        
             elif x_header ==  LAN_X_GET_FIRMWARE_VERSION:
                 self.add_text_to_textwindow(" - LAN_X_Header - X_GET_FIRMWARE_VERSION")
-                logging.debug("X_GET_FIRMWARE_VERSION")
+                logger.debug("X_GET_FIRMWARE_VERSION")
                 data[0] = 0xF3 #		#identify Firmware (not change)
                 data[1] = 0x0A #;		#identify Firmware (not change)
                 data[2] = z21FWVersionMSB #;   #V_MSB
@@ -959,7 +970,7 @@ class Z21MonitorPage(tk.Frame):
     
         elif header == LAN_SET_BROADCASTFLAGS:
             self.add_text_to_textwindow(" - LAN_SET_BROADCASTFLAGS")
-            logging.debug("LAN_SET_BROADCASTFLAGS")
+            logger.debug("LAN_SET_BROADCASTFLAGS")
             p5=packet[5]
             p4=packet[4]
             p5s= p5<<8
@@ -979,7 +990,7 @@ class Z21MonitorPage(tk.Frame):
             data[2] = flag >> 16
             data[3] = flag >> 24
             self.EthSend (0x08, LAN_GET_BROADCASTFLAGS, data, false, client=client);
-            logging.debug("GET_BROADCASTFLAGS: ")
+            logger.debug("GET_BROADCASTFLAGS: ")
         elif header == (LAN_GET_LOCOMODE):
             pass
         elif header == (LAN_SET_LOCOMODE):
@@ -989,7 +1000,7 @@ class Z21MonitorPage(tk.Frame):
         elif header == (LAN_SET_TURNOUTMODE):
             pass;
         elif header == (LAN_RMBUS_GETDATA):
-            logging.debug("RMBUS_GETDATA")
+            logger.debug("RMBUS_GETDATA")
             data[0] = packet[4]
             #data[1] = 0
             #data[2] = 0
@@ -1011,8 +1022,8 @@ class Z21MonitorPage(tk.Frame):
             pass
         elif header == (LAN_SYSTEMSTATE_GETDATA): #System state
             self.add_text_to_textwindow(" - LAN_SYSTEMSTATE_GETDATA")
-            logging.debug("LAN_SYSTEMSTATE_GETDATA")
-            logging.debug("X_GET_FIRMWARE_VERSION")
+            logger.debug("LAN_SYSTEMSTATE_GETDATA")
+            logger.debug("X_GET_FIRMWARE_VERSION")
             data[0] = 0  # MainCurrent MSB
             data[1] = 0  # MainCurrent LSB
             data[2] = 0  # ProgCurrent MSB
@@ -1033,61 +1044,61 @@ class Z21MonitorPage(tk.Frame):
             self.EthSend (0x14, LAN_SYSTEMSTATE_DATACHANGED, data, False, client=client)            
             
         elif header ==  (LAN_RAILCOM_GETDATA):
-            logging.debug ("LAN_RAILCOM_GETDATA")
+            logger.debug ("LAN_RAILCOM_GETDATA")
         elif header ==  (LAN_LOCONET_FROM_LAN): 
-            logging.debug("LOCONET_FROM_LAN") 
+            logger.debug("LOCONET_FROM_LAN") 
         elif header ==  (LAN_LOCONET_DISPATCH_ADDR):
-            logging.debug("LOCONET_DISPATCH_ADDR ")
+            logger.debug("LOCONET_DISPATCH_ADDR ")
         elif header == (LAN_LOCONET_DETECTOR):
-            logging.debug("LOCONET_DETECTOR Abfrage")
+            logger.debug("LOCONET_DETECTOR Abfrage")
         elif header == (LAN_CAN_DETECTOR):
-            logging.debug("CAN_DETECTOR Abfrage")
+            logger.debug("CAN_DETECTOR Abfrage")
         elif header == (0x12): #	#configuration read
-            logging.debug("Configuration read")
+            logger.debug("Configuration read")
         elif header == (0x13): # configuration write
-            logging.debug("Configuration write")
+            logger.debug("Configuration write")
         elif header == (0x16):  #configuration read
-            logging.debug("Configuration read")
+            logger.debug("Configuration read")
         elif header == (0x17): #	#configuration write
-            logging.debug("Configuration write")
+            logger.debug("Configuration write")
         else:
-            logging.debug("UNKNOWN_COMMAND"); 
+            logger.debug("UNKNOWN_COMMAND"); 
     
     def handleMessage_lan_x_loco_info(self,message):
         if message[2] !=  0x40 or message[4] != 0xEF:
-            logging.debug(str(message))
+            logger.debug(str(message))
             header = message[2]
             header_int=int(header)
-            logging.debug("Header: %s %s",header_int,z21_code2text_dict.get(header_int,"xx"))
+            logger.debug("Header: %s %s",header_int,z21_code2text_dict.get(header_int,"xx"))
             return
-        logging.debug('LAN_X_LOCO_INFO message received')
+        logger.debug('LAN_X_LOCO_INFO message received')
         db = message[5:]
         # address
         address = int.from_bytes(db[0:2], byteorder = 'big')
-        logging.debug('Address: %s', address)
+        logger.debug('Address: %s', address)
         # direction
         direction = db[3] & 0b10000000
         if direction != 0:
-            logging.debug('Direction: forward')
+            logger.debug('Direction: forward')
         else:
-            logging.debug('Direction: backward')
+            logger.debug('Direction: backward')
         # speed
         speed = db[3] & 0b01111111
-        logging.debug('Speed: %s', speed)
+        logger.debug('Speed: %s', speed)
         # speed steps
         speedSteps = db[2] & 0b00000111
         if speedSteps == 4:
-            logging.debug('Speed steps: 128')
+            logger.debug('Speed steps: 128')
         elif speedSteps == 2:
-            logging.debug('Speed steps: 28')
+            logger.debug('Speed steps: 28')
         else:
-            logging.debug('Speed steps: 14')
+            logger.debug('Speed steps: 14')
         # F0
         f0 = db[4] & 0b00010000
         if f0 != 0:
-            logging.debug('F0 (main lights): ON')
+            logger.debug('F0 (main lights): ON')
         else:
-            logging.debug('F0 (main lights): OFF')
+            logger.debug('F0 (main lights): OFF')
     
     def slicePacket(self,client,data):
         while len(data) > 0:
@@ -1104,7 +1115,7 @@ class Z21MonitorPage(tk.Frame):
             client = self.addr
         bytessend = self.socket.sendto(data , client)
         data_str = binascii.hexlify(data)
-        #logging.debug("Senddata %s %s %s",bytessend,data_str,client)  
+        logger.debug("Senddata %s %s %s",bytessend,data_str,client)  
 
 
 class Z21Thread(threading.Thread):
@@ -1117,7 +1128,7 @@ class Z21Thread(threading.Thread):
 
     def run(self):
         #global serialport
-        logging.debug("Z21Thread started")
+        logger.debug("Z21Thread started")
         if self.socket:
 
             #now keep talking with the client
@@ -1128,20 +1139,24 @@ class Z21Thread(threading.Thread):
                 except (socket.timeout,ConnectionResetError):
                     #print("Timeout")
                     continue
-                data = d[0]
-                self.mainpage.addr = d[1]
-                data_str = binascii.hexlify(data)
-                #logging.debug('Z21 Received Message[' + self.mainpage.addr[0] + ':' + str(self.mainpage.addr[1]) + '] - ' + str(data_str)+"]")
-                #print ('Z21 Received Message[' + self.mainpage.addr[0] + ':' + str(self.mainpage.addr[1]) + '] - ' + str(data_str))
+                try:
+                    data = d[0]
+                    self.mainpage.addr = d[1]
+                    data_str = binascii.hexlify(data)
+                    logger.debug('Z21 Received Message[' + self.mainpage.addr[0] + ':' + str(self.mainpage.addr[1]) + '] - ' + str(data_str)+"]")
+                    #print ('Z21 Received Message[' + self.mainpage.addr[0] + ':' + str(self.mainpage.addr[1]) + '] - ' + str(data_str))
+                except BaseException as e:
+                    pass
+                #print(e)
                 
                 try:
                     self.queue_z21.put(d)
                 except:
                     pass
                 
-                #logging.debug("Z21 Thread got message: %s", data_str)                     
+                #logger.debug("Z21 Thread got message: %s", data_str)                     
 
             #self.socket.close()            
  
-        logging.debug("Z21 Thread received event. Exiting")
+        logger.debug("Z21 Thread received event. Exiting")
 

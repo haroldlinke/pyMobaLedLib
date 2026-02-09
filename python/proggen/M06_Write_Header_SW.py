@@ -49,6 +49,7 @@ import proggen.M09_Language as M09
 import proggen.M09_Select_Macro as M09SM
 import proggen.M25_Columns as M25
 import proggen.M30_Tools as M30
+import proggen.M38_Extensions as M38
 import proggen.M70_Exp_Libraries as M70
 import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLWF_Worksheetfunction as WorksheetFunction
@@ -106,7 +107,13 @@ def Add_Logic_InpVars(LogicExp, r):
 
     Arg = Variant()
     #---------------------------------------------------------------------------
-    Arglist = M30.SplitEx(LogicExp, True, 'OR', 'AND', 'NOT')
+    Arglist = M30.SplitEx(LogicExp, True, True, 'OR', 'AND', 'NOT')
+    if UBound(Arglist) > 255:
+        _fn_return_value = False
+        P01.MsgBox(Replace(M09.Get_Language_Str("Fehler: Logic() in Zeile #1# hat zuviele Bedinugnen"), "#1#", r), vbCritical, M09.Get_Language_Str("Fehler: 'Logic()' Ausdruck ist ungültig"))
+        return _fn_return_value
+    Arglist = M30.SplitEx(LogicExp, True, False, "OR", "AND", "NOT")    
+    
     for Arg in Arglist:
         Arg = Trim(Arg)
         if Arg != '':
@@ -215,6 +222,7 @@ def Add_InpVars(MacroName, Org_Macro, Filled_Macro, r, Org_Macro_Row):
     # - Charlie_Binary(LED, InCh, BinStates)                     O.K.
     Arg_List = Get_Arguments(Org_Macro)
     Fil_List = Get_Arguments(Filled_Macro)
+    _fn_return_value = False
     _select0 = MacroName
     if (_select0 == 'Logic'):
         if UBound(Fil_List) != 1:
@@ -222,6 +230,7 @@ def Add_InpVars(MacroName, Org_Macro, Filled_Macro, r, Org_Macro_Row):
             P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Falsche Parameter Anzahl in \'Logic()\' Ausdruck: \'#1#\''), "#1#", Filled_Macro), vbCritical, M09.Get_Language_Str('Fehler: \'Logic()\' Ausdruck ist ungültig'))
             return _fn_return_value
         _fn_return_value = Add_Logic_InpVars(Fil_List(1), r)
+        return _fn_return_value
     else:
         Det_Cnt = 0
         Pos_CounterVar = - 1
@@ -294,7 +303,7 @@ def Is_Switch_Var_then_Add_to_Ctr(Var_Name):
 
 def First_Scan_of_Data_Rows():
     
-    global Switch_Damping_Fact, DMX_LedChan,Read_LDR,Store_Status_Enabled,Use_WS2811, SwitchA_InpLst, SwitchB_InpLst, SwitchC_InpLst, SwitchD_InpLst, CLK_Pin_Number, RST_Pin_Number, LDR_Pin_Number, LED_PINNr_List, DMX_LedChan,Read_LDR, USE_ATTiny_CAN_GBM
+    global Switch_Damping_Fact, DMX_LedChan,Read_LDR,Store_Status_Enabled,Use_WS2811, SwitchA_InpLst, SwitchB_InpLst, SwitchC_InpLst, SwitchD_InpLst, CLK_Pin_Number, RST_Pin_Number, LDR_Pin_Number, LED_PINNr_List, DMX_LedChan,Read_LDR, USE_ATTiny_CAN_GBM, DstVar_List
     
     _fn_return_value = False
     r = Long()
@@ -313,7 +322,7 @@ def First_Scan_of_Data_Rows():
     Var_COL = M25.Get_Address_Col()
     Switch_Damping_Fact = ''
     for r in vbForRange(M02.FirstDat_Row, M30.LastUsedRow()):
-        P01.set_statusmessage(M09.Get_Language_Str("Headerfile wird erstellt. 1st round - Macrozeile: "+str(r)), monitor_message=True)
+        P01.set_statusmessage(M09.Get_Language_Str("Programmzeilenanalyse: 1st round - Macrozeile: "+str(r)), monitor_message=True)
         if not P01.Rows(r).EntireRow.Hidden and P01.Cells(r, M02.Enable_Col) != '':
             Var_Name = P01.Cells(r, Var_COL)
             if Is_Switch_Var_then_Add_to_Ctr(Var_Name) == - 1:
@@ -367,6 +376,12 @@ def First_Scan_of_Data_Rows():
                     if Add_Inp_and_DstVars(line, r) == False:
                         return _fn_return_value
                         # Add the destination variable to DstVar_List
+                    if line.startswith("//#MaxInchVar="):
+                        MaxInchVar = int(line[len("//#MaxInchVar="):])
+                        for i in range(0, MaxInchVar+1):
+                            VarName = "_V" + str(i)
+                            Add_Variable_to_DstVar_List(VarName)
+                        
     _fn_return_value = True
     return _fn_return_value
 
@@ -444,15 +459,13 @@ def Set_PinNrLst_if_Matching(line, Name, Dest_InpLst, PinTyp, MaxCnt):
         NrStr = Replace(NrStr, '  ', ' ')
         if NrStr == '':
             # VB2PY (UntranslatedCode) GoTo PrintError
-            #P01.MsgBox(Replace(M09.Get_Language_Str('Fehler beim Lesen der Pin Nummern in Zeile:' + vbCr + '  \'#1#\''), "#1#", line), vbCritical, M09.Get_Language_Str('Fehler beim Lesen der Pin Nummern'))
-            #return _fn_return_value, Dest_InpLst            
-            pass
+            P01.MsgBox(Replace(M09.Get_Language_Str('Fehler beim Lesen der Pin Nummern in Zeile:' + vbCr + '  \'#1#\''), "#1#", line), vbCritical, M09.Get_Language_Str('Fehler beim Lesen der Pin Nummern'))
+            return _fn_return_value, Dest_InpLst
         NrArr = Split(NrStr, ' ')
         if UBound(NrArr) + 1 > MaxCnt:
             # VB2PY (UntranslatedCode) GoTo PrintError
-            #P01.MsgBox(Replace(M09.Get_Language_Str('Fehler beim Lesen der Pin Nummern in Zeile:' + vbCr + '  \'#1#\''), "#1#", line), vbCritical, M09.Get_Language_Str('Fehler beim Lesen der Pin Nummern'))
-            #return _fn_return_value, Dest_InpLst            
-            pass
+            P01.MsgBox(Replace(M09.Get_Language_Str('Fehler beim Lesen der Pin Nummern in Zeile:' + vbCr + '  \'#1#\''), "#1#", line), vbCritical, M09.Get_Language_Str('Fehler beim Lesen der Pin Nummern'))
+            return _fn_return_value, Dest_InpLst            
         # Check if valid pins names / numbers are used
         NrStr = ''
         for OnePin in NrArr:
@@ -558,7 +571,7 @@ def Add_Variable_to_DstVar_List(VarName):
     if InStr(DstVar_List, Check) == 0:
         DstVar_List = DstVar_List + VarName + ' '
     else:
-        if InStr(MultiSet_DstVar_List, Check) == 0:
+        if not VarName.startswith("_V") and InStr(MultiSet_DstVar_List, Check) == 0:
             MultiSet_DstVar_List = MultiSet_DstVar_List + VarName + ' '
     _fn_return_value = True
     return _fn_return_value
@@ -708,6 +721,7 @@ def Add_Inp_and_DstVars(line, r):
     Org_Macro_Row = Long()
 
     Arguments = String()
+    MacroType = String()
 
     Res = Boolean()
 
@@ -744,9 +758,13 @@ def Add_Inp_and_DstVars(line, r):
         _with0 = PG.ThisWorkbook.Sheets(M02.LIBMACROS_SH)
         OutCntStr = _with0.Cells(Org_Macro_Row, M02.SM_OutCntCOL)
         Org_Macro = _with0.Cells(Org_Macro_Row, M02.SM_Macro_COL)
+        MacroType = _with0.Cells(Org_Macro_Row, M02.SM_Typ___COL)                                         # 21.11.25 Juergen support macro only extensions
+        
         if Add_InpVars(Parts(0), Org_Macro, line, r, Org_Macro_Row) == False:
             _fn_return_value = False
             return _fn_return_value
+        if MacroType != "":
+            M38.Add_Macro_Extension_Entry (MacroType)        
         _select4 = OutCntStr
         if (_select4 == '') or (_select4 == '0'):
             _fn_return_value = True
@@ -790,10 +808,23 @@ def Print_DstVar_List(fp, Channel,Min_Channel):
     
     rm_number = start_channel - Min_Channel #+List_Lenght(DstVar_List)-1
     
+    # sort DstVarList before use to have the _Vxxxx variables at the start of the list
+    #varlist = DstVar_List.split(" ")
+    #varlist.sort()
+    
     for Var in Split(Trim(DstVar_List), ' '):
-        VBFiles.writeText(fp, '#define ' + M30.AddSpaceToLen(Var, 22) + '  ' + M30.AddSpaceToLen(str(Channel), 41) + '// Z21-RM-Rückmelder: Adresse:' + str(int(rm_number/8)+1) + " Eingang:" + str(int(rm_number%8)+1), '\n')
-        Channel = Channel + 1
-        rm_number = rm_number + 1
+    #for Var in varlist:
+        #if Var.replace(" ", "") != "":
+        Var_str = str(Var)
+        ignore_V = False
+        if Var_str.startswith("_V"):
+            if Var_str != "_V" + str(Channel):
+                ignore_V = True
+            
+        if not ignore_V:
+            VBFiles.writeText(fp, '#define ' + M30.AddSpaceToLen(Var, 22) + '  ' + M30.AddSpaceToLen(str(Channel), 41) + '// Z21-RM-Rückmelder: Adresse:' + str(int(rm_number/8)+1) + " Eingang:" + str(int(rm_number%8)+1), '\n')
+            Channel = Channel + 1
+            rm_number = rm_number + 1
         
     return Channel
 
@@ -883,7 +914,7 @@ def Valid_Var_Name(Name, row):
         return _fn_return_value
     if InStr(M06.InChTxt, '#define ' + Name + ' ') > 0:
         return _fn_return_value
-    _select6, Nr = Is_in_Nr_String(Name, 'LOC_INCH', 0, 250, Nr)
+    _select6, Nr = Is_in_Nr_String(Name, 'LOC_INCH', 0, M30.Get_Current_Platform_Int("MaxInput"), Nr)
     if (_select6 == 1):
         # Valid Number
         if Nr > MaxUsed_Loc_InCh:
@@ -892,7 +923,7 @@ def Valid_Var_Name(Name, row):
             MaxUsed_Loc_InCh_Row = row
         return _fn_return_value
     elif (_select6 == - 1):
-        P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler: Die Nummer der Variable \'#1#\' ist ungültig!' + vbCr + vbCr + 'Gültiger Bereich: #2#'), "#1#", Name), '#2#', '0..250'), vbCritical, M09.Get_Language_Str('Fehler: Ungültige Variable'))
+        P01.MsgBox(Replace(Replace(M09.Get_Language_Str('Fehler: Die Nummer der Variable \'#1#\' ist ungültig!' + vbCr + vbCr + 'Gültiger Bereich: #2#'), "#1#", Name), '#2#', '0..' + M30.Get_Current_Platform_Int("MaxInput"), vbCritical, M09.Get_Language_Str('Fehler: Ungültige Variable')))
     if USE_ATTiny_CAN_GBM:
         # "#define USE_ATTiny_CAN_GBM" Must be located at the beginning of the configuration
         #  13.02.23: Hardi
@@ -919,7 +950,7 @@ def Valid_Var_Name_and_Skip_InCh_and_Numbers(Arg, row):
         if SubArg == '#InCh':
             if M09SM.Get_InCh_Number_w_Err_Msg(Arg) < 0:
                 return _fn_return_value
-            # Check the whole argumnet to make sure that the equation contains only constants
+            # Check the whole argument to make sure that the equation contains only constants
         else:
             if not IsNumeric(SubArg):
                 # Skip special names like '#InCh' and Numbers
@@ -1045,7 +1076,7 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
     #    Print #fp, "#define USE_SWITCH_AND_LED_ARRAY 1    // Enable the new function which handles the SwitchD and the Mainboard LEDs in the ino file"
     # #Else
     #    Print #fp, "#define USE_SWITCH_AND_LED_ARRAY 0"
-    #    If Get_BoardTyp() = "ESP32" Then
+    #    If Get_BoardTyp() = HT_ESP32 Then
     # 04.11.20:
     #        MsgBox "Internal error: The compiler switch 'USE_SWITCH_AND_LED_ARRAY' must be defined if the ESP32 is used", vbCritical, "Internal error"
     #        'EndProg
@@ -1055,6 +1086,12 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
     Min_Channel = 99999999
     # 27.04.23: Juergen start with an invalid value
     if SwitchA_InpCnt > 0 or Read_LDR:
+        if SwitchA_InpCnt and not M30.Get_Current_Platform_Bool("SupportsAnalogButtons"): #                     ' 21.05.25: check if Analog Buttons are supported
+            P01.MsgBox(M09.Get_Language_Str("Analoge Taster werden auf dieser Plattform nicht unterstützt."), vbOK + vbExclamation, P01.Application.ActiveSheet.Name)
+            return _fn_return_value, Channel
+        if Read_LDR and not M30.Get_Current_Platform_Bool("SupportsLDR"): #                                     ' 21.05.25: check if LDR is supported
+            P01.MsgBox(M09.Get_Language_Str("Ein Lichtsensor wird auf dieser Plattform nicht unterstützt."), vbOK + vbExclamation, P01.Application.ActiveSheet.Name)
+            return _fn_return_value, Channel
         Ana_But_Pin_Array = Split(SwitchA_InpLst, ' ')
         if SwitchA_InpCnt >  ( UBound(Ana_But_Pin_Array) + 1 )  * 10:
             P01.MsgBox(M09.Get_Language_Str('Fehler: Es wurden mehr analoge Taster verwendet als möglich sind. ' + 'Es müssen weitere analoge Eingänge zum einlesen definiert werden.' + vbCr + 'Das wird mit dem Befehl \'Set_SwitchA_InpLst()\' in der Makro Spalte gemacht.'), vbCritical, M09.Get_Language_Str('Fehler: Nicht genügend analoge Eingänge zum einlesen der Taster definiert'))
@@ -1063,14 +1100,18 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
         VBFiles.writeText(fp, '#ifndef CONFIG_ONLY', '\n')
         VBFiles.writeText(fp, '//*** Analog switches ***', '\n')
         VBFiles.writeText(fp, '', '\n')
-        if M02a.Get_BoardTyp() == 'AM328':
+        if M02a.Get_BoardTyp() == M02.HT_AM328:
             if M70.Make_Sure_that_AnalogScanner_Library_Exists() == False:
                 return _fn_return_value, Channel
             VBFiles.writeText(fp, '#include <AnalogScanner.h>   // Interrupt driven analog reading library. The library has to be installed manually from https://github.com/merose/AnalogScanner', '\n')
             VBFiles.writeText(fp, 'AnalogScanner scanner;       // Creates an instance of the analog pin scanner.', '\n')
-        elif M02a.Get_BoardTyp() == 'ESP32':
+        elif M02a.Get_BoardTyp() == M02.HT_ESP32:
             VBFiles.writeText(fp, '#include "AnalogScannerESP32.h"   ', '\n')
             VBFiles.writeText(fp, 'AnalogScannerESP32 scanner;       // Creates an instance of the analog pin scanner.', '\n')
+        elif M02a.Get_BoardTyp() == M02.HT_PICO : #                              ' 25.05.25: Juergen add PICO analog support
+            VBFiles.writeText(fp, '#include "AnalogScannerPico.h"   ', '\n') 
+            VBFiles.writeText(fp, 'AnalogScannerPico scanner;        // Creates an instance of the analog pin scanner.', '\n')
+        
         VBFiles.writeText(fp, '', '\n')
         if SwitchA_InpCnt > 0:
             VBFiles.writeText(fp, '#include <Analog_Buttons10.h>', '\n')
@@ -1204,6 +1245,10 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
                                 VBFiles.writeText(fp, '  CLEDController& controller' + str(LEDCh) + ' = FastLED.addLeds<NEOPIXEL, ' + M30.AddSpaceToLenLeft(LED_PINNr_Arr(LEDCh), 2) + '>(leds+' + M30.AddSpaceToLenLeft(str(cnt), 3) + ',' + M30.AddSpaceToLenLeft(str(M06.LEDs_per_Channel(LEDCh)), 3) + '); \\', '\n')
                     else:
                         # 19.01.21 Juergen
+                        if not M30.Get_Current_Platform_Bool("SupportsDMX"): #                               ' 21.05.25: check if DMX is supported
+                            P01.MsgBox(Replace(M09.Get_Language_Str("Das Protokoll #1# wird auf dieser Plattform nicht unterstützt."), "#1#", "DMX"), vbOK + vbExclamation, M09.Get_Language_Str("Steuerung über ") + "DMX")
+                            return _fn_return_value, Channel
+
                         dmxDefines = '#define DMX_LED_OFFSET ' + str(cnt) + vbCrLf + '#define DMX_CHANNEL_COUNT ' + str(M06.LEDs_per_Channel(LEDCh) * 3)
                         DMX_Pin_Number = LED_PINNr_Arr(LEDCh)
                         if ( M06.LEDs_per_Channel(LEDCh) > 100 ) :
@@ -1246,14 +1291,14 @@ def Write_Switches_Header_File_Part_A(fp, Channel):
             PinList = M30.DelLast(PinList)
             VBFiles.writeText(fp, '  int scanOrder[] = {' + PinList + '};', '\n')
             VBFiles.writeText(fp, '  const int SCAN_COUNT = sizeof(scanOrder) / sizeof(scanOrder[0]);', '\n')
-            if M02a.Get_BoardTyp() == 'AM328':
+            if M02a.Get_BoardTyp() == M02.HT_AM328:
                 VBFiles.writeText(fp, '', '\n')
                 if Read_LDR:
                     VBFiles.writeText(fp, '  Init_DarknessSensor(' + str(LDR_Pin_Number) + ', 50, SCAN_COUNT); // Attention: The analogRead() function can\'t be used together with the darkness sensor !', '\n')
                     VBFiles.writeText(fp, '  scanner.setCallback(' + str(LDR_Pin_Number) + ', Darkness_Detection_Callback);', '\n')
                 VBFiles.writeText(fp, '  scanner.setScanOrder(SCAN_COUNT, scanOrder);', '\n')
                 VBFiles.writeText(fp, '  scanner.beginScanning();', '\n')
-            elif M02a.Get_BoardTyp() == 'ESP32':
+            elif M02a.Get_BoardTyp() == M02.HT_ESP32 or M02a.Get_BoardTyp() == M02.HT_PICO:
                 VBFiles.writeText(fp, '  scanner.setScanPins(SCAN_COUNT, scanOrder);', '\n')
                 if Read_LDR:
                     VBFiles.writeText(fp, '  Init_DarknessSensor(' + str(LDR_Pin_Number) + ', 50, 50); // Attention: The analogRead() function can\'t be used together with the darkness sensor !', '\n')
@@ -1586,7 +1631,10 @@ def Check_Detected_Variables():
                 # Added by Misha 30-5-2020.
                 # 14.06.20: Added from Mishas version
             if not Found:
-                Found = Find_Alias_Name_In_Sheet(UnDefVar)            
+                Found = Find_Alias_Name_In_Sheet(UnDefVar)
+            #if not Found:
+                #Found = UnDefVar.startswith("_V")
+                #tmp = Add_Variable_to_DstVar_List(UnDefVar)
             if not Found:
                 Find_and_Select_Name(UnDefVar, UndefNr)
                 P01.MsgBox(Replace(M09.Get_Language_Str('Fehler: Die Variable \'#1#\' wird als Eingang benutzt, wird aber nirgendwo gesetzt.'), "#1#", UnDefVar), vbCritical, M09.Get_Language_Str('Fehler: Undefinierter Zustand eine Eingangsvariablen'))

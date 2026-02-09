@@ -33,7 +33,7 @@ def Workbook_SheetBeforeDoubleClick(Sh, Target, Cancel):
     #--------------------------------------------------------------------------------------------------------------
     if M01.DEBUG_CHANGEEVENT:
         Debug.Print('DieserArbeitsmappe: Workbook_SheetBeforeDoubleClick:' + Target.Row + ' Cancel=' + Cancel)
-    M02a.Proc_DoubleCkick(Sh, Target, Cancel)
+    M02a.Proc_DoubleClick(Sh, Target, Cancel)
     #Cancel = True
 
 def Workbook_BeforeClose(Cancel):

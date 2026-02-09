@@ -1,0 +1,518 @@
+
+#define Const(         LED,Cx,InCh,Val0, Val1)               CONST_T, _CHKL(LED)+RAM0,Cx,_ChkIn(InCh),Val0, Val1,               // 6 Bytes / 13 Bytes mit der Pattern Funktion + 5 Bytes RAM
+#define ConstRGB(      LED,InCh, R0, G0, B0, R1, G1, B1)     Const(LED, C1, InCh, R0, R1) Const(LED, C2, InCh, G0, G1) Const(LED, C3, InCh, B0, B1)
+#define House(         LED,InCh, On_Min,On_Limit, ...)                     HOUSE_T,     _CHKL(LED)+RAMH,_ChkIn(InCh),On_Min,     On_Limit,HOUSE_MIN_T,HOUSE_MAX_T,COUNT_VARARGS(__VA_ARGS__), __VA_ARGS__,  // Variable number of Room types
+#define HouseT(        LED,InCh, On_Min,On_Limit,Min_T,Max_T,...)          HOUSE_T,     _CHKL(LED)+RAMH,_ChkIn(InCh),On_Min,     On_Limit,Min_T,      Max_T,      COUNT_VARARGS(__VA_ARGS__), __VA_ARGS__,  // Variable number of Room types
+#define GasLights(     LED,InCh, ...)                                      HOUSE_T,     _CHKL(LED)+RAMH,_ChkIn(InCh),127,        255,     GAS_MIN_T,  GAS_MAX_T,  COUNT_VARARGS(__VA_ARGS__), __VA_ARGS__,  // Variable number of Gas lights
+#define House_Inv(     LED,InCh, On_Min,On_Limit, ...)                     HOUSE_T,     _CHKL(LED)+RAMH,_ChkIn(InCh),On_Min|0x80,On_Limit,HOUSE_MIN_T,HOUSE_MAX_T,COUNT_VARARGS(__VA_ARGS__), __VA_ARGS__,  // Variable number of Room types
+#define HouseT_Inv(    LED,InCh, On_Min,On_Limit,Min_T,Max_T,...)          HOUSE_T,     _CHKL(LED)+RAMH,_ChkIn(InCh),On_Min|0x80,On_Limit,Min_T,      Max_T,      COUNT_VARARGS(__VA_ARGS__), __VA_ARGS__,  // Variable number of Room types
+#define GasLights_Inv( LED,InCh, ...)                                      HOUSE_T,     _CHKL(LED)+RAMH,_ChkIn(InCh),127   |0x80,255,     GAS_MIN_T,  GAS_MAX_T,  COUNT_VARARGS(__VA_ARGS__), __VA_ARGS__,  // Variable number of Gas lights
+#define Fire(          LED,InCh, LedCnt, Brightness)                       FIRE_T,      _CHKL(LED)+RAM1+RAMN(LedCnt),_ChkIn(InCh),LedCnt,Brightness,
+#define Set_ColTab(    r0,g0,b0,r1,g1,b1,r2,g2,b2,r3,g3,b3,r4,g4,b4,r5,g5,b5,r6,g6,b6,r7,g7,b7,r8,g8,b8,r9,g9,b9,r10,g10,b10,r11,g11,b11,r12,g12,b12,r13,g13,b13,r14,g14,b14,r15,g15,b15,r16,g16,b16) SET_COLTAB_T, r0,g0,b0,r1,g1,b1,r2,g2,b2,r3,g3,b3,r4,g4,b4,r5,g5,b5,r6,g6,b6,r7,g7,b7,r8,g8,b8,r9,g9,b9,r10,g10,b10,r11,g11,b11,r12,g12,b12,r13,g13,b13,r14,g14,b14,r15,g15,b15,r16,g16,b16,
+#define Set_CandleTab(Min_Hue, Max_Hue, Min_BrightnessD, Max_BrightnessD, Min_Brightness, Max_Brightness, Change_Probability, Chg_Hue, DarkProb)  SET_CANDLETAB_T, Min_Hue, Max_Hue, Min_BrightnessD, Max_BrightnessD, Min_Brightness, Max_Brightness, Change_Probability, Chg_Hue, DarkProb,
+#define Set_TV_COL1(  InCh, Update_t_Min, Update_t_Max, Min_Brightness, Max_Brightness, R_Min, R_Max, G_Min, G_Max, B_Min, B_Max)   SET_TV_TAB_T, InCh, 0x00, Update_t_Min, Update_t_Max, Min_Brightness, Max_Brightness, R_Min, R_Max, G_Min, G_Max, B_Min, B_Max,
+#define Set_TV_COL2(  InCh, Update_t_Min, Update_t_Max, Min_Brightness, Max_Brightness, R_Min, R_Max, G_Min, G_Max, B_Min, B_Max)   SET_TV_TAB_T, InCh, 0x01, Update_t_Min, Update_t_Max, Min_Brightness, Max_Brightness, R_Min, R_Max, G_Min, G_Max, B_Min, B_Max,
+#define Set_TV_BW1(   InCh, Update_t_Min, Update_t_Max, Min_Brightness, Max_Brightness, R,            G,            B)              SET_TV_TAB_T, InCh, 0x00, Update_t_Min, Update_t_Max, Min_Brightness, Max_Brightness, R,     R,     G,     G,     B,     B,
+#define Set_TV_BW2(   InCh, Update_t_Min, Update_t_Max, Min_Brightness, Max_Brightness, R,            G,            B)              SET_TV_TAB_T, InCh, 0x01, Update_t_Min, Update_t_Max, Min_Brightness, Max_Brightness, R,     R,     G,     G,     B,     B,
+#define Set_Def_Neon( InCh, Rand_On, RandOff, Min_Def)                    SET_DEF_NEON_T, InCh, Rand_On, RandOff, Min_Def,
+#define _CHECK_MODE_RF_NOT_SAME(Mode, DstVar1, DstVarN) (((Mode)&RF_NOT_SAME) && (DstVarN) - (DstVar1) == 0) ? ((Mode) & ~RF_NOT_SAME) : (Mode) // Prevent endless loop if DstVar1 == DstVarN     // 13.01.20:
+#define Logic(         DstVar, ...)                                        LOGIC_T,     DstVar, COUNT_VARARGS(__VA_ARGS__), __VA_ARGS__,
+#define Counter(       Mode, InCh, Enable, TimeOut, ...)                   COUNTER_T,   _W2B(Mode), InCh+RAM3, Enable, _T2B((TimeOut)/16), COUNT_VARARGS(__VA_ARGS__), __VA_ARGS__,      // TimeOut maximal 17 Min
+#define RandMux(       DstVar1, DstVarN, InCh, Mode, MinTime, MaxTime)     RANDMUX_T,   DstVar1+RAM4, DstVarN, InCh, _CHECK_MODE_RF_NOT_SAME(Mode, DstVar1, DstVarN) | _RAND_MODE2((MinTime), (MaxTime)),                   _Tx2B2(MinTime, MaxTime),               _Tx2B2(MaxTime, MinTime),
+#define RandCntMux(    DstVar1, DstVarN, InCh, Mode, MinTime, MaxTime)     RandMux(DstVar1, DstVarN, InCh, Mode|RF_SEQ, MinTime, MaxTime)
+#define Random(        DstVar, InCh, Mode, MinTime, MaxTime, MinOn, MaxOn) RANDOM_T,    DstVar +RAM4,          InCh, (Mode) | _RAND_MODE4((MinTime), (MaxTime), (MinOn), (MaxOn)), _Tx2B4(MinTime, MaxTime, MinOn, MaxOn), _Tx2B4(MaxTime, MinTime, MinOn, MaxOn), _Tx2B4(MinOn, MaxOn, MinTime, MaxTime), _Tx2B4(MaxOn, MinOn, MinTime, MaxTime),
+#define WeldingCont(   LED, InCh)                                          WELDING_CONT_T, _CHKL(LED)+RAM5, InCh,
+#define Welding(       LED, InCh)                                          WELDING_T,      _CHKL(LED)+RAM5, InCh,
+#define RandWelding(   LED, InCh, Var, MinTime, MaxTime, MinOn, MaxOn)     Random(Var, InCh, RM_NORMAL, MinTime, MaxTime, MinOn, MaxOn) Welding(LED, Var)
+#define CopyLED(                LED, InCh, SrcLED)                       COPYLED_T,   1,       _CHKL(LED), InCh, _CHKL(SrcLED),
+#define CopyNLEDs(     LED_Cnt, LED, InCh, SrcLED)                       COPYLED_T,   (uint8_t)LED_Cnt, _CHKL(LED), InCh, _CHKL(SrcLED),
+#define Schedule(      DstVar1, DstVarN, EnableCh, Start, End)             SCHEDULE_T,  DstVar1+RAM3, DstVarN, EnableCh, Start, End,  // Zeit- oder Helligkeitsgesteuertes Ein- und Ausschalten von Variablen.
+#define New_HSV_Group()                                                    NEW_HSV_GROUP_T+RAM3,
+#define New_Local_Var()                                                    NEW_LOCAL_VAR_T+RAM2,             // 07.11.18:
+#define Use_GlobalVar( GlobVarNr)                                          USE_GLOBALVAR_T, GlobVarNr,
+#define I2X_USE_LOCALVAR    0x80
+#define I2X_USE_START1      0x40
+#define InCh_to_TmpVar(FirstInCh, InCh_Cnt)                              INCH_TO_X_VAR_T,      FirstInCh, (InCh_Cnt-1),                   // 31.05.20:  J: EndInCh is now 0..63 instead of 1..64
+#define InCh_to_TmpVar1(FirstInCh, InCh_Cnt)                             INCH_TO_X_VAR_T,      FirstInCh, (InCh_Cnt-1)|I2X_USE_START1,    // 07.05.20: // 31.05.20:  J: EndInCh is now 0..63 instead of 1..64
+#define InCh_to_LocalVar(FirstInCh, InCh_Cnt)                            INCH_TO_X_VAR_T+RAM1, FirstInCh, (InCh_Cnt-1)|I2X_USE_LOCALVAR,
+#define InCh_to_LocalVar1(FirstInCh, InCh_Cnt)                           INCH_TO_X_VAR_T+RAM1, FirstInCh, (InCh_Cnt-1)|I2X_USE_LOCALVAR|I2X_USE_START1,
+#define Bin_InCh_to_TmpVar(FirstInCh, InCh_Cnt)                          BIN_INCH_TO_TMPVAR_T,  FirstInCh, (InCh_Cnt-1),     // 18.01.19: // 31.05.20:  J: EndInCh is now 0..7 instead of 1..8
+#define Bin_InCh_to_TmpVar1(FirstInCh, InCh_Cnt)                         BIN_INCH_TO_TMPVAR_T,  FirstInCh, (InCh_Cnt-1)|0x40,// 07.05.20: // 31.05.20:  J: EndInCh is now 0..7 instead of 1..8
+#define Button(        LED,Cx,InCh,Duration,Val0, Val1)      PatternT1(LED,_NStru(Cx,   2,1),InCh,_Cx2LedCnt(Cx),Val0,Val1,Val0,PM_SEQUENZ_W_ABORT+PF_SLOW,Duration/16,   _Cx2P_BLINK(Cx))
+#define ButtonNOff(    LED,Cx,InCh,Duration,Val0, Val1)      PatternT1(LED,_NStru(Cx,   2,1),InCh,_Cx2LedCnt(Cx),Val0,Val1,Val0,PM_SEQUENZ_NO_RESTART+PF_SLOW,Duration/16,_Cx2P_BLINK(Cx)) // 12.03.19:
+#define Blinker(       LED,Cx,InCh,Period)                   PatternT1(LED,_NStru(Cx,   2,1),InCh,_Cx2LedCnt(Cx), 0,  255, 0,   PF_SLOW,(Period)/32,                      _Cx2P_BLINK(Cx))     // Blinker  31.10.20:  Added PF_SLOW and /16 to all Blinker functions
+#define BlinkerInvInp( LED,Cx,InCh,Period)                   PatternT1(LED,_NStru(Cx,   2,1),InCh,_Cx2LedCnt(Cx), 0,  255, 0,   PF_SLOW+PF_INVERT_INP,(Period)/32,        _Cx2P_BLINK(Cx))     // Blinker with inverse input
+#define BlinkerHD(     LED,Cx,InCh,Period)                   PatternT1(LED,_NStru(Cx,   2,1),InCh,_Cx2LedCnt(Cx),50,  255, 0,   PF_SLOW, (Period)/32,                     _Cx2P_BLINK(Cx))     // Hell/Dunkel Blinken
+#define Blink2(        LED,Cx,InCh,Pause,Act,Val0,Val1)      PatternT2(LED,_NStru(Cx,   2,1),InCh,_Cx2LedCnt(Cx),Val0,Val1,0,   PF_SLOW, Act/16,     Pause/16,            _Cx2P_BLINK(Cx))     // Blinken mit zwei verschiedenen Helligkeiten
+#define Blink3(        LED,Cx,InCh,Pause,Act,Val0,Val1,Off)  PatternT2(LED,_NStru(Cx,   2,1),InCh,_Cx2LedCnt(Cx),Val0,Val1,Off, PF_SLOW, Act/16,     Pause/16,            _Cx2P_BLINK(Cx))     // Blinken mit zwei verschiedenen Helligkeiten und einen Wert wenn der Blinker aus ist
+#define BlueLight1(    LED,Cx,InCh)                          PatternT4(LED,_NStru(Cx,   4,1),InCh,_Cx2LedCnt(Cx),0,   255, 0,0,  48 ms, 74 ms,  48 ms, 496 ms,_Cx2P_DBLFL(Cx))     // Blaulicht
+#define BlueLight2(    LED,Cx,InCh)                          PatternT4(LED,_NStru(Cx,   4,1),InCh,_Cx2LedCnt(Cx),0,   255, 0,0,  24 ms, 74 ms,  24 ms, 512 ms,_Cx2P_DBLFL(Cx))     // Blaulicht (Andere Periode damit nicht synchron)
+#define Leuchtfeuer(   LED,Cx,InCh)                          PatternT4(LED,_NStru(Cx,   4,1),InCh,_Cx2LedCnt(Cx),0,   255, 0,0,1000 ms,500 ms,1000 ms,1500 ms,_Cx2P_DBLFL(Cx))     // Leuchtfeuer fuer Windrad
+#define LeuchtfeuerALL(LED,InCh)                             PatternT4(LED,_NStru(C_ALL,4,1),InCh,_Cx2LedCnt(C_ALL),0,255, 0,0,1000 ms,500 ms,1000 ms,1500 ms,0b11000111, 0b00000001)// Leuchtfeuer fuer Windrad
+#define Andreaskreuz(  LED,Cx,InCh)                         APatternT1(LED,_NStru(Cx,   0,1),InCh,2,0,255,0,0,250 ms,105)                                                          // Nur fuer einzelne LEDs (C1, C2, C3).
+#define AndreaskrRGB(  LED,InCh)                            APatternT1(LED,0,                InCh,4,0,255,0,0,250 ms,129,24)
+#define AndreaskrLT(LED, Single_Cx, InCh, MaxBrightness, LT_Time,FadeTime, OnTime) Bin_InCh_to_TmpVar(InCh, 1)  \ XPatternT9(LED,_Cx2StCh(Single_Cx)+132,SI_LocalVar,2,0,MaxBrightness,0,0,FadeTime,FadeTime,LT_Time,FadeTime,OnTime,OnTime,FadeTime,OnTime,FadeTime,240,15,48,204,3  ,63,128,0,0,2,64,0,0,65)
+#define AndreaskrLT3(LED, Single_Cx, InCh, MaxBrightness, LT_Time,FadeTime, OnTime)        \  Bin_InCh_to_TmpVar(InCh, 1)  \ XPatternT9(LED,_Cx2StCh(Single_Cx)+68,SI_LocalVar,3,0,MaxBrightness,0,0,FadeTime,FadeTime,LT_Time,FadeTime,OnTime,OnTime,FadeTime,OnTime,FadeTime,192,243,0,192,196,48,19  ,63,128,0,0,2,64,0,0,65)
+#define AndreaskrLT_RGB(LED, InCh, MaxBrightness, LT_Time,FadeTime, OnTime)                \  Bin_InCh_to_TmpVar(InCh, 1)  \ XPatternT9(LED,4,SI_LocalVar,4,0,MaxBrightness,0,0,FadeTime,FadeTime,LT_Time,FadeTime,OnTime,OnTime,FadeTime,OnTime,FadeTime,0,195,195,0,0,3,192,192,3  ,63,128,0,0,2,64,0,0,65)
+#define AndreaskrLT3_RGB(LED, InCh, MaxBrightness, LT_Time,FadeTime, OnTime)               \  Bin_InCh_to_TmpVar(InCh, 1)  \ XPatternT9(LED,196,SI_LocalVar,9,0,MaxBrightness,0,0,FadeTime,FadeTime,LT_Time,FadeTime,OnTime,OnTime,FadeTime,OnTime,FadeTime,0,0,12,3,48,12,0,0,0,0,0,12,64,5,12,0,48,0,3,80,1  ,63,128,0,0,2,64,0,0,65)
+#define RGB_AmpelX(    LED,InCh)                             PatternT4(LED,0,InCh,18,0,255,0,0,3 Sec,1 Sec,10 Sec,3 Sec,1,2,100,8,0,40,0,134,0,1,2,4,200,16,0,80,0,12)             // Ampel fuer Kreuzung mit 6 RGB LEDs
+#define RGB_AmpelXFade(LED,InCh)                            APatternT8(LED,0,InCh,18,0,255,0,0,200,2 Sec,200,1 Sec,200,10 Sec,200,3 Sec,1,2,4,8,144,33,64,134,0,128,2,0,10,128,33,0,134,0,1,2,4,8,16,32,67,128,12,1,0,5,0,20,0,67,0,12)
+#define RGB_AmpelX_A(  LED,InCh)                             PatternT12(LED,0,InCh,17,0,255,0,0,2 Sec,2 sec,10 Sec,500,500,500,500,500,500,500,500,2 Sec,1,2,50,4,0,10,0,16,0,40,0,64,0,160,0,0,1,128,2,0,4,0,10,192,16,16,32,32,64,70,0,192,0,0,1,0,3,0,4,0,12,0,16,0,48,0,64,0,192,0,24)
+#define AmpelX(        LED,InCh)                             PatternT4(LED,0,InCh,6,0, 255,0,0,3 Sec,1 Sec,10 Sec,3 Sec,201,194,40,73,22,70)                                       // Ampel fuer Kreuzung mit 6 einzelnen LEDs (Achtung keine RGB LEDs)
+#define Flash(         LED, Cx, InCh, Var, MinTime, MaxTime) Random(Var, InCh, RM_NORMAL, MinTime, MaxTime, 30 ms, 30 ms) Const(LED, Cx, Var, 0, 255)                                         // Zufaelliges Blitzlicht (Fotograf)
+#define Def_Neon_Misha(LED, InCh, Var, Min_Delay, Max_Delay) Random(Var, InCh, RM_NORMAL, Min_Delay, Max_Delay, 500 ms, 2000 ms)  \ PatternT8(LED,8, Var,3,1,128,0,0,300 ms,100 ms,300 ms,100 ms,4 sec,400 ms,100 ms,100 ms,0,254,3,248,191,136,17,128,100)
+#define ConstrWarnLightRGB6(   LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT12(LED,28,InCh,18,0,255,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,MaxBrightness,MaxBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MaxBrightness,MaxBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MaxBrightness,MaxBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MaxBrightness,MaxBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MaxBrightness,MaxBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MaxBrightness,MaxBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0,MinBrightness,MinBrightness,0)
+#define ConstrWarnLightFlash3( LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT6( LED,128,InCh,3, MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitE,129,64,0,0,0)
+#define ConstrWarnLightFlash4( LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT8( LED,0,  InCh,4, MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,2,4,8,0,0)
+#define ConstrWarnLightFlash5( LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT10(LED,128,InCh,5, MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,8,64,0,2,16,0,0)
+#define ConstrWarnLightFlash6( LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT12(LED,0,  InCh,6, MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,32,0,4,128,0,16,0,2)
+#define ConstrWarnLightFlash7( LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT14(LED,192,InCh,7, MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,128,0,64,0,32,0,16,0,8,0,4,0)
+#define ConstrWarnLightFlash8( LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT16(LED,0,  InCh,8, MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,0,2,0,4,0,8,0,16,0,32,0,64,0,128,0)
+#define ConstrWarnLightFlash9( LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT18(LED,192,InCh,9, MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,0,8,0,64,0,0,2,0,16,0,128,0,0,4,0,32,0,0,1,0)
+#define ConstrWarnLightFlash10(LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT20(LED,0,  InCh,10,MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,0,32,0,0,4,0,128,0,0,16,0,0,2,0,64,0,0,8,0,0,1,0,32,0)
+#define ConstrWarnLightFlash11(LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT22(LED,192,InCh,11,MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,0,128,0,0,64,0,0,32,0,0,16,0,0,8,0,0,4,0,0,2,0,0,1,0,128,0,0,64,0,0)
+#define ConstrWarnLightFlash12(LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT24(LED,0,  InCh,12,MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,0,0,2,0,0,4,0,0,8,0,0,16,0,0,32,0,0,64,0,0,128,0,0,0,1,0,0,2,0,0,4,0,0,8,0)
+#define ConstrWarnLightFlash13(LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT26(LED,192,InCh,13,MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,0,0,8,0,0,64,0,0,0,2,0,0,16,0,0,128,0,0,0,4,0,0,32,0,0,0,1,0,0,8,0,0,64,0,0,0,2,0,0,16,0,0)
+#define ConstrWarnLightFlash14(LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT28(LED,0,  InCh,14,MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,0,0,32,0,0,0,4,0,0,128,0,0,0,16,0,0,0,2,0,0,64,0,0,0,8,0,0,0,1,0,0,32,0,0,0,4,0,0,128,0,0,0,16,0,0,0,2,0)
+#define ConstrWarnLightFlash15(LED,InCh, MinBrightness, MaxBrightness, OnT, WaitT, WaitE)      PatternT30(LED,192,InCh,15,MinBrightness,MaxBrightness,0,0,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitT,OnT,WaitE,1,0,0,128,0,0,0,64,0,0,0,32,0,0,0,16,0,0,0,8,0,0,0,4,0,0,0,2,0,0,0,1,0,0,128,0,0,0,64,0,0,0,32,0,0,0,16,0,0,0,8,0,0,0,4,0,0)
+#define ConstrWarnLight3(      LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT4( LED,128,InCh,3, MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,WaitE,17,1,0,0,0)
+#define ConstrWarnLight4(      LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT5( LED,0,  InCh,4, MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,WaitE,33,132,0,0,0,0)
+#define ConstrWarnLight5(      LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT6( LED,128,InCh,5, MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,WaitE,65,16,4,1,0,0,0,0)
+#define ConstrWarnLight6(      LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT7( LED,0,  InCh,6, MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,129,64,32,16,8,0,0,0,0)
+#define ConstrWarnLight7(      LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT8( LED,128,InCh,7, MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,1,1,1,1,1,1,1,0,0,0,0)
+#define ConstrWarnLight8(      LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT9( LED,0,  InCh,8, MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,1,2,4,8,16,32,64,128,0,0,0,0)
+#define ConstrWarnLight9(      LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT10(LED,128,InCh,9, MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,1,4,16,64,0,1,4,16,64,0,1,0,0,0)
+#define ConstrWarnLight10(     LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT11(LED,0,  InCh,10,MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,1,8,64,0,2,16,128,0,4,32,0,1,8,0,0)
+#define ConstrWarnLight11(     LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT12(LED,128,InCh,11,MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,1,16,0,1,16,0,1,16,0,1,16,0,1,16,0,1,0)
+#define ConstrWarnLight12(     LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT13(LED,128,InCh,12,MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,1,32,0,4,128,0,16,0,2,64,0,8,0,1,32,0,4,128,0,0)
+#define ConstrWarnLight13(     LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT14(LED,64, InCh,13,MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,1,64,0,16,0,4,0,1,64,0,16,0,4,0,1,64,0,16,0,4,0,1,0)
+#define ConstrWarnLight14(     LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT15(LED,192,InCh,14,MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,1,128,0,64,0,32,0,16,0,8,0,4,0,2,0,1,128,0,64,0,32,0,16,0,8,0,0)
+#define ConstrWarnLight15(     LED,InCh, MinBrightness, MaxBrightness, OnT, WaitE)             PatternT16(LED,0,  InCh,15,MinBrightness,MaxBrightness,0,0,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,OnT,WaitE,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0)
+#define Charlie_Buttons(LED, InCh, States)    InCh_to_TmpVar(InCh, States) \ PatternT1(LED,28,SI_LocalVar,3,0,255,0,0,1 ms,15,15,15,35,35,35,55,55,55,75,75,75,95,95,95,115,115,115,135,135,135,155,155,155,175,175,175,195,195,195,215,215,215  ,63,191,191,191,191,191,191,191,191,191,191)
+#define _GET_BIN_SIZE(n)  (n<=1?0:(n<=2?1:(n<=4)?2:(n<=8?3:(n<=16?4:999)))) // Number of bits needed for n states (n up to 16)
+#define Charlie_Binary(LED, InCh, BinStates)  Bin_InCh_to_TmpVar(InCh, _GET_BIN_SIZE((BinStates))) \ PatternT1(LED,28,SI_LocalVar,3,0,255,0,0,1 ms,15,15,15,35,35,35,55,55,55,75,75,75,95,95,95,115,115,115,135,135,135,155,155,155,175,175,175,195,195,195,215,215,215  ,63,191,191,191,191,191,191,191,191,191,191)
+#define EntrySignal3_RGB(LED, InCh)                 EntrySignal3_RGB_BT(LED,InCh,128,125 ms)
+#define EntrySignal3_RGB_B(LED, InCh,MaxBrightness) EntrySignal3_RGB_BT(LED,InCh,MaxBrightness,125 ms)        // 01.05.20: Added by Juergen
+#define EntrySignal3_RGB_T(LED, InCh,FadeTime)      EntrySignal3_RGB_BT(LED,InCh,128,FadeTime)                //    "
+#define EntrySignal3_RGB_BT(LED, InCh,MaxBrightness,FadeTime)  \ InCh_to_TmpVar(InCh, 3)      /* 29.10.19:  Old: 500 ms */ \ XPatternT1(LED,160,SI_LocalVar,9,0,MaxBrightness,0,0,FadeTime,64,4,104,0  ,63,191,191)  // 01.05.20: Juergen added parameter MaxBrightness and FadeTime
+#define EntrySignal3(LED, InCh, MaxB128)                   InCh_to_TmpVar(InCh, 3)      /* 29.10.19:  Old: 500 ms */  \ XPatternT1(LED,224,SI_LocalVar,3,0,MaxB128,0,0,125 ms,145,1  ,63,191,191)
+#define DepSignal4_RGB(LED, InCh, MaxB128)                 InCh_to_TmpVar(InCh, 4)      /* 29.10.19:  Old: 7 Input channels, 500 ms */  \ XPatternT1(LED,12,SI_LocalVar,18,0,MaxB128,0,0,125 ms,0,240,0,15,0,0,0,0,0,240,0,0,0,0,0,0,0,0,240,0,0,0,0,0,0,240,15,0,240,0,0,16,17,17,1,0  ,63,191,191,191)
+#define DepSignal4(LED, InCh, MaxB128)                     InCh_to_TmpVar(InCh, 4)      /* 29.10.19:  Old: 7 Input channels, 500 ms */  \ XPatternT1(LED,12,SI_LocalVar,5,0,MaxB128,0,0,125 ms,15,240,0,15,0,240,15,240,0,16  ,63,191,191,191)
+#define EntrySignal3Bin_RGB(LED, InCh, MaxB128)            Bin_InCh_to_TmpVar(InCh, 2)  /* 29.10.19:  Old: 500 ms */                    \ XPatternT1(LED,160,SI_LocalVar,9,0,MaxB128,0,0,500 ms,64,4,104,0  ,63,191,191)
+#define EntrySignal3Bin(LED, InCh, MaxB128)                Bin_InCh_to_TmpVar(InCh, 2)  /* 29.10.19:  Old: 500 ms */                    \ XPatternT1(LED,224,SI_LocalVar,3,0,MaxB128,0,0,125 ms,145,1  ,63,191,191)
+#define DepSignal4Bin_RGB(LED, InCh, MaxB128)              Bin_InCh_to_TmpVar(InCh, 2)  /* 29.10.19:  Old: 500 ms */                    \ XPatternT1(LED,12,SI_LocalVar,18,0,MaxB128,0,0,125 ms,0,240,0,15,0,0,0,0,0,240,0,0,0,0,0,0,0,0,240,0,0,0,0,0,0,240,15,0,240,0,0,16,17,17,1,0  ,63,191,191,191)
+#define DepSignal4Bin(LED, InCh, MaxB128)                  Bin_InCh_to_TmpVar(InCh, 2)  /* 29.10.19:  Old: 500 ms */                    \ XPatternT1(LED,12,SI_LocalVar,5,0,MaxB128,0,0,125 ms,15,240,0,15,0,240,15,240,0,16  ,63,191,191,191)
+#define KS_Vorsignal_Zs3V_RGB(LED, InCh, MaxB128)          InCh_to_LocalVar(InCh, 3)                                                    \ XPatternT9(LED,128,SI_LocalVar,12,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,0,48,224,0,0,1,0,0,237,208,14,236,192,14  ,0,63,128,63,128,64,0,0,1)
+#define KS_Vorsignal_Zs3V(LED, InCh, MaxB128)               InCh_to_LocalVar(InCh, 3)                                                   \ XPatternT9(LED,128,SI_LocalVar,4,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,144,32,224,206,12  ,0,63,128,63,128,64,0,0,1)
+#define KS_Hauptsignal_Zs3_Zs1_RGB(LED, InCh, MaxB128)      InCh_to_LocalVar(InCh, 4)                                                   \ XPatternT11(LED,128,SI_LocalVar,12,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,0,128,0,0,0,8,0,112,8,0,128,224,8,142,0,8,0  ,0,63,128,63,128,63,128,64,0,0,1)
+#define KS_Hauptsignal_Zs3_Zs1(LED, InCh, MaxB128)          InCh_to_LocalVar(InCh, 4)                                                   \ XPatternT11(LED,128,SI_LocalVar,4,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,32,64,80,160,42,2  ,0,63,128,63,128,63,128,64,0,0,1)
+#define KS_Hauptsignal_Zs3_Zs6_Zs1_RGB(LED, InCh, MaxB128)  InCh_to_LocalVar(InCh, 4)                                                   \ XPatternT11(LED,96,SI_LocalVar,15,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,0,0,4,0,0,0,16,0,0,56,132,3,0,16,28,8,14,4,0,2,0  ,0,63,128,63,128,63,128,64,0,0,1)
+#define KS_Hauptsignal_Zs3_Zs6_Zs1(LED, InCh, MaxB128)      InCh_to_LocalVar(InCh, 4)                                                   \ XPatternT11(LED,32,SI_LocalVar,5,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,64,0,2,42,80,74,8  ,0,63,128,63,128,63,128,64,0,0,1)
+#define HS_5l_RGB(LED, InCh, MaxB64)                        InCh_to_TmpVar(InCh, 4) \ XPatternT1(LED,12,SI_LocalVar,15,0,MaxB64,0,0,500 ms,0,0,0,0,0,0,0,0,0,8,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,240,10,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,240,255  ,0,63,128,63,128,63,128,63)
+#define HS_5r_RGB(LED, InCh, MaxB64)                        InCh_to_TmpVar(InCh, 4) \ XPatternT1(LED,12,SI_LocalVar,15,0,MaxB64,0,0,500 ms,0,0,0,0,0,0,0,0,0,8,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,240,10,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,240,255  ,0,63,128,63,128,63,128,63)
+#define HS_5_Plus_RGB(LED, InCh, MaxB64)                    InCh_to_TmpVar(InCh, 8) \ XPatternT1(LED,12,SI_LocalVar,27,0,MaxB64,0,0,500 ms,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,5,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,128,136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,5,0,0,4,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,112,5,0,0,4,0,0,0,52,0,0,53,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,52,0,0,53,0,0  ,0,63,128,63,128,63,128,63,128,63,128,63,128,63,128,63)
+#define Gleissperrsignal_RGB(LED, InCh, MaxB32)             InCh_to_TmpVar(InCh, 2) \ XPatternT1(LED,12,SI_LocalVar,12,0,MaxB32,0,0,600 ms,0,0,0,0,0,0,0,64,0,0,64,0,0,0,0,0,0,0,51,3,0,51,3,0  ,0,63,128,63)
+#define HS_Einfach_RGB(LED, InCh, MaxB32)                   InCh_to_TmpVar(InCh, 3) \ XPatternT1(LED,12,SI_LocalVar,12,0,MaxB32,0,0,500 ms,0,0,0,0,0,0,0,240,0,0,128,0,0,0,0,0,0,0,0,0,0,192,0,0,0,0,0,0,0,0,191,0,0,192,0,0  ,0,63,128,63,128,63)
+#define Vorsignal_RGB(LED, InCh, MaxB16)                    InCh_to_TmpVar(InCh, 2) \ XPatternT1(LED,12,SI_LocalVar,12,0,MaxB16,0,0,500 ms,0,0,0,0,0,0,0,128,0,0,128,0,0,0,0,0,0,0,122,0,0,122,0,0  ,0,63,128,63)
+#define HP_2_2_RGB(LED, InCh, MaxB16)                       InCh_to_TmpVar(InCh, 2) \ XPatternT1(LED,12,SI_LocalVar,12,0,MaxB16,0,0,500 ms,0,0,0,0,0,0,0,128,0,8,0,0,0,0,0,0,0,0,128,0,0,0,0,8  ,0,63,128,63)
+#define KS_Vorsignal_Zs3VBin_RGB(LED, InCh, MaxB128)        Bin_InCh_to_TmpVar(InCh, 2)                                                \ XPatternT9(LED,128,SI_LocalVar,12,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,0,48,224,0,0,1,0,0,237,208,14,236,192,14  ,0,63,128,63,128,64,0,0,1)
+#define KS_Vorsignal_Zs3VBin(LED, InCh, MaxB128)            Bin_InCh_to_TmpVar(InCh, 2)                                                \ XPatternT9(LED,128,SI_LocalVar,4,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,144,32,224,206,12  ,0,63,128,63,128,64,0,0,1)
+#define KS_Hauptsignal_Zs3_Zs1Bin_RGB(LED, InCh, MaxB128)   Bin_InCh_to_TmpVar(InCh, 2)                                                \ XPatternT11(LED,128,SI_LocalVar,12,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,0,128,0,0,0,8,0,112,8,0,128,224,8,142,0,8,0  ,0,63,128,63,128,63,128,64,0,0,1)
+#define KS_Hauptsignal_Zs3_Zs1Bin(LED, InCh, MaxB128)       Bin_InCh_to_TmpVar(InCh, 2)                                                \ XPatternT11(LED,128,SI_LocalVar,4,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,32,64,80,160,42,2  ,0,63,128,63,128,63,128,64,0,0,1)
+#define KS_Hauptsignal_Zs3_Zs6_Zs1Bin_RGB(LED, InCh, MaxB128) Bin_InCh_to_TmpVar(InCh, 2)                                              \ XPatternT11(LED,96,SI_LocalVar,15,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,0,0,4,0,0,0,16,0,0,56,132,3,0,16,28,8,14,4,0,2,0  ,0,63,128,63,128,63,128,64,0,0,1)
+#define KS_Hauptsignal_Zs3_Zs6_Zs1Bin(LED, InCh, MaxB128)     Bin_InCh_to_TmpVar(InCh, 2)                                              \ XPatternT11(LED,32,SI_LocalVar,5,0,MaxB128,0,0,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,500 ms,200 ms,500 ms,200 ms,64,0,2,42,80,74,8  ,0,63,128,63,128,63,128,64,0,0,1)
+#define HS_5lBin_RGB(LED, InCh, MaxB64)            Bin_InCh_to_TmpVar(InCh, 2) \ XPatternT1(LED,12,SI_LocalVar,15,0,MaxB64,0,0,500 ms,0,0,0,0,0,0,0,0,0,8,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,240,10,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,240,255  ,0,63,128,63,128,63,128,63)
+#define HS_5rBin_RGB(LED, InCh, MaxB64)            Bin_InCh_to_TmpVar(InCh, 2) \ XPatternT1(LED,12,SI_LocalVar,15,0,MaxB64,0,0,500 ms,0,0,0,0,0,0,0,0,0,8,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,240,10,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,240,255  ,0,63,128,63,128,63,128,63)
+#define HS_5_PlusBin_RGB(LED, InCh, MaxB64)        Bin_InCh_to_TmpVar(InCh, 3) \ XPatternT1(LED,12,SI_LocalVar,27,0,MaxB64,0,0,500 ms,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,5,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,128,136,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,112,5,0,0,4,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,112,5,0,0,4,0,0,0,52,0,0,53,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,0,3,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,52,0,0,53,0,0  ,0,63,128,63,128,63,128,63,128,63,128,63,128,63,128,63)
+#define GleissperrsignalBin_RGB(LED, InCh, MaxB32) Bin_InCh_to_TmpVar(InCh, 1) \ XPatternT1(LED,12,SI_LocalVar,12,0,MaxB32,0,0,600 ms,0,0,0,0,0,0,0,64,0,0,64,0,0,0,0,0,0,0,51,3,0,51,3,0  ,0,63,128,63)
+#define HS_EinfachBin_RGB(LED, InCh, MaxB32)       Bin_InCh_to_TmpVar(InCh, 2) \ XPatternT1(LED,12,SI_LocalVar,12,0,MaxB32,0,0,500 ms,0,0,0,0,0,0,0,240,0,0,128,0,0,0,0,0,0,0,0,0,0,192,0,0,0,0,0,0,0,0,191,0,0,192,0,0  ,0,63,128,63,128,63)
+#define VorsignalBin_RGB(LED, InCh, MaxB16)        Bin_InCh_to_TmpVar(InCh, 1) \ XPatternT1(LED,12,SI_LocalVar,12,0,MaxB16,0,0,500 ms,0,0,0,0,0,0,0,128,0,0,128,0,0,0,0,0,0,0,122,0,0,122,0,0  ,0,63,128,63)
+#define HP_2_2Bin_RGB(LED, InCh, MaxB16)           Bin_InCh_to_TmpVar(InCh, 1) \ XPatternT1(LED,12,SI_LocalVar,12,0,MaxB16,0,0,500 ms,0,0,0,0,0,0,0,128,0,8,0,0,0,0,0,0,0,0,128,0,0,0,0,8  ,0,63,128,63)
+#define SingleLedSignal(LED,InCh,Single_Cx, FadeTime) InCh_to_LocalVar(InCh, 4) \ XPatternT1(LED,_Cx2StCh(Single_Cx)+64,SI_LocalVar,2,0,128,0,0,FadeTime,132,12  ,0,63,128,63,128,63,191)
+#define SingleLedSignalEx(LED,InCh,Single_Cx, FadeTime, State0_0, State0_1, State1_0, State1_1, State2_0, State2_1, State3_0, State3_1) InCh_to_LocalVar(InCh, 4) \ XPatternT1(LED,_Cx2StCh(Single_Cx)+28,SI_LocalVar,2,0,255,0,0,FadeTime,0,0,State0_0,State0_1,0,0,State1_0,State1_1,0,0,State2_0,State2_1,0,0,State3_0,State3_1  ,0,63,128,63,128,63,128,63)
+#define  ButtonFunc(                DstVar, InCh, Duration)                      Random(DstVar, InCh, RF_STAY_ON, 0, 0, (Duration), (Duration))             // DstVar is turned on if InCh is activated and stays on for duration (Static (Not Edge) retiggerable mono flop)
+#define  MonoFlop(                  DstVar, InCh, Duration)                      Counter(_CM_RS_FlipFlop1,               InCh,   SI_0,   Duration, DstVar)  // Re-trigger with rising edge (Like ButtonFunc, but edge triggered)
+#define  MonoFlopReset(             DstVar, InCh, R_InCh, Duration)              Counter(_CM_RS_FlipFlop1,               InCh,   R_InCh, Duration, DstVar)  // Re-trigger with rising edge with additional Reset input
+#define  MonoFlopLongReset(         DstVar, InCh, Duration)                      Counter(_CM_RS_FlipFlop1|CF_RESET_LONG, InCh,   SI_0,   Duration, DstVar)  // Re-trigger with rising edge, Long press disables
+#define  RS_FlipFlop(               DstVar, R_InCh, S_InCh)                      Counter(_CM_RS_FlipFlop1,               S_InCh, R_InCh, 0,        DstVar)  // Edge triggered RS Flip Flop
+#define  RS_FlipFlopTimeout(        DstVar, R_InCh, S_InCh, Timeout)             Counter(_CM_RS_FlipFlop1,               S_InCh, R_InCh, Timeout,  DstVar)  // Edge triggered RS Flip Flop and timeout
+#define  T_FlipFlopReset(           DstVar, T_InCh, R_InCh)                      Counter(_CM_T_FlipFlop1,                T_InCh, R_InCh, 0,        DstVar)  // Toggle Flip Flop with reset
+#define  T_FlipFlopResetTimeout(    DstVar, T_InCh, R_InCh, Timeout)             Counter(_CM_T_FlipFlop1,                T_InCh, R_InCh, Timeout,  DstVar)  // Toggle Flip Flop with restart and timeout
+#define  MonoFlopInv(               DstVar, InCh, Duration)                      Counter(_CM_RS_FlipFlop2,               InCh,   SI_0,   Duration, DstVar,  DstVar)  // Re-trigger with rising edge (Like ButtonFunc, but edge triggered)
+#define  MonoFlopInvLongReset(      DstVar, InCh, Duration)                      Counter(_CM_RS_FlipFlop2|CF_RESET_LONG, InCh,   SI_0,   Duration, DstVar,  DstVar)  // Re-trigger with rising edge, Long press disables
+#define  RS_FlipFlopInv(            DstVar, R_InCh, S_InCh)                      Counter(_CM_RS_FlipFlop2,               S_InCh, R_InCh, 0,        DstVar,  DstVar)  // Edge triggered RS Flip Flop
+#define  RS_FlipFlopInvTimeout(     DstVar, R_InCh, S_InCh, Timeout)             Counter(_CM_RS_FlipFlop2,               S_InCh, R_InCh, Timeout,  DstVar,  DstVar)  // Edge triggered RS Flip Flop and timeout
+#define  T_FlipFlopInvReset(        DstVar, T_InCh, R_InCh)                      Counter(_CM_T_FlipFlopReset2,           T_InCh, R_InCh, 0,        DstVar,  DstVar)  // Toggle Flip Flop with reset Q'
+#define  T_FlipFlopInvResetTimeout( DstVar, T_InCh, R_InCh, Timeout)             Counter(_CM_T_FlipFlopReset2,           T_InCh, R_InCh, Timeout,  DstVar,  DstVar)  // Toggle Flip Flop with restart and timeout Q'
+#define  MonoFlop2(                 DstVar0, DstVar1, InCh, Duration)            Counter(_CM_RS_FlipFlop2,               InCh,   SI_0,   Duration, DstVar0, DstVar1)  // Two Outputs, re-trigger with rising edge (Like ButtonFunc, but edge triggered)
+#define  MonoFlop2LongReset(        DstVar0, DstVar1, InCh, Duration)            Counter(_CM_RS_FlipFlop2|CF_RESET_LONG, InCh,   SI_0,   Duration, DstVar0, DstVar1)  // Two Outputs, re-trigger with rising edge, Long press disables
+#define  RS_FlipFlop2(              DstVar0, DstVar1, R_InCh, S_InCh)            Counter(_CM_RS_FlipFlop2,               S_InCh, R_InCh, 0,        DstVar0, DstVar1)  // Edge triggered RS Flip Flop
+#define  RS_FlipFlop2Timeout(       DstVar0, DstVar1, R_InCh, S_InCh, Timeout)   Counter(_CM_RS_FlipFlop2,               S_InCh, R_InCh, Timeout,  DstVar0, DstVar1)  // Edge triggered RS Flip Flop and timeout
+#define  T_FlipFlop2Reset(          DstVar0, DstVar1, T_InCh, R_InCh)            Counter(_CM_T_FlipFlopReset2,           T_InCh, R_InCh, 0,        DstVar0, DstVar1)  // Toggle Flip Flop with reset
+#define  T_FlipFlop2ResetTimeout(   DstVar0, DstVar1, T_InCh, R_InCh, Timeout)   Counter(_CM_T_FlipFlopReset2,           T_InCh, R_InCh, Timeout,  DstVar0, DstVar1)  // Toggle Flip Flop with restart and timeout
+#define  RGB_Heartbeat(LED)                                           \  New_HSV_Group()                                          \ APatternT2(LED,192,SI_1,1,0,255,0,PM_HSV,60 Sek,0 ms,1)  \ APatternT1(LED, 194,SI_1,1,10,255,0,PM_HSV|PF_EASEINOUT,1 Sek,1)   // Nicht ganz aus gehen weil es sonst bei manchen Farben flackert
+#define  RGB_Heartbeat2(LED, MinBrightness, MaxBrightness)            \  New_HSV_Group()                                          \ APatternT2(LED,192,SI_1,1,0,255,0,PM_HSV,60 Sek,0 ms,1)  \ APatternT1(LED, 194,SI_1,1,MinBrightness,MaxBrightness,0,PM_HSV|PF_EASEINOUT,1 Sek,1)            // 18.01.19:
+#define  RGB_Heartbeat_Color(LED, MinBrightness, MaxBrightness, Color, Duration) \ New_HSV_Group()                                          \ APatternT1(LED,224,SI_1,1,Color,Color,0,PM_HSV,0 ms,1)  \ APatternT1(LED, 194,SI_1,1,MinBrightness,MaxBrightness,0,PM_HSV|PF_EASEINOUT,Duration,1)       
+#define  RGB_Ring(LED, InCh, Brightness, Duration) \ APatternT1(LED,4,InCh,36,0,Brightness,0,0,Duration,137,98,8,162,28,195,52,142,34,72,162,24,130,40,199,48,141,163,40,146,40,134,32,202,49,76,227,56,138,36,138,33,136,114,12,211,52,142,34,137,98,8,162,28,195,48,141,163,72,162,24,130,40,199,49,76,227,40,146,40,134,32,202,114,12,211,56,138,36,138,33,136,162,28,195,52,142,34,137,98,8,130,40,199,48,141,163,72,162,24,134,32,202,49,76,227,40,146,40,138,33,136,114,12,211,56,138,36)                        // 07.01.25: Juergen include Raily's LED ring macro  
+#define Status_Button_0_1(LED,B_LED_Cx, Val1)  PatternT1(LED,40 +_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,Val1,0,0,0.4 Sec,57,0  ,63,192,0,0,1)  // 01.04.20:
+#define Status_Button_0_2(LED,B_LED_Cx, Val1)  PatternT1(LED,232+_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,Val1,0,0,0.4 Sec,57,128,227,0,0  ,63,192,0,0,1,192,0,0,0,0,2)
+#define Status_Button_0_3(LED,B_LED_Cx, Val1)  PatternT1(LED,232+_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,Val1,0,0,0.4 Sec,57,128,227,0,142,227,0,0  ,63,192,0,0,1,192,0,0,0,0,2,192,0,0,0,0,0,0,3)
+#define Status_Button_0_4(LED,B_LED_Cx, Val1)  PatternT1(LED,40 +_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,Val1,0,0,0.4 Sec,57,128,227,0,142,227,0,142,227,56,0  ,63,192,0,0,1,192,0,0,0,0,2,192,0,0,0,0,0,0,3,192,0,0,0,0,0,0,0,0,4)
+#define Status_Button_0_5(LED,B_LED_Cx, Val1)  PatternT1(LED,168+_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,Val1,0,0,0.4 Sec,57,128,227,0,142,227,0,142,227,56,128,227,56,142,3,0  ,63,192,0,0,1,192,0,0,0,0,2,192,0,0,0,0,0,0,3,192,0,0,0,0,0,0,0,0,4,192,0,0,0,0,0,0,0,0,0,0,5)
+#define Status_ButtonBL_0_1(LED,B_LED_Cx,Val1,BackLight) PatternT1(LED,28 +_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,255,0,0,0.4 Sec,BackLight,Val1,0,0,0  ,63,192,0,0,1)
+#define Status_ButtonBL_0_2(LED,B_LED_Cx,Val1,BackLight) PatternT1(LED,28 +_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,255,0,0,0.4 Sec,BackLight,Val1,0,0,0,Val1,0,Val1,0,0,0  ,63,192,0,0,1,192,0,0,0,0,2)
+#define Status_ButtonBL_0_3(LED,B_LED_Cx,Val1,BackLight) PatternT1(LED,28 +_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,255,0,0,0.4 Sec,BackLight,Val1,0,0,0,Val1,0,Val1,0,0,0,Val1,0,Val1,0,Val1,0,0,0  ,63,192,0,0,1,192,0,0,0,0,2,192,0,0,0,0,0,0,3)
+#define Status_ButtonBL_0_4(LED,B_LED_Cx,Val1,BackLight) PatternT1(LED,28 +_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,255,0,0,0.4 Sec,BackLight,Val1,0,0,0,Val1,0,Val1,0,0,0,Val1,0,Val1,0,Val1,0,0,0,Val1,0,Val1,0,Val1,0,Val1,0,0,0  ,63,192,0,0,1,192,0,0,0,0,2,192,0,0,0,0,0,0,3,192,0,0,0,0,0,0,0,0,4)
+#define Status_ButtonBL_0_5(LED,B_LED_Cx,Val1,BackLight) PatternT1(LED,28 +_Cx2StCh(B_LED_Cx),SI_LocalVar,1,0,255,0,0,0.4 Sec,BackLight,Val1,0,0,0,Val1,0,Val1,0,0,0,Val1,0,Val1,0,Val1,0,0,0,Val1,0,Val1,0,Val1,0,Val1,0,0,0,Val1,0,Val1,0,Val1,0,Val1,0,Val1,0,0,0  ,63,192,0,0,1,192,0,0,0,0,2,192,0,0,0,0,0,0,3,192,0,0,0,0,0,0,0,0,4,192,0,0,0,0,0,0,0,0,0,0,5)
+#define Status_Button_RGB_0_1(LED,R0,G0,B0,R10,G10,B10,R11,G11,B11)                                                                                                 PatternT1(LED,28,SI_LocalVar,3,0,255,0,0,0.5 Sec,R0,G0,B0,R10,G10,B10,R11,G11,B11  ,63,192,1)
+#define Status_Button_RGB_0_2(LED,R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21)                                                                         PatternT1(LED,28,SI_LocalVar,3,0,255,0,0,0.5 Sec,R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21  ,63,192,1,192,2)
+#define Status_Button_RGB_0_3(LED,R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31)                                                 PatternT1(LED,28,SI_LocalVar,3,0,255,0,0,0.5 Sec,R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31  ,63,192,1,192,2,192,3)
+#define Status_Button_RGB_0_4(LED,R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41)                         PatternT1(LED,28,SI_LocalVar,3,0,255,0,0,0.5 Sec,R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41  ,63,192,1,192,2,192,3,192,4)
+#define Status_Button_RGB_0_5(LED,R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41,R50,G50,B50,R51,G51,B51) PatternT1(LED,28,SI_LocalVar,3,0,255,0,0,0.5 Sec,R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41,R50,G50,B50,R51,G51,B51  ,63,192,1,192,2,192,3,192,4,192,5)
+#define PushButton_0_1(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                               \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar, InCh, SI_1, Timeout, TmpNr+0, TmpNr+1)                                        \ InCh_to_TmpVar(TmpNr, 1+1)
+#define PushButton_0_2(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                               \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar, InCh, SI_1, Timeout, TmpNr+0, TmpNr+1, TmpNr+2)  \ InCh_to_TmpVar(TmpNr, 2+1)
+#define PushButton_0_3(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                               \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar, InCh, SI_1, Timeout, TmpNr+0, TmpNr+1, TmpNr+2, TmpNr+3)                     \ InCh_to_TmpVar(TmpNr, 3+1)
+#define PushButton_0_4(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                               \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar, InCh, SI_1, Timeout, TmpNr+0, TmpNr+1, TmpNr+2, TmpNr+3, TmpNr+4)            \ InCh_to_TmpVar(TmpNr, 4+1)
+#define PushButton_0_5(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                               \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar, InCh, SI_1, Timeout, TmpNr+0, TmpNr+1, TmpNr+2, TmpNr+3, TmpNr+4, TmpNr+5)   \ InCh_to_TmpVar(TmpNr, 5+1)
+#define PushButton2I_0_1(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                              \ Logic(LocInCh, InCh+1 OR InCh2==SI_0?InCh+1:InCh2)                                                                                                                                  \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar|CF_INV_ENABLE, LocInCh, InCh, Timeout, TmpNr+0, TmpNr+1)                                       \ InCh_to_TmpVar(TmpNr, 1+1)
+#define PushButton2I_0_2(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                              \ Logic(LocInCh, InCh+1 OR InCh2==SI_0?InCh+1:InCh2)                                                                                                                                  \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar|CF_INV_ENABLE, LocInCh, InCh, Timeout, TmpNr+0, TmpNr+1, TmpNr+2)                              \ InCh_to_TmpVar(TmpNr, 2+1)
+#define PushButton2I_0_3(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                              \ Logic(LocInCh, InCh+1 OR InCh2==SI_0?InCh+1:InCh2)                                                                                                                                  \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar|CF_INV_ENABLE, LocInCh, InCh, Timeout, TmpNr+0, TmpNr+1, TmpNr+2, TmpNr+3)                     \ InCh_to_TmpVar(TmpNr, 3+1)
+#define PushButton2I_0_4(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                              \ Logic(LocInCh, InCh+1 OR InCh2==SI_0?InCh+1:InCh2)                                                                                                                                  \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar|CF_INV_ENABLE, LocInCh, InCh, Timeout, TmpNr+0, TmpNr+1, TmpNr+2, TmpNr+3, TmpNr+4)            \ InCh_to_TmpVar(TmpNr, 4+1)
+#define PushButton2I_0_5(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                              \ Logic(LocInCh, InCh+1 OR InCh2==SI_0?InCh+1:InCh2)                                                                                                                                  \ Counter((Rotate?CF_ROTATE:0)|(Use0?0:CF_SKIP0)|(ResetLong?CF_RESET_LONG:0)|OptCtrPar|CF_INV_ENABLE, LocInCh, InCh, Timeout, TmpNr+0, TmpNr+1, TmpNr+2, TmpNr+3, TmpNr+4, TmpNr+5)   \ InCh_to_TmpVar(TmpNr, 5+1)
+#define PushButton_w_LED_0_1(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                        \ PushButton_0_1(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_Button_0_1(B_LED, B_LED_Cx, 255)
+#define PushButton_w_LED_0_2(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                        \ PushButton_0_2(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_Button_0_2(B_LED, B_LED_Cx, 255)
+#define PushButton_w_LED_0_3(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                        \ PushButton_0_3(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_Button_0_3(B_LED, B_LED_Cx,255)
+#define PushButton_w_LED_0_4(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                        \ PushButton_0_4(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_Button_0_4(B_LED, B_LED_Cx,255)
+#define PushButton_w_LED_0_5(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                        \ PushButton_0_5(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_Button_0_5(B_LED, B_LED_Cx,255)
+#define PushButton_w_LED_BL_0_1(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton_0_1(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_1(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton_w_LED_BL_0_2(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton_0_2(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_2(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton_w_LED_BL_0_3(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton_0_3(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_3(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton_w_LED_BL_0_4(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton_0_4(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_4(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton_w_LED_BL_0_5(B_LED, B_LED_Cx, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton_0_5(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_5(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton_RGB_0_1(B_LED, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11)                                                  \ PushButton_0_1(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \ Status_Button_RGB_0_1(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11)
+#define PushButton_RGB_0_2(B_LED, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21)                                                                         \ PushButton_0_2(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \ Status_Button_RGB_0_2(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21)
+#define PushButton_RGB_0_3(B_LED, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31)                                                 \ PushButton_0_3(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \ Status_Button_RGB_0_3(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31)
+#define PushButton_RGB_0_4(B_LED, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41)                         \ PushButton_0_4(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \ Status_Button_RGB_0_4(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41)
+#define PushButton_RGB_0_5(B_LED, InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41,R50,G50,B50,R51,G51,B51) \ PushButton_0_5(InCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \ Status_Button_RGB_0_5(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41,R50,G50,B50,R51,G51,B51)
+#define PushButton2I_w_LED_BL_0_1(B_LED, B_LED_Cx, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton2I_0_1(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_1(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton2I_w_LED_BL_0_2(B_LED, B_LED_Cx, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton2I_0_2(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_2(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton2I_w_LED_BL_0_3(B_LED, B_LED_Cx, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton2I_0_3(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_3(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton2I_w_LED_BL_0_4(B_LED, B_LED_Cx, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton2I_0_4(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_4(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton2I_w_LED_BL_0_5(B_LED, B_LED_Cx, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, Val1, BackLight)                                                    \ PushButton2I_0_5(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                           \ Status_ButtonBL_0_5(B_LED, B_LED_Cx, Val1, BackLight)
+#define PushButton2I_RGB_0_1(B_LED, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11)                                                                                                 \
+            PushButton2I_0_1(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \
+            Status_Button_RGB_0_1(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11)
+
+#define PushButton2I_RGB_0_2(B_LED, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21)                                                                         \
+            PushButton2I_0_2(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \
+            Status_Button_RGB_0_2(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21)
+
+#define PushButton2I_RGB_0_3(B_LED, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31)                                                 \
+            PushButton2I_0_3(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \
+            Status_Button_RGB_0_3(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31)
+
+#define PushButton2I_RGB_0_4(B_LED, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41)                         \
+            PushButton2I_0_4(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \
+            Status_Button_RGB_0_4(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41)
+
+#define PushButton2I_RGB_0_5(B_LED, InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41,R50,G50,B50,R51,G51,B51) \
+            PushButton2I_0_5(InCh, InCh2, LocInCh, TmpNr, Rotate, Use0, ResetLong, OptCtrPar, Timeout)                                                                                                                                          \
+            Status_Button_RGB_0_5(B_LED, R0,G0,B0,R10,G10,B10,R11,G11,B11,R20,G20,B20,R21,G21,B21,R30,G30,B30,R31,G31,B31,R40,G40,B40,R41,G41,B41,R50,G50,B50,R51,G51,B51)
+
+#define Servo2(LED, InCh, Single_Cx, Servo1, Servo2, ServoT)                                                          \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT1(LED,_Cx2StCh(Single_Cx)+28,SI_LocalVar,1,0,255,0,0,ServoT,0,Servo1,Servo2  ,127,129,129)
+
+#define Servo3(LED, InCh, Single_Cx, Servo1, Servo2, Servo3, ServoT)                                                  \
+            InCh_to_TmpVar1(InCh, 3)                                                                                  \
+            PatternT1(LED,_Cx2StCh(Single_Cx)+28,SI_LocalVar,1,0,255,0,0,ServoT,0,Servo1,Servo2,Servo3  ,127,129,129,129)
+
+#define Servo4(LED, InCh, Single_Cx, Servo1, Servo2, Servo3, Servo4, ServoT)                                          \
+            InCh_to_TmpVar1(InCh, 4)                                                                                  \
+            PatternT1(LED,_Cx2StCh(Single_Cx)+28,SI_LocalVar,1,0,255,0,0,ServoT,0,Servo1,Servo2,Servo3,Servo4  ,127,129,129,129,129)
+
+#define Servo5(LED, InCh, Single_Cx, Servo1, Servo2, Servo3, Servo4, Servo5, ServoT)                                  \
+            InCh_to_TmpVar1(InCh, 5)                                                                                  \
+            PatternT1(LED,_Cx2StCh(Single_Cx)+28,SI_LocalVar,1,0,255,0,0,10 Sec,0,Servo1,Servo2,Servo3,Servo4,Servo5  ,127,129,129,129,129,129)
+
+// Herzstueck for the PCB Ver. 1.0 where the Red and Green Channels are swapped ;-(                           // 25.07.20:
+#define Herz_BiRelais_V1_AB(LED, InCh, DelayHerz1)                                                                    \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,192,SI_LocalVar,2,0,255,0,0,200 ms, DelayHerz1,32,1  ,127,128,1,128,1)
+
+#define Herz_BiRelais_I_V1_AB(LED, InCh, DelayHerz1)                                                                  \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,192,SI_LocalVar,2,0,255,0,0,200 ms,DelayHerz1,16,2  ,127,128,1,128,1)
+
+
+#define Herz_BiRelais_V1_CD(LED, InCh, DelayHerz1)                                                                    \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,  98,SI_LocalVar,1,0,255,0,0,200 ms, DelayHerz1,4   ,127,128,1,128,1)                       \
+            PatternT2(LED+1,97,SI_LocalVar,1,0,255,0,0,200 ms, DelayHerz1,16  ,127,128,1,128,1)
+
+#define Herz_BiRelais_I_V1_CD(LED, InCh, DelayHerz1)                                                                  \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,  98,SI_LocalVar,1,0,255,0,0,200 ms, DelayHerz1,16 ,127,128,1,128,1)                        \
+            PatternT2(LED+1,97,SI_LocalVar,1,0,255,0,0,200 ms, DelayHerz1,4  ,127,128,1,128,1)
+
+#define Herz_BiRelais_V1_EF(LED, InCh, DelayHerz1)                                                                    \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,96,SI_LocalVar,1,0,255,0,0,200 ms, DelayHerz1,4  ,127,128,1,128,1)                          \
+            PatternT2(LED,98,SI_LocalVar,1,0,255,0,0,200 ms, DelayHerz1,16 ,127,128,1,128,1)
+
+#define Herz_BiRelais_I_V1_EF(LED, InCh, DelayHerz1)                                                                  \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,96,SI_LocalVar,1,0,255,0,0,200 ms, DelayHerz1,16 ,127,128,1,128,1)                          \
+            PatternT2(LED,98,SI_LocalVar,1,0,255,0,0,200 ms, DelayHerz1,4  ,127,128,1,128,1)
+
+
+//Herzstueck 18.05.20:
+#define Herz_BiRelais(LED, InCh, Single_Cx, DelayHerz1)                                                               \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,_Cx2StCh(Single_Cx)+192,SI_LocalVar,2,0,255,0,0,200 ms,DelayHerz1,16,2  ,127,128,1,128,1)
+
+#define Herz_BiRelais_I(LED, InCh, Single_Cx, DelayHerz1)                                                             \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,_Cx2StCh(Single_Cx)+192,SI_LocalVar,2,0,255,0,0,200 ms,DelayHerz1,32,1  ,127,128,1,128,1)
+
+// Saves 2 Bytes RAM and 6 Bytes Flash compared to the Pattern version below, but it uses 7 instead of 6 InCh variables
+#define _Herz_MoRelais_RS(LED, InCh, Single_Cx, DelayHerz1, TmpNr, Inv)                                               \
+            RS_FlipFlopTimeout(TmpNr+0, InCh, InCh+1, DelayHerz1 + 200 ms)                                            \
+            RS_FlipFlopTimeout(TmpNr+1, InCh, InCh+1, DelayHerz1)                                                     \
+            RS_FlipFlopTimeout(TmpNr+2, InCh+1, InCh, DelayHerz1 + 200 ms)                                            \
+            RS_FlipFlopTimeout(TmpNr+3, InCh+1, InCh, DelayHerz1)                                                     \
+            Logic(TmpNr+4, TmpNr+0 AND NOT TmpNr+1)                                                                   \
+            Logic(TmpNr+5, TmpNr+2 AND NOT TmpNr+3)                                                                   \
+            RS_FlipFlop(TmpNr+6, TmpNr+5-Inv, TmpNr+4+Inv)                                                            \
+            Const(LED, Single_Cx, TmpNr+6, 0, 255)
+
+#define Herz_MoRelais(LED, InCh, Single_Cx, DelayHerz1, TmpNr)                                                        \
+            _Herz_MoRelais_RS(LED, InCh, Single_Cx, DelayHerz1, TmpNr, 0)
+
+#define Herz_MoRelais_I(LED, InCh, Single_Cx, DelayHerz1, TmpNr)                                                      \
+            _Herz_MoRelais_RS(LED, InCh, Single_Cx, DelayHerz1, TmpNr, 1)
+
+#define Herz_2MoRelais(LED, InCh, Single_Cx, DelayHerz2)                                                              \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,_Cx2StCh(Single_Cx)+192,SI_LocalVar,2,0,255,0,0,200 ms,DelayHerz2,16,2  ,127,128,63,128,63)
+
+#define Herz_2MoRelais_I(LED, InCh, Single_Cx, DelayHerz2)                                                            \
+            InCh_to_TmpVar1(InCh, 2)                                                                                  \
+            PatternT2(LED,_Cx2StCh(Single_Cx)+192,SI_LocalVar,2,0,255,0,0,200 ms,DelayHerz2,32,1  ,127,128,63,128,63)
+
+
+//--------------------------------------- MP3-TF-16P Sound modul ---------------------------------------------
+
+                                //  ADKey1  ADKey2
+#define SOUND_ADKEY10	11		//	Play Mode	14
+#define SOUND_ADKEY9	17		//	U/SD/SPI	13
+#define SOUND_ADKEY8	22		//	Loop All	12
+#define SOUND_ADKEY7	25		//	Pause/Play	11
+#define SOUND_ADKEY6	29		//	Prev/Vol-	10
+#define SOUND_ADKEY5	37		//	Next/Vol+	9
+#define SOUND_ADKEY4    49      //  4           8
+#define SOUND_ADKEY3    70      //  3           7
+#define SOUND_ADKEY2    134     //  2           6
+#define SOUND_ADKEY1    255     //  1           5
+
+
+// Sound functions could be disable / enabled with the variable SI_Enable_Sound
+#define Sound_ADKey(    LED, InCh, ADKey1, ADKey2)         PatternTE2(LED,28,InCh,SI_Enable_Sound,2,0,255,0,PM_SEQUENZ_NO_RESTART,200 ms,10 ms,ADKey1,ADKey2,0,0)
+
+// Volume changing is independent from SI_Enable_Sound
+#define Sound_ADKeyTime(LED, InCh, ADKey1, ADKey2, Time)   PatternT2( LED,28,InCh,                  2,0,255,0,PM_SEQUENZ_NO_RESTART,Time,10 ms,ADKey1,ADKey2,0,0)
+
+#define Sound_Prev(      LED, InCh)         Sound_ADKey(LED, InCh, SOUND_ADKEY5,  0)
+#define Sound_Next(      LED, InCh)         Sound_ADKey(LED, InCh, SOUND_ADKEY6,  0)
+#define Sound_PausePlay( LED, InCh)         Sound_ADKey(LED, InCh, SOUND_ADKEY7,  0)
+#define Sound_Loop(      LED, InCh)         Sound_ADKey(LED, InCh, SOUND_ADKEY8,  0)
+#define Sound_USDSPI(    LED, InCh)         Sound_ADKey(LED, InCh, SOUND_ADKEY9,  0)  // ? U / SD / SPI
+#define Sound_PlayMode(  LED, InCh)         Sound_ADKey(LED, InCh, SOUND_ADKEY10, 0)  // If Loop is active the button toggles between  Sequence, Sequence, Repeat same, Random, Loop off
+
+// Volume
+// First Volume change after 1000 ms
+// Then volume is changed every 150 ms
+// According to the documentation there are 30 stepps
+#define Sound_DecVol(    LED, InCh, Steps)  Sound_ADKeyTime(LED, InCh, SOUND_ADKEY5,  0, 850 ms - 75 ms + (Steps-1) * 150 ms)
+#define Sound_IncVol(    LED, InCh, Steps)  Sound_ADKeyTime(LED, InCh, SOUND_ADKEY6,  0, 850 ms - 75 ms + (Steps-1) * 150 ms)
+
+#define Sound_Seq1( LED, InCh)    Sound_ADKey(LED, InCh, SOUND_ADKEY1, 0)
+#define Sound_Seq2( LED, InCh)    Sound_ADKey(LED, InCh, SOUND_ADKEY2, 0)
+#define Sound_Seq3( LED, InCh)    Sound_ADKey(LED, InCh, SOUND_ADKEY3, 0)
+#define Sound_Seq4( LED, InCh)    Sound_ADKey(LED, InCh, SOUND_ADKEY4, 0)
+#define Sound_Seq5( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY1)
+#define Sound_Seq6( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY2)
+#define Sound_Seq7( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY3)
+#define Sound_Seq8( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY4)
+#define Sound_Seq9( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY5)
+#define Sound_Seq10(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY6)
+#define Sound_Seq11(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY7)
+#define Sound_Seq12(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY8)
+#define Sound_Seq13(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY9)
+#define Sound_Seq14(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_ADKEY10)
+
+#define _LocalVar_Sound(LED)  PatternT1(LED,28,SI_LocalVar,2,0,255,0,0,200 ms,0,0,SOUND_ADKEY1,0,SOUND_ADKEY2,0,SOUND_ADKEY3,0,SOUND_ADKEY4,0,0,SOUND_ADKEY1,0,SOUND_ADKEY2,0,SOUND_ADKEY3,0,SOUND_ADKEY4,0,SOUND_ADKEY5,0,SOUND_ADKEY6,0,SOUND_ADKEY7,0,SOUND_ADKEY8,0,SOUND_ADKEY9,0,SOUND_ADKEY10,0,0  ,1,129,129,129,129,129,129,129,129,129,129,129,129,129,129,127)
+
+#define Sound_PlayRandom(LED, InCh, MaxSoundNr)                                                                      \
+              New_Local_Var()                                                                                        \
+              Counter(CF_ONLY_LOCALVAR | CF_RANDOM | CF_SKIP0,   InCh, SI_1, 0 Sec, MaxSoundNr+1)                    \
+              _LocalVar_Sound(LED)
+
+#define Sound_Next_of_N_Reset(LED, InCh, InReset, MaxSoundNr)                                                        \
+              New_Local_Var()                                                                                        \
+              Counter(CF_ONLY_LOCALVAR | CF_ROTATE | CF_SKIP0 | CF_INV_ENABLE,   InCh, InReset, 0 Sec, MaxSoundNr+1) \
+              _LocalVar_Sound(LED)
+
+#define Sound_Next_of_N(LED, InCh, MaxSoundNr)                                                                       \
+             Sound_Next_of_N_Reset(LED, InCh, SI_0, MaxSoundNr)
+
+//--------------------------------------- MP3-TF-16P Sound modul with 4.7uF capacitor and 2KHz WS2811 ------------------------ 13.10.21:
+// The new WS2811 modules (model year >2016) generate a 2 kHz PWM Signal (Old 400 Hz)
+// Here the filter capacitor could be reduced 4.7uF (Instead of 22uF) to support also the new
+// MP3-TF-16P modul which use the GDB3200B chip. With 22uF the new sound modules didn't work.
+// Modules with the old MH2024K chip could also be used this macros if the 4.7uF capacitor is used.
+
+#define SOUND_New_ADKEY10            11  //  Play Mode   14
+#define SOUND_New_ADKEY9             18  //  U/SD/SPI    13
+#define SOUND_New_ADKEY8             23  //  Loop All    12
+#define SOUND_New_ADKEY7             27  //  Pause/Play  11
+#define SOUND_New_ADKEY6             31  //  Prev/Vol-   10
+#define SOUND_New_ADKEY5             39  //  Next/Vol+   9
+#define SOUND_New_ADKEY4             53  //  4   8
+#define SOUND_New_ADKEY3             75  //  3   7
+#define SOUND_New_ADKEY2             148 //  2   6
+#define SOUND_New_ADKEY1             255 //  1   5
+
+#define Sound_New_Prev(      LED, InCh)         Sound_ADKey(LED, InCh, SOUND_New_ADKEY5,  0)
+#define Sound_New_Next(      LED, InCh)         Sound_ADKey(LED, InCh, SOUND_New_ADKEY6,  0)
+#define Sound_New_PausePlay( LED, InCh)         Sound_ADKey(LED, InCh, SOUND_New_ADKEY7,  0)
+#define Sound_New_Loop(      LED, InCh)         Sound_ADKey(LED, InCh, SOUND_New_ADKEY8,  0)
+#define Sound_New_USDSPI(    LED, InCh)         Sound_ADKey(LED, InCh, SOUND_New_ADKEY9,  0)  // ? U / SD / SPI
+#define Sound_New_PlayMode(  LED, InCh)         Sound_ADKey(LED, InCh, SOUND_New_ADKEY10, 0)  // If Loop is active the button toggles between  Sequence, Sequence, Repeat same, Random, Loop off
+
+// Volume
+// First Volume change after 1000 ms
+// Then volume is changed every 150 ms
+// According to the documentation there are 30 stepps                                         // Incremented the time from 850 to 950 for the new sound modules. Otherwise sometimes the next/prev sound was played.
+#define Sound_New_DecVol(    LED, InCh, Steps)  Sound_ADKeyTime(LED, InCh, SOUND_New_ADKEY5,  0, 950 ms - 75 ms + (Steps-1) * 150 ms)
+#define Sound_New_IncVol(    LED, InCh, Steps)  Sound_ADKeyTime(LED, InCh, SOUND_New_ADKEY6,  0, 950 ms - 75 ms + (Steps-1) * 150 ms)
+
+#define Sound_New_Seq1( LED, InCh)    Sound_ADKey(LED, InCh, SOUND_New_ADKEY1, 0)
+#define Sound_New_Seq2( LED, InCh)    Sound_ADKey(LED, InCh, SOUND_New_ADKEY2, 0)
+#define Sound_New_Seq3( LED, InCh)    Sound_ADKey(LED, InCh, SOUND_New_ADKEY3, 0)
+#define Sound_New_Seq4( LED, InCh)    Sound_ADKey(LED, InCh, SOUND_New_ADKEY4, 0)
+#define Sound_New_Seq5( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY1)
+#define Sound_New_Seq6( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY2)
+#define Sound_New_Seq7( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY3)
+#define Sound_New_Seq8( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY4)
+#define Sound_New_Seq9( LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY5)
+#define Sound_New_Seq10(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY6)
+#define Sound_New_Seq11(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY7)
+#define Sound_New_Seq12(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY8)
+#define Sound_New_Seq13(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY9)
+#define Sound_New_Seq14(LED, InCh)    Sound_ADKey(LED, InCh, 0, SOUND_New_ADKEY10)
+
+#define _LocalVar_New_Sound(LED)  PatternT1(LED,28,SI_LocalVar,2,0,255,0,0,200 ms,0,0,SOUND_New_ADKEY1,0,SOUND_New_ADKEY2,0,SOUND_New_ADKEY3,0,SOUND_New_ADKEY4,0,0,SOUND_New_ADKEY1,0,SOUND_New_ADKEY2,0,SOUND_New_ADKEY3,0,SOUND_New_ADKEY4,0,SOUND_New_ADKEY5,0,SOUND_New_ADKEY6,0,SOUND_New_ADKEY7,0,SOUND_New_ADKEY8,0,SOUND_New_ADKEY9,0,SOUND_New_ADKEY10,0,0  ,1,129,129,129,129,129,129,129,129,129,129,129,129,129,129,127)
+
+#define Sound_New_PlayRandom(LED, InCh, MaxSoundNr)                                                                      \
+              New_Local_Var()                                                                                        \
+              Counter(CF_ONLY_LOCALVAR | CF_RANDOM | CF_SKIP0,   InCh, SI_1, 0 Sec, MaxSoundNr+1)                    \
+              _LocalVar_New_Sound(LED)
+
+#define Sound_New_Next_of_N_Reset(LED, InCh, InReset, MaxSoundNr)                                                        \
+              New_Local_Var()                                                                                        \
+              Counter(CF_ONLY_LOCALVAR | CF_ROTATE | CF_SKIP0 | CF_INV_ENABLE,   InCh, InReset, 0 Sec, MaxSoundNr+1) \
+              _LocalVar_New_Sound(LED)
+
+#define Sound_New_Next_of_N(LED, InCh, MaxSoundNr)                                                                       \
+             Sound_New_Next_of_N_Reset(LED, InCh, SI_0, MaxSoundNr)
+// 13.10.21:  End od the new section
+
+//---------------------------- JQ6500 Sound modul ---------------------------------                           // 13.02.19:
+
+// Sound functions could be disable / enabled with the variable SI_Enable_Sound
+#define Sound_JQ6500_ADKey(     LED, InCh, ADKey)         PatternTE2(LED,28,InCh,SI_Enable_Sound,1,0,255,0,PM_SEQUENZ_NO_RESTART,400 ms,10 ms,ADKey,0) // Normal WS2811 modul with G+RB outputs anf -O+ inputs
+
+// Volume changing is independent from SI_Enable_Sound
+#define Sound_JQ6500_ADKeyTime(     LED, InCh, ADKey, Time)   PatternT2( LED,28,InCh,                1,0,255,0,PM_SEQUENZ_NO_RESTART,Time,10 ms,ADKey,0)
+
+                                        //  ADKey1     400ms 470 Ohm
+#define SOUND_JQ6500_ADKEY1_N   29      //  1
+#define SOUND_JQ6500_ADKEY2_N   40      //  2
+#define SOUND_JQ6500_ADKEY3_N   50      //  3
+#define SOUND_JQ6500_ADKEY4_N   60      //  4
+#define SOUND_JQ6500_ADKEY5_N   80      //  5
+#define SOUND_JQ6500_ADKEY6_N   162     //  Prev/Vol-
+#define SOUND_JQ6500_ADKEY7_N   231     //  Next/Vol+
+
+// WS2811 with swapped pins (R+GB/+O-)  //  ADKey1
+#define SOUND_JQ6500_ADKEY1_BG	32		//	1
+#define SOUND_JQ6500_ADKEY2_BG	44		//	2
+#define SOUND_JQ6500_ADKEY3_BG	56		//	3
+#define SOUND_JQ6500_ADKEY4_BG	68		//	4
+#define SOUND_JQ6500_ADKEY5_BG	90		//	5
+#define SOUND_JQ6500_ADKEY6_BG	183		//	Prev/Vol-
+#define SOUND_JQ6500_ADKEY7_BG	238		//	Next/Vol+
+
+
+#define Sound_JQ6500_Prev(  LED, InCh)         Sound_JQ6500_ADKey(     LED, InCh, SOUND_JQ6500_ADKEY6_N)
+#define Sound_JQ6500_Next(  LED, InCh)         Sound_JQ6500_ADKey(     LED, InCh, SOUND_JQ6500_ADKEY7_N)
+
+#define Sound_JQ6500_BG_Prev(  LED, InCh)      Sound_JQ6500_ADKey(     LED, InCh, SOUND_JQ6500_ADKEY6_BG)
+#define Sound_JQ6500_BG_Next(  LED, InCh)      Sound_JQ6500_ADKey(     LED, InCh, SOUND_JQ6500_ADKEY7_BG)
+
+// Volume
+// First Volume change after ~1000 ms   ???
+// Then volume is changed every 150 ms  ???
+// 30 stepps ??
+
+#define Sound_JQ6500_DecVol(LED, InCh, Steps)  Sound_JQ6500_ADKeyTime(LED, InCh, SOUND_JQ6500_ADKEY6_N,     1000 ms + (Steps-1) * 150 ms)
+#define Sound_JQ6500_IncVol(LED, InCh, Steps)  Sound_JQ6500_ADKeyTime(LED, InCh, SOUND_JQ6500_ADKEY7_N,     1000 ms + (Steps-1) * 150 ms)
+
+#define Sound_JQ6500_BG_DecVol(LED, InCh, Steps)  Sound_JQ6500_ADKeyTime(LED, InCh, SOUND_JQ6500_ADKEY6_BG, 1000 ms + (Steps-1) * 150 ms)
+#define Sound_JQ6500_BG_IncVol(LED, InCh, Steps)  Sound_JQ6500_ADKeyTime(LED, InCh, SOUND_JQ6500_ADKEY7_BG, 1000 ms + (Steps-1) * 150 ms)
+
+
+#define Sound_JQ6500_Seq1(  LED, InCh)         Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY1_N)
+#define Sound_JQ6500_Seq2(  LED, InCh)         Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY2_N)
+#define Sound_JQ6500_Seq3(  LED, InCh)         Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY3_N)
+#define Sound_JQ6500_Seq4(  LED, InCh)         Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY4_N)
+#define Sound_JQ6500_Seq5(  LED, InCh)         Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY5_N)
+
+#define Sound_JQ6500_BG_Seq1(  LED, InCh)      Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY1_BG)
+#define Sound_JQ6500_BG_Seq2(  LED, InCh)      Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY2_BG)
+#define Sound_JQ6500_BG_Seq3(  LED, InCh)      Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY3_BG)
+#define Sound_JQ6500_BG_Seq4(  LED, InCh)      Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY4_BG)
+#define Sound_JQ6500_BG_Seq5(  LED, InCh)      Sound_JQ6500_ADKey(LED, InCh, SOUND_JQ6500_ADKEY5_BG)
+
+#define _LocalVar_Sound_JQ6500(   LED)    PatternT1(LED,28,SI_LocalVar,1,0,255,0,0,400 ms,0,SOUND_JQ6500_ADKEY1_N, SOUND_JQ6500_ADKEY2_N, SOUND_JQ6500_ADKEY3_N, SOUND_JQ6500_ADKEY4_N, SOUND_JQ6500_ADKEY5_N, 0,1,129,129,129,129,129,127)
+#define _LocalVar_Sound_JQ6500_BG(LED)    PatternT1(LED,28,SI_LocalVar,1,0,255,0,0,400 ms,0,SOUND_JQ6500_ADKEY1_BG,SOUND_JQ6500_ADKEY2_BG,SOUND_JQ6500_ADKEY3_BG,SOUND_JQ6500_ADKEY4_BG,SOUND_JQ6500_ADKEY5_BG,0,1,129,129,129,129,129,127)
+
+
+#define Sound_JQ6500_PlayRandom(LED, InCh, MaxSoundNr)                                                               \
+              New_Local_Var()                                                                                        \
+              Counter(CF_ONLY_LOCALVAR | CF_RANDOM | CF_SKIP0,   InCh, SI_1, 0 Sec, MaxSoundNr+1)                    \
+              _LocalVar_Sound_JQ6500(LED)
+
+#define Sound_JQ6500_Next_of_N_Reset(LED, InCh, InReset, MaxSoundNr)                                                 \
+              New_Local_Var()                                                                                        \
+              Counter(CF_ONLY_LOCALVAR | CF_ROTATE | CF_SKIP0 | CF_INV_ENABLE,   InCh, InReset, 0 Sec, MaxSoundNr+1) \
+              _LocalVar_Sound_JQ6500(LED)
+
+#define Sound_JQ6500_Next_of_N(LED, InCh, MaxSoundNr)                                                                \
+             Sound_JQ6500_Next_of_N_Reset(LED, InCh, SI_0, MaxSoundNr)
+
+
+#define Sound_JQ6500_BG_PlayRandom(LED, InCh, MaxSoundNr)                                                            \
+              New_Local_Var()                                                                                        \
+              Counter(CF_ONLY_LOCALVAR | CF_RANDOM | CF_SKIP0,   InCh, SI_1, 0 Sec, MaxSoundNr+1)                    \
+              _LocalVar_Sound_JQ6500_BG(LED)
+
+#define Sound_JQ6500_BG_Next_of_N_Reset(LED, InCh, InReset, MaxSoundNr)                                              \
+              New_Local_Var()                                                                                        \
+              Counter(CF_ONLY_LOCALVAR | CF_ROTATE | CF_SKIP0 | CF_INV_ENABLE,   InCh, InReset, 0 Sec, MaxSoundNr+1) \
+              _LocalVar_Sound_JQ6500_BG(LED)
+
+#define Sound_JQ6500_BG_Next_of_N(LED, InCh, MaxSoundNr)                                                             \
+             Sound_JQ6500_BG_Next_of_N_Reset(LED, InCh, SI_0, MaxSoundNr)
+

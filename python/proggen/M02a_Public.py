@@ -148,13 +148,13 @@ def Get_SrcDirExamp():
 def Get_BoardTyp():
     #---------------------------------------
     # The build options for the ESP32 are something like "esp32:esp32:esp32..."
-    fn_return_value = 'AM328'
+    fn_return_value = M02.HT_AM328
     if InStr(P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL), 'esp32') > 0:
-        fn_return_value = 'ESP32'
+        fn_return_value = M02.HT_ESP32
     elif InStr(P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL), 'rp2040') > 0:
-        fn_return_value = 'PICO'
+        fn_return_value = M02.HT_PICO
     else:
-        fn_return_value = 'AM328'
+        fn_return_value = M02.HT_AM328
     # Other types:
     # "Every"           ' Nano Every
     return fn_return_value

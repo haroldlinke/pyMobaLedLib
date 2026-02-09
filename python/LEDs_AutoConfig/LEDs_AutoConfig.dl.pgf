@@ -1,0 +1,36 @@
+Head:	Program_Generator configuration file	V1.0
+Sheet:	DCC	Pico_Config
+Line:	Act								//#MaxInchVar=3
+Line:									//#Header:attachment; filename="RM-Config-WS2811-MLL-SNMLL-Test1-000407330151-26.7.2025-17.35.50.txt"
+
+Line:									//#start
+Line:									//#RailMail-WS2811
+Line:									//#Firmware-Version=2.0.35
+Line:									//#Serial-Number=MLL-Test1-000407330151
+Line:									//#Ethernet-MAC-Adresse=2C:CF:67:D9:6F:15
+Line:									//#IP-Adress=192.168.178.84
+Line:									//#Remaining-Config-Space=12704
+Line:									//#Section=MLL-Configuration
+Line:									//#finish
+Line:									//Type:170	0		0	0	0			255
+Line:	Act								NEW_HSV_GROUP_T	0		0	0	0			255
+Line:	Act								LED_to_Var(_V3, 0,=, 100)			0	0	0
+Line:	Act								APATTERNT2_T,_CHKL(#LED)+RAM7,192,#InCh,255,1,0,255,0,6,96,234,0,0,1,0,1	0	C1-1	0	0	0			255
+Line:	Act								// Next_LED(-1)	1	-1	0	0	0
+Line:	Act								APATTERNT1_T,_CHKL(#LED)+RAM7,194,#InCh,255,1,10,255,0,38,232,3,1,0,1	0	C1-1	0	0	0			255
+Line:	Act		_V3						Const(#LED,C1,#InCh,0,127)	1	C1-1	0	0	0	68	7	3
+Line:	Act								// Next_LED(-1)	2	-1	0	0	0
+Line:	Act		_V3						Const(#LED,C2,#InCh,0,127)	1	C2-2	0	0	0	75	7	3
+Line:	Act								// Next_LED(-1)	2	-1	0	0	0
+Line:	Act		_V3						Const(#LED,C3,#InCh,0,127)	1	C3-3	0	0	0	82	7	3
+Line:	Act								HouseT(#LED, #InCh, 2, 5, 1, 4,ROOM_RED,ROOM_RED,ROOM_RED,ROOM_RED,ROOM_RED,FIRE,FIRE)	2	7	0	0	0	89	16	255
+Line:	Act								// Next_LED(-1)	9	-1	49153	0	0
+Line:	Act		2000	AnAus					 PATTERNT12_T,_CHKL(#LED)+RAM7,28,#InCh,255,18,0,255,0,0,100,0,0,0,100,0,0,0,100,0,0,0,100,0,0,0,100,0,0,0,100,0,244,1,216,0,255,255,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,255,255,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,255,255,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,255,255,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,255,255,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,255,255,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0,5,5,0	8	C1-18	49153	0	0			0
+Line:									//Type:170	0		0	0	0			255
+Line:	Act								NEW_HSV_GROUP_T	0		0	0	0			255
+Line:	Act								APATTERNT2_T,_CHKL(#LED)+RAM7,192,#InCh,255,1,0,255,0,6,96,234,0,0,1,0,1	14	C1-1	0	0	0			255
+Line:	Act								// Next_LED(-1)	15	-1	0	0	0
+Line:	Act								APATTERNT1_T,_CHKL(#LED)+RAM7,194,#InCh,255,1,10,255,0,38,232,3,1,0,1	14	C1-1	0	0	0			255
+Line:									//Type:140,0x02,0x01,0x01,0x38,0x01,0x4C,0x1D,0x01,0x00,0x01,0x00	0		0	0	0			255
+Line:	Act		100	AnAus					RANDOM_T,_V2,#InCh,1,56,1,76,29,1,0,1,0	0		1	0	0			1
+Line:	Act		_V2						Const(#LED,C_ALL,#InCh,0,255)	15	C1-3	0	0	0	405	7	2

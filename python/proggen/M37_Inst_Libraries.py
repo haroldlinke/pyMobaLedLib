@@ -1302,9 +1302,14 @@ def Select_Missing():
                 with_3.Value = ChrW(M02.Hook_CHAR)
                 NotInstCnt = NotInstCnt + 1
             elif Sh.Cells(Row, Reque_Ver_Col) != '':
-                if M30.VersionStr_is_Greater(Sh.Cells(Row, Reque_Ver_Col), Sh.Cells(Row, DetectVer_Col)):
-                    with_3.Value = ChrW(M02.Hook_CHAR)
-                    NotInstCnt = NotInstCnt + 1
+                if InStr(Sh.Cells(Row, Lib_Board_Col), "=") != 0:
+                    if not M30.VersionStr_is_Equal(Sh.Cells(Row, Reque_Ver_Col), Sh.Cells(Row, DetectVer_Col)):
+                        with_3.Value = ChrW(M02.Hook_CHAR)
+                        NotInstCnt = NotInstCnt + 1
+                else:               
+                    if M30.VersionStr_is_Greater(Sh.Cells(Row, Reque_Ver_Col), Sh.Cells(Row, DetectVer_Col)):
+                        with_3.Value = ChrW(M02.Hook_CHAR)
+                        NotInstCnt = NotInstCnt + 1
         select_2 = Sh.Cells(Row, Libr_Name_Col)
         if (select_2 == 'FastLED'):
             FastLED_Ver = Sh.Cells(Row, DetectVer_Col)
@@ -1473,7 +1478,9 @@ def Update_MobaLedLib_from_Range_and_Restart_Excel(RangeStr):
     #*HL Ctrl_Pressed = P01.GetAsyncKeyState(M24.VK_CONTROL) != 0
     # Following function must be declared: Public Declare Function GetAsyncKeyState Lib "user32" (ByVal vKey As Long) As Integer
     if False: #*HLCtrl_Pressed:
-        currentUrl = PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Cells(Row, Other_Src_Col)
+        #currentUrl = PG.ThisWorkbook.Sheets(M02.LIBRARYS__SH).Cells(Row, Other_Src_Col)
+        currentUrl = "https://github.com/Hardi-St/MobaLedLib/archive/refs/heads/beta.zip"   # 27.05.25: Juergen set the beta zip as default
+                    
         frm = UserForm_SingleInput()
         newUrl = frm.ShowForm(M09.Get_Language_Str('Beta-Test Installation'), M09.Get_Language_Str('Bitte geben sie die URL ein, von der sie die neue Beta Version herunterladen wollen'), currentUrl)
         if newUrl == '<Abort>':
@@ -1537,7 +1544,7 @@ def Update_MobaLedLib_from_Arduino_and_Restart_Excel():
 
 def Update_MobaLedLib_from_Beta_and_Restart_Excel():
     #---------------------------------------------------------
-    if P01.MsgBox(M09.Get_Language_Str('Soll die Beta Test Version der MobaLedLib installiert werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Beta Test der MobaLedLib installieren?')) != vbYes:
+    if P01.MsgBox(M09.Get_Language_Str('Soll die Korrekturversion der MobaLedLib installiert werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Korrekturversion der MobaLedLib installieren?')) != vbYes:
         return
     Update_MobaLedLib_from_Range_and_Restart_Excel('Select_MobaLedLib_Beta')
 

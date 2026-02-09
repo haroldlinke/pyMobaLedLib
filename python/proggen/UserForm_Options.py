@@ -75,6 +75,7 @@ import proggen.M37_Inst_Libraries as M37
 #import proggen.M80_Create_Multiplexer as M80
 
 import proggen.F00_mainbuttons as F00
+import pgcommon.G00_common as G00
 
 from ExcelAPI.XLC_Excel_Consts import *
 import ExcelAPI.XLA_Application as P01
@@ -98,32 +99,49 @@ class CUserForm_Options:
         self.button2_txt = "Ok"
         self.res = False
         self.UserForm_Res = ""
+        self.show_IP_button = self.controller.UseConfig
         #self.__UserForm_Initialize()
         self.Controls={}
         self.rb_res = {"_R": tk.IntVar(),
                        "_L": tk.IntVar()}
         self.__Disable_Set_Arduino_Typ = True
+        if self.show_IP_button:
+            self.radiobuttons = {"Nano_Normal_L": {"text":M09.Get_Language_Str("Nano Normal (old Bootloader)"), "value": 1,"board": M02.BOARD_NANO_OLD},
+                                 "Nano_New_L"   : {"text":M09.Get_Language_Str("Nano (neue Version)"), "value": 2,"board": M02.BOARD_NANO_NEW},
+                                 "Nano_Full_L"  : {"text":M09.Get_Language_Str("Nano (Full memory)"), "value": 3,"board": M02.BOARD_NANO_FULL},
+                                 "Uno_L"        : {"text":M09.Get_Language_Str("Uno"), "value": 4,"board": M02.BOARD_UNO_NORM},
+                                 "Board_IDE_L"  : {"text":M09.Get_Language_Str("Typ von Arduino IDE benutzen"), "value": 5,"board": ''},
+                                 "ESP32_L"      : {"text":M09.Get_Language_Str("ESP32 Wroom"), "value": 6,"board": M02.BOARD_ESP32, "command": self.__ESP32_L_Click},
+                                 "PICO_L"       : {"text":M09.Get_Language_Str("Raspberry Pico"), "value": 7,"board": M02.BOARD_PICO, "command": self.__Pico_L_Click},
+                                 "PICO_WLAN_L"    : {"text":M09.Get_Language_Str("Raspberry Pico-WLAN-mDNS (Experimental)"), "value": 8,"board": M02.BOARD_PICO_WL, "command": self.__PICO_WLAN_L_Click},
+                                 "Nano_Normal_R": {"text":M09.Get_Language_Str("Nano Normal (old Bootloader)"), "value": 1,"board": M02.BOARD_NANO_OLD},
+                                 "Nano_New_R"   : {"text":M09.Get_Language_Str("Nano (neue Version)"), "value": 2,"board":  M02.BOARD_NANO_NEW},
+                                 "Nano_Full_R"  : {"text":M09.Get_Language_Str("Nano (Full memory)"), "value": 3,"board": M02.BOARD_NANO_FULL},
+                                 "Uno_R"        : {"text":M09.Get_Language_Str("Uno"), "value": 4,"board": M02.BOARD_UNO_NORM},
+                                 "Board_IDE_R"  : {"text":M09.Get_Language_Str("Typ von Arduino IDE benutzen"), "value": 5,"board": ''},
+                                 }
+        else:
+            self.radiobuttons = {"Nano_Normal_L": {"text":M09.Get_Language_Str("Nano Normal (old Bootloader)"), "value": 1,"board": M02.BOARD_NANO_OLD},
+                                 "Nano_New_L"   : {"text":M09.Get_Language_Str("Nano (neue Version)"), "value": 2,"board": M02.BOARD_NANO_NEW},
+                                 "Nano_Full_L"  : {"text":M09.Get_Language_Str("Nano (Full memory)"), "value": 3,"board": M02.BOARD_NANO_FULL},
+                                 "Uno_L"        : {"text":M09.Get_Language_Str("Uno"), "value": 4,"board": M02.BOARD_UNO_NORM},
+                                 "Board_IDE_L"  : {"text":M09.Get_Language_Str("Typ von Arduino IDE benutzen"), "value": 5,"board": ''},
+                                 "ESP32_L"      : {"text":M09.Get_Language_Str("ESP32 Wroom"), "value": 6,"board": M02.BOARD_ESP32},
+                                 "PICO_L"       : {"text":M09.Get_Language_Str("Raspberry Pico"), "value": 7,"board": M02.BOARD_PICO},
+                                 "Nano_Normal_R": {"text":M09.Get_Language_Str("Nano Normal (old Bootloader)"), "value": 1,"board": M02.BOARD_NANO_OLD},
+                                 "Nano_New_R"   : {"text":M09.Get_Language_Str("Nano (neue Version)"), "value": 2,"board":  M02.BOARD_NANO_NEW},
+                                 "Nano_Full_R"  : {"text":M09.Get_Language_Str("Nano (Full memory)"), "value": 3,"board": M02.BOARD_NANO_FULL},
+                                 "Uno_R"        : {"text":M09.Get_Language_Str("Uno"), "value": 4,"board": M02.BOARD_UNO_NORM},
+                                 "Board_IDE_R"  : {"text":M09.Get_Language_Str("Typ von Arduino IDE benutzen"), "value": 5,"board": ''},
+                                 }        
         
-        self.radiobuttons = {"Nano_Normal_L": {"text":M09.Get_Language_Str("Nano Normal (old Bootloader)"), "value": 1,"board": M02.BOARD_NANO_OLD},
-                             "Nano_New_L"   : {"text":M09.Get_Language_Str("Nano (neue Version)"), "value": 2,"board": M02.BOARD_NANO_NEW},
-                             "Nano_Full_L"  : {"text":M09.Get_Language_Str("Nano (Full memory)"), "value": 3,"board": M02.BOARD_NANO_FULL},
-                             "Uno_L"        : {"text":M09.Get_Language_Str("Uno"), "value": 4,"board": M02.BOARD_UNO_NORM},
-                             "Board_IDE_L"  : {"text":M09.Get_Language_Str("Typ von Arduino IDE benutzen"), "value": 5,"board": ''},
-                             "ESP32_L"      : {"text":M09.Get_Language_Str("ESP32 Wroom"), "value": 6,"board": M02.BOARD_ESP32},
-                             "Pico_L"       : {"text":M09.Get_Language_Str("Raspberry Pico (Experimental)"), "value": 7,"board": M02.BOARD_PICO},
-                             "Nano_Normal_R": {"text":M09.Get_Language_Str("Nano Normal (old Bootloader)"), "value": 1,"board": M02.BOARD_NANO_OLD},
-                             "Nano_New_R"   : {"text":M09.Get_Language_Str("Nano (neue Version)"), "value": 2,"board":  M02.BOARD_NANO_NEW},
-                             "Nano_Full_R"  : {"text":M09.Get_Language_Str("Nano (Full memory)"), "value": 3,"board": M02.BOARD_NANO_FULL},
-                             "Uno_R"        : {"text":M09.Get_Language_Str("Uno"), "value": 4,"board": M02.BOARD_UNO_NORM},
-                             "Board_IDE_R"  : {"text":M09.Get_Language_Str("Typ von Arduino IDE benutzen"), "value": 5,"board": ''},
-                             }
-        
-        self.boardlist = ("dummy",M02.BOARD_NANO_OLD, M02.BOARD_NANO_NEW, M02.BOARD_NANO_FULL, M02.BOARD_UNO_NORM,'', M02.BOARD_ESP32, M02.BOARD_PICO)
+        self.boardlist = ("dummy",M02.BOARD_NANO_OLD, M02.BOARD_NANO_NEW, M02.BOARD_NANO_FULL, M02.BOARD_UNO_NORM,'', M02.BOARD_ESP32, M02.BOARD_PICO, M02.BOARD_PICO_WL)
         
         self.defaultboard = 7
         self.default_font = self.controller.defaultfontnormal
         self.default_fontsmall = self.controller.defaultfontsmall
-        self.default_fontlarge = self.controller.defaultfontlarge        
+        self.default_fontlarge = self.controller.defaultfontlarge
+        
         
         #*HL Center_Form(Me)                
 
@@ -147,9 +165,25 @@ class CUserForm_Options:
         
         M07.Detect_Com_Port_and_Save_Result(False)
         self.Show()
-    
+        
+    def __Detect_LED_IP_Button_Click(self):
+        #-----------------------------------------
+        self.Hide()
+        board=self.radiobutton_to_board(True)
+        self.Change_Board(True, board)
+        if "WLAN=Yes" in board:
+            ipadress = G00.InputBox("Enter IP-Adresse", "WLAN-PICO")
+            ComPortColumn = M25.COMPort_COL
+            P01.CellDict[M02.SH_VARS_ROW, ComPortColumn] = "IP:" + ipadress
+            self.controller.setConfigData("serportname", "IP:" + ipadress)
+        self.Show()
+        
     def __Detect_Right_Port_Button_Click(self):
         #-------------------------------------------
+        if not M30.Get_Current_Platform_Bool("NeedLedArduino"): #                                 ' 21.11.25 Juergen - only Nano platofrm needs DCC Arduino
+            return
+        
+        
         self.Hide()
         board=self.radiobutton_to_board(False)
         self.Change_Board(False, board)        
@@ -160,12 +194,68 @@ class CUserForm_Options:
         #----------------------------------------
         self.Hide()
         M08IN.Install_FastBootloader()
+        
+    def __WLAN_Pico_Button_Click(self):
+        #----------------------------------------
+        self.Hide()
+        ComPortColumn = M25.COMPort_COL
+        ipadress_str = P01.CellDict[M02.SH_VARS_ROW, ComPortColumn]
+        if ipadress_str.startswith("IP:"):
+            ipadress = ipadress_str[3:]
+            P01.Shell('Explorer "http://'+ipadress+'"')
+            
+    def __WLAN_Pico_FUpdate_Button_Click(self):
+        #----------------------------------------
+        self.Hide()
+        ComPortColumn = M25.COMPort_COL
+        ipadress_str = P01.CellDict[M02.SH_VARS_ROW, ComPortColumn]
+        if ipadress_str.startswith("IP:"):
+            ipadress = ipadress_str[3:]
+            import requests
+            
+            # Replace with the actual path to your firmware file and device IP
+            #file_path = 'D:/data\doc/GitHub\pyMobaLedLib/python/hex-files/Pico_WH_mDNS/RailMail3-WS2811.ipr'
+            url = 'http://'+ipadress+'/firmwareupdate'
+            
+            PG.ThisWorkbook.Activate()
+            WorkDir = PG.ThisWorkbook.Path + "/hex-files/Pico_WH_mDNS"
+
+            filenameandpath = tk.filedialog.askopenfilename(filetypes=[("hex-File","*.ipr")], initialdir=WorkDir)
+            if not filenameandpath:
+                return
+            if not os.path.exists(filenameandpath):
+                #print ('file does not exist')
+                return
+            
+            res=tk.messagebox.askyesno(title="UPdate Firmware", message="Das Update dauert ca 3 Minuten. Upload starten?")
+            if res == None:
+                return
+            if res:
+                pass
+            else:
+                return
+            try:
+                
+                # Prepare the file payload
+                with open(filenameandpath, 'rb') as f:
+                    files = {'probe': f}
+                    response = requests.post(url, files=files, timeout=250)
+                
+                # Check if it worked
+                if response.status_code == 200:
+                    print(response.text)
+                else:
+                    print(f"Upload failed with status code {response.status_code}")
+            except BaseException as e:
+                print(e)
+
+        
     
     def __HardiForum_Button_Click(self):
         #------------------------------------
         self.Hide()
-        if P01.MsgBox(M09.Get_Language_Str('Öffnet das Profil von Hardi im Stummi Forum.' + vbCr + vbCr + 'Dort findet man, wenn man im Forum angemeldet ist, einen Link zur ' + 'Email Adresse des Autors zum senden einer E-Mail oder PN.' + vbCr + vbCr + 'Alternativ kann auch eine Mail an \'MobaLedlib@gmx.de\' geschickt werden wenn ' + 'es Fragen oder Anregungen zu dem Programm oder zur MobaLedLib gibt.'), vbOKCancel, M09.Get_Language_Str('Profil des Autors öffnen')) == vbOK:
-            P01.Shell('Explorer "https://www.stummiforum.de/u26419_Hardi.html"')
+        if P01.MsgBox(M09.Get_Language_Str("Öffnet das MobaLedLib Forum 'https://forum.MobaLedLib.de'." + vbCr + "Dort findet man Hilfe. Man kann Fragen stellen, wenn man im Forum angemeldet ist."), vbOKCancel, M09.Get_Language_Str("Hilfe im Forum")) == vbOK:
+            P01.Shell("Explorer ""https://forum.MobaLedLib.de""")
     
     def __Pattern_Config_Button_Click(self):
         #----------------------------------------
@@ -193,11 +283,15 @@ class CUserForm_Options:
     
     def __ESP32_L_Click(self):
         self.Change_Board(True, M02.BOARD_ESP32)
-        self.Autodetect_Typ_L_CheckBox.Value = False
+        self.Autodetect_Typ_L_CheckBox_var.set(False)
     
     def __Pico_L_Click(self):
         self.Change_Board(True, M02.BOARD_PICO)
-        self.Autodetect_Typ_L_CheckBox.Value = False
+        self.Autodetect_Typ_L_CheckBox_var.set(False)
+        
+    def __PICO_WLAN_L_Click(self):
+        self.Change_Board(True, M02.BOARD_PICO_WL)
+        self.Autodetect_Typ_L_CheckBox_var.set(False)
     
     def __Nano_Normal_R_Click(self):
         self.Change_Board(False, M02.BOARD_NANO_OLD)
@@ -226,6 +320,7 @@ class CUserForm_Options:
         if self.__Disable_Set_Arduino_Typ:
             return
         M28.Change_Board_Typ(LeftArduino, NewBrd)
+        #UpdateDCCSubPage()
         
     def Check_Board(self,AutodetectChecked):
         #----------------------------------------------------
@@ -296,8 +391,12 @@ class CUserForm_Options:
             self.Controls['ESP32_L'].Value = True
             return
             # 11.11.20:
-        if InStr(str(BuildOpt), M02.BOARD_PICO) > 0 and Side == 'L' and M37.PICO_Lib_Installed():
-            self.Controls['PICO_L'].Value = True
+        if InStr(str(BuildOpt), M02.BOARD_PICO) > 0 and Side == 'L': # and M37.PICO_Lib_Installed():
+            if InStr(str(BuildOpt), "WLAN") > 0:
+                self.Controls['PICO_WLAN_L'].Value = True
+            else:
+                if  M37.PICO_Lib_Installed():
+                    self.Controls['PICO_L'].Value = True
             return
             # 18.04.21: Juergen
         if InStr(str(BuildOpt), '--board ') > 0:
@@ -422,7 +521,7 @@ class CUserForm_Options:
             M30.UnzipAFile(zipfilenamepath,workbookpath3)
             srcpath = workbookpath3+"/pyMobaLedLib-master/python"
             dstpath = workbookpath #workbookpath3+"/pyMobaLedLib/python"
-            if not dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy when destination is development folder
+            if not dstpath.startswith(r"D:\development\GitHub"): # do not copy when destination is development folder
                 F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programm")
                 try:
                     logging.debug("Update pyMobaLedLib from Github -delete folder:"+ workbookpath3+"/LEDs_AutoProg")
@@ -476,7 +575,14 @@ class CUserForm_Options:
         self.right_frame=tk.Frame(frame,relief=tk.RIDGE)
         
         if LeftArduino:
-            self.Button_Setup(frame,M09.Get_Language_Str("USB Port erkennen"),self.__Detect_LED_Port_Button_Click,"U",Row=0)
+            
+            WLAN_device =  InStr(P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL), 'WLAN') > 0
+            if WLAN_device:
+                self.Button_Setup(frame,M09.Get_Language_Str("IP Adresse suchen"),self.__Detect_LED_Port_Button_Click,"U",Row=0)
+                self.Button_Setup(frame,M09.Get_Language_Str("IP Adresse eingeben"),self.__Detect_LED_IP_Button_Click,"U",Row=1)
+            else:
+                self.Button_Setup(frame,M09.Get_Language_Str("USB Port erkennen"),self.__Detect_LED_Port_Button_Click,"U",Row=0)
+                        
             #self.Button_Setup(M09.Get_Language_Str("Version lesen"),self.CommandButton4_,"U",Row=2)
             side="_L"
             self.Autodetect_Typ_L_CheckBox_var = tk.IntVar(master=self.top)
@@ -505,8 +611,10 @@ class CUserForm_Options:
                             continue
                 except BaseException as e:
                     logging.error(e, exc_info=True)
+                
+                rb_command = self.radiobuttons[rb].get("command", None)
          
-                rbutton=tk.Radiobutton(self.right_frame, text=rb_text, variable=self.rb_res.get(side), value=self.radiobuttons[rb]["value"])
+                rbutton=tk.Radiobutton(self.right_frame, text=rb_text, variable=self.rb_res.get(side), value=self.radiobuttons[rb]["value"], command=rb_command)
                 row = self.radiobuttons[rb]["value"]
                 if row > 3:
                     row+=1
@@ -600,8 +708,14 @@ class CUserForm_Options:
             self.tabdict[Bootloader_frame_Name] = Bootloader_frame
             self.container.add(Bootloader_frame, text=Bootloader_frame_Name)
             
-            self.Button_Setup(Bootloader_frame,M09.Get_Language_Str("Schnellen Bootloader"),self.__FastBootloader_Button_Click,"",Row=0,label_text="Installiert den schnellen Bootloader auf dem linken Arduino.")
             
+            WLAN_inst =  InStr(P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL), 'WLAN') > 0
+            if WLAN_inst:
+                self.Button_Setup(Bootloader_frame,M09.Get_Language_Str("WLAN-Pico Konfig"),self.__WLAN_Pico_Button_Click,"",Row=0,label_text="Öffnet die Konfigurationswebseite des WLAN-Picos")
+                #self.Button_Setup(Bootloader_frame,M09.Get_Language_Str("WLAN-Pico\nFirmware-Update"),self.__WLAN_Pico_FUpdate_Button_Click,"",Row=1,label_text="Öffnet die Firmwareupdatewebseite des WLAN-Picos")
+            else:
+                self.Button_Setup(Bootloader_frame,M09.Get_Language_Str("Schnellen Bootloader"),self.__FastBootloader_Button_Click,"",Row=0,label_text="Installiert den schnellen Bootloader auf dem linken Arduino.")
+                                
         
         self.lower_Button_frame = tk.Frame(self.top)
         self.lower_Button_frame.grid(row=2,column=0)

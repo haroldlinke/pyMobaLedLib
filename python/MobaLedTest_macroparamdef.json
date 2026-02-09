@@ -530,6 +530,39 @@
         "Hint": "",
         "Implementation comment": ""
     },
+    "IPUploadTimeout": {
+        "ParName": "IPUploadTimeout",
+        "Cnt": "1",
+        "Type": "",
+        "ConfigName": "IPUploadTimeout",
+        "Min": "10",
+        "Max": "255",
+        "Default": "10",
+        "Input Text": "IP Upload Timeout",
+        "Hint": "Timeout for IP Upload in Sec"
+    },
+    "UseHostAdapter": {
+        "ParName": "UseHostAdapter",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "UseHostAdapter",
+        "Min": "0",
+        "Max": "255",
+        "Default": "255",
+        "Input Text": "IP mDNS: Use Host Adapter",
+        "Hint": "Send mDNS Multicast via Hostadapter only"
+    },
+    "CheckVersion": {
+        "ParName": "CheckVersion",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "CheckVersion",
+        "Min": "0",
+        "Max": "255",
+        "Default": "255",
+        "Input Text": "Check for Updates",
+        "Hint": "Check for pyMLL updates"
+    },
     "Language": {
         "ParName": "Language",
         "Cnt": "1",
@@ -579,10 +612,11 @@
         "ParName": "LEDColourCorrection",
         "Cnt": "",
         "Type": "Multipleparams",
+        "ParamLabelWidth": "15",
         "Min": "",
         "Max": "",
         "Default": "",
-        "Input Text": "LED-Farbkorrektur",
+        "Input Text": "LED-\nFarbkorrektur",
         "Hint": "LED-Farbkorrektur",
         "Implementation comment": "",
         "MultipleParams": [
@@ -704,11 +738,200 @@
         "Hint": "Definiert die Wartezeit zwischen zwei Abfragen der Taster am ARDUINO (x 100ms) - Standard = 1 entspricht 100ms",
         "Implementation comment": ""
     },
+    
+    "RFCompCol":{
+        "ParName": "RFCompCol",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Persistent": "True",
+        "Values": [
+            "0",
+            "2",
+            "3",
+            "4",
+            "7",
+            "8",
+            "9",
+            "11",
+            "12",
+            "13",
+            "14"
+        ],
+        "ValuesText": [
+            "     ",
+            "Aktiv",
+            "Filter",
+            "Adresse",
+            "Beschreibung",
+            "Verteiler",
+            "Stecker",
+            "Name",
+            "Macro",
+            "Start LED",
+            "LEDs"
+        ],
+        "ConfigName": [
+            "RFCompCol",
+            "RFCompColNumber"
+        ],
+        "Hide": "",
+        "NoLabel":"True",
+        "ParamLabelWidth": "12",
+        "ParamEntryWidth": "11",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Spalte",
+        "Hint": "Spalte"
+        },
+        
+    "RFCompOperator":{
+        "ParName": "RFCompOperator",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Persistent": "True",
+        "Values": [
+            "Gleich",
+            "Ungleich",
+            "Beginnt mit",
+            "Endet mit",
+            "Enthält"
+        ],
+        "ValuesText": [
+            "Gleich",
+            "Ungleich",
+            "Beginnt mit",
+            "Endet mit",
+            "Enthält"
+        ],
+        "ConfigName": [
+            "RFCompOperator",
+            "RFCompOperatorNumber"
+        ],
+        "Hide": "",
+        "NoLabel":"True",
+        "ParamLabelWidth": "12",
+        "ParamLabelHeight": "2",
+        "ParamEntryWidth": "11",
+        "ParamEntryHeight": "1",
+        "Min": "0",
+        "Max": "255",
+        "Default": "Gleich",
+        "Input Text": "Vergleichs-\noperator",
+        "Hint": "Vergleichsoperator"
+        },
+        
+    "RFCompValue": {
+        "ParName": "RFCompValue",
+        "Cnt": "1",
+        "Type": "String",
+        "Persistent": "True",
+        "NoLabel":"True",
+        "ParamLabelWidth": "12",
+        "ParamLabelHeight": "2",
+        "ParamEntryWidth": "12",
+        "ParamEntryHeight": "1",
+        "Min": "1",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Vergleichs\nwert",
+        "Hint": "Eingabe eines Vergleichswertes",
+        "Implementation comment": ""
+    },
+    
+   "RFResult":{
+        "ParName": "RFResult",
+        "Cnt": "1",
+        "Type": "Combo",
+        "Persistent": "True",
+        "Values": [
+            "0",
+            "1",
+            "2"
+        ],
+        "ValuesText": [
+            "    ",
+            "UND nächste Zeile",
+            "ODER nächste Zeile"
+        ],
+        "ConfigName": [
+            "RFVergleich",
+            "RFVergleichNumber"
+        ],
+        "Hide": "",
+        "NoLabel":"True",
+        "ParamLabelWidth": "15",
+        "ParamLabelHeight": "2",
+        "ParamEntryWidth": "15",
+        "ParamEntryHeight": "1",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Verknüpfung",
+        "Hint": "Verknüpfung mit der nächsten Zeile mit: UND, ODER - Die Farbe der nächsten Zeile wird übernommen"
+        },
+    
+    "RFColor": {
+        "ParName": "RFColor",
+        "Cnt": "1",
+        "Type": "ChooseColor",
+        "ParamLabelWidth": "10",
+        "ParamLabelHeight": "1",
+        "ParamEntryWidth": "10",
+        "ParamEntryHeight": "1",
+        "Persistent": "True",
+        "Min": "1",
+        "Max": "255",
+        "Default": "#FFFFFF",
+        "Input Text": "Farbe",
+        "Hint": "Zeilenfarbe",
+        "Implementation comment": ""
+    },
+    
+    "RFColorRow": {
+        "ParName": "RFColorRow",
+        "Cnt": "1",
+        "Type": "Checkbutton",
+        "ConfigName": "RFColorRow",
+        "ParamLabelWidth": "5",
+        "NoLabel":"True",
+        "Min": "0",
+        "Max": "255",
+        "Default": "",
+        "Input Text": "Ganze\nZeile",
+        "Hint": "Ganze Zeile färben"
+    },
+    
+    "RowFormatInput": {
+        "ParName": "RowFormatInput",
+        "Cnt": "",
+        "Type": "Multipleparams",
+        "ParamLabelWidth": "14",
+        "ParamLabelHeight": "2",
+        "Min": "",
+        "Max": "",
+        "Repeat": "64",
+        "Default": "",
+        "Input Text": "Bedingungen für Zeilenfarben",
+        "Hint": "Bedingungen für Zeilenfarben",
+        "ValueChangeEvent": "True",
+        "Implementation comment": "",
+        "MultipleParams": [
+            "RFCompCol",
+            "RFCompOperator",
+            "RFCompValue",
+            "!RFResult",
+            "RFColorRow",
+            "RFColor"
+        ]
+    },
+    
     "ShowProgramGenerator": {
         "ParName": "ShowProgramGenerator",
         "Cnt": "1",
         "Type": "Checkbutton",
         "ConfigName": "ShowProgramGenerator",
+        "ParamLabelWidth": "25",
         "Min": "0",
         "Max": "255",
         "Default": "",
@@ -720,6 +943,7 @@
         "Cnt": "1",
         "Type": "Checkbutton",
         "ConfigName": "ShowPatternGenerator",
+        "ParamLabelWidth": "25",
         "Min": "0",
         "Max": "255",
         "Default": "",
@@ -731,10 +955,11 @@
         "Cnt": "1",
         "Type": "Checkbutton",
         "ConfigName": "ShowZ21Simulator",
+        "ParamLabelWidth": "25",
         "Min": "0",
         "Max": "255",
         "Default": "",
-        "Input Text": "Z21 Simulator anzeigen (Test)",
+        "Input Text": "Z21 Simulator anzeigen",
         "Hint": "Die Z21-Simulator-Seite wird nach Neustart angezeigt"
     },
     "ShowHiddentables": {
@@ -742,6 +967,7 @@
         "Cnt": "1",
         "Type": "Checkbutton",
         "ConfigName": "ShowHiddentables",
+        "ParamLabelWidth": "25",
         "Min": "0",
         "Max": "255",
         "Default": "",
@@ -757,7 +983,7 @@
         "Default": "1",
         "Hide": "True",
         "Input Text": "Icon Größe (%)",
-        "Hint": "Defintion der Icomgröße im PG in % (100% = Normal)",
+        "Hint": "Defintion der Icomgröße im PG in % (100% = Normal) - (nach Neustart)",
         "Implementation comment": ""
     },
     

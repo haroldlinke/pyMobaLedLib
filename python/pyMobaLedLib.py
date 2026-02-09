@@ -50,8 +50,88 @@
 # CHANGELOG:
 # 2020-12-23 v4.01 HL: - Inital Version converted by VB2PY based on MLL V3.1.0
 # 2021-01-07 v4.02 HL: - Else:, ByRef check done - first PoC release
-# 2021-01-08 V4.03 HL: - added Workbook Save and Load
+# 2021-01-08 V4.03 HL: - added Workbook Save and Load 
+
+import importlib
+import subprocess
 import sys
+import logging.config
+import json
+#from logger.logger_setup import setup_logging
+def insertZipModule(modulename):
+    try:
+        sys.path.insert(0, modulename)
+    except:
+        print("insertZipModule: Error insert Zipfile:"+modulename)
+
+insertZipModule("tksheet.zip")
+insertZipModule("openpyxl.zip")
+insertZipModule("PIL.zip")
+insertZipModule("serial.zip")
+
+def ensure_module(module_name):
+    try:
+        importlib.import_module(module_name)
+        print(f"Module '{module_name}' is installed.")
+    except ImportError:
+        print(f"Module '{module_name}' is not installed.")
+        choice = 'y' #input(f"Do you want to install '{module_name}' now? [y/n]: ").strip().lower()
+        if choice == 'y':
+            try:
+                print("Installation:", module_name)
+                subprocess.check_call([sys.executable, "-m", "pip", "install", module_name])
+                print(f" Successfully installed '{module_name}'.")
+            except subprocess.CalledProcessError:
+                print(f"Failed to install '{module_name}'. Please install it manually.")
+        else:
+            print(f"Failed to install '{module_name}'. Please install it manually.")
+            print("🚪 Exiting program.")
+            sys.exit(1)
+
+
+# Make sue that TK-Inter is installed
+
+ensure_module("tkinter")
+
+import tkinter as tk
+from tkinter import ttk,messagebox,filedialog, colorchooser
+
+def ensure_module_tk(module_name, pip_name=None):
+    if pip_name is None:
+        pip_name = module_name  # Default to same name if not specified
+    try:
+        importlib.import_module(module_name)
+        print(f"Module '{module_name}' is installed.")
+        return
+    except ImportError:
+        pass
+    try:
+        root = tk.Tk()
+        root.withdraw()  # Hide the main window
+        response = messagebox.askyesno(
+            "Missing Module",
+            f"The module '{module_name}' is not installed.\nDo you want to install it now?"
+        )
+        if response:
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", pip_name])
+                messagebox.showinfo("Installation Complete", f"'{pip_name}' has been successfully installed.")
+            except subprocess.CalledProcessError:
+                messagebox.showerror("Installation Failed", f"Failed to install '{pip_name}'. Please try manually.")
+        else:
+            messagebox.showinfo("Installation cancelled", f"Failed to install '{pip_name}'. Please try manually.")
+            sys.exit(1)
+    except:
+        print("Error in ensure module")
+        return
+
+ensure_module_tk("PIL", "Pillow")  # PIL is imported, Pillow is installed
+ensure_module_tk("keyboard")
+ensure_module_tk("openpyxl")
+ensure_module_tk("serial", "pyserial")
+ensure_module_tk("serial.tools", "pyserial")
+#ensure_module_tk("zeroconf")
+
 import os
 import urllib
 import hashlib
@@ -63,11 +143,10 @@ module_directory = os.path.dirname(module_path)  # Directory containing the modu
 sys.path.append(module_directory)
 from vb2py.vbconstants import vbQuestion, vbYesNo, vbYes, vbInformation
 
-import tkinter as tk
-from tkinter import ttk,messagebox,filedialog, colorchooser
 from mlpyproggen.configfile import ConfigFile
 from mlpyproggen.dictFile import readDictFromFile, saveDicttoFile
 from mlpyproggen.ConfigurationPage import ConfigurationPage
+from mlpyproggen.ProgGenConfigPage import ProgGenConfigPage
 from mlpyproggen.ARDUINOConfigPage import ARDUINOConfigPage
 from mlpyproggen.SerialMonitorPage import SerialMonitorPage, SerialThread
 from mlpyproggen.ColorCheckPage import ColorCheckPage
@@ -87,14 +166,15 @@ from mlpyproggen.StartPage import StartPage
 from mlpyproggen.SoundCheckPage import SoundCheckPage
 from mlpyproggen.tooltip import Tooltip
 from mlpyproggen.DefaultConstants import COLORCOR_MAX, CONFIG2PARAMKEYS, DEFAULT_CONFIG, DEFAULT_PARAM,LARGE_FONT, SMALL_FONT, VERY_LARGE_FONT, PROG_VERSION, DATA_VERSION, ProgGen_Min_Data_Version, Pattgen_Min_Data_Version, SIZEFACTOR,\
-PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1,SerialIF_teststring2, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ,DEBUG
+PARAM_FILENAME, CONFIG_FILENAME, DISCONNECT_FILENAME, CLOSE_FILENAME, FINISH_FILE, PERCENT_BRIGHTNESS, TOOLTIPLIST, SerialIF_teststring1,SerialIF_teststring2, SerialIF_teststring3, MACRODEF_FILENAME, MACROPARAMDEF_FILENAME,LOG_FILENAME, ARDUINO_WAITTIME, COLORTESTONLY_FILE,BLINKFRQ,DEBUG
 from scrolledFrame.ScrolledFrame import ScrolledFrame
 from tkcolorpicker.spinbox import Spinbox
 from tkcolorpicker.limitvar import LimitVar
 from tkcolorpicker.functions import hsv_to_rgb, hexa_to_rgb, rgb_to_hexa, rgb_to_hsv
+import proggen.M06_Write_MLLConfig as M06cfg
 import platform
 import traceback
-
+import mlpyproggen.Prog_Generator as PG
 import ExcelAPI.XLA_Application as P01
 from mlpyproggen.tooltip import Tooltip_Canvas
 
@@ -119,6 +199,11 @@ import proggen.M37_Inst_Libraries as M37
 import proggen.M30_Tools as M30
 import proggen.F00_mainbuttons as F00
 import proggen.M09_Language as M09
+try:
+    import telnetlib
+    import_telnetlibok = True
+except:
+    import_telnetlibok = False
 
 # --- Translation - not used
 EN = {}
@@ -163,8 +248,8 @@ def _T(text):
 # ------------------------------
 
 
-tabClassList_all = ( StartPage, ARDUINOMonitorPage,Prog_GeneratorPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
-tabClassList_all_proggen = ( StartPage, ARDUINOMonitorPage,Prog_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
+tabClassList_all = ( StartPage, ARDUINOMonitorPage,Prog_GeneratorPage, ProgGenConfigPage, Pattern_GeneratorPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage) #, ProgGenConfigPage)
+tabClassList_all_proggen = ( StartPage, ARDUINOMonitorPage,Prog_GeneratorPage, ProgGenConfigPage, ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage) #, ProgGenConfigPage)
 tabClassList_mll_only = ( StartPage, ARDUINOMonitorPage,ColorCheckPage, SoundCheckPage, DCCKeyboardPage, ServoTestPage1, ServoTestPage2, Z21MonitorPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 tabClassList_SetColTab = (ColorCheckPage, SerialMonitorPage, ARDUINOConfigPage, ConfigurationPage)
 
@@ -184,16 +269,21 @@ defaultStartPage = "ColorCheckPage"
 
 ThreadEvent = None
 
+global_controller = None
+
+
+
 # ----------------------------------------------------------------
 # Class LEDColorTest
 # ----------------------------------------------------------------
 
-class pyMobaLedLibapp(tk.Tk):
-    
+class pyMobaLedLibapp(tk.Tk):    
     # ----------------------------------------------------------------
-    # LEDColorTest __init__
+    # 
     # ----------------------------------------------------------------
     def __init__(self, *args, **kwargs):
+        global global_controller
+        global_controller = self
         self.detailed_debug_on = False
         self.arduino = None
         self.mainfile_dir = os.path.dirname(os.path.realpath(__file__))
@@ -206,6 +296,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.loaddatafile = COMMAND_LINE_ARG_DICT["loaddatafile"]!="False"
         self.logfilename =  COMMAND_LINE_ARG_DICT["logfilename"]
         self.useARDUINO_IDE = COMMAND_LINE_ARG_DICT.get("useARDUINO_IDE", False)
+        self.UseConfig = COMMAND_LINE_ARG_DICT.get("UseConfig", False)
         self.useESP32WinBat = COMMAND_LINE_ARG_DICT.get("useESP32WINBAT", False)
         self.execute_upload = True
         self.coltab = None
@@ -213,6 +304,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.ledhighlight = False
         #self.bind("<Configure>", self.on_resize)
         self.oldTabName = ""
+        self.tooltip_var_dict = {}
         
         self.show_colorcheckpage_only = caller_setcoltab
         self.show_setcoltab_save_button = caller_setcoltab or not self.colortest_only
@@ -288,12 +380,14 @@ class pyMobaLedLibapp(tk.Tk):
         self.fontbutton = self.get_font("FontLabel")
         self.fontentry = self.get_font("FontLabel")
         self.fonttext = self.get_font("FontText")
+        if not self.colortest_only:
+            self.check_version()        
         
         self.fontpattgen_sizenormal = int(self.getConfigData("FontNormal")/ScaleFactor)
         self.fontpattgen_sizelarge = int(self.getConfigData("FontLarge")/ScaleFactor)
         self.fontpattgen_sizesmall = int (self.getConfigData("FontSmall")/ScaleFactor)
         
-        logging.debug("Font sizenormal: %s sizelarge: %s sizesmall: %s",self.fontpattgen_sizenormal,self.fontpattgen_sizelarge, self.fontpattgen_sizesmall)
+        logger.debug("Font sizenormal: %s sizelarge: %s sizesmall: %s",self.fontpattgen_sizenormal,self.fontpattgen_sizelarge, self.fontpattgen_sizesmall)
         
         self.fontpattgen_name = self.getConfigData("FontName")
         self.defaultfontnormal = (self.fontpattgen_name, self.fontpattgen_sizenormal)
@@ -325,6 +419,8 @@ class pyMobaLedLibapp(tk.Tk):
         self.currentTabClass = ""
         self.maxLEDcnt = self.getConfigData("MaxLEDcnt")
         self.waittime_int = -1
+        self.waittime_slowmode = False
+        self.IPUploadTimeout = self.getConfigData("IPUploadTimeout")
         self.paramDataChanged = False
         self.palette = {}
         self.connection_startup = False
@@ -359,7 +455,7 @@ class pyMobaLedLibapp(tk.Tk):
 
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        logging.debug("Screenwidht: %s Screenheight: %s ScaleFactor: %s",screen_width,screen_height, ScaleFactor)
+        logger.debug("Screenwidht: %s Screenheight: %s ScaleFactor: %s",screen_width,screen_height, ScaleFactor)
 
         if screen_width< 1920:
             SIZEFACTOR_width = screen_width/1280
@@ -383,8 +479,8 @@ class pyMobaLedLibapp(tk.Tk):
         
         
             
-        logging.debug("Windowwidth: %s Windowheight: %s",self.window_width,self.window_height)
-        logging.debug("pos_x: %s pos_y: %s",self.pos_x,self.pos_y)
+        logger.debug("Windowwidth: %s Windowheight: %s",self.window_width,self.window_height)
+        logger.debug("pos_x: %s pos_y: %s",self.pos_x,self.pos_y)
         
         if self.getConfigData("pos_x") < screen_width and self.getConfigData("pos_y") < screen_height:
             self.geometry('%dx%d+%d+%d' % (self.window_width,self.window_height,self.pos_x, self.pos_y))
@@ -448,6 +544,7 @@ class pyMobaLedLibapp(tk.Tk):
         arduinomenu.add_command(label="Verbinden", command=self.ConnectArduino)
         arduinomenu.add_command(label="Trennen", command=self.DisconnectArduino)
         arduinomenu.add_command(label="Alle LED aus", command=self.SwitchoffallLEDs)
+        arduinomenu.add_command(label="Download Konfig (Experimental)", command=self.DownloadConfig)
         
         #optionsmenu = tk.Menu(menu)
         #menu.add_cascade(label="Optionen", menu=optionsmenu)
@@ -572,7 +669,7 @@ class pyMobaLedLibapp(tk.Tk):
         
         if COMMAND_LINE_ARG_DICT.get("vb2py",False)==True:
             self.arg_test = True
-            tabClassList += (VB2PYPage, TestPage, StellwerkPage, StellwerkEditPage)
+            tabClassList += (VB2PYPage, TestPage, StellwerkPage, StellwerkEditPage, ProgGenConfigPage)
         else:
             self.arg_test = False
             
@@ -662,7 +759,7 @@ class pyMobaLedLibapp(tk.Tk):
             messagestring+=line
         messagebox.showerror('Exception',messagestring)
         #print("Tkinter Exception:",messagestring)
-        logging.debug("Tkinter Exception:\n"+messagestring)
+        logger.debug("Tkinter Exception:\n"+messagestring)
         if DEBUG and not "Error in Dialog" in line:
             raise
         
@@ -672,6 +769,54 @@ class pyMobaLedLibapp(tk.Tk):
         else:
             data_changed = False
         return self.paramDataChanged or data_changed
+    
+    def check_version(self, exec_update=False):
+        
+        # compares the current version with the version in github
+        # string on github:
+        #      Version = "V7.0.0-A0 - 22.7.2025"
+        # versionstring in the program:
+        #      "V7.0.0-A0 - 22.7.2025"
+        
+        if not self.getConfigData("CheckVersion"):
+            return
+        
+        Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version.py"
+        try:
+            response = urllib.request.urlopen(Version_URL)
+            version_str = response.read().decode('utf-8')
+        except:
+            version_str = ""
+            
+        if version_str != "":
+            # extract version string from github string
+            version_str_split = version_str.split('"')
+            comp_version_str = version_str_split[1]
+            
+            #extract Main version from version string: "V7.0.0"
+            comp_version_str_split = comp_version_str.split("-")
+            comp_version_str = comp_version_str_split[0]
+            
+            comp_prog_version_split = PROG_VERSION.split("-")
+            comp_prog_version = comp_prog_version_split[0]
+            
+            if not exec_update:
+                if comp_version_str > comp_prog_version:
+                    answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen:\n\nHilfe->Update pyMobaLedLib")
+            else:
+                if comp_version_str > comp_prog_version:
+                    answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
+                    if answer == False:
+                        return
+                    else:
+                        self.Update_pyMobaLedLib() 
+                else:
+                    answer = tk.messagebox.askyesno ('Check pyMLL Version','Es gibt keine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\n\nSoll die aktuelle Version nochmal heruntergeladen werden?")
+                    if answer == False:
+                        return
+                    else:
+                        self.Update_pyMobaLedLib()                    
+        return    
 
     def get_font(self,fontname):
         font_size = self.getConfigData(fontname)
@@ -768,7 +913,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.check_version(exec_update=True)
         
     def OpenLogFile(self):
-        logging.debug("Open logfile: %s",self.logfilename)
+        logger.debug("Open logfile: %s",self.logfilename)
         dst = self.logfilename + ".tmp.log"     # logfile is locked by logger, open a copy with the os specific viewer
         shutil.copyfile(self.logfilename, dst)
         #subprocess.run(dst, shell=True)
@@ -807,6 +952,10 @@ class pyMobaLedLibapp(tk.Tk):
             message = "#L 00 00 00 00 7FFF\n"          
         #message = "#L00 00 00 00 FF\n"
         self.send_to_ARDUINO(message)
+        
+    def DownloadConfig(self):
+        # switch off all LED
+        M06cfg.download_from_Pico()
 
     def update_library(self):
         M37.Update_MobaLedLib_from_Arduino_and_Restart_Excel()
@@ -847,7 +996,7 @@ class pyMobaLedLibapp(tk.Tk):
         if temp_dict:
             temp_led_effect_table = temp_dict.get("ledeffecttable",{}) 
             if self.ledeffecttable.keys() != temp_led_effect_table.keys(): # check if the read led list has the corect keys
-                logging.debug("Error in led list file %s - %s",filepath,temp_led_effect_table.keys())
+                logger.debug("Error in led list file %s - %s",filepath,temp_led_effect_table.keys())
                 messagebox.showerror("Led List file incorrect format","Led List file could not be opened, incorrect format")
             else:
                 self.ledeffecttable.set_table(temp_led_effect_table)
@@ -865,11 +1014,11 @@ class pyMobaLedLibapp(tk.Tk):
     #  cancel_with_save
     # ----------------------------------------------------------------
     def cancel_step2_with_save(self):
-        logging.debug("Cancel_with_save2")
+        logger.debug("Cancel_with_save2")
         self.setConfigData("pos_x", self.winfo_x())
         self.setConfigData("pos_y", self.winfo_y())
         self.setConfigData("lastactive_tabname", self.lastactive_tabname)
-        logging.debug("Cancel_Save_Data: pos_x=%s pos_y=%s",self.winfo_x(), self.winfo_y())
+        logger.debug("Cancel_Save_Data: pos_x=%s pos_y=%s",self.winfo_x(), self.winfo_y())
         self.save_persistent_params()
         self.SaveConfigData()
         self.SaveParamData()
@@ -885,7 +1034,7 @@ class pyMobaLedLibapp(tk.Tk):
         self.close_notification()
         
     def cancel_step2_without_save(self):
-        logging.debug("Cancel_without_save2")
+        logger.debug("Cancel_without_save2")
         for wb in P01.Workbooks:
             wb.Evt_Workbook_BeforeClose()
         self.close_notification()           
@@ -894,7 +1043,7 @@ class pyMobaLedLibapp(tk.Tk):
     #  cancel_with_save
     # ----------------------------------------------------------------
     def cancel_with_save(self):
-        logging.debug("Cancel_with_save")
+        logger.debug("Cancel_with_save")
         self.set_connectstatusmessage("Closing program...",fg="red")
         self.shutdown_frame.tkraise()
         self.update()        
@@ -909,7 +1058,7 @@ class pyMobaLedLibapp(tk.Tk):
     #  cancel_without_save
     # ----------------------------------------------------------------
     def cancel_without_save(self):
-        logging.debug("Cancel_without_save")
+        logger.debug("Cancel_without_save")
         self.set_connectstatusmessage("Closing program...",fg="red")
         #i=0
         #for key in self.tabdict:
@@ -926,7 +1075,7 @@ class pyMobaLedLibapp(tk.Tk):
     #  cancel
     # ----------------------------------------------------------------
     def cancel(self):
-        logging.debug("Cancel")
+        logger.debug("Cancel")
         if self.check_data_changed():
             answer = tk.messagebox.askyesnocancel ('Das Programm wird beendet','Daten wurden verändert. Sollen die Daten gesichert werden?',default='no')
             if answer == None:
@@ -943,7 +1092,7 @@ class pyMobaLedLibapp(tk.Tk):
     #  update program
     # ----------------------------------------------------------------
     def exec_update(self, extract_to, target_dir):
-        logging.debug("Restart requested")
+        logger.debug("Restart requested")
         answer = tk.messagebox.askyesnocancel ('Das Programm wird beendet um den Installationsprozess abzuschliessen','Daten wurden verändert. Sollen die Daten gesichert werden?',default='no')
         if answer == None:
             return # no cancelation
@@ -952,9 +1101,9 @@ class pyMobaLedLibapp(tk.Tk):
         else:
             self.cancel_without_save()
         #restart program
-        logging.debug("Exec Update")
+        logger.debug("Exec Update")
         subprocess.run(['python', '../update_replacer.py', extract_to, target_dir])
-        #logging.debug("sys.executable: %s, sys.argv: %s", sys.executable, repr(sys.argv))
+        #logger.debug("sys.executable: %s, sys.argv: %s", sys.executable, repr(sys.argv))
         #os.execv(sys.executable, ["python"] + sys.argv)
         
         #############################################
@@ -963,7 +1112,7 @@ class pyMobaLedLibapp(tk.Tk):
     #  update program
     # ----------------------------------------------------------------
     def restart(self):
-        logging.debug("Restart requested")
+        logger.debug("Restart requested")
         answer = tk.messagebox.askyesnocancel ('Das Programm wird beendet um den Installationsprozess abzuschliessen','Daten wurden verändert. Sollen die Daten gesichert werden?',default='no')
         if answer == None:
             return # no cancelation
@@ -972,9 +1121,9 @@ class pyMobaLedLibapp(tk.Tk):
         else:
             self.cancel_without_save()
         #restart program
-        logging.debug("Restart")
+        logger.debug("Restart")
         #subprocess.run(['python', '../update_replacer.py', extract_to, target_dir])
-        logging.debug("sys.executable: %s, sys.argv: %s", sys.executable, repr(sys.argv))
+        logger.debug("sys.executable: %s, sys.argv: %s", sys.executable, repr(sys.argv))
         os.execv(sys.executable, ["python"] + sys.argv)
         
         #############################################
@@ -982,7 +1131,7 @@ class pyMobaLedLibapp(tk.Tk):
 
 
     def close_notification(self):
-        logging.debug("Close_notification")
+        logger.debug("Close_notification")
         for key in self.tabdict:
             self.tabdict[key].cancel()
         self.setConfigData("pos_x", self.winfo_x())
@@ -995,7 +1144,7 @@ class pyMobaLedLibapp(tk.Tk):
             pass
         self.disconnect()
         self.continueCheckDisconnectFile = False
-        logging.debug("Destroy")
+        logger.debug("Destroy")
         self.destroy()        
         
     # ----------------------------------------------------------------
@@ -1025,7 +1174,7 @@ class pyMobaLedLibapp(tk.Tk):
             self.current_tab = newtab
             self.lastactive_tabname = newtab.tabClassName
             newtab.tabselected()
-        logging.debug("TabChanged %s - %s",self.oldTabName,newtab_name)
+        logger.debug("TabChanged %s - %s",self.oldTabName,newtab_name)
 
     # ----------------------------------------------------------------
     # setParamDataChanged
@@ -1039,23 +1188,23 @@ class pyMobaLedLibapp(tk.Tk):
     def startup_system(self):
         if True: #self.getConfigData("autoconnect"):
             port_name = self.getConfigData("serportname")
-            logging.debug("Portname: "+ str(port_name))
+            logger.debug("Portname: "+ str(port_name))
             if P01.checkplatform("Darwin"):
-                logging.debug("startup-system: MAC - no NO DEVICE check")
+                logger.debug("startup-system: MAC - no NO DEVICE check")
                 self.connect()
             else:
                 if port_name.upper() == "NO DEVICE" or port_name=="":
-                    logging.debug("startup-system: NO DEVICE  handling")
+                    logger.debug("startup-system: NO DEVICE  handling")
                     macrodata = self.MacroDef.data.get("StartPage")
                     msg_no_device_title = macrodata.get("MSG_NO_DEVICE_title","")
                     msg_no_device = macrodata.get("MSG_NO_DEVICE","")
                     answer = tk.messagebox.askyesnocancel (msg_no_device_title, msg_no_device, default='no')
-                    logging.debug("Portname: No DEVICE question - answer:"+ str(answer))
+                    logger.debug("Portname: No DEVICE question - answer:"+ str(answer))
                     if answer == None:
                         return
                     
                     if answer==True:
-                        logging.debug("pyMobaLedLib.startup_system: Show_USB_Port_Dialog")
+                        logger.debug("pyMobaLedLib.startup_system: Show_USB_Port_Dialog")
                         ComPortColumn = M25.COMPort_COL
                         ComPort=" "
                         res, ComPort= M07New.Show_USB_Port_Dialog(ComPortColumn, ComPort) 
@@ -1099,8 +1248,8 @@ class pyMobaLedLibapp(tk.Tk):
             self.ARDUINO_boardtype = ""
             
         # Output results
-        logging.debug("ARDUINO Version Number:"+ str(self.ARDUINO_version))
-        logging.debug("ARDUINO Type String:" + self.ARDUINO_boardtype)
+        logger.debug("ARDUINO Version Number:"+ str(self.ARDUINO_version))
+        logger.debug("ARDUINO Type String:" + self.ARDUINO_boardtype)
         
         self.mobaledlib_version = self.ARDUINO_version
         
@@ -1122,15 +1271,69 @@ class pyMobaLedLibapp(tk.Tk):
             # maxLEDcnt = sum of all maxLEDcnt per channel
             for i in range (0,self.max_LEDchannel):
                 maxLEDcnt+=int(self.max_ledcnt_list[i])
-                logging.debug("ARDUINO LED-Channel: %s Leds: %s", i, self.max_ledcnt_list[i])
+                logger.debug("ARDUINO LED-Channel: %s Leds: %s", i, self.max_ledcnt_list[i])
         self.set_maxLEDcnt(maxLEDcnt)        
         return
     
+    def connectIP(self, IPAdresse=None):
+        logger.debug("connectIP %s",IPAdresse)
+        if IPAdresse != None and IPAdresse != "":
+            
+            self.set_connectstatusmessage("Versuch sich mit dem PICO- IP: "+ IPAdresse + " zu verbinden ...",fg="red")
+            self.update()
+            try:
+                host = IPAdresse
+                port = 23  # Standard-Telnet-Port
+                self.arduino = telnetlib.Telnet(host, port, timeout=5)
+                self.arduino.write(b'#?\n')
+                logger.debug ("Connect: send #?")
+                
+                antwort = self.arduino.read_until(b"\n")
+                txt = antwort.decode()
+                logger.debug("Connect Linesread: %s ",txt)
+                pos = txt.find(SerialIF_teststring1)
+                if pos != -1:
+                    pos = pos + 2 # jump over "#?"
+                else:
+                    pos = txt.find(SerialIF_teststring3)
+                if pos != -1:
+                    pos2 = txt.find('\n',pos)
+                    if pos2 != -1:
+                        self.ARDUINO_IP = True
+                        # get the text between pos and pos2
+                        txt = txt[pos:pos2] #txt[pos+2:pos2]
+                        self.queue.put(txt)
+                        self.determine_ARDUINO_Properties_from_Startmessage(txt)
+                
+                        self.ARDUINO_current_portname = host
+                        self.arduino.portstr = host
+                        self.arduino.is_open=True
+                        
+                        for key in self.tabdict:
+                            self.tabdict[key].connect(host)
+                            
+                        if self.direct_mode_active:
+                            self.ARDUINO_begin_direct_mode()
+                        else:    
+                            self.set_connectstatusmessage("Verbunden mit "+ self.ARDUINO_current_portname + " - EFFECT Mode",fg="green")
+                        self.connection_startup = False
+                        self.connection_startup_answer = True
+                        self.ARDUINO_status = "Connected"
+                        logger.debug("Connect : %s ",txt)
+        
+                        self.send_to_ARDUINO("#X\r\n")
+            except BaseException as e:
+                logger.debug("ConnectIP: Error!! " + str(e))
+                self.set_connectstatusmessage("Nicht verbunden - Fehler",fg="black")
     
     def connect(self,port=None):
+        self.ARDUINO_IP = False
         if port == None:
             port = self.getConfigData("serportname")
-        logging.debug("connect %s",port)
+        if port.startswith("IP:"):
+            self.connectIP(IPAdresse=port[3:])
+            return
+        logger.debug("connect %s",port)
         self.ARDUINO_message = ""
         timeout_error = False
         read_error =False
@@ -1147,7 +1350,7 @@ class pyMobaLedLibapp(tk.Tk):
             self.set_connectstatusmessage("Versuch sich mit dem ARDUINO am Port "+ port + " zu verbinden ...",fg="red")
             self.update()
             # it is possible that during the update procedure the port was opened already - check again
-            if self.arduino and self.arduino.isOpen():
+            if self.arduino and self.arduino.is_open:
                 if port == self.ARDUINO_current_portname:
                     return # port already open            
             try:
@@ -1155,9 +1358,9 @@ class pyMobaLedLibapp(tk.Tk):
                 baudrate = self.getConfigData("baudrate")
                 baudrate = 115200
                 self.arduino = serial.Serial(port,baudrate=baudrate,timeout=2,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
-                logging.debug("connected to: %s Baudrate: %s", self.arduino.portstr,baudrate)
+                logger.debug("connected to: %s Baudrate: %s", self.arduino.portstr,baudrate)
             except BaseException as e:
-                logging.debug(e, exc_info=True) 
+                #logger.debug(e) 
                 #messagebox.showerror("Error connecting to the serial port " + self.getConfigData("serportname"),
                 #                     "Serial Interface to ARDUINO could not be opened!\n"
                 #                     "\n"
@@ -1197,16 +1400,16 @@ class pyMobaLedLibapp(tk.Tk):
                 #time.sleep(1)
                 pass
             except:
-                logging.debug("Connect: Error Reset ARDUINO!")
+                logger.debug("Connect: Error Reset ARDUINO!")
                 
-            logging.debug("Connect: Sleep 1 seconds")
+            logger.debug("Connect: Sleep 1 seconds")
             time.sleep(1)
-            logging.debug("Connect: continue")
+            logger.debug("Connect: continue")
             self.send_to_ARDUINO_init_buffer(immediatly=True)
             self.arduino.flush()
             self.send_to_ARDUINO("#?\r\n")
             
-            logging.debug ("Connect: send #?")
+            logger.debug ("Connect: send #?")
             self.update()
             no_of_trials = 3
             emptyline_no = 0
@@ -1220,12 +1423,12 @@ class pyMobaLedLibapp(tk.Tk):
                         #self.arduino.flush()
                         #self.send_to_ARDUINO("#?\r\n")
                         #i = i + 1
-                        #logging.debug("Connect: Flush and send #? again - Trial %s:", i)
+                        #logger.debug("Connect: Flush and send #? again - Trial %s:", i)
                     #self.update()
                     #text=""
                     #timeout_error = True
                     #text = self.arduino.readline()
-                    #logging.debug (text)
+                    #logger.debug (text)
                     #timeout_error = False
                     ## check if feedback is from MobaLedLib
                     #text_string = str(text.decode('utf-8'))
@@ -1233,12 +1436,12 @@ class pyMobaLedLibapp(tk.Tk):
                         #emptyline_no +=1
                         #if emptyline_no>2:
                             #read_error = True
-                            #logging.debug("Connect Error: %s",text_string)                            
+                            #logger.debug("Connect Error: %s",text_string)                            
                             #break
                     
                     #if not SerialIF_teststring1 in text_string:
                         #read_error = True
-                        #logging.debug("Connect Line ignored: %s",text_string)
+                        #logger.debug("Connect Line ignored: %s",text_string)
                     #else:
                         #if "MobaLedLib" in text_string:
                             #self.mobaledlib_version = 1
@@ -1246,12 +1449,12 @@ class pyMobaLedLibapp(tk.Tk):
                             #self.determine_ARDUINO_Properties_from_Startmessage(text_string)
                             #self.mobaledlib_version = self.ARDUINO_version
                         #self.queue.put(text_string)
-                        #logging.debug("Connect message: %s", text_string)
+                        #logger.debug("Connect message: %s", text_string)
                         #read_error = False
                         #break
                 #except (IOError,UnicodeDecodeError) as e:
-                    #logging.debug(e)
-                    #logging.debug("Connect Error:%s",text_string)
+                    #logger.debug(e)
+                    #logger.debug("Connect Error:%s",text_string)
                     #read_error = True
             i = 0
             start = time.time()
@@ -1265,7 +1468,7 @@ class pyMobaLedLibapp(tk.Tk):
                         txt = txt.split('\n')[-1]
         
                     txt = txt + self.arduino.read(self.arduino.in_waiting).decode(errors='ignore')
-                    logging.debug("Connect Linesread: %s ",txt)
+                    logger.debug("Connect Linesread: %s ",txt)
                     # see if txt contains #?LEDs and afterwars a \n is in txt
                     pos = txt.find(SerialIF_teststring1)
                     if pos != -1:
@@ -1280,13 +1483,13 @@ class pyMobaLedLibapp(tk.Tk):
                 if (time.time()-start) >= 1:
                     i = i + 1
                     if i > 3:
-                        logging.debug("Connect: Search string not found" )
+                        logger.debug("Connect: Search string not found" )
                         read_error = True
                         break
                     start = time.time()
                     self.arduino.write(b'#?\n')
                     
-            logging.debug("Connect : %s ",txt)
+            logger.debug("Connect : %s ",txt)
             
             self.send_to_ARDUINO("#X\r\n")
             if read_error:         
@@ -1345,7 +1548,7 @@ class pyMobaLedLibapp(tk.Tk):
     # ----------------------------------------------------------------
     def connect_Z21(self,port,dcc_adress_range):
 
-        logging.debug("connect_Z21 ", port)
+        logger.debug("connect_Z21 ", port)
         if port == self.getConfigData("serportname"):
             self.disconnect()
             self.ARDUINO_status = ""
@@ -1354,7 +1557,7 @@ class pyMobaLedLibapp(tk.Tk):
         port_dcc_data = self.serial_port_dict.get(port,{})
         if port_dcc_data != {}:
             arduino = port_dcc_data.get("ARDUINO",None)        
-            if arduino and arduino.isOpen():
+            if arduino and arduino.is_open:
                 self.disconnect_Z21(port)
                 arduino = None
 
@@ -1368,10 +1571,10 @@ class pyMobaLedLibapp(tk.Tk):
                 baudrate = self.getConfigData("baudrate")
                 baudrate = 115200
                 self.arduino = serial.Serial(port,baudrate=baudrate,timeout=2,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
-                logging.debug("connected to: %s Baudrate: %s", self.arduino.portstr,baudrate)                
+                logger.debug("connected to: %s Baudrate: %s", self.arduino.portstr,baudrate)                
 
             except BaseException as e:
-                logging.debug(e, exc_info=True) 
+                logger.debug(e, exc_info=True) 
                 messagebox.showerror("Error connecting to the serial port " + port,
                                      "Serial Interface to ARDUINO could not be opened!\n"
                                      "\n"
@@ -1396,7 +1599,7 @@ class pyMobaLedLibapp(tk.Tk):
                     self.queue.put(text_string)
                     logging.info("Connect message: %s", text_string)
             except (IOError,UnicodeDecodeError) as e:
-                logging.debug(e)                
+                logger.debug(e)                
                 read_error = True
                 
             if read_error:         
@@ -1443,7 +1646,7 @@ class pyMobaLedLibapp(tk.Tk):
     # ----------------------------------------------------------------
     def disconnect_Z21(self,port):
         self.disconnect()
-        logging.debug("disconnect Z21 serial port: %s", port)
+        logger.debug("disconnect Z21 serial port: %s", port)
         arduino = None
         port_dcc_data = self.serial_port_dict.get(port,{})
         if port_dcc_data != {}:
@@ -1459,7 +1662,7 @@ class pyMobaLedLibapp(tk.Tk):
     # LEDColorTest disconnect ARDUINO
     # ----------------------------------------------------------------
     def disconnect(self):
-        logging.debug("disconnect start")
+        logger.debug("disconnect start")
         if self.arduino:
             self.led_off()
             for key in self.tabdict:
@@ -1468,9 +1671,10 @@ class pyMobaLedLibapp(tk.Tk):
             #self.send_to_ARDUINO(message)
             message = "#X\n"
             self.send_to_ARDUINO(message)
-            logging.debug("close ARDUINO port %s",self.arduino.portstr)
+            logger.debug("close ARDUINO port %s",self.arduino.portstr)
             time.sleep(10*ARDUINO_WAITTIME)
             self.arduino.close()
+            self.arduino.is_open = False
             self.arduino = None
             self.ARDUINO_current_portname=""
             self.ARDUINO_status=""
@@ -1478,10 +1682,11 @@ class pyMobaLedLibapp(tk.Tk):
         self.set_connectstatusmessage("Nicht Verbunden",fg="black")
         
     def close_arduino_connection_after_write_error(self):
-        logging.debug("close ARDUINO port %s",self.arduino.portstr)
+        logger.debug("close ARDUINO port %s",self.arduino.portstr)
         if self.arduino:
             if self.arduino.is_open:
                 self.arduino.close()
+                self.arduino.is_open = False
                 self.arduino = None
                 self.ARDUINO_current_portname=""
                 self.ARDUINO_status=""
@@ -1489,9 +1694,9 @@ class pyMobaLedLibapp(tk.Tk):
         self.set_connectstatusmessage("Nicht Verbunden",fg="black")        
             
     def connect_if_not_connected(self, port=None):
-        logging.debug("Connect_if_not_connected")
+        logger.debug("Connect_if_not_connected")
         if self.arduino:
-            if self.arduino.isOpen():
+            if self.arduino.is_open:
                 return True
         return self.connect(port=port)
     
@@ -1502,7 +1707,7 @@ class pyMobaLedLibapp(tk.Tk):
         return False
 
     def checkconnection(self):
-        #logging.debug("Check_connection")
+        #logger.debug("Check_connection")
         textmessage = ""
         #self.connection_startup = False
         if self.connection_startup:
@@ -1559,16 +1764,16 @@ class pyMobaLedLibapp(tk.Tk):
                                 self.ARDUINO_begin_direct_mode()                            
                             break
                     except BaseException as e:
-                        logging.debug(e, exc_info=True) 
+                        logger.debug(e, exc_info=True) 
                         pass
         return textmessage
     
     def ARDUINO_begin_direct_mode(self):
         self.direct_mode_active = True
-        if self.arduino and self.arduino.isOpen():
+        if self.arduino and self.arduino.is_open:
             #self.send_to_ARDUINO_init_buffer()
             self.send_active = False
-            logging.debug("ARDUINO_Begin_direct_mode")
+            logger.debug("ARDUINO_Begin_direct_mode")
             self.set_connectstatusmessage("Verbunden "+ self.ARDUINO_current_portname + " - DIRECT Mode",fg="green")
             if self.mobaledlib_version == 1:
                 self.send_to_ARDUINO("#BEGIN\n")
@@ -1580,11 +1785,11 @@ class pyMobaLedLibapp(tk.Tk):
 
     def ARDUINO_end_direct_mode(self):
         self.direct_mode_active = False
-        if self.arduino and self.arduino.isOpen():
+        if self.arduino and self.arduino.is_open:
             self.send_active = False
             self.led_off()
             #self.send_to_ARDUINO_init_buffer()
-            logging.debug("ARDUINO_End_direct_mode")
+            logger.debug("ARDUINO_End_direct_mode")
             self.set_connectstatusmessage("Verbunden "+ self.ARDUINO_current_portname + " - EFFECT Mode",fg="green")
             if self.mobaledlib_version == 1:
                 self.send_to_ARDUINO("#END\n")
@@ -1592,17 +1797,17 @@ class pyMobaLedLibapp(tk.Tk):
                 self.send_to_ARDUINO("#X\n")
         
     def set_connectstatusmessage(self,status_text,fg="black"):
-        logging.debug("set_connectstatusmessage: %s",status_text)
+        logger.debug("set_connectstatusmessage: %s",status_text)
         self.connectstatusmessage.configure(text="Status: " + status_text,fg=fg)
         
     def set_statusmessage(self,status_text,fg="black", monitor_message=False):
-        logging.debug("set_statusmessage: %s",status_text)
+        logger.debug("set_statusmessage: %s",status_text)
         self.statusmessage.configure(text=status_text,fg=fg)
         if monitor_message:
             self.arduinoMonitorPage.add_text_to_textwindow(status_text)
 
     def set_ARDUINOmessage(self,status_text,fg="black"):
-        logging.debug("set_ARDUINOmessage %s",status_text)
+        logger.debug("set_ARDUINOmessage %s",status_text)
         #self.statusmessage.configure(text=status_text,fg=fg)
         pass
     
@@ -1611,6 +1816,7 @@ class pyMobaLedLibapp(tk.Tk):
             c = self.serial_writebuffer[0]
             self.serial_writebuffer = self.serial_writebuffer[1:]
             self.arduino.write(c.encode())
+            Debug.Print("Serial_Callback:", c.encode)
             if len(self.serial_writebuffer)>0:
                 self.after(self.waittime_int, self.send_to_ARDUINO_callback)
             else:
@@ -1633,12 +1839,13 @@ class pyMobaLedLibapp(tk.Tk):
             if self.serial_writebuffer_idx < self.serial_writebuffer_len and self.arduino != None:
                 c = self.serial_writebuffer[self.serial_writebuffer_idx]
                 if self.detailed_debug_on:
-                    logging.debug("send_to_ARDUINO_callback - write:"+c)
+                    logger.debug("send_to_ARDUINO_callback - write:"+c)
                 self.serial_writebuffer_idx += 1
                 self.arduino.write(c.encode())
-                #logging.debug("send_to_ARDUINO_callback - write: "+str(c.encode())+"-"+str(self.serial_writebuffer_len))
+                logger.debug("send_to_ARDUINO_callback - write: "+str(c.encode())+"-"+str(self.serial_writebuffer_len))
+                #print("send_to_ARDUINO_callback - write: "+str(c.encode())+"-"+str(self.serial_writebuffer_len))
                 if self.serial_writebuffer_idx < self.serial_writebuffer_len:
-                    if self.ARDUINO_has_readbuffer:
+                    if self.ARDUINO_has_readbuffer and not self.waittime_slowmode:
                         # ESP32 and Pico have a readbuffer and the complete command can be sent without a delay between the bytes sent.
                         if c != "\n":
                             self.send_to_ARDUINO_callback()
@@ -1659,9 +1866,9 @@ class pyMobaLedLibapp(tk.Tk):
             else:
                 self.send_active = False
         except BaseException as e:
-            print("Serial Error")
-            logging.debug("send_to_ARDUINO_callback - write Error")
-            logging.debug(e, exc_info=True)
+            #print("Serial Error")
+            logger.debug("send_to_ARDUINO_callback - write Error")
+            logger.debug(e, exc_info=True)
             self.close_arduino_connection_after_write_error()
             self.send_active = False
             self.send_error = True
@@ -1674,7 +1881,7 @@ class pyMobaLedLibapp(tk.Tk):
         c = chr(10)
         self.send_to_ARDUINO(c)
 
-    def send_to_ARDUINO(self, message,arduino=None,comport=None):
+    def send_to_ARDUINO(self, message,arduino=None,comport=None, slowmode=False):
         if arduino == None:
             arduino = self.arduino
         if arduino:
@@ -1692,10 +1899,19 @@ class pyMobaLedLibapp(tk.Tk):
                     if waittime < 1.0:
                         waittime = 1.0
                     self.waittime_int = round(waittime)
-                    #if self.waittime_int < 10:
-                    #    self.waittime_int = 10
+                
+                # self.waittime_slowmode = slowmode
+                # if slowmode:
+                    # if self.waittime_int < 10:
+                        # self.waittime_int = 10
+                # else:
+                    # if self.waittime_int == -1 or self.waittime_int == 10:
+                        # waittime = self.get_maxLEDcnt() * 0.02 # 20us
+                        # if waittime < 1.0:
+                            # waittime = 1.0
+                        # self.waittime_int = round(waittime)                    
                 self.start_time = time.perf_counter()
-                logging.debug("send_to_ARDUINO - %s: %s",str(self.start_time), message)
+                logger.debug("send_to_ARDUINO - %s: %s",str(self.start_time), message)
                 self.serial_writebuffer += message
                 self.serial_writebuffer_len = len(self.serial_writebuffer)
                 #print(len(self.serial_writebuffer_len))
@@ -1704,24 +1920,29 @@ class pyMobaLedLibapp(tk.Tk):
                     self.serial_writebuffer_idx = 0
                     self.after(self.waittime_int, self.send_to_ARDUINO_callback)
             except BaseException as e:
-                logging.debug("send_to_ARDUINO - Error write message to ARDUINO %s",message)
-                logging.debug(e, exc_info=True)
+                logger.debug("send_to_ARDUINO - Error write message to ARDUINO %s",message)
+                logger.debug(e, exc_info=True)
                 
-    def send_to_ARDUINO_old(self, message,arduino=None,comport=None):
+    def send_to_ARDUINO_servo(self, message,arduino=None,comport=None):
         if arduino == None:
             arduino = self.arduino
         if arduino:
             try:
-                waittime = self.get_maxLEDcnt() * 0.00005
+                waittime = self.get_maxLEDcnt() * 0.0002
+                # if waittime < 1.0:
+                    # waittime = 1.0                
                 for c in message:
                     arduino.write(c.encode())
                     time.sleep(waittime)
+                time.sleep(2*ARDUINO_WAITTIME)
+                #arduino.write(message.encode())
+                logger.debug("Message send to ARDUINO-Servo: %s",message)
+                #print("send_to_ARDUINO_servo - write: %s",message)
                 #time.sleep(2*ARDUINO_WAITTIME)
-                logging.debug("Message send to ARDUINO: %s Waittime: %s",message, waittime)
                 self.queue.put( ">> " + str(message))
             except BaseException as e:
-                logging.debug("Error write message to ARDUINO %s",message)
-                logging.debug(e, exc_info=True)     
+                logger.debug("Error write message to ARDUINO-Servo %s",message)
+                logger.debug(e, exc_info=True)     
     
     def set_maxLEDcnt(self,maxLEDcnt):
         self.maxLEDcnt = maxLEDcnt
@@ -1779,7 +2000,7 @@ class pyMobaLedLibapp(tk.Tk):
         startpagename = COMMAND_LINE_ARG_DICT.get("startpagename","")
         if not startpagename in self.tabdict.keys():
             startpagename=""
-            logging.debug("Commandline argument --startpage %s wrong. Allowed: %s",startpagename,repr(self.tabdict.keys()))
+            logger.debug("Commandline argument --startpage %s wrong. Allowed: %s",startpagename,repr(self.tabdict.keys()))
             
         if startpagename == "":
             startpagenumber = self.getConfigData("startpage")
@@ -1856,11 +2077,11 @@ class pyMobaLedLibapp(tk.Tk):
             
             
     def readConfigData(self):
-        logging.debug("readConfigData")
+        logger.debug("readConfigData")
         filedir = self.mainfile_dir # os.path.dirname(os.path.realpath(__file__))
         
         self.ParamData = ConfigFile(DEFAULT_PARAM, PARAM_FILENAME,filedir=filedir)
-        logging.debug("Read Paramdata: %s",repr(self.ParamData.data))
+        logger.debug("Read Paramdata: "+ repr(self.ParamData.data))
                 
         parent_filedir = os.path.dirname(filedir) # get the parent dirname
         # configfile in parent dir
@@ -1870,18 +2091,18 @@ class pyMobaLedLibapp(tk.Tk):
         
         self.correct_led_correction_values()
         
-        logging.debug("ReadConfig: %s %s\n\r%s",CONFIG_FILENAME,filedir,repr(self.ConfigData.data))
+        logger.debug("ReadConfig: %s %s\n\r%s",CONFIG_FILENAME,filedir, "") # ,repr(self.ConfigData.data))
         
         macrodef_filename_str = MACRODEF_FILENAME
         macroparamdef_filename_str = MACROPARAMDEF_FILENAME
        
         if hasattr(sys, '_MEIPASS'):
-            logging.debug('running in a PyInstaller bundle')
+            logger.debug('running in a PyInstaller bundle')
         
             try:
                 # PyInstaller creates a temp folder and stores path in _MEIPASS
                 base_path = sys._MEIPASS
-                logging.debug("PyInstaller: sys._MEIPASS: %s",base_path)
+                logger.debug("PyInstaller: sys._MEIPASS: %s",base_path)
                 
                 filedir = base_path
                 
@@ -1892,35 +2113,36 @@ class pyMobaLedLibapp(tk.Tk):
                 
                 macrodef_filename_str = srcfile
                 #shutil.copy2(srcfile,destfile)
-                #logging.debug("Copy %s to %s",srcfile,destfile)
+                #logger.debug("Copy %s to %s",srcfile,destfile)
                 
                 srcfile = os.path.join(base_path,MACROPARAMDEF_FILENAME)
                 destfile =  os.path.join(filedir,MACROPARAMDEF_FILENAME)
                 
                 macroparamdef_filename_str = srcfile
                 #shutil.copy2(srcfile,destfile)            
-                #logging.debug("Copy %s to %s",srcfile,destfile)
+                #logger.debug("Copy %s to %s",srcfile,destfile)
                 
             except BaseException as e:
-                logging.debug("PyInstaller handling Error")
-                logging.debug(e, exc_info=True) 
+                logger.debug("PyInstaller handling Error")
+                logger.debug(e, exc_info=True) 
         
         else:
-            logging.debug('running in a normal Python process')        
+            logger.debug('running in a normal Python process')        
         
         try:
             self.MacroDef = ConfigFile({},MACRODEF_FILENAME,filedir=filedir)
             #logging.info(self.MacroDef.data)
             self.MacroParamDef = ConfigFile({},MACROPARAMDEF_FILENAME,filedir=filedir)
-            logging.debug("ReadConfig: %s",repr(self.ConfigData.data))
+            logger.debug("ReadConfig: %s") #,repr(self.ConfigData.data))
             #logging.info(self.MacroParamDef.data)
         except BaseException as e:
-            logging.debug("PyInstaller handling Error")
-            logging.debug(e, exc_info=True) 
+            logger.debug("PyInstaller handling Error")
+            logger.debug(e, exc_info=True) 
         
     def setConfigData(self,key, value):
         if key=="serportname":
-            print("setconfigdata:", key,value)
+            #print("setconfigdata:", key,value)
+            logger.debug("setconfigdata:"+ key + " "+ value)
         self.ConfigData.data[key] = value
         
     def setConfigDataDict(self,param_dict):
@@ -1931,11 +2153,11 @@ class pyMobaLedLibapp(tk.Tk):
             self.ParamData.data[key] = value
 
     def SaveConfigData(self):
-        logging.debug("SaveConfigData")
+        logger.debug("SaveConfigData")
         self.ConfigData.save()
         
     def SaveParamData(self):
-        logging.debug("SaveParamData")
+        logger.debug("SaveParamData")
         if self.ParamData.data:
             self.ParamData.save()
         
@@ -1962,8 +2184,8 @@ class pyMobaLedLibapp(tk.Tk):
             try:
                 os.remove(DISCONNECT_FILENAME)
             except BaseException as e:
-                logging.debug("ERROR: onCheckDisconnectFile")
-                logging.debug(e, exc_info=True) 
+                logger.debug("ERROR: onCheckDisconnectFile")
+                logger.debug(e, exc_info=True) 
 
         if os.path.isfile(CLOSE_FILENAME):
             self.led_off()
@@ -1974,8 +2196,8 @@ class pyMobaLedLibapp(tk.Tk):
             try:
                 os.remove(CLOSE_FILENAME)
             except BaseException as e:
-                logging.debug("ERROR: onCheckDisconnectFile2")
-                logging.debug(e, exc_info=True) 
+                logger.debug("ERROR: onCheckDisconnectFile2")
+                logger.debug(e, exc_info=True) 
         
         if self.continueCheckDisconnectFile:
             self.after(1000, self.onCheckDisconnectFile)
@@ -2000,6 +2222,21 @@ class pyMobaLedLibapp(tk.Tk):
             tooltip_var.hide()
             tooltip_var.update_text(text)            
         return
+    
+    def ToolTip_canvas(self, canvas, objid,text="",button_1=False):
+        tooltiptext = text
+        tooltip_var = self.tooltip_var_dict.get(objid,None)
+        if tooltip_var==None:
+            tooltip_var=Tooltip_Canvas(canvas, objid, text=tooltiptext,button_1=button_1,controller=self)
+            self.tooltip_var_dict[objid] = tooltip_var
+        else:
+            tooltip_var.unschedule()
+            tooltip_var.hide()
+            tooltip_var.update_text(text)
+    
+    def clear_ToolTip_canvas(self):
+        self.tooltip_var_dict = {}
+    
 
     def addtoclipboard(self,text):
         self.root.clipboard_clear()
@@ -2053,41 +2290,43 @@ class pyMobaLedLibapp(tk.Tk):
             
 
     def get_macroparam_var_value(self, var,valuedict):
-        
         paramconfig_dict = self.MacroParamDef.data.get(var.key,{})
         param_type = paramconfig_dict.get("Type","")
-        
         if param_type == "":
             value = var.get()
             param_configname = paramconfig_dict.get("ConfigName",var.key)
             valuedict[param_configname] = value                                        
-        elif param_type == "Combo":
+        elif param_type in ["Combo"]:
             current_index = var.current()
-            #if current_index == -1: # entry not in list
-            value = var.get()
-            #else:
-            #    value_list = var.keyvalues
-            #    value = value_list[current_index]
-            param_configname_list = paramconfig_dict.get("ConfigName",[var.key])
-    
-            if param_configname_list[0] != "":
-                valuedict[param_configname_list[0]] = value
-            if param_configname_list[1] != "":
-                valuedict[param_configname_list[1]] = current_index
-        elif param_type in ["Entry","BigEntry"]:
+            if current_index != -1:
+                value_list = var.keyvalues
+                if current_index in range(0,len(value_list)):
+                    value = value_list[current_index]
+                else:
+                    value = var.get()
+                param_configname_list = paramconfig_dict.get("ConfigName",[var.key])
+                if param_configname_list[0] != "":
+                    valuedict[param_configname_list[0]] = value
+                if param_configname_list[1] != "":
+                    valuedict[param_configname_list[1]] = current_index
+        elif param_type in ["Entry","BigEntry","ChooseFileName","ChooseDirectory","ChooseColor","String"]:
             value = var.get()
             param_configname = paramconfig_dict.get("ConfigName",var.key)
             valuedict[param_configname] = value
-        elif param_type in ["Checkbutton"]:
+        elif param_type in ["List"]:
+            value = [var.get(i) for i in var.curselection()]
             param_configname = paramconfig_dict.get("ConfigName",var.key)
+            valuedict[param_configname] = value
+        elif param_type in ["Checkbutton"]:
             try:
                 value = var.get()
-                if value==0:
-                    valuedict[param_configname] = False
-                else:
-                    valuedict[param_configname] = True
             except:
+                value=0
+            param_configname = paramconfig_dict.get("ConfigName",var.key)
+            if value==0:
                 valuedict[param_configname] = False
+            else:
+                valuedict[param_configname] = True
         return
 
             
@@ -2229,7 +2468,7 @@ class pyMobaLedLibapp(tk.Tk):
     def checkcolor(self,_event=None):
         self.showFramebyName("ColorCheckPage")    
     
-    def create_macroparam_content(self,parent_frame, macro, macroparams,extratitleline=False,maxcolumns=5, startrow=0, minrow=4, style="MACROPage",generic_methods={},hidecondition=False):
+    def create_macroparam_content(self,parent_frame, macro, macroparams,extratitleline=False,maxcolumns=5, startrow=0, minrow=4, style="MACROPage",generic_methods={},hidecondition=False,onlyLabel=False):
         
         if style =="MACROPage":
         
@@ -2240,6 +2479,7 @@ class pyMobaLedLibapp(tk.Tk):
             PARAMFRAMEWIDTH = int(105*SIZEFACTOR)
             
             PARAMLABELWIDTH = int(15*SIZEFACTOR)
+            PARAMLABELHEIGHT = 2
             PARAMLABELWRAPL = int(100*SIZEFACTOR)      
             
             PARAMSPINBOXWIDTH = 6
@@ -2257,7 +2497,8 @@ class pyMobaLedLibapp(tk.Tk):
             PARAMFRAMEWIDTH = 105
             
             PARAMLABELWIDTH = 15
-            PARAMLABELWRAPL = 100       
+            PARAMLABELHEIGHT = 2
+            PARAMLABELWRAPL = 100
             
             PARAMSPINBOXWIDTH = 6
             PARAMENTRWIDTH = 16
@@ -2295,6 +2536,8 @@ class pyMobaLedLibapp(tk.Tk):
                 param_configname = paramconfig_dict.get("ConfigName",paramkey)
                 param_default = paramconfig_dict.get("Default","")
                 param_allow_value_entry = (paramconfig_dict.get("AllowValueEntry","False") == "True")
+                param_nolabel_str = paramconfig_dict.get("NoLabel","False")
+                param_nolabel = param_nolabel_str == "True" 
                 param_hide_str = paramconfig_dict.get("Hide","False")
                 param_hide = param_hide_str == "True"
                 if param_hide_str == "Cond":
@@ -2302,13 +2545,16 @@ class pyMobaLedLibapp(tk.Tk):
                 param_value_change_event = (paramconfig_dict.get("ValueChangeEvent","False") == "True")
                 param_value_scrollable = (paramconfig_dict.get("Scrollable","False") == "True")
                 param_label_width = int(paramconfig_dict.get("ParamLabelWidth",PARAMLABELWIDTH))
+                param_label_height = int(paramconfig_dict.get("ParamLabelHeight",PARAMLABELHEIGHT))
                 param_entry_width = int(paramconfig_dict.get("ParamEntryWidth",PARAMENTRWIDTH))
+                param_entry_height = int(paramconfig_dict.get("ParamEntryHeight","2"))
                 param_description = paramconfig_dict.get("ParamDescription","")
                 
                 if param_persistent:
                     configData = self.getConfigData(paramkey)
                     if configData != "":
                         param_default = configData
+ 
                 param_readonly = (paramconfig_dict.get("ReadOnly","False") == "True")
                 param_type = paramconfig_dict.get("Type","")
         
@@ -2329,10 +2575,13 @@ class pyMobaLedLibapp(tk.Tk):
                     
                     
                 if param_type == "": # number value param
+                    param_entry_width = int(paramconfig_dict.get("ParamEntryWidth",PARAMSPINBOXWIDTH))
                     
-                    label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
-                    label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(label, text=param_tooltip)
+                    if not param_nolabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
+                        label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)
+                    
                     if param_max == "":
                         param_max = 255
                     paramvar = LimitVar(param_min, param_max, parent_frame)
@@ -2340,9 +2589,9 @@ class pyMobaLedLibapp(tk.Tk):
                     paramvar.key = paramkey
                     
                     if param_value_change_event:
-                        s_paramvar = Spinbox(parent_frame, from_=param_min, to=param_max, width=PARAMSPINBOXWIDTH, name='spinbox', textvariable=paramvar,font=self.fontspinbox,command=lambda:self._update_value(macro,paramkey))
+                        s_paramvar = Spinbox(parent_frame, from_=param_min, to=param_max, width=param_entry_width, name='spinbox', textvariable=paramvar,font=self.fontspinbox,command=lambda:self._update_value(macro,paramkey))
                     else:
-                        s_paramvar = Spinbox(parent_frame, from_=param_min, to=param_max, width=PARAMSPINBOXWIDTH, name='spinbox', textvariable=paramvar,font=self.fontspinbox)
+                        s_paramvar = Spinbox(parent_frame, from_=param_min, to=param_max, width=param_entry_width, name='spinbox', textvariable=paramvar,font=self.fontspinbox)
 
                     s_paramvar.delete(0, 'end')
                     s_paramvar.insert(0, param_default)
@@ -2371,19 +2620,19 @@ class pyMobaLedLibapp(tk.Tk):
                         row=row+deltarow                    
                     
                 elif param_type == "Time": # Time value param
+                    if not param_nolabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=2,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
+                        label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)
                     
-                    label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
-                    label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(label, text=param_tooltip)
                     
-                    
-                    paramvar = tk.Entry(parent_frame,width=PARAMENTRWIDTH,font=self.fontentry)
+                    paramvar = tk.Entry(parent_frame,width=param_entry_width,font=self.fontentry)
                     paramvar.delete(0, 'end')
                     paramvar.insert(0, param_default)
                     paramvar.grid(row=row+valuerow, column=column+valuecolumn, sticky=STICKY, padx=2, pady=2)
                     paramvar.key = paramkey
                 
-                    self.set_macroparam_var(macro, paramkey, paramvar)                
+                    self.set_macroparam_var(macro, paramkey, paramvar)
         
                     column = column + deltacolumn
                     if column > maxcolumns:
@@ -2392,24 +2641,25 @@ class pyMobaLedLibapp(tk.Tk):
                         
                 elif param_type == "String": # String value param
                     
-                    label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
-                    label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(label, text=param_tooltip)
+                    if not param_nolabel or onlyLabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=param_label_height,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
+                        label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)
                     
-                    
-                    paramvar = tk.Entry(parent_frame,width=PARAMENTRWIDTH,font=self.fontentry)
-                         
-                    if param_value_change_event:
-                        paramvar.bind("<Return>",self._key_return)                
-    
-                    paramvar.delete(0, 'end')
-                    paramvar.insert(0, param_default)
-                    paramvar.grid(row=row+valuerow, column=column+valuecolumn, sticky=STICKY, padx=2, pady=2)
-                    paramvar.key = paramkey
-                    paramvar.macro = macro
-                    
-                    self.set_macroparam_var(macro, paramkey, paramvar)                
+                    if not onlyLabel:
+                        paramvar = tk.Entry(parent_frame,width=param_entry_width,font=self.fontentry)
+                             
+                        if param_value_change_event:
+                            paramvar.bind("<Return>",self._key_return)                
         
+                        paramvar.delete(0, 'end')
+                        paramvar.insert(0, param_default)
+                        paramvar.grid(row=row+valuerow, column=column+valuecolumn, sticky=STICKY, padx=2, pady=2)
+                        paramvar.key = paramkey
+                        paramvar.macro = macro
+                        
+                        self.set_macroparam_var(macro, paramkey, paramvar)                
+            
                     column = column + deltacolumn
                     if column > maxcolumns:
                         column = 0
@@ -2417,10 +2667,15 @@ class pyMobaLedLibapp(tk.Tk):
                 
                 elif param_type == "BigEntry": # Text value param
                     
-                    label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,font=self.fontlabel)
-                    label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(label, text=param_tooltip)
-                    paramvar = tk.Entry(parent_frame,width=PARAMENTRWIDTH*3,font=self.fontentry)
+                    
+                    
+                    
+                    if not param_nolabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=param_label_height,wraplength = PARAMLABELWRAPL,font=self.fontlabel)
+                        label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)
+                        
+                    paramvar = tk.Entry(parent_frame,width=param_entry_width*3,font=self.fontentry)
                     
                     if param_value_change_event:
                         paramvar.bind("<Return>",self._key_return)
@@ -2431,16 +2686,16 @@ class pyMobaLedLibapp(tk.Tk):
                     paramvar.key = paramkey
                     paramvar.macro = macro
                 
-                    self.set_macroparam_var(macro, paramkey, paramvar)                
-    
+                    self.set_macroparam_var(macro, paramkey, paramvar)
+        
                     column = column + deltacolumn
                     if column > maxcolumns:
                         column = 0
                         row=row+deltarow            
                 
                 elif param_type == "Text": # Text value param
-                    if not param_hide:
-                        label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
+                    if not param_hide and not param_nolabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=param_label_height,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
                         label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
                         self.ToolTip(label, text=param_tooltip)
                     
@@ -2449,9 +2704,9 @@ class pyMobaLedLibapp(tk.Tk):
                         number_of_lines = "2"
                         
                     if param_value_scrollable:
-                        paramvar = tk.scrolledtext.ScrolledText(parent_frame,bg=self.cget('bg'),width=PARAMENTRWIDTH*5,height=int(number_of_lines),font=self.fonttext)
+                        paramvar = tk.scrolledtext.ScrolledText(parent_frame,bg=self.cget('bg'),width=param_entry_width*5,height=int(number_of_lines),font=self.fonttext)
                     else:
-                        paramvar = tk.Text(parent_frame,width=PARAMENTRWIDTH*5,bg=self.cget('bg'),height=int(number_of_lines),font=self.fonttext)
+                        paramvar = tk.Text(parent_frame,width=param_entry_width*5,bg=self.cget('bg'),height=int(number_of_lines),font=self.fonttext)
                     
                     paramvar.delete("1.0", "end")
                     paramvar.insert("end",param_default)
@@ -2470,17 +2725,28 @@ class pyMobaLedLibapp(tk.Tk):
                         row=row+deltarow
                         
                 elif param_type == "Checkbutton": # Checkbutton param
-                    paramvar = tk.IntVar(value=0)
-                    paramvar.key = paramkey
-                    if param_default!="":
-                        paramvar.set(1)
-                    else:                        
-                        paramvar.set(0)
-                    label=tk.Checkbutton(parent_frame, text=param_title,width=PARAMLABELWIDTH*2,wraplength = PARAMLABELWRAPL*2,anchor="w",variable=paramvar,font=self.fontlabel,onvalue = 1, offvalue = 0)
-                    label.grid(row=row+valuerow, column=column, columnspan=2,sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(label, text=param_tooltip)
-                                    
-                    self.set_macroparam_var(macro, paramkey, paramvar)                
+                    
+                    if not onlyLabel:
+                        paramvar = tk.IntVar(value=0)
+                        paramvar.key = paramkey
+                        if param_default!="":
+                            paramvar.set(1)
+                        else:                        
+                            paramvar.set(0)
+                            
+                        if param_nolabel:
+                            param_title = ""
+                            param_label_width = 0
+                        
+                        label=tk.Checkbutton(parent_frame, text=param_title,width=param_label_width,wraplength = PARAMLABELWRAPL*2,anchor="w",variable=paramvar,font=self.fontlabel,onvalue = 1, offvalue = 0)
+                        label.grid(row=row+valuerow, column=column, columnspan=2,sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)
+                                        
+                        self.set_macroparam_var(macro, paramkey, paramvar)
+                    else:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=param_label_height,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
+                        label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)                         
         
                     column = column + deltacolumn
                     if column > maxcolumns:
@@ -2490,33 +2756,34 @@ class pyMobaLedLibapp(tk.Tk):
                     
                 elif param_type == "Combo": # Combolist param
                     
-                    if not param_hide:
-                        label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
+                    if not param_hide and not param_nolabel or onlyLabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=param_label_height,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
                         label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
                         self.ToolTip(label, text=param_tooltip)
                     
-                    if param_allow_value_entry:
-                        paramvar = ttk.Combobox(parent_frame, width=PARAMCOMBOWIDTH,font=self.fontlabel)
-                    else:                
-                        paramvar = ttk.Combobox(parent_frame, state="readonly", width=PARAMCOMBOWIDTH,font=self.fontlabel)
-                    combo_value_list = paramconfig_dict.get("KeyValues",paramconfig_dict.get("Values",[]))
-                    combo_text_list = paramconfig_dict.get("ValuesText",[])
-                    
-                    if combo_text_list == []:
-                        paramvar["value"] = combo_value_list
-                    else:
-                        paramvar["value"] = combo_text_list
+                    if not onlyLabel:
+                        if param_allow_value_entry:
+                            paramvar = ttk.Combobox(parent_frame, width=param_entry_width,font=self.fontlabel)
+                        else:                
+                            paramvar = ttk.Combobox(parent_frame, state="readonly", width=param_entry_width,font=self.fontlabel)
+                        combo_value_list = paramconfig_dict.get("KeyValues",paramconfig_dict.get("Values",[]))
+                        combo_text_list = paramconfig_dict.get("ValuesText",[])
                         
-                    paramvar.current(0) #set the selected view                    
+                        if combo_text_list == []:
+                            paramvar["value"] = combo_value_list
+                        else:
+                            paramvar["value"] = combo_text_list
+                            
+                        paramvar.current(0) #set the selected view                    
+                        
+                        if not param_hide:
+                            paramvar.grid(row=row+valuerow, column=column+valuecolumn, sticky=STICKY, padx=2, pady=2)
+                        paramvar.key = paramkey
+                        paramvar.keyvalues = combo_value_list
+                        paramvar.textvalues = combo_text_list
                     
-                    if not param_hide:
-                        paramvar.grid(row=row+valuerow, column=column+valuecolumn, sticky=STICKY, padx=2, pady=2)
-                    paramvar.key = paramkey
-                    paramvar.keyvalues = combo_value_list
-                    paramvar.textvalues = combo_text_list
-                
-                    self.set_macroparam_var(macro, paramkey, paramvar)               
-        
+                        self.set_macroparam_var(macro, paramkey, paramvar)               
+            
                     column = column + deltacolumn
                     if column > maxcolumns:
                         column = 0
@@ -2524,11 +2791,12 @@ class pyMobaLedLibapp(tk.Tk):
                         
                 elif param_type == "GroupCombo": # Combolist param
                     
-                    label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
-                    label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(label, text=param_tooltip)
+                    if not param_nolabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=param_label_height,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
+                        label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)
                     
-                    paramvar = ttk.Combobox(parent_frame, width=PARAMCOMBOWIDTH,postcommand=self.update_GroupComboValues,font=self.fontlabel)
+                    paramvar = ttk.Combobox(parent_frame, width=param_entry_width,postcommand=self.update_GroupComboValues,font=self.fontlabel)
                     combo_value_list = list(self.ledeffecttable.mledgrouptable.keys())
                     combo_text_list = []
                     
@@ -2554,11 +2822,12 @@ class pyMobaLedLibapp(tk.Tk):
                         
                 elif param_type == "CX": # Channel value param
                     
-                    label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
-                    label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(label, text=param_tooltip)
+                    if not param_nolabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=param_label_height,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
+                        label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)
                     
-                    paramvar = ttk.Combobox(parent_frame, width=PARAMCOMBOWIDTH,font=self.fontlabel)
+                    paramvar = ttk.Combobox(parent_frame, width=param_entry_width,font=self.fontlabel)
                     
                     combo_value_list = paramconfig_dict.get("KeyValues",paramconfig_dict.get("Values",("C_All", "C12", "C23", "C1", "C2", "C3", "C_RED", "C_GREEN", "C_BLUE", "C_WHITE", "C_YELLOW", "C_CYAN")))
                     combo_text_list = paramconfig_dict.get("ValuesText",[])
@@ -2589,9 +2858,10 @@ class pyMobaLedLibapp(tk.Tk):
                         row += deltarow
                         column = 0
                     
-                    label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
-                    label.grid(row=row+titlerow, column=column+titlecolumn, rowspan=2, sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(label, text=param_tooltip)
+                    if not param_nolabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=param_label_height,wraplength = PARAMLABELWRAPL,anchor=ANCHOR,font=self.fontlabel)
+                        label.grid(row=row+titlerow, column=column+titlecolumn, rowspan=2, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)
                     
                     repeat_number = paramconfig_dict.get("Repeat","")
                     
@@ -2617,45 +2887,55 @@ class pyMobaLedLibapp(tk.Tk):
                     else:
                         repeat_number_int = int(repeat_number)
                         
-                        repeat_max_columns = 6
+                        repeat_max_columns = 9
                         
                         for i in range(repeat_number_int):
                             repeat_macro=macro+"."+paramkey+"."+str(i)
     
                             multipleparam_frame = ttk.Frame(parent_frame)
-                            multipleparam_frame.grid(row=row,column=column+1 ,columnspan=10,sticky='nesw', padx=0, pady=0)
+                            multipleparam_frame.grid(row=row,column=column+1 ,columnspan=14,sticky='nesw', padx=0, pady=0)
                             
                             multipleparams = paramconfig_dict.get("MultipleParams",[])
                             
                             if multipleparams != []:
-                                self.create_macroparam_content(multipleparam_frame,repeat_macro, multipleparams,extratitleline=extratitleline,maxcolumns=repeat_max_columns,minrow=0,style=style,generic_methods=generic_methods)
+                                if i == 0:
+                                    showonlyLabel = True
+                                else:
+                                    showonlyLabel = False
+                                self.create_macroparam_content(multipleparam_frame,repeat_macro, multipleparams,extratitleline=extratitleline,maxcolumns=repeat_max_columns,minrow=0,style=style,generic_methods=generic_methods, onlyLabel=showonlyLabel)
                    
                             column = 0
                             row=row+1
-                    
-                elif param_type == "Color": # Color value param
-                    
-                    self.colorlabel = tk.Button(parent_frame, text=param_title, width=PARAMLABELWIDTH, height=2, wraplength=PARAMLABELWRAPL,relief="raised", background=param_default,borderwidth=1,command=self.choosecolor,font=self.fontbutton)
-                    #label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,bg=param_default,borderwidth=1)
-                    self.colorlabel.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(self.colorlabel, text=param_tooltip)
-                    
-                    paramvar = tk.Entry(parent_frame,width=PARAMENTRWIDTH,font=self.fontentry)
-                    paramvar.delete(0, 'end')
-                    paramvar.insert(0, param_default)
-                    paramvar.grid(row=row+valuerow, column=column+valuecolumn, sticky=STICKY, padx=2, pady=2)
-                    paramvar.key = paramkey
-                
-                    self.set_macroparam_var(macro, paramkey, paramvar)                
-        
-                    column = column + deltacolumn
-                    if column > maxcolumns:
-                        column = 0
-                        row=row+deltarow
+                            
+                elif param_type == "ChooseColor": # Color value param
+                    if not onlyLabel:
+                        param_label_width = int(paramconfig_dict.get("ParamLabelWidth",PARAMLABELWIDTH))
+                        param_entry_width = int(paramconfig_dict.get("ParamEntryWidth",8))
+                        param_label_height = int(paramconfig_dict.get("ParamLabelHeight","1"))
+                        self.colorlabel = tk.Button(parent_frame, text=param_title, width=param_label_width, height=param_label_height, padx=2, pady=2, wraplength=PARAMLABELWRAPL,relief="raised", background=param_default,borderwidth=1,font=self.fontbutton,command=lambda macrokey=macro,paramkey=paramkey: self.choosecolor(macrokey=macrokey,paramkey=paramkey))
+                        #label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,bg=param_default,borderwidth=1)
+                        self.colorlabel.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(self.colorlabel, text=param_tooltip)
+                        paramvar_strvar = tk.StringVar()
+                        paramvar_strvar.set("")                    
+                        paramvar = tk.Entry(parent_frame,width=param_entry_width,font=self.fontentry,textvariable=paramvar_strvar)
+                        paramvar.delete(0, 'end')
+                        paramvar.insert(0, param_default)
+                        paramvar.grid(row=row+valuerow, column=column+valuecolumn, sticky=STICKY, padx=2, pady=2)
+                        paramvar_strvar.key = paramkey
+                        paramvar_strvar.macro = macro
+                        paramvar_strvar.button = self.colorlabel
+                        paramvar_strvar.trace_add("write", lambda nm, indx, mode,macrokey=macro,paramkey=paramkey: self.colorvar_changed(nm,indx,mode,macrokey=macrokey,paramkey=paramkey)) #self.colorvar_changed)
+                        self.set_macroparam_var(macro, paramkey, paramvar_strvar)                
+            
+                        column = column + deltacolumn
+                        if column > maxcolumns:
+                            column = 0
+                            row=row+deltarow
                         
                 elif param_type == "ChooseFileName": # parameter AskFileName
                     
-                    self.filechooserlabel = tk.Button(parent_frame, text=param_title, width=param_label_width, height=2, padx=2, pady=2, wraplength=PARAMLABELWRAPL,font=self.fontbutton,command=lambda macrokey=macro,paramkey=paramkey: self.choosefilename(macrokey=macrokey,paramkey=paramkey))
+                    self.filechooserlabel = tk.Button(parent_frame, text=param_title, width=param_label_width, height=param_label_height, padx=2, pady=2, wraplength=PARAMLABELWRAPL,font=self.fontbutton,command=lambda macrokey=macro,paramkey=paramkey: self.choosefilename(macrokey=macrokey,paramkey=paramkey))
                     #label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,bg=param_default,borderwidth=1)
                     self.filechooserlabel.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=10, pady=10)
                     self.ToolTip(self.filechooserlabel, text=param_tooltip)
@@ -2696,7 +2976,7 @@ class pyMobaLedLibapp(tk.Tk):
                         
                 elif param_type == "ColTab": # Color value param
                     
-                    self.coltablabel = tk.Button(parent_frame, text=param_title, width=param_label_width, height=2, wraplength=PARAMLABELWRAPL,relief="raised", borderwidth=1,command=self.checkcolor,font=self.fontbutton)
+                    self.coltablabel = tk.Button(parent_frame, text=param_title, width=param_label_width, height=param_label_height, wraplength=PARAMLABELWRAPL,relief="raised", borderwidth=1,command=self.checkcolor,font=self.fontbutton)
                     #label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,bg=param_default,borderwidth=1)
                     self.coltablabel.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
                     self.ToolTip(self.coltablabel, text=param_tooltip)
@@ -2716,14 +2996,15 @@ class pyMobaLedLibapp(tk.Tk):
                         
                 elif param_type == "Var": # Combolist param
                     
-                    label=tk.Label(parent_frame, text=param_title,width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL,font=self.fontlabel)
-                    label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
-                    self.ToolTip(label, text=param_tooltip)
+                    if not param_nolabel:
+                        label=tk.Label(parent_frame, text=param_title,width=param_label_width,height=param_label_height,wraplength = PARAMLABELWRAPL,font=self.fontlabel)
+                        label.grid(row=row+titlerow, column=column+titlecolumn, sticky=STICKY, padx=2, pady=2)
+                        self.ToolTip(label, text=param_tooltip)
                     
                     if param_allow_value_entry:
-                        paramvar = ttk.Combobox(parent_frame, width=PARAMCOMBOWIDTH,font=self.fontlabel)
+                        paramvar = ttk.Combobox(parent_frame, width=param_entry_width,font=self.fontlabel)
                     else:                
-                        paramvar = ttk.Combobox(parent_frame, state="readonly", width=PARAMCOMBOWIDTH,font=self.fontlabel)                
+                        paramvar = ttk.Combobox(parent_frame, state="readonly", width=param_entry_width,font=self.fontlabel)                
                     
                     combo_value_list = paramconfig_dict.get("KeyValues",paramconfig_dict.get("Values",[]))
                     combo_text_list = paramconfig_dict.get("ValuesText",[])
@@ -2774,7 +3055,7 @@ class pyMobaLedLibapp(tk.Tk):
             #        label=tk.Label(parent_frame, text=" ",width=PARAMLABELWIDTH,height=2,wraplength = PARAMLABELWRAPL)
             #        label.grid(row=row,column=i,sticky=STICKY, padx=2, pady=2)
             
-            if maxcolumns > 6:        
+            if maxcolumns > 10:        
                 seplabel=tk.Label(parent_frame, text="",width=90,height=1)
                 seplabel.grid(row=row+2, column=0, columnspan=10,sticky='ew', padx=2, pady=2)
     
@@ -2861,13 +3142,13 @@ class pyMobaLedLibapp(tk.Tk):
     
     def _button_cmd_old(self, macrokey="",button=""):
         """Respond to user click on a button"""
-        logging.debug("Button Pressed: %s - %s",macrokey,button)
+        logger.debug("Button Pressed: %s - %s",macrokey,button)
         button_command = "self."+button+"()"
         eval(button_command)
 
     def _button_cmd(self, macrokey="",button=""):
         """Respond to user click on a button"""
-        logging.debug("Button Pressed: %s - %s",macrokey,button)
+        logger.debug("Button Pressed: %s - %s",macrokey,button)
         page_frame = self.getFramebyName(macrokey)
         if page_frame:        
             button_command = "page_frame" + "." +button+"()"
@@ -2924,14 +3205,45 @@ class pyMobaLedLibapp(tk.Tk):
         paramvar.delete(0, 'end')
         paramvar.insert(0, color)    
     
-    def choosecolor(self):
-        paramvar = self.macroparams_var["Group"]["Group_Colour"]
+    # def choosecolor(self):
+        # paramvar = self.macroparams_var["Group"]["Group_Colour"]
+        # old_color=paramvar.get()        
+        # color = tk.colorchooser.askcolor(color=old_color)
+        
+        # if color:
+            # colorhex = color[1]
+            # return colorhex
+        # return old_color
+    
+    def choosecolor(self,paramkey="",macrokey=""):
+        paramvar = self.macroparams_var[macrokey][paramkey]
         old_color=paramvar.get()        
         color = colorchooser.askcolor(color=old_color)
         
         if color:
             colorhex = color[1]
-            self.setgroupcolor(colorhex)    
+            color_fg = self.determine_fg_color(colorhex)
+            paramvar.button.config(bg=colorhex,fg=color_fg)
+            paramvar = self.macroparams_var[macrokey][paramkey]
+            paramvar.set(colorhex)
+            #paramvar.delete(0, 'end')
+            #paramvar.insert(0, colorhex) 
+        
+    def colorvar_changed(self,var,indx,mode,macrokey="",paramkey=""):
+        #print("colorvar_changed",var,indx,mode)
+        paramvar = self.macroparams_var[macrokey][paramkey]
+        color = paramvar.get()
+        if color == "":
+            color="#000000"
+        try:
+            color_fg = self.determine_fg_color(color)
+        except:
+            color_fg = "black"
+        try:
+            paramvar.button.config(bg=color,fg=color_fg)
+        except:
+            paramvar.button.configure(background="black",fg="white")
+    
 
 
     def _key_return(self,event=None):
@@ -3050,7 +3362,7 @@ class pyMobaLedLibapp(tk.Tk):
         
         
         if False:
-            logging.debug("PyProg-Start_process_serial")
+            logger.debug("PyProg-Start_process_serial")
             global ThreadEvent
             ThreadEvent = threading.Event()
             ThreadEvent.set()
@@ -3067,7 +3379,7 @@ class pyMobaLedLibapp(tk.Tk):
 
 
     def stop_process_serial_all(self):
-        logging.debug("Pyprog-Stop_process_serial")
+        logger.debug("Pyprog-Stop_process_serial")
         #print("pyMobaLedLib: stop_process_serial_all")
         SerialMonitorPage = self.getFramebyName("SerialMonitorPage")
         SerialMonitorPage.set_check_RMBUS(value=False)
@@ -3182,33 +3494,33 @@ class pyMobaLedLibapp(tk.Tk):
                 elif os.path.isdir(srcname):
                     filename = os.path.basename(dstname)
                     F00.StatusMsg_UserForm.Set_Label(f"Kopieren:\n{filename}")
-                    logging.debug(f"Directory copytree: {srcname} - {dstname}")
+                    logger.debug(f"Directory copytree: {srcname} - {dstname}")
                     self.copytree(srcname, dstname, symlinks, ignore)
                 else:
                     shutil.copy2(srcname, dstname)
                     filename = os.path.basename(dstname)
                     F00.StatusMsg_UserForm.Set_Label(f"Kopieren:\n{filename}")
-                    logging.debug(f"Directory Copy2: {srcname} - {dstname}")
+                    logger.debug(f"Directory Copy2: {srcname} - {dstname}")
                 # XXX What about devices, sockets etc.?
             except (IOError, os.error) as why:
-                logging.debug(why, exc_info=True)
+                logger.debug(why, exc_info=True)
                 errors.append((srcname, dstname, str(why)))
             # catch the Error from the recursive copytree so that we can
             # continue with other files
             except BaseException as err:
-                logging.debug(err, exc_info=True)
-                logging.debug(f"Directory Copy: {err}")
+                logger.debug(err, exc_info=True)
+                logger.debug(f"Directory Copy: {err}")
                 errors.extend(err.args[0])
         try:
             shutil.copystat(src, dst)
             #F00.StatusMsg_UserForm.Set_Label(f"Kopieren\n{dst}")
-            logging.debug(f"Directory Copystat: {src} - {dst}")
+            logger.debug(f"Directory Copystat: {src} - {dst}")
         except WindowsError:
             # can't copy file access times on Windows
-            logging.debug("Directory Copy Windows Error")
+            logger.debug("Directory Copy Windows Error")
             pass
         except OSError as why:
-            logging.debug(why, exc_info=True)
+            logger.debug(why, exc_info=True)
             errors.extend((src, dst, str(why)))
         if errors:
             raise BaseException(errors)
@@ -3225,19 +3537,19 @@ class pyMobaLedLibapp(tk.Tk):
                 if not self.is_file_in_use(file_path):
                     try:
                         os.remove(file_path)
-                        logging.debug(f"Removed: {file_path}")
+                        logger.debug(f"Removed: {file_path}")
                         F00.StatusMsg_UserForm.Set_Label(f"Löschen des alten Python Programms\n{file_path}")
                     except Exception as e:
-                        logging.debug(f"Error removing {file_path}: {e}")
+                        logger.debug(f"Error removing {file_path}: {e}")
     
     def remove_empty_directories(self, directory_path):
         for root, dirs, files in os.walk(directory_path, topdown=False):
             for dir_name in dirs:
                 dir_path = os.path.join(root, dir_name)
                 try:
-                    os.rmdir(dir_path)
-                    logging.debug(f"Removed empty directory: {dir_path}")
-                    F00.StatusMsg_UserForm.Set_Label(f"Löschen des alten Python Programms\n{dir_path}")
+                   os.rmdir(dir_path)
+                   logger.debug(f"Removed empty directory: {dir_path}")
+                   F00.StatusMsg_UserForm.Set_Label(f"Löschen des alten Python Programms\n{dir_path}")
                 except OSError:
                     pass  # Directory is not empty
     
@@ -3245,9 +3557,9 @@ class pyMobaLedLibapp(tk.Tk):
         if os.path.exists(directory_path):
             self.remove_files_except_in_use(directory_path)
             self.remove_empty_directories(directory_path)                
-            logging.debug(f"Directory {directory_path} has been deleted successfully.")
+            logger.debug(f"Directory {directory_path} has been deleted successfully.")
         else:
-            logging.debug(f"Directory {directory_path} does not exist.")
+            logger.debug(f"Directory {directory_path} does not exist.")
                  
     
     def show_download_status(self, a,b,c):
@@ -3326,19 +3638,19 @@ class pyMobaLedLibapp(tk.Tk):
             if files1[file] != files2[file]:
                 different_files.append(file)
     
-        logging.debug("Files only in "+ dir1)
+        logger.debug("Files only in "+ dir1)
         for file in only_in_dir1:
-            logging.debug(file)
+            logger.debug(file)
     
-        logging.debug("\nFiles only in "+ dir2)
+        logger.debug("\nFiles only in "+ dir2)
         for file in only_in_dir2:
-            logging.debug(file)
+            logger.debug(file)
     
-        logging.debug("\nFiles with differences in size or date")
+        logger.debug("\nFiles with differences in size or date")
         for file in different_files:
             size1, date1 = files1[file]
             size2, date2 = files2[file]
-            logging.debug(f"{file}:\n  {dir1} -> size: {size1}, date: {datetime.fromtimestamp(date1)}\n  {dir2} -> size: {size2}, date: {datetime.fromtimestamp(date2)}\n")
+            logger.debug(f"{file}:\n  {dir1} -> size: {size1}, date: {datetime.fromtimestamp(date1)}\n  {dir2} -> size: {size2}, date: {datetime.fromtimestamp(date2)}\n")
 
     def Update_pyMobaLedLib(self):
         F00.StatusMsg_UserForm.ShowDialog(M09.Get_Language_Str('Aktualisiere Python MobaLedLib Programm'), '')
@@ -3349,11 +3661,11 @@ class pyMobaLedLibapp(tk.Tk):
             workbookpath3 = os.path.dirname(workbookpath2)
             zipfilenamepath = workbookpath3+"/pyMobaLedLib.zip"
             F00.StatusMsg_UserForm.Set_Label("Download Python MobaLedLib Program")
-            logging.debug("Update pyMobaLedLib from Github - Lokales Verzeichnis:"+ workbookpath)
-            logging.debug("Update pyMobaLedLib from Github -download from Github")
+            logger.debug("Update pyMobaLedLib from Github - Lokales Verzeichnis:"+ workbookpath)
+            logger.debug("Update pyMobaLedLib from Github -download from Github")
             urllib.request.urlretrieve(URL, zipfilenamepath,self.show_download_status)
             F00.StatusMsg_UserForm.Set_Label("Entpacken Python MobaLedLib Programms")
-            logging.debug("Update pyMobaLedLib from Github -unzip file:"+zipfilenamepath+" nach " + workbookpath3)
+            logger.debug("Update pyMobaLedLib from Github -unzip file:"+zipfilenamepath+" nach " + workbookpath3)
             srcpath = workbookpath3+"/pyMobaLedLib-master/python"
             i = 1
             bak_dir = srcpath + "(" + str(i) + ")"
@@ -3370,8 +3682,8 @@ class pyMobaLedLibapp(tk.Tk):
             src_directory_hash = self.compute_directory_hash(srcpath)
             #srcpath = workbookpath3+"/pyMobaLedLib-master/python"
             dstpath = workbookpath #workbookpath3+"/pyMobaLedLib/python"
-            if dstpath.startswith(r"D:\data\doc\GitHub"): # do not copy into development folder
-                dstpath = r"D:\data\doc\pyMobaLedLibcopy"
+            if dstpath.startswith(r"D:\data\development\GitHub"): # do not copy into development folder
+                dstpath = r"D:\data\development\pyMobaLedLibcopy"
             
             dstpath2 = dstpath #+ "/python"
             
@@ -3384,7 +3696,7 @@ class pyMobaLedLibapp(tk.Tk):
             try:
                 #os.rename(dstpath2, bak_dstdir)            
                 self.copytree(dstpath2,bak_dstdir, ignore=["__pycache__", "vb2py", "vb2pyconv"])
-                logging.debug("Update pyMobaLedLib from Github -delete folder:"+ dstpath +"/LEDs_AutoProg and /hex-files")
+                logger.debug("Update pyMobaLedLib from Github -delete folder:"+ dstpath +"/LEDs_AutoProg and /hex-files")
                 shutil.rmtree(dstpath+"/LEDs_AutoProg")
                 shutil.rmtree(dstpath+"/hex-files")
             except BaseException as e:
@@ -3406,19 +3718,19 @@ class pyMobaLedLibapp(tk.Tk):
             #    logging.error(e, exc_info=True)
             F00.StatusMsg_UserForm.Set_Label("Kopieren des Python MobaLedLib Programms")
             self.copytree(srcpath,dstpath, ignore=["__pycache__", "vb2py", "vb2pyconv"])
-            dst_directory_hash = self.compute_directory_hash(dstpath)
-            #logging.debug(f"Update pyMobaLedLib from Github: Hash nicht gleich: {src_directory_hash} - {dst_directory_hash}")
+            #dst_directory_hash = self.compute_directory_hash(dstpath)
+            #logger.debug(f"Update pyMobaLedLib from Github: Hash nicht gleich: {src_directory_hash} - {dst_directory_hash}")
             P01.Unload(F00.StatusMsg_UserForm)
-            if dst_directory_hash != src_directory_hash:
+            #if dst_directory_hash != src_directory_hash:
                 # Beispiel für die Nutzung:
-                self.compare_directories(srcpath, dstpath, ignore=["__pycache__", "vb2py", "vb2pyconv"])
-                P01.MsgBox(M09.Get_Language_Str(' Achtung: Die kopierten Daten stimmen nicht mit den heruntergeladenen Daten überein\nDetails finden Sie in der Logdatei: logfile.log!!'), vbQuestion + vbYesNo, M09.Get_Language_Str('Python MobaLedLib Aktualisierung fehlgeschlagen'))
-            else:
-                #logging.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
-                if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
-                    # shutdown and restart
-                    #self.exec_update(srcpath, dstpath)
-                    self.restart()
+            #   self.compare_directories(srcpath, dstpath, ignore=["__pycache__", "vb2py", "vb2pyconv"])
+            #   P01.MsgBox(M09.Get_Language_Str(' Achtung: Die kopierten Daten stimmen nicht mit den heruntergeladenen Daten überein\nDetails finden Sie in der Logdatei: logfile.log!!'), vbInformation, M09.Get_Language_Str('Python MobaLedLib Aktualisierung'))
+            #else:
+                #logger.debug("Update pyMobaLedLib from Github -copy folder:"+ srcpath + " nach " +dstpath)
+            if P01.MsgBox(M09.Get_Language_Str(' Python MobaLedLib wurde aktualisiert. Soll neu gestartet werden?'), vbQuestion + vbYesNo, M09.Get_Language_Str('Aktualisieren der Python MobaLedLib')) == vbYes:
+                # shutdown and restart
+                #self.exec_update(srcpath, dstpath)
+                self.restart()
  
         except Exception as e:
             logging.error(e, exc_info=True)
@@ -3427,34 +3739,34 @@ class pyMobaLedLibapp(tk.Tk):
 
             
     
-    def check_version(self, exec_update=False):
-        Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version.py"
-        try:
-            response = urllib.request.urlopen(Version_URL)
-            version_str = response.read().decode('utf-8')
-        except:
-            version_str = ""
+    #def check_version(self, exec_update=False):
+        #Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version.py"
+        #try:
+            #response = urllib.request.urlopen(Version_URL)
+            #version_str = response.read().decode('utf-8')
+        #except:
+            #version_str = ""
             
-        if version_str != "":
-            version_str_split = version_str.split('"')
-            version_str = version_str_split[1]
-        if not exec_update:
-            if version_str != PROG_VERSION:
-                answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
-        else:
-            if version_str != PROG_VERSION:
-                answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
-                if answer == False:
-                    return
-                else:
-                    self.Update_pyMobaLedLib()
-            else:
-                answer = tk.messagebox.askyesno ('Check pyMLL Version','Es gibt keine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\n\nSoll die aktuelle Version nochmal heruntergeladen werden?")
-                if answer == False:
-                    return
-                else:
-                    self.Update_pyMobaLedLib()                
-        return
+        #if version_str != "":
+            #version_str_split = version_str.split('"')
+            #version_str = version_str_split[1]
+        #if not exec_update:
+            #if version_str != PROG_VERSION:
+                #answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
+        #else:
+            #if version_str != PROG_VERSION:
+                #answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
+                #if answer == False:
+                    #return
+                #else:
+                    #self.Update_pyMobaLedLib()
+            #else:
+                #answer = tk.messagebox.askyesno ('Check pyMLL Version','Es gibt keine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\n\nSoll die aktuelle Version nochmal heruntergeladen werden?")
+                #if answer == False:
+                    #return
+                #else:
+                    #self.Update_pyMobaLedLib()                
+        #return
      
 
 
@@ -3468,7 +3780,7 @@ class SerialThreadx(threading.Thread):
 
     def run(self):
         #global serialport
-        logging.debug("pyProg-SerialThread started:"+self.serialport_name)
+        logger.debug("pyProg-SerialThread started:"+self.serialport_name)
         if self.serialport:
 
             while not ThreadEvent.is_set() and self.serialport:
@@ -3502,7 +3814,7 @@ class SerialThreadx(threading.Thread):
                         pass
                     logging.info("PyProg-SerialThread (%s) got message: %s", self.serialport_name,text)
 
-        logging.debug("PyProg-SerialThread (%s) received event. Exiting", self.serialport_name)
+        logger.debug("PyProg-SerialThread (%s) received event. Exiting", self.serialport_name)
 
 
 def img_resource_path(relative_path):
@@ -3515,9 +3827,22 @@ def img_resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
+def setup_logging(config_path='logger/logging_config.json', logfilename="logfile.log"):
+    with open(config_path, 'r') as f:
+        config = json.load(f)
+        
+        config["handlers"]["file"]["filename"] = logfilename
+        logging.config.dictConfig(config)
+
 def check_version(exec_update=False):
     
-    Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version.py"
+    # compares the current version with the version in github
+    # string on github:
+    #      Version = "V7.0.0-A0 - 22.7.2025"
+    # versionstring in the program:
+    #      "V7.0.0-A0 - 22.7.2025"
+    
+    Version_URL= "https://raw.githubusercontent.com/haroldlinke/pyMobaLedLib/master/python/version2.py"
     try:
         response = urllib.request.urlopen(Version_URL)
         version_str = response.read().decode('utf-8')
@@ -3525,26 +3850,33 @@ def check_version(exec_update=False):
         version_str = ""
         
     if version_str != "":
+        # extract version string from github string
         version_str_split = version_str.split('"')
-        version_str = version_str_split[1]
-        if version_str.startswith("*"):
-            return
+        comp_version_str = version_str_split[1]
+        
+        #extract Main version from version string: "V7.0.0"
+        comp_version_str_split = comp_version_str.split("-")
+        comp_version_str = comp_version_str_split[0]
+        
+        comp_prog_version_split = PROG_VERSION.split("-")
+        comp_prog_version = comp_prog_version_split[0]
+        
         if not exec_update:
-            if version_str > PROG_VERSION:
-                answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen")
-        else:
-            if version_str > PROG_VERSION:
-                answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
-                if answer == False:
-                    return
-                else:
-                    pass
-            else:
-                answer = tk.messagebox.askyesno ('Check pyMLL Version','Es gibt keine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\n\nSoll die aktuelle Version nochmal heruntergeladen werden?")
-                if answer == False:
-                    return
-                else:
-                    self.Update_pyMobaLedLib()                    
+            if comp_version_str > comp_prog_version:
+                answer = tk.messagebox.showinfo ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nBitte die neue Version herunterladen:\n\nHilfe->Update pyMobaLedLib")
+        #else:
+            #if version_str > PROG_VERSION:
+                #answer = tk.messagebox.askyesno ('Neue pyMLL Version','Es gibt eine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\nNeue Version: "+ version_str + "\n\nSoll die neue Version heruntergeladen werden?")
+                #if answer == False:
+                    #return
+                #else:
+                    #pass
+            #else:
+                #answer = tk.messagebox.askyesno ('Check pyMLL Version','Es gibt keine neue pyMLL Version auf GitHub.\n\nAktuelle Version: '+ PROG_VERSION + "\n\nSoll die aktuelle Version nochmal heruntergeladen werden?")
+                #if answer == False:
+                    #return
+                #else:
+                    #self.Update_pyMobaLedLib()                    
     return
  
 
@@ -3561,13 +3893,9 @@ filedir = ""
 
 def main_entry():
     
-    global DEBUG
-    global ScaleFactor
-    
-    global COMMAND_LINE_ARG_DICT
-    global filedir
-    
+    global DEBUG, ScaleFactor, COMMAND_LINE_ARG_DICT, filedir, logger
     #import wingdbstub
+
     try:
         import ctypes
         ScaleFactor = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
@@ -3595,15 +3923,20 @@ def main_entry():
     parser.add_argument('--special',choices=["True","False"],help="if <True> special feature are shown - for developers only")
     parser.add_argument('--ARDUINO_IDE',choices=["True", "False"],help="Forces the use of the ARDUINO IDE instead of the Windows batch files")
     parser.add_argument('--ESP32WINBAT',choices=["True", "False"],help="Forces the use of thethe Windows batch file for ESP32")
+    parser.add_argument('--UseConfig',choices=["True", "False"],help="Creates a config and uploads to Pico")
     try:
         args = parser.parse_args()
     except argparse.ArgumentError:
         #print("Argument Error")
-        logging.debug ('Catching an argumentError')
+        logger.debug ('Catching an argumentError')
     
     logging_format = '%(asctime)s - %(message)s'
     
+    #setup_logging()
+    
     filedir = os.path.dirname(os.path.realpath(__file__))
+    
+    
     if args.logfile:
         logfilename1=args.logfile
     else:
@@ -3613,6 +3946,7 @@ def main_entry():
         logfilename=None
     else:
         logfilename = os.path.join(filedir, logfilename1)
+    setup_logging(filedir + "/logger/logging_config.json", logfilename=logfilename)
     logging_level="DEBUG"
     
     if args.loglevel:
@@ -3633,20 +3967,17 @@ def main_entry():
         log_level=logging.DEBUG
 
     logger.setLevel(log_level)
-    fh = logging.handlers.RotatingFileHandler(logfilename,maxBytes=1000000,backupCount=3)
-    fh.setLevel(log_level)
-    # create console handler with a higher log level
-    ch = logging.StreamHandler()
-    ch.setLevel(log_level)
+    
+    
+    #fh = logging.handlers.RotatingFileHandler(logfilename,maxBytes=50000,backupCount=5)
+    #fh.setLevel(log_level)
     # create formatter and add it to the handlers
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    ch.setFormatter(formatter)
-    fh.setFormatter(formatter)
+    #formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    #fh.setFormatter(formatter)
     # add the handlers to logger
-    logger.addHandler(ch)
-    logger.addHandler(fh)
-    logging.basicConfig(format=logging_format, filename=logfilename,filemode="w",level=log_level,datefmt="%H:%M:%S",force=True)
-
+    #logger.addHandler(fh)
+    #logging.basicConfig(format=logging_format, filename=logfilename,level=log_level,datefmt="%H:%M:%S",force=True)
+    logger.info("***********************************************************************************************************")
     logger.info("Python Version: %s",sys.version)
     logger.info("MLL Proggenerator started %s", PROG_VERSION)
     logger.info(" Platform: %s",platform.platform())
@@ -3654,14 +3985,15 @@ def main_entry():
     
     logger.debug("Installationfolder %s",filedir)
     logger.debug("Logging Level: %s Logfilename: %s",logging_level, logfilename)
-    
+    logger.info("***********************************************************************************************************")
+    logger.info(" ")
     COMMAND_LINE_ARG_DICT["logfilename"]=logfilename
     if args.startpage:
         COMMAND_LINE_ARG_DICT["startpagename"]=args.startpage
     else:
         COMMAND_LINE_ARG_DICT["startpagename"]="StartPage"
         
-    logger.info(" Startpage: %s",COMMAND_LINE_ARG_DICT["startpagename"])        
+    logging.info(" Startpage: %s",COMMAND_LINE_ARG_DICT["startpagename"])        
     if args.port:
         COMMAND_LINE_ARG_DICT["serportname"]=args.port
         
@@ -3682,9 +4014,6 @@ def main_entry():
     if args.test:
         COMMAND_LINE_ARG_DICT["test"]=args.test
         
-        if args.test:
-            COMMAND_LINE_ARG_DICT["test"]=args.test    
-        
     if args.special:
         COMMAND_LINE_ARG_DICT["special"]=args.special
         
@@ -3698,7 +4027,16 @@ def main_entry():
             
     if args.vb2py:
         if args.vb2py == "True":
-            COMMAND_LINE_ARG_DICT["vb2py"] = True    
+            COMMAND_LINE_ARG_DICT["vb2py"] = True
+    
+    if args.UseConfig:
+        if args.UseConfig == "True":
+            COMMAND_LINE_ARG_DICT["UseConfig"] = True
+            # check if the necessare modules are loaded
+            ensure_module_tk("cpip")
+            ensure_module_tk("requests")
+            ensure_module_tk("zeroconf")
+            ensure_module_tk("telnetlib", "telnetlib-313-and-up 3.13.1")
                     
 
     # check if colortest only is needed
@@ -3706,23 +4044,25 @@ def main_entry():
         filedir = os.path.dirname(os.path.realpath(__file__))
         filepath1 = os.path.join(filedir, COLORTESTONLY_FILE)
         open(filepath1, 'r').close()
+        logger.debug("Colortestfile exists: Mode Colortestonly")
         colortest_only = True
     except BaseException as e:
-        logging.debug(e, exc_info=True) 
+        #logger.debug(e, exc_info=True)
+        logger.debug("Colortestfile does not exist")
         colortest_only = False
         pass
     
     if colortest_only:
         COMMAND_LINE_ARG_DICT["colortest_only"]= "True"
+        COMMAND_LINE_ARG_DICT["caller"]= "SetColTab"
+        COMMAND_LINE_ARG_DICT["startpagename"]='ColorCheckPage'
         
     logger.info("Commandline args: %s",repr(COMMAND_LINE_ARG_DICT))
-    if not colortest_only:
-        check_version()
-    
+        
     try:
         app = pyMobaLedLibapp()
         tk_version = app.tk.call("info", "patchlevel")
-        logging.debug("TK-Version:"+tk_version)
+        logger.debug("TK-Version:"+tk_version)
         
         app.setroot(app)
         app.protocol("WM_DELETE_WINDOW", app.cancel)
@@ -3730,11 +4070,11 @@ def main_entry():
         app.mainloop()
     
     except BaseException as e:
-        logging.error(e, exc_info=True)
+        logger.error(e, exc_info=True)
         #print(e, exc_info=True)
         pass    
     
-    logging.info("Program End")
+    logger.info("Program End")
 
 if __name__ == "__main__":
     main_entry()

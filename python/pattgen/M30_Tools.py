@@ -1031,7 +1031,7 @@ def VersionStr_is_Greater(Ver1, Ver2, Delimmiter='.'):
     # "1.0" => "1.0.0"
     Ver1A = Split(Ver1, Delimmiter)
     Ver2A = Split(Ver2, Delimmiter)
-    EndNr = WorksheetFunction.Max(UBound(Ver1A), UBound(Ver2A))
+    EndNr = X02.Application.WorksheetFunction.Max(UBound(Ver1A), UBound(Ver2A))
     for Nr in vbForRange(0, EndNr):
         if UBound(Ver1A) >= Nr:
             v1 = Val(Ver1A(Nr))

@@ -1,0 +1,766 @@
+17:11:29 - ***********************************************************************************************************
+17:11:29 - Python Version: 3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]
+17:11:29 - MLL Proggenerator started V7.0.2-A4 - 03.09.2025
+17:11:29 -  Platform: Windows-10-10.0.19045-SP0
+17:11:29 - Parameters; Namespace(loglevel='DEBUG', logfile=None, loaddatafile=None, startpage=None, port=None, z21simulator=None, caller=None, test=None, vb2py='True', special=None, ARDUINO_IDE=None, ESP32WINBAT='True', UseConfig='True')
+17:11:29 - Installationfolder D:\data\doc\GitHub\pyMobaLedLib\python
+17:11:29 - Logging Level: DEBUG Logfilename: D:\data\doc\GitHub\pyMobaLedLib\python\../logfile.logx
+17:11:29 - ***********************************************************************************************************
+17:11:29 -  
+17:11:29 -  Startpage: StartPage
+17:11:29 - Colortestfile does not exist
+17:11:29 - Commandline args: {'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.logx', 'startpagename': 'StartPage', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'UseConfig': True}
+17:11:29 - readConfigData
+17:11:29 - Warning: Config File D:\data\doc\GitHub\pyMobaLedLib\python\MobaLedTest_param.json not found
+17:11:29 - Read Paramdata: {}
+17:11:29 - ReadConfig: ../../MobaLedTest_config.json D:\data\doc\GitHub\pyMobaLedLib\python
+
+17:11:29 - running in a normal Python process
+17:11:29 - ReadConfig: %s
+17:11:30 - Font sizenormal: 11 sizelarge: 14 sizesmall: 8
+17:11:30 - Screenwidht: 1920 Screenheight: 1080 ScaleFactor: 1.0
+17:11:30 - Windowwidth: 1920 Windowheight: 1017
+17:11:30 - pos_x: 1 pos_y: 48
+17:11:30 - set_statusmessage: Erstelle ProgramGenerator Seite ...
+17:11:30 - set_statusmessage: Erstelle Workbook: ProgGenerator
+17:11:30 - set_statusmessage: Erstelle WorkSheet: DCC
+17:11:31 - STREAM b'IHDR' 16 13
+17:11:31 - STREAM b'sRGB' 41 1
+17:11:31 - STREAM b'gAMA' 54 4
+17:11:31 - STREAM b'pHYs' 70 9
+17:11:31 - STREAM b'IDAT' 91 6382
+17:11:31 - STREAM b'IHDR' 16 13
+17:11:31 - STREAM b'sRGB' 41 1
+17:11:31 - STREAM b'gAMA' 54 4
+17:11:31 - STREAM b'pHYs' 70 9
+17:11:31 - STREAM b'IDAT' 91 5037
+17:11:32 - set_statusmessage: Erstelle WorkSheet: Selectrix
+17:11:32 - set_statusmessage: Erstelle WorkSheet: CAN
+17:11:32 - set_statusmessage: Erstelle WorkSheet: LNet
+17:11:32 - set_statusmessage: Erstelle WorkSheet: Examples
+17:11:32 - set_statusmessage: Erstelle WorkSheet: Config
+17:11:32 - set_statusmessage: Erstelle WorkSheet: Languages
+17:11:33 - set_statusmessage: Erstelle WorkSheet: Lib_Macros
+17:11:33 - Add additional data: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\Lib_Macros_ext.csv
+17:11:33 - set_statusmessage: Erstelle WorkSheet: Libraries
+17:11:33 - set_statusmessage: Erstelle WorkSheet: Par_Description
+17:11:33 - set_statusmessage: Erstelle WorkSheet: Platform_Parameters
+17:11:33 - set_statusmessage: Erstelle WorkSheet: Named_Ranges
+17:11:33 - Set_activeworkbook:	ProgGenerator
+17:11:33 - Set_activeworkbook:	ProgGenerator
+17:11:33 - Load Workbook:D:\data\doc\GitHub\pyMobaLedLib\python\../temp_workbook.table_ProgGenerator.json
+17:11:33 - FileVersion:V7.0.2-A4 - 03.09.2025
+17:11:33 - set_statusmessage: Erstelle WorkSheet: 102_Beta_2
+17:11:33 - set_statusmessage: Erstelle WorkSheet: PICO Pattern
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:DCC
+17:11:33 - Set_activeworkbook:	ProgGenerator
+17:11:33 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:Selectrix
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:CAN
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:LNet
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:Examples
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:Config
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:Languages
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:Lib_Macros
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:Libraries
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:Par_Description
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:Platform_Parameters
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:Named_Ranges
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:102_Beta_2
+17:11:33 - set_statusmessage: Workbook: ProgGenerator Loading:PICO Pattern
+17:11:33 - set_statusmessage: Init Workbook: ProgGenerator
+17:11:33 - set_statusmessage: Init Workbook: ProgGenerator Sheet: DCC
+17:11:33 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Selectrix
+17:11:33 - set_statusmessage: Init Workbook: ProgGenerator Sheet: CAN
+17:11:33 - set_statusmessage: Init Workbook: ProgGenerator Sheet: LNet
+17:11:33 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Examples
+17:11:33 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Config
+17:11:34 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Languages
+17:11:34 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Lib_Macros
+17:11:34 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Libraries
+17:11:34 - add_controls
+17:11:34 - add_controls:
+17:11:34 - add_controls:
+17:11:34 - add_controls:
+17:11:34 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Par_Description
+17:11:34 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Platform_Parameters
+17:11:34 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Named_Ranges
+17:11:34 - set_statusmessage: Init Workbook: ProgGenerator Sheet: 102_Beta_2
+17:11:34 - set_statusmessage: Init Workbook: ProgGenerator Sheet: PICO Pattern
+17:11:34 - Set_activeworkbook:	ProgGenerator
+17:11:34 - set_statusmessage: Init WorkbookFunction: ProgGenerator
+17:11:34 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:11:34 - Workbook_init - AppLoc_Ardu:\AppData\Local\Arduino15\
+17:11:34 - Workbook_init - Env_USERPROFILE:USERPROFILE
+17:11:34 - Workbook_Open() called
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - EventSH_cellselected
+17:11:34 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:11:34 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+17:11:34 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:11:34 - Set_activeworkbook:	ProgGenerator
+17:11:34 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:11:34 - Set_activeworkbook:	ProgGenerator
+17:11:34 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:11:34 - Set_activeworkbook:	ProgGenerator
+17:11:34 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:11:34 - Set_activeworkbook:	ProgGenerator
+17:11:34 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:11:34 - Set_activeworkbook:	ProgGenerator
+17:11:34 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:11:34 - Set_activeworkbook:	ProgGenerator
+17:11:34 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:11:34 - Set_activeworkbook:	ProgGenerator
+17:11:34 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:11:34 - Update_General_Versions
+17:11:34 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:11:34 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+17:11:34 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:11:34 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:11:34 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+17:11:34 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/arduino/hardware/avr/*.*
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/arduino/hardware/avr\\1.8.6']
+17:11:34 - Get_All_Library_States
+17:11:34 - Read_Sketchbook_Path_from_preference_txt - Name:C:\Users\Harold\AppData\Local\Arduino15\preferences.txt
+17:11:34 - Sketchbookpath=C:\Users\Harold\Documents\Arduino
+17:11:34 - Create_Folder:C:\Users\Harold\Documents\Arduino/
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/FastLED/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/FastLED/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/NmraDcc/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/NmraDcc/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/AnalogScanner/library.properties
+17:11:34 - _last_files: None
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/ATtinySerialOut/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/ATtinySerialOut/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/DIO2/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/DIO2/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/EWMA/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/EWMA/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaTools/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaTools/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/LocoNet/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/LocoNet/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/TimerOne/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/TimerOne/library.properties']
+17:11:34 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/ATTinyCore/hardware/avr/*.*
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/ATTinyCore/hardware/avr\\1.5.2']
+17:11:34 - _last_files: None
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/ATTinyCore/hardware/avr/1.5.2/libraries/ATTinyCore/src/ATTinyCore.h
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/ATTinyCore/hardware/avr/1.5.2/libraries/ATTinyCore/src/ATTinyCore.h']
+17:11:34 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:11:34 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+17:11:34 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/arduino/hardware/avr/*.*
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/arduino/hardware/avr\\1.8.6']
+17:11:34 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/hardware/esp32/*.*
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/hardware/esp32\\1.0.4']
+17:11:34 - _last_files: None
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/hardware/esp32/1.0.4/libraries/ESP32/src/dummy.h
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/hardware/esp32/1.0.4/libraries/ESP32/src/dummy.h']
+17:11:34 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/tools/esptool_py/*.*
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/tools/esptool_py\\2.6.1']
+17:11:34 - _last_files: None
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/tools/esptool_py/2.6.1/esptool.exe
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/tools/esptool_py/2.6.1/esptool.exe']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/WiFiManager/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/WiFiManager/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/U8g2/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/U8g2/library.properties']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/EspSoftwareSerial/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/EspSoftwareSerial/library.properties']
+17:11:34 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/rp2040/hardware/rp2040/*.*
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/rp2040/hardware/rp2040\\4.4.0']
+17:11:34 - _last_files: None
+17:11:34 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/rp2040/hardware/rp2040/4.4.0/libraries/rp2040/dummy_rp2040.h
+17:11:34 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/rp2040/hardware/rp2040/4.4.0/libraries/rp2040/dummy_rp2040.h']
+17:11:34 - Dir:C:\Users\Harold\Documents\Arduino/libraries/LocoNet2/library.properties
+17:11:34 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/LocoNet2/library.properties']
+17:11:34 - Get_Sketchbook_Path called
+17:11:34 - Get_Sketchbook_Path=C:\Users\Harold\Documents\Arduino
+17:11:34 - Get_SrcDirInLib=C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/extras/
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 2831
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 4195
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 1521
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 1988
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 1798
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 1734
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 2187
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 1511
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 5326
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 5613
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 5088
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 2583
+17:11:34 - STREAM b'IHDR' 16 13
+17:11:34 - STREAM b'sRGB' 41 1
+17:11:34 - STREAM b'gAMA' 54 4
+17:11:34 - STREAM b'pHYs' 70 9
+17:11:34 - STREAM b'IDAT' 91 5431
+17:11:34 - set_statusmessage: Erstelle PatternConfigurator Seite ...
+17:11:34 - set_statusmessage: Erstelle Workbook: PatternWorkbook
+17:11:34 - set_statusmessage: Erstelle WorkSheet: Main
+17:11:35 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Main.csv
+17:11:35 - set_statusmessage: Erstelle WorkSheet: PG-Temp
+17:11:35 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Main.csv
+17:11:35 - set_statusmessage: Erstelle WorkSheet: Languages
+17:11:35 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Languages.csv
+17:11:35 - set_statusmessage: Erstelle WorkSheet: Goto_Activation_Entries
+17:11:35 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Goto_Activation_Entries.csv
+17:11:35 - set_statusmessage: Erstelle WorkSheet: Special_Mode_Dlg
+17:11:35 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Special_Mode_Dlg.csv
+17:11:35 - set_statusmessage: Erstelle WorkSheet: Par_Description
+17:11:35 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Par_Description.csv
+17:11:35 - set_statusmessage: Erstelle WorkSheet: Named_Ranges
+17:11:35 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Named_Ranges.csv
+17:11:35 - Set_activeworkbook:	PatternWorkbook
+17:11:35 - Set_activeworkbook:	PatternWorkbook
+17:11:35 - Load Workbook:D:\data\doc\GitHub\pyMobaLedLib\python\../temp_workbook.table_PatternWorkbook.json
+17:11:35 - FileVersion:V7.0.2-A4 - 03.09.2025
+17:11:35 - set_statusmessage: Erstelle WorkSheet: Verkehrssicherugnsanhaenger
+17:11:35 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Main.csv
+17:11:35 - set_statusmessage: Workbook: PatternWorkbook Loading:Main
+17:11:35 - Set_activeworkbook:	PatternWorkbook
+17:11:35 - TabChanged  - .!notebook.!pattern_generatorpage.!frame.!frame3.!notebook.!frame
+17:11:37 - set_statusmessage: Workbook: PatternWorkbook Loading:PG-Temp
+17:11:37 - set_statusmessage: Workbook: PatternWorkbook Loading:Languages
+17:11:37 - set_statusmessage: Workbook: PatternWorkbook Loading:Goto_Activation_Entries
+17:11:37 - set_statusmessage: Workbook: PatternWorkbook Loading:Special_Mode_Dlg
+17:11:37 - set_statusmessage: Workbook: PatternWorkbook Loading:Par_Description
+17:11:37 - set_statusmessage: Workbook: PatternWorkbook Loading:Named_Ranges
+17:11:37 - set_statusmessage: Workbook: PatternWorkbook Loading:Verkehrssicherugnsanhaenger
+17:11:38 - set_statusmessage: Init Workbook: PatternWorkbook
+17:11:38 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Main
+17:11:38 - add_controls
+17:11:38 - add_controls:
+17:11:38 - add_controls:
+17:11:38 - add_controls:
+17:11:38 - add_controls:
+17:11:38 - add_controls:
+17:11:38 - add_controls:
+17:11:38 - add_controls:
+17:11:38 - add_controls:
+17:11:38 - add_controls:
+17:11:38 - add_controls:
+17:11:39 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: PG-Temp
+17:11:39 - add_controls
+17:11:39 - add_controls:
+17:11:39 - add_controls:
+17:11:39 - add_controls:
+17:11:39 - add_controls:
+17:11:39 - add_controls:
+17:11:39 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Languages
+17:11:39 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Goto_Activation_Entries
+17:11:39 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Special_Mode_Dlg
+17:11:39 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Par_Description
+17:11:39 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Named_Ranges
+17:11:39 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Verkehrssicherugnsanhaenger
+17:11:39 - Set_activeworkbook:	PatternWorkbook
+17:11:39 - Starting Workbook_Open() in 'DieseArbeitsmappe'
+17:11:39 - Set_activeworkbook:	PatternWorkbook
+17:11:39 - Set_activeworkbook:	PatternWorkbook
+17:11:39 - Colorcorrection:1.0
+17:11:39 - SoundCheckPage - Multipleparams
+17:11:39 - ConfigurationPage - Multipleparams
+17:11:39 - ConfigurationPage - Multipleparams
+17:11:39 - ConfigurationPage - Multipleparams
+17:11:39 - Set_activeworkbook:	ProgGenerator
+17:11:39 - Set_activeworkbook:	ProgGenerator
+17:11:39 - Tabselected: Programm
+Generator
+17:11:39 - Set_activeworkbook:	ProgGenerator
+17:11:39 - TabChanged  - .!notebook.!prog_generatorpage
+17:11:40 - TK-Version:8.6.12
+17:11:40 - Portname: COM11
+17:11:40 - Checkplatform: Current platform=Windows- Checked Platform=Darwin
+17:11:40 - connect COM11
+17:11:40 - set_connectstatusmessage: Versuch sich mit dem ARDUINO am Port COM11 zu verbinden ...
+17:11:40 - could not open port 'COM11': FileNotFoundError(2, 'Das System kann die angegebene Datei nicht finden.', None, 2)
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\pyMobaLedLib.py", line 1342, in connect
+    self.arduino = serial.Serial(port,baudrate=baudrate,timeout=2,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\serial\serialwin32.py", line 31, in __init__
+    super(Serial, self).__init__(*args, **kwargs)
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\serial\serialutil.py", line 240, in __init__
+    self.open()
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\serial\serialwin32.py", line 62, in open
+    raise SerialException("could not open port {!r}: {!r}".format(self.portstr, ctypes.WinError()))
+serial.serialutil.SerialException: could not open port 'COM11': FileNotFoundError(2, 'Das System kann die angegebene Datei nicht finden.', None, 2)
+17:11:47 - set_connectstatusmessage: Nicht Verbunden
+17:11:49 - Cancel
+17:11:57 - Cancel_with_save
+17:11:57 - set_connectstatusmessage: Closing program...
+17:11:57 - Cancel_with_save2
+17:11:57 - Cancel_Save_Data: pos_x=1 pos_y=48
+17:11:57 - SaveConfigData
+17:11:57 - ConfigFile-Save:D:\data\doc\GitHub\MobaLedTest_config.json
+17:11:57 - SaveParamData
+17:11:57 - Save Workbook:D:\data\doc\GitHub\pyMobaLedLib\python\../temp_workbook.table_ProgGenerator.json
+17:11:59 - Save Workbook:D:\data\doc\GitHub\pyMobaLedLib\python\../temp_workbook.table_PatternWorkbook.json
+17:11:59 - Close_notification
+17:11:59 - stop_process_serial
+17:11:59 - SaveConfigData
+17:11:59 - ConfigFile-Save:D:\data\doc\GitHub\MobaLedTest_config.json
+17:11:59 - SaveConfig: ARDUINO
+Einstellungen - {'serportnumber': 0, 'serportname': 'COM11', 'baudrate': 115200, 'maxLEDcount': '20', 'lastLedCount': 1, 'lastLedChannel': 0, 'lastLed': 0, 'pos_x': 0, 'pos_y': 0, 'win_height': 1017, 'win_width': 1920, 'colorview': 1, 'startpage': 3, 'startpagename': 'StartPage', 'led_correction_r': 255, 'led_correction_g': 175, 'led_correction_b': 239, 'use_led_correction': True, 'old_color': '#0F0B33', 'palette': {'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'GAS_LIGHT D': '#323232', 'GAS LIGHT': '#FFFFFF', 'NEON_LIGHT D': '#14141B', 'NEON_LIGHT M': '#464650', 'NEON_LIGHT': '#F5F5FF', 'ROOM_TV0 A': '#330A12', 'ROOM_TV0 B': '#0F0B33', 'ROOM_TV1 A': '#323208', 'ROOM_TV1 B': '#323208', 'SINGLE_LED': '#FFFFFF', 'SINGLE_LED D': '#323200'}, 'effectpalette': {'House': {'ROOM_DARK': '#323232', 'ROOM_BRIGHT': '#FFFFFF', 'ROOM_WARM_W': '#934D08', 'ROOM_RED': '#FF0000', 'ROOM_D_RED': '#320009', 'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'ROOM_COL345': '#271201', 'FIRE': '#000000', 'FIRED': '#000000', 'FIREB': '#000000', 'ROOM_CHIMNEY': '#000000', 'ROOM_CHIMNEYD': '#000000', 'ROOM_CHIMNEYB': '#000000', 'ROOM_TV0': '#323214', 'ROOM_TV0_CHIMNEY': '#323214', 'ROOM_TV0_CHIMNEYD': '#323214', 'ROOM_TV0_CHIMNEYB': '#323214', 'ROOM_TV1': '#323208', 'ROOM_TV1_CHIMNEY': '#323208', 'ROOM_TV1_CHIMNEYD': '#323208', 'ROOM_TV1_CHIMNEYB': '#323208', 'NEON_LIGHT': '#F5F5FF', 'NEON_LIGHT_SGL': '#F5F5FF', 'NEON_LIGHT1': '#F5F5FF', 'NEON_LIGHT2': '#F5F5FF', 'NEON_LIGHT3': '#F5F5FF', 'NEON_LIGHTD': '#14141B', 'NEON_LIGHTD_SGL': '#14141B', 'NEON_LIGHT1D': '#14141B', 'NEON_LIGHT2D': '#14141B', 'NEON_LIGHT3D': '#14141B', 'NEON_LIGHTM': '#464650', 'NEON_LIGHTM_SGL': '#464650', 'NEON_LIGHT1M': '#464650', 'NEON_LIGHT2M': '#464650', 'NEON_LIGHT3M': '#464650', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': '#14141B', 'NEON_DEF_D_SGL': '#14141B', 'NEON_DEF1D': '#14141B', 'NEON_DEF2D': '#14141B', 'NEON_DEF3D': '#14141B', 'LED_SGL': '#FFFFFF', 'SINGLE_LED1': '#FFFFFF', 'SINGLE_LED2': '#FFFFFF', 'SINGLE_LED3': '#FFFFFF', 'LED_D_SGL': '#323232', 'SINGLE_LED1D': '#323232', 'SINGLE_LED2D': '#323232', 'SINGLE_LED3D': '#323232', 'GAS_LIGHT': '#FFFFFF', 'GAS_LIGHT_SGL': '#FFFFFF', 'GAS_LIGHT1': '#FFFFFF', 'GAS_LIGHT2': '#FFFFFF', 'GAS_LIGHT3': '#FFFFFF', 'GAS_LIGHTD': '#323232', 'GAS_LIGHTD_SGL': '#323232', 'GAS_LIGHT1D': '#323232', 'GAS_LIGHT2D': '#323232', 'GAS_LIGHT3D': '#323232', 'SKIP_ROOM': '#000000'}, 'Const': {}, 'GasLights': {'NEON_LIGHT': 'NEON_LIGHT', 'NEON_LIGHT_SGL': 'NEON_LIGHT', 'NEON_LIGHT1': 'NEON_LIGHT', 'NEON_LIGHT2': 'NEON_LIGHT', 'NEON_LIGHT3': 'NEON_LIGHT', 'NEON_LIGHTD': 'NEON_LIGHT D', 'NEON_LIGHTD_SGL': 'NEON_LIGHT D', 'NEON_LIGHT1D': 'NEON_LIGHT D', 'NEON_LIGHT2D': 'NEON_LIGHT D', 'NEON_LIGHT3D': 'NEON_LIGHT D', 'NEON_LIGHTM': 'NEON_LIGHT M', 'NEON_LIGHTM_SGL': 'NEON_LIGHT M', 'NEON_LIGHT1M': 'NEON_LIGHT M', 'NEON_LIGHT2M': 'NEON_LIGHT M', 'NEON_LIGHT3M': 'NEON_LIGHT M', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': 'NEON_LIGHT D', 'NEON_DEF_D_SGL': 'NEON_LIGHT D', 'NEON_DEF1D': 'NEON_LIGHT D', 'NEON_DEF2D': 'NEON_LIGHT D', 'NEON_DEF3D': 'NEON_LIGHT D', 'GAS_LIGHT': 'GAS LIGHT', 'GAS_LIGHT_SGL': 'GAS LIGHT', 'GAS_LIGHT1': 'GAS LIGHT', 'GAS_LIGHT2': 'GAS LIGHT', 'GAS_LIGHT3': 'GAS LIGHT', 'GAS_LIGHTD': 'GAS_LIGHT D', 'GAS_LIGHTD_SGL': 'GAS_LIGHT D', 'GAS_LIGHT1D': 'GAS_LIGHT D', 'GAS_LIGHT2D': 'GAS_LIGHT D', 'GAS_LIGHT3D': 'GAS_LIGHT D'}}, 'old_effect': 'ROOM_DARK', 'group_name': 'Group001', 'autoconnect': False, 'lastSound': 0, 'lastSoundImpuls': 200, 'startcmdcb': False, 'startcmd_filename': 'D:/data/doc/GitHub/pyMobaLedLib/python/images/BW_Gleisplan.jpg', 'resourcePathcb': False, 'resourcePath_filename': '', 'ArduinoTypeName': 'Nano/Uno (neu)', 'ArduinoTypeNumber': 1, 'Z21Data': {'0': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '1': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '2': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}}, 'lastservo_channel': 1, 'DCC BaseAddress': 100, 'ServoAddress': 0, 'ServoLEDChannel': 0, 'ServoChannel': 0, 'SoundAddress': 0, 'SoundLEDChannel': 0, 'SoundImpulsLength': 200, 'Sound_RED': 8, 'Sound_GREEN': 3, 'Sound_BLUE': 6, 'baudratenumber': 0, 'ARDUINOMessage': 0, 'Autoconnect': 0, 'ARDUINOShowAll': True, 'ARDUINOTakeOver': True, 'ARDUINOTest': False, 'UseZ21Data': False, 'ARDUINOBlink': False, 'MLLDigSysName': 'None', 'MLLDigSysNumber': 0, 'Baudrate': 115200, 'FontTitle': 12, 'FontLabel': 8, 'FontSpinbox': 8, 'FontScale': 8, 'FontName': 'Arial', 'FontNormal': 11, 'FontLarge': 14, 'FontSmall': 8, 'RMbusTimer': 100, 'ShowProgramGenerator': True, 'ShowPatternGenerator': True, 'ShowZ21Simulator': False, 'ShowHiddentables': False, 'PGIconSize': 50, 'AutoLoadWorkbooks': True, 'UseCOM_Port_UserForm': False, 'languagename': 'Auto', 'language': 0, 'IPUploadTimeout': 60, 'UseHostAdapter': True, 'CheckVersion': True, 'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.logx', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'LEDchannel': '', 'lastactive_tabname': 'ProgGeneratorPage', 'UseConfig': True}
+17:11:59 - Save_Config: win_height=1017 win_width=1920
+17:11:59 - SaveConfigData
+17:11:59 - ConfigFile-Save:D:\data\doc\GitHub\MobaLedTest_config.json
+17:11:59 - SaveConfig: Programm
+Einstellungen - {'serportnumber': 0, 'serportname': 'COM11', 'baudrate': 115200, 'maxLEDcount': '20', 'lastLedCount': 1, 'lastLedChannel': 0, 'lastLed': 0, 'pos_x': 0, 'pos_y': 0, 'win_height': 1017, 'win_width': 1920, 'colorview': 1, 'startpage': 3, 'startpagename': 'StartPage', 'led_correction_r': 255, 'led_correction_g': 175, 'led_correction_b': 239, 'use_led_correction': True, 'old_color': '#0F0B33', 'palette': {'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'GAS_LIGHT D': '#323232', 'GAS LIGHT': '#FFFFFF', 'NEON_LIGHT D': '#14141B', 'NEON_LIGHT M': '#464650', 'NEON_LIGHT': '#F5F5FF', 'ROOM_TV0 A': '#330A12', 'ROOM_TV0 B': '#0F0B33', 'ROOM_TV1 A': '#323208', 'ROOM_TV1 B': '#323208', 'SINGLE_LED': '#FFFFFF', 'SINGLE_LED D': '#323200'}, 'effectpalette': {'House': {'ROOM_DARK': '#323232', 'ROOM_BRIGHT': '#FFFFFF', 'ROOM_WARM_W': '#934D08', 'ROOM_RED': '#FF0000', 'ROOM_D_RED': '#320009', 'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'ROOM_COL345': '#271201', 'FIRE': '#000000', 'FIRED': '#000000', 'FIREB': '#000000', 'ROOM_CHIMNEY': '#000000', 'ROOM_CHIMNEYD': '#000000', 'ROOM_CHIMNEYB': '#000000', 'ROOM_TV0': '#323214', 'ROOM_TV0_CHIMNEY': '#323214', 'ROOM_TV0_CHIMNEYD': '#323214', 'ROOM_TV0_CHIMNEYB': '#323214', 'ROOM_TV1': '#323208', 'ROOM_TV1_CHIMNEY': '#323208', 'ROOM_TV1_CHIMNEYD': '#323208', 'ROOM_TV1_CHIMNEYB': '#323208', 'NEON_LIGHT': '#F5F5FF', 'NEON_LIGHT_SGL': '#F5F5FF', 'NEON_LIGHT1': '#F5F5FF', 'NEON_LIGHT2': '#F5F5FF', 'NEON_LIGHT3': '#F5F5FF', 'NEON_LIGHTD': '#14141B', 'NEON_LIGHTD_SGL': '#14141B', 'NEON_LIGHT1D': '#14141B', 'NEON_LIGHT2D': '#14141B', 'NEON_LIGHT3D': '#14141B', 'NEON_LIGHTM': '#464650', 'NEON_LIGHTM_SGL': '#464650', 'NEON_LIGHT1M': '#464650', 'NEON_LIGHT2M': '#464650', 'NEON_LIGHT3M': '#464650', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': '#14141B', 'NEON_DEF_D_SGL': '#14141B', 'NEON_DEF1D': '#14141B', 'NEON_DEF2D': '#14141B', 'NEON_DEF3D': '#14141B', 'LED_SGL': '#FFFFFF', 'SINGLE_LED1': '#FFFFFF', 'SINGLE_LED2': '#FFFFFF', 'SINGLE_LED3': '#FFFFFF', 'LED_D_SGL': '#323232', 'SINGLE_LED1D': '#323232', 'SINGLE_LED2D': '#323232', 'SINGLE_LED3D': '#323232', 'GAS_LIGHT': '#FFFFFF', 'GAS_LIGHT_SGL': '#FFFFFF', 'GAS_LIGHT1': '#FFFFFF', 'GAS_LIGHT2': '#FFFFFF', 'GAS_LIGHT3': '#FFFFFF', 'GAS_LIGHTD': '#323232', 'GAS_LIGHTD_SGL': '#323232', 'GAS_LIGHT1D': '#323232', 'GAS_LIGHT2D': '#323232', 'GAS_LIGHT3D': '#323232', 'SKIP_ROOM': '#000000'}, 'Const': {}, 'GasLights': {'NEON_LIGHT': 'NEON_LIGHT', 'NEON_LIGHT_SGL': 'NEON_LIGHT', 'NEON_LIGHT1': 'NEON_LIGHT', 'NEON_LIGHT2': 'NEON_LIGHT', 'NEON_LIGHT3': 'NEON_LIGHT', 'NEON_LIGHTD': 'NEON_LIGHT D', 'NEON_LIGHTD_SGL': 'NEON_LIGHT D', 'NEON_LIGHT1D': 'NEON_LIGHT D', 'NEON_LIGHT2D': 'NEON_LIGHT D', 'NEON_LIGHT3D': 'NEON_LIGHT D', 'NEON_LIGHTM': 'NEON_LIGHT M', 'NEON_LIGHTM_SGL': 'NEON_LIGHT M', 'NEON_LIGHT1M': 'NEON_LIGHT M', 'NEON_LIGHT2M': 'NEON_LIGHT M', 'NEON_LIGHT3M': 'NEON_LIGHT M', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': 'NEON_LIGHT D', 'NEON_DEF_D_SGL': 'NEON_LIGHT D', 'NEON_DEF1D': 'NEON_LIGHT D', 'NEON_DEF2D': 'NEON_LIGHT D', 'NEON_DEF3D': 'NEON_LIGHT D', 'GAS_LIGHT': 'GAS LIGHT', 'GAS_LIGHT_SGL': 'GAS LIGHT', 'GAS_LIGHT1': 'GAS LIGHT', 'GAS_LIGHT2': 'GAS LIGHT', 'GAS_LIGHT3': 'GAS LIGHT', 'GAS_LIGHTD': 'GAS_LIGHT D', 'GAS_LIGHTD_SGL': 'GAS_LIGHT D', 'GAS_LIGHT1D': 'GAS_LIGHT D', 'GAS_LIGHT2D': 'GAS_LIGHT D', 'GAS_LIGHT3D': 'GAS_LIGHT D'}}, 'old_effect': 'ROOM_DARK', 'group_name': 'Group001', 'autoconnect': False, 'lastSound': 0, 'lastSoundImpuls': 200, 'startcmdcb': False, 'startcmd_filename': 'D:/data/doc/GitHub/pyMobaLedLib/python/images/BW_Gleisplan.jpg', 'resourcePathcb': False, 'resourcePath_filename': '', 'ArduinoTypeName': 'Nano/Uno (neu)', 'ArduinoTypeNumber': 1, 'Z21Data': {'0': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '1': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '2': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}}, 'lastservo_channel': 1, 'DCC BaseAddress': 100, 'ServoAddress': 0, 'ServoLEDChannel': 0, 'ServoChannel': 0, 'SoundAddress': 0, 'SoundLEDChannel': 0, 'SoundImpulsLength': 200, 'Sound_RED': 8, 'Sound_GREEN': 3, 'Sound_BLUE': 6, 'baudratenumber': 0, 'ARDUINOMessage': 0, 'Autoconnect': 0, 'ARDUINOShowAll': True, 'ARDUINOTakeOver': True, 'ARDUINOTest': False, 'UseZ21Data': False, 'ARDUINOBlink': False, 'MLLDigSysName': 'None', 'MLLDigSysNumber': 0, 'Baudrate': 115200, 'FontTitle': 12, 'FontLabel': 8, 'FontSpinbox': 8, 'FontScale': 8, 'FontName': 'Arial', 'FontNormal': 11, 'FontLarge': 14, 'FontSmall': 8, 'RMbusTimer': 100, 'ShowProgramGenerator': True, 'ShowPatternGenerator': True, 'ShowZ21Simulator': False, 'ShowHiddentables': False, 'PGIconSize': 50, 'AutoLoadWorkbooks': True, 'UseCOM_Port_UserForm': False, 'languagename': 'Auto', 'language': 0, 'IPUploadTimeout': 60, 'UseHostAdapter': True, 'CheckVersion': True, 'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.logx', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'LEDchannel': '', 'lastactive_tabname': 'ProgGeneratorPage', 'UseConfig': True}
+17:11:59 - SaveConfigData
+17:11:59 - ConfigFile-Save:D:\data\doc\GitHub\MobaLedTest_config.json
+17:11:59 - SaveConfig: VB2PY
+  - {'serportnumber': 0, 'serportname': 'COM11', 'baudrate': 115200, 'maxLEDcount': '20', 'lastLedCount': 1, 'lastLedChannel': 0, 'lastLed': 0, 'pos_x': 0, 'pos_y': 0, 'win_height': 1017, 'win_width': 1920, 'colorview': 1, 'startpage': 3, 'startpagename': 'StartPage', 'led_correction_r': 255, 'led_correction_g': 175, 'led_correction_b': 239, 'use_led_correction': True, 'old_color': '#0F0B33', 'palette': {'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'GAS_LIGHT D': '#323232', 'GAS LIGHT': '#FFFFFF', 'NEON_LIGHT D': '#14141B', 'NEON_LIGHT M': '#464650', 'NEON_LIGHT': '#F5F5FF', 'ROOM_TV0 A': '#330A12', 'ROOM_TV0 B': '#0F0B33', 'ROOM_TV1 A': '#323208', 'ROOM_TV1 B': '#323208', 'SINGLE_LED': '#FFFFFF', 'SINGLE_LED D': '#323200'}, 'effectpalette': {'House': {'ROOM_DARK': '#323232', 'ROOM_BRIGHT': '#FFFFFF', 'ROOM_WARM_W': '#934D08', 'ROOM_RED': '#FF0000', 'ROOM_D_RED': '#320009', 'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'ROOM_COL345': '#271201', 'FIRE': '#000000', 'FIRED': '#000000', 'FIREB': '#000000', 'ROOM_CHIMNEY': '#000000', 'ROOM_CHIMNEYD': '#000000', 'ROOM_CHIMNEYB': '#000000', 'ROOM_TV0': '#323214', 'ROOM_TV0_CHIMNEY': '#323214', 'ROOM_TV0_CHIMNEYD': '#323214', 'ROOM_TV0_CHIMNEYB': '#323214', 'ROOM_TV1': '#323208', 'ROOM_TV1_CHIMNEY': '#323208', 'ROOM_TV1_CHIMNEYD': '#323208', 'ROOM_TV1_CHIMNEYB': '#323208', 'NEON_LIGHT': '#F5F5FF', 'NEON_LIGHT_SGL': '#F5F5FF', 'NEON_LIGHT1': '#F5F5FF', 'NEON_LIGHT2': '#F5F5FF', 'NEON_LIGHT3': '#F5F5FF', 'NEON_LIGHTD': '#14141B', 'NEON_LIGHTD_SGL': '#14141B', 'NEON_LIGHT1D': '#14141B', 'NEON_LIGHT2D': '#14141B', 'NEON_LIGHT3D': '#14141B', 'NEON_LIGHTM': '#464650', 'NEON_LIGHTM_SGL': '#464650', 'NEON_LIGHT1M': '#464650', 'NEON_LIGHT2M': '#464650', 'NEON_LIGHT3M': '#464650', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': '#14141B', 'NEON_DEF_D_SGL': '#14141B', 'NEON_DEF1D': '#14141B', 'NEON_DEF2D': '#14141B', 'NEON_DEF3D': '#14141B', 'LED_SGL': '#FFFFFF', 'SINGLE_LED1': '#FFFFFF', 'SINGLE_LED2': '#FFFFFF', 'SINGLE_LED3': '#FFFFFF', 'LED_D_SGL': '#323232', 'SINGLE_LED1D': '#323232', 'SINGLE_LED2D': '#323232', 'SINGLE_LED3D': '#323232', 'GAS_LIGHT': '#FFFFFF', 'GAS_LIGHT_SGL': '#FFFFFF', 'GAS_LIGHT1': '#FFFFFF', 'GAS_LIGHT2': '#FFFFFF', 'GAS_LIGHT3': '#FFFFFF', 'GAS_LIGHTD': '#323232', 'GAS_LIGHTD_SGL': '#323232', 'GAS_LIGHT1D': '#323232', 'GAS_LIGHT2D': '#323232', 'GAS_LIGHT3D': '#323232', 'SKIP_ROOM': '#000000'}, 'Const': {}, 'GasLights': {'NEON_LIGHT': 'NEON_LIGHT', 'NEON_LIGHT_SGL': 'NEON_LIGHT', 'NEON_LIGHT1': 'NEON_LIGHT', 'NEON_LIGHT2': 'NEON_LIGHT', 'NEON_LIGHT3': 'NEON_LIGHT', 'NEON_LIGHTD': 'NEON_LIGHT D', 'NEON_LIGHTD_SGL': 'NEON_LIGHT D', 'NEON_LIGHT1D': 'NEON_LIGHT D', 'NEON_LIGHT2D': 'NEON_LIGHT D', 'NEON_LIGHT3D': 'NEON_LIGHT D', 'NEON_LIGHTM': 'NEON_LIGHT M', 'NEON_LIGHTM_SGL': 'NEON_LIGHT M', 'NEON_LIGHT1M': 'NEON_LIGHT M', 'NEON_LIGHT2M': 'NEON_LIGHT M', 'NEON_LIGHT3M': 'NEON_LIGHT M', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': 'NEON_LIGHT D', 'NEON_DEF_D_SGL': 'NEON_LIGHT D', 'NEON_DEF1D': 'NEON_LIGHT D', 'NEON_DEF2D': 'NEON_LIGHT D', 'NEON_DEF3D': 'NEON_LIGHT D', 'GAS_LIGHT': 'GAS LIGHT', 'GAS_LIGHT_SGL': 'GAS LIGHT', 'GAS_LIGHT1': 'GAS LIGHT', 'GAS_LIGHT2': 'GAS LIGHT', 'GAS_LIGHT3': 'GAS LIGHT', 'GAS_LIGHTD': 'GAS_LIGHT D', 'GAS_LIGHTD_SGL': 'GAS_LIGHT D', 'GAS_LIGHT1D': 'GAS_LIGHT D', 'GAS_LIGHT2D': 'GAS_LIGHT D', 'GAS_LIGHT3D': 'GAS_LIGHT D'}}, 'old_effect': 'ROOM_DARK', 'group_name': 'Group001', 'autoconnect': False, 'lastSound': 0, 'lastSoundImpuls': 200, 'startcmdcb': False, 'startcmd_filename': '', 'resourcePathcb': False, 'resourcePath_filename': '', 'ArduinoTypeName': 'Nano/Uno (neu)', 'ArduinoTypeNumber': 1, 'Z21Data': {'0': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '1': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '2': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}}, 'lastservo_channel': 1, 'DCC BaseAddress': 100, 'ServoAddress': 0, 'ServoLEDChannel': 0, 'ServoChannel': 0, 'SoundAddress': 0, 'SoundLEDChannel': 0, 'SoundImpulsLength': 200, 'Sound_RED': 8, 'Sound_GREEN': 3, 'Sound_BLUE': 6, 'baudratenumber': 0, 'ARDUINOMessage': 0, 'Autoconnect': 0, 'ARDUINOShowAll': True, 'ARDUINOTakeOver': True, 'ARDUINOTest': False, 'UseZ21Data': False, 'ARDUINOBlink': False, 'MLLDigSysName': 'None', 'MLLDigSysNumber': 0, 'Baudrate': 115200, 'FontTitle': 12, 'FontLabel': 8, 'FontSpinbox': 8, 'FontScale': 8, 'FontName': 'Arial', 'FontNormal': 11, 'FontLarge': 14, 'FontSmall': 8, 'RMbusTimer': 100, 'ShowProgramGenerator': True, 'ShowPatternGenerator': True, 'ShowZ21Simulator': False, 'ShowHiddentables': False, 'PGIconSize': 50, 'AutoLoadWorkbooks': True, 'UseCOM_Port_UserForm': False, 'languagename': 'Auto', 'language': 0, 'IPUploadTimeout': 60, 'UseHostAdapter': True, 'CheckVersion': True, 'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.logx', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'LEDchannel': '', 'lastactive_tabname': 'ProgGeneratorPage', 'UseConfig': True}
+17:11:59 - SaveConfigData
+17:11:59 - ConfigFile-Save:D:\data\doc\GitHub\MobaLedTest_config.json
+17:11:59 - SaveConfig: Test
+  - {'serportnumber': 0, 'serportname': 'COM11', 'baudrate': 115200, 'maxLEDcount': '20', 'lastLedCount': 1, 'lastLedChannel': 0, 'lastLed': 0, 'pos_x': 0, 'pos_y': 0, 'win_height': 1017, 'win_width': 1920, 'colorview': 1, 'startpage': 3, 'startpagename': 'StartPage', 'led_correction_r': 255, 'led_correction_g': 175, 'led_correction_b': 239, 'use_led_correction': True, 'old_color': '#0F0B33', 'palette': {'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'GAS_LIGHT D': '#323232', 'GAS LIGHT': '#FFFFFF', 'NEON_LIGHT D': '#14141B', 'NEON_LIGHT M': '#464650', 'NEON_LIGHT': '#F5F5FF', 'ROOM_TV0 A': '#330A12', 'ROOM_TV0 B': '#0F0B33', 'ROOM_TV1 A': '#323208', 'ROOM_TV1 B': '#323208', 'SINGLE_LED': '#FFFFFF', 'SINGLE_LED D': '#323200'}, 'effectpalette': {'House': {'ROOM_DARK': '#323232', 'ROOM_BRIGHT': '#FFFFFF', 'ROOM_WARM_W': '#934D08', 'ROOM_RED': '#FF0000', 'ROOM_D_RED': '#320009', 'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'ROOM_COL345': '#271201', 'FIRE': '#000000', 'FIRED': '#000000', 'FIREB': '#000000', 'ROOM_CHIMNEY': '#000000', 'ROOM_CHIMNEYD': '#000000', 'ROOM_CHIMNEYB': '#000000', 'ROOM_TV0': '#323214', 'ROOM_TV0_CHIMNEY': '#323214', 'ROOM_TV0_CHIMNEYD': '#323214', 'ROOM_TV0_CHIMNEYB': '#323214', 'ROOM_TV1': '#323208', 'ROOM_TV1_CHIMNEY': '#323208', 'ROOM_TV1_CHIMNEYD': '#323208', 'ROOM_TV1_CHIMNEYB': '#323208', 'NEON_LIGHT': '#F5F5FF', 'NEON_LIGHT_SGL': '#F5F5FF', 'NEON_LIGHT1': '#F5F5FF', 'NEON_LIGHT2': '#F5F5FF', 'NEON_LIGHT3': '#F5F5FF', 'NEON_LIGHTD': '#14141B', 'NEON_LIGHTD_SGL': '#14141B', 'NEON_LIGHT1D': '#14141B', 'NEON_LIGHT2D': '#14141B', 'NEON_LIGHT3D': '#14141B', 'NEON_LIGHTM': '#464650', 'NEON_LIGHTM_SGL': '#464650', 'NEON_LIGHT1M': '#464650', 'NEON_LIGHT2M': '#464650', 'NEON_LIGHT3M': '#464650', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': '#14141B', 'NEON_DEF_D_SGL': '#14141B', 'NEON_DEF1D': '#14141B', 'NEON_DEF2D': '#14141B', 'NEON_DEF3D': '#14141B', 'LED_SGL': '#FFFFFF', 'SINGLE_LED1': '#FFFFFF', 'SINGLE_LED2': '#FFFFFF', 'SINGLE_LED3': '#FFFFFF', 'LED_D_SGL': '#323232', 'SINGLE_LED1D': '#323232', 'SINGLE_LED2D': '#323232', 'SINGLE_LED3D': '#323232', 'GAS_LIGHT': '#FFFFFF', 'GAS_LIGHT_SGL': '#FFFFFF', 'GAS_LIGHT1': '#FFFFFF', 'GAS_LIGHT2': '#FFFFFF', 'GAS_LIGHT3': '#FFFFFF', 'GAS_LIGHTD': '#323232', 'GAS_LIGHTD_SGL': '#323232', 'GAS_LIGHT1D': '#323232', 'GAS_LIGHT2D': '#323232', 'GAS_LIGHT3D': '#323232', 'SKIP_ROOM': '#000000'}, 'Const': {}, 'GasLights': {'NEON_LIGHT': 'NEON_LIGHT', 'NEON_LIGHT_SGL': 'NEON_LIGHT', 'NEON_LIGHT1': 'NEON_LIGHT', 'NEON_LIGHT2': 'NEON_LIGHT', 'NEON_LIGHT3': 'NEON_LIGHT', 'NEON_LIGHTD': 'NEON_LIGHT D', 'NEON_LIGHTD_SGL': 'NEON_LIGHT D', 'NEON_LIGHT1D': 'NEON_LIGHT D', 'NEON_LIGHT2D': 'NEON_LIGHT D', 'NEON_LIGHT3D': 'NEON_LIGHT D', 'NEON_LIGHTM': 'NEON_LIGHT M', 'NEON_LIGHTM_SGL': 'NEON_LIGHT M', 'NEON_LIGHT1M': 'NEON_LIGHT M', 'NEON_LIGHT2M': 'NEON_LIGHT M', 'NEON_LIGHT3M': 'NEON_LIGHT M', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': 'NEON_LIGHT D', 'NEON_DEF_D_SGL': 'NEON_LIGHT D', 'NEON_DEF1D': 'NEON_LIGHT D', 'NEON_DEF2D': 'NEON_LIGHT D', 'NEON_DEF3D': 'NEON_LIGHT D', 'GAS_LIGHT': 'GAS LIGHT', 'GAS_LIGHT_SGL': 'GAS LIGHT', 'GAS_LIGHT1': 'GAS LIGHT', 'GAS_LIGHT2': 'GAS LIGHT', 'GAS_LIGHT3': 'GAS LIGHT', 'GAS_LIGHTD': 'GAS_LIGHT D', 'GAS_LIGHTD_SGL': 'GAS_LIGHT D', 'GAS_LIGHT1D': 'GAS_LIGHT D', 'GAS_LIGHT2D': 'GAS_LIGHT D', 'GAS_LIGHT3D': 'GAS_LIGHT D'}}, 'old_effect': 'ROOM_DARK', 'group_name': 'Group001', 'autoconnect': False, 'lastSound': 0, 'lastSoundImpuls': 200, 'startcmdcb': False, 'startcmd_filename': 'D:/data/doc/GitHub/pyMobaLedLib/python/images/BW_Gleisplan.jpg', 'resourcePathcb': False, 'resourcePath_filename': '', 'ArduinoTypeName': 'Nano/Uno (neu)', 'ArduinoTypeNumber': 1, 'Z21Data': {'0': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '1': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '2': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}}, 'lastservo_channel': 1, 'DCC BaseAddress': 100, 'ServoAddress': 0, 'ServoLEDChannel': 0, 'ServoChannel': 0, 'SoundAddress': 0, 'SoundLEDChannel': 0, 'SoundImpulsLength': 200, 'Sound_RED': 8, 'Sound_GREEN': 3, 'Sound_BLUE': 6, 'baudratenumber': 0, 'ARDUINOMessage': 0, 'Autoconnect': 0, 'ARDUINOShowAll': True, 'ARDUINOTakeOver': True, 'ARDUINOTest': False, 'UseZ21Data': False, 'ARDUINOBlink': False, 'MLLDigSysName': 'None', 'MLLDigSysNumber': 0, 'Baudrate': 115200, 'FontTitle': 12, 'FontLabel': 8, 'FontSpinbox': 8, 'FontScale': 8, 'FontName': 'Arial', 'FontNormal': 11, 'FontLarge': 14, 'FontSmall': 8, 'RMbusTimer': 100, 'ShowProgramGenerator': True, 'ShowPatternGenerator': True, 'ShowZ21Simulator': False, 'ShowHiddentables': False, 'PGIconSize': 50, 'AutoLoadWorkbooks': True, 'UseCOM_Port_UserForm': False, 'languagename': 'Auto', 'language': 0, 'IPUploadTimeout': 60, 'UseHostAdapter': True, 'CheckVersion': True, 'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.logx', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'LEDchannel': '', 'lastactive_tabname': 'ProgGeneratorPage', 'UseConfig': True}
+17:11:59 - SaveConfigData
+17:11:59 - ConfigFile-Save:D:\data\doc\GitHub\MobaLedTest_config.json
+17:11:59 - SaveConfig: Stellwerk
+  - {'serportnumber': 0, 'serportname': 'COM11', 'baudrate': 115200, 'maxLEDcount': '20', 'lastLedCount': 1, 'lastLedChannel': 0, 'lastLed': 0, 'pos_x': 0, 'pos_y': 0, 'win_height': 1017, 'win_width': 1920, 'colorview': 1, 'startpage': 3, 'startpagename': 'StartPage', 'led_correction_r': 255, 'led_correction_g': 175, 'led_correction_b': 239, 'use_led_correction': True, 'old_color': '#0F0B33', 'palette': {'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'GAS_LIGHT D': '#323232', 'GAS LIGHT': '#FFFFFF', 'NEON_LIGHT D': '#14141B', 'NEON_LIGHT M': '#464650', 'NEON_LIGHT': '#F5F5FF', 'ROOM_TV0 A': '#330A12', 'ROOM_TV0 B': '#0F0B33', 'ROOM_TV1 A': '#323208', 'ROOM_TV1 B': '#323208', 'SINGLE_LED': '#FFFFFF', 'SINGLE_LED D': '#323200'}, 'effectpalette': {'House': {'ROOM_DARK': '#323232', 'ROOM_BRIGHT': '#FFFFFF', 'ROOM_WARM_W': '#934D08', 'ROOM_RED': '#FF0000', 'ROOM_D_RED': '#320009', 'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'ROOM_COL345': '#271201', 'FIRE': '#000000', 'FIRED': '#000000', 'FIREB': '#000000', 'ROOM_CHIMNEY': '#000000', 'ROOM_CHIMNEYD': '#000000', 'ROOM_CHIMNEYB': '#000000', 'ROOM_TV0': '#323214', 'ROOM_TV0_CHIMNEY': '#323214', 'ROOM_TV0_CHIMNEYD': '#323214', 'ROOM_TV0_CHIMNEYB': '#323214', 'ROOM_TV1': '#323208', 'ROOM_TV1_CHIMNEY': '#323208', 'ROOM_TV1_CHIMNEYD': '#323208', 'ROOM_TV1_CHIMNEYB': '#323208', 'NEON_LIGHT': '#F5F5FF', 'NEON_LIGHT_SGL': '#F5F5FF', 'NEON_LIGHT1': '#F5F5FF', 'NEON_LIGHT2': '#F5F5FF', 'NEON_LIGHT3': '#F5F5FF', 'NEON_LIGHTD': '#14141B', 'NEON_LIGHTD_SGL': '#14141B', 'NEON_LIGHT1D': '#14141B', 'NEON_LIGHT2D': '#14141B', 'NEON_LIGHT3D': '#14141B', 'NEON_LIGHTM': '#464650', 'NEON_LIGHTM_SGL': '#464650', 'NEON_LIGHT1M': '#464650', 'NEON_LIGHT2M': '#464650', 'NEON_LIGHT3M': '#464650', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': '#14141B', 'NEON_DEF_D_SGL': '#14141B', 'NEON_DEF1D': '#14141B', 'NEON_DEF2D': '#14141B', 'NEON_DEF3D': '#14141B', 'LED_SGL': '#FFFFFF', 'SINGLE_LED1': '#FFFFFF', 'SINGLE_LED2': '#FFFFFF', 'SINGLE_LED3': '#FFFFFF', 'LED_D_SGL': '#323232', 'SINGLE_LED1D': '#323232', 'SINGLE_LED2D': '#323232', 'SINGLE_LED3D': '#323232', 'GAS_LIGHT': '#FFFFFF', 'GAS_LIGHT_SGL': '#FFFFFF', 'GAS_LIGHT1': '#FFFFFF', 'GAS_LIGHT2': '#FFFFFF', 'GAS_LIGHT3': '#FFFFFF', 'GAS_LIGHTD': '#323232', 'GAS_LIGHTD_SGL': '#323232', 'GAS_LIGHT1D': '#323232', 'GAS_LIGHT2D': '#323232', 'GAS_LIGHT3D': '#323232', 'SKIP_ROOM': '#000000'}, 'Const': {}, 'GasLights': {'NEON_LIGHT': 'NEON_LIGHT', 'NEON_LIGHT_SGL': 'NEON_LIGHT', 'NEON_LIGHT1': 'NEON_LIGHT', 'NEON_LIGHT2': 'NEON_LIGHT', 'NEON_LIGHT3': 'NEON_LIGHT', 'NEON_LIGHTD': 'NEON_LIGHT D', 'NEON_LIGHTD_SGL': 'NEON_LIGHT D', 'NEON_LIGHT1D': 'NEON_LIGHT D', 'NEON_LIGHT2D': 'NEON_LIGHT D', 'NEON_LIGHT3D': 'NEON_LIGHT D', 'NEON_LIGHTM': 'NEON_LIGHT M', 'NEON_LIGHTM_SGL': 'NEON_LIGHT M', 'NEON_LIGHT1M': 'NEON_LIGHT M', 'NEON_LIGHT2M': 'NEON_LIGHT M', 'NEON_LIGHT3M': 'NEON_LIGHT M', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': 'NEON_LIGHT D', 'NEON_DEF_D_SGL': 'NEON_LIGHT D', 'NEON_DEF1D': 'NEON_LIGHT D', 'NEON_DEF2D': 'NEON_LIGHT D', 'NEON_DEF3D': 'NEON_LIGHT D', 'GAS_LIGHT': 'GAS LIGHT', 'GAS_LIGHT_SGL': 'GAS LIGHT', 'GAS_LIGHT1': 'GAS LIGHT', 'GAS_LIGHT2': 'GAS LIGHT', 'GAS_LIGHT3': 'GAS LIGHT', 'GAS_LIGHTD': 'GAS_LIGHT D', 'GAS_LIGHTD_SGL': 'GAS_LIGHT D', 'GAS_LIGHT1D': 'GAS_LIGHT D', 'GAS_LIGHT2D': 'GAS_LIGHT D', 'GAS_LIGHT3D': 'GAS_LIGHT D'}}, 'old_effect': 'ROOM_DARK', 'group_name': 'Group001', 'autoconnect': False, 'lastSound': 0, 'lastSoundImpuls': 200, 'startcmdcb': False, 'startcmd_filename': 'D:/data/doc/GitHub/pyMobaLedLib/python/images/BW_Gleisplan.jpg', 'resourcePathcb': False, 'resourcePath_filename': '', 'ArduinoTypeName': 'Nano/Uno (neu)', 'ArduinoTypeNumber': 1, 'Z21Data': {'0': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '1': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '2': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}}, 'lastservo_channel': 1, 'DCC BaseAddress': 100, 'ServoAddress': 0, 'ServoLEDChannel': 0, 'ServoChannel': 0, 'SoundAddress': 0, 'SoundLEDChannel': 0, 'SoundImpulsLength': 200, 'Sound_RED': 8, 'Sound_GREEN': 3, 'Sound_BLUE': 6, 'baudratenumber': 0, 'ARDUINOMessage': 0, 'Autoconnect': 0, 'ARDUINOShowAll': True, 'ARDUINOTakeOver': True, 'ARDUINOTest': False, 'UseZ21Data': False, 'ARDUINOBlink': False, 'MLLDigSysName': 'None', 'MLLDigSysNumber': 0, 'Baudrate': 115200, 'FontTitle': 12, 'FontLabel': 8, 'FontSpinbox': 8, 'FontScale': 8, 'FontName': 'Arial', 'FontNormal': 11, 'FontLarge': 14, 'FontSmall': 8, 'RMbusTimer': 100, 'ShowProgramGenerator': True, 'ShowPatternGenerator': True, 'ShowZ21Simulator': False, 'ShowHiddentables': False, 'PGIconSize': 50, 'AutoLoadWorkbooks': True, 'UseCOM_Port_UserForm': False, 'languagename': 'Auto', 'language': 0, 'IPUploadTimeout': 60, 'UseHostAdapter': True, 'CheckVersion': True, 'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.logx', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'LEDchannel': '', 'lastactive_tabname': 'ProgGeneratorPage', 'UseConfig': True}
+17:11:59 - SaveConfigData
+17:11:59 - ConfigFile-Save:D:\data\doc\GitHub\MobaLedTest_config.json
+17:11:59 - SaveConfig: Stellwerk
+Editor - {'serportnumber': 0, 'serportname': 'COM11', 'baudrate': 115200, 'maxLEDcount': '20', 'lastLedCount': 1, 'lastLedChannel': 0, 'lastLed': 0, 'pos_x': 0, 'pos_y': 0, 'win_height': 1017, 'win_width': 1920, 'colorview': 1, 'startpage': 3, 'startpagename': 'StartPage', 'led_correction_r': 255, 'led_correction_g': 175, 'led_correction_b': 239, 'use_led_correction': True, 'old_color': '#0F0B33', 'palette': {'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'GAS_LIGHT D': '#323232', 'GAS LIGHT': '#FFFFFF', 'NEON_LIGHT D': '#14141B', 'NEON_LIGHT M': '#464650', 'NEON_LIGHT': '#F5F5FF', 'ROOM_TV0 A': '#330A12', 'ROOM_TV0 B': '#0F0B33', 'ROOM_TV1 A': '#323208', 'ROOM_TV1 B': '#323208', 'SINGLE_LED': '#FFFFFF', 'SINGLE_LED D': '#323200'}, 'effectpalette': {'House': {'ROOM_DARK': '#323232', 'ROOM_BRIGHT': '#FFFFFF', 'ROOM_WARM_W': '#934D08', 'ROOM_RED': '#FF0000', 'ROOM_D_RED': '#320009', 'ROOM_COL0': '#0F0D03', 'ROOM_COL1': '#162C1B', 'ROOM_COL2': '#9B4905', 'ROOM_COL3': '#271201', 'ROOM_COL4': '#1E0000', 'ROOM_COL5': '#4F2707', 'ROOM_COL345': '#271201', 'FIRE': '#000000', 'FIRED': '#000000', 'FIREB': '#000000', 'ROOM_CHIMNEY': '#000000', 'ROOM_CHIMNEYD': '#000000', 'ROOM_CHIMNEYB': '#000000', 'ROOM_TV0': '#323214', 'ROOM_TV0_CHIMNEY': '#323214', 'ROOM_TV0_CHIMNEYD': '#323214', 'ROOM_TV0_CHIMNEYB': '#323214', 'ROOM_TV1': '#323208', 'ROOM_TV1_CHIMNEY': '#323208', 'ROOM_TV1_CHIMNEYD': '#323208', 'ROOM_TV1_CHIMNEYB': '#323208', 'NEON_LIGHT': '#F5F5FF', 'NEON_LIGHT_SGL': '#F5F5FF', 'NEON_LIGHT1': '#F5F5FF', 'NEON_LIGHT2': '#F5F5FF', 'NEON_LIGHT3': '#F5F5FF', 'NEON_LIGHTD': '#14141B', 'NEON_LIGHTD_SGL': '#14141B', 'NEON_LIGHT1D': '#14141B', 'NEON_LIGHT2D': '#14141B', 'NEON_LIGHT3D': '#14141B', 'NEON_LIGHTM': '#464650', 'NEON_LIGHTM_SGL': '#464650', 'NEON_LIGHT1M': '#464650', 'NEON_LIGHT2M': '#464650', 'NEON_LIGHT3M': '#464650', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': '#14141B', 'NEON_DEF_D_SGL': '#14141B', 'NEON_DEF1D': '#14141B', 'NEON_DEF2D': '#14141B', 'NEON_DEF3D': '#14141B', 'LED_SGL': '#FFFFFF', 'SINGLE_LED1': '#FFFFFF', 'SINGLE_LED2': '#FFFFFF', 'SINGLE_LED3': '#FFFFFF', 'LED_D_SGL': '#323232', 'SINGLE_LED1D': '#323232', 'SINGLE_LED2D': '#323232', 'SINGLE_LED3D': '#323232', 'GAS_LIGHT': '#FFFFFF', 'GAS_LIGHT_SGL': '#FFFFFF', 'GAS_LIGHT1': '#FFFFFF', 'GAS_LIGHT2': '#FFFFFF', 'GAS_LIGHT3': '#FFFFFF', 'GAS_LIGHTD': '#323232', 'GAS_LIGHTD_SGL': '#323232', 'GAS_LIGHT1D': '#323232', 'GAS_LIGHT2D': '#323232', 'GAS_LIGHT3D': '#323232', 'SKIP_ROOM': '#000000'}, 'Const': {}, 'GasLights': {'NEON_LIGHT': 'NEON_LIGHT', 'NEON_LIGHT_SGL': 'NEON_LIGHT', 'NEON_LIGHT1': 'NEON_LIGHT', 'NEON_LIGHT2': 'NEON_LIGHT', 'NEON_LIGHT3': 'NEON_LIGHT', 'NEON_LIGHTD': 'NEON_LIGHT D', 'NEON_LIGHTD_SGL': 'NEON_LIGHT D', 'NEON_LIGHT1D': 'NEON_LIGHT D', 'NEON_LIGHT2D': 'NEON_LIGHT D', 'NEON_LIGHT3D': 'NEON_LIGHT D', 'NEON_LIGHTM': 'NEON_LIGHT M', 'NEON_LIGHTM_SGL': 'NEON_LIGHT M', 'NEON_LIGHT1M': 'NEON_LIGHT M', 'NEON_LIGHT2M': 'NEON_LIGHT M', 'NEON_LIGHT3M': 'NEON_LIGHT M', 'NEON_LIGHTL': '#464650', 'NEON_LIGHTL_SGL': '#464650', 'NEON_LIGHT1L': '#464650', 'NEON_LIGHT2L': '#464650', 'NEON_LIGHT3L': '#464650', 'NEON_DEF_D': 'NEON_LIGHT D', 'NEON_DEF_D_SGL': 'NEON_LIGHT D', 'NEON_DEF1D': 'NEON_LIGHT D', 'NEON_DEF2D': 'NEON_LIGHT D', 'NEON_DEF3D': 'NEON_LIGHT D', 'GAS_LIGHT': 'GAS LIGHT', 'GAS_LIGHT_SGL': 'GAS LIGHT', 'GAS_LIGHT1': 'GAS LIGHT', 'GAS_LIGHT2': 'GAS LIGHT', 'GAS_LIGHT3': 'GAS LIGHT', 'GAS_LIGHTD': 'GAS_LIGHT D', 'GAS_LIGHTD_SGL': 'GAS_LIGHT D', 'GAS_LIGHT1D': 'GAS_LIGHT D', 'GAS_LIGHT2D': 'GAS_LIGHT D', 'GAS_LIGHT3D': 'GAS_LIGHT D'}}, 'old_effect': 'ROOM_DARK', 'group_name': 'Group001', 'autoconnect': False, 'lastSound': 0, 'lastSoundImpuls': 200, 'startcmdcb': False, 'startcmd_filename': 'D:/data/doc/GitHub/pyMobaLedLib/python/images/BW_Gleisplan.jpg', 'resourcePathcb': False, 'resourcePath_filename': '', 'ArduinoTypeName': 'Nano/Uno (neu)', 'ArduinoTypeNumber': 1, 'Z21Data': {'0': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '1': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}, '2': {'serportname': 'NO DEVICE', 'dcc_start': 1, 'dcc_end': 9999}}, 'lastservo_channel': 1, 'DCC BaseAddress': 100, 'ServoAddress': 0, 'ServoLEDChannel': 0, 'ServoChannel': 0, 'SoundAddress': 0, 'SoundLEDChannel': 0, 'SoundImpulsLength': 200, 'Sound_RED': 8, 'Sound_GREEN': 3, 'Sound_BLUE': 6, 'baudratenumber': 0, 'ARDUINOMessage': 0, 'Autoconnect': 0, 'ARDUINOShowAll': True, 'ARDUINOTakeOver': True, 'ARDUINOTest': False, 'UseZ21Data': False, 'ARDUINOBlink': False, 'MLLDigSysName': 'None', 'MLLDigSysNumber': 0, 'Baudrate': 115200, 'FontTitle': 12, 'FontLabel': 8, 'FontSpinbox': 8, 'FontScale': 8, 'FontName': 'Arial', 'FontNormal': 11, 'FontLarge': 14, 'FontSmall': 8, 'RMbusTimer': 100, 'ShowProgramGenerator': True, 'ShowPatternGenerator': True, 'ShowZ21Simulator': False, 'ShowHiddentables': False, 'PGIconSize': 50, 'AutoLoadWorkbooks': True, 'UseCOM_Port_UserForm': False, 'languagename': 'Auto', 'language': 0, 'IPUploadTimeout': 60, 'UseHostAdapter': True, 'CheckVersion': True, 'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.logx', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'LEDchannel': '', 'lastactive_tabname': 'ProgGeneratorPage', 'UseConfig': True}
+17:11:59 - SaveConfigData
+17:11:59 - ConfigFile-Save:D:\data\doc\GitHub\MobaLedTest_config.json
+17:11:59 - disconnect start
+17:11:59 - set_connectstatusmessage: Nicht Verbunden
+17:11:59 - Destroy
+17:12:00 - Program End
+17:13:45 - ***********************************************************************************************************
+17:13:45 - Python Version: 3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]
+17:13:45 - MLL Proggenerator started V7.0.2-A4 - 03.09.2025
+17:13:45 -  Platform: Windows-10-10.0.19045-SP0
+17:13:45 - Parameters; Namespace(loglevel='DEBUG', logfile=None, loaddatafile=None, startpage=None, port=None, z21simulator=None, caller=None, test=None, vb2py='True', special=None, ARDUINO_IDE=None, ESP32WINBAT='True', UseConfig='True')
+17:13:45 - Installationfolder D:\data\doc\GitHub\pyMobaLedLib\python
+17:13:45 - Logging Level: DEBUG Logfilename: D:\data\doc\GitHub\pyMobaLedLib\python\../logfile.logx
+17:13:45 - ***********************************************************************************************************
+17:13:45 -  
+17:13:45 -  Startpage: StartPage
+17:13:45 - Colortestfile does not exist
+17:13:45 - Commandline args: {'logging_level': 'DEBUG', 'logfilename': 'D:\\data\\doc\\GitHub\\pyMobaLedLib\\python\\../logfile.logx', 'startpagename': 'StartPage', 'loaddatafile': True, 'useESP32WINBAT': True, 'vb2py': True, 'UseConfig': True}
+17:13:45 - readConfigData
+17:13:45 - Warning: Config File D:\data\doc\GitHub\pyMobaLedLib\python\MobaLedTest_param.json not found
+17:13:45 - Read Paramdata: {}
+17:13:45 - ReadConfig: ../../MobaLedTest_config.json D:\data\doc\GitHub\pyMobaLedLib\python
+
+17:13:45 - running in a normal Python process
+17:13:45 - ReadConfig: %s
+17:13:46 - Font sizenormal: 11 sizelarge: 14 sizesmall: 8
+17:13:46 - Screenwidht: 1920 Screenheight: 1080 ScaleFactor: 1.0
+17:13:46 - Windowwidth: 1920 Windowheight: 1017
+17:13:46 - pos_x: 1 pos_y: 48
+17:13:46 - set_statusmessage: Erstelle ProgramGenerator Seite ...
+17:13:46 - set_statusmessage: Erstelle Workbook: ProgGenerator
+17:13:46 - set_statusmessage: Erstelle WorkSheet: DCC
+17:13:47 - STREAM b'IHDR' 16 13
+17:13:47 - STREAM b'sRGB' 41 1
+17:13:47 - STREAM b'gAMA' 54 4
+17:13:47 - STREAM b'pHYs' 70 9
+17:13:47 - STREAM b'IDAT' 91 6382
+17:13:47 - STREAM b'IHDR' 16 13
+17:13:47 - STREAM b'sRGB' 41 1
+17:13:47 - STREAM b'gAMA' 54 4
+17:13:47 - STREAM b'pHYs' 70 9
+17:13:47 - STREAM b'IDAT' 91 5037
+17:13:48 - set_statusmessage: Erstelle WorkSheet: Selectrix
+17:13:48 - set_statusmessage: Erstelle WorkSheet: CAN
+17:13:48 - set_statusmessage: Erstelle WorkSheet: LNet
+17:13:48 - set_statusmessage: Erstelle WorkSheet: Examples
+17:13:48 - set_statusmessage: Erstelle WorkSheet: Config
+17:13:48 - set_statusmessage: Erstelle WorkSheet: Languages
+17:13:48 - set_statusmessage: Erstelle WorkSheet: Lib_Macros
+17:13:48 - Add additional data: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\Lib_Macros_ext.csv
+17:13:48 - set_statusmessage: Erstelle WorkSheet: Libraries
+17:13:48 - set_statusmessage: Erstelle WorkSheet: Par_Description
+17:13:48 - set_statusmessage: Erstelle WorkSheet: Platform_Parameters
+17:13:49 - set_statusmessage: Erstelle WorkSheet: Named_Ranges
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - Load Workbook:D:\data\doc\GitHub\pyMobaLedLib\python\../temp_workbook.table_ProgGenerator.json
+17:13:49 - FileVersion:V7.0.2-A4 - 03.09.2025
+17:13:49 - set_statusmessage: Erstelle WorkSheet: 102_Beta_2
+17:13:49 - set_statusmessage: Erstelle WorkSheet: PICO Pattern
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:DCC
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:Selectrix
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:CAN
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:LNet
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:Examples
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:Config
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:Languages
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:Lib_Macros
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:Libraries
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:Par_Description
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:Platform_Parameters
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:Named_Ranges
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:102_Beta_2
+17:13:49 - set_statusmessage: Workbook: ProgGenerator Loading:PICO Pattern
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: DCC
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Selectrix
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: CAN
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: LNet
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Examples
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Config
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Languages
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Lib_Macros
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Libraries
+17:13:49 - add_controls
+17:13:49 - add_controls:
+17:13:49 - add_controls:
+17:13:49 - add_controls:
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Par_Description
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Platform_Parameters
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: Named_Ranges
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: 102_Beta_2
+17:13:49 - set_statusmessage: Init Workbook: ProgGenerator Sheet: PICO Pattern
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - set_statusmessage: Init WorkbookFunction: ProgGenerator
+17:13:49 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:13:49 - Workbook_init - AppLoc_Ardu:\AppData\Local\Arduino15\
+17:13:49 - Workbook_init - Env_USERPROFILE:USERPROFILE
+17:13:49 - Workbook_Open() called
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - EventSH_cellselected
+17:13:49 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:13:49 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+17:13:49 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:13:49 - Set_activeworkbook:	ProgGenerator
+17:13:49 - TabChanged  - .!notebook.!prog_generatorpage.!frame.!frame4.!notebook.!frame
+17:13:49 - Update_General_Versions
+17:13:49 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:13:49 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+17:13:49 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:13:49 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:13:49 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+17:13:49 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/arduino/hardware/avr/*.*
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/arduino/hardware/avr\\1.8.6']
+17:13:49 - Get_All_Library_States
+17:13:49 - Read_Sketchbook_Path_from_preference_txt - Name:C:\Users\Harold\AppData\Local\Arduino15\preferences.txt
+17:13:49 - Sketchbookpath=C:\Users\Harold\Documents\Arduino
+17:13:49 - Create_Folder:C:\Users\Harold\Documents\Arduino/
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaLedLib/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/FastLED/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/FastLED/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/NmraDcc/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/NmraDcc/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/AnalogScanner/library.properties
+17:13:49 - _last_files: None
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/ATtinySerialOut/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/ATtinySerialOut/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/DIO2/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/DIO2/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/EWMA/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/EWMA/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/MobaTools/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/MobaTools/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/LocoNet/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/LocoNet/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/TimerOne/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/TimerOne/library.properties']
+17:13:49 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/ATTinyCore/hardware/avr/*.*
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/ATTinyCore/hardware/avr\\1.5.2']
+17:13:49 - _last_files: None
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/ATTinyCore/hardware/avr/1.5.2/libraries/ATTinyCore/src/ATTinyCore.h
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/ATTinyCore/hardware/avr/1.5.2/libraries/ATTinyCore/src/ATTinyCore.h']
+17:13:49 - Dir:C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:13:49 - _last_files:['C:\\Program Files (x86)\\Arduino\\arduino_debug.exe']
+17:13:49 - Find ARDUINO exe - Individual Filename: C:\Program Files (x86)\Arduino\arduino_debug.exe
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/arduino/hardware/avr/*.*
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/arduino/hardware/avr\\1.8.6']
+17:13:49 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/hardware/esp32/*.*
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/hardware/esp32\\1.0.4']
+17:13:49 - _last_files: None
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/hardware/esp32/1.0.4/libraries/ESP32/src/dummy.h
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/hardware/esp32/1.0.4/libraries/ESP32/src/dummy.h']
+17:13:49 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/tools/esptool_py/*.*
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/tools/esptool_py\\2.6.1']
+17:13:49 - _last_files: None
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/esp32/tools/esptool_py/2.6.1/esptool.exe
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/esp32/tools/esptool_py/2.6.1/esptool.exe']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/WiFiManager/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/WiFiManager/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/U8g2/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/U8g2/library.properties']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/EspSoftwareSerial/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/EspSoftwareSerial/library.properties']
+17:13:49 - Checkplatform: Current platform=Windows- Checked Platform=Windows
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/rp2040/hardware/rp2040/*.*
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/rp2040/hardware/rp2040\\4.4.0']
+17:13:49 - _last_files: None
+17:13:49 - Dir:C:\Users\Harold\AppData\Local\Arduino15\packages/rp2040/hardware/rp2040/4.4.0/libraries/rp2040/dummy_rp2040.h
+17:13:49 - _last_files:['C:\\Users\\Harold\\AppData\\Local\\Arduino15\\packages/rp2040/hardware/rp2040/4.4.0/libraries/rp2040/dummy_rp2040.h']
+17:13:49 - Dir:C:\Users\Harold\Documents\Arduino/libraries/LocoNet2/library.properties
+17:13:49 - _last_files:['C:\\Users\\Harold\\Documents\\Arduino/libraries/LocoNet2/library.properties']
+17:13:50 - Get_Sketchbook_Path called
+17:13:50 - Get_Sketchbook_Path=C:\Users\Harold\Documents\Arduino
+17:13:50 - Get_SrcDirInLib=C:\Users\Harold\Documents\Arduino/libraries/MobaLedLib/extras/
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 2831
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 4195
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 1521
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 1988
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 1798
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 1734
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 2187
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 1511
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 5326
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 5613
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 5088
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 2583
+17:13:50 - STREAM b'IHDR' 16 13
+17:13:50 - STREAM b'sRGB' 41 1
+17:13:50 - STREAM b'gAMA' 54 4
+17:13:50 - STREAM b'pHYs' 70 9
+17:13:50 - STREAM b'IDAT' 91 5431
+17:13:50 - set_statusmessage: Erstelle PatternConfigurator Seite ...
+17:13:50 - set_statusmessage: Erstelle Workbook: PatternWorkbook
+17:13:50 - set_statusmessage: Erstelle WorkSheet: Main
+17:13:50 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Main.csv
+17:13:50 - set_statusmessage: Erstelle WorkSheet: PG-Temp
+17:13:50 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Main.csv
+17:13:50 - set_statusmessage: Erstelle WorkSheet: Languages
+17:13:50 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Languages.csv
+17:13:50 - set_statusmessage: Erstelle WorkSheet: Goto_Activation_Entries
+17:13:50 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Goto_Activation_Entries.csv
+17:13:50 - set_statusmessage: Erstelle WorkSheet: Special_Mode_Dlg
+17:13:50 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Special_Mode_Dlg.csv
+17:13:50 - set_statusmessage: Erstelle WorkSheet: Par_Description
+17:13:50 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Par_Description.csv
+17:13:50 - set_statusmessage: Erstelle WorkSheet: Named_Ranges
+17:13:50 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Named_Ranges.csv
+17:13:50 - Set_activeworkbook:	PatternWorkbook
+17:13:50 - Set_activeworkbook:	PatternWorkbook
+17:13:50 - Load Workbook:D:\data\doc\GitHub\pyMobaLedLib\python\../temp_workbook.table_PatternWorkbook.json
+17:13:50 - FileVersion:V7.0.2-A4 - 03.09.2025
+17:13:50 - set_statusmessage: Erstelle WorkSheet: Verkehrssicherugnsanhaenger
+17:13:50 - Import CSV_int: Filename=D:\data\doc\GitHub\pyMobaLedLib\python\csv\PA_Main.csv
+17:13:50 - set_statusmessage: Workbook: PatternWorkbook Loading:Main
+17:13:50 - Set_activeworkbook:	PatternWorkbook
+17:13:50 - TabChanged  - .!notebook.!pattern_generatorpage.!frame.!frame3.!notebook.!frame
+17:13:52 - set_statusmessage: Workbook: PatternWorkbook Loading:PG-Temp
+17:13:52 - set_statusmessage: Workbook: PatternWorkbook Loading:Languages
+17:13:52 - set_statusmessage: Workbook: PatternWorkbook Loading:Goto_Activation_Entries
+17:13:52 - set_statusmessage: Workbook: PatternWorkbook Loading:Special_Mode_Dlg
+17:13:52 - set_statusmessage: Workbook: PatternWorkbook Loading:Par_Description
+17:13:52 - set_statusmessage: Workbook: PatternWorkbook Loading:Named_Ranges
+17:13:52 - set_statusmessage: Workbook: PatternWorkbook Loading:Verkehrssicherugnsanhaenger
+17:13:52 - set_statusmessage: Init Workbook: PatternWorkbook
+17:13:52 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Main
+17:13:52 - add_controls
+17:13:52 - add_controls:
+17:13:52 - add_controls:
+17:13:52 - add_controls:
+17:13:52 - add_controls:
+17:13:52 - add_controls:
+17:13:52 - add_controls:
+17:13:52 - add_controls:
+17:13:52 - add_controls:
+17:13:52 - add_controls:
+17:13:52 - add_controls:
+17:13:53 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: PG-Temp
+17:13:53 - add_controls
+17:13:53 - add_controls:
+17:13:53 - add_controls:
+17:13:53 - add_controls:
+17:13:53 - add_controls:
+17:13:53 - add_controls:
+17:13:53 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Languages
+17:13:53 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Goto_Activation_Entries
+17:13:53 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Special_Mode_Dlg
+17:13:53 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Par_Description
+17:13:53 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Named_Ranges
+17:13:53 - set_statusmessage: Init Workbook: PatternWorkbook Sheet: Verkehrssicherugnsanhaenger
+17:13:53 - Set_activeworkbook:	PatternWorkbook
+17:13:53 - Starting Workbook_Open() in 'DieseArbeitsmappe'
+17:13:53 - Set_activeworkbook:	PatternWorkbook
+17:13:53 - Set_activeworkbook:	PatternWorkbook
+17:13:53 - Colorcorrection:1.0
+17:13:53 - SoundCheckPage - Multipleparams
+17:13:53 - ConfigurationPage - Multipleparams
+17:13:53 - ConfigurationPage - Multipleparams
+17:13:53 - ConfigurationPage - Multipleparams
+17:13:53 - Set_activeworkbook:	ProgGenerator
+17:13:53 - Set_activeworkbook:	ProgGenerator
+17:13:53 - Tabselected: Programm
+Generator
+17:13:53 - Set_activeworkbook:	ProgGenerator
+17:13:53 - TabChanged  - .!notebook.!prog_generatorpage
+17:13:54 - TK-Version:8.6.12
+17:13:54 - Portname: COM11
+17:13:54 - Checkplatform: Current platform=Windows- Checked Platform=Darwin
+17:13:54 - connect COM11
+17:13:54 - set_connectstatusmessage: Versuch sich mit dem ARDUINO am Port COM11 zu verbinden ...
+17:13:54 - could not open port 'COM11': FileNotFoundError(2, 'Das System kann die angegebene Datei nicht finden.', None, 2)
+Traceback (most recent call last):
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\pyMobaLedLib.py", line 1342, in connect
+    self.arduino = serial.Serial(port,baudrate=baudrate,timeout=2,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,bytesize=serial.EIGHTBITS)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\serial\serialwin32.py", line 31, in __init__
+    super(Serial, self).__init__(*args, **kwargs)
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\serial\serialutil.py", line 240, in __init__
+    self.open()
+  File "D:\data\doc\GitHub\pyMobaLedLib\python\serial\serialwin32.py", line 62, in open
+    raise SerialException("could not open port {!r}: {!r}".format(self.portstr, ctypes.WinError()))
+serial.serialutil.SerialException: could not open port 'COM11': FileNotFoundError(2, 'Das System kann die angegebene Datei nicht finden.', None, 2)
+17:13:56 - set_connectstatusmessage: Nicht Verbunden
+17:13:58 - Open logfile: D:\data\doc\GitHub\pyMobaLedLib\python\../logfile.logx

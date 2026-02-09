@@ -36,6 +36,13 @@
 import serial.tools.list_ports as portlist
 import logging
 import serial
+try:    
+    from zeroconf import Zeroconf, ServiceBrowser, ServiceListener,  DNSAddress
+    import_zeroconfok = True
+except:
+    import_zeroconfok = False
+    
+import socket, time
 
 from vb2py.vbfunctions import *
 from vb2py.vbdebug import *
@@ -269,7 +276,7 @@ def Check_USB_Port_with_Dialog(ComPortColumn):
     fn_return_value = False
     #---------------------------------------------------------------------------
     #if P01.val(ComPortPage().Cells(M02.SH_VARS_ROW, ComPortColumn)) <= 0:
-    if not PG.global_controller.arduino or not PG.global_controller.arduino.isOpen():
+    if True: #HL not PG.global_controller.arduino or not PG.global_controller.arduino.is_open:
         if not F00.port_is_available(ComPortPage().Cells(M02.SH_VARS_ROW, ComPortColumn)):
             fn_return_value = M07New.USB_Port_Dialog(ComPortColumn)
             # 04.05.20: Prior Check_USB_Port_with_Dialog ends the program in case of an error
@@ -370,8 +377,8 @@ def EnumComPorts_old(Show_Unknown, ResNames, PrintDebug=True):
     # Doesn't check if the COM Port is used by an other program
     CountOnly = True
     NumberOfPorts = 0
-    ESP_Inst = ( M02a.Get_BoardTyp() == 'ESP32' )
-    PICO_Inst = ( M02a.Get_BoardTyp() == 'PICO' )
+    ESP_Inst = ( M02a.Get_BoardTyp() == M02.HT_ESP32 )
+    PICO_Inst = ( M02a.Get_BoardTyp() == M02.HT_PICO )
     for objItem in GetObject('winmgmts:\\\\.\\root\\CIMV2').ExecQuery('SELECT * FROM Win32_PnPEntity WHERE ClassGuid="{4d36e978-e325-11ce-bfc1-08002be10318}"', VBGetMissingArgument(GetObject.ExecQuery, 1), 48):
         if Show_Unknown or ( ESP_Inst == False and PICO_Inst == False and  (InStr(objItem.Caption, 'CH340') > 0 or InStr(objItem.Caption, 'Arduino') > 0 or InStr(objItem.Caption, 'USB Serial Port') > 0 ) ) or ( ESP_Inst == True and InStr(objItem.Caption, 'Silicon Labs CP210x') > 0 )  or  ( PICO_Inst == True and InStr(objItem.Path_.Path, 'USB\\\\VID_2E8A&PID_000A\\') > 0 ):
             # 10.11.20: Added: "Silicon Labs CP210x" for the ESP32  02.05.20: Added: "USB Serial Port" for original Nano (Frank)
@@ -407,33 +414,213 @@ def EnumComPorts_old(Show_Unknown, ResNames, PrintDebug=True):
         fn_return_value = Result
     return fn_return_value
 
+import socket
+import struct
+import time
+
+sock = None
+MCAST_GRP = "224.0.0.251"
+MCAST_PORT = 5353
+query = b"\x00\x00\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00"  # DNS query header
+query += b"\x09_railmail\x04_tcp\x05local\x00"  # Query for _railmail._tcp.local
+query += b"\x00\x0C\x00\x01"  # Type PTR, Class IN
+
+def init_socket():
+    global sock
+    
+    # Get local IP address of the active network interface
+    try:
+        hostname = socket.gethostname()
+        local_ip = socket.gethostbyname(hostname)
+    except BaseException as e:
+        local_ip = ""
+        logging.debug(e)
+    
+    if not PG.global_controller.getConfigData("UseHostAdapter"):
+        local_ip = ""
+    
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    
+    sock.bind((local_ip, MCAST_PORT))
+    if local_ip != "":
+        mreq = struct.pack("4s4s", socket.inet_aton(MCAST_GRP), socket.inet_aton(local_ip))
+    else:
+        mreq = struct.pack("4sl", socket.inet_aton(MCAST_GRP), socket.INADDR_ANY)
+    
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
+# Funktion zum Leeren des Sockets
+def clear_socket(sock):
+    
+    sock.setblocking(False)  # Setze Socket auf non-blocking Modus
+    try:
+        while True:
+            data, addr = sock.recvfrom(1024)  # Versuche, alte Pakete zu lesen
+            #print(f"Verworfen: {addr[0]} → {data}")  # Debug-Ausgabe
+    except socket.error:
+        pass  # Keine weiteren Daten mehr im Puffer
+    finally:
+        sock.setblocking(True)  # Setze Socket zurück auf normalen Modus
+
+
+
+#starttime = time.time()
+#while True:
+    #data, addr = sock.recvfrom(1024)
+
+    ## Decode the binary response properly
+    #decoded_response = data.decode(errors="ignore")
+    #print(f"Response from {addr[0]}: {decoded_response}")
+    ## Apply stricter filtering based on structure and presence of RailMail service name
+    #if "_railmail._tcp.local" in decoded_response or "railmail" in decoded_response:
+        #print(f"Valid RailMail Response from {addr[0]}: {decoded_response}")
+    #if int(time.time() - starttime) > 1:
+        #starttime = time.time()
+        #sock.sendto(query, (MCAST_GRP, MCAST_PORT))
+
+
+def find_devices2():
+    global sock
+    
+    init_socket()
+    clear_socket(sock)
+    
+    sock.sendto(query, (MCAST_GRP, MCAST_PORT))
+    
+    sock.settimeout(1.0) # Timeout auf 1 Sekunde setzen
+    
+    starttime = time.time()
+    
+    devices = []
+    
+    while int(time.time() - starttime) < 1:
+        try:
+            data, addr = sock.recvfrom(1024)
+            currtime = time.time() - starttime
+    
+            # Decode the binary response properly
+            decoded_response = data.decode(errors="ignore")
+            #print(f"{currtime} - Response from {addr[0]}: {decoded_response}")
+        
+            # Apply stricter filtering based on structure and presence of RailMail service name
+            if "RailMail-" in decoded_response:
+                print(f"{currtime} - Valid RailMail Response from {addr[0]}: {decoded_response}")
+                description = decoded_response[decoded_response.index("RailMail-"):-10]
+                devices.append(["IP:" + addr[0], description])
+        except:
+            pass
+    return devices
+
+# Key: instance name (string)
+# Value: dict with resolved info (e.g. host, port, [ips])
+
+services = {}
+if import_zeroconfok:
+    class TrackingListener(ServiceListener):
+        def add_service(self, zc, service_type, name):
+            
+            for record in zc.cache.entries_with_name(name.lower()):
+                if isinstance(record, DNSAddress):
+                    ip = socket.inet_ntoa(record.address)
+                    Debug.Print(f"Found IP from cache: {ip}")        
+            services[ip] = {
+                "name": name
+            }
+            Debug.Print(f"[ADD]   {name}{ip}")
+    
+        def remove_service(self, zc, service_type, name):
+            # Remove from our dict (if present)
+            info = services.pop(name, None)
+            if info:
+                print(f"[DROP]  {name} removed")
+    
+from concurrent.futures import ThreadPoolExecutor
+
+def is_ip_responsive(ip, port=80, timeout=1):
+    try:
+        with socket.create_connection((ip, port), timeout=timeout):
+            return ip, True
+    except (socket.timeout, socket.error):
+        return ip, False
+
+def monitor_ips_concurrently(services, interval=1):
+    ip_list = list(services.keys())
+    if len(ip_list) > 0:
+        with ThreadPoolExecutor(max_workers=len(ip_list)) as executor:
+            Debug.Print("Checking IPs...")
+            futures = [executor.submit(is_ip_responsive, ip) for ip in ip_list]
+            for future in futures:
+                ip, status = future.result()
+                Debug.Print(f"{ip}: {'Responsive' if status else 'Not responsive'}")
+                if status == False:
+                    services.pop(ip)
+            #print("-" * 40)
+            #time.sleep(interval)
+
+def find_devices():
+    zc = Zeroconf()
+    listener = TrackingListener()
+    browser = ServiceBrowser(zc, "_railmail._tcp.local.", listener)
+    devices = []
+
+    time.sleep(2)
+    monitor_ips_concurrently(services)
+    Debug.Print("\n=== CURRENT SERVICES ===")
+    for inst, info in services.items():
+        Debug.Print(f"{inst}: {info['name']}")
+        devices.append(["IP:" + inst, info['name']])
+
+    browser.cancel()
+    zc.close()
+    return devices
+
+
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: ResNames - ByRef 
 def EnumComPorts(Show_Unknown, ResNames, PrintDebug=True):
     Ports = vbObjectInitialize((50,), Byte)
-    ESP_Inst = ( M02a.Get_BoardTyp() == 'ESP32' )
-    PICO_Inst = ( M02a.Get_BoardTyp() == 'PICO' )
-
-    temp_comports_list = portlist.comports(include_links=False)
+    ESP_Inst = ( M02a.Get_BoardTyp() == M02.HT_ESP32 )
+    PICO_Inst = ( M02a.Get_BoardTyp() == M02.HT_PICO )
+    WLAN_inst =  InStr(P01.Cells(M02.SH_VARS_ROW, M25.BUILDOP_COL), 'WLAN') > 0
+    if WLAN_inst:
+        # check for Railmail mDNS
+        if import_zeroconfok:
+            Ports = []
+            ResNames = []
+            devices = find_devices()
+            temp_device_list = devices
+            
+            for device in temp_device_list:
+                Ports.append(device[0])
+                ResNames.append(device[1])
+        else:
+            Debug.Print("EnumComPorts: Module Zeroconf not imported")
+            Ports = ["Fehler"]
+            ResNames = ["Achtung:Module Zeroconf nicht gefunden"]
+    else:
+        temp_comports_list = portlist.comports(include_links=False)
+        
+        Debug.Print("EnumComPorts:"+repr(temp_comports_list))
     
-    Debug.Print("EnumComPorts:"+repr(temp_comports_list))
-
-    NumberOfPorts = len(temp_comports_list)
-    Ports = [] #vbObjectInitialize((NumberOfPorts - 1,), Variant)
-    ResNames = [] #vbObjectInitialize((NumberOfPorts - 1,), Variant)    
-    idx=0
-    for comport in temp_comports_list:
-        Debug.Print("EnumComPorts:"+repr(comport.description)+" "+repr(comport.device))
-        # if Show_Unknown or ( ESP_Inst == False and PICO_Inst == False and  (InStr(comport.description, 'CH340') > 0 or InStr(comport.description, 'Arduino') > 0 or InStr(comport.description, 'USB Serial Port') > 0 or InStr(comport.description, 'USB2.0-Ser') > 0  or InStr(comport.description, 'tty') > 0 ) ) or ( ESP_Inst == True and InStr(comport.description, 'Silicon Labs CP210x') > 0 )  or  ( PICO_Inst == True and InStr(comport.description, 'USB\\\\VID_2E8A&PID_000A\\') > 0 ):
-        if Show_Unknown or ( ESP_Inst == False and PICO_Inst == False and  (InStr(comport.description, 'CH340') > 0 or InStr(comport.description, 'Arduino') > 0 or InStr(comport.description, 'USB Serial Port') > 0 or InStr(comport.description, 'USB2.0-Ser') > 0  or InStr(comport.description, 'tty') > 0 ) ) or ( InStr(comport.description, 'Silicon Labs CP210x') > 0 ) or ( InStr(comport.description, 'CP2102 USB to UART') > 0 )  or  ( PICO_Inst == True and InStr(comport.description, 'USB\\\\VID_2E8A&PID_000A\\') > 0 ):
-            Ports.append(comport.device)
-            ResNames.append(comport.description)
-            idx=idx+1
+        NumberOfPorts = len(temp_comports_list)
+        Ports = [] #vbObjectInitialize((NumberOfPorts - 1,), Variant)
+        ResNames = [] #vbObjectInitialize((NumberOfPorts - 1,), Variant)    
+        idx=0
+        for comport in temp_comports_list:
+            Debug.Print("EnumComPorts:"+repr(comport.description)+" "+repr(comport.device))
+            # if Show_Unknown or ( ESP_Inst == False and PICO_Inst == False and  (InStr(comport.description, 'CH340') > 0 or InStr(comport.description, 'Arduino') > 0 or InStr(comport.description, 'USB Serial Port') > 0 or InStr(comport.description, 'USB2.0-Ser') > 0  or InStr(comport.description, 'tty') > 0 ) ) or ( ESP_Inst == True and InStr(comport.description, 'Silicon Labs CP210x') > 0 )  or  ( PICO_Inst == True and InStr(comport.description, 'USB\\\\VID_2E8A&PID_000A\\') > 0 ):
+            if Show_Unknown or ( ESP_Inst == False and PICO_Inst == False and  (InStr(comport.description, 'CH340') > 0 or InStr(comport.description, 'Arduino') > 0 or InStr(comport.description, 'USB Serial Port') > 0 or InStr(comport.description, 'USB2.0-Ser') > 0  or InStr(comport.description, 'tty') > 0 ) ) or ( InStr(comport.description, 'Silicon Labs CP210x') > 0 ) or ( InStr(comport.description, 'CP2102 USB to UART') > 0 )  or  ( PICO_Inst == True and InStr(comport.hwid, 'USB VID:PID=2E8A:000A') > 0 ):
+                Ports.append(comport.device)
+                ResNames.append(comport.description)
+                idx=idx+1
 
     fn_return_value = Ports
     return fn_return_value, ResNames
 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: PortNr - ByVal 
 def Check_If_Port_is_Available(PortNr):
+    if PortNr.startswith("IP:"):
+        return True
     Debug.Print("Check_If_Port_is_Available:"+PortNr)
     fn_return_value = None
     Ports = vbObjectInitialize(objtype=Byte)
@@ -943,7 +1130,7 @@ def SendMLLCommand(ComPort, message, UseHardwareHandshake, ShowResult):
     if UseHardwareHandshake:
         InitComPort(ComPort, 'BAUD=115200 PARITY=N DATA=8 STOP=1 dtr=off octs=on')
     else:
-        if M02a.Get_BoardTyp() != 'PICO':
+        if M02a.Get_BoardTyp() != M02.HT_PICO:
             InitComPort(ComPort, 'BAUD=115200 PARITY=N DATA=8 STOP=1 dtr=off octs=off')
         else:
             InitComPort(ComPort, 'BAUD=115200 PARITY=N DATA=8 STOP=1 dtr=on octs=off')
@@ -951,7 +1138,7 @@ def SendMLLCommand(ComPort, message, UseHardwareHandshake, ShowResult):
     handle = CreateFile('\\\\.\\COM' + ComPort, __GENERIC_READ or __GENERIC_WRITE, 0, 0, __OPEN_EXISTING, __FILE_ATTRIBUTE_NORMAL, 0)
     if handle < 0:
         Err.Raise(1, VBGetMissingArgument(Err.Raise, 1), '')
-    if M02a.Get_BoardTyp() == 'PICO':
+    if M02a.Get_BoardTyp() == M02.HT_PICO:
         EscapeCommFunction(handle, __COM_SETDTR)
     if UseHardwareHandshake:
         Repeat = 1

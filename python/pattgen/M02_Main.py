@@ -655,7 +655,7 @@ def Global_On_Enter_Proc():
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Sh - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Target - ByVal 
 # VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Cancel - ByRef 
-def Proc_DoubleCkick(Sh, Target, Cancel):
+def Proc_DoubleClick(Sh, Target, Cancel):
     # 01.01.20
     #----------------------------------------------------------------------------------------------
     Cancel = False

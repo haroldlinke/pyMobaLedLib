@@ -74,6 +74,8 @@ from locale import getdefaultlocale
 import re
 import time
 import logging
+logger=logging.getLogger(__name__)
+
 import pattgen.D00_Forms as D00
 import mlpyproggen.Pattern_Generator as PG
 import ExcelAPI.XLWA_WinAPI as X03
@@ -264,7 +266,7 @@ class ServoTestPage2(tk.Frame):
             pass
 
     def tabselected(self):
-        logging.debug("Tabselected: %s",self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
         #self.controller.currentTabClass = self.tabClassName
         #self.controller.send_to_ARDUINO("#BEGIN")
         #time.sleep(ARDUINO_WAITTIME)
@@ -281,12 +283,12 @@ class ServoTestPage2(tk.Frame):
         self.servo_status_loop()
 
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)
         self.servo_continue_update_status = False
         self.controller.ARDUINO_end_direct_mode()
-        logging.info(self.tabname)
+        logger.info(self.tabname)
         pass
 
     def getConfigData(self, key):
@@ -455,7 +457,7 @@ class ServoTestPage2(tk.Frame):
 
     def Upload_firmware_direkt(self, hexfile_name="", AttinyAdress=None):
         print("Upload Firmware direkt:", hexfile_name, AttinyAdress)
-        logging.debug("Upload Firmware direkt: "+ hexfile_name, AttinyAdress)
+        logger.debug("Upload Firmware direkt: "+ hexfile_name, AttinyAdress)
         self.progress_message_var.set("Hochladen zum Attiny gestartet")
         
         self.buttonProgramServodirect.config(text = "Abbrechen")
@@ -485,7 +487,7 @@ class ServoTestPage2(tk.Frame):
         with open(hexfile_name, 'r') as hex_file:
             lines = hex_file.readlines()
 
-            logging.debug("Upload Firmware direkt - file opened: "+ hexfile_name, AttinyAdress)
+            logger.debug("Upload Firmware direkt - file opened: "+ hexfile_name, AttinyAdress)
             self.servo_continue_update_status = False
             result = self.controller.send_to_ARDUINO_init_buffer(immediatly=True)
             hexline_nr = 0
@@ -494,7 +496,7 @@ class ServoTestPage2(tk.Frame):
             modulo = 0
             while hexline_nr < len_lines and self.continue_upload:
                 print("Block-Nr:", hexline_nr)
-                logging.debug("Upload Firmware direkt - send hex line: "+ str(hexline_nr))
+                logger.debug("Upload Firmware direkt - send hex line: "+ str(hexline_nr))
                 hex_line = lines[hexline_nr]
                 hex_line2 = hex_line[1:len(hex_line)-1]
                 bytestring = bytes.fromhex(hex_line2)

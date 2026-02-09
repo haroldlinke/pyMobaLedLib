@@ -889,10 +889,13 @@ def Delete_Shapes(MacroCodeNr, LEDs=0):
         # 10.02.21: Disabled
         pass
     else:
-        if X02.ActiveSheet.RGB_LED_CheckBox.Value == True:
-            RGB_Type = True
-            # LED type is RGB
-            NumberOfLEDs = NumberOfLEDs / 3
+        try:
+            if X02.ActiveSheet.RGB_LED_CheckBox.Value == True:
+                RGB_Type = True
+                # LED type is RGB
+                NumberOfLEDs = NumberOfLEDs / 3
+        except:
+            pass
     if PrevWorkSheet is None:
         TargetWorkSheet = X02.ActiveSheet
     else:

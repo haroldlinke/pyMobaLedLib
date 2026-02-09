@@ -98,7 +98,7 @@ class ConfigFile():
                 logging.error ("ERROR: JSON Error in Config File %s",self.filepath)
                 logging.error(jsondata)
                 jsondata = {}
-            
+
         try:
             self.data = default_config.copy()
             if True: #self.data == {}:
@@ -128,8 +128,12 @@ class ConfigFile():
 
     def save(self):
 
-        # Write JSON file
-        with open(self.filepath, 'w', encoding='utf8') as outfile:
-            json.dump(self.data, outfile, ensure_ascii=False, indent=4)
-        logging.debug("ConfigFile-Save:" + self.filepath)
+        try:# Write JSON file
+            with open(self.filepath, 'w', encoding='utf8') as outfile:
+                json.dump(self.data, outfile, ensure_ascii=False, indent=4)
+            logging.debug("ConfigFile-Save:" + self.filepath)
         #print("ConfigFile-Save:" + self.filepath, "Port:",self.data.get("serportname"))
+        except BaseException as e:
+            logging.debug("Error in ConfigFile-Save:" + self.filepath)
+            logging.debug(e, exc_info=True)
+    

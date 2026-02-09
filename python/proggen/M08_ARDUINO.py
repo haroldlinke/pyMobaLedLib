@@ -84,6 +84,7 @@ import proggen.M40_ShellandWait as M40
 #import proggen.M70_Exp_Libraries as M70
 #import proggen.M80_Create_Multiplexer as M80
 import proggen.M98_Onedrive as M98
+import proggen.M06_Write_MLLConfig as M06cfg
 
 #import proggen.D08_Select_COM_Port_Userform as D08
 
@@ -113,6 +114,27 @@ PromptUser = 2
 #End Enum
 Start_Compile_Time = 0
 
+AskBootPico = False
+ArduName = ""
+
+def SetArduName(CommunicationType = ""):
+#---------------------------------------------
+    global ArduName
+    if M02a.Get_BoardTyp() == M02.HT_ESP32:
+        ArduName = "ESP32"
+    elif M02a.Get_BoardTyp() == M02.HT_PICO:
+        ArduName = "PICO"
+    elif M02a.Get_BoardTyp() == M02.HT_AM328:
+        ArduName = CommunicationType + " Arduino"
+    else:
+        ArduName = "?"
+
+def GetArduName():
+    
+    if ArduName == "":
+        SetArduName()
+    _fn_return_value = ArduName
+    return _fn_return_value
 
 def Use_Excel_Console():
     #---------------------------------------------
@@ -243,7 +265,7 @@ def Create_Start_Sub(BoardName, ResultName, ComPort, BuildOptions, InoName, SrcD
     #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     fn_return_value = ""
     
-    if BoardName == 'PICO':
+    if BoardName == M02.HT_PICO:
         Board_Version = M37.Get_Lib_Version('rp2040:rp2040')
         if Board_Version == '':
             P01.MsgBox(M09.Get_Language_Str('Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:') + '  \'' + 'Raspberry Pico Board' + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
@@ -251,6 +273,11 @@ def Create_Start_Sub(BoardName, ResultName, ComPort, BuildOptions, InoName, SrcD
         if Board_Version != M37.Get_Required_Version('rp2040:rp2040'):
             P01.MsgBox(M09.Get_Language_Str('Fehler: Die notwendige Version der Arduino Erweiterung ist nicht installiert:') + '  \'' + 'Raspberry Pi Pico/RP2040 Board' + Get_Required_Version("rp2040:rp2040") + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
             return fn_return_value
+        # else:
+            # # patch PicoFastLed.cpp
+            # if Dir(SrcDir + "patch/PicoFastLED.cpp") != '':
+                # shutil.copyfile(SrcDir + "patch/PicoFastLED.cpp", M02.Sketchbook_Path + '/libraries/MobaLedLib/src/PicoFastLED.cpp', )
+            
         
     CMD_Name = 'Start_' + BoardName + '_Sub.cmd'
     fp = FreeFile()
@@ -272,7 +299,7 @@ def Create_Start_Sub(BoardName, ResultName, ComPort, BuildOptions, InoName, SrcD
         # 23.07.20:
             #*** 14.07.20: Faster way to compile from Jürgen (10 sec instead of 22 sec) ***
             # Create_PrivateBuild_cmd_if_missing SrcDir                           ' 28.10.20: Jürgen: Disabled
-            if False: #True == M28.Get_Bool_Config_Var('Fast_Build_and_Upload'):
+            if True == M28.Get_Bool_Config_Var('Fast_Build_and_Upload'):
                 Debug.Print("Fast Build and Upload")
                 OptParts = Split(BuildOptions, ' ')
                 if UBound(OptParts) >= 1:
@@ -320,8 +347,8 @@ def Create_Start_Sub(BoardName, ResultName, ComPort, BuildOptions, InoName, SrcD
             
             VBFiles.writeText(fp, 'IF ERRORLEVEL 1 ECHO Start_Arduino_Result: %ERRORLEVEL% > "' + ResultName + '"', '\n')
             VBFiles.writeText(fp, 'goto :eof', '\n')
-            for i in vbForRange(1, 100):
-                VBFiles.writeText(fp, '', '\n') # generate empty lines to hide the following to courious people (Jürgen)
+            #for i in vbForRange(1, 100):
+            #    VBFiles.writeText(fp, '', '\n') # generate empty lines to hide the following to courious people (Jürgen)
             VBFiles.writeText(fp, ':build', '\n')
             M08FA.Create_Build(BoardName, fp) # M08_Fast_ARDUINO
         else:
@@ -376,7 +403,7 @@ def __Create_PIO_Build(fp, Environment, ResultName, ComPort, SrcDir):
     VBFiles.writeText(fp2, 'framework = arduino', '\n')
     VBFiles.writeText(fp2, 'build_src_flags =', '\n')   # ' 24.09.24: Hardi: Old:  "src_build_flags = "
     VBFiles.writeText(fp2, 'lib_deps =', '\n')
-    VBFiles.writeText(fp2, '    FastLED@>=3.9.9', '\n') # ' 18.01.24: Jürgen: Change minimal version to 3.9.9 - allows revival after FastLED blocks
+    VBFiles.writeText(fp2, '    FastLED@>=3.9.13', '\n') # ' 24.04.25: Jürgen: Change minimal version to 3.9.13 - a stable version without FastLED blocks
     VBFiles.writeText(fp2, '    NmraDcc', '\n')         # '                  Ini syntax see: https://docs.platformio.org/en/stable/core/userguide/lib/cmd_uninstall.html
     VBFiles.writeText(fp2, '    MobaLedLib=file://../../libraries/MobaLedLib', '\n')
     VBFiles.writeText(fp2, '', '\n')
@@ -481,7 +508,7 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
 
     kk = Integer()
     
-    fn_return_value = False
+    fn_return_value = ""
     #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     OptParts = Split(BuildOptions, ' ')
     if UBound(OptParts) >= 1:
@@ -642,9 +669,9 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         VBFiles.writeText(fp, '', '\n')
         VBFiles.writeText(fp, 'if exist "%aTemp%\\rebuildFailed.txt" (', '\n')
         VBFiles.writeText(fp, '   echo Last rebuild failed ;-(', '\n')
-        VBFiles.writeText(fp, '   echo Press ENTER to rebuild everything', '\n')
+        #VBFiles.writeText(fp, '   echo Press ENTER to rebuild everything', '\n')
         # If the error is located in the .ino file Ctrl+C could be pressed here
-        VBFiles.writeText(fp, '   if "%8"=="" pause', '\n')
+        #VBFiles.writeText(fp, '   if "%8"=="" pause', '\n')
         VBFiles.writeText(fp, '   goto :rebuild', '\n')
         VBFiles.writeText(fp, '   )', '\n')
         VBFiles.writeText(fp, '', '\n')
@@ -770,7 +797,7 @@ def Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, C
         if Board_Version < "2.":
             VBFiles.writeText(fp, '          "%packages%\\esp32\\tools\\esptool_py\\%ESP32_TOOL_VERSION%/esptool.exe" --chip esp32 --port \\\\.\\!uploadTo! --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect ' + ' 0xE000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/partitions/boot_app0.bin"' + ' 0x1000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/sdk/bin/bootloader_qio_80m.bin"' + ' 0x10000 "%aTemp%\\%srcFile%.bin"' + ' 0x8000  "%aTemp%\\%srcFile%.partitions.bin"', '\n')
         else:
-            VBFiles.writeText(fp, '          "%packages%\\esp32\\tools\\esptool_py\\%ESP32_TOOL_VERSION%/esptool.exe" --chip esp32 --port \\\\.\\!uploadTo! --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect ' + ' 0xE000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/partitions/boot_app0.bin"' + ' 0x1000  "%aTemp%\%srcFile%.bootloader.bin"' + ' 0x10000 "%aTemp%\\%srcFile%.bin"' + ' 0x8000  "%aTemp%\\%srcFile%.partitions.bin"', '\n')
+            VBFiles.writeText(fp, '          "%packages%\\esp32\\tools\\esptool_py\\%ESP32_TOOL_VERSION%/esptool.exe" --chip esp32 --port \\\\.\\!uploadTo! --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size detect ' + ' 0xE000  "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/partitions/boot_app0.bin"' + ' 0x1000  "%aTemp%\\%srcFile%.bootloader.bin"' + ' 0x10000 "%aTemp%\\%srcFile%.bin"' + ' 0x8000  "%aTemp%\\%srcFile%.partitions.bin"', '\n')
                     
         VBFiles.writeText(fp, '   ) else (', '\n')
         VBFiles.writeText(fp, '          "%packages%\\esp32\\hardware\\esp32\\%ESP32_BOARD_VERSION%/tools/espota.exe" -i !uploadTo! -p 3232 --auth= -f "%aTemp%\\%srcFile%.bin"', '\n')
@@ -1150,6 +1177,8 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
     Name = String()
 
     i = Integer()
+    
+    fn_return_value = ""
     #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Arduino start Parameters see:
     #   https://github.com/arduino/Arduino/blob/master/build/shared/manpage.adoc
@@ -1200,7 +1229,7 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
     if BuildDirForScript != '':
         CommandStr = CommandStr + ' --pref build.path="' + BuildDirForScript + '"' + ' --preserve-temp-files'
     if USE_SUBCOMMAND:
-        if M02a.Get_BoardTyp() == 'ESP32':
+        if M02a.Get_BoardTyp() == M02.HT_ESP32:
             CommandStr = Create_Start_ESP32_Sub(ResultName, ComPort, BuildOptions, InoName, SrcDir, CPUType)
         else:
             CommandStr = Create_Start_Sub(M02a.Get_BoardTyp(), ResultName, ComPort, BuildOptions, InoName, SrcDir, CPUType)
@@ -1286,7 +1315,7 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
         VBFiles.writeText(fp, 'ECHO    "   |__________________[:::]__|  ' + M09.Get_Language_Str('das angezeigt.                           "'), '\n')
         VBFiles.writeText(fp, 'ECHO    "                                                                         "', '\n')
         VBFiles.writeText(fp, 'ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
-    elif (Mode == 'ESP32'):
+    elif (Mode == M02.HT_ESP32):
         # 13.11.20:
         VBFiles.writeText(fp, 'COLOR 1E', '\n')
         # Yellow on Blue
@@ -1308,7 +1337,7 @@ def Create_Cmd_file(ResultName, ComPort, BuildOptions, InoName, Mode, SrcDir, CP
         VBFiles.writeText(fp, 'ECHO    "   |__________________[:::]__|  ' + M09.Get_Language_Str('das angezeigt.                           "'), '\n')
         VBFiles.writeText(fp, 'ECHO    "                                                                         "', '\n')
         VBFiles.writeText(fp, 'ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
-    elif (Mode == 'PICO'):
+    elif (Mode == M02.HT_PICO):
         # 18.04.21:
         VBFiles.writeText(fp, 'COLOR 0E', '\n')
         # Yellow on Black
@@ -1404,7 +1433,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
     # Es war irgend was mit 1.6?
     fn_return_value = "" 
     
-    if M02a.Get_BoardTyp() == 'ESP32' and not P01.checkplatform("Darwin"): # use ESP32 path only when not on MAC
+    if (M02a.Get_BoardTyp() == M02.HT_ESP32) and not P01.checkplatform("Darwin"): # use ESP32 path only when not on MAC
         OptParts = Split(BuildOptions, ' ')
         if UBound(OptParts) >= 1:
             if OptParts(0) == '--board':
@@ -1460,7 +1489,7 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
         arduino_user_lib_dir = M02.Sketchbook_Path + "/libraries/" # r'C:\Users\Harold\Documents\Arduino/libraries/'
         arduino_lib_dir = arduino_exe_dir + r'libraries/'
         arduino_avr_tools_dir = arduino_exe_dir + r'hardware/tools/avr/'
-        arduino_esp32_tempdir = arduino_temp_dir + 'ESP32'
+        arduino_esp32_tempdir = arduino_temp_dir + M02.HT_ESP32
         arduino_esp32cache_tempdir = arduino_temp_dir + 'ESP32/cache'
         
         #if not "Windows" in system_platform:
@@ -1505,6 +1534,75 @@ def Create_ARDUINO_IDE_Cmd(ResultName, ComPort, BuildOptions, InoName, Mode, Src
             CommandStr = (CommandStr1, CommandStr2)
         else:
             CommandStr = CommandStr1
+            
+    elif (M02a.Get_BoardTyp() == M02.HT_PICO): # and not P01.checkplatform("Darwin"): # use ESP32 path only when not on MAC
+        
+        Board_Version = M37.Get_Lib_Version('rp2040:rp2040')
+        if Board_Version == '':
+            P01.MsgBox(M09.Get_Language_Str('Fehler: Eine notwendige Arduino Erweiterung ist nicht installiert:') + '  \'' + 'Raspberry Pico Board' + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
+            return fn_return_value
+        if Board_Version != M37.Get_Required_Version('rp2040:rp2040'):
+            P01.MsgBox(M09.Get_Language_Str('Fehler: Die notwendige Version der Arduino Erweiterung ist nicht installiert:') + '  \'' + 'Raspberry Pi Pico/RP2040 Board' + M37.Get_Required_Version("rp2040:rp2040") + '\'', vbCritical, M09.Get_Language_Str('Fehlende Erweiterung'))
+            return fn_return_value
+        # else:
+            # # patch PicoFastLed.cpp
+            # if Dir(SrcDir + "patch/PicoFastLED.cpp") != '':
+                # shutil.copyfile(SrcDir + "patch/PicoFastLED.cpp", M02.Sketchbook_Path + '/libraries/MobaLedLib/src/PicoFastLED.cpp', )
+        
+        arduino_packages_dir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + 'packages/' # 'C:\Users/Harold/AppData/Local/Arduino15/packages/'
+        
+        system_platform = platform.platform()
+        arduino_exe_dir = M30.FilePath(Find_ArduinoExe()) # r'C:\Program Files (x86)/Arduino/'
+                
+        if "Windows" in system_platform:
+            arduino_builder_exe = r'"' + arduino_exe_dir + r'arduino-builder"'
+        else:
+            arduino_builder_exe = r'"' + arduino_exe_dir + r'arduino-builder"'
+        
+        Debug.Print("Create_ARDUINO_IDE_Cmd")
+        arduino_exe_dir = M30.FilePath(Find_ArduinoExe()) # r'C:\Program Files (x86)/Arduino/'
+        arduino_builder_exe = r'"' + arduino_exe_dir + r'arduino-builder"'
+        arduino_hardware_tools_dir = arduino_packages_dir + 'esp32/hardware/esp32/' + Board_Version + r'/tools/' # r'C:\Users/Harold/AppData/Local/Arduino15/packages/esp32/hardware/esp32/' + Board_Version + r'/tools/'
+        arduino_temp_dir = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + '../Temp/pyMobaLedLib_build/' # r'C:\Users/Harold/AppData/Local/Temp/pyMobaLedLib_build/'
+        arduino_temp_dir = arduino_temp_dir.replace("\\Arduino15\\..", "")
+        arduino_user_lib_dir = M02.Sketchbook_Path + "/libraries/" # r'C:\Users\Harold\Documents\Arduino/libraries/'
+        arduino_lib_dir = arduino_exe_dir + r'libraries/'
+        arduino_avr_tools_dir = arduino_exe_dir + r'hardware/tools/avr/'
+                
+        ahome = arduino_exe_dir
+        atemp = arduino_temp_dir + "Pico/"
+        fbqn = BuildOptions.replace("--board ", "")
+        cache = atemp + 'cache/'
+        runtime_platform_path = Environ(M02.Env_USERPROFILE) + M02.AppLoc_Ardu + "packages/rp2040/hardware/rp2040/" + Board_Version
+        
+        M30.CreateFolder(atemp)
+        M30.CreateFolder(cache)
+
+        CommandStr1 = arduino_builder_exe + ' -compile -logger=human' + \
+                     r' -hardware "' + ahome + 'hardware"' + \
+                     r' -hardware "' + arduino_packages_dir + '"' + \
+                     r' -tools "' + ahome + r'tools-builder"' + \
+                     r' -tools "' + arduino_avr_tools_dir + '"' + \
+                     r' -built-in-libraries "' + arduino_lib_dir + '"' + \
+                     r' -libraries "' + arduino_user_lib_dir + '"' + \
+                     r' -fqbn="' + fbqn + '"'\
+                     r' -build-path "' + atemp + '"' + \
+                     r' -warnings=default' + \
+                     r' -build-cache "' + cache + '"' + \
+                     r' -prefs=build.warn_data_percentage=75' + \
+                     r' -prefs=runtime.platform.path="' + runtime_platform_path + '"' + \
+                     r' ' + InoName
+        
+        CommandStr2 = '"' + arduino_packages_dir + 'rp2040/tools/pqt-python3/1.0.1-base-3a57aed-1/python3" ' + '"'+ arduino_packages_dir + 'rp2040/hardware/rp2040/' + Board_Version + '/tools/uf2conv.py"' +\
+                     r' --serial ' + ComPort +\
+                     r' --family RP2040' +\
+                     r' --deploy "' + atemp + 'LEDs_AutoProg.ino.uf2"'
+        
+        if PG.global_controller.execute_upload:
+            CommandStr = (CommandStr1, CommandStr2)
+        else:
+            CommandStr = CommandStr1            
+            
     else:
         if Dir(SrcDir + ResultName) != '':
             Kill(SrcDir + ResultName)
@@ -1598,7 +1696,7 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
         
         
         """ 21.01.2021 Optionally get IP Address from cell left to com port"""
-        if M02a.Get_BoardTyp() == 'ESP32' and P01.Cells(M02.SH_VARS_ROW, ComPortColumn + 1) != '':
+        if M02a.Get_BoardTyp() == M02.HT_ESP32 and P01.Cells(M02.SH_VARS_ROW, ComPortColumn + 1) != '':
             BuildOptions = P01.Cells(M02.SH_VARS_ROW, BuildOptColumn)
             fn_return_value = True
             return fn_return_value, BuildOptions, DeviceSignature        
@@ -1639,23 +1737,23 @@ def Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, Build
         FirmwareVer = ""
         BaudRate = 0
         if CheckCOMPort_Txt != '':
-            if M02a.Get_BoardTyp() == 'ESP32':
+            if M02a.Get_BoardTyp() == M02.HT_ESP32:
                 # 17.04.21: Juergen
                 BaudRate = 921600
-            elif M02a.Get_BoardTyp() == 'PICO':
+            elif M02a.Get_BoardTyp() == M02.HT_PICO:
                 # 17.04.21: Juergen
                 BaudRate = 921600
             else:
                 BaudRate = M07.Get_Arduino_Baudrate(ComPort, Start_Baudrate, DeviceSignature, FirmwareVer)
-        if BaudRate <= 0:
+        if BaudRate <= 0 and not ComPort.startswith("IP:"):
             if M07.Check_If_Port_is_Available(ComPort) == False:
-                Msg = M09.Get_Language_Str('Fehler: Es ist kein Arduino an COM Port #1# angeschlossen.')
+                Msg = M09.Get_Language_Str('Fehler: Es ist kein #2# an COM Port #1# angeschlossen.')
             elif BaudRate == 0:
-                Msg = M09.Get_Language_Str('Fehler: Das Gerät am COM Port #1# wurde nicht als Arduino erkannt.' + vbCr + 'Evtl. ist es ein defekter Arduino oder der Bootloader ist falsch.')
+                Msg = M09.Get_Language_Str('Fehler: Das Gerät am COM Port #1# wurde nicht als #2# erkannt.' + vbCr + 'Evtl. ist es ein defekter Arduino oder der Bootloader ist falsch.')
             else:
                 Msg = M09.Get_Language_Str('Fehler: Der COM Port #1# wird bereits von einem anderen Programm benutzt.' + vbCr + 'Das kann z.B. der serielle Monitor der Arduino IDE oder das Farbtestprogramm sein.' + vbCr + vbCr + 'Das entsprechende Programm muss geschlossen werden.')
-            Msg = Replace(Msg, "#1#", str(ComPort)) + vbCr + vbCr + M09.Get_Language_Str('Wollen sie es noch mal mit einem anderen Arduino oder einem anderen COM Port versuchen?') + vbCr + vbCr + M09.Get_Language_Str('Mit \'Nein\' wird die Meldung ignoriert und versucht den Arduino trotzdem zu programmieren.')
-            select_variable_ = P01.MsgBox(Msg, vbYesNoCancel + vbQuestion, M09.Get_Language_Str('Fehler bei der Überprüfung des angeschlossenen Arduinos'))
+            Msg = Replace(Replace(Msg, "#1#", ComPort), "#2#", GetArduName()) + vbCr + vbCr + Replace(M09.Get_Language_Str("Wollen sie es noch mal mit einem anderen #2# oder einem anderen COM Port versuchen?"), "#2#", GetArduName()) + vbCr + vbCr + Replace(M09.Get_Language_Str("Mit 'Nein' wird die Meldung ignoriert und versucht den #2# trotzdem zu programmieren."), "#2#", GetArduName())
+            select_variable_ = P01.MsgBox(Msg, vbYesNoCancel + vbQuestion, Replace(M09.Get_Language_Str("Fehler bei der Überprüfung des angeschlossenen #2#"), "#2#", GetArduName()))
             if (select_variable_ == vbYes):
                 Retry = True
                 #P01.Cells(M02.SH_VARS_ROW, ComPortColumn).Value = - P01.val(P01.Cells(M02.SH_VARS_ROW, ComPortColumn).Value)
@@ -1713,7 +1811,7 @@ def Stop_Compile_Time_Display():
     Start_Compile_Time = 0
     P01.Unload(F00.StatusMsg_UserForm)
 
-def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, SrcDir,CreateFilesOnly=False): # 20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
+def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, SrcDir,CreateFilesOnly=False, LEDsInUse=None): # 20.12.21: Jürgen add CreateFilesOnly for programatically generation of header files
     ComPort = String()
 
     BuildOptions = String()
@@ -1753,12 +1851,12 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     ## VB2PY (CheckDirective) VB directive took path 1 on OLD_LIB_CHECK
     Check_Required_Libs_and_Install_missing()
     if ComPortColumn == M25.COMPort_COL:
-        ArduName = 'LED'
+        SetArduName('LED')
     else:
-        ArduName =  M25.Page_ID
+        SetArduName(M25.Page_ID)
         
     #P01.Unload(UserForm_Options) # already done
-    F00.StatusMsg_UserForm.ShowDialog(Replace(M09.Get_Language_Str('Programmiere #1# Arduino'), "#1#", ArduName) + vbCr + M30.FileNameExt(InoName), '...')
+    F00.StatusMsg_UserForm.ShowDialog(Replace(M09.Get_Language_Str('Programmiere #1#'), "#1#", GetArduName()) + vbCr + M30.FileNameExt(InoName), '...')
     
     Fn_result, BuildOptions, DeviceSignature = Check_If_Arduino_could_be_programmed_and_set_Board_type(ComPortColumn, BuildOptColumn, BuildOptions, DeviceSignature,CreateFilesOnly=CreateFilesOnly)
     if Fn_result == False:
@@ -1766,13 +1864,13 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
         return fn_return_value
     CPUType = GetCPUTypeFromSignature(DeviceSignature, '')
     if CPUType != '':
-        StatusMsg_UserForm.ShowDialog(Replace(M09.Get_Language_Str('Programmiere #1# Arduino'), '#1#', ArduName) + vbCr + FileNameExt(InoName) + vbCr + CPUType, '...')
+        F00.StatusMsg_UserForm.ShowDialog(Replace(M09.Get_Language_Str('Programmiere #1# '), '#1#', GetArduName()) + vbCr + M30.FileNameExt(InoName) + vbCr + CPUType, '...')
     ComPort = P01.Cells(M02.SH_VARS_ROW, ComPortColumn)
     ComPort = F00.port_check_format(ComPort)
     Update_Compile_Time(True)
     
     # 21.01.2021 Optionally get IP Address from cell left to com port
-    if M02a.Get_BoardTyp() == "ESP32" and P01.Cells(M02.SH_VARS_ROW, ComPortColumn + 1) != "":
+    if M02a.Get_BoardTyp() == M02.HT_ESP32 and P01.Cells(M02.SH_VARS_ROW, ComPortColumn + 1) != "":
         ComPort = P01.Cells(M02.SH_VARS_ROW, ComPortColumn + 1)
         ComPort = F00.port_check_format(ComPort)
     
@@ -1782,16 +1880,18 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
             Mode = 'CAN'
         else:
             Mode = 'Left'
+        SetArduName("LED")
     else:
         Mode = 'Right'
+        SetArduName("Page_ID")
     TextColor = vbWhite
-    if M02a.Get_BoardTyp() == 'ESP32' or M02a.Get_BoardTyp() == 'PICO':
+    if M02a.Get_BoardTyp() == M02.HT_ESP32 or M02a.Get_BoardTyp() == M02.HT_PICO:
         if Mode == 'Right':
             P01.MsgBox(M09.Get_Language_Str('Wenn der ESP32 verwendet wird, dann wird kein rechter Arduino benötigt'), vbInformation, M09.Get_Language_Str('Rechter Arduino nicht benötigt'))
             return fn_return_value
         else:
             Mode = M02a.Get_BoardTyp()
-            if Mode=="Pico" and M25.Page_ID == 'Selectrix':
+            if Mode==M02.HT_PICO and M25.Page_ID == 'Selectrix':
                 P01.MsgBox(Replace('Error: The #1# support for \'' + M25.Page_ID + '\' is not finished yet',"#1#",Mode), vbInformation, Replace("#1# support not finished","#1#",Mode))
                 return fn_return_value
         TextColor = vbYellow
@@ -1801,7 +1901,7 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     #CommandStr = '"' + Create_Cmd_file(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType) + '"'
     # added support for Linux and Mac
     system_platform = platform.platform()
-    if not "Windows" in system_platform:
+    if not "Windows" in system_platform or M02a.Get_BoardTyp() == M02.HT_PICO:
         useARDUINO_IDE=True
     else:
         useARDUINO_IDE=False
@@ -1812,14 +1912,30 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
             return False# cancelation return
         useARDUINO_IDE = answer
     
-    if PG.get_global_controller().useARDUINO_IDE==True or (M02a.Get_BoardTyp() == 'ESP32' and PG.get_global_controller().useESP32WinBat==False):
+    if PG.get_global_controller().useARDUINO_IDE==True or (M02a.Get_BoardTyp() == M02.HT_ESP32 and PG.get_global_controller().useESP32WinBat==False) or M02a.Get_BoardTyp() == M02.HT_PICO:
         useARDUINO_IDE = True
         
+    if type(ComPort) == str and InStr(ComPort, 'IP:') > 0 and M02a.Get_BoardTyp() == M02.HT_PICO:
+        Start = P01.Time()
+        res = M06cfg.create_MLLconfig_and_upload_to_PICO(P01.Cells(M02.SH_VARS_ROW, M25.COMPort_COL), "", LEDsInUse)
+        #P01.Unload(F00.StatusMsg_UserForm)
+        Stop_Compile_Time_Display()
+        Debug.Print('Compile and upload duration: ' + P01.Format(P01.Time() - Start, 'hh:mm:ss'))
+        if res:
+            M30.Show_Status_for_a_while(M09.Get_Language_Str('Programm erfolgreich hochgeladen. Konfig erstellen und Hochladen dauerte ') + P01.Format(P01.Time() - Start, 'hh:mm:ss'), '00:02:00')
+            PG.global_controller.showFramebyName("ProgGeneratorPage")
+        else:
+            arduinoMonitorPage=PG.global_controller.getFramebyName ("ARDUINOMonitorPage")
+            arduinoMonitorPage.add_text_to_textwindow("\n*****************************************************\n",highlight="Error")
+            Failed = True
+        return
+
+    
     if not useARDUINO_IDE: 
         CommandStr = '"' + Create_Cmd_file(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType) + '"'
     else:
         CommandStr = Create_ARDUINO_IDE_Cmd(ResFile, ComPort, BuildOptions, InoName, Mode, SrcDir, CPUType)
-        
+    
     
     # 02.11.19: Added Quotation marks to prevent Problems with special characters in the path like '&'
     # Disable "serial.SerialDiscovery" trial 2
@@ -1828,9 +1944,10 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
     #CommandStr = CommandStr & " 2>&1 | find /v "" StatusLogger "" | find /v ""serial.SerialDiscovery"" | find /v ""fungsvorgang...
     
     
-    #if CommandStr == '' or CommandStr == '""':
-    #    #U01.Unload(StatusMsg_UserForm)
-    #    M30.EndProg()
+    if CommandStr == '' or CommandStr == '""':
+        P01.Unload(F00.StatusMsg_UserForm)
+        M30.EndProg()
+        return False
     
     if CreateFilesOnly:
         Stop_Compile_Time_Display()
@@ -1890,8 +2007,9 @@ def Compile_and_Upload_Prog_to_Arduino(InoName, ComPortColumn, BuildOptColumn, S
             Failed = True
     
     if Failed:
-        P01.MsgBox(M09.Get_Language_Str('Es ist ein Fehler aufgetreten ;-(' + vbCr + vbCr + 'Zur Fehlersuche kann man die letzten Änderungen wieder rückgängig machen und es noch mal versuchen. ' + vbCr + vbCr + 'Kommunikationsprobleme erkennt man an dieser Meldung: ' + vbCr + '   avrdude: ser_open(): can\'t open device "\\\\.\\') + P01.Cells(M02.SH_VARS_ROW, ComPortColumn) + '":' + vbCr + M09.Get_Language_Str('   Das System kann die angegebene Datei nicht finden.' + vbCr + 'In diesem Fall müssen die Verbindungen überprüft und der Arduino durch einen neuen ersetzt werden.' + vbCr + vbCr + 'Der Fehler kann auch auftreten wenn der DCC/LNet/Selextrix Arduino noch nicht programmiert wurde.' + vbCr + 'Am besten man steckt den rechten Arduino erst dann ein wenn er benötigt wird.' + vbCr + vbCr + 'Wenn der Fehler nicht zu finden ist und immer wieder auftritt, dann kann ein Screenshot des ' + 'vorangegangenen Bildschirms (Nach oben scrollen so dass die erste Meldung nach dem Arduino Bild zu sehen ist) ' + 'zusammen mit dem Excel Programm und einer ausführlichen Beschreibung an ' + vbCr + '  MobaLedLib@gmx.de' + vbCr + 'geschickt werden.'), vbInformation, M09.Get_Language_Str('Fehler beim Hochladen des Programms'))
+        P01.MsgBox(M09.Get_Language_Str('Es ist ein Fehler aufgetreten ;-(' + vbCr + vbCr + 'Zur Fehlersuche kann man die letzten Änderungen wieder rückgängig machen und es noch mal versuchen. ' + vbCr + vbCr + 'Kommunikationsprobleme erkennt man an dieser Meldung: ' + vbCr + '   avrdude: ser_open(): can\'t open device "\\\\.\\') + P01.Cells(M02.SH_VARS_ROW, ComPortColumn) + '":' + vbCr + M09.Get_Language_Str('   Das System kann die angegebene Datei nicht finden.' + vbCr + 'In diesem Fall müssen die Verbindungen überprüft und der Arduino durch einen neuen ersetzt werden.' + vbCr + vbCr + 'Der Fehler kann auch auftreten wenn der DCC/LNet/Selextrix Arduino noch nicht programmiert wurde.' + vbCr + 'Am besten man steckt den rechten Arduino erst dann ein wenn er benötigt wird.' + vbCr + vbCr + 'Wenn der Fehler nicht zu finden ist und immer wieder auftritt, dann kann ein Screenshot des ' + 'vorangegangenen Bildschirms (Nach oben scrollen so dass die erste Meldung nach dem Arduino Bild zu sehen ist) ' + 'zusammen mit dem Excel Programm und einer ausführlichen Beschreibung an ' + vbCr + '  https://forum.mobaledlib.de' + vbCr + 'geschickt werden.'), vbInformation, M09.Get_Language_Str('Fehler beim Hochladen des Programms'))
         M30.EndProg()
+        return False
     else:
         Stop_Compile_Time_Display()
         Debug.Print('Compile and upload duration: ' + P01.Format(P01.Time() - Start, 'hh:mm:ss'))
@@ -1917,7 +2035,7 @@ def GetCPUTypeFromSignature(DeviceSignature, DefaultType='ATMega328P'):
         _fn_return_value = DefaultType
     return _fn_return_value
 
-def Compile_and_Upload_LED_Prog_to_Arduino(CreateFilesOnly=False):
+def Compile_and_Upload_LED_Prog_to_Arduino(CreateFilesOnly=False, LEDsInUse=None):
     #------------------------------------------------------------------
     fn_return_value = False
     Doit = Boolean()
@@ -1926,7 +2044,7 @@ def Compile_and_Upload_LED_Prog_to_Arduino(CreateFilesOnly=False):
     if CreateFilesOnly == False:
         Doit = Upload_the_Right_Arduino_Prog_if_needed()
     if Doit:
-        fn_return_value = Compile_and_Upload_Prog_to_Arduino(M02.InoName_LED, M25.COMPort_COL, M25.BUILDOP_COL, GetWorkbookPath() + '/' + M02.Ino_Dir_LED, CreateFilesOnly=CreateFilesOnly)
+        fn_return_value = Compile_and_Upload_Prog_to_Arduino(M02.InoName_LED, M25.COMPort_COL, M25.BUILDOP_COL, GetWorkbookPath() + '/' + M02.Ino_Dir_LED, CreateFilesOnly=CreateFilesOnly, LEDsInUse=LEDsInUse)
     return fn_return_value
 
 
@@ -2162,7 +2280,7 @@ def Install_Libraries(LibNames=[]):
     P01.ChDrive(SrcDir)
     ChDir(SrcDir)
     if Dir(ResFile) != '':
-        P01.MsgBox(M09.Get_Language_Str('Es ist ein Fehler aufgetreten ;-(' + vbCr + vbCr + 'Wenn der Fehler immer wieder auftritt, dann kann ein Screenshot des ' + 'vorangegangenen Bildschirms und einer ausführlichen Beschreibung an ' + vbCr + '  MobaLedLib@gmx.de' + vbCr + 'geschickt werden.'), vbInformation, M09.Get_Language_Str('Fehler beim Installieren der Bibliotheken'))
+        P01.MsgBox(M09.Get_Language_Str('Es ist ein Fehler aufgetreten ;-(' + vbCr + vbCr + 'Wenn der Fehler immer wieder auftritt, dann kann ein Screenshot des ' + 'vorangegangenen Bildschirms und einer ausführlichen Beschreibung an ' + vbCr + '  https://forum.mobaledlib.de' + vbCr + 'geschickt werden.'), vbInformation, M09.Get_Language_Str('Fehler beim Installieren der Bibliotheken'))
         M30.EndProg()
     else:
         Debug.Print('Compile and upload duration: ' + P01.Format(Time - Start, 'hh:mm:ss'))

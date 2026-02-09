@@ -48,6 +48,7 @@ import proggen.M06_Write_Header as M06
 import proggen.M06_Write_Header_LED2Var as M06LED
 import proggen.M06_Write_Header_Sound as M06Sound
 import proggen.M06_Write_Header_SW as M06SW
+import proggen.M06_Write_MLLConfig as M06WC
 import proggen.M07_COM_Port as M07
 import proggen.M08_ARDUINO as M08
 import proggen.M09_Language as M09
@@ -67,6 +68,12 @@ import proggen.M80_Create_Multiplexer as M80
 
 from ExcelAPI.XLC_Excel_Consts import *
 import ExcelAPI.XLA_Application as P01
+
+try:
+    import requests
+    requests_imported = True
+except:
+    requests_imported = False
 
 house_button_list_str = 'ROOM_DARK,ROOM_BRIGHT,ROOM_WARM_W,ROOM_RED,ROOM_D_RED,NL,ROOM_COL0,ROOM_COL1,ROOM_COL2,ROOM_COL3,ROOM_COL4,ROOM_COL5,ROOM_COL345,NL,FIRE,FIRED,FIREB,ROOM_CHIMNEY,ROOM_CHIMNEYD,ROOM_CHIMNEYB,NL,ROOM_TV0,ROOM_TV0_CHIMNEY,ROOM_TV0_CHIMNEYD,ROOM_TV0_CHIMNEYB,ROOM_TV1,ROOM_TV1_CHIMNEY,ROOM_TV1_CHIMNEYD,ROOM_TV1_CHIMNEYB,NL,NEON_LIGHT,NEON_LIGHT1,NEON_LIGHT2,NEON_LIGHT3,NEON_LIGHTD,NEON_LIGHT1D,NEON_LIGHT2D,NEON_LIGHT3D,NL,NEON_LIGHTM,NEON_LIGHT1M,NEON_LIGHT2M,NEON_LIGHT3M,NEON_LIGHTL,NEON_LIGHT1L,NEON_LIGHT2L,NEON_LIGHT3L,NL,NEON_DEF_D,NEON_DEF1D,NEON_DEF2D,NEON_DEF3D,CANDLE,CANDLE1,CANDLE2,CANDLE3,NL,SINGLE_LED1,SINGLE_LED2,SINGLE_LED3,SINGLE_LED1D,SINGLE_LED2D,SINGLE_LED3D,NL,GAS_LIGHT,GAS_LIGHT1,GAS_LIGHT2,GAS_LIGHT3,GAS_LIGHTD,GAS_LIGHT1D,GAS_LIGHT2D,GAS_LIGHT3D,NL,SKIP_ROOM,SKIP_ROOM'
 gaslights_button_list_str = 'NEON_LIGHT,NEON_LIGHT1,NEON_LIGHT2,NEON_LIGHT3,NEON_LIGHTD,NEON_LIGHT1D,NEON_LIGHT2D,NEON_LIGHT3D,NL,NEON_LIGHTM,NEON_LIGHT1M,NEON_LIGHT2M,NEON_LIGHT3M,NEON_LIGHTL,NEON_LIGHT1L,NEON_LIGHT2L,NEON_LIGHT3L,NL,NEON_DEF_D,NEON_DEF1D,NEON_DEF2D,NEON_DEF3D,CANDLE,CANDLE1,CANDLE2,CANDLE3,NL,SINGLE_LED1,SINGLE_LED2,SINGLE_LED3,SINGLE_LED1D,SINGLE_LED2D,SINGLE_LED3D,NL,GAS_LIGHT,GAS_LIGHT1,GAS_LIGHT2,GAS_LIGHT3,GAS_LIGHTD,GAS_LIGHT1D,GAS_LIGHT2D,GAS_LIGHT3D,NL,SKIP_ROOM,SKIP_ROOM'
@@ -94,6 +101,7 @@ class UserForm_House:
         self.IsActive = False
         self.button1_txt =  M09.Get_Language_Str("Abbrechen")
         self.button2_txt =  M09.Get_Language_Str("Ok")
+        self.button_patch_txt = M09.Get_Language_Str("Patch")
         self.Dist_Nr_R = ""
         self.Conn_Nr_R = ""
         self.res = False
@@ -137,7 +145,7 @@ class UserForm_House:
             screen_width = 1300
             pady = 5
             wraplength = window_width - 100
-        
+        self.pady = pady
         x_cordinate = winfo_x+int((screen_width/2) - (window_width/2))
         y_cordinate = winfo_y+int((screen_height/2) - (window_height/2))
         
@@ -278,9 +286,12 @@ class UserForm_House:
         
         self.b_cancel = tk.Button(self.button_frame, text=self.button1_txt, command=self.cancel,width=10,font=self.default_font)
         self.b_ok = tk.Button(self.button_frame, text=self.button2_txt, command=self.ok,width=10,font=self.default_font)
+        self.b_patch = tk.Button(self.button_frame, text=self.button_patch_txt, command=self.patch_cmd,width=10,font=self.default_font)
+        
 
         self.b_cancel.grid(row=0,column=0,sticky="e",padx=10,pady=pady)
         self.b_ok.grid(row=0,column=1,sticky="e",padx=10,pady=pady)
+        self.b_patch.grid(row=0,column=2,sticky="e",padx=10,pady=pady)
         
         self.button_frame.grid(row=8,column=4,sticky="e")
         
@@ -327,6 +338,20 @@ class UserForm_House:
         self.top.destroy()
         P01.ActiveSheet.Redraw_table()
         self.res = True
+        
+    def patch_cmd(self, event=None):
+        pico_ip = P01.Cells(M02.SH_VARS_ROW, M25.COMPort_COL)[3:]
+        self.url = f'http://{pico_ip}/'  # Replace with your Pico's IP
+        self.__OK_Button_Click()
+        res = self.Userform_Res
+        patchfile = M06WC.generate_patch_file(res, CV_adress=self.CV_Adress, CV_used=self.CV_Used)
+        files = {'file': open(patchfile, 'rb')}
+        uploadurl = self.url + "extensionbackup"
+        response = requests.post(uploadurl, files=files, timeout=PG.IPUploadTimeout)
+        if response.status_code == 200:
+            time.sleep(1)
+            activate_url = self.url + "extensionuse"
+            response = requests.get(activate_url, timeout=5)        
  
     def cancel(self, event=None):
         self.UserForm_res = '<Abort>'
@@ -737,13 +762,19 @@ class UserForm_House:
             self.top.title(M09.Get_Language_Str('Gaslights: Die Gaslaternen werden zufällig, nacheinander aktiviert. Sie erreichen erst nach einiger Zeit die volle Helligkeit und flackern manchmal.'))
             self.Description_Label.configure(text=M09.Get_Language_Str('Straßenlaternen sind ein wichtiger Bestandteil einer virtuellen Stadt. Sie beleuchten die nächtlichen Straßen und erzeugen eine warme Atmosphäre insbesondere, wenn es sich um Gaslaternen handelt. ' + 'Die Lampen gehen zufällig an und werden dann langsam heller bis sie die volle Helligkeit erreichen. Außerdem ist noch ein zufälliges Flackern implementiert welches durch Schwankungen im Gasdruck oder durch Windböen entstehen kann.'))
             
-    def Show_With_Existing_Data(self, MacroName, ConfigLine, LED_Channel, Def_Channel):
+    def Show_With_Existing_Data(self, MacroName, ConfigLine, LED_Channel, Def_Channel, CV_Adress=None, CV_used=None):
         Txt = String()
         #----------------------------------------------------------------------------------------------------------------------
         self.__SetMode(MacroName)
         self.__LED_CntList = ''
         self.IndividualTimes_CheckBox_svar.set(False)
         self.LED_Channel_TextBox_svar.set(Def_Channel)
+        self.CV_Adress = CV_Adress
+        self.CV_Used = CV_used
+        if CV_Adress != None and CV_Adress != 0:
+            self.b_patch.grid(row=0,column=2,sticky="e",padx=10,pady=self.pady)
+        else:
+            self.b_patch.grid_forget()
         #self.show() #*HL
         if Len(ConfigLine) > Len(MacroName):
             if Left(ConfigLine, Len(MacroName)) == MacroName:

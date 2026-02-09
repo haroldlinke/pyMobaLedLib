@@ -67,6 +67,8 @@ from scrolledFrame.ScrolledFrame import VerticalScrolledFrame,HorizontalScrolled
 
 from locale import getdefaultlocale
 import logging
+logger=logging.getLogger(__name__)
+
 import serial
 import time
 import platform
@@ -180,11 +182,11 @@ class ConfigurationPage(tk.Frame):
     def tabselected(self):
         #self.controller.currentTabClass = self.tabClassName
         #self.ledmaxcount.set(self.controller.get_maxLEDcnt())
-        logging.debug("Tabselected: %s",self.tabname)
+        logger.debug("Tabselected: %s",self.tabname)
         self.store_old_config()
     
     def tabunselected(self):
-        logging.debug("Tabunselected: %s",self.tabname)
+        logger.debug("Tabunselected: %s",self.tabname)
         if self.check_if_config_data_changed():
             answer = tk.messagebox.askyesnocancel ('Sie verlassen die Einstellungen','Die Einstellungen wurden verändert. Sollen die geänderten Einstellungen gesichert werden?',default='no')
             if answer == None:
@@ -217,11 +219,11 @@ class ConfigurationPage(tk.Frame):
         self.controller.setParamData(key, value)
 
     def MenuUndo(self,_event=None):
-        logging.debug("MenuUndo: %s",self.tabname)
+        logger.debug("MenuUndo: %s",self.tabname)
         pass
     
     def MenuRedo(self,_event=None):
-        logging.debug("MenuRedo: %s",self.tabname)
+        logger.debug("MenuRedo: %s",self.tabname)
         pass
     
     def connect (self,port):
@@ -240,7 +242,7 @@ class ConfigurationPage(tk.Frame):
         win_height = self.controller.winfo_height()+20
         self.setConfigData("win_height",win_height)
         self.setConfigData("win_width",self.controller.winfo_width())
-        logging.debug("Save_Config: win_height=%s win_width=%s",win_height,self.controller.winfo_width())
+        logger.debug("Save_Config: win_height=%s win_width=%s",win_height,self.controller.winfo_width())
         param_values_dict = self.get_macroparam_var_values(self.tabClassName)
         
         # update maxLEDCnt
@@ -254,7 +256,7 @@ class ConfigurationPage(tk.Frame):
         self.store_old_config()
         self.controller.SaveConfigData()
         
-        logging.debug("SaveConfig: %s - %s",self.tabname,repr(self.controller.ConfigData.data))
+        logger.debug("SaveConfig: %s - %s",self.tabname,repr(self.controller.ConfigData.data))
 
     def store_old_config(self):
         self.old_param_values_dict = self.get_macroparam_var_values(self.tabClassName)

@@ -60,7 +60,7 @@ import subprocess
 import logging
 import platform
 
-import  proggen.F00_mainbuttons as F00
+import proggen.F00_mainbuttons as F00
 import proggen.M02_Public as M02
 import proggen.M09_Language as M09
 import proggen.M07_COM_Port as M07
@@ -72,11 +72,16 @@ import proggen.M37_Inst_Libraries as M37
 import pgcommon.G00_common as G00
 import proggen.Tabelle2 as T02
 import proggen.Userform_Testgrafik as D15
+import proggen.Userform_RowFormat as D16
 
 
 import proggen.M09_Translate as M09_Translate
 
-#from PIL import Image, ImageTk
+try:
+    from PIL import Image, ImageTk
+    PIL_imported = True
+except:
+    PIL_imported = False
 
 def _T(text):
     """Translate text."""
@@ -85,6 +90,9 @@ def _T(text):
 
 global_controller = None
 dialog_parent = None
+
+logger=logging.getLogger(__name__)
+
 
 def set_global_controller(controller):
     global global_controller
@@ -104,6 +112,7 @@ BUTTONLABELWIDTH = 10
 
 start_sheet  = "DCC"
 ThisWorkbook = None
+IPUploadTimeout = 10
 
 def button_check_actual_versions_cmd():
     M37.Check_Actual_Versions()
@@ -117,7 +126,7 @@ def button_delete_selected_cmd():
 class Prog_GeneratorPage(tk.Frame):
     def __init__(self, parent, controller):
         global global_tablemodel, ThisWorkbook
-        global dialog_parent
+        global dialog_parent,  IPUploadTimeout
         dialog_parent = self
         self.tabClassName = "ProgGeneratorPage"
         tk.Frame.__init__(self,parent)
@@ -134,10 +143,10 @@ class Prog_GeneratorPage(tk.Frame):
                       "button_install_selected_cmd"            : button_install_selected_cmd,
                       "button_delete_selected_cmd"             : button_delete_selected_cmd}
         
-        datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;Comment"
+        datasheet_fieldnames = "A;Aktiv;Filter;Adresse oder Name;Typ;Start-\nwert;Beschreibung;Verteiler-\nNummer;Stecker\nNummer;Icon;Name;Beleuchtung, Sound, oder andere Effekte;Start LedNr;LEDs;InCnt;Loc InCh;LED\nSound\nKanal;CV_Adress;CV_Used;Comment"
         datasheet_formating = { "HideCells" : ("A1:C1", "E1"), #((0,1),(0,2),(0,3),(0,5),(0,7),(0,12),(0,13),(0,14),(0,15),(0,16)),
                                 "ProtectedCells"  : (("1:2","M:R") ),
-                                "ColumnWidth"     : (10,68,68,132,132,68,240,136,136,68,240,240,68,68,68, 68), #(5,17,17,34,17,17,60,34,34,17,60,60,17,17,17),
+                                "ColumnWidth"     : (10,68,68,132,132,68,240,136,136,68,240,240,68,68,68, 68), #(5,17,17,34,17,17,60,34,34,17,60,60,17,17,17,17,17),
                                 "ColumnAlignment" : {"c": ("B")
                                                      },                                 
                                 "left_click_callertype": "cell",
@@ -173,7 +182,8 @@ class Prog_GeneratorPage(tk.Frame):
                                  "Change": T02.Worksheet_Change,
                                  "BeforeDoubleClick": None,
                                  "SelectionChange": T02.Worksheet_SelectionChange,
-                                 "Redraw" : F00.worksheet_redraw, 
+                                 "Redraw" : F00.worksheet_redraw,
+                                 "ConditionalFormating": T02.Worksheet_ConditionalFormating,
                                 }
         
         workbook_events = {"Open": AM.Workbook_Open,
@@ -251,7 +261,7 @@ class Prog_GeneratorPage(tk.Frame):
                     },
                    "Lib_Macros":
                     {"Name":"Lib_Macros",
-                     "Filenamex":"csv/Lib_Macros.csv",
+                     "Filename2":"csv/Lib_Macros_ext.csv",
                      "Fieldnames": "A;B;C;D;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;U;V;W;X;Y;Z;AA;AB;AC;AD;AE;AF;AG;AH;AI;AJ;AK;AL;AM;AN;AO;AP;AQ;AR;AS"
                     },
                    "Libraries":
@@ -449,6 +459,7 @@ class Prog_GeneratorPage(tk.Frame):
             sheet.SetInitDataFunction(F00.worksheet_init)
            
         self.workbook.SetInitWorkbookFunction(F00.workbook_init)
+        ThisWorkbook = self.workbook
         
         # create buttonlist
         self.create_button_list()
@@ -476,6 +487,10 @@ class Prog_GeneratorPage(tk.Frame):
         self.workbook.activate_sheet(start_sheet)
         
         self.bind_all("<Control-Shift-T>", M09_Translate.Translate_Selection)
+        
+        IPUploadTimeout = self.controller.IPUploadTimeout
+        
+        self.RowFormat_data = {}
             
 
         # ----------------------------------------------------------------
@@ -483,12 +498,14 @@ class Prog_GeneratorPage(tk.Frame):
         # ----------------------------------------------------------------
 
     def tabselected(self):
+        global IPUploadTimeout
         #self.controller.currentTabClass = self.tabClassName
         logging.debug("Tabselected: %s",self.tabname)
         P01.Application.setActiveWorkbook(self.workbook.Name)
         for sheet in self.workbook.sheets:
             if self.controller.getConfigData("ShowHiddentables"):
                 sheet.Visible = True
+        IPUploadTimeout = self.controller.getConfigData("IPUploadTimeout")
         #self.controller.send_to_ARDUINO("#END")
         #time.sleep(ARDUINO_WAITTIME)        
         pass
@@ -551,7 +568,7 @@ class Prog_GeneratorPage(tk.Frame):
                          "tooltip"  : "Dialog aufrufen"},
                         {"Icon_name": "Btn_Send_to_ARDUINO.png",
                          "command"  : self.upload_to_ARDUINO_Button_click, #F00.Arduino_Button_Click,
-                         "shift_command": F00.Arduino_Button_Shift_Click,
+                         #"shift_command": F00.Arduino_Button_Shift_Click,
                          "text"     : "Z. Arduino\nschicken",
                          "padx"     : 20,
                          "tooltip"  : "ARDUINO aufrufen"},
@@ -609,7 +626,13 @@ class Prog_GeneratorPage(tk.Frame):
                          "command"  : self.Grafik_Button_click,
                          "text"     : "*Grafik",
                          "padx"     : 20,
-                         "tooltip"  : "Grafik"}                                                
+                         "tooltip"  : "Grafik"}
+                        ,
+                        {"Icon_name": "Btn_Color_Row.png",
+                         "command"  : self.RowFormat_Button_click,
+                         "text"     : "Zeilen Färben",
+                         "padx"     : 20,
+                         "tooltip"  : "Zeilen entsprechend den ProgrammGenerator-Einstellungen einfärben"}
         )
         
         filedir = os.path.dirname(os.path.realpath(__file__))
@@ -626,13 +649,15 @@ class Prog_GeneratorPage(tk.Frame):
         if self.PGIconSize > 20:
             filename = r"/images/"+button_desc["Icon_name"]
             filepath = self.filedir2 + filename
-            #original_image = Image.open(filepath)
-            #new_width = int(original_image.width * self.PGIconSize / 100.0)
-            #new_height = int(original_image.height * self.PGIconSize / 100.0)
-            #resized_image = original_image.resize((new_width, new_height))  # Set desired dimensions
-            #icon_image = ImageTk.PhotoImage(resized_image)        
-            #self.icon_dict[button_desc["Icon_name"]] = tk.PhotoImage(file=filepath)
-            icon_image = tk.PhotoImage(file=filepath)
+            if PIL_imported:
+                original_image = Image.open(filepath)
+                new_width = int(original_image.width * self.PGIconSize / 100.0)
+                new_height = int(original_image.height * self.PGIconSize / 100.0)
+                resized_image = original_image.resize((new_width, new_height))  # Set desired dimensions
+                icon_image = ImageTk.PhotoImage(resized_image)        
+                #self.icon_dict[button_desc["Icon_name"]] = tk.PhotoImage(file=filepath)
+            else:
+                icon_image = tk.PhotoImage(file=filepath)
             height = None
         else:
             filepath = "---"
@@ -777,6 +802,9 @@ class Prog_GeneratorPage(tk.Frame):
         background_image = ""
         UserForm_TestGrafik = D15.UserForm_TestGrafik(self.controller, background_image=background_image)
         UserForm_TestGrafik.Show_With_Existing_Data("")
+        
+    def RowFormat_Button_click(self, event=None):
+        P01.ActiveSheet.apply_formatting()
     
             
     def upload_to_ARDUINO_Button_click(self, event=None):
@@ -791,7 +819,7 @@ class Prog_GeneratorPage(tk.Frame):
         pass
         if error_flag:
             self.Stop_Compile_Time_Display()
-            P01.MsgBox(M09.Get_Language_Str('Es ist ein Fehler aufgetreten ;-(' + vbCr + vbCr + 'Zur Fehlersuche kann man die letzten Änderungen wieder rückgängig machen und es noch mal versuchen. ' + vbCr + vbCr + 'Kommunikationsprobleme erkennt man an dieser Meldung: ' + vbCr + '   avrdude: ser_open(): can\'t open device "\\\\.\\') + '":' + vbCr + M09.Get_Language_Str('   Das System kann die angegebene Datei nicht finden.' + vbCr + 'In diesem Fall müssen die Verbindungen überprüft und der Arduino durch einen neuen ersetzt werden.' + vbCr + vbCr + 'Der Fehler kann auch auftreten wenn der DCC/Selextrix Arduino noch nicht programmiert wurde.' + vbCr + 'Am besten man steckt den rechten Arduino erst dann ein wenn er benötigt wird.' + vbCr + vbCr + 'Wenn der Fehler nicht zu finden ist und immer wieder auftritt, dann kann ein Screenshot des ' + 'vorangegangenen Bildschirms (Nach oben scrollen so dass die erste Meldung nach dem Arduino Bild zu sehen ist) ' + 'zusammen mit dem Excel Programm und einer ausführlichen Beschreibung an ' + vbCr + '  MobaLedLib@gmx.de' + vbCr + 'geschickt werden.'), vbInformation, M09.Get_Language_Str('Fehler beim Hochladen des Programms'))
+            P01.MsgBox(M09.Get_Language_Str('Es ist ein Fehler aufgetreten ;-(' + vbCr + vbCr + 'Zur Fehlersuche kann man die letzten Änderungen wieder rückgängig machen und es noch mal versuchen. ' + vbCr + vbCr + 'Kommunikationsprobleme erkennt man an dieser Meldung: ' + vbCr + '   avrdude: ser_open(): can\'t open device "\\\\.\\') + '":' + vbCr + M09.Get_Language_Str('   Das System kann die angegebene Datei nicht finden.' + vbCr + 'In diesem Fall müssen die Verbindungen überprüft und der Arduino durch einen neuen ersetzt werden.' + vbCr + vbCr + 'Der Fehler kann auch auftreten wenn der DCC/Selextrix Arduino noch nicht programmiert wurde.' + vbCr + 'Am besten man steckt den rechten Arduino erst dann ein wenn er benötigt wird.' + vbCr + vbCr + 'Wenn der Fehler nicht zu finden ist und immer wieder auftritt, dann kann ein Screenshot des ' + 'vorangegangenen Bildschirms (Nach oben scrollen so dass die erste Meldung nach dem Arduino Bild zu sehen ist) ' + 'zusammen mit dem Excel Programm und einer ausführlichen Beschreibung an ' + vbCr + '  https://forum.mobaledlib.de' + vbCr + 'geschickt werden.'), vbInformation, M09.Get_Language_Str('Fehler beim Hochladen des Programms'))
             #self.EndProg()
         else:
             self.Stop_Compile_Time_Display()
@@ -885,7 +913,7 @@ class Prog_GeneratorPage(tk.Frame):
                 self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |__________________[:::]__|  ' + M09.Get_Language_Str('das angezeigt.                           "'), '\n')
                 self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "                                                                         "', '\n')
                 self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
-            elif (Mode == 'ESP32'):
+            elif (Mode == M02.HT_ESP32):
                 # 13.11.20:
                 #self.arduinoMonitorPage.add_text_to_textwindow('COLOR 1E', '\n')
                 # Yellow on Blue
@@ -907,7 +935,7 @@ class Prog_GeneratorPage(tk.Frame):
                 self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "   |__________________[:::]__|  ' + M09.Get_Language_Str('das angezeigt.                           "'), '\n')
                 self.arduinoMonitorPage.add_text_to_textwindow('ECHO    "                                                                         "', '\n')
                 self.arduinoMonitorPage.add_text_to_textwindow('ECHO    " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " " "', '\n')
-            elif (Mode == 'PICO'):
+            elif (Mode == M02.HT_PICO):
                 # 18.04.21:
                 #self.arduinoMonitorPage.add_text_to_textwindow('COLOR 0E', '\n')
                 # Yellow on Black
@@ -1022,7 +1050,10 @@ class Prog_GeneratorPage(tk.Frame):
                     #print("shell ended")
                     break
                 if output:
-                    self.arduinoMonitorPage.add_text_to_textwindow(output.decode('utf-8')+"\n")
+                    try:
+                        self.arduinoMonitorPage.add_text_to_textwindow(output.decode('utf-8')+"\n")
+                    except BaseException as e:
+                        logging.debug("ProgGenerator - execute_shell_cmd-output:"+str(e))
                     self.arduinoMonitorPage.update()
     
             rc = self.process.returncode
@@ -1237,10 +1268,10 @@ class Prog_GeneratorPage(tk.Frame):
         self.controller.checkcolor_callback = callback
         self.controller.showFramebyName("ColorCheckPage")
     
-    def checkcolor(self,ColorTable,callback=None):
-        self.controller.coltab = ColorTable
-        self.controller.checkcolor_callback = callback
-        self.controller.showFramebyName("ColorCheckPage")
+    # def checkcolor(self,ColorTable,callback=None):
+        # self.controller.coltab = ColorTable.copy()
+        # self.controller.checkcolor_callback = callback
+        # self.controller.showFramebyName("ColorCheckPage")
         
     def get_ThisWorkbook(self):
         global ThisWorkbook

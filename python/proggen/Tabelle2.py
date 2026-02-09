@@ -167,6 +167,12 @@ def Worksheet_SelectionChange(Target):
     #-----------------------------------------------------------------
     # Is called by event if the worksheet selection has changed
     M20.Global_Worksheet_SelectionChange(Target)
+    
+# VB2PY (UntranslatedCode) Argument Passing Semantics / Decorators not supported: Target - ByVal 
+def Worksheet_ConditionalFormating(Target):
+    #-----------------------------------------------------------------
+    # Is called by event if the worksheet selection has changed
+    M20.Global_Worksheet_ConditionalFormating(Target)
 
 def Worksheet_Activate():
     #-------------------------------

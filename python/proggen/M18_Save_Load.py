@@ -232,7 +232,7 @@ def Save_Sheets_to_pgf(Name, FromAllSheets, AddBoardInfo):
 
 def __Test_Save_Sheets_to_pgf():
     #UT----------------------------------
-    Debug.Print('Save_Sheets_to_pgf=' + Save_Sheets_to_pgf(M08.GetWorkbookPath() + '\\Test_All.MLL_pgf', True))
+    Debug.Print('Save_Sheets_to_pgf=' + Save_Sheets_to_pgf(M08.GetWorkbookPath() + '\\Test_All.MLL_pgf', True, True))
 
 def __Find_Sheet_with_matching_Page_ID(Page_ID):
     fn_return_value = None
@@ -253,11 +253,18 @@ def __Copy_and_Clear_Sheet(SheetName, Page_ID):
         P01.MsgBox(M09.Get_Language_Str('Fehler: Es existiert keine passende Seite als Vorlage zum importieren der Daten'), vbCritical, M09.Get_Language_Str('Fehler: Seite kann nicht angelegt werden'))
         return fn_return_value
     else:
-        for s in PG.ThisWorkbook.sheets:
+        for s in PG.ThisWorkbook.sheets: # Find the last data sheet
             if M28.Is_Data_Sheet(s):
                 DstSh = s
-        Sh.Copy(SheetName=SheetName, After=DstSh)
-        P01.ActiveSheet.Name = SheetName
+        if Sh.Visible == xlSheetHidden : #                                  ' 24.05.25 Peter
+            M25.Page_ID = Page_ID # **HLI20250728**
+            Sh.Visible = xlSheetVisible  #                                   ' unhide hidden shet before copy
+            Sh.Copy(SheetName=SheetName, After=DstSh)
+            Sh.Visible = xlSheetHidden   #                                  ' hide sheet again
+        else:
+            M25.Page_ID = Page_ID # **HLI20250728** 
+            Sh.Copy(SheetName=SheetName, After=DstSh)
+        #P01.ActiveSheet.Name = SheetName
         First_Row = M02.FirstDat_Row
         while P01.Cells(First_Row, 1).EntireRow.Hidden:
             First_Row = First_Row + 1
@@ -300,7 +307,7 @@ def __Open_or_Create_Sheet(SheetName, Inp_Page_ID, Name, ToActiveSheet):
     Row = M30.LastFilledRowIn_ChkAll(P01.ActiveSheet) + 2
     if CreatedNewSheet == False:
         P01.CellDict[Row, M25.Descrip_Col] = M09.Get_Language_Str('Importiert von:') + Name
-        P01.Cells(Row, M02.Enable_Col).ClearContents()
+        #*HL* P01.Cells(Row, M02.Enable_Col).ClearContents()
         # Is set by event => Clear it again
     fn_return_value = True
     return fn_return_value
@@ -311,9 +318,9 @@ def __Adapt_Adress_and_Typ_from_Selectrix(prLst):
     #----------------------------------------------------------------------
     # Adapt a DCC or CAN Address from Selectrix to DCC or CAN
     if IsNumeric(prLst(M25.DCC_or_CAN_Add_Col - 1)):
-        Addr = 1 + prLst(M25.DCC_or_CAN_Add_Col - 1) * 8
+        Addr = 1 + int(prLst(M25.DCC_or_CAN_Add_Col - 1)) * 8
         if IsNumeric(prLst(M25.DCC_or_CAN_Add_Col - 1 + 1)):
-            Addr = Addr + prLst(M25.DCC_or_CAN_Add_Col - 1 + 1)
+            Addr = Addr + int(prLst(M25.DCC_or_CAN_Add_Col - 1 + 1))
         prLst[M25.DCC_or_CAN_Add_Col - 1] = Addr
     if prLst(M25.Inp_Typ_Col - 1 + 1) != '':
         M09.Set_Tast_Txt_Var()
@@ -397,7 +404,7 @@ def __Read_Line(line):
             if Col == M25.LanName_Col:
                 Col = Col + 1
                 # Use two lines to be able to enable both new columns separately                             '
-            s = Replace(parts(i), '{NewLine}', vbLf)
+            s = Replace(str(parts(i)), '{NewLine}', vbLf)
             if Left(s, 2) == '==':
                 s = '\'' + s
             if parts(i) != '':
@@ -462,6 +469,7 @@ def __Read_PGF_from_String_V1and2(lines, Name, ToActiveSheet):
     global __AddedToFilterColumn, __HiddenRows, __Start_Row, __ImportFollowingSheets
     fn_return_value = False
     LNr = 0 #Long()
+
 
     SkipSheet = Boolean()
 
@@ -530,6 +538,7 @@ def __Read_PGF_from_String_V1and2(lines, Name, ToActiveSheet):
             elif (select_0 == __Line_ID):
                 if not SkipSheet:
                     if not __Read_Line(lines(LNr)):
+                        #M20.Update_StartValue(Row)                        
                         M20.Update_All_Start_LedNr() # 17.04.23 do it after import of all sheets is done (include feature)
                         return fn_return_value
                     F00.StatusMsg_UserForm.Set_ActSheet_Label('Line: ' + str(LineNrInSheet))
@@ -674,7 +683,7 @@ def __Save_Data_from_active_Sheet_to_File_CallBack(Do_Import, Import_FromAllShee
     if Do_Import:
         P01.ActiveSheet.Select()
         __Copy_S2S_SrcSheet = P01.ActiveSheet.Name
-        if Save_Sheets_to_pgf(__Save_Data_FileName, True):
+        if Save_Sheets_to_pgf(__Save_Data_FileName, Import_FromAllSheets, False):
             __Copy_to_Selected_Sheet_Callback() #*HLSelect_Dest_Sheet.Start('Copy_to_Selected_Sheet_Callback')
 
 def Copy_from_Sheet_to_Sheet():

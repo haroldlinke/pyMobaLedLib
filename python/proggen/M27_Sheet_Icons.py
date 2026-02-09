@@ -211,15 +211,20 @@ def FindMacro_and_Add_Icon_and_Name(MacroStr, Row, Sh, NameOnly=False):
         M09SM.Add_Icon_and_Name(LibMacRow, Row, Sh, NameOnly=NameOnly)
     else:
         # Special treatement if the line was not found in the "Lib_Macros" sheet
-        if InStr(MacroStr, 'Pattern') > 0:
+        if InStr(MacroStr, 'Pattern') > 0 or MacroStr.startswith("//"):
             OldEvents = P01.Application.EnableEvents
             P01.Application.EnableEvents = False
-            Sh.CellDict[Row, M25.LanName_Col] = M09.Get_Language_Str('Muster') + ' Pattern_Configurator'
+            if MacroStr.startswith("//"):
+                Sh.CellDict[Row, M25.LanName_Col] = 'Pico Config'
+            else:
+                Sh.CellDict[Row, M25.LanName_Col] = M09.Get_Language_Str('Muster') + ' Pattern_Configurator'
             P01.Application.EnableEvents = OldEvents
             if NameOnly == False:
                 Del_one_Icon_in_IconCol(Row, Sh)
                 # 31.10.21: Moved into If statemant. Otherwise the Pattern icon is deleted at program start ;-(
                 Add_Icon('Pattern', Row, Sh)
+        
+            
 
 def __Show_Icons_Column_in_Sheet(Sh):
     OldUpdating = Boolean()
@@ -249,7 +254,7 @@ def __Show_Hide_Icons_Column(Show):
             else:
                 __Hide_Icons_Column_in_Sheet(Sh)
 
-def __Update_Language_Name_Column_in_Sheet(Sh):
+def Update_Language_Name_Column_in_Sheet(Sh):
     OldUpdating = Boolean()
 
     Row = int()
@@ -267,7 +272,7 @@ def __Update_Language_Name_Column_in_Sheet(Sh):
 
 def __Test_Update_Language_Name_Column_in_Sheet():
     #UT----------------------------------------------------
-    __Update_Language_Name_Column_in_Sheet(P01.ActiveSheet)
+    Update_Language_Name_Column_in_Sheet(P01.ActiveSheet)
 
 def Update_Language_Name_Column_in_all_Sheets():
     Sh = None # P01.Worksheet
@@ -280,7 +285,7 @@ def Update_Language_Name_Column_in_all_Sheets():
     P01.Application.ScreenUpdating = False
     for Sh in PG.ThisWorkbook.sheets:
         if M28.Is_Data_Sheet(Sh):
-            __Update_Language_Name_Column_in_Sheet(Sh)
+            Update_Language_Name_Column_in_Sheet(Sh)
     P01.Application.ScreenUpdating = OldUpdating
 
 def SelectMacros_from_Icon():

@@ -360,7 +360,10 @@ def Line_Analog_Trend(r):
 def IsLEDGroup():
     _fn_return_value = None
     #--------------------------------------
-    _fn_return_value = X02.ActiveSheet.RGB_LED_CheckBox.Value
+    try:
+        _fn_return_value = X02.ActiveSheet.RGB_LED_CheckBox.Value
+    except:
+        _fn_return_value = False
     return _fn_return_value
 
 def Draw_Analog_Trend_of_Sheet():
