@@ -199,6 +199,11 @@ import proggen.M37_Inst_Libraries as M37
 import proggen.M30_Tools as M30
 import proggen.F00_mainbuttons as F00
 import proggen.M09_Language as M09
+try:
+    import telnetlib
+    import_telnetlibok = True
+except:
+    import_telnetlibok = False
 
 
 # --- Translation - not used

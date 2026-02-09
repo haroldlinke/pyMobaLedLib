@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg height="87.0mm" version="1.1" width="132.0mm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <style type="text/css">
+<![CDATA[
+rect.invis {
+fill : red;
+opacity : 0;
+stroke : black;
+stroke-width : 1;
+}
+text.C10 {
+font-family : Courier;
+font-size : 10;
+font-weight : 10;
+}
+text.V12 {
+dominant-baseline : middle;
+font-family : Verdana;
+font-size : 12;
+text-anchor : middle;
+text-decoration : underline;
+}
+text.V9 {
+dominant-baseline : middle;
+font-family : Verdana;
+font-size : 9;
+}
+text.scale {
+dominant-baseline : middle;
+font-family : Verdana;
+font-size : 12;
+text-anchor : left;
+}
+tspan {
+white-space : pre;
+}
+]]>
+</style>
+  </defs>
+  <script type="text/ecmascript">
+<![CDATA[
+
+function swapOpacity(idFrom, idTo) {
+    var svgFrom = document.getElementById(idFrom);
+    var svgTo = document.getElementById(idTo);
+    var attrFrom = svgFrom.getAttribute("opacity");
+    var attrTo = svgTo.getAttribute("opacity");
+    svgTo.setAttributeNS(null, "opacity", attrFrom);
+    svgFrom.setAttributeNS(null, "opacity", attrTo);
+}
+
+function setOpacity(id, value) {
+    var svgElem = document.getElementById(id);
+    svgElem.setAttributeNS(null, "opacity", value);
+}
+
+
+function showHistogram(x, y) {
+    var histElem = document.getElementById("HistogramLegend");
+    // Use the ID to compute the y offset. The x offset is 8.0mm for text,
+    // 2.0mm or 0mm for rect
+    for (var i = 0; i < 38; i += 2) {
+        var elem = histElem.children[i / 2]
+        if (i == 0) {
+            var xOffset = 0;
+        } else if (elem.nodeName == "text") {
+            var xOffset = 8;
+        } else {
+            var xOffset = 2;
+        }
+        elem.setAttributeNS(null, "x", x + xOffset + "mm");
+        elem.setAttributeNS(null, "y", y + i + "mm");
+    }
+    histElem.setAttributeNS(null, "opacity", 1.0);
+}
+ 
+function hideHistogram() {
+    setOpacity("HistogramLegend", 0.0)
+}
+ 
+
+function scaleGraphic(scale, theId) {
+    var graphicGroup = document.getElementById("graphic");
+    graphicGroup.setAttributeNS(null, "transform", "scale(" + scale + ")");
+    // Un-bold all then bold the txtId.
+    var scaleGroup = document.getElementById("scaleGroup");
+    for (var i = 0; i < scaleGroup.children.length; ++i) {
+        var elem = scaleGroup.children[i];
+        if (elem.id == theId) {
+            elem.setAttributeNS(null, "font-weight", "bold");
+        } else {
+            elem.setAttributeNS(null, "font-weight", "normal");
+        }
+    }
+}
+
+]]>
+</script>
+  <g id="scaleGroup">
+    <text class="scale" x="8.0mm" y="4.0mm">Select scale (bold selected):</text>
+    <text class="scale" font-weight="normal" id="0.05" onclick="scaleGraphic(0.05, &apos;0.05&apos;)" text-decoration="underline" x="72.0mm" y="4.0mm">5%</text>
+    <text class="scale" font-weight="normal" id="0.1" onclick="scaleGraphic(0.1, &apos;0.1&apos;)" text-decoration="underline" x="82.0mm" y="4.0mm">10%</text>
+    <text class="scale" font-weight="normal" id="0.25" onclick="scaleGraphic(0.25, &apos;0.25&apos;)" text-decoration="underline" x="97.0mm" y="4.0mm">25%</text>
+    <text class="scale" font-weight="normal" id="0.5" onclick="scaleGraphic(0.5, &apos;0.5&apos;)" text-decoration="underline" x="112.0mm" y="4.0mm">50%</text>
+    <text class="scale" font-weight="bold" id="1.0" onclick="scaleGraphic(1.0, &apos;1.0&apos;)" text-decoration="underline" x="127.0mm" y="4.0mm">100%</text>
+    <text class="scale" font-weight="normal" id="1.5" onclick="scaleGraphic(1.5, &apos;1.5&apos;)" text-decoration="underline" x="147.0mm" y="4.0mm">150%</text>
+    <text class="scale" font-weight="normal" id="2.0" onclick="scaleGraphic(2.0, &apos;2.0&apos;)" text-decoration="underline" x="167.0mm" y="4.0mm">200%</text>
+  </g>
+  <!-- Root position: left, Sweep direction: + canvas=Box(width=Dim(72mm), depth=Dim(19mm)) datum=Pt(x=Dim(-6.0mm), y=Dim(4.0mm))-->
+  <g transform="translate(0, 24)">
+    <g id="graphic" transform="scale(1.0)">
+      <rect fill="none" height="19.0mm" stroke="grey" stroke-width="2" width="72.0mm" x="0px" y="28px" />
+      <rect fill="mistyrose" height="5.2mm" stroke="black" stroke-width="1" width="32.0mm" x="20.0mm" y="15.8mm" />
+      <rect fill="blue" height="1.2mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="19.8mm" />
+      <rect fill="cyan" height="0.0mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="19.8mm" />
+      <rect fill="green" height="0.4mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="19.4mm" />
+      <rect fill="red" height="1.3mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="18.1mm" />
+      <rect fill="white" height="2.3mm" stroke="black" stroke-width=".5" width="4.0mm" x="20.0mm" y="15.8mm" />
+      <line stroke="black" stroke-width="2" x1="24.0mm" x2="52.0mm" y1="21.0mm" y2="18.4mm" />
+      <line stroke="black" stroke-width="2" x1="52.0mm" x2="24.0mm" y1="18.4mm" y2="15.8mm" />
+      <text class="V12" opacity="1.0" x="36.0mm" y="13.8mm">LEDs_AutoProg.h</text>
+      <rect class="invis" height="5.2mm" onmouseout="hideHistogram()" onmouseover="showHistogram(25.0, 20.392)" width="4.0mm" x="20.0mm" y="15.8mm" />
+      <g id="t0.alt" opacity="0.0">
+        <rect fill="khaki" height="132pt" width="210pt" x="24.0mm" y="15.8mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="26.6mm" y="20.0mm">
+          <tspan>                    Type      Me [     Me] </tspan>
+          <tspan dy="1.5em" x="26.6mm">             header-name       0 [      0] </tspan>
+          <tspan dy="1.5em" x="26.6mm">              identifier      88 [     88] </tspan>
+          <tspan dy="1.5em" x="26.6mm">          string-literal       2 [      2] </tspan>
+          <tspan dy="1.5em" x="26.6mm">               pp-number      28 [     28] </tspan>
+          <tspan dy="1.5em" x="26.6mm">       character-literal       0 [      0] </tspan>
+          <tspan dy="1.5em" x="26.6mm">preprocessing-op-or-punc      98 [     98] </tspan>
+          <tspan dy="1.5em" x="26.6mm">          non-whitespace       0 [      0] </tspan>
+          <tspan dy="1.5em" x="26.6mm">                  concat       0 [      0] </tspan>
+          <tspan dy="1.5em" x="26.6mm">              whitespace     174 [    174] </tspan>
+          <tspan dy="1.5em" x="26.6mm">                   Total     390 [    390] </tspan>
+        </text>
+      </g>
+      <g id="t1.alt" opacity="0.0">
+        <rect fill="khaki" height="20pt" width="340pt" x="36.0mm" y="13.8mm" />
+        <text font-family="Courier" font-size="10" font-weight="normal" x="38.6mm" y="18.0mm">
+          <tspan>D:\data\doc\GitHub\pyMobaLedLib\python/LEDs_AutoProg/LEDs_AutoProg.h </tspan>
+        </text>
+      </g>
+      <g id="HistogramLegend" opacity="0.0">
+        <rect fill="khaki" height="40.0mm" id="0" width="48.0mm" x="0.0mm" y="0.0mm" />
+        <rect fill="white" height="4.0mm" id="2" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="2.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="4" x="8.0mm" y="4.0mm">whitespace</text>
+        <rect fill="yellow" height="4.0mm" id="6" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="6.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="8" x="8.0mm" y="8.0mm">concat</text>
+        <rect fill="black" height="4.0mm" id="10" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="10.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="12" x="8.0mm" y="12.0mm">non-whitespace</text>
+        <rect fill="red" height="4.0mm" id="14" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="14.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="16" x="8.0mm" y="16.0mm">preprocessing-op-or-punc</text>
+        <rect fill="magenta" height="4.0mm" id="18" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="18.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="20" x="8.0mm" y="20.0mm">character-literal</text>
+        <rect fill="green" height="4.0mm" id="22" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="22.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="24" x="8.0mm" y="24.0mm">pp-number</text>
+        <rect fill="cyan" height="4.0mm" id="26" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="26.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="28" x="8.0mm" y="28.0mm">string-literal</text>
+        <rect fill="blue" height="4.0mm" id="30" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="30.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="32" x="8.0mm" y="32.0mm">identifier</text>
+        <rect fill="orange" height="4.0mm" id="34" stroke="black" stroke-width=".5" width="4.0mm" x="2.0mm" y="34.0mm" />
+        <text dominant-baseline="middle" font-family="Verdana" font-size="10" id="36" x="8.0mm" y="36.0mm">header-name</text>
+      </g>
+      <rect class="invis" height="5.2mm" id="t0" onmouseout="swapOpacity(&apos;t0&apos;, &apos;t0.alt&apos;)" onmouseover="swapOpacity(&apos;t0&apos;, &apos;t0.alt&apos;)" width="28.0mm" x="24.0mm" y="15.8mm" />
+      <rect class="invis" height="14px" id="t1" onmouseout="swapOpacity(&apos;t1&apos;, &apos;t1.alt&apos;)" onmouseover="swapOpacity(&apos;t1&apos;, &apos;t1.alt&apos;)" width="180px" x="4.3mm" y="11.3mm" />
+    </g>
+  </g>
+</svg>
